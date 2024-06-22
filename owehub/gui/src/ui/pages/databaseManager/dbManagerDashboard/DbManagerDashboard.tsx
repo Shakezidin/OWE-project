@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchActive } from '../../../../redux/apiSlice/configSlice/config_get_slice/activeSlice';
 import moment from 'moment';
 import Loading from '../../../components/loader/Loading';
+import { ICONS } from '../../../icons/Icons';
 
 const DbManagerDashboard = () => {
   const navigate = useNavigate();
@@ -105,32 +106,44 @@ const DbManagerDashboard = () => {
 
       <div className="Db-manager-container">
         <div className="runner-section">
-          <h3>DB Status</h3>
-          <p>Application {!start_time && 'Not'} Running</p>
+          <div className='dbm-top'>
+            <img src={ICONS.dbm} alt='' className='dbm-img' />
+            <h3>DB Status</h3>
+            <p>Application {!start_time && 'Not'} Running</p>
+          </div>
           <div className="active-button">
             <div className="active-since-section">
               {!start_time ? (
                 <button type="button" style={{ background: '#CA0B00' }}>
+                  <span className="status-circle red"></span>
                   Inactive
                 </button>
               ) : (
-                <button type="button">Active</button>
+                <button type="button">
+                  <span className="status-circle green"></span>
+                  Active
+                </button>
               )}
             </div>
-
             {start_time && (
               <div className="since-section">
-                <h3>Active Since</h3>
+                <h3>Since:</h3>
                 <p>{moment(start_time).format('MM/DD/YYYY hh:mm A')}</p>
               </div>
             )}
           </div>
         </div>
+
+
+
+
+
+
         <div className="DashBarchart-section">
           <DashBarLineChart />
           <div className="identity1">
-            <Boxes color="#FB7955" /> <p>Historical Records</p>
-            <Boxes color="#0088FE" /> <p>Total Records</p>
+            <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>Historical Records</p>
+            <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>Total Records</p>
           </div>
         </div>
       </div>
@@ -156,10 +169,11 @@ const DbManagerDashboard = () => {
                 cursor: 'pointer',
                 alignContent: 'center',
                 backgroundColor: '#ffffff',
+                boxShadow: 'none'
               }),
               placeholder: (baseStyles) => ({
                 ...baseStyles,
-                color: '#0493CE', // Change the placeholder color here
+                color: '#292929', // Change the placeholder color here
               }),
               indicatorSeparator: () => ({
                 display: 'none',
@@ -175,7 +189,7 @@ const DbManagerDashboard = () => {
                 ...baseStyles,
                 fontSize: '13px',
                 color: state.isSelected ? '#ffffff' : '#000000',
-                backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                 '&:hover': {
                   backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                 },
@@ -183,7 +197,7 @@ const DbManagerDashboard = () => {
               }),
               singleValue: (baseStyles, state) => ({
                 ...baseStyles,
-                color: '#0493CE',
+                color: '#292929',
               }),
               menu: (baseStyles) => ({
                 ...baseStyles,
@@ -212,10 +226,11 @@ const DbManagerDashboard = () => {
                     border: '1px solid #d0d5dd',
                     fontWeight: '500',
                     cursor: 'pointer',
+                    boxShadow: 'none',
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
-                    color: '#0493CE', // Change the placeholder color here
+                    color: '#292929', // Change the placeholder color here
                   }),
                   dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
@@ -231,14 +246,14 @@ const DbManagerDashboard = () => {
                     ...baseStyles,
                     fontSize: '13px',
                     color: state.isSelected ? '#ffffff' : '#000000',
-                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                     '&:hover': {
                       backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: '#0493CE',
+                    color: '#292929',
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -268,8 +283,8 @@ const DbManagerDashboard = () => {
             </div>
 
             <div className="identity">
-              <Boxes color="#FB7955" /> <p>30% Fail</p>
-              <Boxes color="#0088FE" /> <p>70% Pass</p>
+              <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
+              <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
             </div>
           </div>
 
@@ -291,10 +306,11 @@ const DbManagerDashboard = () => {
                     border: '1px solid #d0d5dd',
                     fontWeight: '500',
                     cursor: 'pointer',
+                    boxShadow: 'none',
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
-                    color: '#0493CE', // Change the placeholder color here
+                    color: '#292929', // Change the placeholder color here
                   }),
                   indicatorSeparator: () => ({
                     display: 'none',
@@ -310,14 +326,14 @@ const DbManagerDashboard = () => {
                     ...baseStyles,
                     fontSize: '13px',
                     color: state.isSelected ? '#ffffff' : '#000000',
-                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                     '&:hover': {
                       backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: '#0493CE',
+                    color: '#292929',
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -346,8 +362,8 @@ const DbManagerDashboard = () => {
               </div>
             </div>
             <div className="identity">
-              <Boxes color="#FB7955" /> <p>30% Fail</p>
-              <Boxes color="#0088FE" /> <p>70% Pass</p>
+              <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
+              <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
             </div>
           </div>
 
@@ -369,10 +385,11 @@ const DbManagerDashboard = () => {
                     border: '1px solid #d0d5dd',
                     fontWeight: '500',
                     cursor: 'pointer',
+                    boxShadow: 'none',
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
-                    color: '#0493CE', // Change the placeholder color here
+                    color: '#292929', // Change the placeholder color here
                   }),
                   indicatorSeparator: () => ({
                     display: 'none',
@@ -388,14 +405,14 @@ const DbManagerDashboard = () => {
                     ...baseStyles,
                     fontSize: '13px',
                     color: state.isSelected ? '#ffffff' : '#000000',
-                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                     '&:hover': {
                       backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: '#0493CE',
+                    color: '#292929',
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -424,8 +441,8 @@ const DbManagerDashboard = () => {
               </div>
             </div>
             <div className="identity">
-              <Boxes color="#FB7955" /> <p>30% Fail</p>
-              <Boxes color="#0088FE" /> <p>70% Pass</p>
+              <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
+              <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
             </div>
           </div>
         </div>

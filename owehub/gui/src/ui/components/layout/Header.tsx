@@ -3,6 +3,7 @@ import './layout.css';
 import '../layout/layout.css';
 import {
   MdKeyboardArrowDown,
+  MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
   MdKeyboardArrowUp,
 } from 'react-icons/md';
@@ -14,6 +15,7 @@ import { ROUTES } from '../../../routes/routes';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoMdLogOut } from 'react-icons/io';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import { IoMenu } from 'react-icons/io5';
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -86,83 +88,66 @@ const Header: React.FC<Toggleprops> = ({
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
       <div className="header-icon">
         <div
-          className="header-logo"
-          style={{ marginLeft: toggleOpen ? '17px' : '17px' }}
+          className={`side-bar-logo ${toggleOpen ? 'side-bar-logo-active' : ''}`}
+          style={{
+            width: !toggleOpen && !isTablet ? 240 :  50,
+            paddingLeft: toggleOpen || isTablet ? 0 : undefined,
+          }}
+          onClick={() =>isTablet && setToggleOpen((prev) => !prev)}
         >
+          {isTablet ? (
+            <IoMenu
+              
+              size={22}
+              className="mx-auto"
+            />
+          ) : (
+            <img
+              src={ICONS.sidebarLogo}
+              alt=""
+              style={{
+                marginInline: toggleOpen ? 'auto' : undefined,
+              }}
+            />
+          )}
+          {toggleOpen || isTablet ? null : <h3 style={{ color: 'black' }}>OWE HUB</h3>}
+
+          {!isTablet && (
+            <div
+              className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
+              onClick={() => setToggleOpen(!toggleOpen)}
+              style={{
+                position: 'absolute',
+                right: toggleOpen ? -17 : 0,
+                top: '10px',
+                borderRadius: toggleOpen
+                  ? '0px 10px 10px 0px'
+                  : '10px 0 0 10px',
+              }}
+            >
+              {toggleOpen ? (
+                <MdKeyboardArrowRight
+                  style={{ fontSize: '1.2rem', color: '#23B364' }}
+                />
+              ) : (
+                <MdKeyboardArrowLeft
+                  style={{ fontSize: '1.2rem', color: '#23B364' }}
+                />
+              )}
+            </div>
+          )}
+        </div>
+        <div className="header-logo flex items-center" style={{ marginLeft:isTablet? 0:25,height:"100%" }}>
           <object
             type="image/svg+xml"
             data={ICONS.LOGO}
             aria-label="login-icon"
           ></object>
         </div>
-        {toggleOpen && !isTablet && (
-          <div
-            className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
-            onClick={() => setToggleOpen(!toggleOpen)}
-            style={{
-              position: 'absolute',
-              left: '0px',
-              top: '10px',
-              borderRadius: '0px 10px 10px 0px',
-            }}
-          >
-            <MdKeyboardArrowRight
-              style={{ fontSize: '1.2rem', color: '#23B364' }}
-            />
-          </div>
-        )}
       </div>
       <div className="search-container">
-        <div className="user-container">
-          {/* <button className="app-btn" onClick={() => setOpenModal(!openModal)}>
-            {
-              openModal ? <img src={ICONS.groupActiveIcon} alt="" /> : <img src={ICONS.groupIcon} alt="" />
-            }
-          </button> */}
-          {/* {
-            openModal && (<div className="header-modal">
-              <div className="select-head">
-                <p>Select Option</p>
-              </div>
-              <div className="image-box-container" >
-                <div className="image-icon" style={{ backgroundColor: "#DDF3FF" }}>
-                  <img src={ICONS.commIconHead} alt="" />
-                </div>
-                <p className="" >
-                  Commission
-                </p>
-              </div>
-              <div className="image-box-container" onClick={() => setSidebarChange(1)}>
-                <div className="image-icon" style={{ backgroundColor: "#FFE6E6" }}>
-                  <img src={ICONS.dbIconManag} alt="" />
-                </div>
-                <p className="">
-                  Database Manger
-                </p>
-              </div>
-              <div className="image-box-container">
-                <div className="image-icon" style={{ backgroundColor: "#DDDFFF" }}>
-                  <img src={ICONS.projIcon} alt="" />
-                </div>
-                <p className="">
-                  Project Manager
-                </p>
-              </div>
-              <div className="image-box-container">
-                <div className="image-icon" style={{ backgroundColor: "#DDF3FF" }}>
-                  <img src={ICONS.teamManag} alt="" />
-                </div>
-                <p className="">
-                  Team Management
-                </p>
-              </div>
-            </div>
-            )
-          } */}
-          {/* <div className="notification">
-            <img src={ICONS.NOTIFICATION} alt="" />
-          </div> */}
-          <div className="user-img-container">
+        <div className="user-container" ref={dropdownRef} onClick={() => setOPenIcon(!openIcon)}>
+          <div className="user-img-container"  >
             <div className="user-img">
               <span>{name}</span>
             </div>
@@ -175,8 +160,6 @@ const Header: React.FC<Toggleprops> = ({
               <div className="">
                 <div
                   className="down-circle"
-                  ref={dropdownRef}
-                  onClick={() => setOPenIcon(!openIcon)}
                 >
                   {openIcon ? (
                     <img src={ICONS.upperIcon} alt="" />
@@ -202,19 +185,12 @@ const Header: React.FC<Toggleprops> = ({
 
                       <div
                         className="image-box-container "
-                        // style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
                         onClick={handleLogout}
                       >
                         <div className="image-icon">
                           <IoMdLogOut />
                         </div>
-
                         <div
-                          style={
-                            {
-                              // color: "black",
-                            }
-                          }
                         >
                           <p style={{ fontSize: '12px', fontWeight: '500' }}>
                             Logout

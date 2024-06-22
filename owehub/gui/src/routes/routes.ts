@@ -53,4 +53,5 @@ export const ROUTES = {
   DB_MANAGER_DATA_TABLE: '/dbManager/dataTable',
   DB_MANAGER_USER_ACTIVITY: '/dbManager/userActivity',
   DB_MANAGER_WEB_HOOKS: '/dbManager/webhooks',
+  BATTERY_BACK_UP:"/battery-backup-calulator",
 };

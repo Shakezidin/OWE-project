@@ -73,7 +73,7 @@ export const WelcomePage = () => {
   ];
 
   return (
-    <div className="welcomeMainContainer">
+    <div className="welcomeMainContainer scrollbar">
       <div className="welcomeContainer">
         <header className="welcomeBannerView">
           <div className="welcomeInnerBannerView">
@@ -214,7 +214,7 @@ export const WelcomePage = () => {
         <section className="welcomeWorkEaseView">
           <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
           <br />
-          <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
+          <ImageLayout images={[Grid_1, Grid_3, Grid_2, Grid_4, Grid_5]} />
         </section>
 
         <section className="welcomeOverProcessContainer">

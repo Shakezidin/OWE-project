@@ -53,8 +53,9 @@ a {
   position: absolute;
   color: #000000;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 14.5px;
+  top: 4px;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -167,15 +168,15 @@ input[type='password']::-ms-clear {
   border-radius: 1.5rem;
   margin-top: 0.5rem;
 }
-::-webkit-scrollbar {
+ ::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
+}  */
 
 /* modal style  */
 .transparent-model {
@@ -270,7 +271,6 @@ input[type='password']::-ms-clear {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  align-items: flex-end;
 }
 .createUserActionButton {
   display: flex;
@@ -388,6 +388,34 @@ br {
   margin-bottom: -15px !important;
 }
 
+.scrollbar{
+  overflow: auto;
+  height: 100vh;
+}
+
+.scrollbar::-webkit-scrollbar {
+  display: initial !important;
+  width: 10px !important;
+  height: auto !important;;
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto  !important;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.scrollbar::-webkit-scrollbar-button {
+  display: initial;
+}
+.scrollbar::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.scrollbar::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
 .bg-white{
   background-color: var(--white-color);
 }
@@ -399,10 +427,23 @@ br {
 .bg-secondary{
   background-color: var(--secondary-color);
 }
+.d-none{
+  display: none;
+}
 
 
 @media (max-width:1024px) {
   .modal {
     max-width:750px;
   }
+  .create-input-container{
+    gap: 15px;
+    margin-left: 0.5rem !important;
+  }
+}
+
+
+.main-container{
+  max-width: 1900px;
+  margin-inline: auto;
 }

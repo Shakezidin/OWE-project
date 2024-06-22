@@ -455,8 +455,8 @@ const RepDashBoardTable = () => {
   ];
 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -786,7 +786,7 @@ const RepDashBoardTable = () => {
 
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {startIndex} - {currentPageData?.length} of {currentPageData?.length} item
           </p>
 
           {

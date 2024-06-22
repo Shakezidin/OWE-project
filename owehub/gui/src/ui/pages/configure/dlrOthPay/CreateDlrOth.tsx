@@ -17,6 +17,7 @@ import {
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
+import { firstCapitalize } from '../../../../utiles';
 
 interface ButtonProps {
   editMode: boolean;
@@ -64,7 +65,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof typeof createCommission]) {
-        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+        error[key as keyof IError] = firstCapitalize(`${key.replaceAll("_"," ")} is required`);
       }
     }
     setErrors({ ...error });
@@ -158,9 +159,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.unique_id.replace('unique_id', 'unique id')}
                     </span>
@@ -179,9 +181,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.payee}
                     </span>
@@ -200,9 +203,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.amount}
                     </span>
@@ -224,9 +228,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.description}
                     </span>
@@ -245,9 +250,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.date}
                     </span>
@@ -268,9 +274,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>

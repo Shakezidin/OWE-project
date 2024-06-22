@@ -160,7 +160,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     maxLength={50}
                   />
                 </div>
-                <div className="create-input-field-profile-password">
+                <div className="create-input-field-profile-password relative" >
                   <label className="inputLabel">New Password</label>
                   <Input
                     type={showNewPassword ? 'text' : 'password'}
@@ -192,7 +192,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     maxLength={50}
                   />
                   {error.newPassword && (
-                    <span className="error">{error.newPassword}</span>
+                    <span className="error absolute">{error.newPassword}</span>
                   )}
                 </div>
                 <div className="create-input-field-profile-password">

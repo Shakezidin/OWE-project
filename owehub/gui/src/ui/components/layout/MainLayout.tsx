@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassword';
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import { cancelAllRequests } from '../../../http';
 const MainLayout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ const MainLayout = () => {
             dispatch(logout());
             navigate('/login');
             toast.error('User does not exist. Please register..');
+            cancelAllRequests()
           }
         })
         .catch((error: any) => {
@@ -87,6 +89,12 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
+      <Header
+        toggleOpen={toggleOpen}
+        setToggleOpen={setToggleOpen}
+        sidebarChange={sidebarChange}
+        setSidebarChange={setSidebarChange}
+      />
       <div className="side-header">
         <Sidebar
           toggleOpen={toggleOpen}
@@ -96,14 +104,8 @@ const MainLayout = () => {
         />
         <div
           className="header-width"
-          style={{ marginLeft: !toggleOpen ? '240px' : '50px' }}
+          style={{ marginLeft: !toggleOpen && !isTablet ? '240px' : isTablet ? 0 : '50px' }}
         >
-          <Header
-            toggleOpen={toggleOpen}
-            setToggleOpen={setToggleOpen}
-            sidebarChange={sidebarChange}
-            setSidebarChange={setSidebarChange}
-          />
           <div className="children-container">
             <Outlet />
           </div>

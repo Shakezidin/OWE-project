@@ -23,6 +23,7 @@ import {
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
 import { useAppSelector } from '../../../../redux/hooks';
+import { firstCapitalize } from '../../../../utiles';
 interface tierLoanProps {
   handleClose: () => void;
   tierEditedData: TierLoanFeeModel | null;
@@ -63,7 +64,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
         continue;
       }
       if (!createTier[key as keyof typeof createTier]) {
-        error[key] = `${key.replaceAll('_', ' ')} is required`;
+        error[key] = firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -200,9 +201,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.dealer_tier}
                     </span>
@@ -221,9 +223,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.installer}
                     </span>
@@ -242,9 +245,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.state}
                     </span>
@@ -269,9 +273,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.loan_type}
                     </span>
@@ -298,9 +303,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.owe_cost}
                     </span>
@@ -326,9 +332,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.dlr_mu}
                     </span>
@@ -357,9 +364,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.dlr_cost}
                     </span>
@@ -381,9 +389,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -410,9 +419,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.end_date}
                     </span>

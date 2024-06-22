@@ -1,6 +1,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Label, LabelList, Tooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 
 interface DataItem {
   name: string;
@@ -13,7 +14,8 @@ interface PieChartProps {
   data: DataItem[];
 }
 
-const COLORS = ['#FB7955', '#0088FE'];
+const COLORS = ['#63ACA3', '#EE824D'];
+
 
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value;
@@ -23,6 +25,9 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
 function PieChartWithPaddingAngle({ data }: PieChartProps) {
   // Destructure data from props
   const navigate = useNavigate();
+  
+  const isTablet = useMatchMedia('(max-width: 1024px)');
+
 
   const handleClick = (entry: DataItem, index: number) => {
     navigate(`/dbManager/webhooks`);
@@ -38,6 +43,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
         justifyContent: 'center',
         outline: 'none',
       }}
+      className='dashbar-db'
     >
       <div
         style={{
@@ -54,7 +60,6 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
           height={400}
           style={{ outline: 'none', cursor: 'pointer' }}
         >
-          {/* <Tooltip formatter={(value: number, name: string, props: any) => [`${value} webhooks`, props]} /> */}
           <Tooltip
             content={({ payload }) => {
               if (payload && payload.length > 0) {
@@ -80,8 +85,8 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
             data={data}
             cx={120}
             cy={200}
-            innerRadius={80}
-            outerRadius={125}
+            innerRadius={ isTablet ? 70 : 80}
+            outerRadius={isTablet ? 105 : 125}
             fill="#8884d8"
             paddingAngle={0}
             dataKey="value"

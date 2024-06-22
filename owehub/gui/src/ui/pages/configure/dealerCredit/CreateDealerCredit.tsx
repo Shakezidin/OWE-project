@@ -48,9 +48,9 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
   const [dealerCredit, setDealerCredit] = useState({
     unique_id: editData ? editData.unique_id : '',
     date: editData ? editData.date : '',
-    exact_amt: editData ?editData.exact_amount : '',
+    exact_amt: editData ? editData.exact_amount : '',
     per_kw_amt: editData ? editData.per_kw_amount : '',
-    approved:editData ?editData.approved_by: '',
+    approved: editData ? editData.approved_by : '',
     notes: editData ? editData.notes : '',
   });
   const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.dealerCredit);
@@ -67,19 +67,47 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
     getNewFormData();
   }, []);
 
+  // const handleValidation = () => {
+  //   const error: typeof dealerCredit = {} as typeof dealerCredit;
+
+  //   for (const key in dealerCredit) {
+  //     if (!dealerCredit[key as keyof typeof dealerCredit]) {
+  //       // Capitalize the first letter of the key'
+  //       const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+  //       // Assign an error message with the capitalized key
+  //       error[key as keyof typeof dealerCredit] = `${capitalizedKey} is required`;
+  //     }
+  //   }
+
+  //   setErrors({ ...error });
+  //   return Object.keys(error).length ? false : true;
+  // };
+
   const handleValidation = () => {
-    const error: IError = {} as IError;
-    for (const key in setDealerCredit) {
-      if (key === 'record_id') {
-        continue;
-      }
-      if (!CreateDealerCredit[key as keyof typeof CreateDealerCredit]) {
-        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+    const error: typeof dealerCredit = {} as typeof dealerCredit;
+  
+    for (const key in dealerCredit) {
+      if (!dealerCredit[key as keyof typeof dealerCredit]) {
+        // Split the key into words based on underscores or spaces
+        const words = key.split(/[_\s]+/);
+        
+        // Capitalize the first letter of each word
+        const formattedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+        
+        // Join the formatted words with spaces
+        const formattedKey = formattedWords.join(' ');
+        
+        // Assign an error message with the formatted key
+        error[key as keyof typeof dealerCredit] = `${formattedKey} is required`;
       }
     }
+  
     setErrors({ ...error });
-    return Object.keys(error).length === 0;
+    return Object.keys(error).length ? false : true;
   };
+
+ 
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -102,29 +130,30 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-   
-    if(editMode){
-      const data = {
-        unique_id:dealerCredit.unique_id,
-        date:dealerCredit.date,
-        exact_amount : parseInt(dealerCredit.exact_amt),
-        per_kw_amount:parseInt(dealerCredit.per_kw_amt),
-        approved_by:dealerCredit.approved,
-        notes:dealerCredit.notes,
-        record_id:editData.record_id,
-        
+    if (handleValidation()) {
+      if (editMode) {
+        const data = {
+          unique_id: dealerCredit.unique_id,
+          date: dealerCredit.date,
+          exact_amount: parseInt(dealerCredit.exact_amt),
+          per_kw_amount: parseInt(dealerCredit.per_kw_amt),
+          approved_by: dealerCredit.approved,
+          notes: dealerCredit.notes,
+          record_id: editData.record_id,
+
+        }
+        dispatch(updateDealerCredit(data))
+      } else {
+        const data = {
+          unique_id: dealerCredit.unique_id,
+          date: dealerCredit.date,
+          exact_amount: parseInt(dealerCredit.exact_amt),
+          per_kw_amount: parseInt(dealerCredit.per_kw_amt),
+          approved_by: dealerCredit.approved,
+          notes: dealerCredit.notes,
+        };
+        dispatch(createDealerCredit(data));
       }
-      dispatch(updateDealerCredit(data))
-    } else {
-      const data = {
-        unique_id: dealerCredit.unique_id,
-        date: dealerCredit.date,
-        exact_amount: parseInt(dealerCredit.exact_amt),
-        per_kw_amount: parseInt(dealerCredit.per_kw_amt),
-        approved_by: dealerCredit.approved,
-        notes: dealerCredit.notes,
-      };
-    dispatch(createDealerCredit(data));
     }
   };
 
@@ -155,15 +184,22 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Unqiue Id"
+                    label="Unique Id"
                     value={dealerCredit.unique_id}
                     name="unique_id"
                     placeholder={'Unique Id'}
                     onChange={handleChange}
                   />
                   {errors?.unique_id && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.unique_id.replace('sale_type', 'sale type')}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        fontSize: '12px',
+                        fontWeight: 400
+                      }}
+                    >
+                      {errors.unique_id}
                     </span>
                   )}
                 </div>
@@ -177,8 +213,15 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.date.replace('sale_price', 'sale pricee')}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        fontSize: '12px',
+                        fontWeight: 400
+                      }}
+                    >
+                      {errors.date}
                     </span>
                   )}
                 </div>
@@ -193,8 +236,15 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.exact_amt && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.date.replace('sale_price', 'sale pricee')}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        fontSize: '12px',
+                        fontWeight: 400
+                      }}
+                    >
+                      {errors.exact_amt}
                     </span>
                   )}
                 </div>
@@ -210,7 +260,14 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.per_kw_amt && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        fontSize: '12px',
+                        fontWeight: 400
+                      }}
+                    >
                       {errors.per_kw_amt}
                     </span>
                   )}
@@ -224,9 +281,16 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     placeholder={'Approved By'}
                     onChange={handleChange}
                   />
-                  {errors?.approve && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.approve.replace('approve', 'approve')}
+                  {errors?.approved && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        fontSize: '12px',
+                        fontWeight: 400
+                      }}
+                    >
+                      Approved By is required
                     </span>
                   )}
                 </div>
@@ -236,12 +300,19 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     label="Notes"
                     value={dealerCredit.notes}
                     name="notes"
-                    placeholder={'notes'}
+                    placeholder={'Notes'}
                     onChange={handleChange}
                   />
                   {errors?.notes && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.start_date.replace('notes', 'Notes')}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        fontSize: '12px',
+                        fontWeight: 400
+                      }}
+                    >
+                      {errors.notes}
                     </span>
                   )}
                 </div>
@@ -254,11 +325,11 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };
 

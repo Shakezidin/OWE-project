@@ -463,7 +463,7 @@ const DashBoardTable: React.FC = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {dataUser?.length} item
+            {currentPage} - {dataUser?.length} of {dataUser?.length} item
           </p>
           {dataUser?.length > 0 ? (
             <Pagination

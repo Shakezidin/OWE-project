@@ -264,9 +264,9 @@ const LeaderOverride = () => {
                   />
                 ))}
                 <th>
-                  <div className="action-header">
+                  {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
                     <p>Action</p>
-                  </div>
+                  </div>}
                 </th>
               </tr>
             </thead>

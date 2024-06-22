@@ -226,9 +226,9 @@ const DealerOverRides: React.FC = () => {
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           viewArchive={viewArchived}
-          onpressExport={() => {}}
+          onpressExport={() => { }}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
@@ -279,13 +279,11 @@ const DealerOverRides: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {viewArchived === true ? null : (
-                  <th>
-                    <div className="action-header">
-                      <p>Action</p>
-                    </div>
-                  </th>
-                )}
+                 <th>
+                  <div className="action-header">
+                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -323,24 +321,7 @@ const DealerOverRides: React.FC = () => {
                     <td>{dateFormat(el.end_date)}</td>
                     {viewArchived === true ? null : (
                       <td>
-                        {selectedRows.size > 0 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
-                          </div>
-                        ) : (
+                        {selectedRows.size === 1 ? (
                           <div className="action-icon">
                             <div
                               className="action-archive"
@@ -359,7 +340,26 @@ const DealerOverRides: React.FC = () => {
                               {/* <span className="tooltiptext">Edit</span> */}
                             </div>
                           </div>
-                        )}
+                        ) : selectedRows.size === 0 ? (
+                          <div className="action-icon">
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleArchiveClick(el.record_id)}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                              {/* <span className="tooltiptext">Archive</span> */}
+                            </div>
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleEditDealer(el)}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                              {/* <span className="tooltiptext">Edit</span> */}
+                            </div>
+                          </div>
+                        ) : null}
                       </td>
                     )}
                   </tr>

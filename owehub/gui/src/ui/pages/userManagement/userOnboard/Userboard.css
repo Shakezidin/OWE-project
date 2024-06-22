@@ -117,3 +117,10 @@
 .react-tel-input .form-control{
   width: 100%  !important;
 }
+.react-tel-input {
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  position: relative;
+  width: 100%;
+  margin-top: 5px;
+}

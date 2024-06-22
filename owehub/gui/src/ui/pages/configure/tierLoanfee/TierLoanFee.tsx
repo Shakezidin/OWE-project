@@ -272,13 +272,13 @@ const TierLoanFee = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {viewArchived === true ? null : (
+          
                   <th>
-                    <div className="action-header">
+                   {(!viewArchived && selectedRows.size<2) && <div className="action-header">
                       <p>Action</p>
-                    </div>
+                    </div>}
                   </th>
-                )}
+    
               </tr>
             </thead>
             <tbody>
@@ -317,9 +317,9 @@ const TierLoanFee = () => {
                     <td>{el.dlr_cost}</td>
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
-                    {!viewArchived && selectedRows.size < 2 && (
+                   
                       <td>
-                        <div className="action-icon">
+                  {(!viewArchived && selectedRows.size<2) &&      <div className="action-icon">
                           <div
                             className="action-archive"
                             style={{ cursor: 'pointer' }}
@@ -336,9 +336,9 @@ const TierLoanFee = () => {
                             <img src={ICONS.editIcon} alt="" />
                             {/* <span className="tooltiptext">Edit</span> */}
                           </div>
-                        </div>
+                        </div>}
                       </td>
-                    )}
+          
                   </tr>
                 ))
               ) : (

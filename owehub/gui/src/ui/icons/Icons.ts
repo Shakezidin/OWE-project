@@ -17,9 +17,9 @@ import activityIcon from '../../resources/assets/activityIcon.svg';
 import report from '../../resources/assets/report.svg';
 import menu from '../../resources/assets/menu-icon.svg';
 import sales_per from '../../resources/assets/sales_new.svg';
-import ntp_per from '../../resources/assets/ntp_per.svg';
+import ntp_per from '../../resources/assets/pay.svg';
 import installed_per from '../../resources/assets/installed_per.svg';
-import cancelled_per from '../../resources/assets/cancelled_per.svg';
+import cancelled_per from '../../resources/assets/cancelled.svg';
 import filter from '../../resources/assets/filter.svg';
 import filterActive from '../../resources/assets/filterActive.svg';
 import dashHead from '../../resources/assets/dashhead.svg';
@@ -102,6 +102,7 @@ import element from '../../resources/assets/element.svg';
 import user from '../../resources/assets/sales.svg';
 import vector from '../../resources/assets/Vector1.svg';
 import lable_img from '../../resources/assets/lable_img.svg';
+import dbm from '../../resources/assets/dbm.svg';
 
 
 export const ICONS = {
@@ -224,4 +225,5 @@ export const ICONS = {
   vector: vector,
   online: online,
   fil_white:fil_white,
+  dbm:dbm,
 };

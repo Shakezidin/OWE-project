@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/reconcileSlice';
 import { addDays, format } from 'date-fns';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -108,7 +109,7 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
       }
       if (!createReconcileData[key as keyof typeof createReconcileData]) {
         error[key as keyof typeof createReconcileData] =
-          `${key.toLocaleLowerCase().replace('_', ' ')} is required`;
+         firstCapitalize( `${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -174,9 +175,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -195,9 +197,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.customer}
                     </span>
@@ -219,9 +222,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.partner_name}
                     </span>
@@ -246,9 +250,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.state}
                     </span>
@@ -267,9 +272,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.sys_size}
                     </span>
@@ -289,9 +295,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.status}
                     </span>
@@ -319,9 +326,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -348,9 +356,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.end_date}
                     </span>
@@ -370,9 +379,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.amount}
                     </span>
@@ -392,9 +402,10 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.notes}
                     </span>

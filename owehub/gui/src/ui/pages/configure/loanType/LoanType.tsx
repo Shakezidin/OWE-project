@@ -284,13 +284,14 @@ const LoanType = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {viewArchived === true ? null : (
-                  <th>
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
                     <div className="action-header">
                       <p>Action</p>
                     </div>
-                  </th>
-                )}
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -326,8 +327,9 @@ const LoanType = () => {
                     </td>
                     <td>{el.adder}</td>
                     <td>{el.description}</td>
-                    {viewArchived === true ? null : (
-                      <td>
+
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className="action-archive"
@@ -347,8 +349,8 @@ const LoanType = () => {
                             {/* <span className="tooltiptext">Edit</span> */}
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (

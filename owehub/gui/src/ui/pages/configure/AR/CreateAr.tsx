@@ -94,7 +94,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
       bank: [
         { condition: (value: any) => !!value, message: 'Bank is required' },
       ],
-      ced: [{ condition: (value: any) => !!value, message: 'Ced is required' }],
+      ced: [{ condition: (value: any) => !!value, message: 'CED is required' }],
     };
     const { isValid, errors } = validateConfigForm(
       createArData!,
@@ -186,7 +186,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Unique id"
+                    label="Unique Id"
                     value={createArData.unique_id}
                     name="unique_id"
                     placeholder={'Enter'}

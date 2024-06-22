@@ -306,13 +306,11 @@ const TimeLine = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {viewArchived === true ? null : (
-                  <th>
-                    <div className="action-header">
-                      <p>Action</p>
-                    </div>
-                  </th>
-                )}
+                <th>
+                  <div className="action-header">
+                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>

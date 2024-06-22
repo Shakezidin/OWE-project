@@ -24,6 +24,7 @@ export const RepPayDashboardPage: React.FC = () => {
     endDate: new Date(),
     key: 'selection',
   });
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
@@ -108,7 +109,7 @@ export const RepPayDashboardPage: React.FC = () => {
                   <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "-29px" }}>
                     Includes
                   </label>
-                  <div className='drop-d'> <DropdownWithCheckboxes /></div>
+                  <div className='drop-d'> <DropdownWithCheckboxes isOpen={isOpen} setIsOpen={setIsOpen} /></div>
                 </div>
               </div>
 
@@ -130,11 +131,12 @@ export const RepPayDashboardPage: React.FC = () => {
                     value={comissionValueData.find(
                       (option) => option.value === selectedOption2
                     )}
+                    onFocus={()=>setIsOpen(false)}
                     onChange={handleSelectChange2}
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: '500',
                         borderRadius: '.40rem',
                         border: 'none',
@@ -152,6 +154,7 @@ export const RepPayDashboardPage: React.FC = () => {
                         marginTop: '15px'
 
                       }),
+                      
                       indicatorSeparator: () => ({
                         display: 'none',
                       }),
@@ -167,18 +170,19 @@ export const RepPayDashboardPage: React.FC = () => {
                         ...baseStyles,
                         fontSize: '13px',
                         color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
-                        color: '#292929',
+                        color:selectedOption2? '#292929' : '#8b8484' ,
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,
-                        width: '6rem',
+                        width: '131px',
+                        left: -31
                       }),
                       input: (baseStyles) => ({
                         ...baseStyles,
@@ -313,7 +317,7 @@ export const RepPayDashboardPage: React.FC = () => {
             fetchFunction={() => { }}
           />
         )}
-        <div className="" style={{ marginTop: '20px' }}>
+        <div className="" style={{ marginTop: '8px' }}>
           {active === 0 && <RepDashBoardTable />}
           {active === 1 && <RepDashBoardChart />}
         </div>

@@ -28,6 +28,7 @@ import {
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
+import { firstCapitalize } from '../../../../utiles';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -46,7 +47,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   setRefetch,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.nonComm);
+  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.nonComm);
   const [createCommission, setCreateCommission] = useState({
     unique_id: commission?.unique_id || '',
     exact_amount: commission?.exact_amount || '',
@@ -74,7 +75,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof typeof createCommission]) {
-        error[key as keyof IError] = `${key.replaceAll('_', ' ')} is required`;
+        error[key as keyof IError] = firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -180,9 +181,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.unique_id.replace('unique_id', 'unique id')}
                     </span>
@@ -212,9 +214,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.exact_amount.replace('exact amount', 'amount')}
                     </span>
@@ -233,9 +236,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.approved_by}
                     </span>
@@ -254,9 +258,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.notes}
                     </span>
@@ -271,15 +276,16 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.end_date && (
+                  {errors?.date && (
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.end_date.replace('end_date', 'end date')}
+                      {errors.date}
                     </span>
                   )}
                 </div>
@@ -290,6 +296,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         <div className="createUserActionButton">
           <ActionButton title={'Cancel'} type="button" onClick={handleClose} />
           <ActionButton
+          disabled={isFormSubmitting}
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}

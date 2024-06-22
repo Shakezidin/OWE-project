@@ -27,6 +27,7 @@ import { useAppSelector } from '../../../../redux/hooks';
 import { errorSwal } from '../../../components/alert/ShowAlert';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -86,7 +87,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
       if (!createPayData[key as keyof PayScheduleModel]) {
         // @ts-ignore
         error[key as keyof PayScheduleModel] =
-          `${key.replaceAll('_', ' ')} is required`;
+          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -224,9 +225,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.dealer}
                     </span>
@@ -247,9 +249,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.partner_name}
                     </span>
@@ -270,9 +273,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.installer_name}
                     </span>
@@ -297,9 +301,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.sale_type}
                     </span>
@@ -321,9 +326,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.state}
                     </span>
@@ -342,9 +348,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rl}
                     </span>
@@ -365,9 +372,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.draw}
                     </span>
@@ -386,9 +394,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.draw_max}
                     </span>
@@ -407,9 +416,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_draw}
                     </span>
@@ -430,9 +440,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_draw_max}
                     </span>
@@ -452,9 +463,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_pay}
                     </span>
@@ -474,9 +486,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -505,9 +518,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.end_date}
                     </span>
@@ -530,9 +544,10 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.commission_model}
                     </span>
