@@ -40,10 +40,10 @@ type SaleDataStruct struct {
 	PtoDate                time.Time
 	ProjectStatus          string
 	SystemType             string
-	StartDate              time.Time // added by zidhin
-	EndDate                time.Time //field added by zidhin
-	ChargeDlr              string    // field added by zidhiin
 	ContractDate           time.Time //field added by zidhin
+	Setter                 string    //field added by zidhin
+	RepPay                 string    //field added by zidhin
+	Type                   string    //field added by zidhin
 }
 
 type SaleDataList struct {
@@ -261,6 +261,14 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 		} else {
 			// log.FuncWarnTrace(0, "Empty value received in CONTRACTDATE for Unique Id: %v", saleData.ContractDate)
 		}
+
+		if Setter, ok := data["setter"]; ok && Setter != nil {
+			saleData.Setter = Setter.(string)
+		} else {
+			// log.FuncWarnTrace(0, "Empty value received in setter for Unique Id: %v", saleData.Setter)
+		}
+
+		_, _, saleData.RepPay, _ = PayScheduleCfg.CalculateRepDrawPerc(saleData.UniqueId, saleData.Dealer, saleData.Partner, saleData.Installer, saleData.Type, saleData.State, saleData.ContractDate)
 
 		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)
 		saleDataList.SaleDataList = append(saleDataList.SaleDataList, saleData)

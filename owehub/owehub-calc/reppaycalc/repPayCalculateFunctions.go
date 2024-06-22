@@ -573,7 +573,7 @@ func calculateR2DmBal(R2DmName string, r2DmCOmm, r2DmPaid float64) (r2DmBal floa
 * DESCRIPTION:     calculates the "r2 dm comm" value based on the provided data
 * RETURNS:         r2DmComm
 *****************************************************************************/
-func calculateR2DmComm(r2DmName string, r2DmRate, perTeamKw float64) (r2DmComm float64) {
+func calculateR2Comm(r2DmName string, r2DmRate, perTeamKw float64) (r2DmComm float64) {
 	log.EnterFn(0, "calculateR2DmComm")
 	defer func() { log.ExitFn(0, "calculateR2DmComm", nil) }()
 	if len(r2DmName) > 0 {
@@ -620,11 +620,25 @@ func calculateTeamCount(rep1Team, rep2Team string) (teamCount float64) {
 * DESCRIPTION:     calculates the "r2 dir bal" value based on the provided data
 * RETURNS:         r2DirBal
 *****************************************************************************/
-func calculateR2DirBal(r2DirName string, r2DirComm, R2DirPaid float64) (r2DirBal float64) {
+func calculateR2Bal(r2DirName string, r2DirComm, R2DirPaid float64) (r2DirBal float64) {
 	log.EnterFn(0, "calculateR2DirBal")
 	defer func() { log.ExitFn(0, "calculateR2DirBal", nil) }()
 	if len(r2DirName) > 0 {
 		return r2DirComm - R2DirPaid
 	}
 	return r2DirBal
+}
+
+func calculateR1Bal(R1SlName string, R1SlComm, R1SlPaid float64) (r1SlBal float64) {
+	if len(R1SlName) > 0 {
+		return math.Round(R1SlComm - R1SlPaid)
+	}
+	return r1SlBal
+}
+
+func calculateR1Comm(R1SlName string, R1SlRate, perTeamKw float64) (r1SlComm float64) {
+	if len(R1SlName) > 0 {
+		return math.Round(R1SlRate * perTeamKw)
+	}
+	return r1SlComm
 }

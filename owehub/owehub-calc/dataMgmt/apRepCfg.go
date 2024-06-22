@@ -203,7 +203,7 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) 
  * DESCRIPTION:     calculates the r2 dm paid value based on the
  * RETURNS:         r2DmPaid
  *****************************************************************************/
-func (pApRepCfg *ApRepCfgStruct) CalculateR2DmPaid(r2DmName, uniqueId string) (r2DmPaid float64) {
+func (pApRepCfg *ApRepCfgStruct) CalculateRDmPaid(r2DmName, uniqueId string) (r2DmPaid float64) {
 	if len(r2DmName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == "DM-OVRD" {
@@ -219,10 +219,10 @@ func (pApRepCfg *ApRepCfgStruct) CalculateR2DmPaid(r2DmName, uniqueId string) (r
  * DESCRIPTION:     calculates the r2 dir paid value based on the
  * RETURNS:         r2DirPaid
  *****************************************************************************/
-func (pApRepCfg *ApRepCfgStruct) CalculateR2DirPaid(r2DmName, uniqueId string) (r2DirPaid float64) {
+func (pApRepCfg *ApRepCfgStruct) CalculateR2Paid(r2DmName, uniqueId, types string) (r2DirPaid float64) {
 	if len(r2DmName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
-			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == "DIR-OVRD" {
+			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == types {
 				r2DirPaid += data.Amount
 			}
 		}
@@ -287,4 +287,15 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApDedTotalPaid(uniqueId, payee string)
 		}
 	}
 	return amount
+}
+
+func (pApRepCfg *ApRepCfgStruct) CalculateR1SlPaid(r1SlName, uniqueId, types string) (r1SlPaid float64) {
+	if len(r1SlName) > 0 {
+		for _, data := range pApRepCfg.ApRepList.ApRepList {
+			if data.UniqueId == uniqueId && data.Rep == r1SlName && data.Type == types {
+				r1SlPaid += data.Amount
+			}
+		}
+	}
+	return r1SlPaid
 }
