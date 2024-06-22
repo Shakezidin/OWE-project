@@ -184,6 +184,11 @@ const (
 	TableName_v_dealer                       string = "v_dealer"
 	TableName_ap_rep                         string = "ap_rep"
 	TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
+
+	/* Battery Backup Calculator Tables and Procedures */
+	CreateBatteryBackupCalcProspectInfo string = "create_prospect_info"
+	InsertBatteryBackupCalcProspectLoad string = "insert_prospect_load_info"
+	TableName_Prospect_Info             string = "prospects_info"
 )
 
 /******************************************************************************
