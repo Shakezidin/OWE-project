@@ -99,7 +99,9 @@ CREATE TABLE rep_pay_cal_standard(
 	rep_1_team varchar,
 	rep_2_team varchar,
 	team_count float,
+	ap_oth_date date,
 	ap_oth_paid float,
+	ap_oth_payee varchar,
 	ap_oth_balance float,
 	ap_pda_rc_amnt float,
 	ap_pda_amnt float,
@@ -109,11 +111,14 @@ CREATE TABLE rep_pay_cal_standard(
 	ap_pda_dba varchar,
 	ap_adv_rc_amt float,
 	ap_adv_amnt float,
-	ap_adv_paid amnt float,
+	ap_adv_paid_amnt float,
 	ap_adv_paid_balance float,
 	ap_adv_dba varchar,
 	ap_ded_paid_amnt float,
 	ap_ded_balance float
+	ap_ded_date date,
+	ap_ded_payee varchar,
+	ap_ded_dba varchar,
 	rep_1_status varchar,
 	rep_2_status varchar,
 	commission_model TEXT
@@ -987,4 +992,133 @@ UNION ALL
 		NULL as total_per_rep,
     commission_model AS commission_model
 FROM pr_appt
+UNION ALL
+	SELECT
+		home_owner as home_owner,
+		NULL as current_status,
+		ap_oth_date as status_date,
+		unique_id as unique_id,
+		ap_oth_payee as owe_contractor,
+		NULL as DBA,
+		NULL as type, --need to calculate
+		NULL as Today, --need to calculate
+		ap_oth_balance as Amount,
+		NULL as finance_type,--need to calculate type
+		NULL as sys_size,
+		NULL as contract_total,
+		NULL as loan_fee,
+		NULL as epc,
+		NULL as adders, -- here
+		NULL as r_r,
+		NULL as comm_rate,
+		NULL as net_epc,
+		NULL as credit,
+		NULL as rep_2,
+		NULL as net_comm,
+		NULL as draw_amt,
+		ap_oth_paid as amt_paid,
+		ap_oth_balance as balance, 
+		dealer as dealer_code,
+		NULL as subtotal,
+		NULL as max_per_rep,
+		NULL as total_per_rep,
+    commission_model AS commission_model
+FROM rep_pay_cal_standard -- for ap-oth
+UNION ALL
+	SELECT
+		home_owner as home_owner,
+		NULL as current_status,
+		ap_ded_date as status_date,
+		unique_id as unique_id,
+		ap_ded_payee as owe_contractor,
+		ap_ded_dba as DBA,
+		NULL as type, --need to calculate
+		NULL as Today, --need to calculate
+		ap_ded_balance as Amount,
+		NULL as finance_type,--need to calculate type
+		NULL as sys_size,
+		NULL as contract_total,
+		NULL as loan_fee,
+		NULL as epc,
+		NULL as adders, -- here
+		NULL as r_r,
+		NULL as comm_rate,
+		NULL as net_epc,
+		NULL as credit,
+		NULL as rep_2,
+		NULL as net_comm,
+		NULL as draw_amt,
+		ap_ded_paid as amt_paid,
+		ap_ded_balance as balance, 
+		dealer as dealer_code,
+		NULL as subtotal,
+		NULL as max_per_rep,
+		NULL as total_per_rep,
+    commission_model AS commission_model
+FROM rep_pay_cal_standard -- for ap-ded
+UNION ALL
+	SELECT
+		home_owner as home_owner,
+		NULL as current_status,
+		ap_pda_date as status_date,
+		unique_id as unique_id,
+		ap_pda_payee as owe_contractor,
+		ap_pda_dba as DBA,
+		NULL as type, --need to calculate
+		NULL as Today, --need to calculate
+		ap_pda_paid_balance as Amount,
+		NULL as finance_type,--need to calculate type
+		NULL as sys_size,
+		NULL as contract_total,
+		NULL as loan_fee,
+		NULL as epc,
+		NULL as adders, -- here
+		NULL as r_r,
+		NULL as comm_rate,
+		NULL as net_epc,
+		NULL as credit,
+		NULL as rep_2,
+		NULL as net_comm,
+		NULL as draw_amt,
+		ap_pda_paid_amnt as amt_paid,
+		ap_pda_paid_balance as balance, 
+		dealer as dealer_code,
+		NULL as subtotal,
+		NULL as max_per_rep,
+		NULL as total_per_rep,
+    commission_model AS commission_model
+FROM rep_pay_cal_standard -- for ap-pda
+UNION ALL
+	SELECT
+		home_owner as home_owner,
+		NULL as current_status,
+		ap_adv_date as status_date,
+		unique_id as unique_id,
+		ap_adv_payee as owe_contractor,
+		ap_adv_dba as DBA,
+		NULL as type, --need to calculate
+		NULL as Today, --need to calculate
+		ap_adv_paid_balance as Amount,
+		NULL as finance_type,--need to calculate type
+		NULL as sys_size,
+		NULL as contract_total,
+		NULL as loan_fee,
+		NULL as epc,
+		NULL as adders, -- here
+		NULL as r_r,
+		NULL as comm_rate,
+		NULL as net_epc,
+		NULL as credit,
+		NULL as rep_2,
+		NULL as net_comm,
+		NULL as draw_amt,
+		ap_adv_paid_amnt as amt_paid,
+		ap_adv_paid_balance as balance, 
+		dealer as dealer_code,
+		NULL as subtotal,
+		NULL as max_per_rep,
+		NULL as total_per_rep,
+    commission_model AS commission_model
+FROM rep_pay_cal_standard -- for ap-ADV
+
 
