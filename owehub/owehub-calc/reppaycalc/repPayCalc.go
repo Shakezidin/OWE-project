@@ -35,6 +35,8 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 
 	var repPayCalc map[string]interface{}
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
+		log.FuncErrorTrace(0, "saleData.UniuqeId : %v, saleData.RepPay : %v, saleData.contractDate: %v", saleData.UniqueId, saleData.RepPay, saleData.ContractDate)
+		saleData.RepPay = "YES" //for calculating reppay we need type, that's y I hardcoded this
 		if len(saleData.UniqueId) > 0 && (saleData.RepPay == "YES" || saleData.RepPay == "Rep Pay") && saleData.ContractDate.After(date2) {
 			repPayCalc, err = CalculateRepPayProject(saleData)
 		} else if len(saleData.UniqueId) > 0 && (saleData.RepPay == "YES" || saleData.RepPay == "Rep Pay") && saleData.ContractDate.After(date1) {
@@ -111,27 +113,27 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
 	log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, setter : %v", ntp, permSub, shaky, apptSetter)
 
-	status = "PTO"                                 //AJ
-	rep1 = "Adrian Bobbitt"                        //M
-	dealer = "OWE-AZ-22"                           //A
+	status = "NTP"                                 //AJ
+	rep1 = "Alan Villalobos"                       //M
+	dealer = "9 Figures LLC"                           //A
 	source = "REP"                                 //D
-	uniqueID = "OUR11442"                          //G
-	systemSize = 13.2                              //P
+	uniqueID = "OUR22811"                          //G
+	systemSize = 8.925                             //P
 	partner = "Dividend"                           //B
 	installer = "One World Energy"                 //C
-	loanType = "LF-DIV-12MONTH-25y-2.99"           //F
+	loanType = "LF-DIV-0MONTH-25y-3.99"            //F
 	state = "AZ :: Arizona"                        //K
-	wc, _ = time.Parse("01-02-2006", "01-10-2023") //U
-	contractTotal = 59000                          //S (miss match)
+	wc, _ = time.Parse("01-02-2006", "03-20-2024") //U
+	contractTotal = 55361.13                       //S (miss match)
 	epc = (systemSize * 1000) / contractTotal      //S
 	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Chris Hill"                            //H
+	homeOwner = "Tori Davidson"                         //H
 	rep2 = ""                                           //N
-	pto, _ = time.Parse("01-02-2006", "02-24-2024")     //AG
-	instSys, _ = time.Parse("01-02-2006", "01-26-2023") //AD
+	pto = time.Time{}                                   //AG
+	instSys = time.Time{}                               //AD
 	cancel = time.Time{}                                //AC
-	ntp, _ = time.Parse("01-02-2006", "01-10-2023")     //W
-	permSub, _ = time.Parse("01-02-2006", "01-12-2023") //X
+	ntp, _ = time.Parse("01-02-2006", "03-20-2024")     //W
+	permSub, _ = time.Parse("01-02-2006", "03-28-2024") //X
 	if status == "HOLD" || status == "CANCEL" {
 		shaky = true
 	} else {
@@ -140,7 +142,6 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	types = "LOAN"                            //* not received from Colten yet //E
 	kwh = (systemSize * 1000) / contractTotal //Q
 	apptSetter = ""                           //O
-	commissionModels = "standard"             //
 	salesRepType = "Sales Rep"                //DG need to confirm with sushank
 	payee := ""                               //confirm with sushank
 
@@ -153,10 +154,9 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	epcCalc := common.CalculateAREPCCalc(contractCalc, wc, epc, systemSize, common.ARWc1FilterDate)                                                                 //AQ
 	RepDrawPercentage, repDrawMax, repPay, commissionModels := dataMgmt.PayScheduleCfg.CalculateRepDrawPerc(uniqueID, dealer, partner, installer, types, state, wc) //DH DI DJ
 	payRate := dataMgmt.ApptSettersCfg.CalculatePayRate(apptSetter, wc)                                                                                             //DC (O, U)
-	loanFee := dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractTotal, wc)                                                  //AR(mistake)
-	log.FuncErrorTrace(0, "loanfee = %v", loanFee)
-	loanFee = 19182.63
+	loanFee := dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractTotal, wc)                                                  //AR
 
+	commissionModels = "standard"
 	//*==================== REP 1 ==========================/
 	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, wc, true) //BP (mistake)
 	log.FuncErrorTrace(0, "rep1Referral = %v", rep1Referral)
@@ -173,9 +173,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, types, systemSize, wc, true)                              //BM(mistake)
 	log.FuncErrorTrace(0, "rep1AutoAdder = %v", rep1AutoAdder)
 	rep1AutoAdder = 0.0
-	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep1, uniqueID, dealer, installer, state) //BN(mistake)
-	log.FuncErrorTrace(0, "rep1LoanFee = %v", rep1LoanFee)
-	rep1LoanFee = 19182.63                                                                                                                                                    //BN
+	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep1, uniqueID, dealer, installer, state, rep1, rep2, systemSize)                                            //BN
 	rep1AdderTotal := calculateR1AdderTotal(rep1, commissionModels, rep1Addr, rep1AutoAdder, rep1LoanFee, rep1Rebate, rep1Referral)                                           //BR (BL, BM, BN, BO, BP)
 	rep1NetEpc := calculateR1NetEpc(perRepKw, contractCalc, rep1AdderTotal, rep1LoanFee, loanFee, systemSize)                                                                 //BU
 	rep1payRateSemi := CalculateR1PayRateSemi(commissionModels, rep1, source, rep1Rl, rep1Rate, rep1Adjustment, rep1Incentive, epcCalc, systemSize, perRepKw, rep1NetEpc, wc) //BJ (BC, BD, BE, BH, AQ) (filed name in 8020 is project base cost)
@@ -219,12 +217,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep2Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep2, uniqueID, rep1, rep2, state, wc, false) //CQ(mistake)
 	log.FuncErrorTrace(0, "rep2Referral = %v", rep2Referral)
 	rep2Referral = 0
-	rep2Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, false)                  //CP
-	rep2R_R := calculateRR(rep2, rep2Rebate, rep2Referral)                                                 //CR
-	rep2LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep2, uniqueID, dealer, installer, state) //CO(mistake)
-	log.FuncErrorTrace(0, "rep2LoanFee = %v", rep2LoanFee)
-	rep2LoanFee = 0.0
-	rep2AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, types, systemSize, wc, false) //CN(mistake)
+	rep2Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, false)                                          //CP
+	rep2R_R := calculateRR(rep2, rep2Rebate, rep2Referral)                                                                         //CR
+	rep2LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep2, uniqueID, dealer, installer, state, rep1, rep2, systemSize) //CO
+	rep2AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, types, systemSize, wc, false)        //CN(mistake)
 	log.FuncErrorTrace(0, "rep2AutoAdder = %v", rep2AutoAdder)
 	rep2AutoAdder = 0.0
 	rep2Addr := dataMgmt.AdderDataCfg.CalculateRAddrResp(dealer, rep1, rep2, uniqueID, state, systemSize, false)                          //CM
@@ -279,9 +275,6 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Zidhin + apdPdaPaidBalance: %v, adpPdaDba: %v", apdPdaPaidBalance, adpPdaDba)
 
 	//*==================== AP-ADV ==========================/
-	// rep2DrawAmount =
-	// payee = "Maria Lopez"
-	// rep2 = "Maria Lopez"
 	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, payee, apAdvRcmdAmnt)
 	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, payee)
@@ -459,23 +452,23 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	teamCount := calculateTeamCount(rep1Team, rep2Team)                                        //AU
 	statusDate := CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc) //AK
 
-	R1SlName, R1SlRate := dataMgmt.LeaderOverrideCfg.CalculateR1SlName(rep1Team, wc) //AZ BA
-	R1SlDBA := dataMgmt.DBACfg.CalculateR1DBA(R1SlName)                              //BB
-	R1SlComm := calculateR1Comm(R1SlName, R1SlRate, perTeamKw)                       //BC (AZ, BA, AW)
-	R1SlPaid := dataMgmt.ApRepCfg.CalculateR1SlPaid(R1SlName, uniqueID, "SL-OVRD")   //BZ (AZ, G)
-	R1SlBal := calculateR1Bal(R1SlName, R1SlComm, R1SlPaid)                          //CA (AZ, BC, BZ)
+	R1SlName, R1SlRate := dataMgmt.LeaderOverrideCfg.CalculateR1Name(rep1Team, "SL", wc) //AZ BA
+	R1SlDBA := dataMgmt.DBACfg.CalculateR1DBA(R1SlName)                                  //BB
+	R1SlComm := calculateR1Comm(R1SlName, R1SlRate, perTeamKw)                           //BC (AZ, BA, AW)
+	R1SlPaid := dataMgmt.ApRepCfg.CalculateR1Paid(R1SlName, uniqueID, "SL-OVRD")         //BZ (AZ, G)
+	R1SlBal := calculateR1Bal(R1SlName, R1SlComm, R1SlPaid)                              //CA (AZ, BC, BZ)
 
-	R1DmName, R1DmRate := dataMgmt.LeaderOverrideCfg.CalculateRName(rep1Team, "DM", wc) //BD,BE
-	R1DmDBA := dataMgmt.DBACfg.CalculateR2DBA(R1DmName)                                 //BF
-	R1DmComm := calculateR1Comm(R1DmName, R1DmRate, perTeamKw)                          //BG
-	R1DmPaid := dataMgmt.ApRepCfg.CalculateRDmPaid(R1DmName, uniqueID)                  //CC
-	R1DmBal := calculateR1Bal(R1DmName, R1DmComm, R1DmPaid)                             //CD (BD, BG, CC)
+	R1DmName, R1DmRate := dataMgmt.LeaderOverrideCfg.CalculateR1Name(rep1Team, "DM", wc) //BD,BE
+	R1DmDBA := dataMgmt.DBACfg.CalculateR2DBA(R1DmName)                                  //BF
+	R1DmComm := calculateR1Comm(R1DmName, R1DmRate, perTeamKw)                           //BG
+	R1DmPaid := dataMgmt.ApRepCfg.CalculateR1Paid(R1DmName, uniqueID, "DM-OVRD")         //CC
+	R1DmBal := calculateR1Bal(R1DmName, R1DmComm, R1DmPaid)                              //CD (BD, BG, CC)
 
-	R1DirName, R1DirRate := dataMgmt.LeaderOverrideCfg.CalculateRName(rep1Team, "DIR", wc) //BH BI
-	R1DirDBA := dataMgmt.DBACfg.CalculateR1DBA(R1DirName)                                  //BJ
-	R1DirComm := calculateR1Comm(R1DirName, R1DirRate, perTeamKw)                          //BK (BH, BI, AW)
-	R1DirPaid := dataMgmt.ApRepCfg.CalculateR1SlPaid(R1DirName, uniqueID, "DIR-OVRD")      //CF
-	R1DirBal := calculateR1Bal(R1DirName, R1DirComm, R1DirPaid)                            //CG (BH, BK, CF)
+	R1DirName, R1DirRate := dataMgmt.LeaderOverrideCfg.CalculateR1Name(rep1Team, "DIR", wc) //BH BI
+	R1DirDBA := dataMgmt.DBACfg.CalculateR1DBA(R1DirName)                                   //BJ
+	R1DirComm := calculateR1Comm(R1DirName, R1DirRate, perTeamKw)                           //BK (BH, BI, AW)
+	R1DirPaid := dataMgmt.ApRepCfg.CalculateR1SlPaid(R1DirName, uniqueID, "DIR-OVRD")       //CF
+	R1DirBal := calculateR1Bal(R1DirName, R1DirComm, R1DirPaid)                             //CG (BH, BK, CF)
 
 	R2SlName, R2SlRate := dataMgmt.LeaderOverrideCfg.CalculateR2Name(teamCount, rep2Team, "SL", wc) //BL, BM
 	R2SlDBA := dataMgmt.DBACfg.CalculateR2DBA(R2SlName)                                             //BN
@@ -486,14 +479,14 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	R2DmName, r2DmRate := dataMgmt.LeaderOverrideCfg.CalculateR2Name(teamCount, rep2Team, "DM", wc) //BP BQ (AT, AU, U)
 	R2DmDBA := dataMgmt.DBACfg.CalculateR2DBA(R2DmName)                                             //BR
 	R2DmComm := calculateR2Comm(R2DmName, r2DmRate, perTeamKw)                                      //BS (BP, BQ, AW)
-	R2DmPaid := dataMgmt.ApRepCfg.CalculateRDmPaid(R2DmName, uniqueID)                              //CL (BP, G,)
+	R2DmPaid := dataMgmt.ApRepCfg.CalculateR2Paid(R2DmName, uniqueID, "DM-OVRD")                    //CL (BP, G,)
 	R2DmBal := calculateR2DmBal(R2DmName, R2DmComm, R2DmPaid)                                       //CM (BP, BS, CL)
 
-	R2DirName, r2DirRate := dataMgmt.LeaderOverrideCfg.CalculateR2DirName(teamCount, rep2Team, wc) //BT BU
-	R2DirDBA := dataMgmt.DBACfg.CalculateR2DBA(R2DirName)                                          //BV
-	R2DirComm := calculateR2DirComm(R2DirName, r2DirRate, perTeamKw)                               //BW (BT,BU, AW)
-	R2DirPaid := dataMgmt.ApRepCfg.CalculateR2Paid(R2DirName, uniqueID, "DIR-OVRD")                //CO (BT, G)
-	R2DirBal := calculateR2Bal(R2DirName, R2DirComm, R2DirPaid)                                    //CP
+	R2DirName, r2DirRate := dataMgmt.LeaderOverrideCfg.CalculateR2Name(teamCount, rep2Team, "DIR", wc) //BT BU
+	R2DirDBA := dataMgmt.DBACfg.CalculateR2DBA(R2DirName)                                              //BV
+	R2DirComm := calculateR2DirComm(R2DirName, r2DirRate, perTeamKw)                                   //BW (BT,BU, AW)
+	R2DirPaid := dataMgmt.ApRepCfg.CalculateR2Paid(R2DirName, uniqueID, "DIR-OVRD")                    //CO (BT, G)
+	R2DirBal := calculateR2Bal(R2DirName, R2DirComm, R2DirPaid)                                        //CP
 
 	log.FuncFuncTrace(0, "Zidhin rep1Team (AS): %v, rep2Team (AT): %v, teamCount (AU): %v", rep1Team, rep2Team, teamCount)
 	log.FuncFuncTrace(0, "Zidhin R2DmName (BP): %v, r2DmRate (BQ): %v, R2DmComm (BS): %v", R2DmName, r2DmRate, R2DmComm)
@@ -530,42 +523,36 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	outData["rep_2_team"] = rep2Team
 	outData["team_count"] = teamCount
 	outData["status_date"] = statusDate
-
 	outData["r1_sl_name"] = R1SlName
 	outData["r1_sl_rate"] = R1SlRate
 	outData["r1_sl_sba"] = R1SlDBA
 	outData["r1_sl_comm"] = R1SlComm
 	outData["r1_sl_paid"] = R1SlPaid
 	outData["r1_sl_bal"] = R1SlBal
-
 	outData["r1_dm_name"] = R1DmName
 	outData["r1_dm_rate"] = R1DmRate
 	outData["r1_dm_dba"] = R1DmDBA
 	outData["r1_dm_comm"] = R1DmComm
 	outData["r1_dm_paid"] = R1DmPaid
 	outData["r1_dm_bal"] = R1DmBal
-
 	outData["r1_dir_name"] = R1DirName
 	outData["r1_dir_rate"] = R1DirRate
 	outData["r1_dir_dba"] = R1DirDBA
 	outData["r1_dir_comm"] = R1DirComm
 	outData["r1_dir_paid"] = R1DirPaid
 	outData["r1_dir_bal"] = R1DirBal
-
 	outData["r2_sl_name"] = R2SlName
 	outData["r2_sl_rate"] = R2SlRate
 	outData["r2_sl_dba"] = R2SlDBA
 	outData["r2_sl_comm"] = R2SlComm
 	outData["r2_sl_paid"] = R2SlPaid
 	outData["r2_sl_bal"] = R2SlBal
-
 	outData["r2_dm_name"] = R2DmName
 	outData["r2_dm_rate"] = r2DmRate
 	outData["r2_dm_dba"] = R2DmDBA
 	outData["r2_dm_comm"] = R2DmComm
 	outData["r2_dm_paid"] = R2DmPaid
 	outData["r2_dm_bal"] = R2DmBal
-
 	outData["r2_dir_name"] = R2DirName
 	outData["r2_dir_rate"] = r2DirRate
 	outData["r2_dir_dba"] = R2DirDBA

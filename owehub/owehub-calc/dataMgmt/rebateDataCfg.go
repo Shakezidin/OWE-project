@@ -198,8 +198,7 @@ func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, stat
 	}
 
 	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
-	log.FuncErrorTrace(0, "perrepOvrdShare+++++++=====================%v count- > %v", PerRepOverSHare)
-	// log.FuncErrorTrace(0, "repCount+++++++=====================%v %v", repCount, uniqueId)
+
 	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
 	log.FuncErrorTrace(0, "PerRepDefOvrd+++++++=====================%v count- > %v", PerRepDefOvrd)
 

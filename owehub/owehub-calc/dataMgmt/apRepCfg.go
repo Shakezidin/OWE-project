@@ -203,10 +203,10 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) 
  * DESCRIPTION:     calculates the r2 dm paid value based on the
  * RETURNS:         r2DmPaid
  *****************************************************************************/
-func (pApRepCfg *ApRepCfgStruct) CalculateRDmPaid(r2DmName, uniqueId string) (r2DmPaid float64) {
+func (pApRepCfg *ApRepCfgStruct) CalculateR1Paid(r2DmName, uniqueId, types string) (r2DmPaid float64) {
 	if len(r2DmName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
-			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == "DM-OVRD" {
+			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == types {
 				r2DmPaid += data.Amount
 			}
 		}

@@ -60,17 +60,13 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 		dataList []map[string]interface{}
 	)
 
-	//Shushank
-	// uniqueID = "OUR19865"
-	// uniqueID = "OUR11347"
-
-	// log.EnterFn(0, "LoadSaleData")
-	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
+	log.EnterFn(0, "LoadSaleData")
+	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.EnterFn(0, "LoadSaleData")
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 
-	uidList := []string{"OUR11442"}
+	uidList := []string{"OUR22811"}
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
 	for i, uid := range uidList {
 		query += "'" + strings.ToUpper(uid) + "'"
@@ -307,7 +303,7 @@ func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, dealer, installer,
 		if data.UniqueId == uniqueId {
 			log.FuncErrorTrace(0, "data.Dealer : %v, data.installer: %v, data.state: %v, data.LoanType: %v, data.ContractDate: %v", data.Dealer, data.Installer, data.State, data.LoanType, data.ContractDate)
 			dlrCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, loanType, contractDate)
-			loanfee += contractdoldol * dlrCost
+			return (contractdoldol * dlrCost) / 100
 		}
 	}
 

@@ -185,85 +185,7 @@ func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateR2Name(teamCount float6
 	return r2Dmname, r2DmRate
 }
 
-func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateR2DirName(teamCount float64, rep2Team string, wc time.Time) (r2Dmname string, r2DmRate float64) {
-	var (
-		err       error
-		startDate time.Time
-		endDate   time.Time
-	)
-	if len(rep2Team) > 0 {
-		if teamCount == 1 {
-			return "O1T", 0
-		} else {
-			for _, data := range pLeaderOverride.LeaderOverrideList.LeaderOverrideList {
-				if len(data.StartDate) > 0 {
-					startDate, err = time.Parse("01-02-2006", data.StartDate)
-					if err != nil {
-						log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
-					}
-				} else {
-					log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
-					continue
-				}
-
-				if len(data.EndDate) > 0 {
-					endDate, err = time.Parse("01-02-2006", data.EndDate)
-					if err != nil {
-						log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
-					}
-				} else {
-					log.FuncWarnTrace(0, "Empty EndDate Received in data.EndDate config")
-					continue
-				}
-				if data.TeamName == rep2Team && data.Type == "DIR" && startDate.Before(wc) && endDate.After(wc) {
-					r2Dmname = data.LeaderName
-					payRateInt, _ := strconv.Atoi(data.PayRate)
-					r2DmRate = float64(payRateInt)
-				}
-			}
-		}
-	}
-	return r2Dmname, r2DmRate
-}
-
-func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateR1SlName(rep1Team string, wc time.Time) (r1SlName string, r1SlRate float64) {
-	var (
-		err       error
-		startDate time.Time
-		endDate   time.Time
-	)
-	if len(rep1Team) > 0 {
-		for _, data := range pLeaderOverride.LeaderOverrideList.LeaderOverrideList {
-			if len(data.StartDate) > 0 {
-				startDate, err = time.Parse("01-02-2006", data.StartDate)
-				if err != nil {
-					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
-				}
-			} else {
-				log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
-				continue
-			}
-
-			if len(data.EndDate) > 0 {
-				endDate, err = time.Parse("01-02-2006", data.EndDate)
-				if err != nil {
-					log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
-				}
-			} else {
-				log.FuncWarnTrace(0, "Empty EndDate Received in data.EndDate config")
-				continue
-			}
-			if data.TeamName == rep1Team && data.Type == "SL" && startDate.Before(wc) && endDate.After(wc) {
-				r1SlName = data.LeaderName
-				payRateInt, _ := strconv.ParseFloat(data.PayRate, 64)
-				r1SlRate = payRateInt
-			}
-		}
-	}
-	return r1SlName, r1SlRate
-}
-
-func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateRName(rep1Team, types string, wc time.Time) (r1DmName string, r1DmRate float64) {
+func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateR1Name(rep1Team, types string, wc time.Time) (r1DmName string, r1DmRate float64) {
 	var (
 		err       error
 		startDate time.Time
@@ -299,4 +221,3 @@ func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateRName(rep1Team, types s
 	}
 	return r1DmName, r1DmRate
 }
-

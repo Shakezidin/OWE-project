@@ -384,14 +384,16 @@ func calculateRMinOrMax(rep1 string, rPayRateSubTotal, minRate, maxRate float64)
 func calculateRDrawAmount(rCommStatusCheck, drawMax, perRepSales, drawPerentage float64) (r1DrawAmount float64) {
 	log.EnterFn(0, "calculateRDrawAmount")
 	defer func() { log.ExitFn(0, "calculateRDrawAmount", nil) }()
+	log.FuncErrorTrace(0, "drawMax : %v, perRepSales = %v, rcommstatusCheck ; %v, drawPercentage : %v", drawMax, perRepSales, rCommStatusCheck, drawPerentage)
 	if rCommStatusCheck > 0 {
+		drawPerentage = drawPerentage / 100
 		if (drawMax * perRepSales) < (rCommStatusCheck * drawPerentage) {
-			return math.Round(drawMax * perRepSales)
+			r1DrawAmount = math.Round(drawMax * perRepSales)
 		} else {
-			return math.Round(rCommStatusCheck * drawPerentage)
+			r1DrawAmount = math.Round(rCommStatusCheck * drawPerentage)
 		}
 	}
-	return rCommStatusCheck
+	return r1DrawAmount
 }
 
 /******************************************************************************

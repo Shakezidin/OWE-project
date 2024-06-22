@@ -324,6 +324,14 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, deale
 				st = state[6:]
 			}
 
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer {
+				log.FuncErrorTrace(0, "data.Dealer : %v =========== dealer : %v", data.Dealer, dealer)
+				log.FuncErrorTrace(0, "data.partnerName : %v =========== partner : %v", data.PartnerName, partner)
+				log.FuncErrorTrace(0, "data.installerName : %v =========== Installer : %v", data.InstallerName, installer)
+				log.FuncErrorTrace(0, "data.state : %v =========== st : %v", data.State, st)
+				log.FuncErrorTrace(0, "data.startDate : %v =========== wc : %v", data.StartDate, wc)
+				log.FuncErrorTrace(0, "data.EndDate : %v =========== wx : %v", data.EndDate, wc)
+			}
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer &&
 				data.SaleType == types &&
 				data.State == st &&
@@ -338,5 +346,3 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, deale
 	}
 	return RepDrawPercentage, repDrawMax, repPay, commissionModels
 }
-
-

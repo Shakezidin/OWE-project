@@ -161,16 +161,6 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installe
 		}
 
 		for _, data := range cmmsnRatesCfg.cmmsnRatesList {
-			if data.Partner == partner {
-				log.FuncErrorTrace(0, "data.Dealer: %v ============== dealer %v", data.Partner, partner)
-				log.FuncErrorTrace(0, "data.installer: %v ============== installer %v", data.Installer, installer)
-				log.FuncErrorTrace(0, "data.state: %v ============== state %v", data.State, state)
-				log.FuncErrorTrace(0, "data.saleType: %v ============== type %v", data.SaleType, types)
-				log.FuncErrorTrace(0, "data.salePrice: %v ============== kwh %v", data.SalePrice, kwh)
-				log.FuncErrorTrace(0, "data.payScale: %v ============== repType %v", data.RepType, payScale)
-				log.FuncErrorTrace(0, "data.startDate: %v ============== wc %v", data.StartDate, wc)
-				log.FuncErrorTrace(0, "data.endDate: %v ============== wc %v", data.EndDate, wc)
-			}
 			if partner == data.Partner &&
 				installer == data.Installer &&
 				state == data.State &&
@@ -193,6 +183,7 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installe
 func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, dealer, rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
 	log.EnterFn(0, "CalculateRep1Rl")
 	defer func() { log.ExitFn(0, "CalculateRep1Rl", nil) }()
+
 	if commissionModels == "standard" {
 		if len(rep1) > 0 {
 			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
@@ -200,10 +191,12 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 				if len(state) > 0 {
 					st = state[6:]
 				}
-				if data.Partner == partner {
+
+				if data.Partner == partner && installer == data.Installer &&
+					st == data.State {
 					log.FuncErrorTrace(0, "data.Dealer: %v ============== dealer %v", data.Partner, partner)
 					log.FuncErrorTrace(0, "data.installer: %v ============== installer %v", data.Installer, installer)
-					log.FuncErrorTrace(0, "data.state: %v ============== state %v", data.State, st)
+					log.FuncErrorTrace(0, "data.state: %v ============== state %v", data.State, state)
 					log.FuncErrorTrace(0, "data.saleType: %v ============== type %v", data.SaleType, types)
 					log.FuncErrorTrace(0, "data.salePrice: %v ============== kwh %v", data.SalePrice, kwh)
 					log.FuncErrorTrace(0, "data.payScale: %v ============== repType %v", data.RepType, payScale)
