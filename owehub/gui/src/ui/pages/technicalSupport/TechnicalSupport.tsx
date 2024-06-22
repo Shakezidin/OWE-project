@@ -128,20 +128,28 @@ const TechnicalSupport: React.FC = () => {
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
+  const trimmedValue = value.replace(/\s/g, ''); // Trim the input value
 
-    if (name === 'email') {
-      setEmail(value);
+  if (name === 'email') {
+    if (trimmedValue.length > 0) {
+      setEmail(trimmedValue); // Update the email state with the trimmed value
 
-      if (!emailRegex.test(value)) {
+      if (!emailRegex.test(trimmedValue)) {
         setErrors({ ...errors, email: 'Please enter a valid email address.' });
       } else {
         setErrors({ ...errors, email: '' });
       }
+    } else {
+      setEmail(''); // Clear the email state if the trimmed value is empty
+      setErrors({ ...errors, email: 'Please enter an email address.' });
     }
-  };
+  }
+};
 
+  
 
   return (
     <>
@@ -174,7 +182,7 @@ const TechnicalSupport: React.FC = () => {
                   label="First Name"
                   value={firstName}
                   name="user_name"
-                  placeholder={'Enter'}
+                  placeholder={'Enter First Name'}
                   maxLength={100}
                   onChange={(e) => {
                     const inputValue = e.target.value;
@@ -197,7 +205,7 @@ const TechnicalSupport: React.FC = () => {
                   value={lastName}
                   name="lastName"
                   maxLength={100}
-                  placeholder={'Enter'}
+                  placeholder={'Enter Last Name'}
                   onChange={(e) => {
                     const inputValue = e.target.value;
                     if (/^[a-zA-Z\s]*$/.test(inputValue)) {
@@ -223,7 +231,7 @@ const TechnicalSupport: React.FC = () => {
                   label="Email"
                   value={email}
                   name="email"
-                  placeholder={'Enter'}
+                  placeholder={'email@mymail.com'}
                   onChange={handleInputChange}
                   onKeyPress={(e) => {
                     if (e.key === ' ') {
@@ -234,7 +242,7 @@ const TechnicalSupport: React.FC = () => {
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
 
-              <div className="create-input-field-support" style={{ marginTop: '-5px' }}>
+              <div className="create-input-field-support" style={{ marginTop: '-10px' }}>
                 <label className="inputLabel">Phone Number</label>
                 <PhoneInput
                   countryCodeEditable={false}
@@ -254,12 +262,13 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
 
-            <div className="create-input-container-support">
+            <div className="create-input-container-support" >
               <div className="create-input-field-support">
-                <label className="inputLabel-select select-type-label">
+                <label className="inputLabel-select select-type-label" style={{marginTop:"1px"}}>
                   Issue
                 </label>
                 <SelectOption
+                  marginTop="17px"
                   onChange={handleStateChange}
                   options={options}
                   value={options?.find(
@@ -293,8 +302,8 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
 
-            <div className="create-input-field-note-support" style={{ marginTop: '0.3rem' }}>
-              <label htmlFor="" className="inputLabel-support">Message</label>
+            <div className="create-input-field-note-support">
+              <label htmlFor="" className="inputLabel-support" >Message</label>
               <br />
               <textarea
                 name="message"

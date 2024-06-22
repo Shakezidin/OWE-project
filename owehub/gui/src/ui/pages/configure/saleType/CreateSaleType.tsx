@@ -9,6 +9,7 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
 import { FormEvent } from '../../../../core/models/data_models/typesModel';
 import { toast } from 'react-toastify';
+import { firstCapitalize } from '../../../../utiles';
 interface salesProps {
   handleClose: () => void;
   salesTypeData: SalesTypeModel | null;
@@ -41,7 +42,7 @@ const CreateSaleType: React.FC<salesProps> = ({
       if (!createSales[key as keyof typeof createSales]) {
         // @ts-ignore
         error[key as keyof SalesTypeModel] =
-          `${key.replace('_', ' ')} is required`;
+          firstCapitalize(`${key.replace('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -122,9 +123,10 @@ const CreateSaleType: React.FC<salesProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.type_name}
                     </span>
@@ -148,9 +150,10 @@ const CreateSaleType: React.FC<salesProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.description}
                     </span>

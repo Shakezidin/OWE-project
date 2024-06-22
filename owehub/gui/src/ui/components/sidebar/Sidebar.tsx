@@ -53,7 +53,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     id?: number
   ) => {
     const elm = e.target as HTMLAnchorElement;
-    console.log('working', elm);
+    console.log('working', id,"didiididid");
 
     if (timeOut.current) {
       clearTimeout(timeOut.current);
@@ -81,49 +81,19 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       setProject(false);
     }
   }, [toggleOpen]);
+console.log(cords,"cordssssss");
 
   return (
     <div
-      style={{ zIndex: '20' }}
-      className={`side-bar-container ${toggleOpen ? 'side-bar-active' : ''}`}
+      style={{ zIndex: '30' }}
+      className={`side-bar-container ${toggleOpen ? 'side-bar-active hidden' : 'show'}`}
     >
-      <div
-        className={`side-bar-logo ${toggleOpen ? 'side-bar-logo-active' : ''}`}
-        style={{ paddingBottom: !toggleOpen ? '' : '16.5px' }}
-      >
-        <img
-          src={ICONS.sidebarLogo}
-          alt=""
-          style={{
-            marginLeft: !toggleOpen ? '' : '5px',
-            marginTop: !toggleOpen ? '' : '-6px',
-          }}
-        />
-        {toggleOpen ? null : <h3 style={{ color: 'black' }}>OWE HUB</h3>}
-      </div>
       <div
         className={`side-bar-content ${
           toggleOpen ? 'side-bar-content-active' : ''
         }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
-        <div className="heading-container">
-          {!isTablet && !toggleOpen && (
-            <div
-              className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
-              onClick={() => setToggleOpen(!toggleOpen)}
-              style={{ position: 'absolute', top: '10px', left: '223px' }}
-            >
-              {toggleOpen  ? (
-                <MdKeyboardArrowRight color="black" />
-              ) : (
-                <MdKeyboardArrowLeft
-                  style={{ fontSize: '1.2rem', color: '#23B364' }}
-                />
-              )}
-            </div>
-          )}
-        </div>
         {createSideMenuList().map((el, i) => (
           <div className="" key={i}>
             <div className="" style={{ marginTop: toggleOpen ? 0 : '.4rem' }}>
@@ -136,6 +106,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     toggleOpen &&
                     handleMouseover(e, oth.sidebarProps.displayText, [], 1)
                   }
+                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
@@ -175,7 +146,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     />
                   </div>
 
-                  {toggleOpen ? null : (
+                  {toggleOpen && !isTablet ? null : (
                     <Link to={oth.path}>
                       {' '}
                       <p
@@ -190,7 +161,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     </Link>
                   )}
 
-                  <div
+<div
                     className="tip"
                     style={{
                       backgroundColor: '#fff',
@@ -202,10 +173,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       maxHeight: '300px',
                       minWidth: '150px',
                       overflowY: 'scroll',
-                      borderTopLeftRadius: '4px',
+                      borderBottomRightRadius: '4px',
                       borderTopRightRadius: '4px',
                       borderLeft: '1px solid #D9D9D9',
-                      color: '#092D04',
+                      // color: "#092D04",
                     }}
                   >
                     <Link
@@ -213,15 +184,17 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: 'block',
-                        background: '#E1F5EA',
+                        background: '#377CF6',
                         padding: '11px 12px',
-                        color: '#23B364',
+                        color: 'white',
                         width: '100%',
                         fontWeight: '500',
                         borderBottom: '1px solid #E8E8E8',
                         fontSize: '13px',
-                        // borderRight: "3px solid #23B364",
+                        // borderRight: "3px solid #377CF6",
                         cursor: 'default',
+                         pointerEvents: 'none',
+                    
                       }}
                     >
                       {' '}
@@ -240,8 +213,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                   to={oth.path}
                   onMouseEnter={(e) =>
                     toggleOpen &&
-                    handleMouseover(e, oth.sidebarProps.displayText, [], 1)
+                    !isTablet &&
+                    handleMouseover(e, oth.sidebarProps.displayText, [], 2)
                   }
+                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
@@ -281,7 +256,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     />
                   </div>
 
-                  {toggleOpen ? null : (
+                  {toggleOpen && !isTablet ? null : (
                     <Link to={oth.path}>
                       {' '}
                       <p
@@ -304,7 +279,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       top: cords.top,
                       left: cords.left,
                       display:
-                        cords.opacity && cords.id === 1 ? 'block' : 'none',
+                        cords.opacity && cords.id === 2 ? 'block' : 'none',
                       maxHeight: '300px',
                       minWidth: '150px',
                       overflowY: 'scroll',
@@ -319,15 +294,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: 'block',
-                        background: '#3083E5',
+                        background: '#377CF6',
                         padding: '11px 12px',
                         color: 'white',
                         width: '100%',
                         fontWeight: '500',
                         borderBottom: '1px solid #E8E8E8',
                         fontSize: '13px',
-                        // borderRight: "3px solid #3083E5",
+                        // borderRight: "3px solid #377CF6",
                         cursor: 'default',
+                         pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -348,6 +324,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     toggleOpen &&
                     handleMouseover(e, oth.sidebarProps.displayText, [], 2)
                   }
+                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
@@ -388,7 +365,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                   </div>
 
                   {/* {oth.sidebarProps.icon && oth.sidebarProps.icon} */}
-                  {!toggleOpen && (
+                  {(!toggleOpen || isTablet) && (
                     <p
                       className={
                         location.pathname === oth.path ? 'tablink' : 'tablinkk'
@@ -423,15 +400,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: 'block',
-                        background: '#3083E5',
+                        background: '#377CF6',
                         padding: '11px 12px',
                         color: 'white',
                         width: '100%',
                         fontWeight: '500',
                         borderBottom: '1px solid #E8E8E8',
                         fontSize: '13px',
-                        // borderRight: "3px solid #3083E5",
+                        // borderRight: "3px solid #377CF6",
                         cursor: 'default',
+                         pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -448,8 +426,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                   key={index}
                   style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                   to={oth.path}
+                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                   onMouseEnter={(e) =>
                     toggleOpen &&
+                    !isTablet &&
                     handleMouseover(e, oth.sidebarProps.displayText, [], 3)
                   }
                   onMouseLeave={() => {
@@ -490,7 +470,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       }
                     />
                   </div>
-                  {toggleOpen ? null : (
+                  {toggleOpen && !isTablet ? null : (
                     <p
                       className={
                         location.pathname === oth.path ? 'tablink' : 'tablinkk'
@@ -524,15 +504,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: 'block',
-                        background: '#3083E5',
+                        background: '#377CF6',
                         padding: '11px 12px',
                         color: 'white',
                         width: '100%',
                         fontWeight: '500',
                         borderBottom: '1px solid #E8E8E8',
                         fontSize: '13px',
-                        // borderRight: "3px solid #3083E5",
+                        // borderRight: "3px solid #377CF6",
                         cursor: 'default',
+                         pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -561,6 +542,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       }}
                       onMouseEnter={(e) =>
                         toggleOpen &&
+                        !isTablet &&
                         handleMouseover(
                           e,
                           item.sidebarProps.displayText,
@@ -598,7 +580,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                           {' '}
                           {item.sidebarProps.icon && item.sidebarProps.icon}
                         </div>
-                        {toggleOpen ? null : (
+                        {toggleOpen && !isTablet ? null : (
                           <p
                             className={`tablinkk`}
                             style={{ color: repay ? '#0069A3' : '#101828' }}
@@ -631,16 +613,17 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                           className=""
                           style={{
                             display: 'block',
-                            background: '#3083E5',
+                            background: '#377CF6',
                             padding: '13.5px 12px',
                             color: 'white',
                             width: '100%',
                             fontWeight: '500',
                             borderBottom: '1px solid #E8E8E8',
                             fontSize: '13px',
-                            // borderRight: "3px solid #3083E5",
+                            // borderRight: "3px solid #377CF6",
                             cursor: 'default',
                           }}
+                          
                         >
                           {' '}
                           {cords.text}
@@ -651,6 +634,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                             <Link
                               to={ch.path}
                               key={ind}
+                              onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                               style={{
                                 display: 'block',
                                 marginBlock: '6px',
@@ -691,6 +675,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                           <Link
                             key={ele}
                             to={accr?.path}
+                            onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                             style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                             className={`side-icon-container ${
                               location.pathname === accr.path
@@ -699,7 +684,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                             }`}
                           >
                             <div>{accr.sidebarProps.icon}</div>
-                            {toggleOpen ? null : (
+                            {toggleOpen && !isTablet ? null : (
                               <p
                                 className={
                                   location.pathname === accr.path
@@ -729,7 +714,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       }`}
                     >
                       <div></div>
-                      {toggleOpen ? null : (
+                      {toggleOpen && !isTablet ? null : (
                         <p className={`tablink`}>
                           {item.sidebarProps.displayText}
                         </p>
@@ -748,6 +733,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                   to={oth.path}
                   onMouseEnter={(e) =>
                     toggleOpen &&
+                    !isTablet &&
                     handleMouseover(e, oth.sidebarProps.displayText, [], 3)
                   }
                   onMouseLeave={() => {
@@ -755,6 +741,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
                     }, 500);
                   }}
+                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                   className={`side-icon-container ${
                     location.pathname === oth.path
                       ? 'active-link-bg'
@@ -788,7 +775,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       }
                     />
                   </div>
-                  {toggleOpen ? null : (
+                  {toggleOpen && !isTablet ? null : (
                     <p
                       className={
                         location.pathname === oth.path ? 'tablink' : 'tablinkk'
@@ -821,15 +808,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: 'block',
-                        background: '#3083E5',
+                        background: '#377CF6',
                         padding: '11px 12px',
                         color: 'white',
                         width: '100%',
                         fontWeight: '500',
                         borderBottom: '1px solid #E8E8E8',
                         fontSize: '13px',
-                        // borderRight: "3px solid #3083E5",
+                        // borderRight: "3px solid #377CF6",
                         cursor: 'default',
+                         pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -1097,8 +1085,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                   key={index}
                   style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                   to={oth.path}
+                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                   onMouseEnter={(e) =>
                     toggleOpen &&
+                    !isTablet &&
                     handleMouseover(
                       e,
                       oth.sidebarProps.displayText,
@@ -1143,7 +1133,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {oth.sidebarProps.icon && oth.sidebarProps.icon}
                   </div>
 
-                  {toggleOpen ? null : (
+                  {toggleOpen && !isTablet ? null : (
                     <p
                       className={
                         location.pathname === oth.path ? 'tablink' : 'tablinkk'
@@ -1178,15 +1168,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: 'block',
-                        background: '#3083E5',
+                        background: '#377CF6',
                         padding: '11px 12px',
                         color: 'white',
                         width: '100%',
                         fontWeight: '500',
                         borderBottom: '1px solid #E8E8E8',
                         fontSize: '13px',
-                        // borderRight: "3px solid #3083E5",
+                        // borderRight: "3px solid #377CF6",
                         cursor: 'default',
+                         pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -1202,8 +1193,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                   key={index}
                   style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                   to={oth.path}
+                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
                   onMouseEnter={(e) =>
                     toggleOpen &&
+                    !isTablet &&
                     handleMouseover(
                       e,
                       oth.sidebarProps.displayText,
@@ -1248,7 +1241,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     {oth.sidebarProps.icon && oth.sidebarProps.icon}
                   </div>
 
-                  {toggleOpen ? null : (
+                  {toggleOpen && !isTablet ? null : (
                     <p
                       className={
                         location.pathname === oth.path ? 'tablink' : 'tablinkk'
@@ -1283,15 +1276,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: 'block',
-                        background: '#3083E5',
+                        background: '#377CF6',
                         padding: '11px 12px',
                         color: 'white',
                         width: '100%',
                         fontWeight: '500',
                         borderBottom: '1px solid #E8E8E8',
                         fontSize: '13px',
-                        // borderRight: "3px solid #3083E5",
+                        // borderRight: "3px solid #377CF6",
                         cursor: 'default',
+                         pointerEvents: 'none',
                       }}
                     >
                       {' '}

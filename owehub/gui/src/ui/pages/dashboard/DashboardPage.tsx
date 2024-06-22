@@ -10,6 +10,8 @@ import FilterModal from '../../components/FilterModal/FilterModal';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
+import { useAppDispatch } from '../../../redux/hooks';
+import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState({
@@ -18,6 +20,7 @@ export const DashboardPage: React.FC = () => {
     key: 'selection',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleSelect = (ranges: any) => {
     setSelectionRange(ranges.selection);
@@ -34,7 +37,8 @@ export const DashboardPage: React.FC = () => {
       key: 'selection',
     });
   };
-
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1);
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
@@ -61,6 +65,18 @@ export const DashboardPage: React.FC = () => {
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(()=>{
+    dispatch(getDealerPay({
+      page_number:currentPage,
+      page_size:itemsPerPage,
+      pay_roll_start_date:"",
+      pay_roll_end_date:"",
+      use_cutoff:"",
+      dealer_name:"",
+      sort_by:""
+    }))
+  },[currentPage])
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -72,7 +88,7 @@ export const DashboardPage: React.FC = () => {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
+ 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -110,7 +126,7 @@ export const DashboardPage: React.FC = () => {
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: '500',
                         borderRadius: '.40rem',
                         border: 'none',
@@ -141,19 +157,22 @@ export const DashboardPage: React.FC = () => {
                         ...baseStyles,
                         fontSize: '13px',
                         color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
-                        color: '#292929',
+                  
+                        color:selectedOption2? '#292929' : '#8b8484' ,
                         width: 'fit-content',
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,
-                        width: '6rem',
+                        width: '131px',
+                        left: -31
+                        
                       }),
                     }}
                   />
@@ -288,7 +307,7 @@ export const DashboardPage: React.FC = () => {
           />
         )}
 
-        <div className="" style={{ marginTop: '20px' }}>
+        <div className="" style={{ marginTop: '8px' }}>
           {active === 0 && <DashBoardTable />}
           {active === 1 && <DashBoardChart />}
         </div>

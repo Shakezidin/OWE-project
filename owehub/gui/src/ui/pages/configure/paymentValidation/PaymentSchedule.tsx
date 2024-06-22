@@ -279,7 +279,7 @@ const PaymentSchedule = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {viewArchived === true ? null : (
+                {(!viewArchived && selectedRows.size<2) && (
                   <th>
                     <div className="action-header">
                       <p>Action</p>

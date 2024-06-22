@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import '../../userManagement/user.css';
 import { ICONS } from '../../../icons/Icons';
 import '../../configure/configure.css';
@@ -38,6 +38,8 @@ interface UserTableProos {
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   onClickMultiDelete: () => void;
   AddBtn?: React.ReactNode;
+  currentPage1:number,
+  setCurrentPage1:React.Dispatch<SetStateAction<number>>
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -52,10 +54,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   setSelectAllChecked,
   onClickMultiDelete,
   AddBtn,
+  setCurrentPage1,
+  currentPage1
 }) => {
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
-  const [currentPage1, setCurrentPage1] = useState(1);
+
   const count = useAppSelector((state) => state.userManagement.totalCount);
   useEffect(() => {
     const data = {
@@ -319,6 +323,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             <button
               className="trash-btn rounded-8 border-none flex items-center justify-center"
               type="button"
+              style={{cursor:"pointer"}}
             >
               <svg
                 width="24"

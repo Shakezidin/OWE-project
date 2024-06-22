@@ -12,6 +12,7 @@ import {
 } from '../../../../redux/apiActions/config/adderCreditAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderCreditSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -45,7 +46,7 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
     for (const key in createAdderCreditData) {
       if (!createAdderCreditData[key as keyof typeof createAdderCreditData]) {
         error[key as keyof typeof createAdderCreditData] =
-          `${key.replaceAll('_', ' ')} is required`;
+          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -137,9 +138,10 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -159,9 +161,10 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.pay_scale}
                     </span>
@@ -181,9 +184,10 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.type}
                     </span>
@@ -203,9 +207,10 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.max_rate}
                     </span>
@@ -225,9 +230,10 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.min_rate}
                     </span>

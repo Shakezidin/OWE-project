@@ -173,9 +173,6 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepRCommPaid(uniqueId, rep string) (r1
 	defer func() { log.ExitFn(0, "CalculateRepRCommPaid", nil) }()
 	if len(rep) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
-			if data.UniqueId == uniqueId && data.Rep == rep {
-				log.FuncErrorTrace(0, "data.Type:%v ========= type:%v", data.Type)
-			}
 			if data.UniqueId == uniqueId && data.Rep == rep && (data.Type == "Advance" || data.Type == "Draw" ||
 				data.Type == "Shaky" || data.Type == "Cancel" || data.Type == "Final" || data.Type == "Adjustment") {
 				r1DrawPaid += data.Amount

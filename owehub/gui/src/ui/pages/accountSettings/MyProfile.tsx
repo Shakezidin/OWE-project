@@ -262,7 +262,7 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '2.8%' }}
+              style={{ padding: '0.5rem', marginLeft: '1rem'}}
             >
               <div className="create-input-field-address">
                 <Input
@@ -291,6 +291,7 @@ const MyProfile = () => {
                   value={stateOption(newFormData)?.find(
                     (option) => option.value === state
                   )}
+                  singleValueStyles={{fontWeight:400}}
                   disabled={isEditMode}
                 />
                 {errors.state && (
@@ -309,29 +310,7 @@ const MyProfile = () => {
                 />
                 {errors.city && <span className="error">{errors.city}</span>}
               </div>
-            </div>
-            <div
-              className="create-input-container"
-              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '24px' }}
-            >
-              {/* <div className="create-input-field-address">
-                <Input
-                  type={'text'}
-                  label="Zip Code"
-                  value={zipCode}
-                  name=""
-                  placeholder={'Enter'}
-                  onChange={(e) => {
-                    setZipCode(e.target.value);
-                    setErrors({ ...errors, zipCode: '' });
-                  }}
-                  disabled={isEditMode}
-                />
-                {errors.zipCode && (
-                  <span className="error">{errors.zipCode}</span>
-                )}
-              </div> */}
-              <div className="create-input-field-address">
+              <div className="create-input-field-address" >
                 <Input
                   type={'text'}
                   label="Country"

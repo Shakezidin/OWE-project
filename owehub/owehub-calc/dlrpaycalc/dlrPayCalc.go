@@ -151,8 +151,6 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	netEpc = saleData.ContractTotal / (systemSize * 1000)
 	contractTotal = saleData.ContractTotal
 
-
-
 	outData["dealer"] = dealer
 	outData["partner"] = partner
 	outData["instl"] = installer
@@ -206,7 +204,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID, systemSize)
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
 
-	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, contractDolDol)
+	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractDolDol, wc)
 	log.FuncFuncTrace(0, "zidhin loanFee: %v", loanFee)
 	// loanFee = 637.18
 	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)

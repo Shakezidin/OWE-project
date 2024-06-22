@@ -21,6 +21,7 @@ import {
 import { addDays, format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -73,7 +74,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         continue;
       }
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] = `${key} is required`;
+        error[key as keyof typeof newFormData] = firstCapitalize(`${key} is required`);
       }
     }
     setErrors({ ...error });
@@ -189,11 +190,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.dlrMu}
+                      {"DLR MU is required"}
                     </span>
                   )}
                 </div>
@@ -216,11 +218,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.dealerName}
+                      {"Dealer Name is required"}
                     </span>
                   )}
                 </div>
@@ -243,11 +246,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.stateName.replace('stateName', 'state')}
+                      {"State is required"}
                     </span>
                   )}
                 </div>
@@ -272,11 +276,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.loanType}
+                      {"Loan Type is required"}
                     </span>
                   )}
                 </div>
@@ -302,11 +307,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.installerName}
+                      {"Installer is required"}
                     </span>
                   )}
                 </div>
@@ -331,11 +337,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.dlrCost}
+                      {"DLR Cost is required"}
                     </span>
                   )}
                 </div>
@@ -362,11 +369,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.oweCost}
+                      {"Owe Cost is required"}
                     </span>
                   )}
                 </div>
@@ -390,11 +398,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.startDate.replace('startDate', 'start date')}
+                      {"Start Date is required"}
                     </span>
                   )}
                 </div>
@@ -420,11 +429,12 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.endDate.replace('endDate', 'end date')}
+                      {"End Date is required"}
                     </span>
                   )}
                 </div>

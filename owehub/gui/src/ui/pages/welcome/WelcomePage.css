@@ -8,10 +8,11 @@
   flex: 1;
   position: relative;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .welcomeBannerView {
-  background: url('../../../resources/assets/banner.jpg');
+  background: url('../../../resources/assets/landingBanner.svg');
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -129,6 +130,7 @@
   display: inline-flex;
   height: 42px;
   padding: 1rem;
+  margin-bottom: 15px;
 }
 
 .welcome-phone-text {
@@ -164,7 +166,7 @@
 .welcome-our-text {
   color: #000;
   font-size: 2.1rem;
-  padding: 15px 0 0 20px;
+  padding: 15px;
 }
 
 .welcome-main {
@@ -455,4 +457,84 @@
   height: 1px;
   width: 100%;
   background-color: grey;
+}
+
+
+/*Welcome Responsive*/
+@media screen and (max-width: 1024px) {
+  .welcome-main{
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+  .welcome-text-black{
+    text-align: center;
+    margin-top: 2.2rem;
+  }
+  .welcome-our-text{
+    text-align: center;
+  }
+  .welcomeBoxView{
+    gap: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 70px;
+  }
+  .boxContainer{
+    margin-right: unset !important;
+    width: unset !important;
+    padding: 25px;
+  }
+  .welcomeInnerApplicationView{
+    margin: unset;
+  }
+  .welcomeAboutUsContainer{
+    margin-top: 5rem;
+  }
+  .welcomeAboutUsView{
+    flex-direction: column-reverse;
+    margin: 0 100px;
+  }
+  .welcomeAboutUsView p{
+    text-align: center;
+  }
+  .welcomeAboutUsRightView{
+    align-items: center;
+    margin-left: 0;
+    margin-bottom: 210px;
+  }
+  .welcomeAboutUsLeftView{
+    align-items: center;
+  }
+  .welcomeAboutUsSmall{
+    left: 50%;
+  }
+  .welcomeWorkEaseView{
+    margin: 59px 53px;
+    margin-top: 300px;
+  }
+  #welcomeFooterLowerView{
+    padding: 5px 30px;
+  }
+  .welcomeOverProcess{
+    padding-left: 100px;
+  }
+  .landing-table{
+    overflow-x: scroll;
+    width: 100vw;
+    padding-right: 100px;
+  }
+  .welcomeInnerBannerView{
+    margin: 0 35px;
+  }
+  .welcomeBannerView{
+    background-position: 94%;
+  }
+  .welcomeHeaderView object {
+    width: 300px;
+  }
+  .welcomeOverProcessContainer{
+    margin: 0;
+    margin-bottom: 50px;
+  }
 }

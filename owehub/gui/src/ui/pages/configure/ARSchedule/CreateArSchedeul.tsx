@@ -178,9 +178,10 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.partner}
                     </span>
@@ -206,11 +207,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.saleType}
+                      {"Sale Type is required"}
                     </span>
                   )}
                 </div>
@@ -228,11 +230,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.ptoPay}
+                      {"PTO Pay is required"}
                     </span>
                   )}
                 </div>
@@ -252,11 +255,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.redline}
+                      {"Red Line is required"}
                     </span>
                   )}
                 </div>
@@ -274,11 +278,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.permitMax}
+                      {"Permit Max is required"}
                     </span>
                   )}
                 </div>
@@ -305,9 +310,10 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.state}
                     </span>
@@ -330,11 +336,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.permitPay}
+                      {"Permit Pay is required"}
                     </span>
                   )}
                 </div>
@@ -353,11 +360,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.installPay}
+                      {"Install Pay is required"}
                     </span>
                   )}
                 </div>
@@ -383,9 +391,10 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.installer}
                     </span>
@@ -408,11 +417,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.calcDate}
+                      {"Calc Date is required"}
                     </span>
                   )}
                 </div>
@@ -433,11 +443,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.start.replace('Start', 'Start date')}
+                      {errors.start.replace('Start', 'Start Date')}
                     </span>
                   )}
                 </div>
@@ -460,11 +471,12 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
-                      {errors.end.replace('End', 'end date')}
+                      {errors.end.replace('End', 'End Date')}
                     </span>
                   )}
                 </div>

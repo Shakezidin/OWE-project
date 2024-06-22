@@ -185,7 +185,7 @@ const EnterOtpScreen = () => {
                     [name]: validValue,
                   }));
                 }}
-                maxLength={20}
+                maxLength={8}
               />
 
               {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}

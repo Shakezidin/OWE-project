@@ -12,19 +12,21 @@
   gap: 0px;
   border-radius: 16px;
   opacity: 0px;
-  background-color: #008dda;
+  background-color: #ffffff;
   text-align: center;
   padding-top: 5rem;
 
   flex-shrink: 0;
 }
-
+.dbm-top{
+  margin-top: -29px;
+}
 .runner-section h3 {
   font-family: Poppins;
   font-size: 20px;
   font-weight: 600;
   line-height: 30px;
-  color: #b9e5fe;
+  color: #000000;
   text-align: center;
 }
 
@@ -32,20 +34,38 @@
   font-size: 13px;
   font-weight: 500;
   line-height: 21px;
-  color: #ffffff;
+  color: #000000;
+}
+.dbm-img{
+  width: 57px;
+  height: 57px;
 }
 
 .active-button {
-  margin-top: 1rem;
-  width: 181px;
-  height: 139px;
-  margin-left: 1.5rem;
-  margin-right: 2rem;
+  margin-top: 3.4rem;
+  width: 100%;
+  height: 162px;
   gap: 0px;
-  border-radius: 12px;
+  border-bottom-left-radius: 12px; 
+  border-bottom-right-radius: 12px;
   opacity: 0px;
-  background: #0069a3;
+  background: rgb(184, 228, 223);
   display: inline-block;
+}
+.status-circle {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.status-circle.red {
+  background-color: #ff0000;
+}
+
+.status-circle.green {
+  background-color: rgba(59, 179, 29, 1);
 }
 
 .active-since-section button {
@@ -56,26 +76,37 @@
   border-radius: 100px;
   opacity: 0px;
   border: none;
-  background: #03c988;
-  color: white;
+  background: #ffffff;
+  color: rgb(0, 0, 0);
   font-size: 14px;
   font-weight: 600;
   line-height: 21px;
   cursor: pointer;
 }
 
+.since-section{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  margin-top: 13px;
+}
+
 .since-section h3 {
-  margin-top: 0.5rem;
-  font-size: 12px;
-  font-weight: 400;
+  margin-top: 0rem;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 18px;
-  color: #ffffff;
+  color: #000000;
+  margin-left: 19px;
+
 }
 
 .since-section p {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 18px;
+  margin-left: 4px;
 }
 
 .DashBarchart-section {
@@ -301,4 +332,34 @@
   color: #6d6d6d;
   margin-left: 49px;
   cursor: pointer;
+}
+
+
+.dashbar-db .recharts-tooltip-wrapper {
+  z-index: 50;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 0px 0px !important;
+  background-color: #000000;
+  border-radius: 0 !important;
+}
+
+.dashbar-db .recharts-tooltip-wrapper .pie-tooltip {
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+@media screen and (max-width: 1024px) {
+  .Create-section{
+    padding: 0.7rem;
+  }
+  .Create-section p {
+    font-size: 13px;
+  }
+  .identity{
+    padding-left: 0;
+    justify-content: center;
+  }
+  .PieBarchart-section{
+    margin-top: 0;
+  }
 }

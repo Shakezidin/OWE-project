@@ -19,6 +19,7 @@ import {
   updateleaderOverride,
 } from '../../../../redux/apiActions/config/leaderOverrideAction';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -78,7 +79,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     for (const key in formData) {
       if (!formData[key as keyof typeof formData]) {
         error[key as keyof typeof formData] =
-          `${key.toLocaleLowerCase()} is required`;
+         firstCapitalize( `${key.replaceAll("_"," ")} is required`);
       }
     }
     setErrors({ ...error });
@@ -162,9 +163,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.teamName}
                     </span>
@@ -183,9 +185,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.leaderName}
                     </span>
@@ -204,9 +207,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.type}
                     </span>
@@ -228,9 +232,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.type}
                     </span>
@@ -249,9 +254,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.qual}
                     </span>
@@ -277,9 +283,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.salesQ}
                     </span>
@@ -308,9 +315,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.teamKwQ}
                     </span>
@@ -332,9 +340,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.payRate}
                     </span>
@@ -359,9 +368,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.start.replace('start', 'start date')}
                     </span>
@@ -385,9 +395,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.end.replace('end', 'end date')}
                     </span>
@@ -407,9 +418,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.uniqueId}
                     </span>

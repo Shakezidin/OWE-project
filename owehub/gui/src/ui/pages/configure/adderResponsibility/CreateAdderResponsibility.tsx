@@ -12,6 +12,7 @@ import {
 } from '../../../../redux/apiActions/config/adderResponsbilityAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderResponsbilitySlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -53,7 +54,7 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
       }
       if (!createAdderResponsbilityData[key as keyof TError]) {
         // @ts-ignore
-        error[key as keyof TError] = `${key.replaceAll('_', ' ')} is required`;
+        error[key as keyof TError] = firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -131,9 +132,10 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -153,9 +155,10 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.pay_scale}
                     </span>
@@ -175,9 +178,10 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.percentage}
                     </span>

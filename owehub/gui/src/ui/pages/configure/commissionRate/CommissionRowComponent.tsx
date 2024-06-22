@@ -68,13 +68,13 @@ const CommissionRowComponent: React.FC<rowProps> = ({
                 onClick={() => handleSort(item.name)}
               />
             ))}
-            {viewArchived === true ? null : (
+    
               <th>
-                <div className="action-header">
+              {(!viewArchived && selectedRows.size<2) &&  <div className="action-header">
                   <p>Action</p>
-                </div>
+                </div>}
               </th>
-            )}
+        
           </tr>
         </thead>
         <tbody>

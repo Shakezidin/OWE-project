@@ -42,6 +42,7 @@ const UserManagement: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const [tablePermissions, setTablePermissions] = useState({});
+  const [page, setPage] = useState(1);
   const {
     loading,
     userOnboardingList,
@@ -74,7 +75,7 @@ const UserManagement: React.FC = () => {
   /** role based get data */
   useEffect(() => {
     const data = {
-      page_number: 1,
+      page_number: page,
       page_size: 10,
       filters: [
         {
@@ -88,7 +89,7 @@ const UserManagement: React.FC = () => {
       await dispatch(fetchUserListBasedOnRole(data));
     };
     fetchList();
-  }, [selectedOption, createUserResult, deleteUserResult]);
+  }, [selectedOption, createUserResult, deleteUserResult, page]);
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
@@ -253,6 +254,8 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
+          currentPage1={page}
+          setCurrentPage1={setPage}
           selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
           setSelectedRows={setSelectedRows}
