@@ -189,6 +189,9 @@ const (
 	CreateBatteryBackupCalcProspectInfo string = "create_prospect_info"
 	InsertBatteryBackupCalcProspectLoad string = "insert_prospect_load_info"
 	TableName_Prospect_Info             string = "prospects_info"
+	TableName_Prospect_Load             string = "prospect_load_info"
+	TableName_Breaker_Info              string = "breaker_info"
+	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
 )
 
 /******************************************************************************

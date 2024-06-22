@@ -152,11 +152,11 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
                 'note', bi.note
             )) AS breakers
         FROM
-            prospect_load_info pl
+            ` + db.TableName_Prospect_Load + ` pl
         JOIN
-            prospect_load_breakers plb ON pl.prospect_load_id = plb.prospect_load_id
+            ` + db.TableName_Prospect_LoadBreaker_Map + ` plb ON pl.prospect_load_id = plb.prospect_load_id
         JOIN
-            breaker_info bi ON plb.breaker_id = bi.breaker_id
+            ` + db.TableName_Breaker_Info + ` bi ON plb.breaker_id = bi.breaker_id
 		WHERE
 			pl.prospect_id = $1
 		GROUP BY
