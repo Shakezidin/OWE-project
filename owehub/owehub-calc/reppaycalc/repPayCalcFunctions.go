@@ -104,3 +104,16 @@ func CalculateRepRBalance(rep string, commStatusCheck, commPaid float64) (balanc
 	}
 	return balance
 }
+
+/******************************************************************************
+ * FUNCTION:        CalculateRepRBalance
+ * DESCRIPTION:     Calculate Contract Ammount
+ * RETURNS:         contact amount
+ *****************************************************************************/
+func CalculatePrApptType(dealer string) (types string) {
+	log.EnterFn(0, "CalculateRepRBalance")
+	if len(dealer) > 0 {
+		return "Appt-Set"
+	}
+	return types
+}

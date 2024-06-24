@@ -120,8 +120,8 @@
 .calc-grey-btn {
   background-color: #f1f1f1;
 }
-.calc-yellow-btn{
-  background-color: #E7AE1C;
+.calc-yellow-btn {
+  background-color: #e7ae1c;
   color: #fff;
 }
 
@@ -176,10 +176,9 @@
   flex-basis: 160px;
 }
 
-.translate-28{
+.translate-28 {
   transform: translateX(28px);
 }
-
 
 .sm-switch {
   width: 43px;
@@ -195,53 +194,53 @@
   left: -38px;
   top: -5px;
 }
-.screw-top{
+.screw-top {
   position: absolute;
   left: 10px;
   top: 10px;
 }
-.screw-top-right{
+.screw-top-right {
   position: absolute;
   right: 10px;
   top: 10px;
 }
 
-.screw-bottom-right{
+.screw-bottom-right {
   position: absolute;
   right: 10px;
   bottom: 10px;
 }
 
-.screw-bottom-left{
+.screw-bottom-left {
   position: absolute;
   left: 10px;
   bottom: 10px;
 }
 
-.battery-watt-wrapper{
+.battery-watt-wrapper {
   border-radius: 20px;
   padding-left: 35px;
   padding-right: 25px;
   padding-block: 38px;
 }
 
-.battery-watt-heading{
+.battery-watt-heading {
   color: #172935;
   font-size: 3rem;
 }
 
-.watt-counter-btn{
+.watt-counter-btn {
   background-color: #172935;
   width: 37px;
   height: 37px;
   border-radius: 50%;
 }
 
-.counter-btn-wrapper{
+.counter-btn-wrapper {
   gap: 34px;
 }
 
-.appliance-container{
+.appliance-container {
   padding-right: 20px;
   padding-left: 25px;
   padding-top: 9px;
@@ -250,47 +249,49 @@
   margin-top: 20px;
 }
 
-.appliance-container .appliance-heading{
+.appliance-container .appliance-heading {
   font-size: 1rem;
   color: #272727;
   font-weight: 600;
 }
-.applicane-switch-container .switch{
+.applicane-switch-container .switch {
   width: 27px;
   height: 16px;
 }
 
-.applicane-switch-container .switch input:checked + .slider{
-  background-color: #5484FF;
+.applicane-switch-container .switch input:checked + .slider {
+  background-color: #5484ff;
 }
 
-.applicane-switch-container .switch .slider:before{
+.applicane-switch-container .switch .slider:before {
   bottom: 2px;
   left: 2px;
 }
 
-.applicane-switch-container .switch input:checked + .slider:before{
+.applicane-switch-container .switch input:checked + .slider:before {
   background-color: #fff;
   width: 12px;
   transform: translateX(12px);
   height: 12px;
 }
 
-.fixed-btn-wrapper{
+.fixed-btn-wrapper {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   padding-block: 31px;
   background-color: #fff;
-  filter: drop-shadow(0 -4px 12px rgba(0,0,0,0.07));
+  filter: drop-shadow(0 -4px 12px rgba(0, 0, 0, 0.07));
 }
 
-.batter-amp-container{
+.batter-amp-container {
   padding-bottom: 110px;
+  max-width: 1182px;
+  margin-inline: auto;
 }
 
-.warning-popup-btn{
+.warning-popup-btn {
   width: 100%;
   margin-inline: auto;
   border: none;
@@ -303,23 +304,296 @@
   margin-bottom: 13px;
 }
 
-.warning-popup-btn.outline-btn{
+.warning-popup-btn.outline-btn {
   background-color: #fff;
   border: 1px solid #000;
 }
 
-.stats-heading{
+.stats-heading {
   font-size: 3rem;
   color: #172935;
   line-height: 1.1;
 }
 
-.stats-btn{
-  padding: 8px 21px;
-  border: 1px solid #7C7C7C;
+.stats-btn {
+  padding: 5px 21px;
+  border: 1px solid #7c7c7c;
   border-radius: 33px;
-  color: #7C7C7C;
+  color: #7c7c7c;
+  background-color: transparent;
   font-weight: 500;
   cursor: pointer;
   margin-top: 21px;
+  font-size: 12px;
+}
+
+.battery-power-calculator-wrapper {
+  border-radius: 20px;
+  background-color: #f8f8f8;
+  padding-top: 15px;
+  padding-bottom: 35px;
+  margin-top: 42px;
+  padding-right: 23px;
+  padding-left: 39px;
+}
+
+.calc-stats {
+  padding-bottom: 31px;
+  border-bottom: 2px dashed #cccccc;
+}
+.calc-bg-navy {
+  background-color: #172935;
+}
+
+.calc-input-wrapper .inputLabel,
+.calc-select-wrapper .inputLabel {
+  font-weight: 500;
+  font-size: 14px;
+  color: #919191;
+}
+.calc-select-wrapper .inputLabel {
+  display: block;
+  margin-bottom: 5px;
+}
+.calc-input-wrapper .input-inner-view {
+  border: 1px solid #ebebeb;
+  border-radius: 4px;
+  background: #f8f8f8 !important;
+}
+
+.calc-input-wrapper .input-inner-view .input {
+  background: transparent;
+  padding-block: 22px;
+}
+.calc-input-wrapper .input-inner-view .input::placeholder {
+  color: #202020;
+  font-weight: 700;
+}
+
+.calc-input-wrapper .input-inner-view .input {
+  color: #202020;
+  font-weight: 700;
+}
+
+.calc-select-wrapper {
+  width: 147px;
+  margin-left: auto;
+}
+
+.calc-disabled-btn {
+  background-color: #c7c7c7;
+  color: #9f9f9f;
+}
+
+.appliance-quantity {
+  background-color: #f1f1f1;
+  border-radius: 14px;
+  padding: 3px;
+}
+.grid-amp-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 100px;
+}
+
+.quantity-toggler-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+.panel-container {
+  flex-basis: 600px;
+  flex: 1;
+  flex-shrink: 0;
+}
+
+.scrollbar .modal{
+  height: 560px;
+}
+.batter-amp-wrapper{
+  gap: 64px;
+}
+
+@media (max-width: 1024px) {
+  .batter-amp-wrapper{
+    gap: 40px;
+  }
+  .batter-amp-wrapper{
+    flex-direction: column;
+  }
+  .batter-amp-container {
+    padding-inline: 13px;
+  }
+  .grid-amp-container {
+    column-gap: 80px;
+  }
+  .panel-container {
+    width: 100%;
+    margin-top: 100px;
+  }
+
+  .battery-amp-wrapper {
+    padding: 48px 30px;
+  }
+
+  .home-battery {
+    max-width: 216px;
+  }
+  .battery-chip {
+    top: -18px;
+    left: -54px;
+  }
+  .battery-amp {
+    font-size: 12px;
+    padding-block: 6px;
+  }
+
+  .batter-amp-switch {
+    width: 43px;
+    height: 47px;
+  }
+  .calc-select-wrapper,
+  .calc-input-wrapper {
+    flex: 1;
+    width: 100%;
+  }
+
+  .calc-input-container {
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+  .calc-input-wrapper .inputLabel,
+  .calc-select-wrapper .inputLabel {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .battery-watt-heading {
+    font-size: 22px;
+  }
+
+  .battery-watt-heading ~ p {
+    margin-top: 0 !important;
+    font-size: 10px !important;
+    position: absolute;
+    top: 19px;
+  }
+
+  .battery-watt-wrapper {
+    align-items: flex-end;
+    position:absolute;
+    top: 28px;
+    transform: translateX(-50%);
+    left: 50%;
+    width: calc(100% - 22px);
+    margin-inline: auto;
+    padding-block: 16px;
+    min-height: 86px;
+  }
+  .stats-btn {
+    padding: 5px 4px;
+    font-size: 10px;
+  }
+
+  .battery-power-calculator-wrapper {
+    padding-inline: 22px;
+  }
+  .calc-stats {
+    align-items: flex-end !important;
+  }
+
+  .calc-stats > div > p {
+    font-size: 12px !important;
+  }
+  .calc-stats > div > div {
+    align-items: center !important;
+  }
+  .calc-stats > div > div > .mt1 {
+    margin-top: 0;
+    margin-right: 6px !important;
+  }
+  .appliance-icon {
+    gap: 6px;
+  }
+
+  .appliance-icon .icon > svg {
+    width: 22px;
+  }
+  .appliance-icon .appliance-name h5 {
+    font-size: 12px !important;
+  }
+
+  .appliance-icon .check > svg {
+    width: 14px !important;
+  }
+  .calc-stats > div > div > .mt1 > svg {
+    width: 20px;
+    height: 20px;
+  }
+  .stats-heading {
+    font-size: 22px;
+  }
+
+  .battery-watt-wrapper > div:first-child {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+
+
+  .watt-counter-btn {
+    width: 24px;
+    font-size: 14px !important;
+    height: 24px;
+  }
+
+  .counter-btn-wrapper {
+    gap: 26px;
+  }
+  .watt-counter-btn > svg {
+    width: 14px !important;
+    height: 14px;
+  }
+
+  .sm-switch {
+    width: 34px;
+    height: 36px;
+  }
+
+  .battery-amp {
+    outline: 2px solid #d1d1d1;
+  }
+
+  .sm-battery-chip {
+    top: -10px;
+    left: -37px;
+  }
+  .flex-149 {
+    flex-basis: 100px;
+    flex-grow: 1;
+  }
+
+  .battery-amp > svg {
+    margin-right: 4px !important;
+  }
+
+  .battery-amp.sm-amp {
+    padding-left: 4px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .panel-container.p3 {
+    padding: 2rem 1rem;
+  }
+
+  .battery-amp-wrapper {
+    padding: 48px 12px;
+  }
 }

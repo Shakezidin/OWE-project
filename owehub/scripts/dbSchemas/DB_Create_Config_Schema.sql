@@ -234,7 +234,7 @@ CREATE TABLE dealer_tier (
     id serial NOT NULL,
     dealer_id INT,
     tier_id INT,
-    start_date date NOT NULL,
+    start_date date,
     end_date date,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,

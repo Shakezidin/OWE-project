@@ -262,14 +262,14 @@ func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, s
 	return R1AddrResp
 }
 
-func (pReferral *ReferralDataStruct) CalculateRReferral(rep, uniqueId, rep1, rep2, state string, r1r2check bool) (R1Referral float64) {
+func (pReferral *ReferralDataStruct) CalculateRReferral(rep, uniqueId, rep1, rep2, state string, date time.Time, r1r2check bool) (R1Referral float64) {
 	log.EnterFn(0, "CalculateRReferral")
 	defer func() { log.ExitFn(0, "CalculateRReferral", nil) }()
 
 	if len(rep) > 0 {
-		for _, data := range RebateCfg.RebateList {
-			if data.UniqueId == uniqueId {
-				R1Referral += pReferral.CalculateR1AddrResp(data.UniqueId, rep1, rep2, state, data.Types, data.Date, r1r2check)
+		for _, data := range pReferral.ReferralDataList {
+			if data.UniqueID == uniqueId {
+				R1Referral += pReferral.CalculateR1AddrResp(data.UniqueID, rep1, rep2, state, data.Type, date, r1r2check)
 			}
 		}
 	}

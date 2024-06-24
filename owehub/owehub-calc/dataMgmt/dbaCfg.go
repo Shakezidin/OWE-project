@@ -9,7 +9,6 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
-	log "OWEApp/shared/logger"
 )
 
 type GetDBAList struct {
@@ -91,7 +90,6 @@ func (DBACfg *DBACfgStruct) CalculateReprepDba(rep string) (dba string) {
 func (DBACfg *DBACfgStruct) CalculateApptSetDba(apptSetter string) (apptSetDba string) {
 	if len(apptSetter) > 0 {
 		for _, data := range DBACfg.DBAList {
-			log.FuncErrorTrace(0, data.Dba)
 			if data.PreferredName == apptSetter {
 				apptSetDba = data.Dba
 			}
@@ -105,14 +103,14 @@ func (DBACfg *DBACfgStruct) CalculateApptSetDba(apptSetter string) (apptSetDba s
 * DESCRIPTION:     calculates the r2 db dba value based on the provided data
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
-func (DBACfg *DBACfgStruct) CalculateR2DmDba(r2Dmname string) string {
-	if len(r2Dmname) > 0 {
-		if r2Dmname == "~~~" {
+func (DBACfg *DBACfgStruct) CalculateR2DBA(r2DirName string) string {
+	if len(r2DirName) > 0 {
+		if r2DirName == "~~~" {
 			return ""
 		} else {
 			for _, data := range DBACfg.DBAList {
-				if data.Dba == r2Dmname {
-					return data.PreferredName
+				if data.PreferredName == r2DirName {
+					return data.Dba
 				}
 			}
 		}
@@ -120,14 +118,14 @@ func (DBACfg *DBACfgStruct) CalculateR2DmDba(r2Dmname string) string {
 	return ""
 }
 
-func (DBACfg *DBACfgStruct) CalculateR2DirDba(r2DirName string) string {
-	if len(r2DirName) > 0 {
-		if r2DirName == "~~~" {
+func (DBACfg *DBACfgStruct) CalculateR1DBA(R1SlName string) (r1SlDBA string) {
+	if len(R1SlName) > 0 {
+		if R1SlName == "~~~" {
 			return ""
 		} else {
 			for _, data := range DBACfg.DBAList {
-				if data.Dba == r2DirName {
-					return data.PreferredName
+				if data.PreferredName == R1SlName {
+					return data.Dba
 				}
 			}
 		}

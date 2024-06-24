@@ -40,10 +40,10 @@ type SaleDataStruct struct {
 	PtoDate                time.Time
 	ProjectStatus          string
 	SystemType             string
-	StartDate              time.Time // added by zidhin
-	EndDate                time.Time //field added by zidhin
-	ChargeDlr              string    // field added by zidhiin
 	ContractDate           time.Time //field added by zidhin
+	Setter                 string    //field added by zidhin
+	RepPay                 string    //field added by zidhin
+	Type                   string    //field added by zidhin
 }
 
 type SaleDataList struct {
@@ -60,17 +60,13 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 		dataList []map[string]interface{}
 	)
 
-	//Shushank
-	// uniqueID = "OUR19865"
-	// uniqueID = "OUR11347"
-
-	// log.EnterFn(0, "LoadSaleData")
-	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
+	log.EnterFn(0, "LoadSaleData")
+	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.EnterFn(0, "LoadSaleData")
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 
-	uidList := []string{"OUR11442"}
+	uidList := []string{"OUR22410"}
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
 	for i, uid := range uidList {
 		query += "'" + strings.ToUpper(uid) + "'"
@@ -262,6 +258,14 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 			// log.FuncWarnTrace(0, "Empty value received in CONTRACTDATE for Unique Id: %v", saleData.ContractDate)
 		}
 
+		if Setter, ok := data["setter"]; ok && Setter != nil {
+			saleData.Setter = Setter.(string)
+		} else {
+			// log.FuncWarnTrace(0, "Empty value received in setter for Unique Id: %v", saleData.Setter)
+		}
+
+		_, _, saleData.RepPay, _ = PayScheduleCfg.CalculateRepDrawPerc(saleData.UniqueId, saleData.Dealer, saleData.Partner, saleData.Installer, saleData.Type, saleData.State, saleData.ContractDate)
+
 		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)
 		saleDataList.SaleDataList = append(saleDataList.SaleDataList, saleData)
 	}
@@ -299,7 +303,7 @@ func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, dealer, installer,
 		if data.UniqueId == uniqueId {
 			log.FuncErrorTrace(0, "data.Dealer : %v, data.installer: %v, data.state: %v, data.LoanType: %v, data.ContractDate: %v", data.Dealer, data.Installer, data.State, data.LoanType, data.ContractDate)
 			dlrCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, loanType, contractDate)
-			loanfee += contractdoldol * dlrCost
+			return (contractdoldol * dlrCost) / 100
 		}
 	}
 

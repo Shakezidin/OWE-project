@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jackc/pgtype"
 	_ "github.com/lib/pq"
 )
 
@@ -319,8 +320,22 @@ func CallDBFunction(dbIdx uint8, functionName string, parameters []interface{}) 
 	}
 
 	var args []string
-	for i := range parameters {
-		args = append(args, fmt.Sprintf("$%d", i+1))
+	for i, param := range parameters {
+		switch v := param.(type) {
+		case []string:
+			args = append(args, fmt.Sprintf("$%d::TEXT[]", i+1))
+			var textArray pgtype.TextArray
+			err := textArray.Set(v)
+			if err != nil {
+				log.FuncErrorTrace(0, "Error setting TextArray: %v\n", err)
+				continue
+			}
+			parameters[i] = textArray
+		case pgtype.JSONB:
+			args = append(args, fmt.Sprintf("$%d::jsonb", i+1))
+		default:
+			args = append(args, fmt.Sprintf("$%d", i+1))
+		}
 	}
 
 	query := fmt.Sprintf("SELECT %s(%s) AS result", functionName, strings.Join(args, ", "))

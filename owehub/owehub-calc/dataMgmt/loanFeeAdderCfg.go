@@ -38,12 +38,12 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 	log.EnterFn(0, "LoadRebateCfg")
 	defer func() { log.ExitFn(0, "LoadRebateCfg", err) }()
 
-	query = 
-		 ` SELECT *
+	query =
+		` SELECT *
 			FROM loan_fee_adder lfa`
 	// SELECT lfa.id as record_id, lfa.unique_id, lfa.type_mktg, vd.dealer_name, pt.partner_name AS installer_name, st.name AS state_name, lfa.contract_dol_dol, tr.tier_name AS dealer_tier_name,
 	// lfa.owe_cost, lfa.addr_amount, lfa.per_kw_amount, lfa.rep_doll_divby_per, lfa.description_rep_visible, lfa.notes_not_rep_visible, lfa.type, ud1.name as rep_1_name, ud2.name as rep_2_name, lfa.sys_size,
-	// lfa.rep_count, lfa.per_rep_addr_share, lfa.per_rep_ovrd_share, lfa.r1_pay_scale, lfa.rep_1_def_resp, lfa.r1_addr_resp, lfa.r2_pay_scale, lfa.rep_2_def_resp, lfa.r2_addr_resp, 
+	// lfa.rep_count, lfa.per_rep_addr_share, lfa.per_rep_ovrd_share, lfa.r1_pay_scale, lfa.rep_1_def_resp, lfa.r1_addr_resp, lfa.r2_pay_scale, lfa.rep_2_def_resp, lfa.r2_addr_resp,
 	// lfa.start_date, lfa.end_date
 	// JOIN states st ON st.state_id = lfa.state_id
 	// JOIN user_details ud1 ON ud1.user_id = lfa.rep_1
@@ -152,13 +152,15 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepAddrShare(adderA
 	return perRepAddrShare
 }
 
-func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniqueId, dealer, installer, state, Type string, date time.Time, contractDolDol, repDolDivByPer, repCount, adderAmount, PerKwAmt, sysSize float64) (r1AdderResp float64) {
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniqueId, dealer, installer, state, Type string, date time.Time, contractDolDol, repDolDivByPer, PerKwAmt, sysSize, repCount float64) (r1AdderResp float64) {
 	log.EnterFn(0, "CalculaterepR1AdderResp")
 	defer func() { log.ExitFn(0, "CalculaterepR1AdderResp", nil) }()
 	perRepOvrdShare := LoanFeeAdderCfg.CalculateRepPerRepOvrdShare(uniqueId, dealer, installer, state, Type, date, contractDolDol, repDolDivByPer, repCount)
 	if perRepOvrdShare > 0 {
 		return perRepOvrdShare
 	} else if len(rep1) > 0 {
+		dlrCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date)
+		adderAmount := (contractDolDol * dlrCost) / 100
 		if Type[:2] == "LF" {
 			return LoanFeeAdderCfg.CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize)
 		} else {
@@ -175,16 +177,14 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniq
 * DESCRIPTION:     calculates the "R1LoanFee" value based on the provided data
 * RETURNS:         r1loanFee
 *****************************************************************************/
-func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepRLoanFee(rep, uniqueId, dealer, installer, state string) (r1LoanFee float64) {
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepRLoanFee(rep, uniqueId, dealer, installer, state, rep1, rep2 string, sysSize float64) (r1LoanFee float64) {
 	log.EnterFn(0, "CalculateRepRLoanFee")
 	defer func() { log.ExitFn(0, "CalculateRepRLoanFee", nil) }()
+	repCount := AdderDataCfg.CalculateRepCount(rep1, rep2)
 	if len(rep) > 0 {
 		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList {
 			if data.UniqueID == uniqueId {
-				addrAmount := 0.0
-				SysSize := 0.0
-				repCount := 0.0
-				r1AdderResp := LoanFeeAdderCfg.CalculaterepR1AdderResp(rep, uniqueId, dealer, installer, state, data.Type, data.Date, data.ContractDolDol, data.RepDollDivbyPer, repCount, addrAmount, data.PerKwAmount, SysSize)
+				r1AdderResp := LoanFeeAdderCfg.CalculaterepR1AdderResp(rep, uniqueId, dealer, installer, state, data.Type, data.Date, data.ContractDolDol, data.RepDollDivbyPer, data.PerKwAmount, sysSize, repCount)
 				r1LoanFee += r1AdderResp
 			}
 		}
