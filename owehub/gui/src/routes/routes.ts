@@ -53,7 +53,7 @@ export const ROUTES = {
   DB_MANAGER_DATA_TABLE: '/dbManager/dataTable',
   DB_MANAGER_USER_ACTIVITY: '/dbManager/userActivity',
   DB_MANAGER_WEB_HOOKS: '/dbManager/webhooks',
-  BATTERY_BACK_UP:"/battery-backup-calulator",
-  BATTERY_UI_GENRATOR:"/battery-ui-generator",
+  BATTERY_BACK_UP:"/battery-backup-calulator/:id",
+  BATTERY_UI_GENRATOR:"/battery-ui-generator/:id",
    SR_IMAGE_UPLOAD:"/sr-image-upload"
 };

@@ -418,6 +418,11 @@
   gap: 64px;
 }
 
+.crl-btn{
+  background: transparent;
+  border: none;
+}
+
 @media (max-width: 1024px) {
   .batter-amp-wrapper{
     gap: 40px;
