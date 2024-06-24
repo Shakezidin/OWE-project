@@ -106,14 +106,79 @@ func CalculateRepRBalance(rep string, commStatusCheck, commPaid float64) (balanc
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateRepRBalance
- * DESCRIPTION:     Calculate Contract Ammount
- * RETURNS:         contact amount
+ * FUNCTION:        CalculatePrApptType
+ * DESCRIPTION:     Calculate pr_appt_type
+ * RETURNS:         types
  *****************************************************************************/
-func CalculatePrApptType(dealer string) (types string) {
-	log.EnterFn(0, "CalculateRepRBalance")
+func CalculateType(data, val string) (types string) {
+	log.EnterFn(0, "CalculatePrApptType")
+	defer func() { log.ExitFn(0, "CalculatePrApptType", nil) }()
+	if len(data) > 0 {
+		return val
+	}
+	return types
+}
+
+/******************************************************************************
+ * FUNCTION:        calculatePrR1D1Type
+ * DESCRIPTION:     Calculate pr r1 d1 type
+ * RETURNS:         types
+ *****************************************************************************/
+func calculatePrRDType(dealer string, repDrawAmount float64) (types string) {
+	log.EnterFn(0, "calculatePrR1D1Type")
+	defer func() { log.ExitFn(0, "calculatePrR1D1Type", nil) }()
 	if len(dealer) > 0 {
-		return "Appt-Set"
+		if repDrawAmount > 0 {
+			types = "Draw"
+		} else {
+			types = "Adjustment"
+		}
+	}
+	return types
+}
+
+/******************************************************************************
+ * FUNCTION:        calculatePrRFType
+ * DESCRIPTION:     Calculate pr r1 F type
+ * RETURNS:         types
+ *****************************************************************************/
+func calculatePrRFType(dealer string, repBalance float64) (types string) {
+	log.EnterFn(0, "calculatePrRFType")
+	defer func() { log.ExitFn(0, "calculatePrRFType", nil) }()
+	if len(dealer) > 0 {
+		if repBalance > 0 {
+			types = "Final"
+		} else {
+			types = "Adjustment"
+		}
+	}
+	return types
+}
+
+/******************************************************************************
+ * FUNCTION:        calculatePrR1BType
+ * DESCRIPTION:     Calculate pr r1 F type
+ * RETURNS:         types
+ *****************************************************************************/
+func calculatePrRBType(dealer string) (types string) {
+	log.EnterFn(0, "calculatePrR1BType")
+	defer func() { log.ExitFn(0, "calculatePrR1BType", nil) }()
+	if len(dealer) > 0 {
+		return "Bonus"
+	}
+	return types
+}
+
+/******************************************************************************
+ * FUNCTION:        calculatePrR1SlType
+ * DESCRIPTION:     Calculate pr r1 F type
+ * RETURNS:         types
+ *****************************************************************************/
+func calculatePrRType(dealer, Val string) (types string) {
+	log.EnterFn(0, "calculatePrR1SlType")
+	defer func() { log.ExitFn(0, "calculatePrR1SlType", nil) }()
+	if len(dealer) > 0 {
+		return Val
 	}
 	return types
 }

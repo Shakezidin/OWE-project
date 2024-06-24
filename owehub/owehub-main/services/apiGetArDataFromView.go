@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 	"time"
 
 	"encoding/json"
@@ -27,11 +28,11 @@ import (
 
 func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.GetArDataReq
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
+		err     error
+		dataReq models.GetArDataReq
+		data    []map[string]interface{}
+		// whereEleList []interface{}
+		query string
 		// queryForAlldata string
 		// filter string
 		// RecordCount     int64
@@ -68,87 +69,19 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	query = ` SELECT  *
-	FROM ar_data`
-	// WHERE
-	// 	CASE
-	// 		WHEN $1 = 'ALL' AND $2 = 'ALL' THEN
-	// 		(SELECT 1 FROM ar_data AS ad
-	// 			WHERE ad.balance != 0 AND
-	// 			(ad.status IN (
-	// 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
-	// 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
-	// 				CASE WHEN $5 THEN 'Sold' ELSE '' END,
-	// 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
-	// 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
-	// 				CASE WHEN $8 THEN 'Install' ELSE '' END,
-	// 				CASE WHEN $9 THEN 'PTO' ELSE '' END
-	// 			))
-	// 			LIMIT 1)
+	// Map to hold statuses
+	statuses := map[string]bool{
+		"Shaky":   dataReq.Shaky,
+		"Cancel":  dataReq.Cancel,
+		"Sold":    dataReq.Sold,
+		"Permits": dataReq.Permits,
+		"NTP":     dataReq.NTP,
+		"Install": dataReq.Install,
+		"PTO":     dataReq.PTO,
+	}
 
-	// 		WHEN $1 = 'ALL' AND $2 != 'ALL' THEN
-	// 			(SELECT 1 FROM ar_data AS ad
-	// 			WHERE ad.balance != 0 AND
-	// 			(ad.status IN (
-	// 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
-	// 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
-	// 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
-	// 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
-	// 				CASE WHEN $8 THEN 'Install' ELSE '' END,
-	// 				CASE WHEN $9 THEN 'PTO' ELSE '' END
-	// 			)) AND ad.partner = '-ALL-'
-	// 			LIMIT 1)
-
-	// 		WHEN $1 = 'current due' AND $2 = 'ALL' THEN
-	// 			(SELECT 1 FROM ar_data AS ad
-	// 			WHERE ad.current_due > 0 AND ad.balance < 0 AND
-	// 			(ad.status IN (
-	// 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
-	// 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
-	// 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
-	// 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
-	// 				CASE WHEN $8 THEN 'Install' ELSE '' END,
-	// 				CASE WHEN $9 THEN 'PTO' ELSE '' END
-	// 			))
-	// 			LIMIT 1)
-
-	// 		WHEN $1 = 'current due' AND $2 != 'ALL' THEN
-	// 			(SELECT 1 FROM ar_data AS ad
-	// 			WHERE ad.current_due > 0 AND ad.balance < 0 AND
-	// 			(ad.status IN (
-	// 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
-	// 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
-	// 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
-	// 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
-	// 				CASE WHEN $8 THEN 'Install' ELSE '' END,
-	// 				CASE WHEN $9 THEN 'PTO' ELSE '' END
-	// 			)) AND ad.partner = '-ALL-'
-	// 			LIMIT 1)
-
-	// 		WHEN $1 = 'overpaid' AND $2 = 'ALL' THEN
-	// 			(SELECT 1 FROM ar_data AS ad
-	// 			WHERE ad.current_due < 0 AND ad.balance >= 0
-	// 			LIMIT 1)
-
-	// 		WHEN $1 = 'overpaid' AND $2 != 'ALL' THEN
-	// 			(SELECT 1
-	// 			FROM ar_data AS ad
-	// 			WHERE ad.current_due < 0 AND ad.balance >= 0 AND ad.partner = '-ALL-'
-	// 			LIMIT 1)
-	// 	END IS NOT NULL
-	// ORDER BY
-	// 	$10 ASC`
-
-	whereEleList = append(whereEleList, dataReq.ReportType)
-	whereEleList = append(whereEleList, dataReq.SalePartner)
-	whereEleList = append(whereEleList, dataReq.Shaky)
-	whereEleList = append(whereEleList, dataReq.Cancel)
-	whereEleList = append(whereEleList, dataReq.Sold)
-	whereEleList = append(whereEleList, dataReq.Permits)
-	whereEleList = append(whereEleList, dataReq.NTP)
-	whereEleList = append(whereEleList, dataReq.Install)
-	whereEleList = append(whereEleList, dataReq.PTO)
-	whereEleList = append(whereEleList, dataReq.SortBy)
+	// Generate the query
+	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses)
 
 	// data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -327,5 +260,150 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println(data)
 }
 
+// Function to generate the base query
+func getBaseQuery() string {
+	return `SELECT * FROM ar_data`
+}
 
+// Function to generate the WHERE clause based on parameters
+func getWhereClause(reportType, salePartner string, statuses map[string]bool) string {
+	var conditions []string
 
+	switch {
+	case reportType == "ALL" && salePartner == "ALL":
+		conditions = append(conditions, "balance != 0")
+		conditions = append(conditions, generateStatusCondition(statuses))
+	case reportType == "ALL" && salePartner != "ALL":
+		conditions = append(conditions, "balance != 0")
+		conditions = append(conditions, generateStatusCondition(statuses))
+		conditions = append(conditions, "partner = '-ALL-'")
+	case reportType == "current due" && salePartner == "ALL":
+		conditions = append(conditions, "current_due > 0", "balance < 0")
+		conditions = append(conditions, generateStatusCondition(statuses))
+	case reportType == "current due" && salePartner != "ALL":
+		conditions = append(conditions, "current_due > 0", "balance < 0")
+		conditions = append(conditions, generateStatusCondition(statuses))
+		conditions = append(conditions, "partner = '-ALL-'")
+	case reportType == "overpaid" && salePartner == "ALL":
+		conditions = append(conditions, "current_due < 0", "balance >= 0")
+	case reportType == "overpaid" && salePartner != "ALL":
+		conditions = append(conditions, "current_due < 0", "balance >= 0")
+		conditions = append(conditions, "partner = 'ALL'")
+	}
+
+	if len(conditions) > 0 {
+		return " WHERE " + strings.Join(conditions, " AND ")
+	}
+	return ""
+}
+
+func generateStatusCondition(statuses map[string]bool) string {
+	var statusConditions []string
+
+	for status, include := range statuses {
+		if include {
+			statusConditions = append(statusConditions, fmt.Sprintf("'%s'", status))
+		}
+	}
+
+	if len(statusConditions) > 0 {
+		return fmt.Sprintf("status IN (%s)", strings.Join(statusConditions, ", "))
+	}
+	return ""
+}
+
+func getOrderByClause(sortBy string) string {
+	if sortBy != "" {
+		return fmt.Sprintf(" ORDER BY %s ASC", sortBy)
+	}
+	return ""
+}
+
+func generateQuery(reportType, salePartner, sortBy string, statuses map[string]bool) string {
+	query := getBaseQuery()
+	query += getWhereClause(reportType, salePartner, statuses)
+	query += getOrderByClause(sortBy)
+	return query
+}
+
+// // query = ` SELECT  *
+// // FROM ar_data`
+// // WHERE
+// // 	CASE
+// // 		WHEN $1 = 'ALL' AND $2 = 'ALL' THEN
+// // 		(SELECT 1 FROM ar_data AS ad
+// // 			WHERE ad.balance != 0 AND
+// // 			(ad.status IN (
+// // 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+// // 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+// // 				CASE WHEN $5 THEN 'Sold' ELSE '' END,
+// // 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
+// // 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
+// // 				CASE WHEN $8 THEN 'Install' ELSE '' END,
+// // 				CASE WHEN $9 THEN 'PTO' ELSE '' END
+// // 			))
+// // 			LIMIT 1)
+
+// // 		WHEN $1 = 'ALL' AND $2 != 'ALL' THEN
+// // 			(SELECT 1 FROM ar_data AS ad
+// // 			WHERE ad.balance != 0 AND
+// // 			(ad.status IN (
+// // 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+// // 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+// // 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
+// // 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
+// // 				CASE WHEN $8 THEN 'Install' ELSE '' END,
+// // 				CASE WHEN $9 THEN 'PTO' ELSE '' END
+// // 			)) AND ad.partner = '-ALL-'
+// // 			LIMIT 1)
+
+// // 		WHEN $1 = 'current due' AND $2 = 'ALL' THEN
+// // 			(SELECT 1 FROM ar_data AS ad
+// // 			WHERE ad.current_due > 0 AND ad.balance < 0 AND
+// // 			(ad.status IN (
+// // 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+// // 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+// // 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
+// // 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
+// // 				CASE WHEN $8 THEN 'Install' ELSE '' END,
+// // 				CASE WHEN $9 THEN 'PTO' ELSE '' END
+// // 			))
+// // 			LIMIT 1)
+
+// // 		WHEN $1 = 'current due' AND $2 != 'ALL' THEN
+// // 			(SELECT 1 FROM ar_data AS ad
+// // 			WHERE ad.current_due > 0 AND ad.balance < 0 AND
+// // 			(ad.status IN (
+// // 				CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+// // 				CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+// // 				CASE WHEN $6 THEN 'Permits' ELSE '' END,
+// // 				CASE WHEN $7 THEN 'NTP' ELSE '' END,
+// // 				CASE WHEN $8 THEN 'Install' ELSE '' END,
+// // 				CASE WHEN $9 THEN 'PTO' ELSE '' END
+// // 			)) AND ad.partner = '-ALL-'
+// // 			LIMIT 1)
+
+// // 		WHEN $1 = 'overpaid' AND $2 = 'ALL' THEN
+// // 			(SELECT 1 FROM ar_data AS ad
+// // 			WHERE ad.current_due < 0 AND ad.balance >= 0
+// // 			LIMIT 1)
+
+// // 		WHEN $1 = 'overpaid' AND $2 != 'ALL' THEN
+// // 			(SELECT 1
+// // 			FROM ar_data AS ad
+// // 			WHERE ad.current_due < 0 AND ad.balance >= 0 AND ad.partner = '-ALL-'
+// // 			LIMIT 1)
+// // 	END IS NOT NULL
+// // ORDER BY
+// // 	$10 ASC`
+
+// whereEleList = append(whereEleList, dataReq.ReportType)
+// whereEleList = append(whereEleList, dataReq.SalePartner)
+// whereEleList = append(whereEleList, dataReq.Shaky)
+// whereEleList = append(whereEleList, dataReq.Cancel)
+// whereEleList = append(whereEleList, dataReq.Sold)
+// whereEleList = append(whereEleList, dataReq.Permits)
+// whereEleList = append(whereEleList, dataReq.NTP)
+// whereEleList = append(whereEleList, dataReq.Install)
+// whereEleList = append(whereEleList, dataReq.PTO)
+// whereEleList = append(whereEleList, dataReq.SortBy)
