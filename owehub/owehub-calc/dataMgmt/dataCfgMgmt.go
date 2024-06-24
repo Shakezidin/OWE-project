@@ -235,5 +235,19 @@ func LoadConfigurations() (err error) {
 	}
 	log.FuncErrorTrace(0, "===== ApDedData : %+v", ApDedData.ApDedList[0])
 
+	err = DealerOwnersConfig.LoadRDealerOwnersCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dealer owners Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== Dealer Owners : %+v", DealerOwnersConfig.DealerOwnersList[0])
+
+	err = RepNameConfig.LoadRRepNameCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get rep name Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== rep names : %+v", RepNameConfig.RepNameList[0])
+
 	return err
 }

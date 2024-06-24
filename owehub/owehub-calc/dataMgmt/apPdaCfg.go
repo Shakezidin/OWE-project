@@ -160,3 +160,17 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaRcmdAmount(UniqueId, payee, rep1, rep2
 func ConvertToLower(str1 string) (result string) {
 	return strings.ToLower(str1)
 }
+
+/******************************************************************************
+ * FUNCTION:        getPayee
+ * DESCRIPTION:     calculates the payee  value based on the unique Id
+ * RETURNS:         payee
+ *****************************************************************************/
+func (pApPdaData *ApPdaCfgStruct) GetPayee(uniqueId string) (payee string) {
+	for _, data := range pApPdaData.ApPdaList {
+		if data.UniqueId == uniqueId {
+			return data.Payee
+		}
+	}
+	return payee
+}

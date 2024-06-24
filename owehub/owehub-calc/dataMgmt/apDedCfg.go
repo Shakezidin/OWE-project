@@ -110,3 +110,26 @@ func (ApDedData *ApDedCfgStruct) CalculateBalance(UniqueId, payee string, totalP
 	}
 	return balance
 }
+
+/******************************************************************************
+ * FUNCTION:        getPayee
+ * DESCRIPTION:     calculates the payee  value based on the unique Id
+ * RETURNS:         payee
+ *****************************************************************************/
+func (ApDedData *ApDedCfgStruct) GetPayee(uniqueId string) (payee string) {
+	for _, data := range ApDedData.ApDedList {
+		if data.UniqueId == uniqueId {
+			return data.Payee
+		}
+	}
+	return payee
+}
+
+func (ApDedData *ApDedCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	for _, data := range ApDedData.ApDedList {
+		if data.UniqueId == uniqueId {
+			return data.Date
+		}
+	}
+	return date
+}

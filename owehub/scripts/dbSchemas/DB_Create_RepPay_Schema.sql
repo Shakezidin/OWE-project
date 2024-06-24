@@ -99,10 +99,10 @@ CREATE TABLE rep_pay_cal_standard(
 	rep_1_team varchar,
 	rep_2_team varchar,
 	team_count float,
-	ap_oth_date date,
 	ap_oth_paid float,
-	ap_oth_payee varchar,
 	ap_oth_balance float,
+	ap_oth_date date,
+	ap_oth_payee varchar,
 	ap_pda_rc_amnt float,
 	ap_pda_amnt float,
 	ap_pda_paid_amnt float,
@@ -118,10 +118,42 @@ CREATE TABLE rep_pay_cal_standard(
 	ap_ded_balance float
 	ap_ded_date date,
 	ap_ded_payee varchar,
-	ap_ded_dba varchar,
 	rep_1_status varchar,
 	rep_2_status varchar,
-	commission_model TEXT
+	commission_model varchar,
+	pr_r1_d_type varchar,
+	pr_r1_d_today date,
+	pr_r1_d_status varchar,
+	pr_r1_f_type varchar,
+	pr_r1_f_today date,
+	pr_r1_f_status varchar,
+	pr_r1_b_type varchar,
+	pr_r1_b_today date,
+	pr_r1_b_status varchar,
+	pr_r2_d_type varchar,
+	pr_r2_d_today date,
+	pr_r2_d_status varchar,
+	pr_r2_f_type varchar,
+	pr_r2_f_today date,
+	pr_r2_f_status varchar,
+	pr_r2_b_type varchar,
+	pr_r2_b_today date,
+	pr_r2_b_status varchar,
+	pr_appt_type varchar,
+	pr_appt_today date,
+	pr_appt_status varchar,
+	pr_oth_type varchar,
+	pr_oth_today date,
+	pr_oth_status varchar,
+	pr_pda_type varchar,
+	pr_pda_today date,
+	pr_pda_status varchar,
+	pr_adv_type varchar,
+	pr_adv_today date,
+	pr_adv_status varchar,
+	pr_ded_type varchar,
+	pr_ded_today date,
+	pr_ded_status varchar
 );
 
 
@@ -151,65 +183,96 @@ CREATE TABLE rep_pay_cal_ovrrd_standard(
 	kwh float,
 	appt_setter varchar,
 	status_date date,
-	per_team_kw float,
-	per_rep_kw float,
-	contract_calc float,
-	epcCalc float,
-	rep_draw_percentage float,
-	rep_draw_max float,
-	rep_pay varchar,
-	pay_rate float,
-	loan_fee float,
 	r1_sl_name varchar,
+	r1_sl_rate float,
 	r1_sl_dba varchar,
-	r1_sl_balance float,
+	r1_sl_comm float,
 	r1_sl_paid float,
+	r1_sl_bal float,
 	r1_dm_name varchar,
+	r1_dm_rate float,
 	r1_dm_dba varchar,
-	r1_dm_balance float,
+	r1_dm_comm float,
 	r1_dm_paid float,
+	r1_dm_bal float,
 	r1_dir_name varchar,
+	r1_dir_rate float,
 	r1_dir_dba varchar,
-	r1_dir_balance float,
+	r1_dir_comm float,
 	r1_dir_paid float,
-	rep_1_status varchar,
-	rep_2_status varchar,
-	r1_dir_dba varchar,
-	rep_1_status varchar,
-	rep_2_status varchar,
+	r1_dir_bal float,
+	r2_sl_name varchar,
+	r2_sl_rate float,
+	r2_sl_dba varchar,
+	r2_sl_comm float,
+	r2_sl_paid float,
+	r2_sl_bal float,
+	r2_dm_name varchar,
+	r2_dm_rate float,
+	r2_dm_dba varchar,
+	r2_dm_comm float,
+	r2_dm_paid float,
+	r2_dm_bal float,
+	r2_dir_name varchar,
+	r2_dir_rate float,
+	r2_dir_dba varchar,
+	r2_dir_comm float,
+	r2_dir_paid float,
+	r2_dir_bal float,
+	pr_r1_sl_type varchar,
+	pr_r1_sl_today date,
+	pr_r1_sl_status varchar,
+	pr_r1_dm_type varchar,
+	pr_r1_dm_today date,
+	pr_r1_dm_status varchar,
+	pr_r1_dir_type varchar,
+	pr_r1_dir_today date,
+	pr_r1_dir_status varchar,
+	pr_r2_sl_type varchar,
+	pr_r2_sl_today date,
+	pr_r2_sl_status varchar,
+	pr_r2_dm_type varchar,
+	pr_r2_dm_today date,
+	pr_r2_dm_status varchar,
+	pr_r2_dir_type varchar,
+	pr_r2_dir_today date,
+	pr_r2_dir_status varchar
 );
 
 
 CREATE VIEW pr_r1_d AS
 SELECT
-		rep_pay_cal_standard.dealer as dealer,
-    rep_pay_cal_standard.home_owner as home_owner,
-		rep_pay_cal_standard.unique_id as unique_id,
-		rep_pay_cal_standard.rep_1 as rep_1,
-		rep_pay_cal_standard.rep_1_dba as rep_1_dba,
-		rep_pay_cal_standard.status as status,
-		rep_pay_cal_standard.status_date as status_date,
-		rep_pay_cal_standard.rep_1_draw_amount as rep_1_draw_amount,
-		rep_pay_cal_standard.rep_1_comm_paid as rep_1_comm_paid,
-		rep_pay_cal_standard.rep_1_balance as rep_1_balance,
-		rep_pay_cal_standard.system_size as system_size,
-		rep_pay_cal_standard.contract_total as contract_total,
-		rep_pay_cal_standard.loan_fee as loan_fee,
-		rep_pay_cal_standard.epc as epc,
-		rep_pay_cal_standard.rep_1_addr as rep_1_addr,
-		rep_pay_cal_standard.rep_1_rr as rep_1_rr,
-		rep_pay_cal_standard.rep_1_position as rep_1_position,
-		rep_pay_cal_standard.rep_1_net_epc as rep_1_net_epc,
-		rep_pay_cal_standard.rep_1_credit as rep_1_credit,
-		rep_pay_cal_standard.rep_2 as rep_2,
-		rep_pay_cal_standard.rep1_comm_status_check as rep_1_comm_status_check,
-		rep_pay_cal_standard.rep_1_draw_amount as rep_1_draw_amount,
-		rep_pay_cal_standard.loan_type as loan_type,
-		rep_pay_cal_standard.state as state,
-		rep_pay_cal_standard.wc as wc,
-		rep_pay_cal_standard.rep_1_status as rep_1_status,
-		rep_pay_cal_standard.rep_2_status as rep_2_status,
-    rep_pay_cal_standard.commission_model AS commission_model
+	rep_pay_cal_standard.dealer as dealer,
+	rep_pay_cal_standard.home_owner as home_owner,
+	rep_pay_cal_standard.unique_id as unique_id,
+	rep_pay_cal_standard.rep_1 as rep_1,
+	rep_pay_cal_standard.rep_1_dba as rep_1_dba,
+	rep_pay_cal_standard.status as status,
+	rep_pay_cal_standard.status_date as status_date,
+	rep_pay_cal_standard.rep_1_draw_amount as rep_1_draw_amount,
+	rep_pay_cal_standard.rep_1_comm_paid as rep_1_comm_paid,
+	rep_pay_cal_standard.rep_1_balance as rep_1_balance,
+	rep_pay_cal_standard.system_size as system_size,
+	rep_pay_cal_standard.contract_total as contract_total,
+	rep_pay_cal_standard.loan_fee as loan_fee,
+	rep_pay_cal_standard.epc as epc,
+	rep_pay_cal_standard.rep_1_addr as rep_1_addr,
+	rep_pay_cal_standard.rep_1_rr as rep_1_rr,
+	rep_pay_cal_standard.rep_1_position as rep_1_position,
+	rep_pay_cal_standard.rep_1_net_epc as rep_1_net_epc,
+	rep_pay_cal_standard.rep_1_credit as rep_1_credit,
+	rep_pay_cal_standard.rep_2 as rep_2,
+	rep_pay_cal_standard.rep1_comm_status_check as rep_1_comm_status_check,
+	rep_pay_cal_standard.rep_1_draw_amount as rep_1_draw_amount,
+	rep_pay_cal_standard.loan_type as loan_type,
+	rep_pay_cal_standard.state as state,
+	rep_pay_cal_standard.wc as wc,
+	rep_pay_cal_standard.rep_1_status as rep_1_status,
+	rep_pay_cal_standard.rep_2_status as rep_2_status,
+    rep_pay_cal_standard.commission_model AS commission_model,
+	rep_pay_cal_standard.pr_r1_d_type AS pr_r1_d_type,
+	rep_pay_cal_standard.pr_r1_d_today AS pr_r1_d_today,
+	rep_pay_cal_standard.pr_r1_d_status AS pr_r1_d_status
 FROM
     rep_pay_cal_standard
 WHERE
@@ -224,32 +287,35 @@ WHERE
 
 CREATE VIEW pr_r1_f AS
 SELECT
-   rep_pay_cal_standard.dealer AS dealer,
-	 rep_pay_cal_standard.home_owner AS home_owner,
-	 rep_pay_cal_standard.unique_id AS unique_id,
-	 rep_pay_cal_standard.rep_1 AS rep,
-	 rep_pay_cal_standard.rep_1_dba AS rep_1_dba,
-	 rep_pay_cal_standard.status AS status,
-	 rep_pay_cal_standard.status_date AS status_date,
-	 rep_pay_cal_standard.rep_1_balance AS rep_1_balance,
-	 rep_pay_cal_standard.rep_1_comm_paid AS rep_1_comm_paid,
-	 rep_pay_cal_standard.system_size AS system_size,
-	 rep_pay_cal_standard.contract_total AS contract_total,
-	 rep_pay_cal_standard.loan_fee AS loan_fee,
-	 rep_pay_cal_standard.epc AS epc,
-	 rep_pay_cal_standard.rep_1_addr AS rep_1_addr,
-	 rep_pay_cal_standard.rep_1_rr AS rep_1_rr,
-	 rep_pay_cal_standard.rep_1_position AS rep_1_position,
-	 rep_pay_cal_standard.rep_1_net_epc AS rep_1_net_epc,
-	 rep_pay_cal_standard.rep_1_credit AS rep_1_credit,
-	 rep_pay_cal_standard.rep_2 AS rep_2,
-	 rep_pay_cal_standard.rep_1_comm_status_check AS rep_1_comm_status_check,
-	 rep_pay_cal_standard.rep_1_draw_amount AS rep_1_draw_amount,
-	 rep_pay_cal_standard.loan_type AS loan_type,
-	 rep_pay_cal_standard.state AS state,
-	 rep_pay_cal_standard.wc AS wc,
-	 rep_pay_cal_standard.rep_1_status as rep_status,
-	 rep_pay_cal_standard.commission_model AS commission_model
+    rep_pay_cal_standard.dealer AS dealer,
+	rep_pay_cal_standard.home_owner AS home_owner,
+	rep_pay_cal_standard.unique_id AS unique_id,
+	rep_pay_cal_standard.rep_1 AS rep,
+	rep_pay_cal_standard.rep_1_dba AS rep_1_dba,
+	rep_pay_cal_standard.status AS status,
+	rep_pay_cal_standard.status_date AS status_date,
+	rep_pay_cal_standard.rep_1_balance AS rep_1_balance,
+	rep_pay_cal_standard.rep_1_comm_paid AS rep_1_comm_paid,
+	rep_pay_cal_standard.system_size AS system_size,
+	rep_pay_cal_standard.contract_total AS contract_total,
+	rep_pay_cal_standard.loan_fee AS loan_fee,
+	rep_pay_cal_standard.epc AS epc,
+	rep_pay_cal_standard.rep_1_addr AS rep_1_addr,
+	rep_pay_cal_standard.rep_1_rr AS rep_1_rr,
+	rep_pay_cal_standard.rep_1_position AS rep_1_position,
+	rep_pay_cal_standard.rep_1_net_epc AS rep_1_net_epc,
+	rep_pay_cal_standard.rep_1_credit AS rep_1_credit,
+	rep_pay_cal_standard.rep_2 AS rep_2,
+	rep_pay_cal_standard.rep_1_comm_status_check AS rep_1_comm_status_check,
+	rep_pay_cal_standard.rep_1_draw_amount AS rep_1_draw_amount,
+	rep_pay_cal_standard.loan_type AS loan_type,
+	rep_pay_cal_standard.state AS state,
+	rep_pay_cal_standard.wc AS wc,
+	rep_pay_cal_standard.rep_1_status as rep_status,
+	rep_pay_cal_standard.commission_model AS commission_model,
+	rep_pay_cal_standard.pr_r1_f_type AS pr_r1_f_type,
+	rep_pay_cal_standard.pr_r1_f_today AS pr_r1_f_today,
+	rep_pay_cal_standard.pr_r1_f_status AS pr_r1_f_status
 FROM
     rep_pay_cal_standard
 WHERE
@@ -272,19 +338,22 @@ WHERE
 
 CREATE VIEW pr_r1_b AS
 SELECT
-   rep_pay_cal_standard.dealer AS dealer,
-	 rep_pay_cal_standard.home_owner AS home_owner,
-	 rep_pay_cal_standard.unique_id AS unique_id,
-	 rep_pay_cal_standard.rep_1 AS rep,
-	 rep_pay_cal_standard.per_team_kw AS per_team_kw,
-	 rep_pay_cal_standard.state AS status,
-	 rep_pay_cal_standard.status_date AS status_date,
-	 rep_pay_cal_standard.rep_1_rl AS rep_2_rl,
-	 rep_pay_cal_standard.rep_1_rate AS rep_2_rate,
-	 rep_pay_cal_standard.wc AS wc,
-	 rep_pay_cal_standard.state AS state,
-	 rep_pay_cal_standard.rep_1_status as rep_status,
-	 rep_pay_cal_standard.commission_model AS commission_model
+    rep_pay_cal_standard.dealer AS dealer,
+	rep_pay_cal_standard.home_owner AS home_owner,
+	rep_pay_cal_standard.unique_id AS unique_id,
+	rep_pay_cal_standard.rep_1 AS rep,
+	rep_pay_cal_standard.per_team_kw AS per_team_kw,
+	rep_pay_cal_standard.state AS status,
+	rep_pay_cal_standard.status_date AS status_date,
+	rep_pay_cal_standard.rep_1_rl AS rep_2_rl,
+	rep_pay_cal_standard.rep_1_rate AS rep_2_rate,
+	rep_pay_cal_standard.wc AS wc,
+	rep_pay_cal_standard.state AS state,
+	rep_pay_cal_standard.rep_1_status as rep_status,
+	rep_pay_cal_standard.commission_model AS commission_model,
+	rep_pay_cal_standard.pr_r1_b_type AS pr_r1_b_type,
+	rep_pay_cal_standard.pr_r1_b_today AS pr_r1_b_today,
+	rep_pay_cal_standard.pr_r1_b_status AS pr_r1_b_status
 FROM
     rep_pay_cal_standard
 WHERE
@@ -321,7 +390,10 @@ SELECT
 	rep_pay_cal_standard.wc as wc,
 	rep_pay_cal_standard.state as state,
 	rep_pay_cal_standard.rep_2_status as rep_status,
-	 rep_pay_cal_standard.commission_model AS commission_model
+	rep_pay_cal_standard.commission_model AS commission_model,
+	rep_pay_cal_standard.pr_r2_d_type AS pr_r2_d_type,
+	rep_pay_cal_standard.pr_r2_d_today AS pr_r2_d_today,
+	rep_pay_cal_standard.pr_r2_d_status AS pr_r2_d_status
 FROM
     rep_pay_cal_standard
 WHERE
@@ -360,7 +432,10 @@ SELECT
 	rep_pay_cal_standard.wc as wc,
 	rep_pay_cal_standard.state as state,
 	rep_pay_cal_standard.rep_2_status as rep_status,
-	 rep_pay_cal_standard.commission_model AS commission_model
+	rep_pay_cal_standard.commission_model AS commission_model,
+	rep_pay_cal_standard.pr_r2_f_type AS pr_r2_f_type,
+	rep_pay_cal_standard.pr_r2_f_today AS pr_r2_f_today,
+	rep_pay_cal_standard.pr_r2_f_status AS pr_r2_f_status
 FROM
     rep_pay_cal_standard
 WHERE
@@ -384,19 +459,22 @@ WHERE
 
 CREATE VIEW pr_r2_b AS
 SELECT
-   rep_pay_cal_standard.dealer AS dealer,
-	 rep_pay_cal_standard.home_owner AS home_owner,
-	 rep_pay_cal_standard.unique_id AS unique_id,
-	 rep_pay_cal_standard.rep_2 AS rep,
-	 rep_pay_cal_standard.rep_1_loan_fee as rep_1_loan_fee,
-	 rep_pay_cal_standard.status as status,
-	 rep_pay_cal_standard.status_date as status_date,
-	 rep_pay_cal_standard.rep_2_min_rate as rep_2_min_rate,
-	 rep_pay_cal_standard.rep_2_max_rate as rep_2_max_rate,
-	 rep_pay_cal_standard.wc AS wc,
-	 rep_pay_cal_standard.state AS state,
-	 rep_pay_cal_standard.rep_2_status as rep_status,
-	 rep_pay_cal_standard.commission_model AS commission_model
+    rep_pay_cal_standard.dealer AS dealer,
+	rep_pay_cal_standard.home_owner AS home_owner,
+	rep_pay_cal_standard.unique_id AS unique_id,
+	rep_pay_cal_standard.rep_2 AS rep,
+	rep_pay_cal_standard.rep_1_loan_fee as rep_1_loan_fee,
+	rep_pay_cal_standard.status as status,
+	rep_pay_cal_standard.status_date as status_date,
+	rep_pay_cal_standard.rep_2_min_rate as rep_2_min_rate,
+	rep_pay_cal_standard.rep_2_max_rate as rep_2_max_rate,
+	rep_pay_cal_standard.wc AS wc,
+	rep_pay_cal_standard.state AS state,
+	rep_pay_cal_standard.rep_2_status as rep_status,
+	rep_pay_cal_standard.commission_model AS commission_model,
+	rep_pay_cal_standard.pr_r2_b_type AS pr_r2_b_type,
+	rep_pay_cal_standard.pr_r2_b_today AS pr_r2_b_today,
+	rep_pay_cal_standard.pr_r2_b_status AS pr_r2_b_status
 FROM
     rep_pay_cal_standard
 WHERE
@@ -419,7 +497,10 @@ SELECT
 	rep_pay_cal_ovrrd_standard.r1_sl_paid as r1_sl_paid,
 	rep_pay_cal_ovrrd_standard.system_size as system_size,
 	rep_pay_cal_ovrrd_standard.rep_1_status as rep_status,
-	rep_pay_cal_ovrrd_standard.commission_model AS commission_model
+	rep_pay_cal_ovrrd_standard.commission_model AS commission_model,
+	rep_pay_cal_ovrrd_standard.pr_r1_sl_type AS pr_r1_sl_type,
+	rep_pay_cal_ovrrd_standard.pr_r1_sl_today AS pr_r1_sl_today,
+	rep_pay_cal_ovrrd_standard.pr_r1_sl_status AS pr_r1_sl_status
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -442,7 +523,10 @@ SELECT
 	rep_pay_cal_ovrrd_standard.r1_dm_paid as r1_dm_paid,
 	rep_pay_cal_ovrrd_standard.system_size as system_size,
 	rep_pay_cal_ovrrd_standard.rep_1_status as rep_status,
-	rep_pay_cal_ovrrd_standard.commission_model AS commission_model
+	rep_pay_cal_ovrrd_standard.commission_model AS commission_model,
+	rep_pay_cal_ovrrd_standard.pr_r1_dm_type AS pr_r1_dm_type,
+	rep_pay_cal_ovrrd_standard.pr_r1_dm_today AS pr_r1_dm_today,
+	rep_pay_cal_ovrrd_standard.pr_r1_dm_status AS pr_r1_dm_status
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -465,7 +549,10 @@ SELECT
 	rep_pay_cal_ovrrd_standard.r1_dir_paid as r1_dir_paid,
 	rep_pay_cal_ovrrd_standard.system_size as system_size,
 	rep_pay_cal_ovrrd_standard.rep_1_status as rep_status,
-	rep_pay_cal_ovrrd_standard.commission_model AS commission_model
+	rep_pay_cal_ovrrd_standard.commission_model AS commission_model,
+	rep_pay_cal_ovrrd_standard.pr_r1_dir_type AS pr_r1_dir_type,
+	rep_pay_cal_ovrrd_standard.pr_r1_dir_today AS pr_r1_dir_today,
+	rep_pay_cal_ovrrd_standard.pr_r1_dir_status AS pr_r1_dir_status
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -488,7 +575,10 @@ SELECT
 	rep_pay_cal_ovrrd_standard.r2_sl_paid as r2_sl_paid,
 	rep_pay_cal_ovrrd_standard.system_size as system_size,
 	rep_pay_cal_ovrrd_standard.rep_2_status as rep_status,
-	rep_pay_cal_ovrrd_standard.commission_model AS commission_model
+	rep_pay_cal_ovrrd_standard.commission_model AS commission_model,
+	rep_pay_cal_ovrrd_standard.pr_r2_sl_type AS pr_r2_sl_type,
+	rep_pay_cal_ovrrd_standard.pr_r2_sl_today AS pr_r2_sl_today,
+	rep_pay_cal_ovrrd_standard.pr_r2_sl_status AS pr_r2_sl_status
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -511,7 +601,10 @@ SELECT
 	rep_pay_cal_ovrrd_standard.r2_dm_paid as r2_dm_paid,
 	rep_pay_cal_ovrrd_standard.system_size as system_size,
 	rep_pay_cal_ovrrd_standard.rep_2_status as rep_status,
-	rep_pay_cal_ovrrd_standard.commission_model AS commission_model
+	rep_pay_cal_ovrrd_standard.commission_model AS commission_model,
+	rep_pay_cal_ovrrd_standard.pr_r2_dm_type AS pr_r2_dm_type,
+	rep_pay_cal_ovrrd_standard.pr_r2_dm_today AS pr_r2_dm_today,
+	rep_pay_cal_ovrrd_standard.pr_r2_dm_status AS pr_r2_dm_status
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -534,7 +627,11 @@ SELECT
 	rep_pay_cal_ovrrd_standard.r2_dir_paid as r2_dir_paid,
 	rep_pay_cal_ovrrd_standard.system_size as system_size,
 	rep_pay_cal_ovrrd_standard.rep_2_status as rep_status,
-	rep_pay_cal_ovrrd_standard.commission_model AS commission_model
+	rep_pay_cal_ovrrd_standard.commission_model AS commission_model,
+	rep_pay_cal_ovrrd_standard.pr_r2_dir_type AS pr_r2_dir_type,
+	rep_pay_cal_ovrrd_standard.pr_r2_dir_today AS pr_r2_dir_today,
+	rep_pay_cal_ovrrd_standard.pr_r2_dir_status AS pr_r2_dir_status
+	
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -557,7 +654,10 @@ SELECT
 	rep_pay_cal_standard.appt_paid as appt_paid,
 	rep_pay_cal_standard.state as state,
 	rep_pay_cal_standard.wc as wc,
-	rep_pay_cal_standard.commission_model AS commission_model
+	rep_pay_cal_standard.commission_model AS commission_model,
+	rep_pay_cal_standard.pr_appt_type AS pr_appt_type,
+	rep_pay_cal_standard.pr_appt_today AS pr_appt_today,
+	rep_pay_cal_standard.pr_appt_status AS pr_appt_status
 FROM
     rep_pay_cal_standard
 WHERE
@@ -584,8 +684,8 @@ CREATE VIEW rep_pay_pr_data AS
 		unique_id as unique_id,
 		rep_1 as owe_contractor,
 		rep_1_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r1_d_type as type, --need to calculate
+		pr_r1_d_today as Today, --need to calculate
 		rep_1_draw_amount as Amount,
 		loan_type as finance_type,
 		system_size as sys_size,
@@ -606,7 +706,7 @@ CREATE VIEW rep_pay_pr_data AS
 		NULL as subtotal,
 		NULL as max_per_rep,
 		NULL as total_per_rep,
-    commission_model AS commission_model
+    	commission_model AS commission_model,
 FROM pr_r1_d
 UNION ALL
 	SELECT
@@ -616,8 +716,8 @@ UNION ALL
 		unique_id as unique_id,
 		rep_1 as owe_contractor,
 		rep_1_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r1_f_type as type, --need to calculate
+		pr_r1_f_today as Today, --need to calculate
 		rep_1_balance as Amount,
 		loan_type as finance_type,
 		system_size as sys_size,
@@ -648,8 +748,8 @@ UNION ALL
 		unique_id as unique_id,
 		rep_1 as owe_contractor,
 		rep_1_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r1_b_type as type, --need to calculate
+		pr_r1_b_today as Today, --need to calculate
 		rep_2_rate as Amount,
 		NULL as finance_type, --need to calculate type
 		state as sys_size,
@@ -680,8 +780,8 @@ SELECT
 		unique_id as unique_id,
 		rep_2 as owe_contractor,
 		rep_2_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r2_d_type as type, --need to calculate
+		pr_r2_d_today as Today, --need to calculate
 		rep_2_draw_amount as Amount,
 		loan_type as finance_type,
 		system_size as sys_size,
@@ -712,8 +812,8 @@ UNION ALL
 		unique_id as unique_id,
 		rep_2 as owe_contractor,
 		rep_2_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r2_f_type as type, --need to calculate
+		pr_r2_f_today as Today, --need to calculate
 		rep_2_balance as Amount,
 		loan_type as finance_type,
 		system_size as sys_size,
@@ -744,8 +844,8 @@ UNION ALL
 		unique_id as unique_id,
 		rep_2 as owe_contractor,
 		rep_2_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r2_b_type as type, --need to calculate
+		pr_r2_b_today as Today, --need to calculate
 		rep_2_max_rate as Amount,
 		NULL as finance_type,--need to calculate type
 		state as sys_size,
@@ -776,8 +876,8 @@ UNION ALL
 		unique_id as unique_id,
 		r1_sl_name as owe_contractor,
 		r1_sl_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r1_sl_type as type, --need to calculate
+		pr_r1_sl_today as Today, --need to calculate
 		r1_sl_balance as Amount,
 		NULL as finance_type,--need to calculate type
 		state as sys_size,
@@ -808,8 +908,8 @@ UNION ALL
 		unique_id as unique_id,
 		r2_sl_name as owe_contractor,
 		r2_sl_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r2_sl_type as type, --need to calculate
+		pr_r2_sl_today as Today, --need to calculate
 		r2_sl_balance as Amount,
 		NULL as finance_type,--need to calculate type
 		state as sys_size,
@@ -840,8 +940,8 @@ UNION ALL
 		unique_id as unique_id,
 		r1_dm_name as owe_contractor,
 		r1_dm_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r1_dm_type as type, --need to calculate
+		pr_r1_dm_type as Today, --need to calculate
 		r1_dm_balance as Amount,
 		NULL as finance_type,--need to calculate type
 		state as sys_size,
@@ -872,8 +972,8 @@ UNION ALL
 		unique_id as unique_id,
 		r2_dm_name as owe_contractor,
 		r2_dm_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r2_dm_type as type, --need to calculate
+		pr_r2_dm_type as Today, --need to calculate
 		r2_dm_balance as Amount,
 		NULL as finance_type,--need to calculate type
 		state as sys_size,
@@ -904,8 +1004,8 @@ UNION ALL
 		unique_id as unique_id,
 		r1_dir_name as owe_contractor,
 		r1_dir_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r1_dir_type as type, --need to calculate
+		pr_r1_dir_type as Today, --need to calculate
 		r1_dir_balance as Amount,
 		NULL as finance_type,--need to calculate type
 		state as sys_size,
@@ -936,8 +1036,8 @@ UNION ALL
 		unique_id as unique_id,
 		r2_dir_name as owe_contractor,
 		r2_dir_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_r2_dir_type as type, --need to calculate
+		pr_r2_dir_type as Today, --need to calculate
 		r2_dir_balance as Amount,
 		NULL as finance_type,--need to calculate type
 		state as sys_size,
@@ -968,8 +1068,8 @@ UNION ALL
 		unique_id as unique_id,
 		appt_setter as owe_contractor,
 		appt_set_dba as DBA,
-		NULL as type, --need to calculate
-		NULL as Today, --need to calculate
+		pr_appt_type as type, --need to calculate
+		pr_appt_type as Today, --need to calculate
 		appt_balance as Amount,
 		NULL as finance_type,--need to calculate type
 		NULL as sys_size,
@@ -1031,7 +1131,7 @@ UNION ALL
 		ap_ded_date as status_date,
 		unique_id as unique_id,
 		ap_ded_payee as owe_contractor,
-		ap_ded_dba as DBA,
+		NULL as DBA,
 		NULL as type, --need to calculate
 		NULL as Today, --need to calculate
 		ap_ded_balance as Amount,

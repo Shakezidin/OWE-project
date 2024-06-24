@@ -1110,6 +1110,25 @@ CREATE TABLE ap_pda (
     updated_at timestamp without time zone
 );
 
+CREATE TABLE dealer_owners (
+    id serial NOT NULL,
+    dealer_owner varchar,
+    role varchar,
+    blank varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+)
+
+CREATE TABLE rep_name (
+    id serial NOT NULL,
+    rep_name varchar,
+    status varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+)
+
 /*
 CREATE TABLE AR_Schedule (
     Partner text,
