@@ -166,3 +166,12 @@ func (pApAdvData *ApAdvCfgStruct) GetPayee(uniqueId string) (payee string) {
 	}
 	return payee
 }
+
+func (pApAdvData *ApAdvCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	for _, data := range pApAdvData.ApAdvList {
+		if data.UniqueId == uniqueId {
+			return data.Date
+		}
+	}
+	return date
+}

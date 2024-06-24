@@ -278,7 +278,7 @@ CREATE TABLE payment_schedule (
     rep_draw float,
     rep_draw_max float,
     rep_pay character varying,
-    start_date character varying NOT NULL,
+    start_date character varying,
     end_date character varying,
     commission_model character varying,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -1118,7 +1118,7 @@ CREATE TABLE dealer_owners (
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone
-)
+);
 
 CREATE TABLE rep_name (
     id serial NOT NULL,
@@ -1127,7 +1127,7 @@ CREATE TABLE rep_name (
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone
-)
+);
 
 /*
 CREATE TABLE AR_Schedule (

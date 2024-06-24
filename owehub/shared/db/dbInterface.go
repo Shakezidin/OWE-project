@@ -184,6 +184,8 @@ const (
 	TableName_v_dealer                       string = "v_dealer"
 	TableName_ap_rep                         string = "ap_rep"
 	TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
+	TableName_REP_PAY_APCALC                 string = "rep_pay_cal_standard"
+	TableName_REP_PAY_APCALC_OVRD            string = "rep_pay_cal_ovrrd_standard"
 
 	/* Battery Backup Calculator Tables and Procedures */
 	CreateBatteryBackupCalcProspectInfo string = "create_prospect_info"
