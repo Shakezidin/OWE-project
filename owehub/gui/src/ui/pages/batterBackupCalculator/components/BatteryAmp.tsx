@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useMemo, useState } from 'react';
 import on from '../lib/on_switch.png';
 import off from '../lib/off_switch.png';
 import screw from '../lib/construction.svg';
@@ -8,6 +8,7 @@ import { PiCircle, PiWarningCircleLight } from 'react-icons/pi';
 import { FaPlus } from 'react-icons/fa6';
 import { FaMinus } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from 'react-icons/io';
+import Select from 'react-select';
 import {
   AirConditioner,
   Clock,
@@ -24,12 +25,14 @@ import {
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import ToggleSwitch from '../../../components/Switch';
 import WarningPopup from './WarningPopup';
+import Input from '../../../components/text_input/Input';
+import { ca } from 'date-fns/locale';
 const appliance = [
   {
     name: 'Air Conditioner',
     quantity: 1,
     icon: (color: string) => <AirConditioner color={color} />,
-    isOn: true,
+    isOn: false,
   },
   {
     name: 'Washing Machine',
@@ -42,7 +45,7 @@ const appliance = [
     name: 'Electric Oven',
     quantity: 1,
     icon: (color: string) => <ElectricOven color={color} />,
-    isOn: true,
+    isOn: false,
   },
 
   {
@@ -56,13 +59,13 @@ const appliance = [
     name: 'Well Pump',
     quantity: 1,
     icon: (color: string) => <WellPump color={color} />,
-    isOn: true,
+    isOn: false,
   },
   {
     name: 'Dishwasher',
     quantity: 1,
     icon: (color: string) => <Dishwasher color={color} />,
-    isOn: true,
+    isOn: false,
   },
   {
     name: 'Pool Pump',
@@ -74,20 +77,37 @@ const appliance = [
     name: 'EV Charger',
     quantity: 1,
     icon: (color: string) => <EvCharger color={color} />,
-    isOn: true,
+    isOn: false,
   },
 ];
-const BatteryAmp = ({
-  battery,
-  setStep,
-}: {
-  battery: {
-    quantity: number;
-    amp: string;
-    note: string;
-  }[];
-  setStep: React.Dispatch<SetStateAction<number>>;
-}) => {
+const months = [
+  { label: 'January', value: 'January' },
+  { label: 'February', value: 'February' },
+  { label: 'March', value: 'March' },
+  { label: 'April', value: 'April' },
+  { label: 'May', value: 'May' },
+  { label: 'June', value: 'June' },
+  { label: 'July', value: 'July' },
+  { label: 'August', value: 'August' },
+  { label: 'September', value: 'September' },
+  { label: 'October', value: 'October' },
+  { label: 'November', value: 'November' },
+  { label: 'December', value: 'December' },
+];
+
+const BatteryAmp = () => {
+  const [battery] = useState<{ quantity: number; amp: string; note: string }[]>(
+    [
+      { quantity: 1, amp: '15AMP', note: '' },
+      { quantity: 1, amp: '15AMP', note: '' },
+      { quantity: 1, amp: '15AMP', note: '' },
+    ]
+  );
+  const [requiredBattery, setRequiredBattery] = useState(2);
+  const [selectedMonth, setSelectedMonth] = useState({
+    label: 'June',
+    value: 'June',
+  });
   const arrayGen = () => {
     const arr = [];
     for (let index = 0; index < battery.length; index++) {
@@ -103,16 +123,33 @@ const BatteryAmp = ({
     }
     return arr;
   };
-  const [appliances, setAppliances] = useState(appliance);
+
+  const [appliances, setAppliances] = useState([...appliance]);
   const [batteryPower, setBatteryPower] = useState(arrayGen());
   const [mainOn, setMainOn] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [avgConsumption, setAvgConsumption] = useState('');
+  const [caluclatedBackup, setCaluclatedBackup] = useState(0);
+  const [mainDisabled, setMainDisabled] = useState(true);
 
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
     batteries[index].isOn = !batteries[index].isOn;
     setBatteryPower([...batteries]);
   };
+
+  const required = useMemo(() => {
+    let count = 0;
+    appliances.forEach((battery) => {
+      if (battery.isOn) {
+        count += battery.quantity;
+      }
+    });
+    if (count > requiredBattery) {
+      setRequiredBattery(count);
+    }
+    return count;
+  }, [appliances]);
 
   const handleQuantity = (index: number, type: 'dec' | 'inc') => {
     const appliance = [...appliances];
@@ -125,21 +162,35 @@ const BatteryAmp = ({
     setAppliances([...appliance]);
   };
 
+  const calculator = () => {
+    const consumption = (parseFloat(avgConsumption) / 24) * 6 * 0.6;
+    setCaluclatedBackup(consumption);
+  };
+
   useEffect(() => {
-    if (batteryPower.some((item) => item.amp === '70+ AMP')) {
+    if (
+      batteryPower.some((item) => item.amp === '70+ AMP') ||
+      requiredBattery < required
+    ) {
       setMainOn(false);
     }
-  }, [batteryPower]);
+    if (requiredBattery >= required) {
+      setMainOn(true);
+    }
+  }, [batteryPower, required, requiredBattery]);
   return (
     <div
-      className="scrollbar batter-amp-container  px4 relative"
+      className="scrollbar   relative"
       style={{ backgroundColor: '#F2F2F2' }}
     >
-      <div>
-        <div className="py3  flex " style={{ minHeight: '100vh', gap: 64 }}>
+      <div className="batter-amp-container ">
+        <div
+          className="py3 items-start batter-amp-wrapper justify-center flex "
+          style={{ minHeight: '100vh',  }}
+        >
           <div
-            className="bg-white p3 flex-grow-1 relative"
-            style={{ maxWidth: 600, borderRadius: 20 }}
+            className="bg-white panel-container p3 flex-grow-1 relative"
+            style={{ borderRadius: 20 }}
           >
             <div className="absolute screw-top">
               <img src={screw} alt="" />
@@ -156,7 +207,7 @@ const BatteryAmp = ({
             <div className="absolute screw-bottom-left">
               <img src={screw} alt="" />
             </div>
-            <div className="battery-amp-wrapper">
+            <div className="battery-amp-wrapper mx-auto">
               <div className="bg-navy-dark mx-auto">
                 <div className="home-battery relative flex items-center mx-auto">
                   <div className="battery flex items-center flex-grow-1">
@@ -245,7 +296,10 @@ const BatteryAmp = ({
                       <span>Full Home Backup</span>
                     </div>
                   </div>
-                  <div className="batter-amp-switch flex items-center justify-center">
+                  <div
+                    onClick={() => !mainDisabled && setMainOn((prev) => !prev)}
+                    className="batter-amp-switch pointer flex items-center justify-center"
+                  >
                     <img src={mainOn ? on : off} alt="" className="pointer" />
                   </div>
                 </div>
@@ -265,10 +319,10 @@ const BatteryAmp = ({
                 )}
               </div>
 
-              <div className="mt4 flex flex-wrap items-center justify-between">
-                {batteryPower.map((item, index) => {
+              <div className="mt4 grid-amp-container">
+                {batteryPower.map((item, index: number) => {
                   return (
-                    <div className="flex mb3" style={{ width: '50%' }}>
+                    <div className="flex mb3" >
                       <div
                         className={`flex-149 flex items-center relative ${(index + 1) % 2 === 0 ? 'ml-auto' : 'translate-28'}`}
                       >
@@ -393,11 +447,116 @@ const BatteryAmp = ({
                 })}
               </div>
             </div>
+
+            <div className="battery-power-calculator-wrapper">
+              <div className="flex calc-stats justify-between items-start">
+                <div>
+                  <div className="flex  items-start">
+                    <div className="mr2 mt1">
+                      <Clock />
+                    </div>
+                    <div className="">
+                      <h4 className="stats-heading" style={{ fontWeight: 600 }}>
+                        {caluclatedBackup
+                          ? caluclatedBackup.toFixed(2)
+                          : caluclatedBackup || '00'}{' '}
+                        Hrs
+                      </h4>
+                    </div>
+                  </div>
+                  <p
+                    className="mt-0"
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 500,
+                      color: '#7C7C7C',
+                    }}
+                  >
+                    Expected hours of backup
+                  </p>
+                </div>
+                <button className="stats-btn">See details</button>
+              </div>
+              <div className="mt4 ">
+                <div className="flex calc-input-container mb3 items-end">
+                  <div className="calc-input-wrapper">
+                    <Input
+                      type="text"
+                      name=""
+                      label="Input average daily consumption"
+                      placeholder={'00'}
+                      value={avgConsumption}
+                      onChange={(e) => {
+                        e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+                        setAvgConsumption(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="calc-select-wrapper">
+                    <label htmlFor="" className="inputLabel">
+                      Select hottest month
+                    </label>
+                    <Select
+                      options={months}
+                      value={selectedMonth}
+                      onChange={(e) => e && setSelectedMonth(e)}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          height: 45,
+                          width: '100%',
+                          fontSize: 14,
+                          fontWeight: 500,
+                          color: '#7C7C7C',
+                          border: '1px solid #EBEBEB',
+                          background: 'transparent',
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          color: '#202020',
+                        }),
+                        indicatorSeparator: (base) => ({
+                          ...base,
+                          width: 0,
+                        }),
+                        dropdownIndicator: (base) => ({
+                          ...base,
+                          color: '#D9D9D9',
+                        }),
+                        menuList: (base) => ({
+                          ...base,
+                          '&::-webkit-scrollbar': {
+                            scrollbarWidth: 'thin',
+                            display: 'block',
+                            scrollbarColor: 'rgb(173, 173, 173) #fff',
+                            width: 8,
+                          },
+                          '&::-webkit-scrollbar-thumb': {
+                            background: 'rgb(173, 173, 173)',
+                            borderRadius: '30px',
+                          },
+                        }),
+                      }}
+                    />
+                  </div>
+                </div>
+                <button
+                  className={`calc-btn  pointer  text-white ${avgConsumption ? 'calc-bg-navy' : 'calc-disabled-btn'}`}
+                  style={{ maxWidth: '100%', color: '#fff' }}
+                  onClick={calculator}
+                >
+                  Calculate
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="flex-grow-1">
+          <div className="flex-grow-1" style={{ width: '100%',flexShrink:0 }}>
             <div className="bg-white flex justify-between battery-watt-wrapper">
               <div>
-                <h3 className="battery-watt-heading"> 4 Batteries</h3>
+                <h3 className="battery-watt-heading">
+                  {' '}
+                  {requiredBattery} Batteries
+                </h3>
                 <p
                   className="mt2"
                   style={{ color: '#7C7C7C', fontSize: 12, fontWeight: 500 }}
@@ -407,14 +566,20 @@ const BatteryAmp = ({
               </div>
               <div className="flex counter-btn-wrapper items-center">
                 <div
-                  onClick={() => setIsOpen(true)}
-                  className="watt-counter-btn justify-center flex items-center"
+                  role="button"
+                  onClick={() => {
+                    required && requiredBattery <= required
+                      ? setIsOpen(true)
+                      : setRequiredBattery((prev) => (prev ? prev - 1 : prev));
+                  }}
+                  className="watt-counter-btn pointer justify-center flex items-center"
                 >
                   <FaMinus color="#fff" size={24} />
                 </div>
                 <div
-                  onClick={() => setIsOpen(true)}
-                  className="watt-counter-btn justify-center flex items-center"
+                  role="button"
+                  onClick={() => setRequiredBattery((prev) => prev + 1)}
+                  className="watt-counter-btn   pointer justify-center flex items-center"
                 >
                   <FaPlus color="#fff" size={24} />
                 </div>
@@ -502,19 +667,25 @@ const BatteryAmp = ({
                           gap: 12,
                         }}
                       >
-                        <FaMinus
-                          className="pointer"
+                        <span
                           onClick={() => app.isOn && handleQuantity(ind, 'dec')}
-                          color={app.isOn ? '#000000' : 'rgba(0,0,0,0.3)'}
-                          size={14}
-                        />
+                          className="quantity-toggler-btn pointer"
+                        >
+                          <FaMinus
+                            color={app.isOn ? '#000000' : 'rgba(0,0,0,0.3)'}
+                            size={10}
+                          />
+                        </span>
                         <span>{app.quantity}</span>
-                        <FaPlus
-                          className="pointer"
+                        <span
                           onClick={() => app.isOn && handleQuantity(ind, 'inc')}
-                          color={app.isOn ? '#000000' : 'rgba(0,0,0,0.3)'}
-                          size={14}
-                        />
+                          className="quantity-toggler-btn pointer"
+                        >
+                          <FaPlus
+                            color={app.isOn ? '#000000' : 'rgba(0,0,0,0.3)'}
+                            size={10}
+                          />
+                        </span>
                       </div>
                       <div
                         className="applicane-switch-container flex justify-center"
@@ -534,86 +705,36 @@ const BatteryAmp = ({
                 })}
               </div>
             </div>
-          </div>
-        </div>
+            <div className="mt4">
+              <button
+                className="calc-btn text-white pointer calc-green-btn"
+                style={{ maxWidth: '100%' }}
+              >
+                Submit
+              </button>
+              {/* <button
+                  onClick={() => null}
+                  className="calc-btn flex items-center justify-center calc-grey-btn pointer"
+                >
+                  <IoIosArrowRoundBack size={24} className="mr1 " />
 
-        <div className="my4">
-          <div className="flex px3">
-            <div className="col-4 px3">
-              <div className="flex items-start">
-                <div className="mr2 mt1">
-                  <Clock />
-                </div>
-                <div className="">
-                  <h4 className="stats-heading" style={{ fontWeight: 600 }}>
-                    12 Hrs
-                  </h4>
-                  <p
-                    className="mt-0"
-                    style={{ fontSize: 16, fontWeight: 500, color: '#7C7C7C' }}
-                  >
-                    Expected hours of backup
-                  </p>
-                  <button className="stats-btn">See details</button>
-                </div>
-              </div>
-            </div>
-            <div className="col-4 px3">
-              <div className="flex items-start">
-                <div className="mr2 mt1">
-                  <ThunderBolt />
-                </div>
-                <div className="">
-                  <h4 className="stats-heading" style={{ fontWeight: 600 }}>
-                    365 Watt
-                  </h4>
-                  <p
-                    className="mt-0"
-                    style={{ fontSize: 16, fontWeight: 500, color: '#7C7C7C' }}
-                  >
-                    Expected hours of backup
-                  </p>
-                  <button className="stats-btn">See details</button>
-                </div>
-              </div>
-            </div>
-            <div className="col-4 px3">
-              <div className="flex items-start">
-                <div className="mr2 mt1">
-                  <Timer />
-                </div>
-                <div className="">
-                  <h4 className="stats-heading" style={{ fontWeight: 600 }}>
-                    6 Hrs
-                  </h4>
-                  <p
-                    className="mt-0"
-                    style={{ fontSize: 16, fontWeight: 500, color: '#7C7C7C' }}
-                  >
-                    Total average daily consumption
-                  </p>
-                  <button className="stats-btn">See details</button>
-                </div>
-              </div>
+                  <span>Go Back</span>
+                </button> */}
             </div>
           </div>
         </div>
       </div>
-      <div className="flex fixed-btn-wrapper justify-center calc-btn-wrapper items-center">
-        <button
-          onClick={() => setStep(0)}
-          className="calc-btn flex items-center justify-center calc-grey-btn pointer"
-        >
-          <IoIosArrowRoundBack size={24} className="mr1 " />
 
-          <span>Go Back</span>
-        </button>
-
-        <button className="calc-btn text-white pointer calc-green-btn">
-          Submit
-        </button>
-      </div>
-      {isOpen && <WarningPopup isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && (
+        <WarningPopup
+          setMainOn={setMainOn}
+          isOpen={isOpen}
+          required={required}
+          setRequiredBattery={setRequiredBattery}
+          setMainDisabled={setMainDisabled}
+          setIsOpen={setIsOpen}
+        />
+      )}
     </div>
   );
 };

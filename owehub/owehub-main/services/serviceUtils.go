@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"math/rand"
 	"net/http"
@@ -105,4 +106,15 @@ func FormAndSendHttpResp(httpResp http.ResponseWriter, message string, httpStatu
 		httpResp.WriteHeader(httpStatusCode)
 		httpResp.Write([]byte(jsonResp))
 	}
+}
+
+func BytesToStringArray(raw []byte) []string {
+	str := string(raw)
+	str = strings.Trim(str, "{}\"") // Remove curly braces
+	log.FuncDebugTrace(0, "Before: %+v, After: %+v", string(raw), str)
+	strArray := strings.Split(str, ",") // Split by comma
+	for i := range strArray {
+		strArray[i] = strings.TrimSpace(strArray[i]) // Trim spaces
+	}
+	return strArray
 }

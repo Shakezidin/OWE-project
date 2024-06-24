@@ -11,6 +11,9 @@ create database owe_db;
 \i '/docker-entrypoint-initdb.d/DB_Create_AR_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_RepPay_Schema.sql';
 
+/* Battery Backup Calcuator Schema */
+\i '/docker-entrypoint-initdb.d/DB_Create_Battery_BackupCalc_Schema.sql'
+
 /* Add a default Admin User to Login tables */
 /* Default Admin Password is 1234 for Development purpose */
 -- Insert default role 'Admin' into user_roles table
@@ -194,4 +197,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealerArchive.sql';
 
-
+/* Battery Backup Calcuator Schema */
+\i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspect.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspectLoad.sql';

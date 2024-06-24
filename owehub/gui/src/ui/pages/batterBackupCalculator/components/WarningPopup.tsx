@@ -3,14 +3,25 @@ import { WarningIcon } from '../icons';
 interface IPopPupProps {
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<SetStateAction<boolean>>;
+  setMainOn: React.Dispatch<SetStateAction<boolean>>;
+  setRequiredBattery:React.Dispatch<SetStateAction<number>>;
+  setMainDisabled: React.Dispatch<SetStateAction<boolean>>;
+  required:number
 }
-const WarningPopup = ({ isOpen, setIsOpen }: IPopPupProps) => {
+const WarningPopup = ({
+  isOpen,
+  setIsOpen,
+  setMainOn,
+  setMainDisabled,
+  setRequiredBattery,
+  required
+}: IPopPupProps) => {
   const handleClose = () => {
     setIsOpen?.((prev) => !prev);
   };
   return (
     <div className="transparent-model scrollbar">
-      <div className=" modal py3 px4 ">
+      <div className="scrollbar modal py3 px4 ">
         <div className="mx-auto flex justify-center">
           <WarningIcon />
         </div>
@@ -32,19 +43,31 @@ const WarningPopup = ({ isOpen, setIsOpen }: IPopPupProps) => {
         </div>
         <div className="mt4">
           <button
-            onClick={handleClose}
+            onClick={() => {
+              setMainOn(false);
+              setMainDisabled(true);
+              setRequiredBattery(prev=>prev?prev-1:prev);
+              handleClose();
+            }}
             className="calc-grey-btn warning-popup-btn pointer"
           >
             I would like to switch to a partial home back-up.
           </button>
           <button
-            onClick={handleClose}
+            onClick={() => {
+              setMainDisabled(false);
+              handleClose();
+              setRequiredBattery(required)
+            }}
             className="calc-green-btn pointer warning-popup-btn"
           >
             I would like to remain with the recommended configuration.
           </button>
           <button
-            onClick={handleClose}
+            onClick={() => {
+              setMainDisabled(false);
+              handleClose();
+            }}
             className="outline-btn warning-popup-btn pointer"
           >
             I would like to reduce the total number of batteries.

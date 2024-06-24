@@ -1223,6 +1223,36 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+
+	/************ Battery Backup Calculator API *******************/
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/set_prospect_info",
+		apiHandler.HandleSetProspectInfo,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_prospect_info",
+		apiHandler.HandleGetProspectInfo,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/set_prospect_load",
+		apiHandler.HandleSetProspectLoad,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_prospect_load",
+		apiHandler.HandleGetProspectLoad,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************
