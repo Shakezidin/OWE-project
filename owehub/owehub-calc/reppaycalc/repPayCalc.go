@@ -399,6 +399,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["ap_adv_dba"] = adpAdvDba
 	outData["ap_ded_paid_amnt"] = apDedPaidAmnt
 	outData["ap_ded_balance"] = apDedBalance
+	outData["pr_appt_type"] = CalculatePrApptType(dealer)
 
 	mapToJson(outData, uniqueID, "outData")
 	return outData, err
