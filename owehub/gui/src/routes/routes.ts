@@ -55,4 +55,5 @@ export const ROUTES = {
   DB_MANAGER_WEB_HOOKS: '/dbManager/webhooks',
   BATTERY_BACK_UP:"/battery-backup-calulator",
   BATTERY_UI_GENRATOR:"/battery-ui-generator",
+   SR_IMAGE_UPLOAD:"/sr-image-upload"
 };

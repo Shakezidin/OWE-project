@@ -68,6 +68,8 @@ import AdderData from './ui/pages/configure/adderData/AdderData';
 import ApRep from './ui/pages/configure/apRep/ApRep';
 import BatteryBackup from "./ui/pages/batterBackupCalculator"
 import BatteryAmp from './ui/pages/batterBackupCalculator/components/BatteryAmp';
+import SrImageUpload from './ui/pages/SrImageUpload/SrImageUpload';
+
 
 function App() {
   const dispatch = useAppDispatch();
@@ -265,6 +267,7 @@ function App() {
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp/>}/>
+        <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload/>}/>
       </Routes>
     </BrowserRouter>
   );
