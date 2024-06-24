@@ -32,9 +32,9 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'Software Engineer', 'SE');
 */
 \copy user_details (name,user_code,mobile_number,email_id,password,password_change_required,reporting_manager,dealer_owner,role_id,user_status,user_designation,description,region,street_address,state,city,zipcode,country,tables_permissions,created_at,updated_at) FROM '/docker-entrypoint-initdb.d/user_details.csv' DELIMITER ',' CSV;
-INSERT INTO partners (partner_name,description) VALUES ('PartnerABC','Example Partner Description');
-INSERT INTO tier (tier_name) VALUES ('TierName123');
-INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,10,'Example Loan Type Description');
+-- INSERT INTO partners (partner_name,description) VALUES ('PartnerABC','Example Partner Description');
+-- INSERT INTO tier (tier_name) VALUES ('TierName123');
+-- INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,10,'Example Loan Type Description');
 
 /******************************************************************************************/
 
@@ -51,24 +51,39 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
 \copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
 \copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
-\copy commission_rates(partner_id, installer_id, state_id, sale_type_id, sale_price, rep_type, is_archived, rl, rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/commission_rates.csv' DELIMITER ',' CSV;
+\copy commission_rates(partner_id, installer_id,sale_type_id, state_id, rl, rate, rep_type, sale_price, start_date, end_date) FROM '/docker-entrypoint-initdb.d/commission_rates.csv' DELIMITER ',' CSV;
 \copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 \copy loan_type (product_code,description,active,adder) FROM '/docker-entrypoint-initdb.d/loan_type.csv' DELIMITER ',' CSV;
-\copy v_dealer (dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
+\copy v_dealer (id,dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
 \copy dealer_override(sub_dealer,dealer_id,pay_rate,start_date,end_date,state) FROM '/docker-entrypoint-initdb.d/dealer_override.csv' DELIMITER ',' CSV;
-\copy dealer_tier(dealer_id,tier_id,start_date,end_date) FROM '/docker-entrypoint-initdb.d/dealer_tier.csv' DELIMITER ',' CSV;
-\copy loan_fee(dealer_id,installer,state_id,loan_type,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/loan_fee.csv' DELIMITER ',' CSV;
-\copy tier_loan_fee(dealer_tier,installer_id,state_id,loan_type,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/tier_loan_fee.csv' DELIMITER ',' CSV;
+\copy dealer_tier(dealer_id,tier_id,start_date,end_date) FROM '/docker-entrypoint-initdb.d/dealer_tier1.csv' DELIMITER ',' CSV;
+\copy loan_fee(dealer_id,installer,loan_type,state_id,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/loan_fee1.csv' DELIMITER ',' CSV;
+\copy tier_loan_fee(dealer_tier,installer_id,loan_type,state_id,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/tier_loan_fee1.csv' DELIMITER ',' CSV;
 \copy adjustments(unique_id,customer,partner,installer,state,sys_size,bl,epc,date,amount,notes) FROM '/docker-entrypoint-initdb.d/adjustments.csv' DELIMITER ',' CSV;
 \copy ar(unique_id,date,amount) FROM '/docker-entrypoint-initdb.d/ar.csv' DELIMITER ',' CSV;
 \copy ar_schedule(partner,installer,sale_type_id,state_id,red_line,calc_date,permit_pay,permit_max,install_pay,pto_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/ar_schedule.csv' DELIMITER ',' CSV;
 \copy install_cost(cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/install_cost.csv' DELIMITER ',' CSV;
 \copy reconcile(unique_id,start_date,amount,notes) FROM '/docker-entrypoint-initdb.d/reconcile.csv' DELIMITER ',' CSV;
-\copy adder_data(unique_id,date,type_ad_mktg,gc,exact_amount,type1,per_kw_amt,rep_percent,description,notes,sys_size,adder_cal) FROM '/docker-entrypoint-initdb.d/adder_data.csv' DELIMITER '^' CSV;
-\copy referral_data(unique_id,new_customer,referrer_serial,referrer_name,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/referral_data.csv' DELIMITER '^' CSV;
-\copy rebate_data(unique_id,customer_verf,type_rd_mktg,item,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/rebate_data.csv' DELIMITER '^' CSV;
+\copy adder_data(unique_id,date,gc,exact_amount,per_kw_amt,rep_percent) FROM '/docker-entrypoint-initdb.d/adder_data.csv' DELIMITER ',' CSV;
+\copy referral_data(unique_id,new_customer,referrer_serial,referrer_name,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/referral_data.csv' DELIMITER ',' CSV;
+\copy rebate_data(unique_id,rep_doll_divby_per,amount,type,date) FROM '/docker-entrypoint-initdb.d/rebate_data.csv' DELIMITER ',' CSV;
 \copy dealer_credit(unique_id,date,exact_amount,per_kw_amount,approved_by,notes,total_amount,sys_size) FROM '/docker-entrypoint-initdb.d/dealer_credit.csv' DELIMITER '^' CSV;
-
+\copy ap_rep(unique_id,rep,type,amount) FROM '/docker-entrypoint-initdb.d/ap_rep.csv' DELIMITER ',' CSV;
+\copy payment_schedule(dealer_id,partner_id,installer_id,sale_type_id,state_id,rl,draw,draw_max,rep_draw,rep_draw_max,rep_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/pay_schedule.csv' DELIMITER ',' CSV;
+\copy ap_dealer(unique_id,dealer_id,dba,type,date,amount,method,transaction,notes) FROM '/docker-entrypoint-initdb.d/ap_dealer.csv' DELIMITER '^' CSV;
+\copy dealer_repayment_bonus(unique_id,home_owner,sys_size,contract_$$,shaky_hand,repayment_bonus,remaining_repayment_bonus) FROM '/docker-entrypoint-initdb.d/dealer_repayment_bonus.csv' DELIMITER ',' CSV;
+\copy auto_adder(rep_percentage,unique_id) FROM '/docker-entrypoint-initdb.d/auto_adder.csv' DELIMITER ',' CSV;
+\copy dba(preferred_name,dba) FROM '/docker-entrypoint-initdb.d/dba.csv' DELIMITER ',' CSV;
+\copy loan_fee_adder(unique_id,per_kw_amount,rep_doll_divby_per,type,contract_dol_dol,date) FROM '/docker-entrypoint-initdb.d/loan_fee_adder.csv' DELIMITER ',' CSV;
+\copy rate_adjustments(pay_scale,position,adjustment,min_rate,max_rate) FROM '/docker-entrypoint-initdb.d/rate_adjustments.csv' DELIMITER ',' CSV;
+\copy rep_credit(unique_id,per_rep_amt,exact_amt) FROM '/docker-entrypoint-initdb.d/rep_credit.csv' DELIMITER ',' CSV;
+\copy rep_incent(name,month,doll_div_kw) FROM '/docker-entrypoint-initdb.d/rep_incent.csv' DELIMITER '^' CSV;
+\copy rep_pay_settings(name,state_id,pay_scale,position,b_e,start_date,end_Date) FROM '/docker-entrypoint-initdb.d/rep_pay_settings.csv' DELIMITER ',' CSV;
+\copy adder_credit(pay_scale,type,max_rate,min_rate) FROM '/docker-entrypoint-initdb.d/adder_credit.csv' DELIMITER ',' CSV;
+\copy ap_oth(unique_id,payee,amount,date) FROM '/docker-entrypoint-initdb.d/ap_oth.csv' DELIMITER ',' CSV;
+\copy ap_pda(unique_id,payee,amount_ovrd,date) FROM '/docker-entrypoint-initdb.d/ap_pda.csv' DELIMITER ',' CSV;
+\copy ap_ded(unique_id,payee,amount,date) FROM '/docker-entrypoint-initdb.d/ap_ded.csv' DELIMITER ',' CSV;
+\copy ap_adv(unique_id,payee,amount_ovrd,date) FROM '/docker-entrypoint-initdb.d/ap_adv.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 

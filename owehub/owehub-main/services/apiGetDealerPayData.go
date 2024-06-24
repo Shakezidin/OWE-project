@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 	"time"
 
 	"encoding/json"
@@ -27,13 +28,17 @@ import (
 
 func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.GetDealerPay
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		// filter string
-		// RecordCount     int64
+		err             error
+		dataReq         models.GetDealerPay
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
+		queryWithFiler  string
+		filter2         string
+		aurguments      string
 	)
 
 	log.EnterFn(0, "GetARDataFromView")
@@ -73,8 +78,8 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	dateFormat := "2006-01-02"
 	if dataReq.UseCutoff == "YES" {
-		dateFormat := "2006-01-02"
 		parsedDate, err := time.Parse(dateFormat, dataReq.PayRollEndDate)
 		if err != nil {
 			fmt.Println("Error parsing date:", err)
@@ -85,20 +90,30 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 		dataReq.PayRollEndDate = adjustedDate.Format(dateFormat)
 	}
+
+	tableName := db.TableName_DLR_PAY_APCALC
 	if dataReq.DealerName == "ALL" {
-		query = `SELECT * FROM dlr_pay_pr_data dlrpay WHERE dlrpay.Dealer NOT in('HOUSE') AND dlrpay.Status_Date >= $1 AND dlrpay.Status_Date <= $2 ORDER BY $3 ASC`
-		whereEleList = append(whereEleList, dataReq.PayRollStartDate)
-		whereEleList = append(whereEleList, dataReq.PayRollEndDate)
-		whereEleList = append(whereEleList, dataReq.SortBy)
+		query = `SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, 
+			loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, 
+			contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer NOT IN ('HOUSE')`
+		aurguments = " AND commission_model = $1 ORDER BY $2"
+		filter = PrepareDealerPayFilters(tableName, dataReq, false)
+		whereEleList = append(whereEleList, dataReq.CommissionModel, dataReq.SortBy)
 	} else {
-		query = `SELECT * FROM dlr_pay_pr_data dlrpay WHERE dlrpay.Dealer = $1 AND dlrpay.Status_Date >= $2 AND dlrpay.Status_Date <= $3 ORDER BY $4 ASC`
-		whereEleList = append(whereEleList, dataReq.DealerName)
-		whereEleList = append(whereEleList, dataReq.PayRollStartDate)
-		whereEleList = append(whereEleList, dataReq.PayRollEndDate)
-		whereEleList = append(whereEleList, dataReq.SortBy)
+		query = `SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, 
+			loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, 
+			contract_date, commission_model FROM dlr_pay_pr_data dlrpay`
+		aurguments = " WHERE dlrpay.dealer = $1 AND commission_model = $2 ORDER BY $3"
+		filter = PrepareDealerPayFilters(tableName, dataReq, false)
+		whereEleList = append(whereEleList, dataReq.DealerName, dataReq.CommissionModel, dataReq.SortBy)
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+	if filter != "" {
+		queryWithFiler = query + aurguments + filter
+	}
+	log.FuncErrorTrace(0, queryWithFiler)
+	// Append sorting and pagination filters
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer pay data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get dealer pay data from DB", http.StatusBadRequest, nil)
@@ -109,189 +124,187 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	for _, item := range data {
 		// UniqueId
-		UniqueId, ok := item["Unique_ID"].(string)
-		if !ok || UniqueId == "" {
+		UniqueId, uniqueIdok := item["unique_id"].(string)
+		if !uniqueIdok || UniqueId == "" {
 			log.FuncErrorTrace(0, "Failed to get unique id for Record ID %v. Item: %+v\n", UniqueId, item)
 			UniqueId = ""
 		}
 
-		HomeOwner, ok := item["Home_Owne"].(string)
-		if !ok {
+		HomeOwner, homeOwnerok := item["home_owner"].(string)
+		if !homeOwnerok {
 			log.FuncErrorTrace(0, "Failed to get home owner for Record ID %v. Item: %+v\n", UniqueId, item)
-			continue
+			// continue
 		}
 
 		// CurrentStatus
-		CurrentStatus, ok := item["Current_Status"].(string)
-		if !ok || CurrentStatus == "" {
+		CurrentStatus, currentStatusok := item["current_status"].(string)
+		if !currentStatusok || CurrentStatus == "" {
 			log.FuncErrorTrace(0, "Failed to get current status for Record ID %v. Item: %+v\n", UniqueId, item)
 			CurrentStatus = ""
 		}
 
 		// StatusDate
-		StatusDate, ok := item["Status_Date"].(time.Time)
-		if !ok {
+		StatusDate, statusDateok := item["status_date"].(time.Time)
+		if !statusDateok {
 			log.FuncErrorTrace(0, "Failed to get status date for Record ID %v. Item: %+v\n", UniqueId, item)
 			StatusDate = time.Time{}
 		}
 
 		// Dealer
-		Dealer, ok := item["Dealer"].(string)
-		if !ok || Dealer == "" {
+		Dealer, dealerok := item["dealer"].(string)
+		if !dealerok || Dealer == "" {
 			log.FuncErrorTrace(0, "Failed to get Dealer for Record ID %v. Item: %+v\n", UniqueId, item)
 			Dealer = ""
 		}
 
 		// DBA
-		DBA, ok := item["DBA"].(string)
-		if !ok || DBA == "" {
+		DBA, dbaok := item["dealer_dba"].(string)
+		if !dbaok || DBA == "" {
 			log.FuncErrorTrace(0, "Failed to get dba for Record ID %v. Item: %+v\n", UniqueId, item)
 			DBA = ""
 		}
 
 		// PaymentType
-		PaymentType, ok := item["Payment_Type"].(string)
-		if !ok || PaymentType == "" {
+		PaymentType, paymentTypeok := item["type"].(string)
+		if !paymentTypeok || PaymentType == "" {
 			log.FuncErrorTrace(0, "Failed to get payment type for Record ID %v. Item: %+v\n", UniqueId, item)
 			PaymentType = ""
 		}
 
+		// Today
+		Today, todayok := item["today"].(time.Time)
+		if !todayok {
+			log.FuncErrorTrace(0, "Failed to get today for Record ID %v. Item: %+v\n", UniqueId, item)
+			Today = time.Time{}
+		}
 		// FinanceType
-		FinanceType, ok := item["Finace_Type"].(string)
-		if !ok || FinanceType == "" {
+		FinanceType, FinanceTypeok := item["finace_type"].(string)
+		if !FinanceTypeok || FinanceType == "" {
 			log.FuncErrorTrace(0, "Failed to get finance type for Record ID %v. Item: %+v\n", UniqueId, item)
 			FinanceType = ""
 		}
 
-		// Today
-		Today, ok := item["Today"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get today for Record ID %v. Item: %+v\n", UniqueId, item)
-			Today = time.Time{}
-		}
-
 		// Amount
-		Amount, ok := item["Amount"].(float64)
-		if !ok {
+		Amount, Amountok := item["amount"].(float64)
+		if !Amountok {
 			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", UniqueId, item)
 			Amount = 0
 		}
 
 		// PermitMax
-		SysSize, ok := item["Sys_Size"].(float64)
-		if !ok {
+		SysSize, sysSizeok := item["sys_size"].(float64)
+		if !sysSizeok {
 			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", UniqueId, item)
 			SysSize = 0.0
 		}
 
-		// ContractValue
-		ContractValue, ok := item["Contract_Value"].(float64)
+		// Rl
+		Rl, ok := item["rl"].(float64)
 		if !ok {
+			Rl = 0.0 // or another default value if appropriate
+		}
+
+		// ContractValue
+		ContractValue, contractValueok := item["contract_$$"].(float64)
+		if !contractValueok {
 			log.FuncErrorTrace(0, "Failed to get contract value for Record ID %v. Item: %+v\n", UniqueId, item)
 			ContractValue = 0
 		}
 
 		// LoanFee
-		LoanFee, ok := item["Loan_Fee"].(float64)
-		if !ok {
+		LoanFee, loanFeeok := item["loan_fee"].(float64)
+		if !loanFeeok {
 			log.FuncErrorTrace(0, "Failed to get loan fee for Record ID %v. Item: %+v\n", UniqueId, item)
 			LoanFee = 0
 		}
 
-		// OtherAdders
-		OtherAdders, ok := item["Other_Adders"].(float64)
-		if !ok || OtherAdders == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get other adders for Record ID %v. Item: %+v\n", UniqueId, item)
-			OtherAdders = 0.0
-		}
-
 		// Epc
-		Epc, ok := item["EPC"].(float64)
-		if !ok {
+		Epc, epcok := item["epc"].(float64)
+		if !epcok {
 			log.FuncErrorTrace(0, "Failed to get epc for Record ID %v. Item: %+v\n", UniqueId, item)
 			Epc = 0.0
 		}
 
 		// NetEpc
-		NetEpc, ok := item["Net_EPC"].(float64)
-		if !ok || NetEpc == 0.0 {
+		NetEpc, netEpcok := item["net_epc"].(float64)
+		if !netEpcok || NetEpc == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get net epc for Record ID %v. Item: %+v\n", UniqueId, item)
 			NetEpc = 0.0
 		}
 
-		// Rl
-		Rl, ok := item["RL"].(float64)
-		if !ok || Rl == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get Rl for Record ID %v. Item: %+v\n", UniqueId, item)
-			Rl = 0.0
+		// OtherAdders
+		OtherAdders, otherAdderok := item["other_adders"].(float64)
+		if !otherAdderok || OtherAdders == 0.0 {
+			log.FuncErrorTrace(0, "Failed to get other adders for Record ID %v. Item: %+v\n", UniqueId, item)
+			OtherAdders = 0.0
 		}
 
 		// Credit
-		Credit, ok := item["Credit"].(float64)
-		if !ok || Credit == 0.0 {
+		Credit, creditok := item["credit"].(float64)
+		if !creditok || Credit == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get Credit for Record ID %v. Item: %+v\n", UniqueId, item)
 			Credit = 0.0
 		}
 
 		// Rep1
-		Rep1, ok := item["Rep1"].(string)
-		if !ok || Rep1 == "" {
+		Rep1, rep1ok := item["rep_1"].(string)
+		if !rep1ok || Rep1 == "" {
 			log.FuncErrorTrace(0, "Failed to get rep1 for Record ID %v. Item: %+v\n", UniqueId, item)
 			Rep1 = ""
 		}
 
 		// Rep2
-		Rep2, ok := item["Rep2"].(string)
-		if !ok || Rep2 == "" {
+		Rep2, rep2ok := item["rep_2"].(string)
+		if !rep2ok || Rep2 == "" {
 			log.FuncErrorTrace(0, "Failed to get rep2 for Record ID %v. Item: %+v\n", UniqueId, item)
 			Rep2 = ""
 		}
 
 		// repPay
-		repPay, ok := item["Rep_Pay"].(float64)
-		if !ok || repPay == 0.0 {
+		repPay, repPayok := item["rep_pay"].(float64)
+		if !repPayok || repPay == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get rep pay for Record ID %v. Item: %+v\n", UniqueId, item)
-			Rl = 0.0
+			repPay = 0.0
 		}
 
 		// NetRev
-		NetRev, ok := item["Net_Rev"].(float64)
-		if !ok || NetRev == 0.0 {
+		NetRev, netRevOk := item["net_rev"].(float64)
+		if !netRevOk || NetRev == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get NetRev for Record ID %v. Item: %+v\n", UniqueId, item)
 			NetRev = 0.0
 		}
 
 		// DrawAmt
-		DrawAmt, ok := item["Draw_Amt"].(float64)
-		if !ok || DrawAmt == 0.0 {
+		DrawAmt, drawAmtok := item["draw_amt"].(float64)
+		if !drawAmtok || DrawAmt == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get draw amount for Record ID %v. Item: %+v\n", UniqueId, item)
 			DrawAmt = 0.0
 		}
 
 		// AmtPaid
-		AmtPaid, ok := item["Amt_Paid"].(float64)
-		if !ok || AmtPaid == 0.0 {
+		AmtPaid, amtPaidok := item["amt_paid"].(float64)
+		if !amtPaidok || AmtPaid == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get amount paid for Record ID %v. Item: %+v\n", UniqueId, item)
 			AmtPaid = 0.0
 		}
 
 		// Balance
-		Balance, ok := item["Balance"].(float64)
-		if !ok || Balance == 0.0 {
+		Balance, balanceok := item["balance"].(float64)
+		if !balanceok || Balance == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get Balance for Record ID %v. Item: %+v\n", UniqueId, item)
 			Balance = 0.0
 		}
 
 		// State
-		State, ok := item["ST"].(string)
-		if !ok || State == "" {
+		State, stateok := item["st"].(string)
+		if !stateok || State == "" {
 			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", UniqueId, item)
 			State = ""
 		}
 
 		// ContractDate
-		ContractDate, ok := item["Contract_Date"].(time.Time)
-		if !ok {
+		ContractDate, contractDateok := item["contract_date"].(time.Time)
+		if !contractDateok {
 			log.FuncErrorTrace(0, "Failed to get ContractDate for Record ID %v. Item: %+v\n", UniqueId, item)
 			ContractDate = time.Time{}
 		}
@@ -331,7 +344,41 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		}
 		dealerpayDataList.DealerPayList = append(dealerpayDataList.DealerPayList, dealerpayData)
 	}
+
+	filter2 = PrepareDealerPayFilters(tableName, dataReq, true)
+	if filter2 != "" {
+		queryForAlldata = query + filter2
+	}
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer credit data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of ar data List fetched : %v list %+v", len(dealerpayDataList.DealerPayList), dealerpayDataList)
-	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, dealerpayDataList)
+	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, dealerpayDataList, RecordCount)
+}
+
+func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, forDataCount bool) (filters string) {
+	log.EnterFn(0, "PrepareDealerCreditFilters")
+	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+
+	if forDataCount {
+		filtersBuilder.WriteString(" GROUP BY unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
+	}
+
+	filters = filtersBuilder.String()
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	return filters
 }

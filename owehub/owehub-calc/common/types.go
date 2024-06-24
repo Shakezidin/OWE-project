@@ -14,7 +14,7 @@ type Project_Status string
 const (
 	PTO     Project_Status = "PTO"
 	Install Project_Status = "Install"
-	Cancel  Project_Status = "Cancel"
+	Cancel  Project_Status = "CANCEL"
 	Shaky   Project_Status = "Shaky"
 	Permits Project_Status = "Permits"
 	NTP     Project_Status = "NTP"

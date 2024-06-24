@@ -129,8 +129,8 @@ CREATE TABLE commission_rates (
     is_archived BOOLEAN DEFAULT FALSE,
     rl double precision,
     rate double precision,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    start_date date NOT NULL,
+    end_date date,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -234,7 +234,7 @@ CREATE TABLE dealer_tier (
     id serial NOT NULL,
     dealer_id INT,
     tier_id INT,
-    start_date date NOT NULL,
+    start_date date,
     end_date date,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
@@ -482,7 +482,7 @@ CREATE TABLE referral_bonus (
 
 CREATE TABLE auto_adder (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     date date,
     type text,
     gc text,
@@ -526,8 +526,9 @@ CREATE TABLE loan_fee_adder (
     r2_pay_scale float,
     rep_2_def_resp text,
     r2_addr_resp text,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    date date,
+    -- start_date character varying NOT NULL,
+    -- end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -544,7 +545,8 @@ CREATE TABLE rebate_data (
     customer_verf text,
     type_rd_mktg text,
     item text,
-    amount text,
+    amount float,
+    date date,
     rep_doll_divby_per float,
     notes text,
     type text,
@@ -580,7 +582,7 @@ CREATE TABLE referral_data (
     new_customer text,
     referrer_serial text,
     referrer_name text,
-    amount text,
+    amount Float,
     rep_doll_divby_per float,
     notes text,
     type text,
@@ -608,6 +610,28 @@ CREATE TABLE referral_data (
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
+);
+
+CREATE TABLE dealer_repayment_bonus (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id INT,
+    partner INT,
+    installer INT,
+    loan_type INT,
+    home_owner varchar,
+    sys_size float,
+    contract_$$ float,
+    shaky_hand BOOLEAN,
+    repayment_bonus float,
+    remaining_repayment_bonus float,
+    FOREIGN KEY (loan_type) REFERENCES loan_type(id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    FOREIGN KEY (partner) REFERENCES partners(partner_id),
+    FOREIGN KEY (installer) REFERENCES partners(partner_id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
 );
 
 CREATE TABLE dealer_credit (
@@ -639,6 +663,7 @@ CREATE TABLE noncomm_dlrpay (
     dba text,
     date DATE NOT NULL,
     is_archived BOOLEAN DEFAULT FALSE,
+    commission_model text,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id)
@@ -653,6 +678,7 @@ CREATE TABLE dlr_oth(
     balance float,
     paid_amount float,
     is_archived BOOLEAN DEFAULT FALSE,
+    commission_model text,
     date DATE NOT NULL,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -661,10 +687,10 @@ CREATE TABLE dlr_oth(
 
 CREATE TABLE rep_pay_settings (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    -- unique_id varchar NOT NULL,
     name character varying,
     state_id INT,
-    pay_scale text,
+    pay_scale INT,
     position text,
     b_e text,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -678,7 +704,7 @@ CREATE TABLE rep_pay_settings (
 
 CREATE TABLE rate_adjustments(
     id serial NOT NULL,
-    unique_id varchar NOT NULL,
+    -- unique_id varchar NOT NULL,
     pay_scale text,
     position text,
     adjustment text,
@@ -758,7 +784,7 @@ CREATE TABLE adder_responsibility (
 
 CREATE TABLE adder_credit (
     id serial NOT NULL,
-    unique_id varchar NOT NULL,
+    unique_id varchar,
     pay_scale text,
     type text,
     min_rate float,
@@ -919,7 +945,7 @@ CREATE TABLE adder_data_cfg_schema (
 
 CREATE TABLE ap_rep (
     id serial NOT NULL,
-	unique_id varchar NOT NULL UNIQUE,
+	unique_id varchar NOT NULL,
     rep varchar,
     dba varchar,
     type varchar,
@@ -954,7 +980,118 @@ create TABLE ap_dealer (
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     PRIMARY KEY(id)
-)
+);
+
+CREATE TABLE dba (
+    id serial NOT NULL,
+    preferred_name varchar,
+    dba varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE rep_credit (
+    id serial NOT NULL,
+    unique_id varchar,
+    per_rep_amt float,
+    exact_amt float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE rep_incent (
+    id serial NOT NULL,
+    name varchar,
+    doll_div_kw float,
+    month varchar,
+    comment varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ap_oth (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    payee varchar,
+    amount float,
+    date date,
+    short_code varchar,
+    description varchar,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ap_ded (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    payee varchar,
+    amount float,
+    date date,
+    short_code varchar,
+    description varchar,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ap_adv (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    customer varchar,
+    rcmd_amount float,
+    payee varchar,
+    amount_ovrd float,
+    approved_bt varchar,
+    date date,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    amount float,
+    status varchar,
+    dba varchar,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ap_pda (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    customer varchar,
+    rcmd_amount float,
+    payee varchar,
+    amount_ovrd float,
+    approved_bt varchar,
+    date date,
+    description varchar,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    amount float,
+    status varchar,
+    dba varchar,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
 
 /*
 CREATE TABLE AR_Schedule (

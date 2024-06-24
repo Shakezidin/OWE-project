@@ -9,12 +9,19 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"OWEApp/shared/models"
-	"strconv"
+	"time"
 )
 
+type GetRebateDataTemp struct {
+	UniqueId        string    `json:"unique_id"`
+	Amount          float64   `json:"amount"`
+	RepDollDivbyPer float64   `json:"rep_doll_divby_per"`
+	Date            time.Time `json:"end_date"`
+	Types           string
+}
+
 type RebateCfgStruct struct {
-	RebateList models.GetRebateDataList
+	RebateList []GetRebateDataTemp
 }
 
 var (
@@ -31,14 +38,8 @@ func (RebateCfg *RebateCfgStruct) LoadRebateCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadAdderDataCfg", err) }()
 
 	query = `
-      SELECT rd.id as record_id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type,
-      ud1.name as rep_1_name, ud2.name as rep_2_name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share,
-      rd.r1_pay_scale, rd.rep_1_def_resp, rd.r1_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd."r1_rebate_credit_$", rd.r1_rebate_credit_perc,
-      rd."r2_rebate_credit_$", rd.r2_rebate_credit_perc,  rd.start_date, rd.end_date
-      FROM rebate_data rd
-      JOIN states st ON st.state_id = rd.state_id
-      JOIN user_details ud1 ON ud1.user_id = rd.rep_1
-      JOIN user_details ud2 ON ud2.user_id = rd.rep_2`
+      SELECT unique_id, rep_doll_divby_per, amount, type, date
+      FROM rebate_data`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -46,224 +47,46 @@ func (RebateCfg *RebateCfgStruct) LoadRebateCfg() (err error) {
 		return
 	}
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
-			continue
-		}
-		// unique_id
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
 			Unique_id = ""
 		}
 
-		// customer_verf
-		Customer_verf, ok := item["customer_verf"].(string)
-		if !ok || Customer_verf == "" {
-			log.FuncErrorTrace(0, "Failed to get customer verf for Record ID %v. Item: %+v\n", RecordId, item)
-			Customer_verf = ""
+		Types, ok := item["type"].(string)
+		if !ok || Types == "" {
+			// log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			Types = ""
 		}
-
-		// type_rd_mktg
-		Type_rd_mktg, ok := item["type_rd_mktg"].(string)
-		if !ok || Type_rd_mktg == "" {
-			log.FuncErrorTrace(0, "Failed to get Type_rd_mktg for Record ID %v. Item: %+v\n", RecordId, item)
-			Type_rd_mktg = ""
-		}
-
-		// item
-		Item, ok := item["item"].(string)
-		if !ok || Item == "" {
-			log.FuncErrorTrace(0, "Failed to get item for Record ID %v. Item: %+v\n", RecordId, item)
-			Item = ""
-		}
-
 		// amount
-		Amount, ok := item["amount"].(string)
-		if !ok || Amount == "" {
-			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Amount = ""
+		Amount, ok := item["amount"].(float64)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
+			Amount = 0
 		}
 
-		// rep_doll_divby_per
 		Rep_doll_divby_per, ok := item["rep_doll_divby_per"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep_doll_divby_per for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get rep_doll_divby_per for Record ID %v. Item: %+v\n", RecordId, item)
 			Rep_doll_divby_per = 0.0
 		}
 
-		// notes
-		Notes, ok := item["notes"].(string)
-		if !ok || Notes == "" {
-			log.FuncErrorTrace(0, "Failed to get notes value for Record ID %v. Item: %+v\n", RecordId, item)
-			Notes = ""
-		}
-
-		// type
-		Type, ok := item["type"].(string)
-		if !ok || Type == "" {
-			log.FuncErrorTrace(0, "Failed to get notes_not_rep_visible for Record ID %v. Item: %+v\n", RecordId, item)
-			Type = ""
-		}
-
-		// rep_1_name
-		Rep_1_name, ok := item["rep_1_name"].(string)
-		if !ok || Rep_1_name == "" {
-			log.FuncErrorTrace(0, "Failed to get rep_1_name for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep_1_name = ""
-		}
-
-		// rep_2_name
-		Rep_2_name, ok := item["rep_2_name"].(string)
-		if !ok || Rep_2_name == "" {
-			log.FuncErrorTrace(0, "Failed to get rep_2_name for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep_2_name = ""
-		}
-
-		// sys_size
-		Sys_size, ok := item["sys_size"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
-			Sys_size = 0.0
-		}
-
-		// rep_count
-		Rep_count, ok := item["rep_count"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep count for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep_count = 0.0
-		}
-
-		// name
-		StateName, ok := item["name"].(string)
-		if !ok || StateName == "" {
-			log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
-			StateName = ""
-		}
-
-		// per_rep_addr_share
-		Per_rep_addr_share, ok := item["per_rep_addr_share"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get per_rep_addr_share for Record ID %v. Item: %+v\n", RecordId, item)
-			Per_rep_addr_share = 0.0
-		}
-
-		// per_rep_ovrd_share
-		Per_rep_ovrd_share, ok := item["per_rep_ovrd_share"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get per_rep_ovrd_share for Record ID %v. Item: %+v\n", RecordId, item)
-			Per_rep_ovrd_share = 0.0
-		}
-
-		// r1_pay_scale
-		R1_pay_scale, ok := item["r1_pay_scale"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_pay_scale = 0.0
-		}
-
-		// rep_1_def_resp
-		Rep_1_def_resp, ok := item["rep_1_def_resp"].(string)
-		if !ok || Rep_1_def_resp == "" {
-			log.FuncErrorTrace(0, "Failed to get rep_1_def_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep_1_def_resp = ""
-		}
-
-		// r1_addr_resp
-		R1_addr_resp, ok := item["r1_addr_resp"].(string)
-		if !ok || R1_addr_resp == "" {
-			log.FuncErrorTrace(0, "Failed to get r1_addr_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_addr_resp = ""
-		}
-
-		// r2_pay_scale
-		R2_pay_scale, ok := item["r2_pay_scale"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r2_pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_pay_scale = 0.0
-		}
-
-		// per_rep_def_ovrd
-		Per_rep_def_ovrd, ok := item["per_rep_def_ovrd"].(string)
-		if !ok || Per_rep_def_ovrd == "" {
-			log.FuncErrorTrace(0, "Failed to get per_rep_def_ovrd for Record ID %v. Item: %+v\n", RecordId, item)
-			Per_rep_def_ovrd = ""
-		}
-
-		// r1_rebate_credit_$
-		R1_rebate_credit, ok := item["r1_rebate_credit_$"].(string)
-		if !ok || R1_rebate_credit == "" {
-			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_$ for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_rebate_credit = ""
-		}
-
-		// r1_rebate_credit_perc
-		R1_rebate_credit_perc, ok := item["r1_rebate_credit_perc"].(string)
-		if !ok || R1_rebate_credit_perc == "" {
-			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_rebate_credit_perc = ""
-		}
-
-		// project_base_cost
-		R2_rebate_credit, ok := item["r2_rebate_credit_$"].(string)
-		if !ok || R2_rebate_credit == "" {
-			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_rebate_credit = ""
-		}
-
-		// crt_addr
-		R2_rebate_credit_perc, ok := item["r2_rebate_credit_perc"].(string)
-		if !ok || R2_rebate_credit_perc == "" {
-			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_rebate_credit_perc = ""
-		}
-
-		// start_date
-		Start_date, ok := item["start_date"].(string)
-		if !ok || Start_date == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			Start_date = ""
-		}
-
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+		Date, ok := item["date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = time.Time{}
 		}
 
-		RebateData := models.GetRebateData{
-			RecordId:           RecordId,
-			UniqueId:           Unique_id,
-			CustomerVerf:       Customer_verf,
-			TypeRdMktg:         Type_rd_mktg,
-			Item:               Item,
-			Amount:             Amount,
-			RepDollDivbyPer:    Rep_doll_divby_per,
-			Notes:              Notes,
-			Type:               Type,
-			Rep_1_Name:         Rep_1_name,
-			Rep_2_Name:         Rep_2_name,
-			SysSize:            Sys_size,
-			RepCount:           Rep_count,
-			State:              StateName,
-			PerRepAddrShare:    Per_rep_addr_share,
-			PerRepOvrdShare:    Per_rep_ovrd_share,
-			R1PayScale:         R1_pay_scale,
-			Rep1DefResp:        Rep_1_def_resp,
-			R1AddrResp:         R1_addr_resp,
-			R2PayScale:         R2_pay_scale,
-			PerRepDefOvrd:      Per_rep_def_ovrd,
-			R1RebateCredit:     R1_rebate_credit,
-			R1RebateCreditPerc: R1_rebate_credit_perc,
-			R2RebateCredit:     R2_rebate_credit,
-			R2RebateCreditPerc: R2_rebate_credit_perc,
-			StartDate:          Start_date,
-			EndDate:            EndDate,
+		RebateData := GetRebateDataTemp{
+			UniqueId:        Unique_id,
+			Amount:          Amount,
+			RepDollDivbyPer: Rep_doll_divby_per,
+			Date:            Date,
+			Types:           Types,
 		}
 
-		RebateCfg.RebateList.RebateDataList = append(RebateCfg.RebateList.RebateDataList, RebateData)
+		RebateCfg.RebateList = append(RebateCfg.RebateList, RebateData)
 	}
 	return err
 }
@@ -271,30 +94,154 @@ func (RebateCfg *RebateCfgStruct) LoadRebateCfg() (err error) {
 /******************************************************************************
 * FUNCTION:        CalculateRebate
 * DESCRIPTION:     calculates the ap rep value based on the unique Id
-* RETURNS:         credit
+* RETURNS:         rebate float64
 *****************************************************************************/
-
 func (RebateCfg *RebateCfgStruct) CalculateRebate(dealer string, uniqueId string) (rebate float64) {
 
-	log.EnterFn(0, "LoadRebateCfg")
-	defer func() { log.ExitFn(0, "LoadRebateCfg", nil) }()
+	log.EnterFn(0, "CalculateRebate")
+	defer func() { log.ExitFn(0, "CalculateRebate", nil) }()
 
 	if len(dealer) > 0 {
-		for _, data := range RebateCfg.RebateList.RebateDataList {
+		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				var addramount float64
-				amnt, _ := strconv.Atoi(data.Amount)
-
-				if amnt > 0 { //need to change amoun of type string to float64
-					if len(data.Type) >= 9 && data.Type[:9] == "Relation" {
-						addramount = 0
+				if data.Amount > 0 { //need to change amoun of type string to float64
+					if len(data.Types) >= 9 && data.Types[:9] == "Retention" {
+						rebate += 0
 					} else {
-						addramount = float64(amnt)
+						rebate += data.Amount
 					}
 				}
-				rebate += addramount
 			}
 		}
 	}
 	return rebate
+}
+func (RebateCfg *RebateCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount float64) {
+	log.EnterFn(0, "CalculateRepCount 3")
+	defer func() { log.ExitFn(0, "CalculateRepCount", nil) }()
+	if len(rep1) > 0 && len(rep2) > 0 {
+		return 2
+	}
+	return 1
+}
+
+func (RebateCfg *RebateCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (PerRepOvrdShare float64) {
+	log.EnterFn(0, "CalculatePerRepOvrdShare")
+	defer func() { log.ExitFn(0, "CalculatePerRepOvrdShare", nil) }()
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				if (data.RepDollDivbyPer / 100) <= 1 {
+					return (data.Amount * (data.RepDollDivbyPer / 100)) / repCount
+				} else if (data.RepDollDivbyPer / 100) > 1 {
+					return (data.RepDollDivbyPer / 100) / repCount
+				} else {
+					return 0.0
+				}
+			}
+		}
+	}
+	return PerRepOvrdShare
+}
+
+func (RebateCfg *RebateCfgStruct) CalculatePerRepDefOvrd(uniqueId string) (PerRepOvrdDed float64) {
+	log.EnterFn(0, "CalculatePerRepDefOvrd")
+	defer func() { log.ExitFn(0, "CalculatePerRepDefOvrd", nil) }()
+
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				if len(data.Types) >= 9 && data.Types[:9] == "Retention" {
+					return 0
+				} else if data.Types == "Promo" {
+					return 0
+				} else {
+					return 0
+				}
+			}
+		}
+	}
+	return PerRepOvrdDed
+}
+
+func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repCount float64) (perRepAddrShare float64) {
+	log.EnterFn(0, "CalculatePerRepAddrShare")
+	defer func() { log.ExitFn(0, "CalculatePerRepAddrShare", nil) }()
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				if data.Amount > 0 {
+					log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
+					return data.Amount / repCount
+				} else {
+					log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
+					return perRepAddrShare
+				}
+			}
+		}
+	}
+	return perRepAddrShare
+}
+
+func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time, r1r2check bool) (R1AddrResp float64) {
+	log.EnterFn(0, "CalculateR1AddrResp")
+	defer func() { log.ExitFn(0, "CalculateR1AddrResp", nil) }()
+	var repCount float64
+
+	rep := rep1
+	if !r1r2check {
+		rep = rep2
+	}
+
+	if len(rep) > 0 {
+		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
+	}
+
+	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
+
+	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
+	log.FuncErrorTrace(0, "PerRepDefOvrd+++++++=====================%v count- > %v", PerRepDefOvrd)
+
+	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount)
+	log.FuncErrorTrace(0, "PerRepAddrShare+++++++=====================%v count -> %v", PerRepAddrShare)
+
+	R1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, date)
+	log.FuncErrorTrace(0, "R1PayScale+++++++=====================%v count -> %v rep -> %v", R1PayScale, rep)
+	R1RebateCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
+	log.FuncErrorTrace(0, ",R1RebateCreditPercentage+++++++++++++++++++%v", R1RebateCreditPercentage)
+	R1RebateCreditDol := R1RebateCreditPercentage / repCount
+	if PerRepOverSHare > 0 {
+		return PerRepOverSHare
+	} else if PerRepDefOvrd > 0 {
+		return PerRepDefOvrd
+	} else if len(rep) > 0 {
+		if (PerRepAddrShare * R1RebateCreditPercentage) < R1RebateCreditDol {
+			PerRepAddrShare -= PerRepAddrShare * R1RebateCreditPercentage
+		} else {
+			return PerRepAddrShare - R1RebateCreditDol
+		}
+
+	} else {
+		return R1AddrResp
+	}
+	return R1AddrResp
+}
+
+func (RebateCfg *RebateCfgStruct) CalculateRRebate(rep1, rep2, state, uniqueId string, r1r2check bool) (R1Rebate float64) {
+	log.EnterFn(0, "CalculateR1Rebate")
+	defer func() { log.ExitFn(0, "CalculateR1Rebate", nil) }()
+
+	rep := rep1
+	if !r1r2check {
+		rep = rep2
+	}
+
+	if len(rep) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				R1Rebate += RebateCfg.CalculateR1AddrResp(data.UniqueId, rep1, rep2, state, data.Types, data.Date, r1r2check)
+			}
+		}
+	}
+	return R1Rebate
 }

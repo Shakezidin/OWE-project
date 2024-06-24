@@ -10,7 +10,6 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"fmt"
 	"strings"
 	"time"
 )
@@ -41,9 +40,10 @@ type SaleDataStruct struct {
 	PtoDate                time.Time
 	ProjectStatus          string
 	SystemType             string
-	StartDate              time.Time // added by zidhin
-	EndDate                time.Time //field added by zidhin
-	ChargeDlr              string    // field added by zidhiin
+	ContractDate           time.Time //field added by zidhin
+	Setter                 string    //field added by zidhin
+	RepPay                 string    //field added by zidhin
+	Type                   string    //field added by zidhin
 }
 
 type SaleDataList struct {
@@ -62,14 +62,31 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 
 	log.EnterFn(0, "LoadSaleData")
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
+	log.EnterFn(0, "LoadSaleData")
+	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
-	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
-	if uniqueID != "" {
 
-		//query += " WHERE unique_id='" + uniqueID + "'"
-		query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
-
+	uidList := []string{"OUR22410"}
+	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
+	for i, uid := range uidList {
+		query += "'" + strings.ToUpper(uid) + "'"
+		if len(uidList) == 1 {
+			break
+		} else if i < len(uidList)-2 {
+			query += ","
+		} else {
+			query += "," + "'" + strings.ToUpper(uidList[i+1]) + "'"
+			break
+		}
 	}
+
+	query += ");"
+	// if uniqueID != "" {
+
+	// 	//query += " WHERE unique_id='" + uniqueID + "'"
+	// query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
+
+	// }
 	/*
 		if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
 			query += "WHERE unique_id IN ("
@@ -83,10 +100,12 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 		}
 	*/
 
+	log.FuncInfoTrace(0, "RQUERY ============ %+v", query)
+
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
-		log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
-		err = fmt.Errorf("Failed to fetch Sale Data from DB")
+		// log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
+		// err = fmt.Errorf("Failed to fetch Sale Data from DB")
 		return err
 	}
 	log.FuncInfoTrace(0, "Reterived raw data frm DB Count: %+v", len(dataList))
@@ -99,7 +118,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 		if uniqueId, ok := data["unique_id"]; (ok) && (uniqueId != nil) {
 			saleData.UniqueId = uniqueId.(string)
 		} else {
-			log.ConfWarnTrace(0, "No UniqueId for found in Sale Data")
+			// log.ConfWarnTrace(0, "No UniqueId for found in Sale Data")
 			continue
 		}
 
@@ -206,32 +225,46 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 		if WC1, ok := data["wc_1"]; ok && WC1 != nil {
 			saleData.WC1 = WC1.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in WC1 for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in WC1 for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if pvInstallCompletedDate, ok := data["pv_install_completed_date"]; ok && pvInstallCompletedDate != nil {
 			saleData.PvInstallCompletedDate = pvInstallCompletedDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in pvInstallCompletedDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in pvInstallCompletedDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if permitSubmittedDate, ok := data["permit_submitted_date"]; ok && permitSubmittedDate != nil {
 			saleData.PermitSubmittedDate = permitSubmittedDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in permitSubmittedDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in permitSubmittedDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if cancelledDate, ok := data["cancelled_date"]; ok && cancelledDate != nil {
 			saleData.CancelledDate = cancelledDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in cancelledDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in cancelledDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if ptoDate, ok := data["pto_date"]; ok && ptoDate != nil {
 			saleData.PtoDate = ptoDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in ptoDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in ptoDate for Unique Id: %v", saleData.UniqueId)
 		}
+
+		if contractDate, ok := data["contract_date"]; ok && contractDate != nil {
+			saleData.ContractDate = contractDate.(time.Time)
+		} else {
+			// log.FuncWarnTrace(0, "Empty value received in CONTRACTDATE for Unique Id: %v", saleData.ContractDate)
+		}
+
+		if Setter, ok := data["setter"]; ok && Setter != nil {
+			saleData.Setter = Setter.(string)
+		} else {
+			// log.FuncWarnTrace(0, "Empty value received in setter for Unique Id: %v", saleData.Setter)
+		}
+
+		_, _, saleData.RepPay, _ = PayScheduleCfg.CalculateRepDrawPerc(saleData.UniqueId, saleData.Dealer, saleData.Partner, saleData.Installer, saleData.Type, saleData.State, saleData.ContractDate)
 
 		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)
 		saleDataList.SaleDataList = append(saleDataList.SaleDataList, saleData)
@@ -240,12 +273,9 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 }
 
 func determineSystemType(sysSize float64, state string) string {
-	var (
-		err error
-	)
 
 	log.EnterFn(0, "determineSystemType")
-	defer func() { log.ExitFn(0, "determineSystemType", err) }()
+	defer func() { log.ExitFn(0, "determineSystemType", nil) }()
 
 	if sysSize < 3 {
 		if state == "CA" {
@@ -258,4 +288,24 @@ func determineSystemType(sysSize float64, state string) string {
 		}
 	}
 	return "N//A"
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateLoanFee
+* DESCRIPTION:     calculates the "loan_fee" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, dealer, installer, state, loanType string, contractdoldol float64, contractDate time.Time) float64 {
+	log.EnterFn(0, "CalculateLoanFee")
+	defer func() { log.ExitFn(0, "CalculateLoanFee", nil) }()
+	var loanfee float64
+	for _, data := range psaleDataList.SaleDataList {
+		if data.UniqueId == uniqueId {
+			log.FuncErrorTrace(0, "data.Dealer : %v, data.installer: %v, data.state: %v, data.LoanType: %v, data.ContractDate: %v", data.Dealer, data.Installer, data.State, data.LoanType, data.ContractDate)
+			dlrCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, loanType, contractDate)
+			return (contractdoldol * dlrCost) / 100
+		}
+	}
+
+	return loanfee
 }

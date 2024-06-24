@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -79,7 +80,7 @@ func CalculateProjectStatusDate(uniqueID, ptoDate, installDate, cancelDate, perm
  * RETURNS:         Reps count
  *****************************************************************************/
 func CalculateRepCount(primarySalesRep, secondarySalesRep string) int {
-	log.EnterFn(0, "CalculateRepCount")
+	log.EnterFn(0, "CalculateRepCount 1")
 	defer func() { log.ExitFn(0, "CalculateRepCount", "") }()
 
 	repCount := 0
@@ -171,6 +172,26 @@ func CalculateContractAmount(netEPC float64, contractTotal float64, systemSize f
 		return netEPC * 1000 * systemSize
 	}
 	/* Return 0 if netEPC is empty or if contract_total is not available and netEPC cannot be parsed*/
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateContractAmount
+ * DESCRIPTION:     Calculate Contract Ammount
+ * RETURNS:         contact amount
+ *****************************************************************************/
+func CalculateARContractAmount(epc float64, contractTotal float64, systemSize float64) float64 {
+
+	log.EnterFn(0, "CalculateARContractAmount")
+	defer func() { log.ExitFn(0, "CalculateARContractAmount", nil) }()
+
+	if epc > 0.0 {
+		if contractTotal > 0 {
+			return contractTotal
+		} else {
+			return epc * 1000 * systemSize
+		}
+		/* Return 0 if netEPC is empty or if contract_total is not available and netEPC cannot be parsed*/
+	}
 	return 0
 }
 
@@ -200,6 +221,33 @@ func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, syste
 }
 
 /******************************************************************************
+ * FUNCTION:        CalculateAREPCCalc
+ * DESCRIPTION:    calculates the EPC based on the provided data
+ * RETURNS:         contact amount
+ *****************************************************************************/
+func CalculateAREPCCalc(contractCalc float64, contractDate time.Time, epc float64, systemSize float64, wc1Filterdate time.Time) float64 {
+
+	log.EnterFn(0, "CalculateAREPCCalc")
+	defer func() { log.ExitFn(0, "CalculateAREPCCalc", nil) }()
+
+	if contractCalc > 0.0 {
+		if excelDateFromTime(contractDate) < 44287 {
+			return epc
+		} else {
+			return contractCalc / 1000 / systemSize
+		}
+	}
+	return 0
+}
+
+func excelDateFromTime(t time.Time) int {
+	const excelEpoch = "1899-12-30"
+	excelEpochDate, _ := time.Parse("2006-01-02", excelEpoch)
+	duration := t.Sub(excelEpochDate)
+	return int(duration.Hours() / 24)
+}
+
+/******************************************************************************
  * FUNCTION:        CalculateInstallPay
  * DESCRIPTION:     calculates the "installPay" value based on the provided data
  * RETURNS:         installPay
@@ -210,12 +258,14 @@ func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 f
 	defer func() { log.ExitFn(0, "CalculateInstallPay", nil) }()
 
 	installPay = 0
-	if status == string(Cancel) || status == string(Shaky) {
+
+	if strings.EqualFold(status, string(Cancel)) || strings.EqualFold(status, string(Shaky)) {
 		return installPay
 	}
 	if grossRev > 0 {
 		if installPayM2 > 0 {
-			installPay = Round(netRev*(installPayM2)-permitPay, 2)
+			installPay = netRev*(installPayM2/100) - permitPay
+			// installPay = Round(netRev*(installPayM2)-permitPay, 2)
 		}
 	}
 	return installPay

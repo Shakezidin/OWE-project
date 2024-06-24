@@ -6,7 +6,9 @@
 
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type GetDealerData struct {
 	RecordId  int64     `json:"record_id"`

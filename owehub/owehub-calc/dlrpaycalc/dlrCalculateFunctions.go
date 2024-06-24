@@ -24,7 +24,7 @@ func calculateAdderTotal(dealer string, adder, autoAdder, rebate, referral float
 	defer func() { log.ExitFn(0, "CalculateAdderTotal", nil) }()
 
 	if len(dealer) > 0 {
-		totalSum += adder + autoAdder + rebate + rebate
+		totalSum += adder + autoAdder + rebate + referral
 	}
 	return totalSum
 }
@@ -48,12 +48,13 @@ func calculateEpcCalc(epcCalc, contract, adderLF, sysSize float64) float64 {
 * DESCRIPTION:     calculates the "adder_pw" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculateAdderPerKW(dealer string, adderLF, sysSize float64) float64 {
+func calculateAdderPerKW(dealer string, adderLF, sysSize float64) (adderPerKW float64) {
+
+	adderPerKW = 0
 	if len(dealer) > 0 {
-		adderPerKW := adderLF / sysSize
-		return adderPerKW
+		adderPerKW = adderLF / sysSize
 	}
-	return 0
+	return adderPerKW
 }
 
 /******************************************************************************
@@ -61,9 +62,16 @@ func calculateAdderPerKW(dealer string, adderLF, sysSize float64) float64 {
 * DESCRIPTION:     calculates the "pay_rate_sub_total" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculatePayRateSubTotal(dealer string, payRateSemi, adderPer float64) float64 {
-	if len(dealer) > 0 {
-		return (payRateSemi - adderPer)
+func calculatePayRateSubTotal(dealer, commission_models string, payRateSemi, adderPer, contractdoldol, adderLF float64) float64 {
+	if commission_models == "standard" {
+		if len(dealer) > 0 {
+			return (payRateSemi - adderPer)
+		}
+		return 0
+	} else {
+		if len(dealer) > 0 {
+			return (contractdoldol - payRateSemi - adderLF)
+		}
 	}
 	return 0
 }
@@ -73,10 +81,29 @@ func calculatePayRateSubTotal(dealer string, payRateSemi, adderPer float64) floa
 * DESCRIPTION:     calculates the "comm_total" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculateCommTotal(dealer string, payRate, sysSize, dealerPaymentBonus float64) float64 {
-	if len(dealer) > 0 {
-		commTotal := (payRate * sysSize) + dealerPaymentBonus
-		return math.Round(commTotal*100) / 100
+func calculateCommTotal(dealer, commission_models, rep_1, source string, payRateSubTotal, sysSize, dealerPaymentBonus, contractTotal, baseCost, adderLF float64) float64 {
+	if commission_models == "standard" {
+		if len(dealer) > 0 {
+			commTotal := (payRateSubTotal * sysSize) + dealerPaymentBonus
+			return math.Round(commTotal*100) / 100
+		}
+		return 0
+	} else {
+		if len(dealer) > 0 && dealer == "Onyx D2D" && (rep_1 == "Ramon Roybal" || rep_1 == "Joshua Freitas") {
+			commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.25
+			return math.Round(commTotal*100) / 100
+		} else if rep_1 == "Theo Rosenberg" {
+			if source == "P&S" {
+				commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.4
+				return math.Round(commTotal*100) / 100
+			} else {
+				commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.15
+				return math.Round(commTotal*100) / 100
+			}
+		} else {
+			commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.8
+			return math.Round(commTotal*100) / 100
+		}
 	}
 	return 0
 }
@@ -139,7 +166,6 @@ func calculateR1Balance(dealerStrings string, statusCheckValues, r1CommPaidValue
 * RETURNS:         gross revenue
 *****************************************************************************/
 func CalculateR1DrawAmt(statusCheck float64, DlrDrawMax float64, DlrDrawPerc float64) (result float64) {
-
 	if statusCheck > 0 {
 		maxDraw := statusCheck * DlrDrawPerc
 		if DlrDrawMax < maxDraw {
@@ -224,25 +250,26 @@ func CalculateStatus(uniqueId string, hand bool, pto, instSys, cancel, ntp, perm
 func CalculateStatusDate(uniqueID string, hand bool, pto time.Time, instSys time.Time, cancel time.Time, ntp time.Time, permSub time.Time, wc time.Time) time.Time {
 	var statusDate time.Time
 
-	switch {
-	case !pto.IsZero():
-		statusDate = pto
-	case !instSys.IsZero():
-		statusDate = instSys
-	case !cancel.IsZero():
-		statusDate = cancel
-	case hand == true:
-		statusDate = time.Time{}
-	case !ntp.IsZero():
-		statusDate = ntp
-	case !permSub.IsZero():
-		statusDate = permSub
-	case !wc.IsZero():
-		statusDate = wc
-	default:
-		statusDate = time.Time{}
+	if len(uniqueID) > 0 {
+		switch {
+		case !pto.IsZero():
+			statusDate = pto
+		case !instSys.IsZero():
+			statusDate = instSys
+		case !cancel.IsZero():
+			statusDate = cancel
+		case hand == true:
+			statusDate = time.Time{}
+		case !ntp.IsZero():
+			statusDate = ntp
+		case !permSub.IsZero():
+			statusDate = permSub
+		case !wc.IsZero():
+			statusDate = wc
+		default:
+			statusDate = time.Time{}
+		}
 	}
-
 	return statusDate
 }
 
@@ -395,18 +422,6 @@ func calculatePerTeamKw(rep1Team, rep2Team string, credit, repPay, sysSize float
 }
 
 /******************************************************************************
-* FUNCTION:        calculateRRR
-* DESCRIPTION:     calculates the "r_rr" value based on the provided data
-* RETURNS:         gross revenue
-*****************************************************************************/
-func calculateRRR(repName string, val1, val2 float64) (result float64) {
-	if len(repName) > 0 {
-		return val1 + val2
-	}
-	return 0
-}
-
-/******************************************************************************
 * FUNCTION:        calculateRAdderTotal
 * DESCRIPTION:     calculates the "r_adder_total" value based on the provided data
 * RETURNS:         gross revenue
@@ -544,21 +559,67 @@ func calculateR2PayRateSemi(rep_1 string, repCount, perRepSales, perRepkW, epcCa
 	return result
 }
 
-func CalculatePayRateSemi(dealer string, epcCalc, rl float64) (payRateSemi float64) {
-	if len(dealer) > 0 {
-		return (epcCalc - rl) * 1000
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
+	log.FuncErrorTrace(0, "netEpc %v  contract %v sysSize %v", netEpc, contract, sysSize)
+	if netEpc > 0 {
+		if contract > 0 {
+			contractdoldol = contract
+		} else {
+			contractdoldol = netEpc * 1000 * sysSize
+		}
 	}
+	return contractdoldol
+}
 
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func CalculatePayRateSemi(dealer, commission_models, rep_1 string, epcCalc, rl, systemSize, netEpc float64, wc time.Time) (payRateSemi float64) {
+	date, _ := time.Parse("2006,01,02", "2023,12,20")
+	if commission_models == "standard" {
+		if len(dealer) > 0 {
+			return (epcCalc - rl) * 1000
+		}
+		return 0
+	} else {
+		if len(dealer) > 0 && systemSize > 0 {
+			if rep_1 == "Scott McCollester" && wc.After(date) {
+				return 1.88 * (systemSize * 1000)
+			} else if dealer == "Onyx D2D" {
+				return (netEpc - 1.98) * systemSize
+			} else {
+				return rl * (systemSize * 1000)
+			}
+		}
+	}
 	return 0
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateAdderLf(dealer string, addr, expence, autoadder, loanfee, rebate, referral float64) (adderlf float64) {
+	log.FuncErrorTrace(0, "addr : %v expence : %v autoadder : %v loanFee : %v rabate : %v referral : %v", addr, expence, autoadder, loanfee, rebate, referral)
 	if len(dealer) > 0 {
 		return addr + expence + autoadder + loanfee + rebate + referral
 	}
 	return adderlf
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float64) {
 	if epcCalc > 0 {
 		result := ((contract - loanfee) / sys_size) / 1000
