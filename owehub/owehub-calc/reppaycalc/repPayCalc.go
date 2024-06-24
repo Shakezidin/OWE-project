@@ -399,7 +399,28 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["ap_adv_dba"] = adpAdvDba
 	outData["ap_ded_paid_amnt"] = apDedPaidAmnt
 	outData["ap_ded_balance"] = apDedBalance
-	outData["pr_appt_type"] = CalculatePrApptType(dealer)
+	outData["pr_r1_d_type"] = calculatePrRDType(dealer, rep1DrawAmount)
+	outData["pr_r1_d_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_f_type"] = calculatePrRFType(dealer, rep1Balance)
+	outData["pr_r1_f_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_b_type"] = calculatePrRBType(dealer)
+	outData["pr_r1_b_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_d_type"] = calculatePrRDType(dealer, rep2DrawAmount)
+	outData["pr_r2_d_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_f_type"] = calculatePrRFType(dealer, rep2Balance)
+	outData["pr_r2_f_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_b_type"] = calculatePrRBType(dealer)
+	outData["pr_r2_b_today"] = time.Now().Format("02-01-2006")
+	outData["pr_appt_type"] = CalculateType(dealer, "Appt-Set")
+	outData["pr_appt_today"] = time.Now().Format("02-01-2006")
+	outData["pr_oth_type"] = CalculateType(uniqueID, "AP-OTHER")
+	outData["pr_oth_today"] = time.Now().Format("02-01-2006")
+	outData["pr_pda_type"] = CalculateType(uniqueID, "AP-PDA")
+	outData["pr_pda_today"] = time.Now().Format("02-01-2006")
+	outData["pr_adv_type"] = CalculateType(uniqueID, "Advance")
+	outData["pr_adv_today"] = time.Now().Format("02-01-2006")
+	outData["pr_ded_type"] = CalculateType(uniqueID, "AP_DEDUCT")
+	outData["pr_ded_today"] = time.Now().Format("02-01-2006")
 
 	mapToJson(outData, uniqueID, "outData")
 	return outData, err
@@ -555,6 +576,18 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	outData["r2_dir_comm"] = R2DirComm
 	outData["r2_dir_paid"] = R2DirPaid
 	outData["r2_dir_bal"] = R2DirBal
+	outData["pr_r1_sl_type"] = calculatePrRType(dealer, "SL-OVRD")
+	outData["pr_r1_sl_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_dm_type"] = calculatePrRType(dealer, "DM-OVRD")
+	outData["pr_r1_dm_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_dir_type"] = calculatePrRType(dealer, "DIR-OVRD")
+	outData["pr_r1_dir_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_sl_type"] = calculatePrRType(dealer, "SL-OVRD")
+	outData["pr_r2_sl_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_dm_type"] = calculatePrRType(dealer, "DM-OVRD")
+	outData["pr_r2_dm_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_dir_type"] = calculatePrRType(dealer, "DIR-OVRD")
+	outData["pr_r2_dir_today"] = time.Now().Format("02-01-2006")
 
 	return outData, err
 
