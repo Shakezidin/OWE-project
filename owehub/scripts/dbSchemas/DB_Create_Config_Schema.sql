@@ -994,8 +994,25 @@ CREATE TABLE dba (
 CREATE TABLE rep_credit (
     id serial NOT NULL,
     unique_id varchar,
+    customer varchar,
+    rep_1 varchar,
+    rep_2 varchar,
+    per_kw_amt float,
+    approved_by varchar,
+    notes varchar,
+    rep_count INT,
+    sys_size float,
+    date date,
     per_rep_amt float,
     exact_amt float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE rep_status (
+    name varchar,
+    status varchar,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone
@@ -1092,6 +1109,25 @@ CREATE TABLE ap_pda (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone
 );
+
+CREATE TABLE dealer_owners (
+    id serial NOT NULL,
+    dealer_owner varchar,
+    role varchar,
+    blank varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+)
+
+CREATE TABLE rep_name (
+    id serial NOT NULL,
+    rep_name varchar,
+    status varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+)
 
 /*
 CREATE TABLE AR_Schedule (

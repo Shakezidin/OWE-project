@@ -1,6 +1,7 @@
 package arcalc
 
 import (
+	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	log "OWEApp/shared/logger"
 	"math"
 	"time"
@@ -643,4 +644,30 @@ func calculateR1Comm(R1SlName string, R1SlRate, perTeamKw float64) (r1SlComm flo
 		return math.Round(R1SlRate * perTeamKw)
 	}
 	return r1SlComm
+}
+
+func CalculateSalesRepType(uniqueId, rep1, rep2 string) (salesRepType string) {
+	log.EnterFn(0, "CalculateSalesRepType")
+	defer func() { log.ExitFn(0, "CalculateSalesRepType", nil) }()
+	var ax string
+	r1Tracking := datamgmt.DealerOwnersConfig.CalculateR1Tracking(rep1) //AZ
+	r2Tracking := datamgmt.DealerOwnersConfig.CalculateR2Tracking(rep2) //BA
+	ay := calculateAy(uniqueId, r1Tracking, r2Tracking)                 //AY (I,AZ,BA)
+	if ay != "Dealer Owner" {
+		ax = "Sales Rep"
+	}
+	return ax
+}
+
+func calculateAy(uniqueId, r1Tracking, r2Tracking string) (ay string) {
+	if len(uniqueId) > 0 {
+		if r1Tracking == "Sales Rep" {
+			return "Sales Rep"
+		} else if r1Tracking == "Dealer Owner" && (r2Tracking == "No Rep 2" || r2Tracking == "Dealer Owner") {
+			return "Dealer Owner"
+		} else {
+			return "Sales Rep 2"
+		}
+	}
+	return ay
 }

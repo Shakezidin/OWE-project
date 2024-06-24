@@ -103,7 +103,6 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	kwh := (systemSize * 1000) / contractTotal //* confirm with shushank //Q
 	apptSetter := saleData.Setter              //* confirm with shushank //O
 	commissionModels := "standard"             //* confirm with sushank
-	salesRepType := "Sales Rep 2"              //DG need to calculate
 
 	log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, rep1, dealer)
 	log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
@@ -142,10 +141,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	types = "LEASE"                           //* not received from Colten yet //E
 	kwh = (systemSize * 1000) / contractTotal //Q
 	apptSetter = ""                           //O
-	salesRepType = "Sales Rep"                //DG need to confirm with sushank
 	payee := ""                               //confirm with sushank
 
 	//*==================== COMMON ==========================/
+	salesRepType := CalculateSalesRepType(uniqueID, rep1, rep2)                                                                                                     //DG need to confirm with sushank
 	statusDate := CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)                                                                      //AK
 	perTeamKw := calculatePerTeamKw(rep1, rep2, wc, systemSize)                                                                                                     //AW
 	perRepKw := calculatePerRepKw(rep1, rep2, systemSize)                                                                                                           //AN
@@ -386,6 +385,8 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["rep_2_balance"] = rep2Balance
 	outData["ap_oth_paid"] = apOthPaidAmnt
 	outData["ap_oth_balance"] = aptOthBalance
+	outData["ap_oth_date"] = dataMgmt.ApOthData.GetDate(uniqueID)
+	outData["ap_oth_payee"] = dataMgmt.ApOthData.GetPayee(uniqueID)
 	outData["ap_pda_rc_amnt"] = apPdaRcmdAmnt
 	outData["ap_pda_amnt"] = apdPdaAmnt
 	outData["ap_pda_paid_amnt"] = apdPdaPaidAmnt
@@ -399,28 +400,42 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["ap_adv_dba"] = adpAdvDba
 	outData["ap_ded_paid_amnt"] = apDedPaidAmnt
 	outData["ap_ded_balance"] = apDedBalance
+	outData["ap_ded_date"] = dataMgmt.ApDedData.GetDate(uniqueID)
+	outData["ap_ded_payee"] = dataMgmt.ApDedData.GetPayee(uniqueID)
+	outData["commission_model"] = commissionModels
 	outData["pr_r1_d_type"] = calculatePrRDType(dealer, rep1DrawAmount)
 	outData["pr_r1_d_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_d_status"] = dataMgmt.RepNameConfig.CalculateStatus(rep1)
 	outData["pr_r1_f_type"] = calculatePrRFType(dealer, rep1Balance)
 	outData["pr_r1_f_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_f_status"] = dataMgmt.RepNameConfig.CalculateStatus(rep1)
 	outData["pr_r1_b_type"] = calculatePrRBType(dealer)
 	outData["pr_r1_b_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_b_status"] = dataMgmt.RepNameConfig.CalculateStatus(rep1)
 	outData["pr_r2_d_type"] = calculatePrRDType(dealer, rep2DrawAmount)
 	outData["pr_r2_d_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_d_status"] = dataMgmt.RepNameConfig.CalculateStatus(rep2)
 	outData["pr_r2_f_type"] = calculatePrRFType(dealer, rep2Balance)
 	outData["pr_r2_f_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_f_status"] = dataMgmt.RepNameConfig.CalculateStatus(rep2)
 	outData["pr_r2_b_type"] = calculatePrRBType(dealer)
 	outData["pr_r2_b_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_b_status"] = dataMgmt.RepNameConfig.CalculateStatus(rep2)
 	outData["pr_appt_type"] = CalculateType(dealer, "Appt-Set")
 	outData["pr_appt_today"] = time.Now().Format("02-01-2006")
+	outData["pr_appt_status"] = dataMgmt.RepNameConfig.CalculateStatus(apptSetter)
 	outData["pr_oth_type"] = CalculateType(uniqueID, "AP-OTHER")
 	outData["pr_oth_today"] = time.Now().Format("02-01-2006")
+	outData["pr_oth_status"] = dataMgmt.RepNameConfig.CalculateStatus(dataMgmt.ApOthData.GetPayee(uniqueID))
 	outData["pr_pda_type"] = CalculateType(uniqueID, "AP-PDA")
 	outData["pr_pda_today"] = time.Now().Format("02-01-2006")
+	outData["pr_pda_status"] = dataMgmt.RepNameConfig.CalculateStatus(dataMgmt.ApPdaData.GetPayee(uniqueID))
 	outData["pr_adv_type"] = CalculateType(uniqueID, "Advance")
 	outData["pr_adv_today"] = time.Now().Format("02-01-2006")
+	outData["pr_adv_status"] = dataMgmt.RepNameConfig.CalculateStatus(dataMgmt.ApAdvData.GetPayee(uniqueID))
 	outData["pr_ded_type"] = CalculateType(uniqueID, "AP_DEDUCT")
 	outData["pr_ded_today"] = time.Now().Format("02-01-2006")
+	outData["pr_ded_status"] = dataMgmt.RepNameConfig.CalculateStatus(dataMgmt.ApDedData.GetPayee(uniqueID))
 
 	mapToJson(outData, uniqueID, "outData")
 	return outData, err
@@ -542,7 +557,7 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	outData["status_date"] = statusDate
 	outData["r1_sl_name"] = R1SlName
 	outData["r1_sl_rate"] = R1SlRate
-	outData["r1_sl_sba"] = R1SlDBA
+	outData["r1_sl_dba"] = R1SlDBA
 	outData["r1_sl_comm"] = R1SlComm
 	outData["r1_sl_paid"] = R1SlPaid
 	outData["r1_sl_bal"] = R1SlBal
@@ -578,16 +593,22 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	outData["r2_dir_bal"] = R2DirBal
 	outData["pr_r1_sl_type"] = calculatePrRType(dealer, "SL-OVRD")
 	outData["pr_r1_sl_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_sl_status"] = dataMgmt.RepNameConfig.CalculateStatus(R1SlName)
 	outData["pr_r1_dm_type"] = calculatePrRType(dealer, "DM-OVRD")
 	outData["pr_r1_dm_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_dm_status"] = dataMgmt.RepNameConfig.CalculateStatus(R1DmName)
 	outData["pr_r1_dir_type"] = calculatePrRType(dealer, "DIR-OVRD")
 	outData["pr_r1_dir_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r1_dir_status"] = dataMgmt.RepNameConfig.CalculateStatus(R1DirName)
 	outData["pr_r2_sl_type"] = calculatePrRType(dealer, "SL-OVRD")
 	outData["pr_r2_sl_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_sl_status"] = dataMgmt.RepNameConfig.CalculateStatus(R2SlName)
 	outData["pr_r2_dm_type"] = calculatePrRType(dealer, "DM-OVRD")
 	outData["pr_r2_dm_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_dm_status"] = dataMgmt.RepNameConfig.CalculateStatus(R2DmName)
 	outData["pr_r2_dir_type"] = calculatePrRType(dealer, "DIR-OVRD")
 	outData["pr_r2_dir_today"] = time.Now().Format("02-01-2006")
+	outData["pr_r2_dir_status"] = dataMgmt.RepNameConfig.CalculateStatus(R2DirName)
 
 	return outData, err
 
