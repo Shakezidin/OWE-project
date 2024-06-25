@@ -79,6 +79,20 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		/* Send the OTP to user Email */
+			// subject := "OTP for Password Reset"
+
+	// plainTextContent := fmt.Sprintf("OTP for password reset. Valid for %v Minutes", ForgotPassOtpExpireInMin)
+	// 	htmlContent := fmt.Sprintf(`
+	//     <div style="
+	//         border: 2px solid black;
+	//         padding: 10px;
+	//         font-size: 24px;
+	//         width: fit-content;
+	//         margin: auto;
+	//     ">
+	//         <strong>%s</strong>
+	//     </div>
+	// `, otp)
 		err = SendOTPToClient(forgotPasswordReq.EmailId, otp)
 		if err != nil || len(otp) <= 0 {
 			log.FuncErrorTrace(0, "Failed to send OTP to client err: %v", err)
