@@ -278,7 +278,7 @@ CREATE TABLE payment_schedule (
     rep_draw float,
     rep_draw_max float,
     rep_pay character varying,
-    start_date character varying NOT NULL,
+    start_date character varying,
     end_date character varying,
     commission_model character varying,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -1106,6 +1106,25 @@ CREATE TABLE ap_pda (
     status varchar,
     dba varchar,
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE dealer_owners (
+    id serial NOT NULL,
+    dealer_owner varchar,
+    role varchar,
+    blank varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE rep_name (
+    id serial NOT NULL,
+    rep_name varchar,
+    status varchar,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone

@@ -152,3 +152,26 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvBalance(UniqueId, payee string, paidAm
 	}
 	return balance, dba
 }
+
+/******************************************************************************
+ * FUNCTION:        getPayee
+ * DESCRIPTION:     calculates the payee  value based on the unique Id
+ * RETURNS:         payee
+ *****************************************************************************/
+func (pApAdvData *ApAdvCfgStruct) GetPayee(uniqueId string) (payee string) {
+	for _, data := range pApAdvData.ApAdvList {
+		if data.UniqueId == uniqueId {
+			return data.Payee
+		}
+	}
+	return payee
+}
+
+func (pApAdvData *ApAdvCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	for _, data := range pApAdvData.ApAdvList {
+		if data.UniqueId == uniqueId {
+			return data.Date
+		}
+	}
+	return date
+}

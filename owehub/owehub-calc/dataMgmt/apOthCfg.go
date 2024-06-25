@@ -16,7 +16,7 @@ type ApOthCfg struct {
 	ShortCode string
 	UniqueId  string
 	Dealer    string
-	Date time.Time
+	Date      time.Time
 	Amount    float64
 }
 
@@ -73,9 +73,9 @@ func (pApOthData *ApOthCfgStruct) LoadApOthCfg() (err error) {
 		}
 
 		ApOthDatas := ApOthCfg{
-			Payee: Payee,
-			Date: date,
-			Amount: amount,
+			Payee:    Payee,
+			Date:     date,
+			Amount:   amount,
 			UniqueId: uniqueId,
 		}
 
@@ -110,4 +110,27 @@ func (pApOthData *ApOthCfgStruct) CalculateBalance(UniqueId, payee string, total
 		}
 	}
 	return balance
+}
+
+/******************************************************************************
+ * FUNCTION:        getPayee
+ * DESCRIPTION:     calculates the payee  value based on the unique Id
+ * RETURNS:         payee
+ *****************************************************************************/
+func (pApOthData *ApOthCfgStruct) GetPayee(uniqueId string) (payee string) {
+	for _, data := range pApOthData.ApOthList {
+		if data.UniqueId == uniqueId {
+			return data.Payee
+		}
+	}
+	return payee
+}
+
+func (pApOthData *ApOthCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	for _, data := range pApOthData.ApOthList {
+		if data.UniqueId == uniqueId {
+			return data.Date
+		}
+	}
+	return date
 }
