@@ -360,7 +360,7 @@ cursor: pointer;
     height: 40px;
   }
   .upper-btns{
-    gap: 210px;
+    gap: 217px;
     margin-bottom: -22px;
   }
 
@@ -433,9 +433,7 @@ cursor: pointer;
     margin-left: 0;
     text-align: center;
   }
-.upper-btns{
-  gap: 280px;
-}
+ 
    
 }
 
@@ -485,5 +483,9 @@ cursor: pointer;
 
   .next-button {
     padding: 10px 20px;
+  }
+
+  .upper-btns{
+    gap: 197px;
   }
 }
