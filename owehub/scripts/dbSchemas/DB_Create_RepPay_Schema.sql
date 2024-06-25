@@ -115,7 +115,7 @@ CREATE TABLE rep_pay_cal_standard(
 	ap_adv_paid_balance float,
 	ap_adv_dba varchar,
 	ap_ded_paid_amnt float,
-	ap_ded_balance float
+	ap_ded_balance float,
 	ap_ded_date date,
 	ap_ded_payee varchar,
 	rep_1_status varchar,

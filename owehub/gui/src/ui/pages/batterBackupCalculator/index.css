@@ -286,7 +286,7 @@
 }
 
 .batter-amp-container {
-  padding-bottom: 110px;
+  padding-bottom: 20px;
   max-width: 1182px;
   margin-inline: auto;
 }
@@ -418,6 +418,11 @@
   gap: 64px;
 }
 
+.crl-btn{
+  background: transparent;
+  border: none;
+}
+
 @media (max-width: 1024px) {
   .batter-amp-wrapper{
     gap: 40px;
@@ -460,6 +465,7 @@
   .calc-input-wrapper {
     flex: 1;
     width: 100%;
+    min-width: 175px;
   }
 
   .calc-input-container {

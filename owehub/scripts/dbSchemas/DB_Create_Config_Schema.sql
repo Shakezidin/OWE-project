@@ -1047,6 +1047,7 @@ CREATE TABLE ap_oth (
     updated_at timestamp without time zone
 );
 
+
 CREATE TABLE ap_ded (
     id serial NOT NULL,
     unique_id varchar,
@@ -1073,7 +1074,7 @@ CREATE TABLE ap_adv (
     rcmd_amount float,
     payee varchar,
     amount_ovrd float,
-    approved_bt varchar,
+    approved_by varchar,
     date date,
     notes varchar,
     balance float,
@@ -1095,7 +1096,7 @@ CREATE TABLE ap_pda (
     rcmd_amount float,
     payee varchar,
     amount_ovrd float,
-    approved_bt varchar,
+    approved_by varchar,
     date date,
     description varchar,
     notes varchar,

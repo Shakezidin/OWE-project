@@ -7,6 +7,12 @@ import jsPDF from 'jspdf';
 import { TbMinus, TbPlus } from 'react-icons/tb';
 import { TfiTrash } from 'react-icons/tfi';
 import { useHref, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+import Carousel from 'react-multi-carousel';
+import type { ButtonGroupProps } from 'react-multi-carousel';
+import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
+import emailjs from '@emailjs/browser';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -19,7 +25,30 @@ const apms = [
   '60 AMP',
   '70+ AMP',
 ];
+
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 1,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 1,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+  },
+};
+export interface IDetail {
+  panel_images_url: string[];
+  prospect_name: string;
+  sr_email_id: string;
+}
+
 const Index = () => {
+  const { id } = useParams();
+  console.log(id, 'params');
   const [inputDetails, setInputDetails] = useState<{
     prospectName: string;
     lra: string;
@@ -34,11 +63,14 @@ const Index = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const queryParamValue = searchParams.get('img');
-  type TError = typeof inputDetails;
+  type TBReakerError = {
+    breaker: string;
+  };
+  type TError = typeof inputDetails & TBReakerError;
   const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState(0);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [detail, setDetail] = useState({} as IDetail);
   const [batter, setBattery] = useState<
     {
       quantity: number;
@@ -46,21 +78,10 @@ const Index = () => {
       note: string;
     }[]
   >([]);
-  const form = useRef<HTMLDivElement | null>(null);
 
-  // const exportPdf = () => {
-  //   if (form.current) {
-  //     html2canvas(form.current).then((canvas) => {
-  //       const imgData = canvas.toDataURL('image/png');
-  //       const pdf = new jsPDF();
-  //       const pdfWidth = pdf.internal.pageSize.getWidth();
-  //       let imgWidth = pdfWidth;
-  //       let imgHeight = pdfWidth / 2;
-  //       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-  //       pdf.save('download.pdf');
-  //     });
-  //   }
-  // };
+
+
+ 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const elm = e.target as HTMLElement;
@@ -80,6 +101,10 @@ const Index = () => {
       if (!inputDetails[key as keyof typeof inputDetails]) {
         error[key as keyof typeof inputDetails] = `${key} is required`;
       }
+    }
+
+    if (!batter.length) {
+      error.breaker = 'Breaker is  required';
     }
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
@@ -105,6 +130,24 @@ const Index = () => {
     setInputDetails((prev) => ({ ...prev, [name]: value }));
   };
 
+  useEffect(() => {
+    const getPropspectDetail = async () => {
+      try {
+        const data = await postCaller('get_prospect_info', {
+          prospect_id: parseInt(id!),
+        });
+        setDetail(data?.data as IDetail);
+        setInputDetails((prev) => ({
+          ...prev,
+          prospectName: data?.data?.prospect_name || '',
+        }));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getPropspectDetail();
+  }, []);
+
   const handleToggle = (type: 'inc' | 'dec', ind: number) => {
     const battery = [...batter];
     if (type === 'inc') {
@@ -117,13 +160,108 @@ const Index = () => {
     setBattery(battery);
   };
 
+  const shareImage = () => {
+    emailjs
+      .send(
+        'service_9h490v9',
+        'template_0xz1vie',
+        {
+          to_name: 'Sales Person',
+          from_name: 'owehub',
+          url: `${window.location.host}/battery-ui-generator/${id}`,
+          email: detail.sr_email_id,
+          reply_to: 'Sales Person',
+          message: 'visit the link below to see the battery panel genrated ui',
+        },
+        {
+          publicKey: '9zrYKpc6-M02ZEmHn',
+        }
+      )
+      .then(
+        (response) => {
+          console.log('Email sent successfully:', response);
+          setInputDetails({
+            prospectName: '',
+            lra: '',
+            continuousCurrent: '',
+            avgCapacity: '',
+          });
+          setBattery([]);
+        },
+        (error) => {
+          toast.error(error.text as string);
+          console.error('Failed to send email:', error);
+        }
+      );
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const data = await postCaller('set_prospect_load', {
+        prospect_id: parseInt(id!),
+        prospect_name: inputDetails.prospectName,
+        lra: parseFloat(inputDetails.lra),
+        average_capacity: parseFloat(inputDetails.avgCapacity as string),
+        continous_current: parseFloat(inputDetails.continuousCurrent as string),
+        breakers: batter.map((battery) => ({
+          ...battery,
+          ampere: parseFloat(battery.amp.split(' ')[0]),
+        })),
+      });
+      await shareImage();
+      await toast.success(data.message);
+    } catch (error) {
+      toast.error((error as Error).message!);
+    }
+  };
+
+  const ButtonGroup = ({
+    next,
+    previous,
+    goToSlide,
+    ...rest
+  }: ButtonGroupProps) => {
+    const { carouselState } = rest;
+    console.log(carouselState?.currentSlide);
+
+    return (
+      <div
+        style={{ gap: 24 }}
+        className="carousel-button-group items-center justify-center flex items-center"
+      >
+        <button
+          className={` crl-btn ${carouselState?.currentSlide === 0 ? 'disable' : ''}`}
+          onClick={() => previous?.()}
+          disabled={carouselState?.currentSlide === 0}
+        >
+          <FaCircleArrowLeft size={24} className="mt1" />
+        </button>
+
+        <span>
+          {carouselState?.currentSlide! + 1} /{' '}
+          {detail?.panel_images_url?.length}
+        </span>
+
+        <button
+          disabled={
+            carouselState?.currentSlide! + 1 ===
+            detail?.panel_images_url?.length
+          }
+          className="crl-btn"
+          onClick={() => next?.()}
+        >
+          <FaCircleArrowRight size={24} className="mt1" />
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div
       className="p3"
       style={{ backgroundColor: '#F2F2F2', minHeight: '100vh' }}
     >
-      <div className="bg-white battery-wrapper p3" ref={form}>
+      <div className="bg-white battery-wrapper p3" >
         <div className="wrapper-header">
           <h4 className="h4" style={{ fontWeight: 500 }}>
             Breakers Details Form
@@ -140,18 +278,39 @@ const Index = () => {
         <div className="flex  ">
           <div className="col-3 pr3 ">
             <div className="inline-block mt3" style={{ width: '100%' }}>
-              <img
-                src={queryParamValue || dummy}
-                alt=""
-                style={{ maxWidth: '100%' }}
-              />
-              <p
-                style={{ fontSize: 12, color: '#919191', textAlign: 'center' }}
-              >
-                Electrical Panel .IMG
-                <br />
-                18/06/2024
-              </p>
+              {detail?.panel_images_url?.length ? (
+                <Carousel
+                  swipeable={false}
+                  draggable={false}
+                  responsive={responsive}
+                  autoPlaySpeed={1000}
+                  keyBoardControl={true}
+                  customTransition="all .5s"
+                  arrows={false}
+                  renderButtonGroupOutside
+                  customButtonGroup={<ButtonGroup />}
+                  transitionDuration={500}
+                  containerClass="carousel-container panel-carousel"
+                >
+                  {detail.panel_images_url.map((image, index) => {
+                    return (
+                      <div className="inline-block" key={index}>
+                        <img
+                          src={image}
+                          alt=""
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: '280px',
+                            width: '100%',
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </Carousel>
+              ) : (
+                ''
+              )}
             </div>
           </div>
           <div className="col-9">
@@ -339,6 +498,9 @@ const Index = () => {
                     </div>
                   )}
                 </div>
+                {errors.breaker && (
+                  <span className="error"> {errors.breaker}</span>
+                )}
               </div>
             </div>
           </div>
@@ -361,10 +523,10 @@ const Index = () => {
           </button> */}
 
           <button
-            onClick={() => handleValidation() && navigate("/battery-ui-generator")}
+            onClick={() => handleValidation() && handleSubmit()}
             className="calc-btn text-white pointer calc-green-btn"
           >
-            Generate
+            Submit
           </button>
         </div>
       </div>

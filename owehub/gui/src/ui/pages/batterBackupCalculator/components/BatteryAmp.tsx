@@ -1,4 +1,10 @@
-import React, { SetStateAction, useEffect, useMemo, useState } from 'react';
+import React, {
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react';
 import on from '../lib/on_switch.png';
 import off from '../lib/off_switch.png';
 import screw from '../lib/construction.svg';
@@ -9,6 +15,8 @@ import { FaPlus } from 'react-icons/fa6';
 import { FaMinus } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import Select from 'react-select';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import {
   AirConditioner,
   Clock,
@@ -27,6 +35,9 @@ import ToggleSwitch from '../../../components/Switch';
 import WarningPopup from './WarningPopup';
 import Input from '../../../components/text_input/Input';
 import { ca } from 'date-fns/locale';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 const appliance = [
   {
     name: 'Air Conditioner',
@@ -94,21 +105,28 @@ const months = [
   { label: 'November', value: 'November' },
   { label: 'December', value: 'December' },
 ];
+export interface Ibattery {
+  quantity: number;
+  amp: number;
+  note: string;
+  isOn: boolean;
+}
 
 const BatteryAmp = () => {
-  const [battery] = useState<{ quantity: number; amp: string; note: string }[]>(
-    [
-      { quantity: 1, amp: '15AMP', note: '' },
-      { quantity: 1, amp: '15AMP', note: '' },
-      { quantity: 1, amp: '15AMP', note: '' },
-    ]
-  );
-  const [requiredBattery, setRequiredBattery] = useState(2);
+  // const [battery, setBattery] = useState<
+  //   { quantity: number; amp: number; note: string }[]
+  // >([]);
+  const [otherDeatil, setOtherDeatil] = useState<{
+    continous_current?: number;
+    lra?: number;
+  }>({});
+  const [requiredBattery, setRequiredBattery] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState({
     label: 'June',
     value: 'June',
   });
-  const arrayGen = () => {
+  const [initial, setInitial] = useState(0);
+  const arrayGen = (battery: Ibattery[]) => {
     const arr = [];
     for (let index = 0; index < battery.length; index++) {
       let count = 0;
@@ -123,14 +141,47 @@ const BatteryAmp = () => {
     }
     return arr;
   };
-
+  const { id } = useParams();
   const [appliances, setAppliances] = useState([...appliance]);
-  const [batteryPower, setBatteryPower] = useState(arrayGen());
+  const [batteryPower, setBatteryPower] = useState<Ibattery[]>([]);
+  const [initialBattery, setInitialBattery] = useState<Ibattery[]>([]);
   const [mainOn, setMainOn] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [avgConsumption, setAvgConsumption] = useState('');
   const [caluclatedBackup, setCaluclatedBackup] = useState(0);
   const [mainDisabled, setMainDisabled] = useState(true);
+  const form = useRef<HTMLDivElement | null>(null);
+
+  const exportPdf = () => {
+    if (form.current) {
+      const doc = new jsPDF();
+      const element = form.current;
+
+      // Get current scroll position of the div
+      const scrollTop = element.scrollTop;
+
+      // Calculate total height of the div
+      const scrollHeight = element.scrollHeight;
+
+      // Adjust html2canvas options to capture entire content, including scrolled content
+      html2canvas(element, {
+        scrollY: -scrollTop, // Adjust capture to include content scrolled out of view
+        windowHeight: scrollHeight, // Set window height to capture entire scrollable area
+      }).then((canvas) => {
+        const imageData = canvas.toDataURL('image/png');
+
+        // Calculate aspect ratio
+        const imgWidth = doc.internal.pageSize.getWidth();
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // Add image to PDF
+        doc.addImage(imageData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+        // Save the PDF
+        doc.save('div_content.pdf');
+      });
+    }
+  };
 
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
@@ -138,19 +189,37 @@ const BatteryAmp = () => {
     setBatteryPower([...batteries]);
   };
 
+  const minRequired = (current: number, lra: number) => {
+    let totalAmp = 0;
+    const base = { amp: 60, lra: 185, current: 48 };
+    initialBattery.forEach((item) => {
+      totalAmp += item.amp;
+    });
+
+    const requiredPowerwallsByBreakers = Math.ceil(totalAmp / base.amp);
+    const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
+    const requiredPowerwallsByCurrent = Math.ceil(current / base.current);
+    return Math.max(
+      requiredPowerwallsByBreakers,
+      requiredPowerwallsByLRA,
+      requiredPowerwallsByCurrent
+    );
+  };
+
   const required = useMemo(() => {
     let count = 0;
-    appliances.forEach((battery) => {
+
+    appliances.forEach((battery, index) => {
       if (battery.isOn) {
         count += battery.quantity;
       }
     });
-    if (count > requiredBattery) {
-      setRequiredBattery(count);
-    }
-    return count;
-  }, [appliances]);
-
+    let init = initial;
+    count = count - init;
+    const newSum = init + count;
+    setRequiredBattery(Math.max(initial, newSum));
+    return Math.max(initial, newSum);
+  }, [appliances, otherDeatil, initial]);
   const handleQuantity = (index: number, type: 'dec' | 'inc') => {
     const appliance = [...appliances];
     if (type === 'inc') {
@@ -168,25 +237,45 @@ const BatteryAmp = () => {
   };
 
   useEffect(() => {
-    if (
-      batteryPower.some((item) => item.amp === '70+ AMP') ||
-      requiredBattery < required
-    ) {
-      setMainOn(false);
+    const getProspectDetail = async () => {
+      try {
+        const data = await postCaller('get_prospect_load', {
+          prospect_id: parseInt(id!) || 3,
+        });
+        if (data.status > 201) {
+          toast.error((data as Error).message);
+        } else {
+          const batt = data.data.breakers.map((item: any) => ({
+            ...item,
+            amp: item.ampere,
+            isOn: false,
+          })) as Ibattery[];
+          setBatteryPower(arrayGen([...batt]));
+          setInitialBattery(arrayGen([...batt]));
+          setOtherDeatil(data?.data);
+          setInitial(
+            minRequired(data?.data?.continous_current, data?.data?.lra)
+          );
+        }
+      } catch (error) {
+        toast.error((error as Error).message);
+      }
+    };
+    if (id) {
+      getProspectDetail();
     }
-    if (requiredBattery >= required) {
-      setMainOn(true);
-    }
-  }, [batteryPower, required, requiredBattery]);
+  }, [id]);
+
   return (
     <div
+      ref={form}
       className="scrollbar   relative"
       style={{ backgroundColor: '#F2F2F2' }}
     >
       <div className="batter-amp-container ">
         <div
           className="py3 items-start batter-amp-wrapper justify-center flex "
-          style={{ minHeight: '100vh',  }}
+          style={{ minHeight: '100vh' }}
         >
           <div
             className="bg-white panel-container p3 flex-grow-1 relative"
@@ -322,7 +411,7 @@ const BatteryAmp = () => {
               <div className="mt4 grid-amp-container">
                 {batteryPower.map((item, index: number) => {
                   return (
-                    <div className="flex mb3" >
+                    <div className="flex mb3">
                       <div
                         className={`flex-149 flex items-center relative ${(index + 1) % 2 === 0 ? 'ml-auto' : 'translate-28'}`}
                       >
@@ -417,14 +506,17 @@ const BatteryAmp = () => {
                                 size={14}
                               />
                             )}
-                            <span> {item.amp} </span>
+                            <span>
+                              {' '}
+                              {`${item.amp}${item.amp === 70 ? '+' : ''} AMP`}{' '}
+                            </span>
                           </div>
                         </div>
                         <div className="batter-amp-switch sm-switch flex items-center justify-center">
                           {item.isOn ? (
                             <img
                               src={on}
-                              onClick={() => toggle(index)}
+                              onClick={() => !mainOn && toggle(index)}
                               width={23}
                               height={27}
                               alt=""
@@ -433,7 +525,7 @@ const BatteryAmp = () => {
                           ) : (
                             <img
                               src={off}
-                              onClick={() => toggle(index)}
+                              onClick={() => !mainOn && toggle(index)}
                               width={23}
                               height={27}
                               alt=""
@@ -550,7 +642,7 @@ const BatteryAmp = () => {
               </div>
             </div>
           </div>
-          <div className="flex-grow-1" style={{ width: '100%',flexShrink:0 }}>
+          <div className="flex-grow-1" style={{ width: '100%', flexShrink: 0 }}>
             <div className="bg-white flex justify-between battery-watt-wrapper">
               <div>
                 <h3 className="battery-watt-heading">
@@ -578,8 +670,12 @@ const BatteryAmp = () => {
                 </div>
                 <div
                   role="button"
-                  onClick={() => setRequiredBattery((prev) => prev + 1)}
-                  className="watt-counter-btn   pointer justify-center flex items-center"
+                  onClick={() =>
+                    requiredBattery >= required
+                      ? undefined
+                      : setRequiredBattery((prev) => prev + 1)
+                  }
+                  className={`watt-counter-btn   pointer justify-center flex items-center ${requiredBattery >= required ? 'disable' : ''}`}
                 >
                   <FaPlus color="#fff" size={24} />
                 </div>
@@ -707,6 +803,7 @@ const BatteryAmp = () => {
             </div>
             <div className="mt4">
               <button
+                onClick={exportPdf}
                 className="calc-btn text-white pointer calc-green-btn"
                 style={{ maxWidth: '100%' }}
               >
@@ -730,6 +827,7 @@ const BatteryAmp = () => {
           setMainOn={setMainOn}
           isOpen={isOpen}
           required={required}
+          setBatteryPower={setBatteryPower}
           setRequiredBattery={setRequiredBattery}
           setMainDisabled={setMainDisabled}
           setIsOpen={setIsOpen}
