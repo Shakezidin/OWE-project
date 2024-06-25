@@ -67,10 +67,7 @@ const FormComponent: React.FC = () => {
       setEmailError('');
     }
 
-    if (!address || !prospectName || !email) {
-      console.log('Please fill in all fields.');
-      return;
-    }
+     
 
     setIsUploading(true);
 
@@ -106,7 +103,7 @@ const FormComponent: React.FC = () => {
             (response) => {
               console.log('Email sent successfully:', response);
               toast.success('Email sent successfully');
-              setAddress('');
+               
               setProspectName('');
               setEmail('');
               setUploadedImages([]);
@@ -158,7 +155,7 @@ const FormComponent: React.FC = () => {
   };
 
   const checkFormValidity = () => {
-    if (address && prospectName && email && uploadedImages.length > 0) {
+    if (email && uploadedImages.length > 0) {
       setIsFormValid(true);
     } else {
       setIsFormValid(false);
@@ -167,7 +164,7 @@ const FormComponent: React.FC = () => {
 
   useEffect(() => {
     checkFormValidity();
-  }, [address, prospectName, email, uploadedImages]);
+  }, [prospectName, email, uploadedImages]);
 
 
   console.log(uploadedImages, "upload")
