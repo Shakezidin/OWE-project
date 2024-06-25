@@ -113,33 +113,33 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
 	log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, setter : %v", ntp, permSub, shaky, apptSetter)
 
-	status = "PTO"                                 //AJ
-	rep1 = "Nate Brammer"                          //M
+	status = "NTP"                                 //AJ
+	rep1 = "Adrian Bonham"                         //M
 	dealer = "OWE-JG"                              //A
 	source = "REP"                                 //D
-	uniqueID = "OUR22410"                          //G
-	systemSize = 10.4                              //P
-	partner = "LightReach"                         //B
+	uniqueID = "OUR26088"                          //G
+	systemSize = 2                                 //P
+	partner = "SOVA"                               //B
 	installer = "One World Energy"                 //C
-	loanType = "LightReachLease1.99"               //F
+	loanType = "LEASE-SOVA-1.9"                    //F
 	state = "AZ :: Arizona"                        //K
-	wc, _ = time.Parse("01-02-2006", "04-01-2024") //U
-	contractTotal = 35672                          //S (miss match)
+	wc, _ = time.Parse("01-02-2006", "06-16-2024") //U
+	contractTotal = 6806.52                        //S (miss match)
 	epc = (systemSize * 1000) / contractTotal      //S
 	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Lucas Brubaker"                        //H
-	rep2 = "Adrian Bonham"                              //N
-	pto, _ = time.Parse("01-02-2006", "05-10-2024")     //AG
-	instSys, _ = time.Parse("01-02-2006", "04-23-2024") //AD
+	homeOwner = "Lonnee Lefaivre"                       //H
+	rep2 = "Melissa Bush"                               //N
+	pto = time.Time{}                                   //AG
+	instSys = time.Time{}                               //AD
 	cancel = time.Time{}                                //AC
-	ntp, _ = time.Parse("01-02-2006", "04-09-2024")     //W
-	permSub, _ = time.Parse("01-02-2006", "04-12-2024") //X
+	ntp, _ = time.Parse("01-02-2006", "06-17-2024")     //W
+	permSub, _ = time.Parse("01-02-2006", "06-24-2024") //X
 	if status == "HOLD" || status == "CANCEL" {
 		shaky = true
 	} else {
 		shaky = false
 	} //* confirm with shushank //AB
-	types = "LEASE"                           //* not received from Colten yet //E
+	types = "LEASE 1.9"                           //* not received from Colten yet //E
 	kwh = (systemSize * 1000) / contractTotal //Q
 	apptSetter = ""                           //O
 	salesRepType = "Sales Rep"                //DG need to confirm with sushank
