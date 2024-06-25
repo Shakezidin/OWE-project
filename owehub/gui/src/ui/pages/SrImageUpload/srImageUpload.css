@@ -1,0 +1,401 @@
+ /* Base styles */
+body {
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  background-color: #1F222A;
+}
+
+.form-container {
+  background-color: #1F222A;
+  color: white;
+  padding: 79px 73px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.image-buttons {
+  display: flex;
+  margin-bottom: 20px;
+  justify-content: center;
+  gap: 30px;
+}
+
+.image-button {
+  background-color: #1F222A;
+  border: 2px solid #2C2E35;
+  color: #bbb;
+  cursor: pointer;
+  border-radius: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 245px;
+  height: 236px;
+  box-sizing: border-box;
+}
+
+.icon {
+  margin-bottom: 10px;
+  width: 50px; /* Set the size of the icons to be the same */
+  height: 50px;
+}
+
+.icon-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #bbb;
+}
+
+.form-group input {
+  width: calc(100% - 10px);
+  padding: 10px;
+  background-color: #1F222A;
+  border: 2px solid #2C2E35;
+  color: white;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-group input[readonly] {
+  color: #7F7F7F;
+}
+
+.share-button {
+  background-color: #555;
+  border: none;
+  color: #bbb;
+  padding: 15px;
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+/* srImageUpload.css */
+
+/* Add this class to your CSS */
+.share-button.enabled {
+  background-color: green; /* Set your desired green color here */
+  color: white; /* Optional: Set the text color */
+}
+ 
+
+
+.close-icon {
+  color: white;
+}
+
+.uploaded-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.thumbnail-container {
+  position: relative;
+}
+
+.uploaded-image {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 2px solid #2C2E35;
+  border-radius: 5px;
+}
+
+/* Updated .image-number styles */
+.image-number {
+  position: absolute;
+  top: -10px; /* Adjust as needed to position correctly */
+  right: -10px; /* Adjust as needed to position correctly */
+  background-color: white;
+  color: black;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  z-index: 1; /* Ensure the badge is above the thumbnail */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for depth */
+}
+
+.lower-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-top: 20px; /* Adjust as needed */
+}
+
+.add-more {
+  color: #7F7F7F;
+  cursor: pointer;
+  text-align: center;
+  align-self: center;
+  margin-left: -80px; /* Adjust as needed */
+}
+
+.add-moree {
+  color: #7F7F7F;
+  cursor: pointer;
+  text-align: center;
+  align-self: center;
+}
+
+.camera-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #1F222A;
+  color: white;
+}
+
+.back-button {
+  align-self: flex-start;
+  margin: 20px;
+  background-color: #555;
+  border: none;
+  color: #bbb;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.camera-instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 100vh;
+}
+
+.lower-btns {
+  height: 15%;
+  gap: 30px;
+}
+
+.camera-part {
+  height: 85%;
+}
+
+.webcam, .captured-image {
+  width: 100%;
+  height: 90%;
+  border-radius: 10px;
+}
+
+.circular-button {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #bbb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.circle-inner {
+  width: 50px;
+  height: 50px;
+  background-color: #bbb;
+  border-radius: 50%;
+}
+
+.next-button {
+  background-color: #2E7D32;
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 5px;
+  width: 160px;
+  height: 56px;
+  cursor: pointer;
+}
+
+/* Existing styles remain unchanged */
+.uploaded-images-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.uploaded-image-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #14161D;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.uploaded-image-list {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.image-details {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.image-filename {
+  color: white;
+  font-size: 14px;
+}
+
+.image-date {
+  color: #7F7F7F;
+  font-size: 12px;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* Media queries for mobile responsiveness */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 40px 20px;
+  }
+
+  .image-buttons {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .image-button {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .form-group input {
+    width: 100%;
+  }
+
+  .lower-btns {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .webcam, .captured-image {
+    height: auto;
+  }
+
+  .circular-button {
+    width: 60px;
+    height: 60px;
+  }
+
+  .circle-inner {
+    width: 40px;
+    height: 40px;
+  }
+
+  .next-button {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+  }
+
+  .uploaded-images-list {
+    gap: 5px;
+  }
+
+  .uploaded-image-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .uploaded-image-list {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .add-more, .add-moree {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  /* Adjust close-icon for mobile */
+  .close-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 30px 10px;
+  }
+
+  .image-button {
+    padding: 10px;
+  }
+
+  .form-group input {
+    padding: 5px;
+  }
+
+  .share-button {
+    padding: 10px;
+  }
+
+  .circular-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .circle-inner {
+    width: 30px;
+    height: 30px;
+  }
+
+  .next-button {
+    padding: 10px 20px;
+  }
+}

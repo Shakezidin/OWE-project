@@ -66,7 +66,6 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 		log.FuncErrorTrace(0, "Empty Mandatory Parameter Received")
 		FormAndSendHttpResp(resp, "Empty Mandatory Parameter Received", http.StatusBadRequest, nil)
 		return
-
 	}
 
 	// Populate query parameters in the correct order
