@@ -152,9 +152,13 @@ const Index = () => {
     } else {
       if (batter[ind].quantity > 1) {
         batter[ind].quantity -= 1;
+      }else{
+       const newArr =  batter.filter((_,index)=>index!==ind)
+        setBattery([...newArr]);
+        return
       }
     }
-    setBattery(battery);
+    setBattery([...battery]);
   };
 
   const shareImage = () => {
@@ -227,7 +231,7 @@ const Index = () => {
         className="carousel-button-group items-center justify-center flex items-center"
       >
         <button
-          className={` crl-btn ${carouselState?.currentSlide === 0 ? 'disable' : ''}`}
+          className={`pointer crl-btn ${carouselState?.currentSlide === 0 ? 'disable' : ''}`}
           onClick={() => previous?.()}
           disabled={carouselState?.currentSlide === 0}
         >
@@ -244,7 +248,7 @@ const Index = () => {
             carouselState?.currentSlide! + 1 ===
             detail?.panel_images_url?.length
           }
-          className="crl-btn"
+          className="crl-btn pointer"
           onClick={() => next?.()}
         >
           <FaCircleArrowRight size={24} className="mt1" />
@@ -401,8 +405,8 @@ const Index = () => {
                 </div>
               </div>
               <div className="lg-col-8 col-12 calc-container">
-                <div className="flex items-center" style={{ marginTop: 25 }}>
-                  <div className="breaker-size-label">
+                <div className={`flex items-center ${!batter.length?"sm-label-wrapper":""}`}  style={{ marginTop: 25 }}>
+                  <div className="breaker-size-label ">
                     <span className="calc-label">Breakers size</span>
                   </div>
                   <div>
@@ -445,7 +449,7 @@ const Index = () => {
                           placeholder="Add Note +"
                         />
                       </div>
-                      <div className=" flex items-center justify-center">
+                      <div className="trash-btn flex items-center justify-center">
                         <TfiTrash
                           className="pointer"
                           size={18}

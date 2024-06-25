@@ -472,6 +472,9 @@
     align-items: center;
     justify-content: center;
   }
+  .sm-label-wrapper{
+    display: none !important;
+  }
   .dashed-section .pr3 {
     padding: 1rem !important;
   }
@@ -486,8 +489,11 @@
     padding: 1.5rem;
     margin-top: -2rem;
   }
+  .trash-btn{
+    display: none !important;
+  }
   .calc-row {
-    grid-template-columns: calc(30% - 12px) calc(35% - 12px) calc(35% - 12px) auto;
+    grid-template-columns: calc(30% - 12px) calc(35% - 12px)  auto;
     column-gap: 6px;
     margin-block: 12px;
   }
