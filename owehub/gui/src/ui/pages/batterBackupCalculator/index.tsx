@@ -231,7 +231,7 @@ const Index = () => {
         className="carousel-button-group items-center justify-center flex items-center"
       >
         <button
-          className={` crl-btn ${carouselState?.currentSlide === 0 ? 'disable' : ''}`}
+          className={`pointer crl-btn ${carouselState?.currentSlide === 0 ? 'disable' : ''}`}
           onClick={() => previous?.()}
           disabled={carouselState?.currentSlide === 0}
         >
@@ -248,7 +248,7 @@ const Index = () => {
             carouselState?.currentSlide! + 1 ===
             detail?.panel_images_url?.length
           }
-          className="crl-btn"
+          className="crl-btn pointer"
           onClick={() => next?.()}
         >
           <FaCircleArrowRight size={24} className="mt1" />
