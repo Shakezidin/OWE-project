@@ -205,6 +205,8 @@ const (
 	TableName_v_dealer                       string = "v_dealer"
 	TableName_ap_rep                         string = "ap_rep"
 	TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
+	TableName_REP_PAY_APCALC                 string = "rep_pay_cal_standard"
+	TableName_REP_PAY_APCALC_OVRD            string = "rep_pay_cal_ovrrd_standard"
 	TableName_ap_oth                         string = "ap_oth"
 	TableName_ap_ded                         string = "ap_ded"
 	TableName_ap_pda                         string = "ap_pda"

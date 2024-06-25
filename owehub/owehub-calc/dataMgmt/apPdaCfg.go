@@ -174,3 +174,12 @@ func (pApPdaData *ApPdaCfgStruct) GetPayee(uniqueId string) (payee string) {
 	}
 	return payee
 }
+
+func (pApPdaData *ApPdaCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	for _, data := range pApPdaData.ApPdaList {
+		if data.UniqueId == uniqueId {
+			return data.Date
+		}
+	}
+	return date
+}
