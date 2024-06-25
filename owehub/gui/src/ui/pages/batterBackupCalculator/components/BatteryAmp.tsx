@@ -187,10 +187,10 @@ const BatteryAmp = () => {
     setBatteryPower([...batteries]);
   };
  
-  const minRequired = (current: number, lra: number) => {
+  const minRequired = (arr:any[],current: number, lra: number) => {
     let totalAmp = 0;
     const base = { amp: 60, lra: 185, current: 48 };
-    initialBattery.forEach((item) => {
+    arr.forEach((item) => {
       totalAmp += item.amp;
     });
  
@@ -250,10 +250,12 @@ const BatteryAmp = () => {
           })) as Ibattery[];
           setBatteryPower(arrayGen([...batt]));
           setInitialBattery(arrayGen([...batt]));
+        const min = minRequired(arrayGen([...batt]),data?.data?.continous_current, data?.data?.lra)
           setOtherDeatil(data?.data);
           setInitial(
-            minRequired(data?.data?.continous_current, data?.data?.lra)
+            min
           );
+       
         }
       } catch (error) {
         toast.error((error as Error).message);
@@ -263,6 +265,7 @@ const BatteryAmp = () => {
       getProspectDetail();
     }
   }, [id]);
+ console.log(initial,"initial");
  
   return (
     <div
