@@ -91,7 +91,7 @@ const FormComponent: React.FC = () => {
               to_name: 'Sales Person',
               from_name: 'owehub',
               url: `${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`,
-              email: "rajuraman45@gmail.com",
+              email: "anshu.srivastava@ourworldenergy.com",
               reply_to: 'Sales Person',
               message: 'visit the link below to fill the form',
             },
