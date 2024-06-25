@@ -154,31 +154,37 @@ const BatteryAmp = () => {
 
   const exportPdf = () => {
     if (form.current) {
-      const doc = new jsPDF();
-      const element = form.current;
+      // const doc = new jsPDF();
+      // const element = form.current;
+      // const totalHeight = element.scrollHeight;
+      // html2canvas(element, {
+      //   windowHeight: totalHeight,
+      // }).then((canvas) => {
+      //   const imageData = canvas.toDataURL('image/png');
+      //   doc.addImage(
+      //     imageData,
+      //     'PNG',
+      //     0,
+      //     0,
+      //     doc.internal.pageSize.width,
+      //     doc.internal.pageSize.height
+      //   );
 
-      // Get current scroll position of the div
-      const scrollTop = element.scrollTop;
-
-      // Calculate total height of the div
-      const scrollHeight = element.scrollHeight;
-
-      // Adjust html2canvas options to capture entire content, including scrolled content
-      html2canvas(element, {
-        scrollY: -scrollTop, // Adjust capture to include content scrolled out of view
-        windowHeight: scrollHeight, // Set window height to capture entire scrollable area
+      //   doc.save('div_content.pdf');
+      // });
+      const { scrollHeight, offsetHeight } = form.current;
+      html2canvas(form.current, {
+        scrollY: -window.scrollY,
+        scale: 2,
+        windowHeight: Math.max(scrollHeight, offsetHeight),
+        y:-10
       }).then((canvas) => {
-        const imageData = canvas.toDataURL('image/png');
-
-        // Calculate aspect ratio
-        const imgWidth = doc.internal.pageSize.getWidth();
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        // Add image to PDF
-        doc.addImage(imageData, 'PNG', 0, 0, imgWidth, imgHeight);
-
-        // Save the PDF
-        doc.save('div_content.pdf');
+        const imgData = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = 'screenshot.png';
+        link.click();
+     
       });
     }
   };
