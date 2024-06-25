@@ -1,12 +1,14 @@
 import React, { SetStateAction } from 'react';
 import { WarningIcon } from '../icons';
+import { Ibattery } from './BatteryAmp';
 interface IPopPupProps {
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<SetStateAction<boolean>>;
   setMainOn: React.Dispatch<SetStateAction<boolean>>;
-  setRequiredBattery:React.Dispatch<SetStateAction<number>>;
+  setRequiredBattery: React.Dispatch<SetStateAction<number>>;
   setMainDisabled: React.Dispatch<SetStateAction<boolean>>;
-  required:number
+  required: number;
+  setBatteryPower: React.Dispatch<SetStateAction<Ibattery[]>>;
 }
 const WarningPopup = ({
   isOpen,
@@ -14,7 +16,8 @@ const WarningPopup = ({
   setMainOn,
   setMainDisabled,
   setRequiredBattery,
-  required
+  required,
+  setBatteryPower,
 }: IPopPupProps) => {
   const handleClose = () => {
     setIsOpen?.((prev) => !prev);
@@ -46,7 +49,7 @@ const WarningPopup = ({
             onClick={() => {
               setMainOn(false);
               setMainDisabled(true);
-              setRequiredBattery(prev=>prev?prev-1:prev);
+              setRequiredBattery((prev) => (prev ? prev - 1 : prev));
               handleClose();
             }}
             className="calc-grey-btn warning-popup-btn pointer"
@@ -55,9 +58,13 @@ const WarningPopup = ({
           </button>
           <button
             onClick={() => {
-              setMainDisabled(false);
+              setMainDisabled(true);
               handleClose();
-              setRequiredBattery(required)
+              setMainOn(true);
+              setRequiredBattery(required);
+              setBatteryPower((prev) =>
+                prev.map((battery) => ({ ...battery, isOn: true }))
+              );
             }}
             className="calc-green-btn pointer warning-popup-btn"
           >

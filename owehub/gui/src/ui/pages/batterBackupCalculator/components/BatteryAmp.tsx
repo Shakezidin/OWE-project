@@ -105,7 +105,7 @@ const months = [
   { label: 'November', value: 'November' },
   { label: 'December', value: 'December' },
 ];
-interface Ibattery {
+export interface Ibattery {
   quantity: number;
   amp: number;
   note: string;
@@ -125,6 +125,7 @@ const BatteryAmp = () => {
     label: 'June',
     value: 'June',
   });
+  const [initial, setInitial] = useState(0);
   const arrayGen = (battery: Ibattery[]) => {
     const arr = [];
     for (let index = 0; index < battery.length; index++) {
@@ -143,13 +144,14 @@ const BatteryAmp = () => {
   const { id } = useParams();
   const [appliances, setAppliances] = useState([...appliance]);
   const [batteryPower, setBatteryPower] = useState<Ibattery[]>([]);
+  const [initialBattery, setInitialBattery] = useState<Ibattery[]>([]);
   const [mainOn, setMainOn] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [avgConsumption, setAvgConsumption] = useState('');
   const [caluclatedBackup, setCaluclatedBackup] = useState(0);
   const [mainDisabled, setMainDisabled] = useState(true);
-
   const form = useRef<HTMLDivElement | null>(null);
+
   const exportPdf = () => {
     if (form.current) {
       const doc = new jsPDF();
@@ -190,10 +192,8 @@ const BatteryAmp = () => {
   const minRequired = (current: number, lra: number) => {
     let totalAmp = 0;
     const base = { amp: 60, lra: 185, current: 48 };
-    batteryPower.forEach((item) => {
-      if (item.isOn) {
-        totalAmp += item.amp;
-      }
+    initialBattery.forEach((item) => {
+      totalAmp += item.amp;
     });
 
     const requiredPowerwallsByBreakers = Math.ceil(totalAmp / base.amp);
@@ -210,20 +210,16 @@ const BatteryAmp = () => {
     let count = 0;
 
     appliances.forEach((battery, index) => {
-      console.log('workingagin', battery.isOn, index);
       if (battery.isOn) {
-        console.log('working', index);
         count += battery.quantity;
       }
     });
-    count += minRequired(otherDeatil.continous_current!, otherDeatil.lra!);
-
-    if (count > requiredBattery) {
-      setRequiredBattery(count);
-    }
-    return count;
-  }, [appliances, batteryPower, otherDeatil]);
-
+    let init = initial;
+    count = count - init;
+    const newSum = init + count;
+    setRequiredBattery(Math.max(initial, newSum));
+    return Math.max(initial, newSum);
+  }, [appliances, otherDeatil, initial]);
   const handleQuantity = (index: number, type: 'dec' | 'inc') => {
     const appliance = [...appliances];
     if (type === 'inc') {
@@ -249,14 +245,17 @@ const BatteryAmp = () => {
         if (data.status > 201) {
           toast.error((data as Error).message);
         } else {
-          console.log(data.data.breakers, 'datatatata');
           const batt = data.data.breakers.map((item: any) => ({
             ...item,
             amp: item.ampere,
             isOn: false,
           })) as Ibattery[];
           setBatteryPower(arrayGen([...batt]));
+          setInitialBattery(arrayGen([...batt]));
           setOtherDeatil(data?.data);
+          setInitial(
+            minRequired(data?.data?.continous_current, data?.data?.lra)
+          );
         }
       } catch (error) {
         toast.error((error as Error).message);
@@ -266,19 +265,6 @@ const BatteryAmp = () => {
       getProspectDetail();
     }
   }, [id]);
-
-  useEffect(() => {
-    if (
-      batteryPower.some((item) => item.amp >= 70) ||
-      requiredBattery < required
-    ) {
-      setMainOn(false);
-    }
-    if (requiredBattery >= required) {
-      setMainOn(true);
-    }
-  }, [batteryPower, required, requiredBattery]);
-  console.log(otherDeatil, 'detailsss other');
 
   return (
     <div
@@ -530,7 +516,7 @@ const BatteryAmp = () => {
                           {item.isOn ? (
                             <img
                               src={on}
-                              onClick={() => toggle(index)}
+                              onClick={() => !mainOn && toggle(index)}
                               width={23}
                               height={27}
                               alt=""
@@ -539,7 +525,7 @@ const BatteryAmp = () => {
                           ) : (
                             <img
                               src={off}
-                              onClick={() => toggle(index)}
+                              onClick={() => !mainOn && toggle(index)}
                               width={23}
                               height={27}
                               alt=""
@@ -684,8 +670,12 @@ const BatteryAmp = () => {
                 </div>
                 <div
                   role="button"
-                  onClick={() => setRequiredBattery((prev) => prev + 1)}
-                  className="watt-counter-btn   pointer justify-center flex items-center"
+                  onClick={() =>
+                    requiredBattery >= required
+                      ? undefined
+                      : setRequiredBattery((prev) => prev + 1)
+                  }
+                  className={`watt-counter-btn   pointer justify-center flex items-center ${requiredBattery >= required ? 'disable' : ''}`}
                 >
                   <FaPlus color="#fff" size={24} />
                 </div>
@@ -837,6 +827,7 @@ const BatteryAmp = () => {
           setMainOn={setMainOn}
           isOpen={isOpen}
           required={required}
+          setBatteryPower={setBatteryPower}
           setRequiredBattery={setRequiredBattery}
           setMainDisabled={setMainDisabled}
           setIsOpen={setIsOpen}
