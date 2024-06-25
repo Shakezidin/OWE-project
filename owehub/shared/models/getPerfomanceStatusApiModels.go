@@ -20,6 +20,7 @@ type PerfomanceStatusReq struct {
 
 type PerfomanceResponse struct {
 	UniqueId               string `json:"unqiue_id"`
+	Customer               string `json:"customer"`
 	ContractDate           string `json:"contract_date"`
 	PermitApprovedDate     string `json:"permit_approved_date"`
 	PvInstallCompletedDate string `json:"install_completed_date"`
@@ -37,6 +38,7 @@ type PerfomanceListResponse struct {
 type ProjectStatusReq struct {
 	Email        string
 	UniqueId     string `json:"unique_id"`
+	Customer     string `json:"customer"`
 	UniqueIds    []string
 	ProjectLimit int
 	DealerName   interface{}
@@ -46,6 +48,7 @@ type ProjectStatusReq struct {
 // project management list
 type ProjectLstResponse struct {
 	UniqueId string `json:"unqiue_id"`
+	Customer string `json:"customer"`
 }
 
 type ProjectLstsResponse struct {

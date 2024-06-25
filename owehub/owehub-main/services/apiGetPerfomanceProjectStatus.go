@@ -183,6 +183,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			continue
 		}
 
+		Customer, ok := item["home_owner"].(string)
+		if !ok || UniqueId == "" {
+			log.FuncErrorTrace(0, "Failed to get Customer Item: %+v\n", item)
+			continue
+		}
+
 		ContractDate, ok := item["contract_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get ContractDate for Unique ID %v. Item: %+v\n", UniqueId, item)
@@ -233,6 +239,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		perfomanceResponse := models.PerfomanceResponse{
 			UniqueId:               UniqueId,
+			Customer:               Customer,
 			ContractDate:           ContractD,
 			PermitApprovedDate:     PermitD,
 			PvInstallCompletedDate: PvInstallCompleteD,

@@ -25,7 +25,7 @@ func SalesRepRetrieveQueryFunc() string {
 
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT unique_id, contract_date, permit_approved_date, 
+        SELECT home_owner, unique_id, contract_date, permit_approved_date, 
             pv_install_completed_date, pto_date, site_survey_completed_date, 
             install_ready_date, dealer, primary_sales_rep
         FROM consolidated_data_view
@@ -35,7 +35,7 @@ func SalesMetricsRetrieveQueryFunc() string {
 
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT unique_id
+        SELECT unique_id, home_owner
         FROM consolidated_data_view
     `
 	return SalesMetricsRetrieveQuery

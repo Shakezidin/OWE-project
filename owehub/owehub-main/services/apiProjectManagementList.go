@@ -146,13 +146,20 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	projectList := []string{}
+	projectList := []models.ProjectLstResponse{}
 	for _, item := range data {
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok {
 			continue
 		}
-		projectList = append(projectList, UniqueId)
+		Customer, ok := item["home_owner"].(string)
+		if !ok {
+			continue
+		}
+		projectList = append(projectList, models.ProjectLstResponse{
+			UniqueId: UniqueId,
+			Customer: Customer,
+		})
 	}
 
 	// Send the response
