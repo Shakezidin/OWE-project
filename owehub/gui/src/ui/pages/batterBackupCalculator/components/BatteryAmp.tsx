@@ -163,22 +163,20 @@ const BatteryAmp = () => {
       // Calculate total height of the div
       const scrollHeight = element.scrollHeight;
 
-      // Adjust html2canvas options to capture entire content, including scrolled content
       html2canvas(element, {
-        scrollY: -scrollTop, // Adjust capture to include content scrolled out of view
-        windowHeight: scrollHeight, // Set window height to capture entire scrollable area
+        scrollY: -scrollTop, 
+        windowHeight: scrollHeight,
+        scale:1
       }).then((canvas) => {
         const imageData = canvas.toDataURL('image/png');
-
-        // Calculate aspect ratio
-        const imgWidth = doc.internal.pageSize.getWidth();
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        // Add image to PDF
-        doc.addImage(imageData, 'PNG', 0, 0, imgWidth, imgHeight);
-
-        // Save the PDF
-        doc.save('div_content.pdf');
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'pt',
+          format: [canvas.width, canvas.height],
+        });
+        pdf.addImage(imageData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('download.pdf');
+       
       });
     }
   };
