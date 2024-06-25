@@ -149,7 +149,7 @@ export const WelcomePage = () => {
               <CustomBox
                 icon={pandoIcon}
                 title="Battery Backup Calculator"
-                description="More than that, you can have any amount of layers attached "
+                description=" "
                 onClick={() => {
                   navigate('/sr-image-upload');
                 }}
