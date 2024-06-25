@@ -207,6 +207,17 @@ const (
 	TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	TableName_REP_PAY_APCALC                 string = "rep_pay_cal_standard"
 	TableName_REP_PAY_APCALC_OVRD            string = "rep_pay_cal_ovrrd_standard"
+	TableName_ap_oth                         string = "ap_oth"
+	TableName_ap_ded                         string = "ap_ded"
+	TableName_ap_pda                         string = "ap_pda"
+	TableName_ap_adv                         string = "ap_adv"
+	TableName_dba                            string = "dba"
+	TableName_rep_incent                     string = "rep_incent"
+	TableName_rep_status                     string = "rep_status"
+	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
+	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
+	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
+	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 
 	/* Battery Backup Calculator Tables and Procedures */
 	CreateBatteryBackupCalcProspectInfo string = "create_prospect_info"
