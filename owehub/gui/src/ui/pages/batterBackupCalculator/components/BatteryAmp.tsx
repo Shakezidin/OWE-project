@@ -265,7 +265,12 @@ const BatteryAmp = () => {
       getProspectDetail();
     }
   }, [id]);
- console.log(initial,"initial");
+ 
+  useEffect(()=>{
+    if(requiredBattery>=required){
+      setMainOn(true)
+    }
+  },[required,requiredBattery])
  
   return (
     <div
