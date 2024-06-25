@@ -162,9 +162,9 @@ const BatteryAmp = () => {
  
       // Calculate total height of the div
       const scrollHeight = element.scrollHeight;
- 
+
       html2canvas(element, {
-        scrollY: -scrollTop,
+        scrollY: -scrollTop, 
         windowHeight: scrollHeight,
         scale:1
       }).then((canvas) => {
