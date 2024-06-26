@@ -184,6 +184,5 @@ func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, 
 	} else {
 		dlrcost = TierLoanFeeCfg.CalculateDlrCost(dlrTier, installer, state, Type, date)
 	}
-	log.FuncErrorTrace(0, "dlrCost=============== %v", dlrcost)
 	return dlrcost
 }

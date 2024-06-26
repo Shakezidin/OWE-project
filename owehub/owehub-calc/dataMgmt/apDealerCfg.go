@@ -41,7 +41,7 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 	)
 
 	query = `
-      SELECT ad.id as record_id, ad.unique_id, vd.dealer_code as dealer, ad.dba, ad.type, ad.date, ad.amount, ad.method, ad.transaction, ad.notes, ad.dealer as dealer_name, ad.home_owner, st.name as state
+      SELECT ad.id as record_id, ad.unique_id, vd.dealer_name as dealer, ad.dba, ad.type, ad.date, ad.amount, ad.method, ad.transaction, ad.notes, ad.dealer as dealer_name, ad.home_owner, st.name as state
       FROM ap_dealer ad
       LEFT JOIN states st ON st.state_id = ad.state_id
       LEFT JOIN v_dealer vd ON vd.id = ad.dealer_id`
@@ -115,7 +115,7 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 			Transaction = ""
 		}
 
-		// Notes
+		// NotesCalculateR1CommPaid
 		Notes, ok := item["notes"].(string)
 		if !ok || Notes == "" {
 			// log.FuncErrorTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)

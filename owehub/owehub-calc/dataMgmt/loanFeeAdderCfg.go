@@ -171,23 +171,3 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniq
 		return r1AdderResp
 	}
 }
-
-/******************************************************************************
-* FUNCTION:        CalculateRepR1LoanFee
-* DESCRIPTION:     calculates the "R1LoanFee" value based on the provided data
-* RETURNS:         r1loanFee
-*****************************************************************************/
-func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepRLoanFee(rep, uniqueId, dealer, installer, state, rep1, rep2 string, sysSize float64) (r1LoanFee float64) {
-	log.EnterFn(0, "CalculateRepRLoanFee")
-	defer func() { log.ExitFn(0, "CalculateRepRLoanFee", nil) }()
-	repCount := AdderDataCfg.CalculateRepCount(rep1, rep2)
-	if len(rep) > 0 {
-		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList {
-			if data.UniqueID == uniqueId {
-				r1AdderResp := LoanFeeAdderCfg.CalculaterepR1AdderResp(rep, uniqueId, dealer, installer, state, data.Type, data.Date, data.ContractDolDol, data.RepDollDivbyPer, data.PerKwAmount, sysSize, repCount)
-				r1LoanFee += r1AdderResp
-			}
-		}
-	}
-	return r1LoanFee
-}
