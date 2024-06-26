@@ -686,7 +686,8 @@ CREATE VIEW rep_pay_pr_data AS
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-        commission_model AS commission_model
+        commission_model AS commission_model,
+        pr_r1_d_status as rep_status
 FROM pr_r1_d
 UNION ALL
     SELECT
@@ -718,7 +719,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r1_f_status as rep_status
 FROM pr_r1_f
 UNION ALL
     SELECT
@@ -750,7 +752,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r1_b_status as rep_status
 FROM pr_r1_b
 UNION ALL
 SELECT
@@ -782,7 +785,8 @@ SELECT
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r2_d_status as rep_status
 FROM pr_r2_d
 UNION ALL
     SELECT
@@ -814,7 +818,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r2_f_status as rep_status
 FROM pr_r2_f
 UNION ALL
     SELECT
@@ -846,7 +851,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r2_b_status as rep_status
 FROM pr_r2_b
 UNION ALL
     SELECT
@@ -878,7 +884,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r1_sl_status as rep_status
 FROM pr_r1_sl
 UNION ALL
     SELECT
@@ -910,7 +917,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r2_sl_status as rep_status
 FROM pr_r2_sl
 UNION ALL
     SELECT
@@ -942,7 +950,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r1_dm_status as rep_status
 FROM pr_r1_dm
 UNION ALL
     SELECT
@@ -974,7 +983,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r2_dm_status as rep_status
 FROM pr_r2_dm
 UNION ALL
     SELECT
@@ -1006,7 +1016,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r1_dir_status as rep_status
 FROM pr_r1_dir
 UNION ALL
     SELECT
@@ -1038,7 +1049,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_r2_dir_status as rep_status
 FROM pr_r2_dir
 UNION ALL
     SELECT
@@ -1070,7 +1082,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_appt_status as rep_status
 FROM pr_appt
 UNION ALL
     SELECT
@@ -1102,7 +1115,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_oth_status as rep_status
 FROM rep_pay_cal_standard -- for ap-oth
 UNION ALL
     SELECT
@@ -1134,7 +1148,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_ded_status as rep_status
 FROM rep_pay_cal_standard -- for ap-ded
 UNION ALL
     SELECT
@@ -1166,7 +1181,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_pda_status as rep_status
 FROM rep_pay_cal_standard -- for ap-pda
 UNION ALL
     SELECT
@@ -1198,7 +1214,8 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model
+    commission_model AS commission_model,
+    pr_adv_status as rep_status
 FROM rep_pay_cal_standard -- for ap-ADV
  
  
