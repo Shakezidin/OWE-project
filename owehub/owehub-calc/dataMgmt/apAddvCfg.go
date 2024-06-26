@@ -167,6 +167,11 @@ func (pApAdvData *ApAdvCfgStruct) GetPayee(uniqueId string) (payee string) {
 	return payee
 }
 
+/******************************************************************************
+ * FUNCTION:        GetDate
+ * DESCRIPTION:     calculates the date based on the unique Id
+ * RETURNS:         date
+ *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetDate(uniqueId string) (date time.Time) {
 	for _, data := range pApAdvData.ApAdvList {
 		if data.UniqueId == uniqueId {

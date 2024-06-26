@@ -125,6 +125,11 @@ func (ApDedData *ApDedCfgStruct) GetPayee(uniqueId string) (payee string) {
 	return payee
 }
 
+/******************************************************************************
+ * FUNCTION:        GetDate
+ * DESCRIPTION:     calculates the date based on the unique Id
+ * RETURNS:         date
+ *****************************************************************************/
 func (ApDedData *ApDedCfgStruct) GetDate(uniqueId string) (date time.Time) {
 	for _, data := range ApDedData.ApDedList {
 		if data.UniqueId == uniqueId {

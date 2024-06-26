@@ -134,29 +134,29 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1 = "Matthew Tidwell"                       //M
 	dealer = "Parker and Sons"                     //A
 	source = "P&S"                                 //D
-	uniqueID = "OUR18305"                          //G
-	systemSize = 6.48                              //P
-	partner = "EnFin"                              //B
+	uniqueID = "OUR18281"                          //G
+	systemSize = 20.655                            //P
+	partner = "One World Energy"                   //B
 	installer = "One World Energy"                 //C
-	loanType = "LF-ENFIN-0MONTH-30Y-3.99"          //F
+	loanType = ""                                  //F
 	state = "AZ :: Arizona"                        //K
 	wc, _ = time.Parse("01-02-2006", "10-09-2023") //U
-	contractTotal = 27122.00                       //S (miss match)
+	contractTotal = 65926.00                       //S (miss match)
 	epc = (systemSize * 1000) / contractTotal      //S
 	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Brian Johnson"                         //H
+	homeOwner = "Christopher McElroy"                   //H
 	rep2 = ""                                           //N
-	pto, _ = time.Parse("01-02-2006", "11-06-2023")     //AG
-	instSys, _ = time.Parse("01-02-2006", "10-26-2023") //AD
+	pto, _ = time.Parse("01-02-2006", "02-14-2024")     //AG
+	instSys, _ = time.Parse("01-02-2006", "02-02-2024") //AD
 	cancel = time.Time{}                                //AC
-	ntp, _ = time.Parse("01-02-2006", "10-13-2023")     //W
-	permSub, _ = time.Parse("01-02-2006", "10-19-2023") //X
+	ntp, _ = time.Parse("01-02-2006", "10-16-2023")     //W
+	permSub, _ = time.Parse("01-02-2006", "10-11-2023") //X
 	if status == "HOLD" || status == "CANCEL" {
 		shaky = true
 	} else {
 		shaky = false
 	} //* confirm with shushank //AB
-	types = "LOAN"                            //* not received from Colten yet //E
+	types = "CHECK"                           //* not received from Colten yet //E
 	kwh = (systemSize * 1000) / contractTotal //Q
 	apptSetter = ""                           //O
 	payee := ""                               //confirm with sushank

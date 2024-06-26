@@ -161,7 +161,7 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniq
 	} else if len(rep1) > 0 {
 		dlrCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date)
 		adderAmount := (contractDolDol * dlrCost) / 100
-		if Type[:2] == "LF" {
+		if len(Type) > 2 && Type[:2] == "LF" {
 			return LoanFeeAdderCfg.CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize)
 		} else {
 			r1PayScale, _ := RepPayCfg.CalculateRPayScale(rep1, state, date)
