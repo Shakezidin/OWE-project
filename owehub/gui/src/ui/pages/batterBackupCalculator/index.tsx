@@ -79,9 +79,6 @@ const Index = () => {
     }[]
   >([]);
 
-
-
- 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const elm = e.target as HTMLElement;
@@ -155,9 +152,13 @@ const Index = () => {
     } else {
       if (batter[ind].quantity > 1) {
         batter[ind].quantity -= 1;
+      }else{
+       const newArr =  batter.filter((_,index)=>index!==ind)
+        setBattery([...newArr]);
+        return
       }
     }
-    setBattery(battery);
+    setBattery([...battery]);
   };
 
   const shareImage = () => {
@@ -230,7 +231,7 @@ const Index = () => {
         className="carousel-button-group items-center justify-center flex items-center"
       >
         <button
-          className={` crl-btn ${carouselState?.currentSlide === 0 ? 'disable' : ''}`}
+          className={`pointer crl-btn ${carouselState?.currentSlide === 0 ? 'disable' : ''}`}
           onClick={() => previous?.()}
           disabled={carouselState?.currentSlide === 0}
         >
@@ -247,7 +248,7 @@ const Index = () => {
             carouselState?.currentSlide! + 1 ===
             detail?.panel_images_url?.length
           }
-          className="crl-btn"
+          className="crl-btn pointer"
           onClick={() => next?.()}
         >
           <FaCircleArrowRight size={24} className="mt1" />
@@ -258,10 +259,10 @@ const Index = () => {
 
   return (
     <div
-      className="p3"
+      className="form-group-container "
       style={{ backgroundColor: '#F2F2F2', minHeight: '100vh' }}
     >
-      <div className="bg-white battery-wrapper p3" >
+      <div className="bg-white battery-wrapper p3">
         <div className="wrapper-header">
           <h4 className="h4" style={{ fontWeight: 500 }}>
             Breakers Details Form
@@ -275,8 +276,8 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="flex  ">
-          <div className="col-3 pr3 ">
+        <div className="flex  flex-wrap">
+          <div className="lg-col-3 pr3 col-12 ">
             <div className="inline-block mt3" style={{ width: '100%' }}>
               {detail?.panel_images_url?.length ? (
                 <Carousel
@@ -294,14 +295,15 @@ const Index = () => {
                 >
                   {detail.panel_images_url.map((image, index) => {
                     return (
-                      <div className="inline-block" key={index}>
+                      <div className="block" key={index}>
                         <img
                           src={image}
                           alt=""
+                          className='mx-auto block'
                           style={{
                             maxWidth: '100%',
                             maxHeight: '280px',
-                            width: '100%',
+                       
                           }}
                         />
                       </div>
@@ -313,12 +315,9 @@ const Index = () => {
               )}
             </div>
           </div>
-          <div className="col-9">
-            <div className="flex mxn2 " style={{ height: '95%' }}>
-              <div
-                className="col-4 pl2"
-                style={{ borderRight: '2px dashed #EBEBEB ', marginTop: 25 }}
-              >
+          <div className="lg-col-9 col-12">
+            <div className="flex mxn2 flex-wrap" style={{ height: '95%' }}>
+              <div className="lg-col-4 col-12 pl2 dashed-section">
                 <div className="pr3">
                   <div className="mb3 calc-input">
                     <Input
@@ -405,9 +404,9 @@ const Index = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-8 calc-container">
-                <div className="flex items-center" style={{ marginTop: 25 }}>
-                  <div style={{ flexBasis: '25%' }}>
+              <div className="lg-col-8 col-12 calc-container">
+                <div className={`flex items-center ${!batter.length?"sm-label-wrapper":""}`}  style={{ marginTop: 25 }}>
+                  <div className="breaker-size-label ">
                     <span className="calc-label">Breakers size</span>
                   </div>
                   <div>
@@ -417,17 +416,13 @@ const Index = () => {
 
                 {batter.map((battery, ind) => {
                   return (
-                    <div
-                      className="calc-row"
-                      key={ind}
-                      style={{ marginBlock: 10 }}
-                    >
+                    <div className="calc-row" key={ind}>
                       <div className="calc-border amp-p calc-caret">
                         {' '}
                         {battery.amp}{' '}
                       </div>
                       <div className="calc-border flex items-center justify-center calc-caret">
-                        <div style={{ gap: 24 }} className="flex items-center">
+                        <div className="flex breaker-quantity-toggler items-center">
                           <TbPlus
                             size={16}
                             className="pointer"
@@ -454,7 +449,7 @@ const Index = () => {
                           placeholder="Add Note +"
                         />
                       </div>
-                      <div className=" flex items-center justify-center">
+                      <div className="trash-btn flex items-center justify-center">
                         <TfiTrash
                           className="pointer"
                           size={18}
@@ -468,7 +463,7 @@ const Index = () => {
                     </div>
                   );
                 })}
-                <div className="unit-wrapper calc-border ">
+                <div className={`unit-wrapper calc-border ${isOpen?"bg-white":""}`}>
                   {!isOpen ? (
                     <p className="text-center" onClick={() => setIsOpen(true)}>
                       Add more breakres +
@@ -524,7 +519,7 @@ const Index = () => {
 
           <button
             onClick={() => handleValidation() && handleSubmit()}
-            className="calc-btn text-white pointer calc-green-btn"
+            className={`calc-btn text-white pointer ${batter.length ? 'calc-green-btn' : 'calc-grey-btn'}`}
           >
             Submit
           </button>

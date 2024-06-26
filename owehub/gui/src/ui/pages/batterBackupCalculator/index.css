@@ -1,3 +1,8 @@
+.form-group-container {
+  background-color: #f2f2f2;
+  min-height: 100vh;
+  padding: 2rem;
+}
 .battery-wrapper {
   border-radius: 8px;
 }
@@ -21,6 +26,7 @@
   display: grid;
   grid-template-columns: calc(25% - 18px) calc(28% - 18px) calc(45% - 18px) auto;
   gap: 18px;
+  margin-block: 10px;
 }
 
 .unit-wrapper {
@@ -411,23 +417,114 @@
   flex-shrink: 0;
 }
 
-.scrollbar .modal{
+.scrollbar .modal {
   height: 560px;
 }
-.batter-amp-wrapper{
+.batter-amp-wrapper {
   gap: 64px;
 }
 
-.crl-btn{
+.crl-btn {
   background: transparent;
   border: none;
 }
-
+.dashed-section {
+  border-right: 2px dashed #ebebeb;
+  margin-top: 25px;
+}
+.breaker-size-label {
+  flex-basis: 25%;
+}
+.breaker-quantity-toggler {
+  gap: 24px;
+}
 @media (max-width: 1024px) {
-  .batter-amp-wrapper{
+  .breaker-size-label {
+    flex-basis: calc(30% - 4px);
+  }
+  .battery-wrapper {
+    background-color: transparent !important;
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 109px !important;
+  }
+
+  .calc-btn-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    padding-top: 19px;
+    padding-bottom: 36px;
+    padding-inline: 30px;
+    filter: drop-shadow(0 -2px 12px rgba(0, 0, 0, 0.04));
+  }
+
+  .breaker-quantity-toggler {
+    gap: 12px;
+  }
+  .amp-p {
+    padding: 0;
+    padding-block: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sm-label-wrapper{
+    display: none !important;
+  }
+  .dashed-section .pr3 {
+    padding: 1rem !important;
+  }
+  .dashed-section .calc-input .input-inner-view,
+  .dashed-section .calc-input .input-inner-view .input {
+    background: transparent !important;
+  }
+  .wrapper-header {
+    border-bottom: none;
+    background: #fff;
+    margin-inline: -1.5rem;
+    padding: 1.5rem;
+    margin-top: -2rem;
+  }
+  .trash-btn{
+    display: none !important;
+  }
+  .calc-row {
+    grid-template-columns: calc(30% - 12px) calc(35% - 12px)  auto;
+    column-gap: 6px;
+    margin-block: 12px;
+  }
+
+  .calc-caret input {
+    padding-left: 10px;
+    background-color: transparent !important;
+  }
+
+  .calc-caret input::placeholder {
+    text-align: left;
+  }
+
+  .calc-label {
+    font-size: 12px;
+  }
+  .unit-wrapper {
+    flex: 1;
+    max-width: 100%;
+  }
+  .form-group-container {
+    padding: 2rem 1.5rem;
+  }
+  .dashed-section {
+    border-bottom: 2px dashed #ebebeb;
+    border-right: none;
+  }
+  .batter-amp-wrapper {
     gap: 40px;
   }
-  .batter-amp-wrapper{
+  .batter-amp-wrapper {
     flex-direction: column;
   }
   .batter-amp-container {
@@ -491,7 +588,7 @@
 
   .battery-watt-wrapper {
     align-items: flex-end;
-    position:absolute;
+    position: absolute;
     top: 28px;
     transform: translateX(-50%);
     left: 50%;
@@ -549,8 +646,6 @@
     flex-direction: column-reverse;
     gap: 10px;
   }
-
-
 
   .watt-counter-btn {
     width: 24px;

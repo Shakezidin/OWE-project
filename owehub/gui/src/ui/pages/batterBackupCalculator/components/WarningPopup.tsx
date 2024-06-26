@@ -37,7 +37,7 @@ const WarningPopup = ({
             You are attempting to reduce the total number of batteries below our
             recommendation. Reducing the total number of batteries will
             significantly affect the duration in which your whole home can be
-            powered by the remaining configuration. We cannot gaurentee the
+            powered by the remaining configuration. We cannot guarantee the
             duration in which this battery configuration can support your whole
             home. If you would like to maximize the back-up duration of your
             system we advise you remain at the recommended battery quantity or

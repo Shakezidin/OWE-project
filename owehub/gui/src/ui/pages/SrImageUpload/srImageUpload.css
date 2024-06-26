@@ -58,6 +58,7 @@ body {
 }
 
 .form-group {
+  margin-top: 30px;
   margin-bottom: 20px;
 }
 
@@ -90,25 +91,45 @@ body {
   border-radius: 10px;
   cursor: pointer;
   margin-bottom: 20px;
+  margin-top: 30px;
 }
 /* srImageUpload.css */
 
-/* Add this class to your CSS */
-.share-button.enabled {
-  background-color: green; /* Set your desired green color here */
-  color: white; /* Optional: Set the text color */
-}
  
 
-
-.close-icon {
+/* Ensure the default styles for the share button */
+.share-button {
+  background-color: gray; /* Default color when not enabled */
+  color: white; /* Default text color */
+}
+.share-button.enabled {
+  background-color: green;
   color: white;
+}
+
+.camera-icon {
+  font-size: 40px;
+}
+.close-icon {
+  position: absolute;
+  top: -10px; /* Adjust as needed to position correctly */
+  right: -10px; /* Adjust as needed to position correctly */
+  border-radius: 50%;
+ 
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  z-index: 1; /* Ensure the badge is above the thumbnail */
 }
 
 .uploaded-images {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
+ 
 }
 
 .thumbnail-container {
@@ -141,14 +162,47 @@ body {
   z-index: 1; /* Ensure the badge is above the thumbnail */
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for depth */
 }
+ 
 
 .lower-btns {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  margin-top: 20px; /* Adjust as needed */
+  justify-content: space-between; /* Distribute items evenly */
+  align-items: center; /* Center items vertically */
+  gap: 128px; /* Adjust as needed */
+   
+
 }
+
+.upper-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap:460px;
+ 
+}
+
+.camera-icon{
+font-size: 40px;
+cursor: pointer;
+}
+.back-button {
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  color: #bbb;
+  
+  cursor: pointer;
+}
+
+.back-icon {
+  margin-right: 5px; /* Adjust spacing between icon and text */
+}
+
+.back-icon {
+font-size: 20px;
+cursor: pointer;
+}
+ 
 
 .add-more {
   color: #7F7F7F;
@@ -175,14 +229,14 @@ body {
   color: white;
 }
 
+ 
 .back-button {
   align-self: flex-start;
   margin: 20px;
-  background-color: #555;
+   
   border: none;
   color: #bbb;
-  padding: 10px 20px;
-  border-radius: 5px;
+  
   cursor: pointer;
 }
 
@@ -195,10 +249,7 @@ body {
   min-height: 100vh;
 }
 
-.lower-btns {
-  height: 15%;
-  gap: 30px;
-}
+ 
 
 .camera-part {
   height: 85%;
@@ -219,8 +270,9 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-left: 62px;
 }
-
+ 
 .circle-inner {
   width: 50px;
   height: 50px;
@@ -307,28 +359,53 @@ body {
     width: 40px;
     height: 40px;
   }
+  .upper-btns{
+    gap: 217px;
+    margin-bottom: -22px;
+  }
 
   .form-group input {
     width: 100%;
   }
 
-  .lower-btns {
-    flex-direction: column;
-    gap: 20px;
-  }
+ .lower-btns{
+ 
+  display: flex;
+  justify-content: space-between; /* Distribute items evenly */
+  align-items: center; /* Center items vertically */
+  gap: 110px; /* Adjust as needed */
+  margin-top: 10px;
+ 
 
+ }
+
+ .close-icon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  color: black;
+  font-size: 20px;
+  cursor: pointer;
+}
+ 
+ .uploaded-images{
+  margin-top: 0;
+ }
+ 
   .webcam, .captured-image {
     height: auto;
   }
 
   .circular-button {
-    width: 60px;
-    height: 60px;
-  }
+    width: 42px;
+    height: 43px;
+    margin-left: 0;
 
+  }
+   
   .circle-inner {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 37px;
   }
 
   .next-button {
@@ -356,16 +433,8 @@ body {
     margin-left: 0;
     text-align: center;
   }
-
-  /* Adjust close-icon for mobile */
-  .close-icon {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-  }
+ 
+   
 }
 
 @media (max-width: 480px) {
@@ -386,16 +455,37 @@ body {
   }
 
   .circular-button {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 35px;
+    margin-left: 0;
   }
-
+  .lower-btns{
+ 
+    display: flex;
+    justify-content: space-between; /* Distribute items evenly */
+    align-items: center; /* Center items vertically */
+    gap: 55px; /* Adjust as needed */
+   
+  
+   }
+   .close-icon {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
   .circle-inner {
-    width: 30px;
-    height: 30px;
+    width: 29px;
+    height: 29px;
   }
 
   .next-button {
     padding: 10px 20px;
+  }
+
+  .upper-btns{
+    gap: 197px;
   }
 }

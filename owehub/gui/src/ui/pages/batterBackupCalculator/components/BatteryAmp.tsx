@@ -51,21 +51,21 @@ const appliance = [
     icon: (color: string) => <WashingMachine color={color} />,
     isOn: false,
   },
-
+ 
   {
     name: 'Electric Oven',
     quantity: 1,
     icon: (color: string) => <ElectricOven color={color} />,
     isOn: false,
   },
-
+ 
   {
     name: 'Vacuum Cleaner',
     quantity: 1,
     icon: (color: string) => <VaccumCleaner color={color} />,
     isOn: false,
   },
-
+ 
   {
     name: 'Well Pump',
     quantity: 1,
@@ -111,7 +111,7 @@ export interface Ibattery {
   note: string;
   isOn: boolean;
 }
-
+ 
 const BatteryAmp = () => {
   // const [battery, setBattery] = useState<
   //   { quantity: number; amp: number; note: string }[]
@@ -151,51 +151,49 @@ const BatteryAmp = () => {
   const [caluclatedBackup, setCaluclatedBackup] = useState(0);
   const [mainDisabled, setMainDisabled] = useState(true);
   const form = useRef<HTMLDivElement | null>(null);
-
+ 
   const exportPdf = () => {
     if (form.current) {
       const doc = new jsPDF();
       const element = form.current;
-
+ 
       // Get current scroll position of the div
       const scrollTop = element.scrollTop;
-
+ 
       // Calculate total height of the div
       const scrollHeight = element.scrollHeight;
 
-      // Adjust html2canvas options to capture entire content, including scrolled content
       html2canvas(element, {
-        scrollY: -scrollTop, // Adjust capture to include content scrolled out of view
-        windowHeight: scrollHeight, // Set window height to capture entire scrollable area
+        scrollY: -scrollTop, 
+        windowHeight: scrollHeight,
+        scale:1
       }).then((canvas) => {
         const imageData = canvas.toDataURL('image/png');
-
-        // Calculate aspect ratio
-        const imgWidth = doc.internal.pageSize.getWidth();
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        // Add image to PDF
-        doc.addImage(imageData, 'PNG', 0, 0, imgWidth, imgHeight);
-
-        // Save the PDF
-        doc.save('div_content.pdf');
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'pt',
+          format: [canvas.width, canvas.height],
+        });
+        pdf.addImage(imageData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('download.pdf');
+       
       });
     }
   };
-
+ 
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
     batteries[index].isOn = !batteries[index].isOn;
     setBatteryPower([...batteries]);
   };
-
-  const minRequired = (current: number, lra: number) => {
+ 
+  const minRequired = (arr:any[],current: number, lra: number) => {
     let totalAmp = 0;
     const base = { amp: 60, lra: 185, current: 48 };
-    initialBattery.forEach((item) => {
+    arr.forEach((item) => {
       totalAmp += item.amp;
     });
-
+ 
     const requiredPowerwallsByBreakers = Math.ceil(totalAmp / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
     const requiredPowerwallsByCurrent = Math.ceil(current / base.current);
@@ -205,10 +203,10 @@ const BatteryAmp = () => {
       requiredPowerwallsByCurrent
     );
   };
-
+ 
   const required = useMemo(() => {
     let count = 0;
-
+ 
     appliances.forEach((battery, index) => {
       if (battery.isOn) {
         count += battery.quantity;
@@ -230,12 +228,12 @@ const BatteryAmp = () => {
     }
     setAppliances([...appliance]);
   };
-
+ 
   const calculator = () => {
     const consumption = (parseFloat(avgConsumption) / 24) * 6 * 0.6;
     setCaluclatedBackup(consumption);
   };
-
+ 
   useEffect(() => {
     const getProspectDetail = async () => {
       try {
@@ -252,10 +250,12 @@ const BatteryAmp = () => {
           })) as Ibattery[];
           setBatteryPower(arrayGen([...batt]));
           setInitialBattery(arrayGen([...batt]));
+        const min = minRequired(arrayGen([...batt]),data?.data?.continous_current, data?.data?.lra)
           setOtherDeatil(data?.data);
           setInitial(
-            minRequired(data?.data?.continous_current, data?.data?.lra)
+            min
           );
+       
         }
       } catch (error) {
         toast.error((error as Error).message);
@@ -265,7 +265,13 @@ const BatteryAmp = () => {
       getProspectDetail();
     }
   }, [id]);
-
+ 
+  useEffect(()=>{
+    if(requiredBattery>=required){
+      setMainOn(true)
+    }
+  },[required,requiredBattery])
+ 
   return (
     <div
       ref={form}
@@ -284,15 +290,15 @@ const BatteryAmp = () => {
             <div className="absolute screw-top">
               <img src={screw} alt="" />
             </div>
-
+ 
             <div className="absolute screw-top-right">
               <img src={screw} alt="" />
             </div>
-
+ 
             <div className="absolute screw-bottom-right">
               <img src={screw} alt="" />
             </div>
-
+ 
             <div className="absolute screw-bottom-left">
               <img src={screw} alt="" />
             </div>
@@ -407,7 +413,7 @@ const BatteryAmp = () => {
                   </div>
                 )}
               </div>
-
+ 
               <div className="mt4 grid-amp-container">
                 {batteryPower.map((item, index: number) => {
                   return (
@@ -539,7 +545,7 @@ const BatteryAmp = () => {
                 })}
               </div>
             </div>
-
+ 
             <div className="battery-power-calculator-wrapper">
               <div className="flex calc-stats justify-between items-start">
                 <div>
@@ -814,14 +820,14 @@ const BatteryAmp = () => {
                   className="calc-btn flex items-center justify-center calc-grey-btn pointer"
                 >
                   <IoIosArrowRoundBack size={24} className="mr1 " />
-
+ 
                   <span>Go Back</span>
                 </button> */}
             </div>
           </div>
         </div>
       </div>
-
+ 
       {isOpen && (
         <WarningPopup
           setMainOn={setMainOn}
@@ -836,5 +842,6 @@ const BatteryAmp = () => {
     </div>
   );
 };
-
+ 
 export default BatteryAmp;
+ 

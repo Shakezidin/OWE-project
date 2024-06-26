@@ -148,10 +148,10 @@ export const WelcomePage = () => {
               />
               <CustomBox
                 icon={pandoIcon}
-                title="Pando"
-                description="More than that, you can have any amount of layers attached "
+                title="Battery Backup Calculator"
+                description=" "
                 onClick={() => {
-                  window.open('https://www.pando.com/');
+                  navigate('/sr-image-upload');
                 }}
               />
             </div>
