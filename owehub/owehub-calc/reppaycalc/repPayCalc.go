@@ -134,23 +134,23 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1 = "Matthew Tidwell"                       //M
 	dealer = "Parker and Sons"                     //A
 	source = "P&S"                                 //D
-	uniqueID = "OUR18281"                          //G
-	systemSize = 20.655                            //P
+	uniqueID = "OUR18509"                          //G
+	systemSize = 10.125                            //P
 	partner = "One World Energy"                   //B
 	installer = "One World Energy"                 //C
 	loanType = ""                                  //F
 	state = "AZ :: Arizona"                        //K
-	wc, _ = time.Parse("01-02-2006", "10-09-2023") //U
-	contractTotal = 65926.00                       //S (miss match)
+	wc, _ = time.Parse("01-02-2006", "10-17-2023") //U
+	contractTotal = 34213.88                       //S (miss match)
 	epc = (systemSize * 1000) / contractTotal      //S
 	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Christopher McElroy"                   //H
+	homeOwner = "Joy & Rich Sundberg"                   //H
 	rep2 = ""                                           //N
-	pto, _ = time.Parse("01-02-2006", "02-14-2024")     //AG
-	instSys, _ = time.Parse("01-02-2006", "02-02-2024") //AD
+	pto, _ = time.Parse("01-02-2006", "02-06-2024")     //AG
+	instSys, _ = time.Parse("01-02-2006", "11-07-2023") //AD
 	cancel = time.Time{}                                //AC
-	ntp, _ = time.Parse("01-02-2006", "10-16-2023")     //W
-	permSub, _ = time.Parse("01-02-2006", "10-11-2023") //X
+	ntp, _ = time.Parse("01-02-2006", "10-24-2023")     //W
+	permSub, _ = time.Parse("01-02-2006", "10-25-2023") //X
 	if status == "HOLD" || status == "CANCEL" {
 		shaky = true
 	} else {
