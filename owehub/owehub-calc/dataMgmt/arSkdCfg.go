@@ -202,7 +202,6 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				continue
 			}
 		} else {
-			// log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
 			continue
 		}
 		// }
@@ -211,7 +210,6 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			st = saleData.State[6:]
 		}
 
-		// log.FuncErrorTrace(0, "RAED +++REDLINE %v", arSkd.RedLine)
 		if arSkd.PartnerName == saleData.Partner &&
 			arSkd.InstallerName == saleData.Installer &&
 			//TODO: Need to check arSkd.SaleTypeName == ""
@@ -259,41 +257,18 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				st = saleData.State[6:]
 			}
 
-			if saleData.Installer == "One World Energy" {
-				saleData.Installer = "OWE"
-			}
-
-			if saleData.Partner == "Sunnova" {
-				saleData.Partner = "SOVA"
-			}
-
-			ContractDate, err := time.Parse("2006-01-02", "2023-01-22")
-			if err != nil {
-				log.FuncWarnTrace(0, "DATE ERROR")
-				continue
-			}
-			// log.FuncErrorTrace(0, "RAED PARTNER 3 %v", saleData.ContractDate)
-
-			if arSkd.PartnerName == "EnFIn" &&
+			ContractDate := saleData.ContractDate
+			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
-				// arSkd.SaleTypeName == saleData.LoanType &&
-				arSkd.SaleTypeName == "LOAN" &&
+				arSkd.SaleTypeName == saleData.LoanType &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "CREATED" &&
-				(startDate.Before(ContractDate) || startDate.Equal(ContractDate)) && //* need to change the date here
+				(startDate.Before(ContractDate) || startDate.Equal(ContractDate)) &&
 				(endDate.After(ContractDate) || endDate.Equal(ContractDate)) {
-
-				log.FuncErrorTrace(0, "RAED PARTNER 7 %v 8 %v", saleData.Partner, arSkd.PartnerName)
-				log.FuncErrorTrace(0, "RAED INSTALLER 7 %v 9 %v", saleData.Installer, arSkd.InstallerName)
-				// log.FuncErrorTrace(0, "RAED REDLINE, PERMITPAY %v %v", arSkd.RedLine, arSkd.PermitPay)
-				// log.FuncErrorTrace(0, "RAED PERMITMAX, INSTALLPAY %v %v", arSkd.PermitMax, arSkd.InstallPay)
-				// log.FuncErrorTrace(0, "RAED CONTRACTDATE %v DATE %v", saleData.ContractDate, ContractDate)
-
 				redLine = arSkd.RedLine
 				permitPayM1 = arSkd.PermitPay
 				permitMax = arSkd.PermitMax
 				installPayM2 = arSkd.InstallPay
-
 				return redLine, permitPayM1, permitMax, installPayM2
 			}
 		}
@@ -311,11 +286,10 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 					log.FuncErrorTrace(0, "Failed to convert arSkd.StartDate:%+v to time.Time err: %+v", arSkd.StartDate, err)
 				}
 			} else {
-				// log.FuncWarnTrace(0, "Empty StartDate Received in arSkd config")
+				log.FuncWarnTrace(0, "Empty StartDate Received in arSkd config")
 				continue
 			}
 
-			// //2006-01-02 : MM-DD-YY
 			if len(arSkd.EndDate) > 0 {
 				endDate, err = time.Parse("2006-01-02", arSkd.EndDate)
 				if err != nil {
@@ -323,7 +297,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 					continue
 				}
 			} else {
-				// log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
+				log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
 				continue
 			}
 			var st string
@@ -331,12 +305,9 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				st = saleData.State[6:]
 			}
 
-			if saleData.Installer == "One World Energy" {
-				saleData.Installer = "OWE"
-			}
 			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
-				arSkd.SaleTypeName == "LOAN" &&
+				arSkd.SaleTypeName == saleData.Type &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "INSTALL" &&
 				(startDate.Before(today) || startDate.Equal(today)) &&
