@@ -7,31 +7,23 @@
 package services
 
 import (
-	// 	// 	// 	"OWEApp/shared/db"
-	// 	// 	// 	log "OWEApp/shared/logger"
 	"OWEApp/shared/db"
-	models "OWEApp/shared/models"
-	"strings"
-	"time"
-
-	// 	// 	// 	"time"
-
-	// 	// 	// 	"encoding/json"
-	// 	// 	// 	"fmt"
-
 	log "OWEApp/shared/logger"
+	models "OWEApp/shared/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
+	"time"
 )
 
-// /******************************************************************************
-// * FUNCTION:		GetRepPayFromView
-// * DESCRIPTION:     handler for get ApptSetters data request
-// * INPUT:			resp, req
-// * RETURNS:    		void
-// ******************************************************************************/
+/******************************************************************************
+/ * FUNCTION:		GetRepPayFromView
+/ * DESCRIPTION:     handler for get ApptSetters data request
+/ * INPUT:			resp, req
+/ * RETURNS:    		void
+/ ******************************************************************************/
 
 func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	var (
@@ -82,9 +74,6 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-
-	// tableName := db.TableName_REP_PAY
-	// sortByList := dataReq.SortBy
 
 	dateFormat := "2006-01-02"
 	if dataReq.UseCutoff == "YES" {

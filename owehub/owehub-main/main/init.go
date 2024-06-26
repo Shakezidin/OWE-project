@@ -1445,6 +1445,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_rep_pay",
+		apiHandler.GetRepPayDataFromView,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
