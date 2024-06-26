@@ -192,17 +192,6 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 					st = state[6:]
 				}
 
-				if data.Partner == partner && installer == data.Installer &&
-					st == data.State {
-					log.FuncErrorTrace(0, "data.Dealer: %v ============== dealer %v", data.Partner, partner)
-					log.FuncErrorTrace(0, "data.installer: %v ============== installer %v", data.Installer, installer)
-					log.FuncErrorTrace(0, "data.state: %v ============== state %v", data.State, state)
-					log.FuncErrorTrace(0, "data.saleType: %v ============== type %v", data.SaleType, types)
-					log.FuncErrorTrace(0, "data.salePrice: %v ============== kwh %v", data.SalePrice, kwh)
-					log.FuncErrorTrace(0, "data.payScale: %v ============== repType %v", data.RepType, payScale)
-					log.FuncErrorTrace(0, "data.startDate: %v ============== wc %v", data.StartDate, wc)
-					log.FuncErrorTrace(0, "data.endDate: %v ============== wc %v", data.EndDate, wc)
-				}
 				if partner == data.Partner &&
 					installer == data.Installer &&
 					st == data.State &&
@@ -216,12 +205,17 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 		}
 		return rl, rate
 	} else {
-		rl = PayScheduleCfg.CalculateRL(dealer, partner, types, state, wc)
+		rl = PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
 		if len(rep1) > 0 {
 			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+				var st string
+				if len(state) > 0 {
+					st = state[6:]
+				}
+
 				if partner == data.Partner &&
 					installer == data.Installer &&
-					state == data.State &&
+					st == data.State &&
 					types == data.SaleType &&
 					payScale == data.RepType &&
 					(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
