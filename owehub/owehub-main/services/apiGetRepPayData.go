@@ -35,15 +35,22 @@ import (
 
 func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.RepPayRequest
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		// queryForAlldata string
-		filter string
-		// RecordCount     int64
+		err             error
+		dataReq         models.RepPayRequest
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
+
+	type Response struct {
+		Message     string      `json:"message"`
+		RecordCount int64       `json:"record_count"`
+		Data        interface{} `json:"data"`
+	}
 
 	log.EnterFn(0, "GetRepPayFromView")
 	defer func() { log.ExitFn(0, "GetRepPayFromView", err) }()
@@ -76,8 +83,8 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tableName := db.TableName_REP_PAY
-	sortByList := dataReq.SortBy
+	// tableName := db.TableName_REP_PAY
+	// sortByList := dataReq.SortBy
 
 	dateFormat := "2006-01-02"
 	if dataReq.UseCutoff == "YES" {
@@ -90,6 +97,7 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		dataReq.PayRollDate = adjustedDate.Format(dateFormat)
 	}
 
+	tableName := db.TableName_REP_PAY
 	query = `SELECT 
 		rep.home_owner, rep.current_status, rep.status_date, rep.unique_id, rep.owe_contractor,
 		rep.DBA, rep.type, rep.Today, rep.Amount, rep.finance_type, rep.sys_size, rep.contract_total, 
@@ -97,11 +105,39 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		rep.net_comm, rep.draw_amt, rep.amt_paid, rep.balance, rep.dealer_code, rep.subtotal, rep.max_per_rep, rep.total_per_rep
 		FROM ` + db.TableName_REP_PAY
 
-	filter, whereEleList = prepareRepPayFilters("", dataReq, false, true)
+	filter, whereEleList = prepareRepPayFilters(tableName, dataReq, false, true)
+	queryWithFiler = query + filter
 
-}
+	Finaldata, err := db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get RepPayData data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get RepPayData data from DB", http.StatusBadRequest, nil)
+		return
+	}
 
-type FilterResponse struct {
+	filter, whereEleList = prepareRepPayFilters(tableName, dataReq, true, true)
+	queryForAlldata = query + filter
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get RepPayData data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get RepPayData data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	RecordCount = int64(len(data))
+	response := Response{
+		Message:     "Rep Pay Data",
+		RecordCount: RecordCount,
+		Data:        Finaldata,
+	}
+	log.FuncInfoTrace(0, "Number of RepPay List fetched : %v", (RecordCount))
+
+	resp.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(resp).Encode(response); err != nil {
+		http.Error(resp, fmt.Sprintf("Failed to encode data as JSON: %v", err), http.StatusInternalServerError)
+		return
+	}
 }
 
 func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, forDataCount, reportFilter bool) (filters string, whereEleList []interface{}) {
@@ -111,7 +147,6 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(" WHERE")
 	if reportFilter {
-		filtersBuilder.WriteString("")
 		switch dataFilter.ReportType {
 		case "ALL":
 			filtersBuilder.WriteString(" rep.status_date <= $1")
@@ -120,12 +155,15 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "STANDARD":
 			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active' AND rep.total_per_rep > 0.01")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			break
 		case "ACTIVE+":
 			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active' AND rep.max_per_rep > 0.01")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			break
 		case "ACTIVE":
 			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			break
 		case "INACTIVE":
 			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status != 'Active'")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
@@ -229,7 +267,7 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	}
 
 	if len(dataFilter.SortBy) > 1 {
-		filtersBuilder.WriteString(fmt.Sprintf(" ORDER BY "))
+		filtersBuilder.WriteString(" ORDER BY ")
 	}
 	for i, sort := range dataFilter.SortBy {
 		filtersBuilder.WriteString(fmt.Sprintf(" $%d", len(whereEleList)+1))
