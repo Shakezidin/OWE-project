@@ -63,7 +63,7 @@
  
 	 tableName := db.TableName_rep_status
 	 query = `SELECT 
-		 ap.name, ap.status
+		 ap.id as record_id, ap.name, ap.status
 		 FROM ` + db.TableName_rep_status + ` ap`
  
 	 filter, whereEleList = PrepareRepStatusFilters(tableName, dataReq, false)
@@ -181,7 +181,7 @@
 	 }
  
 	 if forDataCount == true {
-		 filtersBuilder.WriteString(" GROUP BY ap.name, ap.status")
+		 filtersBuilder.WriteString(" GROUP BY ap.id, ap.name, ap.status")
 	 } else {
 		 if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			 offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

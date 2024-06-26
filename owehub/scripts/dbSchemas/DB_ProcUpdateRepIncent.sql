@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION create_rep_incent(
+CREATE OR REPLACE FUNCTION update_rep_incent(
     p_id      INT,
     p_name      CHARACTER VARYING,
     p_doll         DOUBLE PRECISION,

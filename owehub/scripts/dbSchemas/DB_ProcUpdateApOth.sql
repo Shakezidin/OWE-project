@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION create_ap_oth(
+CREATE OR REPLACE FUNCTION update_ap_oth(
     p_id      INT,
     p_unique_id      CHARACTER VARYING,
     p_payee          CHARACTER VARYING,

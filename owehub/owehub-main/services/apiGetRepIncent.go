@@ -63,7 +63,7 @@ func HandleGetRepIncentDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	tableName := db.TableName_rep_incent
 	query = `SELECT 
-		ap.name, ap.doll_div_kw, ap.month, ap.comment
+		ap.id as record_id, ap.name, ap.doll_div_kw, ap.month, ap.comment
 		FROM ` + db.TableName_rep_incent + ` ap`
 
 	filter, whereEleList = PrepareRepIncentFilters(tableName, dataReq, false)
@@ -199,7 +199,7 @@ func PrepareRepIncentFilters(tableName string, dataFilter models.DataRequestBody
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ap.name, ap.doll_div_kw, ap.month, ap.comment")
+		filtersBuilder.WriteString(" GROUP BY ap.id, ap.name, ap.doll_div_kw, ap.month, ap.comment")
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

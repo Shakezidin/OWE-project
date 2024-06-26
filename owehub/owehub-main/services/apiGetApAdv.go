@@ -64,7 +64,7 @@ func HandleGetApAdvDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_ap_adv
 	query = `SELECT 
-	 ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code as dealer
+	 ap.id as record_id, ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code as dealer
 	 FROM ` + db.TableName_ap_adv +
 		` ap LEFT JOIN v_dealer vd ON vd.id = ap.dealer_id`
 
@@ -239,7 +239,7 @@ func PrepareApAdvFilters(tableName string, dataFilter models.DataRequestBody, fo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code as dealer")
+		filtersBuilder.WriteString(" GROUP BY ap.id, ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code")
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

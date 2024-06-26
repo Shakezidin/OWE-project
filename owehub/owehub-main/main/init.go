@@ -1253,7 +1253,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_apoded",
+		"/owe-commisions-service/v1/create_apded",
 		apiHandler.HandleCreateApDedRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
@@ -1281,7 +1281,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_apopda",
+		"/owe-commisions-service/v1/create_appda",
 		apiHandler.HandleCreateApPdaRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
@@ -1308,7 +1308,7 @@ var apiRoutes = ApiRoutes{
 		[]types.UserGroup{types.GroupAdmin},
 	}, {
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_apoadv",
+		"/owe-commisions-service/v1/create_apadv",
 		apiHandler.HandleCreateApAdvRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
@@ -1417,6 +1417,34 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_rep_credit",
+		apiHandler.HandleCreateRepCreditRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_rep_credit",
+		apiHandler.HandleUpdateRepCreditRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_rep_credit_archive",
+		apiHandler.HandleRepCreditArchiveRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_rep_credit",
+		apiHandler.HandleGetRepCreditDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
@@ -1447,13 +1475,6 @@ var apiRoutes = ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/sendmail",
-	// 	apiHandler.HandleSendMail,
-	// 	false,
-	// 	[]types.UserGroup{types.GroupEveryOne},
-	// },
 }
 
 /******************************************************************************
