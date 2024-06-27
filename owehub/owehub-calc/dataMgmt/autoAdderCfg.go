@@ -505,13 +505,10 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, 
 
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if uniqueId == data.UniqueId {
-			log.FuncErrorTrace(0, "Matching uniqueId found: %v", uniqueId)
 
 			exactAmnt := AutoAdderCfg.CalculateRepExactAmount(uniqueId, types)
 			repCount := AutoAdderCfg.CalculateRepRepCount(rep1, rep2, uniqueId)
 			perKwAmt := AutoAdderCfg.CalculateRepPerKwAmount(rep1, uniqueId)
-
-			log.FuncErrorTrace(0, "exactAmnt: %v, repCount: %v, perKwAmt: %v", exactAmnt, repCount, perKwAmt)
 
 			if repCount == 0 {
 				log.FuncErrorTrace(0, "repCount is zero, cannot divide by zero")
@@ -525,8 +522,6 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, 
 			} else if perKwAmt > 0 {
 				perRepAddrShare = (perKwAmt * sysSize) / repCount
 			}
-
-			log.FuncErrorTrace(0, "perRepAddrShare calculated as: %v", perRepAddrShare)
 		}
 	}
 	return perRepAddrShare
@@ -574,7 +569,6 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRep1DefResp(rep1, uniqueId, 
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if data.UniqueId == uniqueId {
 			payscale, _ := RepPayCfg.CalculateRPayScale(rep1, state, wc)
-			log.FuncErrorTrace(0, "Payscale=======================%v", payscale)
 			if len(payscale) > 0 {
 				defResp = adderRespCfg.CalculateAdderResp(payscale)
 			}

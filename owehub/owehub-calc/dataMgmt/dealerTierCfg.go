@@ -139,7 +139,7 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 					continue
 				}
 
-				if data.DealerName == dealer && startDate.Before(date) && endDate.After(date) {
+				if data.DealerName == dealer && (startDate.Before(date) || startDate.Equal(date)) && (endDate.After(date) || endDate.Equal(date)) {
 					dlrtier = data.Tier
 				}
 			}

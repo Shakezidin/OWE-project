@@ -33,7 +33,7 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	log.EnterFn(0, "LoadPayScheduleCfg")
 	defer func() { log.ExitFn(0, "LoadPayScheduleCfg", err) }()
 
-	query = `SELECT ps.id as record_id, vd.dealer_code as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
+	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
     st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date, commission_model
     FROM payment_schedule ps
     JOIN states st ON st.state_id = ps.state_id
@@ -58,7 +58,7 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 		// Dealer
 		Dealer, ok := item["dealer"].(string)
 		if !ok || Dealer == "" {
-			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dealer for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer = ""
 		}
 
@@ -217,7 +217,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 			}
 
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st &&
-				startDate.Before(wc) && endDate.After(wc) {
+				(startDate.Before(wc) || startDate.Equal(wc)) && (endDate.After(wc) || endDate.Equal(wc)) {
 				return data.Rl
 			}
 		}
@@ -324,14 +324,6 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, deale
 				st = state[6:]
 			}
 
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer {
-				log.FuncErrorTrace(0, "data.Dealer : %v =========== dealer : %v", data.Dealer, dealer)
-				log.FuncErrorTrace(0, "data.partnerName : %v =========== partner : %v", data.PartnerName, partner)
-				log.FuncErrorTrace(0, "data.installerName : %v =========== Installer : %v", data.InstallerName, installer)
-				log.FuncErrorTrace(0, "data.state : %v =========== st : %v", data.State, st)
-				log.FuncErrorTrace(0, "data.startDate : %v =========== wc : %v", data.StartDate, wc)
-				log.FuncErrorTrace(0, "data.EndDate : %v =========== wx : %v", data.EndDate, wc)
-			}
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer &&
 				data.SaleType == types &&
 				data.State == st &&

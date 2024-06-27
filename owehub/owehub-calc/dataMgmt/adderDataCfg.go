@@ -95,7 +95,7 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 		}
 
 		ExactAmount, ok := item["exact_amount"].(float64)
-		if !ok || ExactAmount <= 0.0 {
+		if !ok{
 			// log.ConfWarnTrace(0, "Failed to get ExactAmount for Record ID %v. Item: %+v\n", RecordId, item)
 			ExactAmount = 0.0
 		}
@@ -314,7 +314,8 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(commissionModels, de
 			for _, data := range AdderDataCfg.AdderDataList {
 				if data.UniqueId == uniqueId {
 					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount) //*
-					if perRepOverd > 0 {
+					log.FuncErrorTrace(0, "perrepOvrd ================ %v", perRepOverd)
+					if perRepOverd != 0 {
 						if perRepOverd != 0 {
 							r1addrresp += perRepOverd
 						} else {
@@ -377,6 +378,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrd(rep1, rep2, uniqueId
 
 	repPercent = repPercent / 100
 	if repPercent > 0 {
+		log.FuncErrorTrace(0, "exactAmount : %v === repPercent : %v ==== repCount == %v", ExactAmount, repPercent, repCount)
 		if repPercent <= 1 {
 			perRepOvrd += (ExactAmount * repPercent) / repCount
 		} else if repPercent > 1 {

@@ -9,6 +9,7 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 )
 
 type GetAdderRespList struct {
@@ -72,6 +73,8 @@ func (adderRespCfg *adderRespCfgStruct) LoadadderRespCfg() (err error) {
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (adderRespCfg *adderRespCfgStruct) CalculateAdderResp(r1PayScale string) (adderResp float64) {
+	log.EnterFn(0, "CalculateAdderResp")
+	defer func() { log.ExitFn(0, "CalculateAdderResp", nil) }()
 	for _, data := range adderRespCfg.adderRespList {
 		if r1PayScale == data.PayScale {
 			return data.Percentage

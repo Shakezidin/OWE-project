@@ -94,6 +94,11 @@ func (pAdderCredit *AdderCreditCfgStruct) LoadAdderCreditCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateR1RebateCreditPercentage
+* DESCRIPTION:     calculates the "r1 rebate cree=dit percentage" value based on the provided data
+* RETURNS:         R1RebateCreditPercentage
+*****************************************************************************/
 func (pAdderCredit *AdderCreditCfgStruct) CalculateR1RebateCreditPercentage(R1PayScale, Type string) (R1RebateCreditPercentage float64) {
 	log.EnterFn(0, "CalculateR1RebateCreditPercentage")
 	defer func() { log.ExitFn(0, "CalculateR1RebateCreditPercentage", nil) }()
