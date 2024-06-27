@@ -8,7 +8,6 @@ package models
 
 type RepPayRequest struct {
 	PayRollDate     string   `json:"pay_roll_start_date"`
-	PayRollEndDate  string   `json:"pay_roll_end_date"`
 	UseCutoff       string   `json:"use_cutoff"`
 	ReportType      string   `json:"report_type"`
 	SortBy          []string `json:"sort_by"`
