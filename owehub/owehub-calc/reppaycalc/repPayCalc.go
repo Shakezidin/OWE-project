@@ -130,33 +130,33 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
 	log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, setter : %v", ntp, permSub, shaky, apptSetter)
 
-	status = "PTO"                                 //AJ
-	rep1 = "Matthew Tidwell"                       //M
-	dealer = "Parker and Sons"                     //A
-	source = "P&S"                                 //D
-	uniqueID = "OUR18509"                          //G
-	systemSize = 10.125                            //P
-	partner = "One World Energy"                   //B
+	status = "Cancel"                              //AJ
+	rep1 = "Brent Hart"                            //M
+	dealer = "OWE-AZ-22"                           //A
+	source = "REP"                                 //D
+	uniqueID = "OUR11404"                          //G
+	systemSize = 6.75                              //P
+	partner = "Dividend"                           //B
 	installer = "One World Energy"                 //C
-	loanType = ""                                  //F
+	loanType = "LF-DIV-12MONTH-25y-2.99"           //F
 	state = "AZ :: Arizona"                        //K
-	wc, _ = time.Parse("01-02-2006", "10-17-2023") //U
-	contractTotal = 34213.88                       //S (miss match)
+	wc, _ = time.Parse("01-02-2006", "01-06-2023") //U
+	contractTotal = 35078.74                       //S (miss match)
 	epc = (systemSize * 1000) / contractTotal      //S
 	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Joy & Rich Sundberg"                   //H
-	rep2 = ""                                           //N
-	pto, _ = time.Parse("01-02-2006", "02-06-2024")     //AG
-	instSys, _ = time.Parse("01-02-2006", "11-07-2023") //AD
-	cancel = time.Time{}                                //AC
-	ntp, _ = time.Parse("01-02-2006", "10-24-2023")     //W
-	permSub, _ = time.Parse("01-02-2006", "10-25-2023") //X
-	if status == "HOLD" || status == "CANCEL" {
+	homeOwner = "Gary Aten"                            //H
+	rep2 = "Jesse Hart"                                //N
+	pto = time.Time{}                                  //AG
+	instSys = time.Time{}                              //AD
+	cancel, _ = time.Parse("01-02-2006", "01-12-2023") //AC
+	ntp = time.Time{}                                  //W
+	permSub = time.Time{}                              //X
+	if status == "HOLD" || status == "Cancel" {
 		shaky = true
 	} else {
 		shaky = false
 	} //* confirm with shushank //AB
-	types = "CHECK"                           //* not received from Colten yet //E
+	types = "LOAN"                            //* not received from Colten yet //E
 	kwh = (systemSize * 1000) / contractTotal //Q
 	apptSetter = ""                           //O
 	payee := ""                               //confirm with sushank
@@ -173,7 +173,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	payRate := dataMgmt.ApptSettersCfg.CalculatePayRate(apptSetter, wc)                                                                                             //DC (O, U)
 	loanFee := dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractTotal, wc)                                                  //AR
 
-	commissionModels = "80/20"
+	commissionModels = "standard"
 	//*==================== REP 1 ==========================/
 	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, wc, true)                                                               //BP (mistake)
 	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                                                                                      //BO
