@@ -92,7 +92,7 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		rep.DBA, rep.type, rep.Today, rep.Amount, rep.finance_type, rep.sys_size, rep.contract_total, 
 		rep.loan_fee, rep.epc, rep.adders, rep.r_r, rep.comm_rate, rep.net_epc, rep.credit, rep.rep_2,
 		rep.net_comm, rep.draw_amt, rep.amt_paid, rep.balance, rep.dealer_code, rep.subtotal, rep.max_per_rep, rep.total_per_rep
-		FROM ` + db.TableName_REP_PAY
+		FROM ` + db.TableName_REP_PAY + ` rep `
 
 	filter, whereEleList = prepareRepPayFilters(tableName, dataReq, false, true)
 	queryWithFiler = query + filter
@@ -255,6 +255,7 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		}
 	}
 
+	if !forDataCount {
 	if len(dataFilter.SortBy) > 1 {
 		filtersBuilder.WriteString(" ORDER BY ")
 	}
@@ -265,12 +266,23 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 			filtersBuilder.WriteString(",")
 		}
 	}
+}
 
 	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY rep.home_owner, rep.current_status, rep.status_date, rep.unique_id, rep.owe_contractor," +
 			"rep.DBA, rep.type, rep.Today, rep.Amount, rep.finance_type, rep.sys_size, rep.contract_total, " +
 			"rep.loan_fee, rep.epc, rep.adders, rep.r_r, rep.comm_rate, rep.net_epc, rep.credit, rep.rep_2," +
 			"rep.net_comm, rep.draw_amt, rep.amt_paid, rep.balance, rep.dealer_code, rep.subtotal, rep.max_per_rep, rep.total_per_rep")
+			if len(dataFilter.SortBy) > 1 {
+				filtersBuilder.WriteString(" ORDER BY ")
+			}
+			for i, sort := range dataFilter.SortBy {
+				filtersBuilder.WriteString(fmt.Sprintf(" $%d", len(whereEleList)+1))
+				whereEleList = append(whereEleList, sort)
+				if i < len(dataFilter.SortBy)-1 {
+					filtersBuilder.WriteString(",")
+				}
+			}
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
