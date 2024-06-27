@@ -230,7 +230,7 @@ const (
 	TableName_Prospect_Load             string = "prospect_load_info"
 	TableName_Breaker_Info              string = "breaker_info"
 	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
-	TableName_REP_PAY                   string = "rep_pay_pr_data"
+	ViewName_REP_PAY                   string = "rep_pay_pr_data"
 )
 
 /******************************************************************************
