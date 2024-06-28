@@ -31,30 +31,28 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		err            error
 		dlrPayDataList []map[string]interface{}
 	)
-	// log.EnterFn(0, "ExecDlrPayInitialCalculation")
-	// defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
+	log.EnterFn(0, "ExecDlrPayInitialCalculation")
+	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
-	var saleData dataMgmt.SaleDataStruct
-	var dlrPayData map[string]interface{}
-	dlrPayData, err = CalculateDlrPayProject(saleData)
-	// for _, saleData := range dataMgmt.SaleData.SaleDataList {
+	for _, saleData := range dataMgmt.SaleData.SaleDataList {
+		var dlrPayData map[string]interface{}
+		dlrPayData, err = CalculateDlrPayProject(saleData)
+		log.FuncErrorTrace(0, "dealer data ====> : %+v", dlrPayData)
 
-	// 	log.FuncErrorTrace(0, "dealer data ====> : %+v", dlrPayData)
-
-	// 	if err != nil || dlrPayData == nil {
-	// 		if len(saleData.UniqueId) > 0 {
-	// 			log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
-	// 		} else {
-	// 			log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
-	// 		}
-	// 	} else {
-	// 		dlrPayDataList = append(dlrPayDataList, dlrPayData)
-	// 	}
-	// }
+		if err != nil || dlrPayData == nil {
+			if len(saleData.UniqueId) > 0 {
+				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
+			} else {
+				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+			}
+		} else {
+			dlrPayDataList = append(dlrPayDataList, dlrPayData)
+		}
+	}
 	/* Update Calculated and Fetched data PR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v %v", err, dlrPayData)
+		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v %v", err)
 	}
 
 	resultChan <- "SUCCESS"
