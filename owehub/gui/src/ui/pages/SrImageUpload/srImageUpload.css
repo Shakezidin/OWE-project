@@ -1,22 +1,64 @@
- /* Base styles */
-body {
-  font-family: Arial, sans-serif;
-}
 
-.container {
-  background-color: #1F222A;
+
+.sr-image-container {
+  background-color: #F2F2F2;
 }
 
 .form-container {
-  background-color: #1F222A;
   color: white;
-  padding: 79px 73px;
+  padding-inline:79px;
+  padding-bottom: 79px;
   border-radius: 10px;
   width: 100%;
   max-width: 700px;
   margin: auto;
   box-sizing: border-box;
   min-height: 100vh;
+}
+
+.sr-form-header{
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  background-color: #fff;
+  padding-bottom: 17px;
+  padding-left: 38px;
+  padding-top: 48px;
+}
+.prospect-input-field input {
+  padding-block: 17px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  padding-left: 24px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
+}
+.sr-appliance-wrapper{
+  border-radius: 8px;
+  margin-top: 18px;
+  padding-block: 14px;
+  padding-left: 24px;
+  padding-right: 20px;
+  background-color: #fff;
+}
+
+.sr-appliance-header{
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F2F2F2;
+}
+.text-sm{
+  font-size: 14px;
+}
+.sr-appliance-body{
+  padding-top: 11px;
+}
+
+.text-dark-navy{
+  color:#272727;
+}
+
+.prospect-input-field input:focus{
+  outline: none;
+  width: 100%;
 }
 
 .image-buttons {
@@ -341,7 +383,8 @@ cursor: pointer;
 /* Media queries for mobile responsiveness */
 @media (max-width: 768px) {
   .form-container {
-    padding: 40px 20px;
+    padding-inline:  20px;
+    padding-bottom: 40px;
   }
 
   .image-buttons {
@@ -439,7 +482,8 @@ cursor: pointer;
 
 @media (max-width: 480px) {
   .form-container {
-    padding: 30px 10px;
+    padding-inline: 10px;
+    padding-bottom:40px ;
   }
 
   .image-button {
