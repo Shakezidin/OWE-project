@@ -640,5 +640,21 @@ margin-inline:0 ;
   .welcomeInnerBannerView{
     width: 100%;
   }
- 
+  #welcomeContact{
+    justify-content: center;
+    gap: 10px;
+  }
+  .footer-logo{
+    width: auto;
+  }
+  .footer-text{
+    font-size: 10px;
+  }
+  #welcomeFooterLowerView{
+    padding: 5px 10px;
+  }
+  #welcomeContact span {
+  font-size: 11px;
+  margin-right: 0;
+ }
 }
