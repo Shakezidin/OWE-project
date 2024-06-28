@@ -26,10 +26,10 @@ BEGIN
 
     -- Insert breaker_info records and link them in prospect_load_breakers
     FOR breaker_record IN SELECT * FROM jsonb_array_elements(p_breakers_info) LOOP
-        INSERT INTO breaker_info (ampere, quantity, note)
+        INSERT INTO breaker_info (ampere, category, note)
         VALUES (
             (breaker_record->>'ampere')::NUMERIC,
-            (breaker_record->>'quantity')::INTEGER,
+            breaker_record->>'category',
             breaker_record->>'note'
         )
         RETURNING breaker_id INTO v_breaker_id;

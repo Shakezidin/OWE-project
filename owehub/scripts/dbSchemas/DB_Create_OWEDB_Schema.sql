@@ -470,7 +470,10 @@ SELECT
     fieldOpsSchema.fin_pv_redlined_date,
     salMetSchema.survey_2nd_completion_date,
     salMetSchema.pv_install_complete_1_2_date,
-    salMetSchema.pv_install_complete_2_3_date
+    salMetSchema.pv_install_complete_2_3_date,
+    fieldOpsSchema.derate_created_date,
+    fieldOpsSchema.mpu_created_date,
+    (intOpsMetSchema.system_size * 1000)/ salMetSchema.contract_total AS epc
 FROM
     (
         SELECT

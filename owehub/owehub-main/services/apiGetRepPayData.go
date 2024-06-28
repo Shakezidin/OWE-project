@@ -11,12 +11,42 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
 )
+
+type RepPay struct {
+	HomeOwner     string
+	CurrentStatus string
+	StatusDate    time.Time
+	UniqueId      string
+	OweContractor string
+	DBA           string
+	Type          string
+	Amount        float64
+	FinanceType   string
+	SysSize       float64
+	LoanFee       float64
+	EPC           float64
+	Adders        float64
+	RR            float64
+	CommRate      float64
+	NetEPC        float64
+	Credit        float64
+	Rep2          string
+	NetComm       float64
+	DrawAmt       float64
+	AmtPaid       float64
+	Balance       float64
+	DealerCode    string
+	Subtotal      float64
+	MaxPerRep     float64
+	TotalPerRep   float64
+}
 
 /******************************************************************************
 / * FUNCTION:		GetRepPayFromView
@@ -36,6 +66,8 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		queryForAlldata string
 		filter          string
 		RecordCount     int64
+		filterData      []map[string]interface{}
+		// totalPerRepData []map[string]interface{}
 	)
 
 	type Response struct {
@@ -69,7 +101,7 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if dataReq.ReportType == "" {
-		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
+		err = errors.New("empty input fields in api is not allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
@@ -86,13 +118,40 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		dataReq.PayRollDate = adjustedDate.Format(dateFormat)
 	}
 
-	tableName := db.TableName_REP_PAY
+	tableName := db.ViewName_REP_PAY
 	query = `SELECT 
 		rep.home_owner, rep.current_status, rep.status_date, rep.unique_id, rep.owe_contractor,
 		rep.DBA, rep.type, rep.Today, rep.Amount, rep.finance_type, rep.sys_size, rep.contract_total, 
 		rep.loan_fee, rep.epc, rep.adders, rep.r_r, rep.comm_rate, rep.net_epc, rep.credit, rep.rep_2,
 		rep.net_comm, rep.draw_amt, rep.amt_paid, rep.balance, rep.dealer_code, rep.subtotal, rep.max_per_rep, rep.total_per_rep
-		FROM ` + db.TableName_REP_PAY
+		FROM ` + db.ViewName_REP_PAY + ` rep `
+
+	maxPerRepQuery := `SELECT 
+		owe_contractor, MAX(Amount) AS total_amount
+		FROM ` + db.ViewName_REP_PAY + `
+		GROUP BY owe_contractor;
+	`
+	totalPerRepQuery := `SELECT 
+		owe_contractor, SUM(Amount) AS total_amount
+		FROM ` + db.ViewName_REP_PAY + `
+		GROUP BY owe_contractor;
+	`
+
+	if dataReq.ReportType == "ACTIVE+" {
+		filterData, err = db.ReteriveFromDB(db.OweHubDbIndex, maxPerRepQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get ACTIVE+ data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get ACTIVE+ data from DB", http.StatusBadRequest, nil)
+			return
+		}
+	} else if dataReq.ReportType == "STANDARD" {
+		filterData, err = db.ReteriveFromDB(db.OweHubDbIndex, totalPerRepQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get STANDARD data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get STANDARD data from DB", http.StatusBadRequest, nil)
+			return
+		}
+	}
 
 	filter, whereEleList = prepareRepPayFilters(tableName, dataReq, false, true)
 	queryWithFiler = query + filter
@@ -102,6 +161,99 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		log.FuncErrorTrace(0, "Failed to get RepPayData data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get RepPayData data from DB", http.StatusBadRequest, nil)
 		return
+	}
+
+	oweContractorMap := make(map[string]float64)
+	for _, data := range filterData {
+		if oweContractor, ok := data["owe_contractor"].(string); ok {
+			if totalAmount, ok := data["total_amount"].(float64); ok {
+				oweContractorMap[oweContractor] = totalAmount
+			}
+		}
+	}
+
+	var repPayList []RepPay
+
+	for _, item := range Finaldata {
+		var repPay RepPay
+		skip := false
+
+		for column, value := range item {
+			switch column {
+			case "home_owner":
+				repPay.HomeOwner = value.(string)
+			case "current_status":
+				repPay.CurrentStatus = value.(string)
+			case "status_date":
+				repPay.StatusDate = value.(time.Time)
+			case "unique_id":
+				repPay.UniqueId = value.(string)
+			case "owe_contractor":
+				repPay.OweContractor = value.(string)
+			case "DBA":
+				repPay.DBA = value.(string)
+			case "type":
+				repPay.Type = value.(string)
+			case "Amount":
+				repPay.Amount = value.(float64)
+			case "finance_type":
+				repPay.FinanceType = value.(string)
+			case "sys_size":
+				repPay.SysSize = value.(float64)
+			case "loan_fee":
+				repPay.LoanFee = value.(float64)
+			case "epc":
+				repPay.EPC = value.(float64)
+			case "adders":
+				repPay.Adders = value.(float64)
+			case "r_r":
+				repPay.RR = value.(float64)
+			case "comm_rate":
+				repPay.CommRate = value.(float64)
+			case "net_epc":
+				repPay.NetEPC = value.(float64)
+			case "credit":
+				repPay.Credit = value.(float64)
+			case "rep_2":
+				repPay.Rep2 = value.(string)
+			case "net_comm":
+				repPay.NetComm = value.(float64)
+			case "draw_amt":
+				repPay.DrawAmt = value.(float64)
+			case "amt_paid":
+				repPay.AmtPaid = value.(float64)
+			case "balance":
+				repPay.Balance = value.(float64)
+			case "dealer_code":
+				repPay.DealerCode = value.(string)
+			case "subtotal":
+				repPay.Subtotal = value.(float64)
+			case "max_per_rep":
+				if totalAmount, ok := oweContractorMap[repPay.OweContractor]; ok && dataReq.ReportType == "ACTIVE+" {
+					if totalAmount > 0.01 {
+						repPay.MaxPerRep = value.(float64)
+					} else {
+						skip = true
+					}
+				} else {
+					repPay.MaxPerRep = value.(float64)
+				}
+			case "total_per_rep":
+				if totalAmount, ok := oweContractorMap[repPay.OweContractor]; ok && dataReq.ReportType == "STANDARD" {
+					if totalAmount > 0.01 {
+						repPay.TotalPerRep = value.(float64)
+					} else {
+						skip = true
+					}
+				} else {
+					repPay.TotalPerRep = value.(float64)
+				}
+			}
+		}
+
+		if !skip {
+			repPayList = append(repPayList, repPay)
+		}
 	}
 
 	filter, whereEleList = prepareRepPayFilters(tableName, dataReq, true, true)
@@ -118,7 +270,7 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	response := Response{
 		Message:     "Rep Pay Data",
 		RecordCount: RecordCount,
-		Data:        Finaldata,
+		Data:        repPayList,
 	}
 	log.FuncInfoTrace(0, "Number of RepPay List fetched : %v", (RecordCount))
 
@@ -140,24 +292,33 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "ALL":
 			filtersBuilder.WriteString(" rep.status_date <= $1")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
-			break
 		case "STANDARD":
-			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active' AND rep.total_per_rep > 0.01")
+			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
-			break
 		case "ACTIVE+":
-			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active' AND rep.max_per_rep > 0.01")
+			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
-			break
 		case "ACTIVE":
 			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
-			break
 		case "INACTIVE":
 			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status != 'Active'")
 			whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		}
 	}
+
+	statuses := map[string]bool{
+		"AP_OTH":      dataFilter.ApOth,
+		"AP_PDA":      dataFilter.ApPda,
+		"AP_DED":      dataFilter.ApDed,
+		"AP_ADV":      dataFilter.ApAdv,
+		"REP_COMM":    dataFilter.RepComm,
+		"REP_BONUS":   dataFilter.RepBonus,
+		"LEADER_OVRD": dataFilter.LeaderOvrd,
+	}
+
+	status := generateStatusConditionRep(statuses)
+	filtersBuilder.WriteString(fmt.Sprintf(" AND %s", status))
 
 	for i, filter := range dataFilter.Filters {
 		column := filter.Column
@@ -255,14 +416,16 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		}
 	}
 
-	if len(dataFilter.SortBy) > 1 {
-		filtersBuilder.WriteString(" ORDER BY ")
-	}
-	for i, sort := range dataFilter.SortBy {
-		filtersBuilder.WriteString(fmt.Sprintf(" $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, sort)
-		if i < len(dataFilter.SortBy)-1 {
-			filtersBuilder.WriteString(",")
+	if !forDataCount {
+		if len(dataFilter.SortBy) > 1 {
+			filtersBuilder.WriteString(" ORDER BY ")
+		}
+		for i, sort := range dataFilter.SortBy {
+			filtersBuilder.WriteString(fmt.Sprintf(" $%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, sort)
+			if i < len(dataFilter.SortBy)-1 {
+				filtersBuilder.WriteString(",")
+			}
 		}
 	}
 
@@ -271,6 +434,16 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 			"rep.DBA, rep.type, rep.Today, rep.Amount, rep.finance_type, rep.sys_size, rep.contract_total, " +
 			"rep.loan_fee, rep.epc, rep.adders, rep.r_r, rep.comm_rate, rep.net_epc, rep.credit, rep.rep_2," +
 			"rep.net_comm, rep.draw_amt, rep.amt_paid, rep.balance, rep.dealer_code, rep.subtotal, rep.max_per_rep, rep.total_per_rep")
+		if len(dataFilter.SortBy) > 1 {
+			filtersBuilder.WriteString(" ORDER BY ")
+		}
+		for i, sort := range dataFilter.SortBy {
+			filtersBuilder.WriteString(fmt.Sprintf(" $%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, sort)
+			if i < len(dataFilter.SortBy)-1 {
+				filtersBuilder.WriteString(",")
+			}
+		}
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
@@ -281,4 +454,19 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+func generateStatusConditionRep(statuses map[string]bool) string {
+	var statusConditions []string
+
+	for status, include := range statuses {
+		if include {
+			statusConditions = append(statusConditions, fmt.Sprintf("'%s'", status))
+		}
+	}
+
+	if len(statusConditions) > 0 {
+		return fmt.Sprintf(" sheet_type IN (%s)", strings.Join(statusConditions, ", "))
+	}
+	return ""
 }
