@@ -455,6 +455,12 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["pr_ded_type"] = CalculateType(uniqueID, "AP_DEDUCT")
 	outData["pr_ded_today"] = time.Now().Format("01-02-2006")
 	outData["pr_ded_status"] = dataMgmt.RepNameConfig.CalculateStatus(dataMgmt.ApDedData.GetPayee(uniqueID))
+	outData["AP_OTH"] = "AP_OTH"
+	outData["AP_PDA"] = "AP_PDA"
+	outData["AP_ADV"] = "AP_ADV"
+	outData["AP_DED"] = "AP_DED"
+	outData["REP_COMM"] = "REP_COMM"
+	outData["REP_BONUS"] = "REP_BONUS"
 
 	mapToJson(outData, uniqueID, "outData")
 	return outData, err
@@ -628,6 +634,7 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	outData["pr_r2_dir_type"] = calculatePrRType(dealer, "DIR-OVRD")
 	outData["pr_r2_dir_today"] = time.Now().Format("01-02-2006")
 	outData["pr_r2_dir_status"] = dataMgmt.RepNameConfig.CalculateStatus(R2DirName)
+	outData["LEADER_OVRD"] = "LEADER_OVRD"
 
 	return outData, err
 

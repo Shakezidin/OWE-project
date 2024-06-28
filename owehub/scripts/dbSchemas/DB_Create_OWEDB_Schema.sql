@@ -472,12 +472,8 @@ SELECT
     salMetSchema.pv_install_complete_1_2_date,
     salMetSchema.pv_install_complete_2_3_date,
     fieldOpsSchema.derate_created_date,
-    fieldOpsSchema.derate_scheduled_date,
-    fieldOpsSchema.derate_completed_date,
     fieldOpsSchema.mpu_created_date,
-    fieldOpsSchema.mpu_scheduled_date,
-    fieldOpsSchema.mpu_complete_date,
-    ABS(ROUND(internal_ops_metrics_schema.system_size * 1000 / sales_metrics_schema.contract_total), 2) AS epc
+    (intOpsMetSchema.system_size * 1000)/ salMetSchema.contract_total AS epc
 FROM
     (
         SELECT
@@ -550,13 +546,7 @@ FROM
             pto_fail_date,
             pto_date,
             inverter_part_number,
-            module,
-            derate_created_date,
-            derate_scheduled_date,
-            derate_completed_date,
-            mpu_created_date,
-            mpu_scheduled_date,
-            mpu_complete_date
+            module
         FROM
             internal_ops_metrics_schema
         WHERE
