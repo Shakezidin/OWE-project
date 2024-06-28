@@ -11,7 +11,13 @@ type RepPayRequest struct {
 	UseCutoff       string   `json:"use_cutoff"`
 	ReportType      string   `json:"report_type"`
 	SortBy          []string `json:"sort_by"`
-	Include         []string `json:"includes"`
+	ApOth           bool     `json:"ap_oth"`
+	ApPda           bool     `json:"ap_pda"`
+	ApDed           bool     `json:"ap_ded"`
+	ApAdv           bool     `json:"ap_adv"`
+	RepComm         bool     `json:"rep_comm"`
+	RepBonus        bool     `json:"rep_bonus"`
+	LeaderOvrd      bool     `json:"leader_ovrd"`
 	PageNumber      int      `json:"page_number"`
 	PageSize        int      `json:"page_size"`
 	CommissionModel string   `json:"commission_model"`

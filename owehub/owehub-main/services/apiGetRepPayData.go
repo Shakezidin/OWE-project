@@ -307,6 +307,19 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		}
 	}
 
+	statuses := map[string]bool{
+		"AP_OTH":      dataFilter.ApOth,
+		"AP_PDA":      dataFilter.ApPda,
+		"AP_DED":      dataFilter.ApDed,
+		"AP_ADV":      dataFilter.ApAdv,
+		"REP_COMM":    dataFilter.RepComm,
+		"REP_BONUS":   dataFilter.RepBonus,
+		"LEADER_OVRD": dataFilter.LeaderOvrd,
+	}
+
+	status := generateStatusConditionRep(statuses)
+	filtersBuilder.WriteString(fmt.Sprintf(" AND %s", status))
+
 	for i, filter := range dataFilter.Filters {
 		column := filter.Column
 
@@ -441,4 +454,19 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+func generateStatusConditionRep(statuses map[string]bool) string {
+	var statusConditions []string
+
+	for status, include := range statuses {
+		if include {
+			statusConditions = append(statusConditions, fmt.Sprintf("'%s'", status))
+		}
+	}
+
+	if len(statusConditions) > 0 {
+		return fmt.Sprintf(" sheet_type IN (%s)", strings.Join(statusConditions, ", "))
+	}
+	return ""
 }
