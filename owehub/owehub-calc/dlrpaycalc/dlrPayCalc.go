@@ -52,7 +52,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	/* Update Calculated and Fetched data PR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v %v", err)
+		log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err: %v", err)
 	}
 
 	resultChan <- "SUCCESS"
