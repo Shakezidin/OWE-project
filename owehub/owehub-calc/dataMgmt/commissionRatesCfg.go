@@ -205,7 +205,7 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 		}
 		return rl, rate
 	} else {
-		rl = PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
+		rl = PayScheduleCfg.CalculateRL(dealer, partner, installer, state, types, wc)
 		if len(rep1) > 0 {
 			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
 				var st string

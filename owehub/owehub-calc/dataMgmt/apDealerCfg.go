@@ -146,9 +146,6 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 * RETURNS:         gross revenue
 *****************************************************************************/
 func (pApDealerCfg *ApDealerCfgStruct) CalculateR1CommPaid(dealer, uniqueid string) (r1CommPaid float64) {
-
-	log.FuncErrorTrace(0, "===Shushank dealer: %v uniqueid: %v", dealer, uniqueid)
-
 	r1CommPaid = 0
 	if len(dealer) > 0 {
 		for _, data := range pApDealerCfg.ApDealerList {
