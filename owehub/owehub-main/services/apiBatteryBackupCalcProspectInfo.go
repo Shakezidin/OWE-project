@@ -61,8 +61,9 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 
 	if len(prospectInfoData.ProspectName) <= 0 ||
 		len(prospectInfoData.SREmailId) <= 0 ||
+		len(prospectInfoData.MultiImages) <= 0 || len(prospectInfoData.WaterHeater) <= 0 ||
+		len(prospectInfoData.CookingAppliances) <= 0 || len(prospectInfoData.Furnace) <= 0 ||
 		len(prospectInfoData.MultiImages) <= 0 {
-
 		log.FuncErrorTrace(0, "Empty Mandatory Parameter Received")
 		FormAndSendHttpResp(resp, "Empty Mandatory Parameter Received", http.StatusBadRequest, nil)
 		return
@@ -72,6 +73,14 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, prospectInfoData.ProspectName)
 	queryParameters = append(queryParameters, prospectInfoData.SREmailId)
 	queryParameters = append(queryParameters, prospectInfoData.MultiImages)
+	queryParameters = append(queryParameters, prospectInfoData.WaterHeater)
+	queryParameters = append(queryParameters, prospectInfoData.CookingAppliances)
+	queryParameters = append(queryParameters, prospectInfoData.Furnace)
+	queryParameters = append(queryParameters, prospectInfoData.ClothesDryer)
+	queryParameters = append(queryParameters, prospectInfoData.PoolPump)
+	queryParameters = append(queryParameters, prospectInfoData.WellPump)
+	queryParameters = append(queryParameters, prospectInfoData.EvCharger)
+	queryParameters = append(queryParameters, prospectInfoData.Spa)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateBatteryBackupCalcProspectInfo, queryParameters)
