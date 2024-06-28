@@ -13,6 +13,8 @@ import Carousel from 'react-multi-carousel';
 import type { ButtonGroupProps } from 'react-multi-carousel';
 import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
 import emailjs from '@emailjs/browser';
+import CategoryPopup from './components/CategoryPopup';
+import { LuChevronRight } from "react-icons/lu";
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -69,15 +71,16 @@ const Index = () => {
   type TError = typeof inputDetails & TBReakerError;
   const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [detail, setDetail] = useState({} as IDetail);
   const [batter, setBattery] = useState<
     {
-      quantity: number;
+      category: string;
       amp: string;
       note: string;
     }[]
   >([]);
+  const [isSelected, setIsSelected] = useState(-1);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -145,22 +148,6 @@ const Index = () => {
     getPropspectDetail();
   }, []);
 
-  const handleToggle = (type: 'inc' | 'dec', ind: number) => {
-    const battery = [...batter];
-    if (type === 'inc') {
-      batter[ind].quantity += 1;
-    } else {
-      if (batter[ind].quantity > 1) {
-        batter[ind].quantity -= 1;
-      }else{
-       const newArr =  batter.filter((_,index)=>index!==ind)
-        setBattery([...newArr]);
-        return
-      }
-    }
-    setBattery([...battery]);
-  };
-
   const shareImage = () => {
     emailjs
       .send(
@@ -206,7 +193,9 @@ const Index = () => {
         continous_current: parseFloat(inputDetails.continuousCurrent as string),
         breakers: batter.map((battery) => ({
           ...battery,
-          ampere: parseFloat(battery.amp.split(' ')[0]),
+          ampere: battery.amp.includes('70')
+            ? battery.amp.split('+')
+            : parseFloat(battery.amp.split(' ')[0]),
         })),
       });
       await shareImage();
@@ -262,7 +251,7 @@ const Index = () => {
       className="form-group-container "
       style={{ backgroundColor: '#F2F2F2', minHeight: '100vh' }}
     >
-      <div className="bg-white battery-wrapper p3">
+      <div className=" battery-wrapper p3">
         <div className="wrapper-header">
           <h4 className="h4" style={{ fontWeight: 500 }}>
             Breakers Details Form
@@ -277,7 +266,7 @@ const Index = () => {
         </div>
 
         <div className="flex  flex-wrap">
-          <div className="lg-col-3 pr3 col-12 ">
+          <div className="lg-col-4 pr3 col-12 ">
             <div className="inline-block mt3" style={{ width: '100%' }}>
               {detail?.panel_images_url?.length ? (
                 <Carousel
@@ -299,11 +288,10 @@ const Index = () => {
                         <img
                           src={image}
                           alt=""
-                          className='mx-auto block'
+                          className="mx-auto block"
                           style={{
                             maxWidth: '100%',
                             maxHeight: '280px',
-                       
                           }}
                         />
                       </div>
@@ -315,187 +303,171 @@ const Index = () => {
               )}
             </div>
           </div>
-          <div className="lg-col-9 col-12">
-            <div className="flex mxn2 flex-wrap" style={{ height: '95%' }}>
-              <div className="lg-col-4 col-12 pl2 dashed-section">
-                <div className="pr3">
-                  <div className="mb3 calc-input">
-                    <Input
-                      onChange={inputHandler}
-                      value={inputDetails.prospectName}
-                      name="prospectName"
-                      type="text"
-                      placeholder=""
-                      label="Prospect name"
-                    />
-                    {errors.prospectName && (
-                      <span className="error">
-                        {' '}
-                        {errors.prospectName.replaceAll(
-                          'prospectName',
-                          'Prospect name'
-                        )}{' '}
-                      </span>
-                    )}
+          <div className="lg-col-4 dashed-section  pb3 col-12">
+            {batter.map((battery, ind) => {
+              return (
+                <div className="calc-row" key={ind}>
+                  <div className="calc-border  flex items-center justify-between amp-p calc-caret">
+                    <span>{battery.amp}</span>
+                    <span
+                      role="button"
+                      onClick={() =>
+                        setBattery((prev) =>
+                          prev.filter((_, index) => index !== ind)
+                        )
+                      }
+                      className="pointer"
+                      style={{ fontSize: 12, fontWeight: 500 }}
+                    >
+                      Remove
+                    </span>
                   </div>
-
-                  <div className="mb3 calc-input">
-                    <Input
-                      onChange={inputHandler}
-                      value={inputDetails.lra}
-                      name="lra"
-                      type="text"
-                      placeholder=""
-                      label="Locked Rotor Amps (LRA)"
-                    />
-
-                    {errors.lra && (
-                      <span className="error">
-                        {' '}
-                        {errors.lra.replaceAll(
-                          'lra',
-                          'Locked Rotor Amps (LRA)'
-                        )}{' '}
-                      </span>
-                    )}
+                  <div
+                    onClick={() => {
+                      setIsSelected(ind);
+                      setIsCategoryOpen(true);
+                    }}
+                    className="calc-border category-btn pointer amp-p flex items-center justify-between calc-caret"
+                  >
+                    <span style={{textTransform:"capitalize"}} className="calc-category-label capitalize">
+                      {battery.category ? battery.category : 'Add Category'}
+                    </span>
+                   {!battery.category ?<TbPlus size={16} className="pointer" color="#919191" />:<LuChevronRight size={16} color='#000'/>}
                   </div>
-
-                  <div className="mb3 calc-input">
-                    <Input
-                      onChange={inputHandler}
-                      value={inputDetails.avgCapacity}
-                      name="avgCapacity"
+                  <div className=" calc-caret flex items-center justify-center">
+                    <input
                       type="text"
-                      placeholder=""
-                      label="Average Capacity"
+                      className="amp-p"
+                      onChange={(e) => {
+                        const battery = [...batter];
+                        battery[ind].note = e.target.value;
+                        setBattery([...battery]);
+                      }}
+                      value={battery.note}
+                      placeholder="Add Note "
                     />
-
-                    {errors.avgCapacity && (
-                      <span className="error">
-                        {' '}
-                        {(errors.avgCapacity as string).replaceAll(
-                          'avgCapacity',
-                          'Average Capacity'
-                        )}{' '}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mb3 calc-input">
-                    <Input
-                      onChange={() => null}
-                      disabled
-                      readOnly
-                      value={inputDetails.continuousCurrent}
-                      name="continuousCurrent"
-                      type="text"
-                      placeholder=""
-                      label="Continuous Current"
-                    />
-                    {errors.continuousCurrent && (
-                      <span className="error">
-                        {' '}
-                        {(errors.continuousCurrent as string).replaceAll(
-                          'continuousCurrent',
-                          'Continuous Current'
-                        )}{' '}
-                      </span>
-                    )}
                   </div>
                 </div>
-              </div>
-              <div className="lg-col-8 col-12 calc-container">
-                <div className={`flex items-center ${!batter.length?"sm-label-wrapper":""}`}  style={{ marginTop: 25 }}>
-                  <div className="breaker-size-label ">
-                    <span className="calc-label">Breakers size</span>
-                  </div>
-                  <div>
-                    <span className="calc-label">Quantity</span>
-                  </div>
+              );
+            })}
+            <div className={`unit-wrapper bg-white `}>
+              {!isOpen ? (
+                <p className="text-center" onClick={() => setIsOpen(true)}>
+                  Add more breakres +
+                </p>
+              ) : (
+                <p>Add Breaker Size</p>
+              )}
+              {isOpen && (
+                <div className="mt2 unit-grid">
+                  {apms.map((item, index) => {
+                    return (
+                      <div
+                        onClick={() => {
+                          setBattery((prev) => [
+                            ...prev,
+                            { note: '', amp: item, category: '' },
+                          ]);
+                          setIsOpen(false);
+                        }}
+                        className="flex items-center justify-center"
+                        key={index}
+                      >
+                        {item}
+                      </div>
+                    );
+                  })}
                 </div>
-
-                {batter.map((battery, ind) => {
-                  return (
-                    <div className="calc-row" key={ind}>
-                      <div className="calc-border amp-p calc-caret">
-                        {' '}
-                        {battery.amp}{' '}
-                      </div>
-                      <div className="calc-border flex items-center justify-center calc-caret">
-                        <div className="flex breaker-quantity-toggler items-center">
-                          <TbPlus
-                            size={16}
-                            className="pointer"
-                            onClick={() => handleToggle('inc', ind)}
-                          />
-
-                          <span> {battery.quantity} </span>
-                          <TbMinus
-                            size={16}
-                            className="pointer"
-                            onClick={() => handleToggle('dec', ind)}
-                          />
-                        </div>
-                      </div>
-                      <div className="calc-border calc-caret flex items-center justify-center">
-                        <input
-                          type="text"
-                          onChange={(e) => {
-                            const battery = [...batter];
-                            battery[ind].note = e.target.value;
-                            setBattery([...battery]);
-                          }}
-                          value={battery.note}
-                          placeholder="Add Note +"
-                        />
-                      </div>
-                      <div className="trash-btn flex items-center justify-center">
-                        <TfiTrash
-                          className="pointer"
-                          size={18}
-                          onClick={() =>
-                            setBattery((prev) =>
-                              prev.filter((_, index) => index !== ind)
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-                <div className={`unit-wrapper calc-border ${isOpen?"bg-white":""}`}>
-                  {!isOpen ? (
-                    <p className="text-center" onClick={() => setIsOpen(true)}>
-                      Add more breakres +
-                    </p>
-                  ) : (
-                    <p>Add Breaker Size</p>
-                  )}
-                  {isOpen && (
-                    <div className="mt2 unit-grid">
-                      {apms.map((item, index) => {
-                        return (
-                          <div
-                            onClick={() => {
-                              setBattery((prev) => [
-                                ...prev,
-                                { note: '', amp: item, quantity: 1 },
-                              ]);
-                              setIsOpen(false);
-                            }}
-                            className="flex items-center justify-center"
-                            key={index}
-                          >
-                            {item}
-                          </div>
-                        );
-                      })}
-                    </div>
+              )}
+            </div>
+            {errors.breaker && <span className="error"> {errors.breaker}</span>}
+          </div>
+          <div className="lg-col-4 col-12">
+            <div className=" form-calc-details" style={{ marginTop: 25 }}>
+              <div className="">
+                <div className="mb3 calc-input">
+                  <Input
+                    onChange={inputHandler}
+                    value={inputDetails.prospectName}
+                    name="prospectName"
+                    type="text"
+                    placeholder=""
+                    label="Prospect name"
+                  />
+                  {errors.prospectName && (
+                    <span className="error">
+                      {' '}
+                      {errors.prospectName.replaceAll(
+                        'prospectName',
+                        'Prospect name'
+                      )}{' '}
+                    </span>
                   )}
                 </div>
-                {errors.breaker && (
-                  <span className="error"> {errors.breaker}</span>
-                )}
+
+                <div className="mb3 calc-input">
+                  <Input
+                    onChange={inputHandler}
+                    value={inputDetails.lra}
+                    name="lra"
+                    type="text"
+                    placeholder=""
+                    label="Locked Rotor Amps (LRA)"
+                  />
+
+                  {errors.lra && (
+                    <span className="error">
+                      {' '}
+                      {errors.lra.replaceAll(
+                        'lra',
+                        'Locked Rotor Amps (LRA)'
+                      )}{' '}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mb3 calc-input">
+                  <Input
+                    onChange={inputHandler}
+                    value={inputDetails.avgCapacity}
+                    name="avgCapacity"
+                    type="text"
+                    placeholder=""
+                    label="Average Capacity"
+                  />
+
+                  {errors.avgCapacity && (
+                    <span className="error">
+                      {' '}
+                      {(errors.avgCapacity as string).replaceAll(
+                        'avgCapacity',
+                        'Average Capacity'
+                      )}{' '}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mb3 calc-input">
+                  <Input
+                    onChange={() => null}
+                    disabled
+                    readOnly
+                    value={inputDetails.continuousCurrent}
+                    name="continuousCurrent"
+                    type="text"
+                    placeholder=""
+                    label="Continuous Current"
+                  />
+                  {errors.continuousCurrent && (
+                    <span className="error">
+                      {' '}
+                      {(errors.continuousCurrent as string).replaceAll(
+                        'continuousCurrent',
+                        'Continuous Current'
+                      )}{' '}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -525,6 +497,13 @@ const Index = () => {
           </button>
         </div>
       </div>
+      <CategoryPopup
+        battery={batter}
+        setBattery={setBattery}
+        isSelected={isSelected}
+        isOpen={isCategoryOpen}
+        setIsOpen={setIsCategoryOpen}
+      />
     </div>
   );
 };

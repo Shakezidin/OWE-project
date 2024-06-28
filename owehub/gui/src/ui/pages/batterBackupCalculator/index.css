@@ -24,18 +24,20 @@
 
 .calc-row {
   display: grid;
-  grid-template-columns: calc(25% - 18px) calc(28% - 18px) calc(45% - 18px) auto;
-  gap: 18px;
+  grid-template-columns: 1fr;
   margin-block: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.07));
 }
 
 .unit-wrapper {
   width: 100%;
   padding-inline: 16px;
-  max-width: calc(53% - 18px);
   border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
+  background-color: #fff;
   position: relative;
 }
 .pointer {
@@ -50,7 +52,7 @@
 }
 
 .calc-border {
-  border: 1px solid #ebebeb;
+  border-bottom: 1px dashed #ECECEC;
 }
 
 .calc-caret {
@@ -62,7 +64,7 @@
 }
 
 .amp-p {
-  padding: 10px 0 10px 17px;
+  padding: 10px 22px;
 }
 
 .unit-wrapper p {
@@ -93,9 +95,7 @@
 .calc-caret input,
 .calc-caret input:focus {
   outline: none;
-  position: absolute;
-  padding-left: 17px;
-  inset: 0;
+  padding-left: 21px;
   border: none;
 }
 
@@ -144,7 +144,24 @@
   margin-inline: auto;
   transform: translateX(10px);
 }
+.category-container{
+  min-height: 70vh;
+  background-color: #fff;
+  width: 100%;
+}
+.category-popup-header{
+  color: #919191;
+  padding-block: 16px;
+  padding-left: 38px;
+  font-size: 12px;
+  border-bottom:1px solid #DADADA;
+  margin-bottom: 20px;
+}
 
+.categories-container{
+  padding-top: 20px;
+  padding-left: 37px;
+}
 .battery-amp {
   background-color: #fff;
   padding-block: 12px;
@@ -423,7 +440,11 @@
 .batter-amp-wrapper {
   gap: 64px;
 }
-
+.calc-category-label{
+  font-size: 12px;
+  color: #919191;
+  font-weight: 500;
+}
 .crl-btn {
   background: transparent;
   border: none;
@@ -465,21 +486,15 @@
   .breaker-quantity-toggler {
     gap: 12px;
   }
-  .amp-p {
-    padding: 0;
-    padding-block: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  
   .sm-label-wrapper{
     display: none !important;
   }
-  .dashed-section .pr3 {
+  .form-calc-details .pr3 {
     padding: 1rem !important;
   }
-  .dashed-section .calc-input .input-inner-view,
-  .dashed-section .calc-input .input-inner-view .input {
+  .form-calc-details .calc-input .input-inner-view,
+  .form-calc-details .calc-input .input-inner-view .input {
     background: transparent !important;
   }
   .wrapper-header {
@@ -493,13 +508,13 @@
     display: none !important;
   }
   .calc-row {
-    grid-template-columns: calc(30% - 12px) calc(35% - 12px)  auto;
-    column-gap: 6px;
-    margin-block: 12px;
+    grid-template-columns: 1fr;
+    margin-block: 24px;
   }
 
   .calc-caret input {
-    padding-left: 10px;
+    width: 100%;
+    padding-left: 21px;
     background-color: transparent !important;
   }
 
