@@ -70,8 +70,9 @@ func ProjectMngmntRetrieveQueryFunc() string {
         contract_total, finance_company, net_epc,
         pv_install_created_date AS pv_install_created_date_2,
         mpu_created_date, mpu_scheduled_date, mpu_complete_date,
-        derate_created_date, derate_scheduled_date, derate_completed_date
-        FROM consolidated_data_view
+        derate_created_date, derate_scheduled_date, derate_completed_date,
+        trenching_ws_open, trenching_scheduled, trenching_completed
+        FROM test_cdv_final3
     `
 	return ProjectMngmntRetrieveQuery
 }

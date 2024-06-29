@@ -106,7 +106,7 @@ type ProjectResponse struct {
 	SystemSize               float64 `json:"system_size"`
 	Adder                    string  `json:"adder"`
 	AHJ                      string  `json:"ajh"`
-	Epc                      string  `json:"epc"`
+	Epc                      float64  `json:"epc"`
 	State                    string  `json:"state"`
 	ContractAmount           float64 `json:"contract_amount"`
 	FinancePartner           string  `json:"finance_partner"`
@@ -131,30 +131,30 @@ var ColumnToField = map[string]string{
 	"derate_created_date":          "DeratePending",
 	"derate_scheduled_date":        "DerateScheduled",
 	"derate_completed_date":        "DerateCompleted",
-	// "derate_created_date_1":        "TrenchingPending",
-	// "derate_scheduled_date_2":      "TrenchingScheduled",
-	// "derate_completed_date_2":   "TrenchingCompleted",
-	"permit_created":            "PvPermitPending",
-	"permit_submitted_date":     "PvPermitScheduled",
-	"permit_approved_date":      "PvPermitCompleted",
-	"ic_created_date":           "IcPermitPending",
-	"ic_submitted_date":         "IcPermitScheduled",
-	"ic_approved_date":          "IcPermitCompleted",
-	"pv_install_created_date_2": "InstallPending", // check
-	"pv_install_created_date":   "InstallReady",
-	"pv_install_scheduled_date": "InstallScheduled",
-	"pv_install_completed_date": "InstallCompleted",
-	"fin_scheduled_date":        "FinalInspectionSubmitted",
-	"fin_pass_date":             "FinalInspectionApproved",
-	"pto_created_date":          "PtoInProcess",
-	"pto_submitted_date":        "PtoSubmitted",
-	"pto_date":                  "PtoCompleted",
-	"system_size":               "SystemSize",
-	"prospect":                  "Adder", // unsure value
-	"ahj":                       "AHJ",
-	"epc":                       "Epc", //check
-	"state":                     "State",
-	"contract_total":            "ContractAmount",
-	"finance_company":           "FinancePartner",
-	"net_epc":                   "NetEPC",
+	"trenching_ws_open":            "TrenchingPending",
+	"trenching_scheduled":          "TrenchingScheduled",
+	"trenching_completed":          "TrenchingCompleted",
+	"permit_created":               "PvPermitPending",
+	"permit_submitted_date":        "PvPermitScheduled",
+	"permit_approved_date":         "PvPermitCompleted",
+	"ic_created_date":              "IcPermitPending",
+	"ic_submitted_date":            "IcPermitScheduled",
+	"ic_approved_date":             "IcPermitCompleted",
+	"pv_install_created_date_2":    "InstallPending", // check
+	"pv_install_created_date":      "InstallReady",
+	"pv_install_scheduled_date":    "InstallScheduled",
+	"pv_install_completed_date":    "InstallCompleted",
+	"fin_scheduled_date":           "FinalInspectionSubmitted",
+	"fin_pass_date":                "FinalInspectionApproved",
+	"pto_created_date":             "PtoInProcess",
+	"pto_submitted_date":           "PtoSubmitted",
+	"pto_date":                     "PtoCompleted",
+	"system_size":                  "SystemSize",
+	"prospect":                     "Adder", // unsure value
+	"ahj":                          "AHJ",
+	"epc":                          "Epc", //check
+	"state":                        "State",
+	"contract_total":               "ContractAmount",
+	"finance_company":              "FinancePartner",
+	"net_epc":                      "NetEPC",
 }

@@ -1,7 +1,8 @@
 CREATE TABLE breaker_info (
     breaker_id SERIAL PRIMARY KEY,
     ampere NUMERIC,
-    category TEXT,
+    category_name TEXT,
+    category_ampere NUMERIC,
     note TEXT
 );
 

@@ -109,7 +109,7 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		prospectInfoId   models.ProspectInfoId
-		prospectLoadInfo models.ProspectLoadInfo
+		prospectLoadInfo models.GetProspectLoadInfo
 		whereEleList     []interface{}
 		data             []map[string]interface{}
 	)
@@ -149,8 +149,9 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
             json_agg(json_build_object(
                 'breaker_id', bi.breaker_id,
                 'ampere', bi.ampere,
-                'category', bi.category,
-                'note', bi.note
+								'note', bi.note,
+                'category_name', bi.category_name,
+								'category_ampere', bi.category_ampere
             )) AS breakers
         FROM
             ` + db.TableName_Prospect_Load + ` pl
@@ -193,6 +194,11 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	totalAmpere := 0.0
+	for _, breaker := range prospectLoadInfo.Breakers {
+		totalAmpere += breaker.CategoryAmpere
+	}
+	prospectLoadInfo.TotalCategoryAmperes = totalAmpere
 	log.FuncDebugTrace(0, "prospect load reterived: %+v", prospectLoadInfo)
 	FormAndSendHttpResp(resp, "prospect load reterived Successfully", http.StatusOK, prospectLoadInfo)
 }

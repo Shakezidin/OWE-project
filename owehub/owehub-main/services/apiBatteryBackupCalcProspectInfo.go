@@ -61,8 +61,6 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 
 	if len(prospectInfoData.ProspectName) <= 0 ||
 		len(prospectInfoData.SREmailId) <= 0 ||
-		len(prospectInfoData.MultiImages) <= 0 || len(prospectInfoData.WaterHeater) <= 0 ||
-		len(prospectInfoData.CookingAppliances) <= 0 || len(prospectInfoData.Furnace) <= 0 ||
 		len(prospectInfoData.MultiImages) <= 0 {
 		log.FuncErrorTrace(0, "Empty Mandatory Parameter Received")
 		FormAndSendHttpResp(resp, "Empty Mandatory Parameter Received", http.StatusBadRequest, nil)
