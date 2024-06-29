@@ -647,7 +647,7 @@ const RepDashBoardTable = () => {
 
     {
       name: 'stat_date',
-      displayName: 'Stat Date',
+      displayName: 'Start Date',
       type: 'string',
       isCheckbox: false,
     },

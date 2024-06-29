@@ -126,20 +126,6 @@
   height: calc(100% - 70px);
   overflow-y: auto;
 }
-
-.rep-date-button {
-  border-radius: 0.4rem;
-  border: none;
-  outline: none;
-  background-color: #ffffff;
-  padding: 6px;
-  cursor: pointer;
-  text-wrap: nowrap;
-  color: rgb(52, 64, 84);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 14.5px;
-}
 .rep-calender-container {
   position: absolute;
   z-index: 999;
@@ -217,8 +203,9 @@
 }
 .rep-manage-user{
   display: flex;
-  gap: 1px;
+  gap: 1rem;
 }
+
 
 .rep-drop_label {
   width: 32px;
@@ -236,15 +223,25 @@
   /* text-align: left; */
   /* width: 45px; */
 }
+
+.date-inputLabel {
+  color: #000000;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  /* text-align: left; */
+  /* width: 45px; */
+}
 .rep-up {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  
 }
 .drop-d{
   margin-bottom: 4px;
-  margin-right: 40px;
 }
 
 .rep-white-back{
@@ -256,7 +253,12 @@
   border-radius: 18px;
 }
 
-
+.selected-indicator {
+  display: none;
+}
+.date-range-small {
+  display: none;
+}
 
 
 @media (max-width: 1024px) {
@@ -298,24 +300,12 @@
   border-radius: 12px;
   background: rgba(255, 255, 255, .3);
 }
-.rep-dash-head-input {
-  display: flex;
-  height: 47px;
-  background-color: #ffffff;
-  padding: 0 3px 0 3px;
-  gap: 0;
-  align-items: center;
-  border-radius: 8px;
-}
+
 .rep-manage-user{
   display: flex;
   gap: 0;
 }
-.rep-dashboard-payroll {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-}
+
 .rep-calender-container {
   position: absolute;
   z-index: 999;
@@ -326,16 +316,12 @@
   border-radius: 0.4rem;
 }
 .rep-drop_label {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 24px;
+  height: 28px;
 }
 .rep-drop_label img{
   width: 15px;
-  height: 17px;
+  height: 14px;
 }
 
 .rep-active-filter-line {
@@ -357,6 +343,37 @@
   gap: 0;
   padding: 10px 0;
 }
+.drop-d{
+  margin-right: 0;
+}
+
+.rep-filter-line {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rep-up {
+  margin-left: -1px;
+}
+.rep-dashboard-payroll{
+  width: 110px;
+}
+.date-text {
+  max-width: 10px; /* Adjust this value as needed */
+}
+
+.date-range-small {
+  display: contents;
+}
+.date-range-large {
+  display: none;
+}
+
 
 }
 

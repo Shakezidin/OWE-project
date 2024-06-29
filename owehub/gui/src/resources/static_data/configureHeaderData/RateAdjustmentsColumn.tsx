@@ -30,7 +30,7 @@ export const RateAdjustmentsColumns: Column[] = [
   },
   {
     name: 'pay_scale',
-    displayName: 'PayScale',
+    displayName: 'Pay Scale',
     type: 'string',
     isCheckbox: false,
   },

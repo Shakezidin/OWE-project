@@ -62,13 +62,34 @@ export const RepPayDashboardPage: React.FC = () => {
     { value: 'LEADER', label: 'LEADER' },
   ];
 
+  const reportData = [
+    { value: 'All', label: 'All' },
+    { value: 'STANDARD', label: 'STANDARD' },
+    { value: 'ACTIVE', label: 'ACTIVE' },
+    { value: 'ACTIVE+', label: 'ACTIVE+' },
+    { value: 'INACTIVE', label: 'INACTIVE' },
+  ];
+  const cutOff = [
+    { value: 'YES', label: 'YES' },
+    { value: 'NO', label: 'NO' },
+  ];
+
   const [selectedOption3, setSelectedOption3] = useState<string>(
-    includeData[0].label
+    cutOff[0].label
   );
   const handleSelectChange3 = (
     selectedOption3: { value: string; label: string } | null
   ) => {
     setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
+  };
+
+  const [selectedOption4, setSelectedOption4] = useState<string>(
+    reportData[0].label
+  );
+  const handleSelectChange4 = (
+    selectedOption4: { value: string; label: string } | null
+  ) => {
+    setSelectedOption4(selectedOption4 ? selectedOption4.value : '');
   };
 
   // used for close date click outside anywhere
@@ -101,19 +122,19 @@ export const RepPayDashboardPage: React.FC = () => {
             <div className="rep-manage-user">
 
 
-            <div className="rep-dash-head-input" >
+              <div className="rep-dash-head-input">
                 <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
-                  <img  src={ICONS.vector} alt="" />
+                  <img src={ICONS.vector} alt="" />
                 </div>
                 <div className='rep-up'>
-                  <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "-29px" }}>
+                  <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "10px" }}>
                     Includes
                   </label>
                   <div className='drop-d'> <DropdownWithCheckboxes isOpen={isOpen} setIsOpen={setIsOpen} /></div>
                 </div>
               </div>
 
-              <div className="rep-dash-head-input" style={{ minWidth: '185px' }}>
+              <div className="rep-dash-head-input" style={{ minWidth: "155px" }}>
                 <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
                   <img src={ICONS.lable_img} alt="" />
                 </div>
@@ -131,7 +152,7 @@ export const RepPayDashboardPage: React.FC = () => {
                     value={comissionValueData.find(
                       (option) => option.value === selectedOption2
                     )}
-                    onFocus={()=>setIsOpen(false)}
+                    onFocus={() => setIsOpen(false)}
                     onChange={handleSelectChange2}
                     styles={{
                       control: (baseStyles, state) => ({
@@ -148,13 +169,13 @@ export const RepPayDashboardPage: React.FC = () => {
                         alignContent: 'center',
                         backgroundColor: '#ffffff',
                         cursor: 'pointer',
-                        marginRight: '32px',
+                        // marginRight: '32px',
                         // marginBottom: '0px',
                         boxShadow: 'none',
                         marginTop: '15px'
 
                       }),
-                      
+
                       indicatorSeparator: () => ({
                         display: 'none',
                       }),
@@ -177,7 +198,7 @@ export const RepPayDashboardPage: React.FC = () => {
                       }),
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
-                        color:selectedOption2? '#292929' : '#8b8484' ,
+                        color: selectedOption2 ? '#292929' : '#8b8484',
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,
@@ -194,19 +215,15 @@ export const RepPayDashboardPage: React.FC = () => {
                     }}
                   />
                 </div>
-               
+
               </div>
 
-
-              <div className="rep-dash-head-input" style={{width: "210px" }}>
-
-
-
+              <div className="rep-dash-head-input">
                 <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
                 <div className='rep-up relative'>
-                  <label className="rep-inputLabel" style=
+                  <label className="date-inputLabel" style=
                     {{
                       color: '#344054',
                       position: 'absolute',
@@ -233,9 +250,16 @@ export const RepPayDashboardPage: React.FC = () => {
                       onClick={handleToggleDatePicker}
                       style={{ color: '#292929' }}
                     >
-                      {selectionRange.startDate.toLocaleDateString() !== selectionRange.endDate.toLocaleDateString()
-                        ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
-                        : 'Select Date'}
+                      <span className="date-text">
+                        {selectionRange.startDate.toLocaleDateString() !== selectionRange.endDate.toLocaleDateString()
+                          ? <React.Fragment>
+                            <span className="date-range-large">
+                              {`${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`}
+                            </span>
+                            <span className="date-range-small">Date Selected</span>
+                          </React.Fragment>
+                          : 'Select Date'}
+                      </span>
                     </label>
                     {showDatePicker && (
                       <div className="rep-calender-container">
@@ -259,6 +283,173 @@ export const RepPayDashboardPage: React.FC = () => {
                     )}
                   </div>
                 </div>
+              </div>
+
+              <div className="rep-dash-head-input" style={{ minWidth: "120px" }}>
+              <div className='rep-drop_label' style={{ backgroundColor: "#63ACA3" }}>
+                  <img src={ICONS.report1} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="rep-inputLabel" style=
+                    {{
+                      color: '#344054', position: 'absolute', left: '8px',
+                      top: '-10px',
+                      whiteSpace: 'nowrap'
+                    }}>
+                    Report Type
+                  </label>
+                  <Select
+                    options={reportData}
+                    value={reportData.find(
+                      (option) => option.value === selectedOption4
+                    )}
+                    onFocus={() => setIsOpen(false)}
+                    onChange={handleSelectChange4}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        borderRadius: '.40rem',
+                        border: 'none',
+                        outline: 'none',
+                        // width: '4rem',
+                        width: 'fit-content',
+                        minHeight: 'unset',
+                        height: '8px',
+                        alignContent: 'center',
+                        backgroundColor: '#ffffff',
+                        cursor: 'pointer',
+                        // marginRight: '26px',
+                        // marginBottom: '0px',
+                        boxShadow: 'none',
+                        marginTop: '15px'
+
+                      }),
+
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                        '&:hover': {
+                          color: '#292929',
+                        },
+                        marginLeft: '-18px'
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#0000000',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                        },
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: selectedOption2 ? '#292929' : '#8b8484',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '131px',
+                        left: -31
+                      }),
+                      input: (baseStyles) => ({
+                        ...baseStyles,
+                        '&:focus': {
+                          border: 'none',
+                          outline: 'none'
+                        }
+                      })
+                    }}
+                  />
+                </div>
+
+              </div>
+              <div className="rep-dash-head-input">
+                <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
+                  <img src={ICONS.lable_img} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="rep-inputLabel" style=
+                    {{
+                      color: '#344054', position: 'absolute', left: '8px',
+                      top: '-10px',
+                      whiteSpace: 'nowrap'
+                    }}>
+                    Cut Off
+                  </label>
+                  <Select
+                    options={cutOff}
+                    value={cutOff.find(
+                      (option) => option.value === selectedOption3
+                    )}
+                    onFocus={() => setIsOpen(false)}
+                    onChange={handleSelectChange3}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        borderRadius: '.40rem',
+                        border: 'none',
+                        outline: 'none',
+                        // width: '4rem',
+                        width: 'fit-content',
+                        minHeight: 'unset',
+                        height: '8px',
+                        alignContent: 'center',
+                        backgroundColor: '#ffffff',
+                        cursor: 'pointer',
+                        // marginRight: '32px',
+                        // marginBottom: '0px',
+                        boxShadow: 'none',
+                        marginTop: '15px'
+
+                      }),
+
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                        '&:hover': {
+                          color: '#292929',
+                        },
+                        marginLeft: '-18px'
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#0000000',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                        },
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: selectedOption2 ? '#292929' : '#8b8484',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '131px',
+                        left: -31
+                      }),
+                      input: (baseStyles) => ({
+                        ...baseStyles,
+                        '&:focus': {
+                          border: 'none',
+                          outline: 'none'
+                        }
+                      })
+                    }}
+                  />
+                </div>
+
               </div>
 
             </div>
