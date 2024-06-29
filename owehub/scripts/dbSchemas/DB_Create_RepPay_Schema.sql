@@ -160,7 +160,8 @@ CREATE TABLE rep_pay_cal_standard(
     AP_ADV varchar,
     AP_DED varchar,
     REP_COMM varchar,
-    REP_BONUS varchar
+    REP_BONUS varchar,
+    per_rep_sales float
 );
  
  

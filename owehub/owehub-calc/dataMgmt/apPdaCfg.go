@@ -8,6 +8,7 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 	"strings"
 	"time"
 )
@@ -33,8 +34,6 @@ func (pApPdaData *ApPdaCfgStruct) LoadApPdaCfg() (err error) {
 		whereEleList []interface{}
 		query        string
 	)
-	// log.EnterFn(0, "LoadARCfg")
-	// defer func() { log.ExitFn(0, "LoadARCfg", err) }()
 
 	query = `
 		 SELECT * FROM ap_pda`
@@ -85,11 +84,13 @@ func (pApPdaData *ApPdaCfgStruct) LoadApPdaCfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
-* DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        GetApPdaBalance
+* DESCRIPTION:     calculates the ap pda balance, dba value based on the provided data
+* RETURNS:         balance, dba
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaBalance(UniqueId, payee string, paidAmount, amount, clawAmnt float64) (balance float64, dba string) {
+	log.EnterFn(0, "GetApPdaBalance")
+	defer func() { log.ExitFn(0, "GetApPdaBalance", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
 		if UniqueId == data.UniqueId {
 			dba = DBACfg.CalculateReprepDba(data.Payee)
@@ -104,11 +105,13 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaBalance(UniqueId, payee string, paidAm
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
-* DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        GetApPdaPaidAmount
+* DESCRIPTION:     calculates the ap pda paid amount, clawamnt value based on the provided data
+* RETURNS:         PaidAmnt, clawAmnt
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaPaidAmount(UniqueId, payee string) (PaidAmnt, clawAmnt float64) {
+	log.EnterFn(0, "GetApPdaPaidAmount")
+	defer func() { log.ExitFn(0, "GetApPdaPaidAmount", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
 		if UniqueId == data.UniqueId {
 			PaidAmnt, clawAmnt = ApRepCfg.CalculateApPdaTotalPaid(UniqueId, data.Payee)
@@ -118,11 +121,13 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaPaidAmount(UniqueId, payee string) (Pa
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
-* DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        GetApPdaAmount
+* DESCRIPTION:     calculates the pda amount value based on the provided data
+* RETURNS:         pda amount
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaAmount(UniqueId, payee string, rcmdAmnt float64) (balance float64) {
+	log.EnterFn(0, "GetApPdaAmount")
+	defer func() { log.ExitFn(0, "GetApPdaAmount", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
 		if data.UniqueId == UniqueId {
 			if rcmdAmnt == 0 {
@@ -138,11 +143,13 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaAmount(UniqueId, payee string, rcmdAmn
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
-* DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        GetApPdaRcmdAmount
+* DESCRIPTION:     calculates the pda rcm amount value based on the provided data
+* RETURNS:         pda rcm amount
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaRcmdAmount(UniqueId, payee, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (balance float64) {
+	log.EnterFn(0, "GetApPdaRcmdAmount")
+	defer func() { log.ExitFn(0, "GetApPdaRcmdAmount", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
 		if data.UniqueId == UniqueId {
 			if UniqueId[:3] == "PDA" {
@@ -163,10 +170,12 @@ func ConvertToLower(str1 string) (result string) {
 
 /******************************************************************************
  * FUNCTION:        getPayee
- * DESCRIPTION:     calculates the payee  value based on the unique Id
+ * DESCRIPTION:     calculates the payee value based on the unique Id
  * RETURNS:         payee
  *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetPayee(uniqueId string) (payee string) {
+	log.EnterFn(0, "GetPayee")
+	defer func() { log.ExitFn(0, "GetPayee", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
 		if data.UniqueId == uniqueId {
 			return data.Payee
@@ -175,7 +184,14 @@ func (pApPdaData *ApPdaCfgStruct) GetPayee(uniqueId string) (payee string) {
 	return payee
 }
 
+/******************************************************************************
+ * FUNCTION:        GetDate
+ * DESCRIPTION:     calculates the date value based on the unique Id
+ * RETURNS:         date
+ *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	log.EnterFn(0, "GetDate")
+	defer func() { log.ExitFn(0, "GetDate", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
 		if data.UniqueId == uniqueId {
 			return data.Date

@@ -143,9 +143,11 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 /******************************************************************************
 * FUNCTION:        CalculateR1CommPaid
 * DESCRIPTION:     calculates the "pr1_comm_paid" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         r1CommPaid
 *****************************************************************************/
 func (pApDealerCfg *ApDealerCfgStruct) CalculateR1CommPaid(dealer, uniqueid string) (r1CommPaid float64) {
+	log.EnterFn(0, "CalculateR1CommPaid")
+	defer func() { log.ExitFn(0, "CalculateR1CommPaid", nil) }()
 	r1CommPaid = 0
 	if len(dealer) > 0 {
 		for _, data := range pApDealerCfg.ApDealerList {
@@ -163,9 +165,11 @@ func (pApDealerCfg *ApDealerCfgStruct) CalculateR1CommPaid(dealer, uniqueid stri
 /******************************************************************************
 * FUNCTION:        CalculateR1DrawPaid
 * DESCRIPTION:     calculates the "r1_draw_paid" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         R1FrawPaid
 *****************************************************************************/
 func (pApDealerCfg *ApDealerCfgStruct) CalculateR1DrawPaid(dealer, uniqueID string) (R1FrawPaid float64) {
+	log.EnterFn(0, "CalculateR1DrawPaid")
+	defer func() { log.ExitFn(0, "CalculateR1DrawPaid", nil) }()
 	if len(dealer) > 0 {
 		for _, data := range pApDealerCfg.ApDealerList {
 			if data.UniqueId == uniqueID && data.Dealer == dealer && (data.Type == "Sold" || data.Type == "NTP") {
@@ -177,12 +181,13 @@ func (pApDealerCfg *ApDealerCfgStruct) CalculateR1DrawPaid(dealer, uniqueID stri
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateR1DrawPaid
-* DESCRIPTION:     calculates the "r1_draw_paid" value based on the provided data
-* RETURNS:         gross revenue
+* FUNCTION:        CalculateOvrdPaid
+* DESCRIPTION:     calculates the "ovrd paid" value based on the provided data
+* RETURNS:         ovrdPaid
 *****************************************************************************/
 func (pApDealerCfg *ApDealerCfgStruct) CalculateOvrdPaid(dealer, uniqueID, parentDlr string) (ovrdPaid float64) {
-
+	log.EnterFn(0, "CalculateOvrdPaid")
+	defer func() { log.ExitFn(0, "CalculateOvrdPaid", nil) }()
 	ovrdPaid = 0.0
 	if len(dealer) > 0 {
 		for _, data := range pApDealerCfg.ApDealerList {

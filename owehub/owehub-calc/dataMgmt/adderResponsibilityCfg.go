@@ -70,7 +70,7 @@ func (adderRespCfg *adderRespCfgStruct) LoadadderRespCfg() (err error) {
 /******************************************************************************
 * FUNCTION:        CalculateadderResp
 * DESCRIPTION:     calculates the repayment bonus value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* RETURNS:         adderResp float64
 *****************************************************************************/
 func (adderRespCfg *adderRespCfgStruct) CalculateAdderResp(r1PayScale string) (adderResp float64) {
 	log.EnterFn(0, "CalculateAdderResp")

@@ -104,6 +104,11 @@ func (pApptSettersCfg *ApptSettersCfgStruct) LoadApptSettersCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+ * FUNCTION:        CalculatePayRate
+ * DESCRIPTION:     calculates the pay rate based on the unique Id
+ * RETURNS:         payRate
+ *****************************************************************************/
 func (pApptSettersCfg *ApptSettersCfgStruct) CalculatePayRate(apptSetter string, wc time.Time) (payRate float64) {
 	log.EnterFn(0, "CalculatePayRate")
 	defer func() { log.ExitFn(0, "CalculatePayRate", nil) }()

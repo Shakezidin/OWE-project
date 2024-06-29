@@ -43,9 +43,9 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			repPayCalc, err = CalculateRepPayProject(saleData)
 			if err != nil || repPayCalc == nil {
 				if len(saleData.UniqueId) > 0 {
-					log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
+					log.FuncErrorTrace(0, "Failed to calculate Rep Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
 				} else {
-					log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+					log.FuncErrorTrace(0, "Failed to calculate Rep Pay Data err : %+v", err)
 				}
 			} else {
 				repPayCalcList = append(repPayCalcList, repPayCalc)
@@ -54,9 +54,9 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			repPayCalc, err = CalculateOldRepPayProject(saleData)
 			if err != nil || repPayCalc == nil {
 				if len(saleData.UniqueId) > 0 {
-					log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
+					log.FuncErrorTrace(0, "Failed to calculate Rep Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
 				} else {
-					log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+					log.FuncErrorTrace(0, "Failed to calculate Rep Pay Data err : %+v", err)
 				}
 			} else {
 				oldrepPayCalcList = append(oldrepPayCalcList, repPayCalc)
@@ -120,8 +120,8 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	types := ""                                //* not received from Colten yet //E
 	kwh := (systemSize * 1000) / contractTotal //* confirm with shushank //Q
 	apptSetter := saleData.Setter              //* confirm with shushank //O
-	commissionModels := "standard"             //* confirm with sushank
 
+	// it is for testing purpose, we can hardcode the values due to missmach between consolidated_data_view and sheet
 	log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, rep1, dealer)
 	log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
 	log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
@@ -161,8 +161,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	apptSetter = ""                           //O
 	payee := ""                               //confirm with sushank
 
+	//till here u can commment it out if u need to remove hard code values
+
 	//*==================== COMMON ==========================/
-	salesRepType := CalculateSalesRepType(uniqueID, rep1, rep2)                                                                                                     //DG need to confirm with sushank
+	salesRepType := CalculateSalesRepType(uniqueID, rep1, rep2)                                                                                                     //DG
 	statusDate := CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)                                                                      //AK
 	perTeamKw := calculatePerTeamKw(rep1, rep2, wc, systemSize)                                                                                                     //AW
 	perRepKw := calculatePerRepKw(rep1, rep2, systemSize)                                                                                                           //AN
@@ -173,19 +175,19 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	payRate := dataMgmt.ApptSettersCfg.CalculatePayRate(apptSetter, wc)                                                                                             //DC (O, U)
 	loanFee := dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractTotal, wc)                                                  //AR
 
-	commissionModels = "standard"
+	commissionModels = "standard" //temporory
 	//*==================== REP 1 ==========================/
-	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, wc, true)                                                               //BP (mistake)
+	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, wc, true)                                                               //BP
 	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                                                                                      //BO
 	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                                                                                                       //AZ
-	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                                                                                                      //BI  there is no schema and get endpoint in main for repcredit
+	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                                                                                                      //BI
 	rep1Addr := dataMgmt.AdderDataCfg.CalculateR1AddrResp(commissionModels, dealer, rep1, rep2, uniqueID, state, systemSize, true)                                            //BL
 	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateRPayScale(rep1, state, wc)                                                                                      //BA //BB
 	rep1Rl, rep1Rate := dataMgmt.CmmsnRatesCfg.CalculateRep1Rl(commissionModels, dealer, rep1, partner, installer, state, types, rep1PayScale, kwh, wc)                       //BC BD
 	rep1Adjustment, rep1minRate, rep1maxRate := dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(rep1PayScale, rep1Position)                                     //BE BF BG
 	rep1R_R := calculateRR(rep1, rep1Rebate, rep1Referral)                                                                                                                    //BQ
 	rep1Incentive := dataMgmt.RepIncentCfg.CalculateRepR1Incentive(rep1, wc)                                                                                                  //BH
-	rep1AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, types, systemSize, wc, true)                                                    //BM(mistake)
+	rep1AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, types, systemSize, wc, true)                                                    //BM
 	rep1LoanFee := dataMgmt.SaleData.CalculateRepRLoanFee(rep1, uniqueID, dealer, installer, state, rep1, rep2, loanType, systemSize, contractCalc, wc)                       //BN
 	rep1AdderTotal := calculateR1AdderTotal(rep1, commissionModels, rep1Addr, rep1AutoAdder, rep1LoanFee, rep1Rebate, rep1Referral)                                           //BR (BL, BM, BN, BO, BP)
 	rep1NetEpc := calculateR1NetEpc(perRepKw, contractCalc, rep1AdderTotal, rep1LoanFee, loanFee, systemSize)                                                                 //BU
@@ -329,7 +331,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["status_date"] = statusDate
 	outData["per_team_kw"] = perTeamKw
 	outData["per_rep_kw"] = perRepKw
-	// outData["per_rep_sales"] = RepPerRepSales
+	outData["per_rep_sales"] = RepPerRepSales
 	outData["contract_calc"] = contractCalc
 	outData["epc_calc"] = epcCalc
 	outData["rep_draw_percentage"] = RepDrawPercentage

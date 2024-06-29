@@ -114,6 +114,8 @@ func (pDealer *DealerRepaymentStruct) LoadDealerRepaymentCfg() (err error) {
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (pDealer *DealerRepaymentStruct) CalculateRepaymentBonus(uniqueid, homeOwner string) (dlrPayBonus float64) {
+	log.EnterFn(0, "CalculateRepaymentBonus")
+	defer func() { log.ExitFn(0, "CalculateRepaymentBonus", nil) }()
 	for _, data := range pDealer.DealerRepaymentList {
 		if data.UniqueId == uniqueid && homeOwner == data.HomeOwner {
 			dlrPayBonus += data.RepaymentBonus

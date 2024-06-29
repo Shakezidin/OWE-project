@@ -95,7 +95,7 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 		}
 
 		ExactAmount, ok := item["exact_amount"].(float64)
-		if !ok{
+		if !ok {
 			// log.ConfWarnTrace(0, "Failed to get ExactAmount for Record ID %v. Item: %+v\n", RecordId, item)
 			ExactAmount = 0.0
 		}
@@ -161,11 +161,11 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 /******************************************************************************
 * FUNCTION:        CalculateAddrPtr
 * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         addrPtrSum
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId string, sysSize float64) (addrPtrSum float64) {
-	// log.EnterFn(0, "CalculateAddrPtr")
-	// defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
+	log.EnterFn(0, "CalculateAddrPtr")
+	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
 
 	if len(dealer) > 0 {
 		// for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
@@ -178,13 +178,13 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateExpense
+* FUNCTION:        CalculateExpence
 * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         Expence
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId string, sysSize float64) (Expence float64) {
-	// log.EnterFn(0, "CalculateExpence")
-	// defer func() { log.ExitFn(0, "CalculateExpence", nil) }()
+	log.EnterFn(0, "CalculateExpence")
+	defer func() { log.ExitFn(0, "CalculateExpence", nil) }()
 
 	if len(dealer) > 0 {
 		// for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
@@ -197,13 +197,13 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAddrPtr
+* FUNCTION:        CalculateAddrPartnerExpense
 * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         addr
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPartnerExpense(dealer string, uniqueId string, sysSize float64, check bool) (addr float64) {
-	log.EnterFn(0, "CalculateAddrPtr")
-	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
+	log.EnterFn(0, "CalculateAddrPartnerExpense")
+	defer func() { log.ExitFn(0, "CalculateAddrPartnerExpense", nil) }()
 	var compare string
 	if check {
 		compare = "Partner"
@@ -228,13 +228,13 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPartnerExpense(dealer strin
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAddrPtr
+* FUNCTION:        CalculateAddr
 * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         addr
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId string, sysSize float64) (addr float64) {
-	log.EnterFn(0, "CalculateAddrPtr")
-	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
+	log.EnterFn(0, "CalculateAddr")
+	defer func() { log.ExitFn(0, "CalculateAddr", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList {
@@ -253,13 +253,13 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId st
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAddrAmount
+* FUNCTION:        CalculateRAddrResp
 * DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         r1addrresp
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateRAddrResp(dealer, rep1, rep2, uniqueId, state string, sysSize float64, r1r2Check bool) (r1addrresp float64) {
-	log.EnterFn(0, "CalculateAddrAmount")
-	defer func() { log.ExitFn(0, "CalculateAddrAmount", nil) }()
+	log.EnterFn(0, "CalculateRAddrResp")
+	defer func() { log.ExitFn(0, "CalculateRAddrResp", nil) }()
 	var repCount float64
 
 	rep := rep1
@@ -273,7 +273,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateRAddrResp(dealer, rep1, rep2, u
 		if len(uniqueId) > 0 {
 			for _, data := range AdderDataCfg.AdderDataList {
 				if data.UniqueId == uniqueId {
-					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount) //*
+					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount)
 					if perRepOverd > 0 {
 						if perRepOverd != 0 {
 							r1addrresp += perRepOverd
@@ -281,8 +281,8 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateRAddrResp(dealer, rep1, rep2, u
 							r1addrresp += 0
 						}
 					} else if len(rep1) > 0 {
-						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
-						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
+						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize)
+						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)
 						r1addrresp += perRepAddrShare * r1DefResp
 					}
 				}
@@ -313,8 +313,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(commissionModels, de
 		if len(uniqueId) > 0 {
 			for _, data := range AdderDataCfg.AdderDataList {
 				if data.UniqueId == uniqueId {
-					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount) //*
-					log.FuncErrorTrace(0, "perrepOvrd ================ %v", perRepOverd)
+					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount)
 					if perRepOverd != 0 {
 						if perRepOverd != 0 {
 							r1addrresp += perRepOverd
@@ -322,8 +321,8 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(commissionModels, de
 							r1addrresp += 0
 						}
 					} else if len(rep1) > 0 {
-						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
-						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
+						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize)
+						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)
 						r1addrresp += perRepAddrShare * r1DefResp
 					}
 				}
@@ -333,7 +332,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(commissionModels, de
 		if len(rep1) > 0 {
 			for _, data := range AdderDataCfg.AdderDataList {
 				if data.UniqueId == uniqueId {
-					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount) //*
+					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount)
 					if perRepOverd > 0 {
 						if perRepOverd != 0 {
 							r1addrresp += perRepOverd
@@ -341,8 +340,8 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(commissionModels, de
 							r1addrresp += 0
 						}
 					} else if len(rep1) > 0 {
-						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
-						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
+						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize)
+						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)
 						r1addrresp += perRepAddrShare * r1DefResp
 					}
 				}
@@ -352,7 +351,14 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(commissionModels, de
 	return r1addrresp
 }
 
+/******************************************************************************
+* FUNCTION:        CalculatePerRepOvrdShare
+* DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
+* RETURNS:         perRepOvrdShare
+*****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (perRepOvrdShare float64) {
+	log.EnterFn(0, "CalculatePerRepOvrdShare")
+	defer func() { log.ExitFn(0, "CalculatePerRepOvrdShare", nil) }()
 	if len(uniqueId) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList {
 			if data.UniqueId == uniqueId {
@@ -370,7 +376,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrdShare(uniqueId string
 /******************************************************************************
 * FUNCTION:        CalculatePerRepOvrd
 * DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         perRepOvrd
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrd(rep1, rep2, uniqueId string, repPercent, repCount, ExactAmount float64) (perRepOvrd float64) {
 	log.EnterFn(0, "CalculatePerRepOvrd")
@@ -378,7 +384,6 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrd(rep1, rep2, uniqueId
 
 	repPercent = repPercent / 100
 	if repPercent > 0 {
-		log.FuncErrorTrace(0, "exactAmount : %v === repPercent : %v ==== repCount == %v", ExactAmount, repPercent, repCount)
 		if repPercent <= 1 {
 			perRepOvrd += (ExactAmount * repPercent) / repCount
 		} else if repPercent > 1 {
@@ -391,10 +396,11 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrd(rep1, rep2, uniqueId
 /******************************************************************************
 * FUNCTION:        CalculateRepCount
 * DESCRIPTION:     calculates the "CalculateRepCount" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         repCount
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount float64) {
-
+	// log.EnterFn(0, "CalculateRepCount")
+	// defer func() { log.ExitFn(0, "CalculateRepCount", nil) }()
 	if len(rep1) > 0 && len(rep2) > 0 {
 		return 2
 	} else if len(rep1) > 0 || len(rep2) > 0 {
@@ -407,7 +413,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateRepCount(rep1, rep2 string) (re
 /******************************************************************************
 * FUNCTION:        CalculatePerRepAddrShare
 * DESCRIPTION:     calculates the "CalculatePerRepAddrShare" value based on the provided data
-* RETURNS:         addrPtr
+* RETURNS:         perRepAddrShare
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepAddrShare(rep1, rep2, uniqueId string, sysSize float64) (perRepAddrShare float64) {
 	log.EnterFn(0, "CalculatePerRepAddrShare")
@@ -426,20 +432,20 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepAddrShare(rep1, rep2, uni
 }
 
 /******************************************************************************
-* FUNCTION:        CalculatePerRepAddrShare
-* DESCRIPTION:     calculates the "CalculatePerRepAddrShare" value based on the provided data
-* RETURNS:         addrPtr
+* FUNCTION:        CalculateR1DfResp
+* DESCRIPTION:     calculates the "rep1 def resp" value based on the provided data
+* RETURNS:         r1DfResp
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateR1DfResp(rep, uniqueId, state string, sysSize float64) (r1DfResp float64) {
-	log.EnterFn(0, "CalculatePerRepAddrShare")
-	defer func() { log.ExitFn(0, "CalculatePerRepAddrShare", nil) }()
+	log.EnterFn(0, "CalculateR1DfResp")
+	defer func() { log.ExitFn(0, "CalculateR1DfResp", nil) }()
 	for _, data := range AdderDataCfg.AdderDataList {
 		if uniqueId != data.UniqueId {
 			continue
 		}
 		r1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, data.Date)
 		if len(r1PayScale) > 0 {
-			return adderRespCfg.CalculateAdderResp(r1PayScale) //*
+			return adderRespCfg.CalculateAdderResp(r1PayScale)
 		}
 	}
 	return r1DfResp
