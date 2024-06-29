@@ -165,7 +165,6 @@
 .battery-amp {
   background-color: #fff;
   padding-block: 12px;
-  outline: 4px solid #d1d1d1;
   padding-left: 10px;
   font-weight: 700;
   font-size: 15px;
@@ -173,11 +172,10 @@
 
 .battery-chip {
   position: absolute;
-  left: -55.9px;
-  top: -9px;
+  top: -12px;
+  left: -52px;
 }
 .batter-amp-switch {
-  outline: 4px solid #d1d1d1;
   width: 62px;
   height: 67px;
   background-color: #fff;
@@ -199,9 +197,6 @@
   flex-basis: 160px;
 }
 
-.translate-28 {
-  transform: translateX(28px);
-}
 
 .sm-switch {
   width: 43px;
@@ -416,7 +411,7 @@
 .grid-amp-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 100px;
+  column-gap: 16px;
 }
 
 .quantity-toggler-btn {
@@ -545,9 +540,7 @@
   .batter-amp-container {
     padding-inline: 13px;
   }
-  .grid-amp-container {
-    column-gap: 80px;
-  }
+ 
   .panel-container {
     width: 100%;
     margin-top: 100px;
@@ -561,8 +554,8 @@
     max-width: 216px;
   }
   .battery-chip {
-    top: -18px;
-    left: -54px;
+    top: -12px;
+    left: -52px;
   }
   .battery-amp {
     font-size: 12px;
@@ -570,8 +563,8 @@
   }
 
   .batter-amp-switch {
-    width: 43px;
-    height: 47px;
+    width: 55px;
+    height: 60px;
   }
   .calc-select-wrapper,
   .calc-input-wrapper {
@@ -677,13 +670,11 @@
   }
 
   .sm-switch {
-    width: 34px;
-    height: 36px;
+    width: 49px;
+    height: 100%;
   }
 
-  .battery-amp {
-    outline: 2px solid #d1d1d1;
-  }
+
 
   .sm-battery-chip {
     top: -10px;
