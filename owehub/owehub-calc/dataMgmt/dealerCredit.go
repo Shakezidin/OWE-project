@@ -128,10 +128,8 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 * RETURNS:         credit
 *****************************************************************************/
 func (DealerCreditCfg *DealerCreditCfgStruct) CalculateCreaditForUniqueId(dealer string, uniqueId string) (credit float64) {
-
-	log.EnterFn(0, "LoadDlrCreditCfg")
-	defer func() { log.ExitFn(0, "LoadDlrCreditCfg", nil) }()
-
+	log.EnterFn(0, "CalculateCreaditForUniqueId")
+	defer func() { log.ExitFn(0, "CalculateCreaditForUniqueId", nil) }()
 	credit = 0.0
 	if len(dealer) > 0 {
 		for _, data := range DealerCreditCfg.DealerCreditList.DealerCreditList {

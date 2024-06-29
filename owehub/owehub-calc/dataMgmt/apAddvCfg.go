@@ -85,11 +85,13 @@ func (pApAdvData *ApAdvCfgStruct) LoadApAdvCfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
-* DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        GetApAdvPaidAmount
+* DESCRIPTION:     calculates the adv paid amount value based on the provided data
+* RETURNS:         PaidAmnt float64
 *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetApAdvPaidAmount(UniqueId, payee string) (PaidAmnt float64) {
+	log.EnterFn(0, "GetApAdvPaidAmount")
+	defer func() { log.ExitFn(0, "GetApAdvPaidAmount", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
 		if data.UniqueId == UniqueId {
 			PaidAmnt = ApRepCfg.CalculateApAdvTotalPaid(UniqueId, data.Payee)
@@ -99,14 +101,15 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvPaidAmount(UniqueId, payee string) (Pa
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
+* FUNCTION:        GetApAdvAmount
 * DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* RETURNS:         float64
 *****************************************************************************/
-func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId, payee string, rcmdAmnt float64) (balance float64) {
+func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId, payee string, rcmdAmnt float64) float64 {
+	log.EnterFn(0, "GetApAdvAmount")
+	defer func() { log.ExitFn(0, "GetApAdvAmount", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
 		if data.UniqueId == UniqueId {
-			log.FuncFuncTrace(0, "Zidhin ++ Amount: %v", data.AmntOverdue)
 			if rcmdAmnt == 0 {
 				return 0
 			} else if data.AmntOverdue > 0 {
@@ -120,11 +123,13 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId, payee string, rcmdAmn
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
-* DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        GetApAdvRcmdAmount
+* DESCRIPTION:     calculates the rc amount value based on the provided data
+* RETURNS:         rcmdAmnt
 *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetApAdvRcmdAmount(UniqueId, payee, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (rcmdAmnt float64) {
+	log.EnterFn(0, "GetApAdvRcmdAmount")
+	defer func() { log.ExitFn(0, "GetApAdvRcmdAmount", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
 		if data.UniqueId == UniqueId {
 			if data.Payee == rep1 {
@@ -138,11 +143,13 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvRcmdAmount(UniqueId, payee, rep1, rep2
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
-* DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        GetApAdvBalance
+* DESCRIPTION:     calculates the adv balance and dba value based on the provided data
+* RETURNS:         balance, dba
 *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetApAdvBalance(UniqueId, payee string, paidAmount, amount float64) (balance float64, dba string) {
+	log.EnterFn(0, "GetApAdvBalance")
+	defer func() { log.ExitFn(0, "GetApAdvBalance", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
 		if UniqueId == data.UniqueId {
 			dba = DBACfg.CalculateReprepDba(data.Payee)
@@ -155,10 +162,12 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvBalance(UniqueId, payee string, paidAm
 
 /******************************************************************************
  * FUNCTION:        getPayee
- * DESCRIPTION:     calculates the payee  value based on the unique Id
+ * DESCRIPTION:     calculates the payee value based on the unique Id
  * RETURNS:         payee
  *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetPayee(uniqueId string) (payee string) {
+	log.EnterFn(0, "GetPayee")
+	defer func() { log.ExitFn(0, "GetPayee", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
 		if data.UniqueId == uniqueId {
 			return data.Payee
@@ -167,7 +176,14 @@ func (pApAdvData *ApAdvCfgStruct) GetPayee(uniqueId string) (payee string) {
 	return payee
 }
 
+/******************************************************************************
+ * FUNCTION:        GetDate
+ * DESCRIPTION:     calculates the date based on the unique Id
+ * RETURNS:         date
+ *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	log.EnterFn(0, "GetDate")
+	defer func() { log.ExitFn(0, "GetDate", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
 		if data.UniqueId == uniqueId {
 			return data.Date

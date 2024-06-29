@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION create_ap_ded(
     p_amount         DOUBLE PRECISION,
     p_date           DATE,
     p_short_code     CHARACTER VARYING,
-    p_description    CHARACTER VARYING
+    p_description    CHARACTER VARYING,
     OUT v_ap_ded_id INT
 )
 RETURNS INT

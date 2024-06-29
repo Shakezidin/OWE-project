@@ -135,15 +135,13 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateApRepForUniqueId
+ * FUNCTION:        CalculateRepPayForUniqueId
  * DESCRIPTION:     calculates the ap rep value based on the unique Id
  * RETURNS:         apRep
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqueId string) (apRep float64) {
-
-	log.EnterFn(0, "LoadApRepCfg")
-	defer func() { log.ExitFn(0, "LoadApRepCfg", nil) }()
-
+	log.EnterFn(0, "CalculateRepPayForUniqueId")
+	defer func() { log.ExitFn(0, "CalculateRepPayForUniqueId", nil) }()
 	apRep = 0.0
 	if len(dealer) > 0 {
 		for _, data := range ApRepCfg.ApRepList.ApRepList {
@@ -155,6 +153,11 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqu
 	return apRep
 }
 
+/******************************************************************************
+ * FUNCTION:        CalculateRepRDrawPaid
+ * DESCRIPTION:     calculates the r1 draw paid value based on the unique Id
+ * RETURNS:         r1DrawPaid
+ *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateRepRDrawPaid(uniqueId, rep string) (r1DrawPaid float64) {
 	log.EnterFn(0, "CalculateRepRDrawPaid")
 	defer func() { log.ExitFn(0, "CalculateRepRDrawPaid", nil) }()
@@ -168,18 +171,23 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepRDrawPaid(uniqueId, rep string) (r1
 	return r1DrawPaid
 }
 
-func (pApRepCfg *ApRepCfgStruct) CalculateRepRCommPaid(uniqueId, rep string) (r1DrawPaid float64) {
+/******************************************************************************
+ * FUNCTION:        CalculateRepRCommPaid
+ * DESCRIPTION:     calculates the r1 comm paid value based on the unique Id
+ * RETURNS:         r1CommPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateRepRCommPaid(uniqueId, rep string) (r1CommPaid float64) {
 	log.EnterFn(0, "CalculateRepRCommPaid")
 	defer func() { log.ExitFn(0, "CalculateRepRCommPaid", nil) }()
 	if len(rep) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == rep && (data.Type == "Advance" || data.Type == "Draw" ||
 				data.Type == "Shaky" || data.Type == "Cancel" || data.Type == "Final" || data.Type == "Adjustment") {
-				r1DrawPaid += data.Amount
+				r1CommPaid += data.Amount
 			}
 		}
 	}
-	return r1DrawPaid
+	return r1CommPaid
 }
 
 /******************************************************************************
@@ -188,6 +196,8 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepRCommPaid(uniqueId, rep string) (r1
  * RETURNS:         apptPaid
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) (apptPaid float64) {
+	log.EnterFn(0, "CalculateApptPaid")
+	defer func() { log.ExitFn(0, "CalculateApptPaid", nil) }()
 	if len(apptSetter) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == apptSetter && data.Type == "Appt-Set" {
@@ -199,11 +209,13 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) 
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateR2DmPaid
+ * FUNCTION:        CalculateR1Paid
  * DESCRIPTION:     calculates the r2 dm paid value based on the
  * RETURNS:         r2DmPaid
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateR1Paid(r2DmName, uniqueId, types string) (r2DmPaid float64) {
+	log.EnterFn(0, "CalculateR1Paid")
+	defer func() { log.ExitFn(0, "CalculateR1Paid", nil) }()
 	if len(r2DmName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == types {
@@ -215,11 +227,13 @@ func (pApRepCfg *ApRepCfgStruct) CalculateR1Paid(r2DmName, uniqueId, types strin
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateR2DirPaid
+ * FUNCTION:        CalculateR2Paid
  * DESCRIPTION:     calculates the r2 dir paid value based on the
  * RETURNS:         r2DirPaid
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateR2Paid(r2DmName, uniqueId, types string) (r2DirPaid float64) {
+	log.EnterFn(0, "CalculateR2Paid")
+	defer func() { log.ExitFn(0, "CalculateR2Paid", nil) }()
 	if len(r2DmName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == types {
@@ -231,11 +245,13 @@ func (pApRepCfg *ApRepCfgStruct) CalculateR2Paid(r2DmName, uniqueId, types strin
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateApRepForUniqueId
- * DESCRIPTION:     calculates the ap rep value based on the unique Id
- * RETURNS:         apRep
+ * FUNCTION:        CalculateAmountApOth
+ * DESCRIPTION:     calculates the ap oth amount value based on the unique Id
+ * RETURNS:         amount
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateAmountApOth(uniqueId, payee string) (amount float64) {
+	log.EnterFn(0, "CalculateAmountApOth")
+	defer func() { log.ExitFn(0, "CalculateAmountApOth", nil) }()
 	for _, data := range pApRepCfg.ApRepList.ApRepList {
 		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-OTHER" {
 			amount += data.Amount
@@ -245,11 +261,13 @@ func (pApRepCfg *ApRepCfgStruct) CalculateAmountApOth(uniqueId, payee string) (a
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateApptPaid
- * DESCRIPTION:     calculates the appt paid paid value based on the
- * RETURNS:         apptPaid
+ * FUNCTION:        CalculateApPdaTotalPaid
+ * DESCRIPTION:     calculates the appt pdat total paid value based on the
+ * RETURNS:         amount, clawAmount
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateApPdaTotalPaid(uniqueId, payee string) (amount, clawAmount float64) {
+	log.EnterFn(0, "CalculateApPdaTotalPaid")
+	defer func() { log.ExitFn(0, "CalculateApPdaTotalPaid", nil) }()
 	for _, data := range pApRepCfg.ApRepList.ApRepList {
 		if data.Amount > 0 && data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-PDA" {
 			amount += data.Amount
@@ -262,11 +280,13 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApPdaTotalPaid(uniqueId, payee string)
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateApptPaid
- * DESCRIPTION:     calculates the appt paid paid value based on the
- * RETURNS:         apptPaid
+ * FUNCTION:        CalculateApAdvTotalPaid
+ * DESCRIPTION:     calculates the ap adv total paid paid value based on the
+ * RETURNS:         totalPaid
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateApAdvTotalPaid(uniqueId, payee string) (amount float64) {
+	log.EnterFn(0, "CalculateApAdvTotalPaid")
+	defer func() { log.ExitFn(0, "CalculateApAdvTotalPaid", nil) }()
 	for _, data := range pApRepCfg.ApRepList.ApRepList {
 		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "Advance" {
 			amount += data.Amount
@@ -276,11 +296,13 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApAdvTotalPaid(uniqueId, payee string)
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateApptPaid
- * DESCRIPTION:     calculates the appt paid paid value based on the
- * RETURNS:         apptPaid
+ * FUNCTION:        CalculateApDedTotalPaid
+ * DESCRIPTION:     calculates the appt ded total paid value based on the
+ * RETURNS:         apdedtotalPaid
  *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateApDedTotalPaid(uniqueId, payee string) (amount float64) {
+	log.EnterFn(0, "CalculateApDedTotalPaid")
+	defer func() { log.ExitFn(0, "CalculateApDedTotalPaid", nil) }()
 	for _, data := range pApRepCfg.ApRepList.ApRepList {
 		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-DEDUCT" {
 			amount += data.Amount
@@ -289,7 +311,14 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApDedTotalPaid(uniqueId, payee string)
 	return amount
 }
 
+/******************************************************************************
+ * FUNCTION:        CalculateR1SlPaid
+ * DESCRIPTION:     calculates the r1 sl paid value based on the
+ * RETURNS:         r1SlPaid
+ *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateR1SlPaid(r1SlName, uniqueId, types string) (r1SlPaid float64) {
+	log.EnterFn(0, "CalculateR1SlPaid")
+	defer func() { log.ExitFn(0, "CalculateR1SlPaid", nil) }()
 	if len(r1SlName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == r1SlName && data.Type == types {

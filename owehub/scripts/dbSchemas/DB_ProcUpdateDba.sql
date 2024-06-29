@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION create_dba(
+CREATE OR REPLACE FUNCTION update_dba(
     p_id      INT,
     p_name      CHARACTER VARYING,
     p_dba         CHARACTER VARYING,
@@ -9,7 +9,7 @@ AS $$
 BEGIN
     UPDATE dba
     SET 
-        name = p_name,
+        preferred_name = p_name,
         dba = p_dba,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id

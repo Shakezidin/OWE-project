@@ -42,7 +42,7 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadRDealerOverrideCfg", err) }()
 
 	query = `
-  SELECT dor.id as record_id, dor.sub_dealer, vd.dealer_code, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name, vd.dealer_code as dealer_name  
+  SELECT dor.id as record_id, dor.sub_dealer, vd.dealer_name, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name, vd.dealer_code as dealer_name  
   FROM dealer_override dor
   LEFT JOIN v_dealer vd ON vd.id = dor.dealer_id
   LEFT JOIN states st ON st.state_id = dor.state`
@@ -131,8 +131,6 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 func (pDealer *DealerOverrideStruct) CalculateParentDealerAndPayRate(dealer string, wc time.Time) (respdealer string, payRate float64) {
 	log.EnterFn(0, "CalculateParentDealerAndPayRate")
 	defer func() { log.ExitFn(0, "CalculateParentDealerAndPayRate", nil) }()
-
-	log.FuncErrorTrace(0, "===Shushank %+v %v", dealer, wc)
 
 	respdealer = ""
 	payRate = 0.0

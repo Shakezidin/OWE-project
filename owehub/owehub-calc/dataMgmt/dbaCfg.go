@@ -9,6 +9,7 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 )
 
 type GetDBAList struct {
@@ -67,11 +68,13 @@ func (DBACfg *DBACfgStruct) LoadDBACfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateReprep1Dba
-* DESCRIPTION:     calculates the repayment bonus value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        CalculateReprepDba
+* DESCRIPTION:     calculates the rep dba value based on the provided data
+* RETURNS:         dba
 *****************************************************************************/
 func (DBACfg *DBACfgStruct) CalculateReprepDba(rep string) (dba string) {
+	log.EnterFn(0, "CalculateReprepDba")
+	defer func() { log.ExitFn(0, "CalculateReprepDba", nil) }()
 	if len(rep) > 0 {
 		for _, data := range DBACfg.DBAList {
 			if data.PreferredName == rep {
@@ -85,9 +88,11 @@ func (DBACfg *DBACfgStruct) CalculateReprepDba(rep string) (dba string) {
 /******************************************************************************
 * FUNCTION:        CalculateApptSetDba
 * DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* RETURNS:         apptSetDba
 *****************************************************************************/
 func (DBACfg *DBACfgStruct) CalculateApptSetDba(apptSetter string) (apptSetDba string) {
+	log.EnterFn(0, "CalculateApptSetDba")
+	defer func() { log.ExitFn(0, "CalculateApptSetDba", nil) }()
 	if len(apptSetter) > 0 {
 		for _, data := range DBACfg.DBAList {
 			if data.PreferredName == apptSetter {
@@ -99,11 +104,13 @@ func (DBACfg *DBACfgStruct) CalculateApptSetDba(apptSetter string) (apptSetDba s
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateR2DbDba
+* FUNCTION:        CalculateR2DBA
 * DESCRIPTION:     calculates the r2 db dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* RETURNS:         string
 *****************************************************************************/
 func (DBACfg *DBACfgStruct) CalculateR2DBA(r2DirName string) string {
+	log.EnterFn(0, "CalculateR2DBA")
+	defer func() { log.ExitFn(0, "CalculateR2DBA", nil) }()
 	if len(r2DirName) > 0 {
 		if r2DirName == "~~~" {
 			return ""
@@ -118,7 +125,14 @@ func (DBACfg *DBACfgStruct) CalculateR2DBA(r2DirName string) string {
 	return ""
 }
 
-func (DBACfg *DBACfgStruct) CalculateR1DBA(R1SlName string) (r1SlDBA string) {
+/******************************************************************************
+* FUNCTION:        CalculateR1DBA
+* DESCRIPTION:     calculates the r1 dba value based on the provided data
+* RETURNS:         string
+*****************************************************************************/
+func (DBACfg *DBACfgStruct) CalculateR1DBA(R1SlName string) string {
+	log.EnterFn(0, "CalculateR1DBA")
+	defer func() { log.ExitFn(0, "CalculateR1DBA", nil) }()
 	if len(R1SlName) > 0 {
 		if R1SlName == "~~~" {
 			return ""

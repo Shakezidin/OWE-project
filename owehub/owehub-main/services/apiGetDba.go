@@ -63,7 +63,7 @@ func HandleGetDBADataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_dba
 	query = `SELECT 
-		 ap.preferred_name, ap.dba
+		 ap.id as record_id, ap.preferred_name, ap.dba
 		 FROM ` + db.TableName_dba + ` ap`
 
 	filter, whereEleList = PrepareDBAFilters(tableName, dataReq, false)
@@ -181,7 +181,7 @@ func PrepareDBAFilters(tableName string, dataFilter models.DataRequestBody, forD
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ap.preferred_name, ap.dba")
+		filtersBuilder.WriteString(" GROUP BY ap.id, ap.preferred_name, ap.dba")
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

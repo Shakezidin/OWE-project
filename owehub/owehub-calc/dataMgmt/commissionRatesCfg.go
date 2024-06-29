@@ -146,13 +146,15 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) LoadcmmsnRatesCfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculatecmmsnRates
-* DESCRIPTION:     calculates the repayment bonus value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        CalculateRepRl
+* DESCRIPTION:     calculates the rep rl value based on the provided data
+* RETURNS:         rl, rate float64
 *****************************************************************************/
 func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
+	log.EnterFn(0, "CalculateRepRl")
+	defer func() { log.ExitFn(0, "CalculateRepRl", nil) }()
 	if len(rep1) > 0 {
-		if installer == "Our World Energy" {
+		if installer == "One World Energy" {
 			installer = "OWE"
 		}
 
@@ -176,9 +178,9 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installe
 }
 
 /******************************************************************************
-* FUNCTION:        CalculatecmmsnRates
+* FUNCTION:        CalculateRep1Rl
 * DESCRIPTION:     calculates the repayment bonus value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* RETURNS:         rl, rate float64
 *****************************************************************************/
 func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, dealer, rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
 	log.EnterFn(0, "CalculateRep1Rl")
@@ -192,17 +194,6 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 					st = state[6:]
 				}
 
-				if data.Partner == partner && installer == data.Installer &&
-					st == data.State {
-					log.FuncErrorTrace(0, "data.Dealer: %v ============== dealer %v", data.Partner, partner)
-					log.FuncErrorTrace(0, "data.installer: %v ============== installer %v", data.Installer, installer)
-					log.FuncErrorTrace(0, "data.state: %v ============== state %v", data.State, state)
-					log.FuncErrorTrace(0, "data.saleType: %v ============== type %v", data.SaleType, types)
-					log.FuncErrorTrace(0, "data.salePrice: %v ============== kwh %v", data.SalePrice, kwh)
-					log.FuncErrorTrace(0, "data.payScale: %v ============== repType %v", data.RepType, payScale)
-					log.FuncErrorTrace(0, "data.startDate: %v ============== wc %v", data.StartDate, wc)
-					log.FuncErrorTrace(0, "data.endDate: %v ============== wc %v", data.EndDate, wc)
-				}
 				if partner == data.Partner &&
 					installer == data.Installer &&
 					st == data.State &&
@@ -216,12 +207,17 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 		}
 		return rl, rate
 	} else {
-		rl = PayScheduleCfg.CalculateRL(dealer, partner, types, state, wc)
+		rl = PayScheduleCfg.CalculateRL(dealer, partner, installer, state, types, wc)
 		if len(rep1) > 0 {
 			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+				var st string
+				if len(state) > 0 {
+					st = state[6:]
+				}
+
 				if partner == data.Partner &&
 					installer == data.Installer &&
-					state == data.State &&
+					st == data.State &&
 					types == data.SaleType &&
 					payScale == data.RepType &&
 					(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&

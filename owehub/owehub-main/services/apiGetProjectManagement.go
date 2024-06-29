@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"math"
 	"strings"
 	"time"
 
@@ -151,6 +152,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	for _, item := range data {
 		var projectData models.ProjectResponse
 		mapRowToStruct(item, &projectData)
+		projectData.Epc = math.Round(projectData.Epc*100) / 100
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 	}
 

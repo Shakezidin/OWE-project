@@ -33,7 +33,7 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	log.EnterFn(0, "LoadPayScheduleCfg")
 	defer func() { log.ExitFn(0, "LoadPayScheduleCfg", err) }()
 
-	query = `SELECT ps.id as record_id, vd.dealer_code as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
+	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
     st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date, commission_model
     FROM payment_schedule ps
     JOIN states st ON st.state_id = ps.state_id
@@ -58,7 +58,7 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 		// Dealer
 		Dealer, ok := item["dealer"].(string)
 		if !ok || Dealer == "" {
-			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dealer for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer = ""
 		}
 
@@ -186,7 +186,7 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 * DESCRIPTION:     calculates the rl value based on the provided data
 * RETURNS:         rl
 *****************************************************************************/
-func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, installer, state string, wc time.Time) float64 {
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, installer, state, types string, wc time.Time) float64 {
 
 	log.EnterFn(0, "CalculateRL")
 	defer func() { log.ExitFn(0, "CalculateRL", nil) }()
@@ -216,8 +216,18 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 				st = state[6:]
 			}
 
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st &&
-				startDate.Before(wc) && endDate.After(wc) {
+			if data.Dealer == dealer {
+				log.FuncErrorTrace(0, "data.Dealer : %v ===== dealer : %v", data.Dealer, dealer)
+				log.FuncErrorTrace(0, "data.partnerName : %v ===== partrner : %v", data.PartnerName, partner)
+				log.FuncErrorTrace(0, "data.installer : %v ===== installer : %v", data.InstallerName, installer)
+				log.FuncErrorTrace(0, "data.state : %v ===== state : %v", data.State, state)
+				log.FuncErrorTrace(0, "data.saleType : %v ===== types : %v", data.SaleType, types)
+				log.FuncErrorTrace(0, "data.startDate : %v ===== wc : %v", data.StartDate, wc)
+				log.FuncErrorTrace(0, "data.EndDate : %v ===== we : %v", data.EndDate, wc)
+			}
+
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st && data.SaleType == types &&
+				(startDate.Before(wc) || startDate.Equal(wc)) && (endDate.After(wc) || endDate.Equal(wc)) {
 				return data.Rl
 			}
 		}
@@ -270,10 +280,24 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 			if data.Dealer == dealer &&
 				strings.EqualFold(data.PartnerName, partner) &&
 				strings.EqualFold(data.InstallerName, installer) &&
-				// data.SaleType == Type &&
+				data.SaleType == Type &&
+				data.State == st {
+				log.FuncErrorTrace(0, "data.Dealer : %v ===== dealer : %v", data.Dealer, dealer)
+				log.FuncErrorTrace(0, "data.partnerName : %v ===== partrner : %v", data.PartnerName, partner)
+				log.FuncErrorTrace(0, "data.installer : %v ===== installer : %v", data.InstallerName, installer)
+				log.FuncErrorTrace(0, "data.state : %v ===== state : %v", data.State, state)
+				log.FuncErrorTrace(0, "data.saleType : %v ===== types : %v", data.SaleType, Type)
+				log.FuncErrorTrace(0, "data.startDate : %v ===== wc : %v", data.StartDate, wc)
+				log.FuncErrorTrace(0, "data.EndDate : %v ===== we : %v", data.EndDate, wc)
+			}
+
+			if data.Dealer == dealer &&
+				strings.EqualFold(data.PartnerName, partner) &&
+				strings.EqualFold(data.InstallerName, installer) &&
+				data.SaleType == Type &&
 				data.State == st &&
-				!startDate.After(wc) &&
-				!endDate.Before(wc) {
+				(startDate.Before(wc) || startDate.Equal(wc)) &&
+				(endDate.After(wc) || endDate.Equal(wc)) {
 
 				drawPerc = data.Draw / 100
 				dlrDrawMax = data.DrawMax
@@ -324,14 +348,6 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, deale
 				st = state[6:]
 			}
 
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer {
-				log.FuncErrorTrace(0, "data.Dealer : %v =========== dealer : %v", data.Dealer, dealer)
-				log.FuncErrorTrace(0, "data.partnerName : %v =========== partner : %v", data.PartnerName, partner)
-				log.FuncErrorTrace(0, "data.installerName : %v =========== Installer : %v", data.InstallerName, installer)
-				log.FuncErrorTrace(0, "data.state : %v =========== st : %v", data.State, st)
-				log.FuncErrorTrace(0, "data.startDate : %v =========== wc : %v", data.StartDate, wc)
-				log.FuncErrorTrace(0, "data.EndDate : %v =========== wx : %v", data.EndDate, wc)
-			}
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer &&
 				data.SaleType == types &&
 				data.State == st &&

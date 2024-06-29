@@ -1,11 +1,11 @@
-CREATE OR REPLACE FUNCTION create_ap_ded(
+CREATE OR REPLACE FUNCTION update_ap_ded(
     p_id      INT,
     p_unique_id      CHARACTER VARYING,
     p_payee          CHARACTER VARYING,
     p_amount         DOUBLE PRECISION,
     p_date           DATE,
     p_short_code     CHARACTER VARYING,
-    p_description    CHARACTER VARYING
+    p_description    CHARACTER VARYING,
     OUT v_ap_ded_id  INT
 )
 RETURNS INT

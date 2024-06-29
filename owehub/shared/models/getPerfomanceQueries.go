@@ -25,7 +25,7 @@ func SalesRepRetrieveQueryFunc() string {
 
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT unique_id, contract_date, permit_approved_date, 
+        SELECT home_owner, unique_id, contract_date, permit_approved_date, 
             pv_install_completed_date, pto_date, site_survey_completed_date, 
             install_ready_date, dealer, primary_sales_rep
         FROM consolidated_data_view
@@ -35,7 +35,7 @@ func SalesMetricsRetrieveQueryFunc() string {
 
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT unique_id
+        SELECT unique_id, home_owner
         FROM consolidated_data_view
     `
 	return SalesMetricsRetrieveQuery
@@ -66,8 +66,12 @@ func ProjectMngmntRetrieveQueryFunc() string {
         permit_submitted_date, permit_approved_date, fin_scheduled_date, 
         fin_pass_date, pto_created_date, pto_submitted_date,
         pto_date, system_size, prospect,
-        ahj, project_status, state,
-        contract_total, finance_company, net_epc
+        ahj, project_status, state, epc,
+        contract_total, finance_company, net_epc,
+        pv_install_created_date AS pv_install_created_date_2,
+        mpu_created_date, mpu_scheduled_date, mpu_complete_date,
+        derate_created_date, derate_scheduled_date, derate_completed_date,
+        trenching_ws_open, trenching_scheduled, trenching_completed
         FROM consolidated_data_view
     `
 	return ProjectMngmntRetrieveQuery

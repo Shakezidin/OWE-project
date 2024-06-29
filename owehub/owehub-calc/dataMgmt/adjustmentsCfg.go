@@ -8,6 +8,7 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
 )
 
@@ -142,8 +143,8 @@ func (AdjustmentsConfig *AdjustmentsCfgStruct) LoadAdjustmentsCfg() (err error) 
 * RETURNS:         Adjust
 *****************************************************************************/
 func (AdjustmentsConfig *AdjustmentsCfgStruct) CalculateAdjust(dealer string, uniqueId string) (adjust float64) {
-	// log.EnterFn(0, "CalculateAdjust")
-	// defer func() { log.ExitFn(0, "CalculateAdjust", nil) }()
+	log.EnterFn(0, "CalculateAdjust")
+	defer func() { log.ExitFn(0, "CalculateAdjust", nil) }()
 
 	adjust = 0.0
 	if len(dealer) > 0 {

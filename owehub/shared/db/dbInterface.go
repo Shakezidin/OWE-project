@@ -72,6 +72,7 @@ const (
 	CreateApAdvFuntion                       string = "create_ap_adv"
 	CreateRepIncentFuntion                   string = "create_rep_incent"
 	CreateRepStatusFuntion                   string = "create_rep_status"
+	CreateRepCreditFuntion                   string = "create_rep_credit"
 	CreateDBAFuntion                         string = "create_dba"
 	UpdateApOthFuntion                       string = "update_ap_oth"
 	UpdateApOthArchiveFunction               string = "update_ap_oth_archive"
@@ -85,6 +86,8 @@ const (
 	UpdateRepIncentArchiveFunction           string = "update_rep_incent_archive"
 	UpdateRepStatusFuntion                   string = "update_rep_status"
 	UpdateRepStatusArchiveFunction           string = "update_rep_status_archive"
+	UpdateRepCreditFuntion                   string = "update_rep_credit"
+	UpdateRepCreditArchiveFunction           string = "update_rep_credit_archive"
 	UpdateDBAFuntion                         string = "update_dba"
 	UpdateDBAArchiveFunction                 string = "update_dba_archive"
 	UpdateCommissionFunction                 string = "update_commission"
@@ -214,6 +217,7 @@ const (
 	TableName_dba                            string = "dba"
 	TableName_rep_incent                     string = "rep_incent"
 	TableName_rep_status                     string = "rep_status"
+	TableName_rep_credit                     string = "rep_credit"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
@@ -226,6 +230,7 @@ const (
 	TableName_Prospect_Load             string = "prospect_load_info"
 	TableName_Breaker_Info              string = "breaker_info"
 	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
+	ViewName_REP_PAY                   string = "rep_pay_pr_data"
 )
 
 /******************************************************************************

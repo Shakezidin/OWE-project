@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION create_rep_status(
+CREATE OR REPLACE FUNCTION update_rep_status(
     p_id      INT,
     p_name      CHARACTER VARYING,
     p_status         CHARACTER VARYING,

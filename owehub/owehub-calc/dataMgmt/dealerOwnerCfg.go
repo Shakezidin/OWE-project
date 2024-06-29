@@ -84,7 +84,14 @@ func (pDealerOwner *DealerOwnersStruct) LoadRDealerOwnersCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateR2Tracking
+* DESCRIPTION:     calculates the r2 tracking value based on the provided data
+* RETURNS:         r2Tracking
+*****************************************************************************/
 func (pDealerOwner *DealerOwnersStruct) CalculateR2Tracking(rep2 string) (r2Tracking string) {
+	log.EnterFn(0, "CalculateR2Tracking")
+	defer func() { log.ExitFn(0, "CalculateR2Tracking", nil) }()
 	if len(rep2) > 0 {
 		for _, data := range pDealerOwner.DealerOwnersList {
 			if data.DealerOwner == rep2 {
@@ -96,7 +103,14 @@ func (pDealerOwner *DealerOwnersStruct) CalculateR2Tracking(rep2 string) (r2Trac
 	return "No Rep 2"
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateR1Tracking
+* DESCRIPTION:     calculates the r1 tracking value based on the provided data
+* RETURNS:         respdealer string, payRate float64
+*****************************************************************************/
 func (pDealerOwner *DealerOwnersStruct) CalculateR1Tracking(rep1 string) (r2Tracking string) {
+	log.EnterFn(0, "CalculateR1Tracking")
+	defer func() { log.ExitFn(0, "CalculateR1Tracking", nil) }()
 	for _, data := range pDealerOwner.DealerOwnersList {
 		if data.DealerOwner == rep1 {
 			return data.Blank

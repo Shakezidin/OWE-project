@@ -8,8 +8,8 @@ import (
 )
 
 /******************************************************************************
-* FUNCTION:        calculateR1Balance
-* DESCRIPTION:     calculates the "r1_balance" value based on the provided data
+* FUNCTION:        calculatePerTeamKw
+* DESCRIPTION:     calculates the per team kw value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculatePerTeamKw(rep1, rep2 string, date time.Time, sysSize float64) float64 {
@@ -71,8 +71,8 @@ func excelDateFromTime(t time.Time) int {
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateContractAmount
- * DESCRIPTION:     Calculate Contract Ammount
+ * FUNCTION:        CalculateRepContractCalc
+ * DESCRIPTION:     Calculate Contract calc
  * RETURNS:         contact amount
  *****************************************************************************/
 func CalculateRepContractCalc(epc float64, contractTotal float64, systemSize float64) float64 {
@@ -86,15 +86,14 @@ func CalculateRepContractCalc(epc float64, contractTotal float64, systemSize flo
 		} else {
 			return epc * 1000 * systemSize
 		}
-		/* Return 0 if netEPC is empty or if contract_total is not available and netEPC cannot be parsed*/
 	}
 	return 0
 }
 
 /******************************************************************************
  * FUNCTION:        CalculateRepRBalance
- * DESCRIPTION:     Calculate Contract Ammount
- * RETURNS:         contact amount
+ * DESCRIPTION:     Calculate rep balance
+ * RETURNS:         balance amount
  *****************************************************************************/
 func CalculateRepRBalance(rep string, commStatusCheck, commPaid float64) (balance float64) {
 	log.EnterFn(0, "CalculateRepRBalance")
@@ -106,13 +105,13 @@ func CalculateRepRBalance(rep string, commStatusCheck, commPaid float64) (balanc
 }
 
 /******************************************************************************
- * FUNCTION:        CalculatePrApptType
+ * FUNCTION:        CalculateType
  * DESCRIPTION:     Calculate pr_appt_type
  * RETURNS:         types
  *****************************************************************************/
 func CalculateType(data, val string) (types string) {
-	log.EnterFn(0, "CalculatePrApptType")
-	defer func() { log.ExitFn(0, "CalculatePrApptType", nil) }()
+	log.EnterFn(0, "CalculateType")
+	defer func() { log.ExitFn(0, "CalculateType", nil) }()
 	if len(data) > 0 {
 		return val
 	}
@@ -120,13 +119,13 @@ func CalculateType(data, val string) (types string) {
 }
 
 /******************************************************************************
- * FUNCTION:        calculatePrR1D1Type
- * DESCRIPTION:     Calculate pr r1 d1 type
+ * FUNCTION:        calculatePrRDType
+ * DESCRIPTION:     Calculate pr r d type
  * RETURNS:         types
  *****************************************************************************/
 func calculatePrRDType(dealer string, repDrawAmount float64) (types string) {
-	log.EnterFn(0, "calculatePrR1D1Type")
-	defer func() { log.ExitFn(0, "calculatePrR1D1Type", nil) }()
+	log.EnterFn(0, "calculatePrRDType")
+	defer func() { log.ExitFn(0, "calculatePrRDType", nil) }()
 	if len(dealer) > 0 {
 		if repDrawAmount > 0 {
 			types = "Draw"
@@ -139,7 +138,7 @@ func calculatePrRDType(dealer string, repDrawAmount float64) (types string) {
 
 /******************************************************************************
  * FUNCTION:        calculatePrRFType
- * DESCRIPTION:     Calculate pr r1 F type
+ * DESCRIPTION:     Calculate pr r F type
  * RETURNS:         types
  *****************************************************************************/
 func calculatePrRFType(dealer string, repBalance float64) (types string) {
@@ -156,13 +155,13 @@ func calculatePrRFType(dealer string, repBalance float64) (types string) {
 }
 
 /******************************************************************************
- * FUNCTION:        calculatePrR1BType
- * DESCRIPTION:     Calculate pr r1 F type
+ * FUNCTION:        calculatePrRBType
+ * DESCRIPTION:     Calculate pr r B type
  * RETURNS:         types
  *****************************************************************************/
 func calculatePrRBType(dealer string) (types string) {
-	log.EnterFn(0, "calculatePrR1BType")
-	defer func() { log.ExitFn(0, "calculatePrR1BType", nil) }()
+	log.EnterFn(0, "calculatePrRBType")
+	defer func() { log.ExitFn(0, "calculatePrRBType", nil) }()
 	if len(dealer) > 0 {
 		return "Bonus"
 	}
@@ -170,13 +169,13 @@ func calculatePrRBType(dealer string) (types string) {
 }
 
 /******************************************************************************
- * FUNCTION:        calculatePrR1SlType
- * DESCRIPTION:     Calculate pr r1 F type
+ * FUNCTION:        calculatePrRType
+ * DESCRIPTION:     Calculate pr r R type
  * RETURNS:         types
  *****************************************************************************/
 func calculatePrRType(dealer, Val string) (types string) {
-	log.EnterFn(0, "calculatePrR1SlType")
-	defer func() { log.ExitFn(0, "calculatePrR1SlType", nil) }()
+	log.EnterFn(0, "calculatePrRType")
+	defer func() { log.ExitFn(0, "calculatePrRType", nil) }()
 	if len(dealer) > 0 {
 		return Val
 	}

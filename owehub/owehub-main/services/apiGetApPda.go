@@ -64,7 +64,7 @@ func HandleGetApPdaDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_ap_pda
 	query = `SELECT 
-		ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code as dealer, ap.description
+		ap.id as record_id, ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code as dealer, ap.description
 		FROM ` + db.TableName_ap_pda +
 		` ap LEFT JOIN v_dealer vd ON vd.id = ap.dealer_id`
 
@@ -248,7 +248,7 @@ func PrepareApPdaFilters(tableName string, dataFilter models.DataRequestBody, fo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code as dealer, ap.description")
+		filtersBuilder.WriteString(" GROUP BY ap.id, ap.unique_id, ap.payee, ap.customer, ap.amount_ovrd, ap.date, ap.customer, ap.approved_by, ap.notes, vd.dealer_code, ap.description")
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

@@ -7,9 +7,17 @@
 package models
 
 type ProspectInfoData struct {
-	MultiImages  []string `json:"panel_images_url"`
-	ProspectName string   `json:"prospect_name"`
-	SREmailId    string   `json:"sr_email_id"`
+	MultiImages       []string `json:"panel_images_url"`
+	ProspectName      string   `json:"prospect_name"`
+	SREmailId         string   `json:"sr_email_id"`
+	WaterHeater       string   `json:"water_heater"`
+	CookingAppliances string   `json:"cooking_appliances"`
+	Furnace           string   `json:"furnace"`
+	ClothesDryer      string   `json:"clothes_dryer"`
+	PoolPump          bool     `json:"pool_pump"`
+	WellPump          bool     `json:"well_pump"`
+	EvCharger         bool     `json:"ev_charger"`
+	Spa               bool     `json:"spa"`
 }
 
 type ProspectInfoId struct {
@@ -17,16 +25,38 @@ type ProspectInfoId struct {
 }
 
 type BreakerInfo struct {
-	Ampere   float64 `json:"ampere"`
-	Quantity int     `json:"quantity"`
-	Note     string  `json:"note"`
+	Ampere   float64  `json:"ampere"`
+	Category Category `json:"category"`
+	Note     string   `json:"note"`
+}
+
+type Category struct {
+	Name   string  `json:"name"`
+	Ampere float64 `json:"ampere"`
+}
+
+type GetBreakerInfo struct {
+	Ampere         float64 `json:"ampere"`
+	Note           string  `json:"note"`
+	CategoryName   string  `json:"category_name"`
+	CategoryAmpere float64 `json:"category_ampere"`
 }
 
 type ProspectLoadInfo struct {
-	ProspectId       int         `json:"prospect_id"`
-	ProspectName     string      `json:"prospect_name"`
-	LRA              float64     `json:"lra"`
-	AverageCapacity  float64     `json:"average_capacity"`
-	ContinousCurrent float64     `json:"continous_current"`
+	ProspectId       int           `json:"prospect_id"`
+	ProspectName     string        `json:"prospect_name"`
+	LRA              float64       `json:"lra"`
+	AverageCapacity  float64       `json:"average_capacity"`
+	ContinousCurrent float64       `json:"continous_current"`
 	Breakers         []BreakerInfo `json:"breakers"`
+}
+
+type GetProspectLoadInfo struct {
+	ProspectId           int              `json:"prospect_id"`
+	ProspectName         string           `json:"prospect_name"`
+	LRA                  float64          `json:"lra"`
+	AverageCapacity      float64          `json:"average_capacity"`
+	ContinousCurrent     float64          `json:"continous_current"`
+	Breakers             []GetBreakerInfo `json:"breakers"`
+	TotalCategoryAmperes float64          `json:"total_catergory_amperes"`
 }

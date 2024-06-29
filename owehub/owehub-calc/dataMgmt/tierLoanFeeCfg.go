@@ -173,18 +173,9 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) CalculateDlrCost(dlrTier, installer, s
 			st = state[6:]
 		}
 
-		if data.DealerTier == dlrTier && data.Installer == installer && data.State == st && data.LoanType == LoanType{
-			log.FuncErrorTrace(0, "data.Dealer: %v ============== dealer %v", data.DealerTier, dlrTier)
-			log.FuncErrorTrace(0, "data.installer: %v ============== installer %v", data.Installer, installer)
-			log.FuncErrorTrace(0, "data.loanType: %v ============== type %v", data.LoanType, LoanType)
-			log.FuncErrorTrace(0, "data.state: %v ============== state %v", data.State, st)
-			log.FuncErrorTrace(0, "data.startDate: %v ============== wc %v", data.StartDate, date)
-			log.FuncErrorTrace(0, "data.endDate: %v ============== wc %v", data.EndDate, date)
-		}
-
 		if dlrTier == data.DealerTier && data.Installer == installer && data.State == st &&
 			data.LoanType == LoanType &&
-			startDate.Before(date) && endDate.After(date) {
+			(startDate.Before(date) || startDate.Equal(date)) && (endDate.After(date) || endDate.Equal(date)) {
 			dlrcost += data.DlrCost
 		}
 	}

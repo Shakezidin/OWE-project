@@ -5,7 +5,7 @@ create database owe_db;
 
 \c owe_db;
 
-\i '/docker-entrypoint-initdb.d/DB_Create_OWEDB_Schema.sql';
+-- \i '/docker-entrypoint-initdb.d/DB_Create_OWEDB_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_Config_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_DlrPay_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_AR_Schema.sql';
@@ -199,6 +199,31 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateVDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealerArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewApDed.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewApOth.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewApPda.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewApAdv.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRepCredit.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRepIncent.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRepStatus.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDba.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateApAdv.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateApDed.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateApOth.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateApPda.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDba.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepCredit.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepIncent.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepStatus.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveApAdv.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveApDed.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveApOth.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveApPda.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveRepCredit.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveRepIncent.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveRepStatus.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveDba.sql';
+
 
 /* Battery Backup Calcuator Schema */
 \i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspect.sql';

@@ -1011,6 +1011,7 @@ CREATE TABLE rep_credit (
 );
 
 CREATE TABLE rep_status (
+    id serial NOT NULL,
     name varchar,
     status varchar,
     is_archived BOOLEAN DEFAULT FALSE,

@@ -31,8 +31,8 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		err            error
 		dlrPayDataList []map[string]interface{}
 	)
-	// log.EnterFn(0, "ExecDlrPayInitialCalculation")
-	// defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
+	log.EnterFn(0, "ExecDlrPayInitialCalculation")
+	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var dlrPayData map[string]interface{}
@@ -65,70 +65,73 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 *****************************************************************************/
 func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
 	var (
-		SysSize         float64   // p
-		payRateSemi     float64   // au             //defference in 8020 calculation Done
-		payRateSubTotal float64   // BG             //defference in 80/20 calculation Done
-		loanFee         float64   // ay //required  //defference in 80/20 calculation Done
-		commTotal       float64   // bh             //defference in 80/20 calculation
-		parentDlr       string    // bk             //in 80/20 field name is changed to DLROV
-		status          string    // aj //required
-		statusDate      time.Time // ak //required
-		contractDolDol  float64   // am //required
-		dealer          string    // ap //required
-		// dealerDBA          string    // aq //required
-		credit             float64 // as //required
-		repPay             float64 // at //required
-		addr               float64 // av
-		expense            float64 // aw
-		autoAdder          float64 // ax
-		rebate             float64 // az
-		referral           float64 // ba
-		adderTot           float64 // bb //required
-		adderLF            float64 // bc
-		epc                float64 // bd //required
-		adderPerKw         float64 // bf
-		statusCheck        float64 // BI //required
-		dealerPaymentBonus float64 // bj
-		payRate            float64 // bl
-		ovrdTotal          float64 // bn
-		DlrDrawMax         float64 // bq
-		r1DrawPaid         float64 // BT //required
-		amtCheck           float64 // bu
-		r1CommPaid         float64 // BV //required
-		r1Balance          float64 // BW //required
-		ovrdPaid           float64 // by
-		ovrdBalance        float64 // bz
-		repCount           float64 // cd
-		perRepSales        float64 // ce
-		perRepkW           float64 // cf
-		contractCalc       float64 // ch
-		epcCalc            float64 // an
-		teamCount          float64 // cm
-		perTeamSales       float64 // cn
-		perTeamKw          float64 // co
-		rl                 float64 // AR //required
-		r1DrawAmt          float64 // BS //required
-		netEpc             float64 // BE //required
-		// Type               string    // E  //required
-		// Rep1               string    // M  //required
-		// Rep2               string    // N  //required
-
-		homeOwner         string    // H //required
-		uniqueID          string    // G //required
-		wc                time.Time // U //required
-		ntp               time.Time // W //required
-		instSys           time.Time // AD //required
-		loanType          string
-		dlrDrawMax        float64 // BQ
-		dlrDrawPerc       float64 // BP
-		partner           string
-		installer         string
-		state             string // K //required
-		contractTotal     float64
-		systemSize        float64 //P //required
-		adderTotal        float64
-		netEpc2           float64
-		commission_models string
+		payRateSemi        float64   // au             //defference in 8020 calculation Done
+		payRateSubTotal    float64   // BG             //defference in 80/20 calculation Done
+		loanFee            float64   // ay //required  //defference in 80/20 calculation Done
+		commTotal          float64   // bh             //defference in 80/20 calculation
+		parentDlr          string    // bk             //in 80/20 field name is changed to DLROV
+		status             string    // aj //required
+		statusDate         time.Time // ak //required
+		contractDolDol     float64   // am //required
+		dealer             string    // ap //required
+		dealerDBA          string    // aq //required
+		credit             float64   // as //required
+		repPay             float64   // at //required
+		addr               float64   // av
+		expense            float64   // aw
+		autoAdder          float64   // ax
+		rebate             float64   // az
+		referral           float64   // ba
+		adderTot           float64   // bb //required
+		adderLF            float64   // bc
+		epc                float64   // bd //required
+		adderPerKw         float64   // bf
+		statusCheck        float64   // BI //required
+		dealerPaymentBonus float64   // bj
+		payRate            float64   // bl
+		ovrdTotal          float64   // bn
+		DlrDrawMax         float64   // bq
+		r1DrawPaid         float64   // BT //required
+		amtCheck           float64   // bu
+		r1CommPaid         float64   // BV //required
+		r1Balance          float64   // BW //required
+		ovrdPaid           float64   // by
+		ovrdBalance        float64   // bz
+		repCount           float64   // cd
+		perRepSales        float64   // ce
+		perRepkW           float64   // cf
+		contractCalc       float64   // ch
+		epcCalc            float64   // an
+		teamCount          float64   // cm
+		perTeamSales       float64   // cn
+		perTeamKw          float64   // co
+		rl                 float64   // AR //required
+		r1DrawAmt          float64   // BS //required
+		netEpc             float64   // BE //required
+		types              string    // E  //required
+		Rep1               string    // M  //required
+		Rep2               string    // N  //required
+		homeOwner          string    // H //required
+		uniqueID           string    // G //required
+		wc                 time.Time // U //required
+		ntp                time.Time // W //required
+		instSys            time.Time // AD //required
+		loanType           string
+		dlrDrawMax         float64 // BQ
+		dlrDrawPerc        float64 // BP
+		partner            string
+		installer          string
+		state              string // K //required
+		contractTotal      float64
+		systemSize         float64 //P //required
+		adderTotal         float64 //BB
+		netEpc2            float64 //BE
+		commission_models  string
+		source             string
+		shaky              bool      //AB
+		pto                time.Time //AG
+		cancel             time.Time //AC
+		permSub            time.Time //X
 	)
 
 	// this row data is from sales data
@@ -142,26 +145,125 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	status = saleData.ProjectStatus
 	dealer = saleData.Dealer
 	loanType = saleData.LoanType
-	// saleType = saleData.SaleType
 	partner = saleData.Partner
 	state = saleData.State
 	installer = saleData.Installer
-	SysSize = saleData.SystemSize
 	systemSize = saleData.SystemSize
 	netEpc = saleData.ContractTotal / (systemSize * 1000)
 	contractTotal = saleData.ContractTotal
+	Rep1 = saleData.PrimarySalesRep
+	Rep2 = saleData.SecondarySalesRep
+	source = saleData.Source
+	types = saleData.Type
+	if status == "HOLD" || status == "Cancel" {
+		shaky = true
+	} else {
+		shaky = false
+	} //AB
+	pto = saleData.PtoDate                 //AG
+	cancel = saleData.CancelledDate        //AC
+	permSub = saleData.PermitSubmittedDate //X
+
+	// it is for testing purpose, we can hardcode the values due to missmach between consolidated_data_view and sheet
+	log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, Rep1, dealer)
+	log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
+	log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
+	log.FuncFuncTrace(0, "Zidhin state (K): %v, wc (U): %v contracttotal (R): %v", state, wc, contractTotal)
+	log.FuncFuncTrace(0, "Zidhin epc (S): %v, homeOwner (H): %v rep2 (N): %v", epc, homeOwner, Rep2)
+	log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
+	log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, Type : %v", ntp, permSub, shaky, types)
+
+	status = "PTO"                                 //AJ
+	Rep1 = "Matthew Tidwell"                       //M
+	dealer = "Parker and Sons"                     //A
+	source = "Parker and Sons"                     //D
+	uniqueID = "OUR18647"                          //G
+	systemSize = 12.555                            //P
+	partner = "LightReach"                         //B
+	installer = "One World Energy"                 //C
+	loanType = "LightReachLease1.99"               //F
+	state = "AZ :: Arizona"                        //K
+	wc, _ = time.Parse("01-02-2006", "10-20-2023") //U
+	contractTotal = 32015.25                       //R
+	netEpc = (systemSize * 1000) / contractTotal   //S
+	log.FuncErrorTrace(0, "epc = %v", epc)
+	homeOwner = "Joan Fenedick"                         //H
+	Rep2 = ""                                           //N
+	pto, _ = time.Parse("01-02-2006", "01-18-2024")     //AG
+	instSys, _ = time.Parse("01-02-2006", "11-27-2023") //AD
+	cancel = time.Time{}                                //AC
+	ntp, _ = time.Parse("01-02-2006", "10-21-2023")     //W
+	permSub, _ = time.Parse("01-02-2006", "11-04-2023") //X
+	if status == "Shaky" || status == "Cancel" {
+		shaky = true
+	} else {
+		shaky = false
+	} //* confirm with shushank //AB
+	types = "LEASE" //* not received from Colten yet //E
+	//till here u can commment it out if u need to remove hard code values
+
+	dealerDBA = dataMgmt.VDealerCfg.CalculateDealerDBA(dealer)
+	statusDate = CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)
+	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, types, state, wc)
+	commission_models = "standardss" // temporary
+
+	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
+	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
+	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID, systemSize)
+	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, types, wc)
+	contractDolDol = CalculateContractDolDol(netEpc, contractTotal, systemSize)
+	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
+	payRateSemi = CalculatePayRateSemi(dealer, commission_models, Rep1, epcCalc, rl, systemSize, netEpc, wc)
+	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID, systemSize)
+	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
+	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractDolDol, wc)
+	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)
+	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
+	adderLF = CalculateAdderLf(dealer, addr, expense, autoAdder, loanFee, rebate, referral)
+	adderPerKw = calculateAdderPerKW(dealer, adderLF, systemSize)
+	payRateSubTotal = calculatePayRateSubTotal(dealer, commission_models, payRateSemi, adderPerKw, contractDolDol, adderLF)
+	dealerPaymentBonus = dataMgmt.DealerRepayConfig.CalculateRepaymentBonus(uniqueID, homeOwner)
+	commTotal = calculateCommTotal(dealer, commission_models, Rep1, source, payRateSubTotal, systemSize, dealerPaymentBonus, contractTotal, payRateSemi, adderLF) //Shushank
+	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
+	r1DrawAmt = CalculateR1DrawAmt(statusCheck, dlrDrawMax, dlrDrawPerc)
+	adderTotal = calculateAdderTotal(dealer, addr, autoAdder, rebate, referral)
+	epc = CalculateAdderEPC(epcCalc, contractDolDol, loanFee, systemSize)
+	netEpc2 = CalculateAdderEPC(epcCalc, contractDolDol, adderLF, systemSize)
+	r1CommPaid = dataMgmt.ApDealerCfg.CalculateR1CommPaid(dealer, uniqueID)
+	r1Balance = calculateR1Balance(dealer, statusCheck, r1CommPaid)
+	r1DrawPaid = dataMgmt.ApDealerCfg.CalculateR1DrawPaid(dealer, uniqueID)
+	parentDlr, payRate = dataMgmt.DealerOverrideConfig.CalculateParentDealerAndPayRate(dealer, saleData.WC1)
+	ovrdTotal = calculateOVRDTotal(dealer, payRate, systemSize)
+	ovrdPaid = dataMgmt.ApDealerCfg.CalculateOvrdPaid(dealer, uniqueID, parentDlr)
+	ovrdBalance = CalculateOvrdBalance(dealer, ovrdTotal, ovrdPaid)
+
+	log.FuncFuncTrace(0, "Shushank dealerDBA (AQ): %v, statusDate (AK): %v", dealerDBA, statusDate)
+	log.FuncFuncTrace(0, "Shushank dlrDrawPerc (BP): %v, dlrDrawMax (BQ): %v", dlrDrawPerc, dlrDrawMax)
+	log.FuncFuncTrace(0, "Shushank credit (AS): %v, repPay (AT): %v expense (AW): %v", credit, repPay, expense)
+	log.FuncFuncTrace(0, "Shushank rl (AR): %v, contractDolDol (AM): %v epcCalc (AN): %v", rl, contractDolDol, epcCalc)
+	log.FuncFuncTrace(0, "Shushank payRateSemi (AU): %v, addr (AV): %v autoAdder (AX): %v", payRateSemi, addr, autoAdder)
+	log.FuncFuncTrace(0, "Shushank loanFee (AY): %v, rebate (AZ): %v referral (BA): %v", loanFee, rebate, referral)
+	log.FuncFuncTrace(0, "Shushank adderLF (BC): %v, adderPerKw (BF): %v payRateSubTotal (BG): %v", adderLF, adderPerKw, payRateSubTotal)
+	log.FuncFuncTrace(0, "RaedMajeed dealerPaymentBonus (BJ): %v", dealerPaymentBonus)
+	log.FuncFuncTrace(0, "RaedMajeed commTotal (BH): %v systemSize (P): %v", commTotal, systemSize)
+	log.FuncFuncTrace(0, "Shushank statusCheck (BI): %v r1DrawAmt (BS): %v", statusCheck, r1DrawAmt)
+	log.FuncFuncTrace(0, "Shushank adderTotal (BB): %v, epc (BD): %v netEpc2: %v", adderTotal, epc, netEpc2)
+	log.FuncFuncTrace(0, "Shushank r1CommPaid (BV): %v, r1Balance (BW): %v r1DrawPaid (BT): %v", r1CommPaid, r1Balance, r1DrawPaid)
+	log.FuncFuncTrace(0, "Shushank parentDlr (BK): %v payRate (BL): %v", parentDlr, payRate)
+	log.FuncFuncTrace(0, "Shushank overdTotal (BN): %v ovrdPaid (BY): %v ovrdBalance (BZ): %v", ovrdTotal, ovrdPaid, ovrdBalance)
 
 	outData["dealer"] = dealer
 	outData["partner"] = partner
 	outData["instl"] = installer
-	outData["source"] = saleData.Source
+	outData["source"] = source
 	outData["loan_type"] = loanType
 	outData["unique_id"] = uniqueID
 	outData["home_owner"] = homeOwner
 	outData["street_address"] = saleData.Address
 	outData["st"] = state
-	outData["rep_1"] = saleData.PrimarySalesRep
-	outData["rep_2"] = saleData.SecondarySalesRep
+	outData["type"] = types
+	outData["rep_1"] = Rep1
+	outData["rep_2"] = Rep2
 	outData["sys_size"] = systemSize
 	outData["contract"] = contractTotal
 	outData["epc"] = netEpc
@@ -175,82 +277,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["inst_sys"] = instSys
 	outData["pto"] = saleData.PtoDate
 
-	// statusDate = CalculateStatusDate(uniqueID, shakyHand, pto, instSys, cancel, ntp, permSub, wc) //! shakyHand
-	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, wc)
-	commission_models = "standard" // temporary
-
-	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
-	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
-	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID, systemSize)
-
-	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
-	log.FuncFuncTrace(0, "zidhin dlrDrawPerc: %v  dlrDrawMax : %v", dlrDrawPerc, dlrDrawMax)
-	// dlrDrawPerc = 0.5
-	// dlrDrawMax = 2000
-	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
-	// repPay = 4461.56 //zidhin
-	log.FuncFuncTrace(0, "zidhin rl: %v", rl)
-	// rl = 2 //zidhin
-	log.FuncFuncTrace(0, "zidhin netepc:  %v", netEpc)
-	// netEpc = 6.488366013
-	log.FuncFuncTrace(0, "zidhin contractTotal: %v", contractTotal)
-	// contractTotal = 38865 //zidhin
-	log.FuncFuncTrace(0, "zidhin commission_models: %v", commission_models)
-
-	contractDolDol = CalculateContractDolDol(netEpc, contractTotal, systemSize)
-	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
-
-	payRateSemi = CalculatePayRateSemi(dealer, commission_models, saleData.PrimarySalesRep, epcCalc, rl, systemSize, netEpc, wc)
-	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID, systemSize)
-	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
-
-	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractDolDol, wc)
-	log.FuncFuncTrace(0, "zidhin loanFee: %v", loanFee)
-	// loanFee = 637.18
-	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)
-	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
-
-	adderLF = CalculateAdderLf(dealer, addr, expense, autoAdder, loanFee, rebate, referral)
-	adderPerKw = calculateAdderPerKW(dealer, adderLF, SysSize)
-	payRateSubTotal = calculatePayRateSubTotal(dealer, commission_models, payRateSemi, adderPerKw, contractDolDol, adderLF)
-	// for 80/20 am-au-bc
-
-	dealerPaymentBonus = dataMgmt.DealerRepayConfig.CalculateRepaymentBonus(uniqueID, homeOwner)
-
-	commTotal = calculateCommTotal(dealer, commission_models, saleData.PrimarySalesRep, saleData.Source, payRateSubTotal, systemSize, dealerPaymentBonus, contractTotal, payRateSemi, adderLF) // dealerPaymentBonus
-	// commTotal = -2888.39             17644 -> commtotal = 6295                                                    //Shushank
-	// commTotal = -2888.39                                                                    //Shushank
-	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
-	r1DrawAmt = CalculateR1DrawAmt(statusCheck, dlrDrawMax, dlrDrawPerc)
-
-	adderTotal = calculateAdderTotal(dealer, addr, autoAdder, rebate, referral)
-	epc = CalculateAdderEPC(epcCalc, contractDolDol, loanFee, SysSize)
-	netEpc2 = CalculateAdderEPC(epcCalc, contractDolDol, adderLF, SysSize)
-
-	r1CommPaid = dataMgmt.ApDealerCfg.CalculateR1CommPaid(dealer, uniqueID)
-	r1Balance = calculateR1Balance(dealer, statusCheck, r1CommPaid)
-	r1DrawPaid = dataMgmt.ApDealerCfg.CalculateR1DrawPaid(dealer, uniqueID)
-
-	parentDlr, payRate = dataMgmt.DealerOverrideConfig.CalculateParentDealerAndPayRate(saleData.Dealer, saleData.WC1)
-
-	ovrdTotal = calculateOVRDTotal(dealer, payRate, SysSize)
-	ovrdPaid = dataMgmt.ApDealerCfg.CalculateOvrdPaid(dealer, uniqueID, parentDlr)
-	ovrdBalance = CalculateOvrdBalance(dealer, ovrdTotal, ovrdPaid)
-	log.FuncFuncTrace(0, "Shushank dlrDrawPerc: %v, dlrDrawMax: %v", dlrDrawPerc, dlrDrawMax)
-	log.FuncFuncTrace(0, "Shushank credit: %v, repPay: %v expense: %v", credit, repPay, expense)
-	log.FuncFuncTrace(0, "Shushank rl: %v, contractDolDol: %v epcCalc: %v", rl, contractDolDol, epcCalc)
-	log.FuncFuncTrace(0, "Shushank payRateSemi: %v, addr: %v autoAdder: %v", payRateSemi, addr, autoAdder)
-	log.FuncFuncTrace(0, "Shushank loanFee: %v, rebate: %v referral: %v", loanFee, rebate, referral)
-	log.FuncFuncTrace(0, "Shushank adderLF: %v, adderPerKw: %v payRateSubTotal: %v", adderLF, adderPerKw, payRateSubTotal)
-	log.FuncFuncTrace(0, "RaedMajeed dealerPaymentBonus: %v", dealerPaymentBonus)
-	log.FuncFuncTrace(0, "RaedMajeed commTotal: %v systemSize -> %v", commTotal, systemSize)
-	log.FuncFuncTrace(0, "Shushank statusCheck: %v r1DrawAmt: %v", statusCheck, r1DrawAmt)
-	log.FuncFuncTrace(0, "Shushank adderTotal: %v, epc: %v netEpc2: %v", adderTotal, epc, netEpc2)
-	log.FuncFuncTrace(0, "Shushank r1CommPaid: %v, r1Balance: %v r1DrawPaid: %v", r1CommPaid, r1Balance, r1DrawPaid)
-	log.FuncFuncTrace(0, "Shushank parentDlr: %v payRate: %v", parentDlr, payRate)
-	log.FuncFuncTrace(0, "Shushank overdTotal: %v ovrdPaid: %v ovrdBalance: %v", ovrdTotal, ovrdPaid, ovrdBalance)
-
 	// this is for 1st sheet (AP CALC)
+	outData["dealer_dba"] = dealerDBA
 	outData["pay_rate_sub_total"] = payRateSubTotal
 	outData["rl"] = rl
 	outData["pay_rate_semi"] = payRateSemi
@@ -272,8 +300,6 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["contract_$$"] = contractDolDol
 
 	// this is for 2nd sheet (DEALER PAY)
-	// DlrDrawMax = 0.0
-	// r1Balance = 0.0
 	outData["dlr_draw_max"] = DlrDrawMax // nocal
 	outData["r1_draw_amt"] = r1DrawAmt
 	outData["amt_check"] = amtCheck
@@ -297,10 +323,10 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	//first sheet calculation
 
-	// epc = CalculateAdderEPC(epcCalc, contractCalc, loanFee, SysSize)
+	// epc = CalculateAdderEPC(epcCalc, contractCalc, loanFee, systemSize)
 	// log.FuncFuncTrace(0, "epc ->  %v", epc)
 
-	// netEpc = calculateEpcCalc(epcCalc, contractCalc, adderLF, SysSize)
+	// netEpc = calculateEpcCalc(epcCalc, contractCalc, adderLF, systemSize)
 	// log.FuncFuncTrace(0, "netEpc ->  %v", netEpc)
 
 	// status = CalculateStatus(uniqueId, hand, pto, instSys, cancel, ntp, permSub, wc)
@@ -318,10 +344,10 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// perRepSales = calculateRepSales(rep_1, netEpc, adderPerKw)
 	// log.FuncFuncTrace(0, "perRepSales ->  %v", perRepSales)
 
-	// perRepkW = calculateRepKw(rep_1, netEpc, SysSize, adderPerKw)
+	// perRepkW = calculateRepKw(rep_1, netEpc, systemSize, adderPerKw)
 	// log.FuncFuncTrace(0, "perRepkW ->  %v", perRepkW)
 
-	// contractCalc = calculateContractCalc(epc, contract, SysSize)
+	// contractCalc = calculateContractCalc(epc, contract, systemSize)
 	// log.FuncFuncTrace(0, "contractCalc ->  %v", contractCalc)
 
 	// teamCount = calculateTeamCount(rep1Team, rep2Team, credit, repPay) // rep1Team, rep2Team
@@ -330,7 +356,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// perTeamSales = calculatePerTeamSales(rep1Team, rep2Team, credit, repPay)
 	// log.FuncFuncTrace(0, "perTeamSales ->  %v", perTeamSales)
 
-	// perTeamKw = calculatePerTeamKw(rep1Team, rep2Team, credit, repPay, SysSize)
+	// perTeamKw = calculatePerTeamKw(rep1Team, rep2Team, credit, repPay, systemSize)
 	// log.FuncFuncTrace(0, "perTeamKw ->  %v", perTeamKw)
 
 	// r1Name = saleData.PrimarySalesRep
@@ -351,7 +377,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// r1PayRateSubTotal = calculateRPayRateSubTotal(rep_1, dealerPaymentBonus, r1DrawAmt) // dealerPaymentBonus
 	// log.FuncFuncTrace(0, "r1PayRateSubTotal ->  %v", r1PayRateSubTotal)
 
-	// r1NetEpc = calculateRNetEpc(epcCalc, overdTotal, overdTotal, overdTotal, rl, SysSize) // verify eq
+	// r1NetEpc = calculateRNetEpc(epcCalc, overdTotal, overdTotal, overdTotal, rl, systemSize) // verify eq
 	// log.FuncFuncTrace(0, "r1NetEpc ->  %v", r1NetEpc)
 
 	// r1MinmaxCorrect = calculateRminmaxCorrect(rep_1, r1DrawPaid, adderPerKw, payRateSubTotal) // verify eq, r1DrawPaid
@@ -381,7 +407,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// r2PayRateSubTotal = calculateRPayRateSubTotal(rep_2, position, position) // verify eq
 	// log.FuncFuncTrace(0, "r2PayRateSubTotal ->  %v", r2PayRateSubTotal)
 
-	// r2NetEpc = calculateRNetEpc(ovrdBalance, r1PayScale, r1PayScale, perTeamKw, rl, SysSize) // verify eq, r1PayScale
+	// r2NetEpc = calculateRNetEpc(ovrdBalance, r1PayScale, r1PayScale, perTeamKw, rl, systemSize) // verify eq, r1PayScale
 	// log.FuncFuncTrace(0, "r2NetEpc ->  %v", r2NetEpc)
 
 	// r2MinmaxCorrect = calculateRminmaxCorrect(rep_2, rl, contractCalc, contractCalc) // veridy eq

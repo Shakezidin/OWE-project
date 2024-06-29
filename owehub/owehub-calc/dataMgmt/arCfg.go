@@ -97,18 +97,17 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+ * FUNCTION:        GetTotalPaidForUniqueId
+ * DESCRIPTION:     calculates the total paid value based on the
+ * RETURNS:         r1SlPaid
+ *****************************************************************************/
 func (arCfgData *ARCfgList) GetTotalPaidForUniqueId(UniqueId string) (totalPaid float64) {
-	var (
-		err error
-	)
-
-	// log.EnterFn(0, "GetTotalPaidForUniqueId")
-	// defer func() { log.ExitFn(0, "GetTotalPaidForUniqueId", err) }()
-
+	log.EnterFn(0, "GetTotalPaidForUniqueId")
+	defer func() { log.ExitFn(0, "GetTotalPaidForUniqueId", nil) }()
 	totalPaid = 0
 
 	if len(UniqueId) <= 0 {
-		log.FuncErrorTrace(0, "%+v", err)
 		return totalPaid
 	}
 	for _, arCfg := range arCfgData.arCfgList {
