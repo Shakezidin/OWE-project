@@ -50,9 +50,8 @@ func calculateEpcCalc(epcCalc, contract, adderLF, sysSize float64) float64 {
 *****************************************************************************/
 func calculateAdderPerKW(dealer string, adderLF, sysSize float64) (adderPerKW float64) {
 
-	adderPerKW = 0
 	if len(dealer) > 0 {
-		adderPerKW = adderLF / sysSize
+		return adderLF / sysSize
 	}
 	return adderPerKW
 }
@@ -90,18 +89,19 @@ func calculateCommTotal(dealer, commission_models, rep_1, source string, payRate
 		return 0
 	} else {
 		if len(dealer) > 0 && dealer == "Onyx D2D" && (rep_1 == "Ramon Roybal" || rep_1 == "Joshua Freitas") {
-			commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.25
+			commTotal := (((contractTotal - baseCost) - adderLF) + dealerPaymentBonus) * 0.25
 			return math.Round(commTotal*100) / 100
 		} else if rep_1 == "Theo Rosenberg" {
-			if source == "P&S" {
-				commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.4
+			if source == "Parker and Sons" {
+				commTotal := (((contractTotal - baseCost) - adderLF) + dealerPaymentBonus) * 0.4
 				return math.Round(commTotal*100) / 100
 			} else {
-				commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.15
+				commTotal := (((contractTotal - baseCost) - adderLF) + dealerPaymentBonus) * 0.15
 				return math.Round(commTotal*100) / 100
 			}
 		} else {
-			commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.8
+			log.FuncErrorTrace(0, "contractTotal (R): %v baseCost (AU): %v , adderLF (BJ): %v", contractTotal, baseCost, adderLF)
+			commTotal := (((contractTotal - baseCost) - adderLF) + dealerPaymentBonus) * 0.8
 			return math.Round(commTotal*100) / 100
 		}
 	}
