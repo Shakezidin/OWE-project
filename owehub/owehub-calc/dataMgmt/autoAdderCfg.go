@@ -303,6 +303,11 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueI
 	return autoAdder
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateExactAmount
+* DESCRIPTION:     calculates the "exact amount" value based on the provided data
+* RETURNS:         ExactAmount
+*****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateExactAmount(uniqueId string) (ExactAmount float64) {
 	log.EnterFn(0, "CalculateExactAmount")
 	defer func() { log.ExitFn(0, "CalculateExactAmount", nil) }()
@@ -329,9 +334,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateExactAmount(uniqueId string) (E
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
+* FUNCTION:        CalculateRepRAutoAddr
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* RETURNS:         float64
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAutoAddr(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time, r1r2check bool) float64 {
 	log.EnterFn(0, "CalculateRepRAutoAddr")
@@ -344,13 +349,13 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAutoAddr(rep1, rep2, unique
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
-* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* FUNCTION:        CalculateRep1AddrResp
+* DESCRIPTION:     calculates the "rep1 addr resp" value based on the provided data
+* RETURNS:         r1AddrResp
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRep1AddrResp(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time, r1r2check bool) (r1AddrResp float64) {
-	log.EnterFn(0, "CalculateRepRAddrResp")
-	defer func() { log.ExitFn(0, "CalculateRepRAddrResp", nil) }()
+	log.EnterFn(0, "CalculateRep1AddrResp")
+	defer func() { log.ExitFn(0, "CalculateRep1AddrResp", nil) }()
 
 	rep := rep1
 	if !r1r2check {
@@ -385,11 +390,11 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRep1AddrResp(rep1, rep2, unique
 /******************************************************************************
 * FUNCTION:        CalculateRep2AddrResp
 * DESCRIPTION:     calculates the "rep 2 adder resp" value based on the provided data
-* RETURNS:         autoAdder
+* RETURNS:         r1AddrResp
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRep2AddrResp(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time, r1r2check bool) (r1AddrResp float64) {
-	log.EnterFn(0, "CalculateRep2RAddrResp")
-	defer func() { log.ExitFn(0, "CalculateRep2RAddrResp", nil) }()
+	log.EnterFn(0, "CalculateRep2AddrResp")
+	defer func() { log.ExitFn(0, "CalculateRep2AddrResp", nil) }()
 	rep := rep1
 	if !r1r2check {
 		rep = rep2
@@ -419,9 +424,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRep2AddrResp(rep1, rep2, unique
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
-* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* FUNCTION:        CalculateRepPerRepOvrdShare
+* DESCRIPTION:     calculates the "per rep ovrd share" value based on the provided data
+* RETURNS:         perRepOvrdShare
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId, types string) (perRepOvrdShare float64) {
 	log.EnterFn(0, "CalculateRepPerRepOvrdShare")
@@ -447,9 +452,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepOvrdShare(rep1, rep2, 
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
-* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* FUNCTION:        CalculateRepExactAmount
+* DESCRIPTION:     calculates the "rep exact amount" value based on the provided data
+* RETURNS:         ExactAmount
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepExactAmount(uniqueId, types string) (ExactAmount float64) {
 	log.EnterFn(0, "CalculateRepExactAmount")
@@ -473,9 +478,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepExactAmount(uniqueId, types 
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
+* FUNCTION:        CalculateRepRepCount
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* RETURNS:         float64
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRepCount(rep1, rep2, uniqueId string) float64 {
 	log.EnterFn(0, "CalculateRepRepCount")
@@ -493,9 +498,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRepCount(rep1, rep2, uniqueI
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
-* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* FUNCTION:        CalculateRepPerRepAddrShare
+* DESCRIPTION:     calculates the "per rep addr share" value based on the provided data
+* RETURNS:         perRepAddrShare
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time) (perRepAddrShare float64) {
 	log.EnterFn(0, "CalculateRepPerRepAddrShare")
@@ -528,9 +533,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, 
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
-* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* FUNCTION:        CalculateRepPerKwAmount
+* DESCRIPTION:     calculates the "rep per kw amount" value based on the provided data
+* RETURNS:         PerKwAmount
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerKwAmount(rep1, uniqueId string) (PerKwAmount float64) {
 	log.EnterFn(0, "CalculateRepPerKwAmount")
@@ -557,9 +562,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerKwAmount(rep1, uniqueId s
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateAutoAddr
-* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
-* RETURNS:         autoAdder
+* FUNCTION:        CalculateRepRep1DefResp
+* DESCRIPTION:     calculates the "rep1 def resp" value based on the provided data
+* RETURNS:         defResp
 *****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRep1DefResp(rep1, uniqueId, state string, wc time.Time) (defResp float64) {
 	log.EnterFn(0, "CalculateRepRep1DefResp")

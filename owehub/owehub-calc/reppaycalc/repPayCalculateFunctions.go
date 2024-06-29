@@ -8,9 +8,9 @@ import (
 )
 
 /******************************************************************************
-* FUNCTION:        calculateR1RR
-* DESCRIPTION:     calculates the "r_rr" value based on the provided data
-* RETURNS:         gross revenue
+* FUNCTION:        calculateRR
+* DESCRIPTION:     calculates the "rr" value based on the provided data
+* RETURNS:         RR
 *****************************************************************************/
 func calculateRR(repName string, val1, val2 float64) (result float64) {
 	log.EnterFn(0, "calculateRR")
@@ -22,9 +22,9 @@ func calculateRR(repName string, val1, val2 float64) (result float64) {
 }
 
 /******************************************************************************
-* FUNCTION:        calculateRStatusCommCheck
+* FUNCTION:        calculateRCommStatudCheck
 * DESCRIPTION:     calculates the "r_status_comm_check" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         result
 *****************************************************************************/
 func calculateRCommStatudCheck(repName, salesRepType, status string, RCommTotal float64) (result float64) {
 	log.EnterFn(0, "calculateRCommStatudCheck")
@@ -44,9 +44,9 @@ func calculateRCommStatudCheck(repName, salesRepType, status string, RCommTotal 
 }
 
 /******************************************************************************
-* FUNCTION:        calculateRStatusCommCheck
+* FUNCTION:        calculateR1CommStatudCheck
 * DESCRIPTION:     calculates the "r_status_comm_check" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         result
 *****************************************************************************/
 func calculateR1CommStatudCheck(commissionModel, repName, salesRepType, status string, RCommTotal float64) (result float64) {
 	log.EnterFn(0, "calculateR1CommStatudCheck")
@@ -80,7 +80,7 @@ func calculateR1CommStatudCheck(commissionModel, repName, salesRepType, status s
 /******************************************************************************
 * FUNCTION:        calculateRepKw
 * DESCRIPTION:     calculates the "rep_kw" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         float64
 *****************************************************************************/
 func calculateRepKw(rep string, netEpc, SysSize, adderPerKw float64) float64 {
 	log.EnterFn(0, "calculateRepKw")
@@ -102,7 +102,7 @@ func calculateRepKw(rep string, netEpc, SysSize, adderPerKw float64) float64 {
 /******************************************************************************
 * FUNCTION:        calculateRPayRateSubTotal
 * DESCRIPTION:     calculates the "r_pay_rate_sub_total" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         result
 *****************************************************************************/
 func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float64) {
 	log.EnterFn(0, "calculateRPayRateSubTotal")
@@ -114,9 +114,9 @@ func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float
 }
 
 /******************************************************************************
-* FUNCTION:        calculateRPayRateSubTotal
+* FUNCTION:        calculateR1PayRateSubTotal
 * DESCRIPTION:     calculates the "r_pay_rate_sub_total" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         result
 *****************************************************************************/
 func calculateR1PayRateSubTotal(commissionModels, repName, source string, val1, val2, val3, val4 float64) (result float64) {
 	log.EnterFn(0, "calculateR1PayRateSubTotal")
@@ -138,9 +138,9 @@ func calculateR1PayRateSubTotal(commissionModels, repName, source string, val1, 
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateContractDolDol
+* FUNCTION:        CalculatePayRateSemi
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         payRateSemi
 *****************************************************************************/
 func CalculatePayRateSemi(Rep string, rl, rate, adjustment, r1Incentive, epcCalc float64) (payRateSemi float64) {
 	log.EnterFn(0, "CalculatePayRateSemi")
@@ -158,9 +158,9 @@ func CalculatePayRateSemi(Rep string, rl, rate, adjustment, r1Incentive, epcCalc
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateContractDolDol
+* FUNCTION:        CalculateR1PayRateSemi
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         payRateSemi
 *****************************************************************************/
 func CalculateR1PayRateSemi(commissionModels, Rep, source string, rl, rate, adjustment, r1Incentive, epcCalc, sysSize, perRepKw, netEpc float64, wc time.Time) (payRateSemi float64) {
 	log.EnterFn(0, "CalculateR1PayRateSemi")
@@ -195,7 +195,7 @@ func CalculateR1PayRateSemi(commissionModels, Rep, source string, rl, rate, adju
 /******************************************************************************
 * FUNCTION:        CalculateEPCCalc
 * DESCRIPTION:    calculates the EPC based on the provided data
-* RETURNS:         contact amount
+* RETURNS:         float64
 *****************************************************************************/
 func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, systemSize float64, wc1Filterdate time.Time) float64 {
 
@@ -220,7 +220,7 @@ func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, syste
 /******************************************************************************
 * FUNCTION:        CalculateContractDolDol
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         contractdoldol
 *****************************************************************************/
 func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
 	log.EnterFn(0, "CalculateContractDolDol")
@@ -238,7 +238,7 @@ func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) 
 /******************************************************************************
 * FUNCTION:        calculateRAdderPerKw
 * DESCRIPTION:     calculates the "r_adder_per_kw" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         result
 *****************************************************************************/
 func calculateRAdderPerKw(repName string, val1, val2 float64) (result float64) {
 	log.EnterFn(0, "calculateRAdderPerKw")
@@ -273,7 +273,6 @@ func calculateR1AdderTotal(repName, commissionModel string, val1, val2, val3, va
 	defer func() { log.ExitFn(0, "calculateR1AdderTotal", nil) }()
 	if commissionModel == "standard" {
 		if len(repName) > 0 {
-			log.FuncErrorTrace(0, "BL : %v, BM: %v, BN : %v, BO : %v BP : %v", val1, val2, val3, val4, val5)
 			return val1 + val2 + val3 + val4 + val5
 		}
 	} else {
@@ -307,7 +306,6 @@ func calculateR1CommTotal(commissionModel, rep1, source string, rMinOrMax, perRe
 	log.EnterFn(0, "calculateR1CommTotal")
 	defer func() { log.ExitFn(0, "calculateR1CommTotal", nil) }()
 	var multiplier float64
-	log.FuncErrorTrace(0, "rep1 : %v, source %v, rMinOrMax: %v perRepKw:%v, rCredit: %v", rep1, source, rMinOrMax, perRepKw, rCredit)
 	if commissionModel == "standard" {
 		if len(rep1) > 0 {
 			if source == "BPN: SETTER" {
@@ -351,14 +349,13 @@ func calculateR1CommTotal(commissionModel, rep1, source string, rMinOrMax, perRe
 			}
 
 			return math.Round(rMinOrMax+rCredit) * multiplier
-
 		}
 	}
 	return r1CommTotal
 }
 
 /******************************************************************************
-* FUNCTION:        calculateR1MinOrMax
+* FUNCTION:        calculateRMinOrMax
 * DESCRIPTION:     calculates the "calculateR1MinOrMax" value based on the provided data
 * RETURNS:         r1MinOrMax
 *****************************************************************************/
@@ -378,14 +375,13 @@ func calculateRMinOrMax(rep1 string, rPayRateSubTotal, minRate, maxRate float64)
 }
 
 /******************************************************************************
-* FUNCTION:        calculateR1DrawAmount
+* FUNCTION:        calculateRDrawAmount
 * DESCRIPTION:     calculates the "r1 draw amount" value based on the provided data
 * RETURNS:         r1DrawAmount
 *****************************************************************************/
 func calculateRDrawAmount(rCommStatusCheck, drawMax, perRepSales, drawPerentage float64) (r1DrawAmount float64) {
 	log.EnterFn(0, "calculateRDrawAmount")
 	defer func() { log.ExitFn(0, "calculateRDrawAmount", nil) }()
-	log.FuncErrorTrace(0, "drawMax : %v, perRepSales = %v, rcommstatusCheck ; %v, drawPercentage : %v", drawMax, perRepSales, rCommStatusCheck, drawPerentage)
 	if rCommStatusCheck > 0 {
 		drawPerentage = drawPerentage / 100
 		if (drawMax * perRepSales) < (rCommStatusCheck * drawPerentage) {
@@ -497,7 +493,7 @@ func calculateApptSetTotal(commissionModel, apptSetter, source string, rep1CommS
 /***************************************************************************
 * FUNCTION:        calculateR1DrawAmount
 * DESCRIPTION:     calculates the "r1 draw amount" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         netEpc
 *****************************************************************************/
 func calculateRNetEpc(rep string, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
 	log.EnterFn(0, "calculateRNetEpc")
@@ -509,14 +505,13 @@ func calculateRNetEpc(rep string, contractCalc, adderTotal, RloanFee, loanFee, s
 }
 
 /***************************************************************************
-* FUNCTION:        calculateR1DrawAmount
+* FUNCTION:        calculateR1NetEpc
 * DESCRIPTION:     calculates the "r1 draw amount" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         netEpc
 *****************************************************************************/
 func calculateR1NetEpc(perRepKw, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
 	log.EnterFn(0, "calculateR1NetEpc")
 	defer func() { log.ExitFn(0, "calculateR1NetEpc", nil) }()
-	log.FuncErrorTrace(0, "perRepKw: %v, contractCalc : %v, AdderTotal : %v, RLoanFee : %v, loanFee : %v, systemSize : %v", perRepKw, contractCalc, adderTotal, RloanFee, loanFee, systemSize)
 	if perRepKw > 0 {
 		netEpc = math.Round(((contractCalc-(adderTotal-RloanFee+loanFee))/systemSize/1000)*1000) / 1000
 	}
@@ -526,7 +521,7 @@ func calculateR1NetEpc(perRepKw, contractCalc, adderTotal, RloanFee, loanFee, sy
 /******************************************************************************
 * FUNCTION:        CalculateStatusDate
 * DESCRIPTION:     calculates the "status_date" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         time.Time
 *****************************************************************************/
 func CalculateStatusDate(uniqueID string, shaky bool, pto, instSys, cancel, ntp, permSub, wc time.Time) time.Time {
 	log.EnterFn(0, "CalculateStatusDate")
@@ -572,13 +567,13 @@ func calculateR2DmBal(R2DmName string, r2DmCOmm, r2DmPaid float64) (r2DmBal floa
 }
 
 /******************************************************************************
-* FUNCTION:        calculateR2DmComm
+* FUNCTION:        calculateR2Comm
 * DESCRIPTION:     calculates the "r2 dm comm" value based on the provided data
 * RETURNS:         r2DmComm
 *****************************************************************************/
 func calculateR2Comm(r2DmName string, r2DmRate, perTeamKw float64) (r2DmComm float64) {
-	log.EnterFn(0, "calculateR2DmComm")
-	defer func() { log.ExitFn(0, "calculateR2DmComm", nil) }()
+	log.EnterFn(0, "calculateR2Comm")
+	defer func() { log.ExitFn(0, "calculateR2Comm", nil) }()
 	if len(r2DmName) > 0 {
 		return math.Round(r2DmRate * perTeamKw)
 	}
@@ -619,47 +614,73 @@ func calculateTeamCount(rep1Team, rep2Team string) (teamCount float64) {
 }
 
 /******************************************************************************
-* FUNCTION:        calculateR2DirBal
-* DESCRIPTION:     calculates the "r2 dir bal" value based on the provided data
+* FUNCTION:        calculateR2Bal
+* DESCRIPTION:     calculates the "r2 bal" value based on the provided data
 * RETURNS:         r2DirBal
 *****************************************************************************/
 func calculateR2Bal(r2DirName string, r2DirComm, R2DirPaid float64) (r2DirBal float64) {
-	log.EnterFn(0, "calculateR2DirBal")
-	defer func() { log.ExitFn(0, "calculateR2DirBal", nil) }()
+	log.EnterFn(0, "calculateR2Bal")
+	defer func() { log.ExitFn(0, "calculateR2Bal", nil) }()
 	if len(r2DirName) > 0 {
 		return r2DirComm - R2DirPaid
 	}
 	return r2DirBal
 }
 
+/******************************************************************************
+* FUNCTION:        calculateR1Bal
+* DESCRIPTION:     calculates the "r bal" value based on the provided data
+* RETURNS:         r1slBal
+*****************************************************************************/
 func calculateR1Bal(R1SlName string, R1SlComm, R1SlPaid float64) (r1SlBal float64) {
+	log.EnterFn(0, "calculateR1Bal")
+	defer func() { log.ExitFn(0, "calculateR1Bal", nil) }()
 	if len(R1SlName) > 0 {
 		return math.Round(R1SlComm - R1SlPaid)
 	}
 	return r1SlBal
 }
 
+/******************************************************************************
+* FUNCTION:        calculateR1Comm
+* DESCRIPTION:     calculates the "r2 dir bal" value based on the provided data
+* RETURNS:         r1SlComm
+*****************************************************************************/
 func calculateR1Comm(R1SlName string, R1SlRate, perTeamKw float64) (r1SlComm float64) {
+	log.EnterFn(0, "calculateR1Comm")
+	defer func() { log.ExitFn(0, "calculateR1Comm", nil) }()
 	if len(R1SlName) > 0 {
 		return math.Round(R1SlRate * perTeamKw)
 	}
 	return r1SlComm
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateSalesRepType
+* DESCRIPTION:     calculates the "r2 dir bal" value based on the provided data
+* RETURNS:         salesRepType
+*****************************************************************************/
 func CalculateSalesRepType(uniqueId, rep1, rep2 string) (salesRepType string) {
 	log.EnterFn(0, "CalculateSalesRepType")
 	defer func() { log.ExitFn(0, "CalculateSalesRepType", nil) }()
 	var ax string
-	r1Tracking := datamgmt.DealerOwnersConfig.CalculateR1Tracking(rep1) //AZ
-	r2Tracking := datamgmt.DealerOwnersConfig.CalculateR2Tracking(rep2) //BA
-	ay := calculateAy(uniqueId, r1Tracking, r2Tracking)                 //AY (I,AZ,BA)
+	r1Tracking := datamgmt.DealerOwnersConfig.CalculateR1Tracking(rep1)
+	r2Tracking := datamgmt.DealerOwnersConfig.CalculateR2Tracking(rep2)
+	ay := calculateAy(uniqueId, r1Tracking, r2Tracking)
 	if ay != "Dealer Owner" {
 		ax = "Sales Rep"
 	}
 	return ax
 }
 
+/******************************************************************************
+* FUNCTION:        calculateAy
+* DESCRIPTION:     calculates the "ay" value based on the provided data
+* RETURNS:         ay
+*****************************************************************************/
 func calculateAy(uniqueId, r1Tracking, r2Tracking string) (ay string) {
+	log.EnterFn(0, "calculateAy")
+	defer func() { log.ExitFn(0, "calculateAy", nil) }()
 	if len(uniqueId) > 0 {
 		if r1Tracking == "Sales Rep" {
 			return "Sales Rep"

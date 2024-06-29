@@ -8,6 +8,7 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 	"time"
 )
 
@@ -84,11 +85,13 @@ func (pApDedData *ApDedCfgStruct) LoadApDedCfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApptSetDba
+* FUNCTION:        GetApDedPaidAmount
 * DESCRIPTION:     calculates the appt set dba value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* RETURNS:         PaidAmnt
 *****************************************************************************/
 func (ApDedData *ApDedCfgStruct) GetApDedPaidAmount(UniqueId, payee string) (PaidAmnt float64) {
+	log.EnterFn(0, "GetApDedPaidAmount")
+	defer func() { log.ExitFn(0, "GetApDedPaidAmount", nil) }()
 	for _, data := range ApDedData.ApDedList {
 		if UniqueId == data.UniqueId {
 			PaidAmnt = ApRepCfg.CalculateAmountApOth(data.UniqueId, data.Payee)
@@ -98,11 +101,13 @@ func (ApDedData *ApDedCfgStruct) GetApDedPaidAmount(UniqueId, payee string) (Pai
 }
 
 /******************************************************************************
- * FUNCTION:        CalculatePaidAmount
+ * FUNCTION:        CalculateBalance
  * DESCRIPTION:     calculates the Paid amount value based on the unique Id
- * RETURNS:         apRep
+ * RETURNS:         balance
  *****************************************************************************/
 func (ApDedData *ApDedCfgStruct) CalculateBalance(UniqueId, payee string, totalPaid float64) (balance float64) {
+	log.EnterFn(0, "CalculateBalance")
+	defer func() { log.ExitFn(0, "CalculateBalance", nil) }()
 	for _, data := range ApDedData.ApDedList {
 		if UniqueId == data.UniqueId {
 			balance = data.Amount - totalPaid
@@ -117,6 +122,8 @@ func (ApDedData *ApDedCfgStruct) CalculateBalance(UniqueId, payee string, totalP
  * RETURNS:         payee
  *****************************************************************************/
 func (ApDedData *ApDedCfgStruct) GetPayee(uniqueId string) (payee string) {
+	log.EnterFn(0, "GetPayee")
+	defer func() { log.ExitFn(0, "GetPayee", nil) }()
 	for _, data := range ApDedData.ApDedList {
 		if data.UniqueId == uniqueId {
 			return data.Payee
@@ -131,6 +138,8 @@ func (ApDedData *ApDedCfgStruct) GetPayee(uniqueId string) (payee string) {
  * RETURNS:         date
  *****************************************************************************/
 func (ApDedData *ApDedCfgStruct) GetDate(uniqueId string) (date time.Time) {
+	log.EnterFn(0, "GetDate")
+	defer func() { log.ExitFn(0, "GetDate", nil) }()
 	for _, data := range ApDedData.ApDedList {
 		if data.UniqueId == uniqueId {
 			return data.Date

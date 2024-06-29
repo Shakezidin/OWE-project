@@ -164,6 +164,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	cancel = saleData.CancelledDate        //AC
 	permSub = saleData.PermitSubmittedDate //X
 
+	// it is for testing purpose, we can hardcode the values due to missmach between consolidated_data_view and sheet
 	log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, Rep1, dealer)
 	log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
 	log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
@@ -199,6 +200,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		shaky = false
 	} //* confirm with shushank //AB
 	types = "LEASE" //* not received from Colten yet //E
+	//till here u can commment it out if u need to remove hard code values
 
 	dealerDBA = dataMgmt.VDealerCfg.CalculateDealerDBA(dealer)
 	statusDate = CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)

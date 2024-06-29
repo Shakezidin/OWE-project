@@ -146,13 +146,15 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) LoadcmmsnRatesCfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculatecmmsnRates
-* DESCRIPTION:     calculates the repayment bonus value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* FUNCTION:        CalculateRepRl
+* DESCRIPTION:     calculates the rep rl value based on the provided data
+* RETURNS:         rl, rate float64
 *****************************************************************************/
 func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
+	log.EnterFn(0, "CalculateRepRl")
+	defer func() { log.ExitFn(0, "CalculateRepRl", nil) }()
 	if len(rep1) > 0 {
-		if installer == "Our World Energy" {
+		if installer == "One World Energy" {
 			installer = "OWE"
 		}
 
@@ -176,9 +178,9 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installe
 }
 
 /******************************************************************************
-* FUNCTION:        CalculatecmmsnRates
+* FUNCTION:        CalculateRep1Rl
 * DESCRIPTION:     calculates the repayment bonus value based on the provided data
-* RETURNS:         dlrPayBonus float64
+* RETURNS:         rl, rate float64
 *****************************************************************************/
 func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, dealer, rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
 	log.EnterFn(0, "CalculateRep1Rl")

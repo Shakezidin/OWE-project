@@ -132,8 +132,6 @@ func (pDealer *DealerOverrideStruct) CalculateParentDealerAndPayRate(dealer stri
 	log.EnterFn(0, "CalculateParentDealerAndPayRate")
 	defer func() { log.ExitFn(0, "CalculateParentDealerAndPayRate", nil) }()
 
-	log.FuncErrorTrace(0, "===Shushank %+v %v", dealer, wc)
-
 	respdealer = ""
 	payRate = 0.0
 	if len(dealer) > 0 {
