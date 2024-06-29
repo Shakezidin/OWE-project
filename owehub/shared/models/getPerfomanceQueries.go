@@ -72,7 +72,7 @@ func ProjectMngmntRetrieveQueryFunc() string {
         mpu_created_date, mpu_scheduled_date, mpu_complete_date,
         derate_created_date, derate_scheduled_date, derate_completed_date,
         trenching_ws_open, trenching_scheduled, trenching_completed
-        FROM test_cdv_final3
+        FROM consolidated_data_view
     `
 	return ProjectMngmntRetrieveQuery
 }
