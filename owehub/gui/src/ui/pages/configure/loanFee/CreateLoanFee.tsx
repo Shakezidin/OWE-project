@@ -35,7 +35,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [newFormData, setNewFormData] = useState({
-    dealerName: 'Shushank Sharma',
+    dealerName: '',
     installerName: '',
     loanType: 'P123',
     dlrMu: '',
@@ -136,7 +136,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
             dlr_cost: parseFloat(newFormData.dlrCost),
             dlr_mu: parseFloat(newFormData.dlrMu),
             owe_cost: parseFloat(newFormData.oweCost),
-            dealer: newFormData.dealerName || 'Shushank Sharma',
+            dealer: newFormData.dealerName,
             loan_type: newFormData.loanType || 'P123',
           })
         );
@@ -154,7 +154,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
             dlr_cost: parseFloat(newFormData.dlrCost),
             dlr_mu: parseFloat(newFormData.dlrMu),
             owe_cost: parseFloat(newFormData.oweCost),
-            dealer: newFormData.dealerName || '',
+            dealer: newFormData.dealerName,
             loan_type: newFormData.loanType || '',
           })
         );
@@ -190,10 +190,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"DLR MU is required"}
                     </span>
@@ -218,10 +218,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"Dealer Name is required"}
                     </span>
@@ -246,10 +246,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"State is required"}
                     </span>
@@ -276,10 +276,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"Loan Type is required"}
                     </span>
@@ -307,10 +307,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"Installer is required"}
                     </span>
@@ -337,10 +337,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"DLR Cost is required"}
                     </span>
@@ -369,10 +369,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"Owe Cost is required"}
                     </span>
@@ -398,10 +398,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"Start Date is required"}
                     </span>
@@ -429,10 +429,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {"End Date is required"}
                     </span>
@@ -452,7 +452,7 @@ className="error"
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             disabled={isFormSubmitting}
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>
