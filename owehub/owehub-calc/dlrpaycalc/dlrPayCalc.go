@@ -176,29 +176,29 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	Rep1 = "Matthew Tidwell"                       //M
 	dealer = "Parker and Sons"                     //A
 	source = "Parker and Sons"                     //D
-	uniqueID = "OUR18305"                          //G
-	systemSize = 6.48                              //P
-	partner = "EnFin"                              //B
+	uniqueID = "OUR18647"                          //G
+	systemSize = 12.555                            //P
+	partner = "LightReach"                         //B
 	installer = "One World Energy"                 //C
-	loanType = "LF-ENFIN-0MONTH-30Y-3.99"          //F
+	loanType = "LightReachLease1.99"               //F
 	state = "AZ :: Arizona"                        //K
-	wc, _ = time.Parse("01-02-2006", "10-09-2023") //U
-	contractTotal = 27122.00                       //R
+	wc, _ = time.Parse("01-02-2006", "10-20-2023") //U
+	contractTotal = 32015.25                       //R
 	netEpc = (systemSize * 1000) / contractTotal   //S
 	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Brian Johnson"                         //H
+	homeOwner = "Joan Fenedick"                         //H
 	Rep2 = ""                                           //N
-	pto, _ = time.Parse("01-02-2006", "11-06-2023")     //AG
-	instSys, _ = time.Parse("01-02-2006", "10-26-2023") //AD
+	pto, _ = time.Parse("01-02-2006", "01-18-2024")     //AG
+	instSys, _ = time.Parse("01-02-2006", "11-27-2023") //AD
 	cancel = time.Time{}                                //AC
-	ntp, _ = time.Parse("01-02-2006", "10-13-2023")     //W
-	permSub, _ = time.Parse("01-02-2006", "10-19-2023") //X
-	if status == "HOLD" || status == "Cancel" {
+	ntp, _ = time.Parse("01-02-2006", "10-21-2023")     //W
+	permSub, _ = time.Parse("01-02-2006", "11-04-2023") //X
+	if status == "Shaky" || status == "Cancel" {
 		shaky = true
 	} else {
 		shaky = false
 	} //* confirm with shushank //AB
-	types = "LOAN" //* not received from Colten yet //E
+	types = "LEASE" //* not received from Colten yet //E
 
 	dealerDBA = dataMgmt.VDealerCfg.CalculateDealerDBA(dealer)
 	statusDate = CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)
