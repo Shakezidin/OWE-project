@@ -70,8 +70,8 @@ export const RepPayDashboardPage: React.FC = () => {
     { value: 'INACTIVE', label: 'INACTIVE' },
   ];
   const cutOff = [
-    { value: 'ACTIVE', label: 'ACTIVE' },
-    { value: 'INACTIVE', label: 'INACTIVE' },
+    { value: 'YES', label: 'YES' },
+    { value: 'NO', label: 'NO' },
   ];
 
   const [selectedOption3, setSelectedOption3] = useState<string>(
