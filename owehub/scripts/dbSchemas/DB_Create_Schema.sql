@@ -5,7 +5,7 @@ create database owe_db;
 
 \c owe_db;
 
-\i '/docker-entrypoint-initdb.d/DB_Create_OWEDB_Schema.sql';
+-- \i '/docker-entrypoint-initdb.d/DB_Create_OWEDB_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_Config_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_DlrPay_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_AR_Schema.sql';
