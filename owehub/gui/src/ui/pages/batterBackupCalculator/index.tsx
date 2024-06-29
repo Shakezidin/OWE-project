@@ -14,7 +14,7 @@ import type { ButtonGroupProps } from 'react-multi-carousel';
 import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
 import emailjs from '@emailjs/browser';
 import CategoryPopup from './components/CategoryPopup';
-import { LuChevronRight } from "react-icons/lu";
+import { LuChevronRight } from 'react-icons/lu';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -75,7 +75,7 @@ const Index = () => {
   const [detail, setDetail] = useState({} as IDetail);
   const [batter, setBattery] = useState<
     {
-      category: string;
+      category: { name: string; ampere: number };
       amp: string;
       note: string;
     }[]
@@ -182,7 +182,6 @@ const Index = () => {
         }
       );
   };
-
   const handleSubmit = async () => {
     try {
       const data = await postCaller('set_prospect_load', {
@@ -329,10 +328,19 @@ const Index = () => {
                     }}
                     className="calc-border category-btn pointer amp-p flex items-center justify-between calc-caret"
                   >
-                    <span style={{textTransform:"capitalize"}} className="calc-category-label capitalize">
-                      {battery.category ? battery.category : 'Add Category'}
+                    <span
+                      style={{ textTransform: 'capitalize' }}
+                      className="calc-category-label capitalize"
+                    >
+                      {battery.category.name
+                        ? battery.category.name
+                        : 'Add Category'}
                     </span>
-                   {!battery.category ?<TbPlus size={16} className="pointer" color="#919191" />:<LuChevronRight size={16} color='#000'/>}
+                    {!battery.category ? (
+                      <TbPlus size={16} className="pointer" color="#919191" />
+                    ) : (
+                      <LuChevronRight size={16} color="#000" />
+                    )}
                   </div>
                   <div className=" calc-caret flex items-center justify-center">
                     <input
@@ -366,7 +374,11 @@ const Index = () => {
                         onClick={() => {
                           setBattery((prev) => [
                             ...prev,
-                            { note: '', amp: item, category: '' },
+                            {
+                              note: '',
+                              amp: item,
+                              category: { name: '', ampere: 0 },
+                            },
                           ]);
                           setIsOpen(false);
                         }}

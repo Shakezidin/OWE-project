@@ -106,10 +106,11 @@ const months = [
   { label: 'December', value: 'December' },
 ];
 export interface Ibattery {
-  quantity: number;
   amp: number;
   note: string;
   isOn: boolean;
+  category_ampere:number;
+  category_name:string
 }
  
 const BatteryAmp = () => {
@@ -126,21 +127,21 @@ const BatteryAmp = () => {
     value: 'June',
   });
   const [initial, setInitial] = useState(0);
-  const arrayGen = (battery: Ibattery[]) => {
-    const arr = [];
-    for (let index = 0; index < battery.length; index++) {
-      let count = 0;
-      if (battery[index].quantity > 1) {
-        while (battery[index].quantity > count) {
-          arr.push({ ...battery[index], isOn: true });
-          count++;
-        }
-      } else {
-        arr.push({ ...battery[index], isOn: true });
-      }
-    }
-    return arr;
-  };
+  // const arrayGen = (battery: Ibattery[]) => {
+  //   const arr = [];
+  //   for (let index = 0; index < battery.length; index++) {
+  //     let count = 0;
+  //     if (battery[index].quantity > 1) {
+  //       while (battery[index].quantity > count) {
+  //         arr.push({ ...battery[index], isOn: true });
+  //         count++;
+  //       }
+  //     } else {
+  //       arr.push({ ...battery[index], isOn: true });
+  //     }
+  //   }
+  //   return arr;
+  // };
   const { id } = useParams();
   const [appliances, setAppliances] = useState([...appliance]);
   const [batteryPower, setBatteryPower] = useState<Ibattery[]>([]);
@@ -205,29 +206,9 @@ const BatteryAmp = () => {
   };
  
   const required = useMemo(() => {
-    let count = 0;
- 
-    appliances.forEach((battery, index) => {
-      if (battery.isOn) {
-        count += battery.quantity;
-      }
-    });
-    let init = initial;
-    count = count - init;
-    const newSum = init + count;
-    setRequiredBattery(Math.max(initial, newSum));
-    return Math.max(initial, newSum);
-  }, [appliances, otherDeatil, initial]);
-  const handleQuantity = (index: number, type: 'dec' | 'inc') => {
-    const appliance = [...appliances];
-    if (type === 'inc') {
-      appliance[index].quantity += 1;
-    }
-    if (type === 'dec' && appliance[index].quantity >= 2) {
-      appliance[index].quantity -= 1;
-    }
-    setAppliances([...appliance]);
-  };
+    return initial
+  }, [initial]);
+
  
   const calculator = () => {
     const consumption = (parseFloat(avgConsumption) / 24) * 6 * 0.6;
@@ -246,13 +227,16 @@ const BatteryAmp = () => {
           const batt = data.data.breakers.map((item: any) => ({
             ...item,
             amp: item.ampere,
-            isOn: false,
+            isOn: true,
           })) as Ibattery[];
-          setBatteryPower(arrayGen([...batt]));
-          setInitialBattery(arrayGen([...batt]));
-        const min = minRequired(arrayGen([...batt]),data?.data?.continous_current, data?.data?.lra)
+          setBatteryPower([...batt]);
+          setInitialBattery([...batt]);
+        const min = minRequired([...batt],data?.data?.continous_current, data?.data?.lra)
           setOtherDeatil(data?.data);
           setInitial(
+            min
+          );
+          setRequiredBattery(
             min
           );
        
@@ -417,105 +401,24 @@ const BatteryAmp = () => {
               <div className="mt4 grid-amp-container">
                 {batteryPower.map((item, index: number) => {
                   return (
-                    <div className="flex mb3">
-                      <div
-                        className={`flex-149 flex items-center relative ${(index + 1) % 2 === 0 ? 'ml-auto' : 'translate-28'}`}
+                    <div
+                    key={index}
+                    style={{border:"1px solid #D1D1D1"}}
+                        className={` flex items-center relative `}
                       >
                         <div className="battery flex items-center flex-grow-1">
-                          <div className="battery-chip sm-battery-chip">
-                            <svg
-                              width="53"
-                              height="63"
-                              viewBox="0 0 53 63"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <g filter="url(#filter0_d_919_3)">
-                                <path
-                                  fill-rule="evenodd"
-                                  clip-rule="evenodd"
-                                  d="M22.4477 14.0454H16.6211V43.1786H22.4477V39.5372H35.5587V17.6873H22.4477V14.0454Z"
-                                  fill="#D1D1D1"
-                                />
-                              </g>
-                              <circle
-                                cx="25.7672"
-                                cy="23.194"
-                                r="1.82974"
-                                fill="#DEDEDE"
-                              />
-                              <circle
-                                cx="25.7672"
-                                cy="34.173"
-                                r="1.82974"
-                                fill="#DEDEDE"
-                              />
-                              <defs>
-                                <filter
-                                  id="filter0_d_919_3"
-                                  x="0.0329838"
-                                  y="0.221985"
-                                  width="52.1137"
-                                  height="62.3095"
-                                  filterUnits="userSpaceOnUse"
-                                  color-interpolation-filters="sRGB"
-                                >
-                                  <feFlood
-                                    flood-opacity="0"
-                                    result="BackgroundImageFix"
-                                  />
-                                  <feColorMatrix
-                                    in="SourceAlpha"
-                                    type="matrix"
-                                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                                    result="hardAlpha"
-                                  />
-                                  <feMorphology
-                                    radius="8.29405"
-                                    operator="dilate"
-                                    in="SourceAlpha"
-                                    result="effect1_dropShadow_919_3"
-                                  />
-                                  <feOffset dy="2.76468" />
-                                  <feGaussianBlur stdDeviation="4.14703" />
-                                  <feComposite in2="hardAlpha" operator="out" />
-                                  <feColorMatrix
-                                    type="matrix"
-                                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0"
-                                  />
-                                  <feBlend
-                                    mode="normal"
-                                    in2="BackgroundImageFix"
-                                    result="effect1_dropShadow_919_3"
-                                  />
-                                  <feBlend
-                                    mode="normal"
-                                    in="SourceGraphic"
-                                    in2="effect1_dropShadow_919_3"
-                                    result="shape"
-                                  />
-                                </filter>
-                              </defs>
-                            </svg>
-                          </div>
-                          <div className="battery-amp sm-amp flex-grow-1 flex items-center">
-                            {item.isOn ? (
-                              <GoCheckCircleFill
-                                className="mr1"
-                                color="#129537"
-                                size={14}
-                              />
-                            ) : (
-                              <MdCancel
-                                className="mr1"
-                                color="#F44336"
-                                size={14}
-                              />
-                            )}
-                            <span>
+                          
+                          <div className=" flex-grow-1  ">
+                            
+                            <span className={`block text-center py1`} style={{backgroundColor:item.isOn?"#129537":"#F44336",fontSize:10,color:"#fff"}}>
                               {' '}
                               {`${item.amp}${item.amp === 70 ? '+' : ''} AMP`}{' '}
                             </span>
+                            <div  className="breaker-category text-center flex items-center justify-center py-1" style={{backgroundColor:"#EEEEEE",height:32}}>
+                              <span className='block' style={{fontSize:10,lineHeight:1.2}}>
+                                {item.category_name}
+                              </span>
+                            </div>
                           </div>
                         </div>
                         <div className="batter-amp-switch sm-switch flex items-center justify-center">
@@ -523,8 +426,8 @@ const BatteryAmp = () => {
                             <img
                               src={on}
                               onClick={() => !mainOn && toggle(index)}
-                              width={23}
-                              height={27}
+                              width={26}
+                              height={31}
                               alt=""
                               className="pointer"
                             />
@@ -532,15 +435,14 @@ const BatteryAmp = () => {
                             <img
                               src={off}
                               onClick={() => !mainOn && toggle(index)}
-                              width={23}
-                              height={27}
+                              width={26}
+                              height={31}
                               alt=""
                               className="pointer"
                             />
                           )}
                         </div>
                       </div>
-                    </div>
                   );
                 })}
               </div>
@@ -659,7 +561,7 @@ const BatteryAmp = () => {
                   className="mt2"
                   style={{ color: '#7C7C7C', fontSize: 12, fontWeight: 500 }}
                 >
-                  Number of batteries required for full home backup
+                  Total number of batteries required
                 </p>
               </div>
               <div className="flex counter-btn-wrapper items-center">
@@ -687,126 +589,7 @@ const BatteryAmp = () => {
                 </div>
               </div>
             </div>
-            <div className=" bg-white appliance-container">
-              <div>
-                <h4 className="appliance-heading">Large Appliances</h4>
-                <div className="flex items-center ">
-                  <p
-                    style={{
-                      color: '#7C7C7C',
-                      fontSize: 12,
-                      fontWeight: 500,
-                      flexBasis: '70%',
-                    }}
-                  >
-                    High Consumption, regular use
-                  </p>
-                  <span
-                    style={{
-                      color: '#898989',
-                      fontSize: 12,
-                      flexBasis: '15%',
-                      textAlign: 'center',
-                    }}
-                  >
-                    Qty
-                  </span>
-                  <span
-                    style={{
-                      color: '#898989',
-                      fontSize: 12,
-                      flexBasis: '15%',
-                      textAlign: 'center',
-                    }}
-                  >
-                    Backup
-                  </span>
-                </div>
-              </div>
-              <div className="mt3">
-                {appliance.map((app, ind) => {
-                  return (
-                    <div key={ind} className="flex mb3 items-center">
-                      <div
-                        className="appliance-icon flex items-center"
-                        style={{ flexBasis: '70%' }}
-                      >
-                        <div
-                          className="check flex items-center "
-                          style={{ flexBasis: '7%', flexShrink: 0 }}
-                        >
-                          {app.isOn ? (
-                            <IoIosCheckmarkCircle color="#37B745" size={21} />
-                          ) : (
-                            <PiCircle size={21} color="#7C7C7C" />
-                          )}
-                        </div>
-                        <div
-                          className="icon flex items-center justify-center"
-                          style={{ flexBasis: '11%', flexShrink: 0 }}
-                        >
-                          {app.icon(app.isOn ? '#000000' : 'rgba(0,0,0,0.3)')}
-                        </div>
-                        <div className="appliance-name">
-                          <h5
-                            style={{
-                              fontSize: 14,
-                              fontWeight: 600,
-                              color: app.isOn ? '#000000' : 'rgba(0,0,0,0.3)',
-                            }}
-                          >
-                            {' '}
-                            {app.name}{' '}
-                          </h5>
-                        </div>
-                      </div>
-                      <div
-                        className="appliance-quantity items-center flex justify-center"
-                        style={{
-                          flexBasis: '15%',
-                          textAlign: 'center',
-                          color: app.isOn ? '#000000' : 'rgba(0,0,0,0.3)',
-                          gap: 12,
-                        }}
-                      >
-                        <span
-                          onClick={() => app.isOn && handleQuantity(ind, 'dec')}
-                          className="quantity-toggler-btn pointer"
-                        >
-                          <FaMinus
-                            color={app.isOn ? '#000000' : 'rgba(0,0,0,0.3)'}
-                            size={10}
-                          />
-                        </span>
-                        <span>{app.quantity}</span>
-                        <span
-                          onClick={() => app.isOn && handleQuantity(ind, 'inc')}
-                          className="quantity-toggler-btn pointer"
-                        >
-                          <FaPlus
-                            color={app.isOn ? '#000000' : 'rgba(0,0,0,0.3)'}
-                            size={10}
-                          />
-                        </span>
-                      </div>
-                      <div
-                        className="applicane-switch-container flex justify-center"
-                        style={{ flexBasis: '15%' }}
-                      >
-                        <ToggleSwitch
-                          onChange={() => {
-                            const current = [...appliances];
-                            current[ind].isOn = !current[ind].isOn;
-                            setAppliances([...current]);
-                          }}
-                          checked={app.isOn}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+           
             <div className="mt4">
               <button
                 onClick={exportPdf}
