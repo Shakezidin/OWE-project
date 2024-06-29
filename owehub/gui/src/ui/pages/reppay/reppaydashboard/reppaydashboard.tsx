@@ -134,7 +134,7 @@ export const RepPayDashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="rep-dash-head-input"style={{minWidth:"155px"}}>
+              <div className="rep-dash-head-input" style={{ minWidth: "155px" }}>
                 <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
                   <img src={ICONS.lable_img} alt="" />
                 </div>
@@ -218,12 +218,12 @@ export const RepPayDashboardPage: React.FC = () => {
 
               </div>
 
-              <div className="rep-dash-head-input" >
+              <div className="rep-dash-head-input">
                 <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
                 <div className='rep-up relative'>
-                  <label className="rep-inputLabel" style=
+                  <label className="date-inputLabel" style=
                     {{
                       color: '#344054',
                       position: 'absolute',
@@ -250,9 +250,16 @@ export const RepPayDashboardPage: React.FC = () => {
                       onClick={handleToggleDatePicker}
                       style={{ color: '#292929' }}
                     >
-                      {selectionRange.startDate.toLocaleDateString() !== selectionRange.endDate.toLocaleDateString()
-                        ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
-                        : 'Select Date'}
+                      <span className="date-text">
+                        {selectionRange.startDate.toLocaleDateString() !== selectionRange.endDate.toLocaleDateString()
+                          ? <React.Fragment>
+                            <span className="date-range-large">
+                              {`${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`}
+                            </span>
+                            <span className="date-range-small">Date Selected</span>
+                          </React.Fragment>
+                          : 'Select Date'}
+                      </span>
                     </label>
                     {showDatePicker && (
                       <div className="rep-calender-container">
@@ -278,9 +285,9 @@ export const RepPayDashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="rep-dash-head-input" style={{minWidth:"120px"}}>
-                <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
-                  <img src={ICONS.lable_img} alt="" />
+              <div className="rep-dash-head-input" style={{ minWidth: "120px" }}>
+              <div className='rep-drop_label' style={{ backgroundColor: "#63ACA3" }}>
+                  <img src={ICONS.report1} alt="" />
                 </div>
                 <div className='rep-up relative'>
                   <label className="rep-inputLabel" style=
