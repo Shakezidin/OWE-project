@@ -183,7 +183,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
                     onChange={(newValue) =>
                       handleChange(newValue, 'dealer_name')
                     }
-                    value={dealerOption(newFormData)?.find(
+                    value={!createDealerTierData.dealer_name ? undefined: dealerOption(newFormData)?.find(
                       (option) =>
                         option.value === createDealerTierData.dealer_name
                     )}
