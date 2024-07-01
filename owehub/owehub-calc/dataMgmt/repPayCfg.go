@@ -33,7 +33,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadRepPayCfg", err) }()
 
 	query = ` SELECT rs.id AS record_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
-	rs.b_e, rs.start_date, rs.end_date, rt.rep_type as pay_scale
+	rs.b_e, rs.start_date, rs.end_date
 	FROM rep_pay_settings rs
 	LEFT JOIN states st ON st.state_id = rs.state_id
 	LEFT JOIN rep_type rt ON rt.id = rs.pay_scale
@@ -41,7 +41,6 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
-		// log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
 		return err
 	}
 
@@ -49,10 +48,6 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 		RecordId, Ok := item["record_id"].(int64)
 		if !Ok {
 			RecordId = 0.0
-		}
-		Unique_id, Ok := item["unique_id"].(string)
-		if !Ok || Unique_id == "" {
-			Unique_id = ""
 		}
 
 		Name, nameOk := item["name"].(string)
@@ -75,34 +70,34 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 			Position = ""
 		}
 
-		B_e, b_eOk := item["b_e"].(string)
-		if !b_eOk || B_e == "" {
-			B_e = ""
+		B_e, b_eOk := item["b_e"].(bool)
+		if !b_eOk {
+			B_e = false
 		}
 
-		Start_date, start_dateOk := item["start_date"].(string)
-		if !start_dateOk || Start_date == "" {
-			Start_date = ""
+		StartDate, start_dateOk := item["start_date"].(time.Time)
+		if !start_dateOk {
+			StartDate = time.Time{}
 		}
 
-		End_date, end_dateOk := item["end_date"].(string)
-		if !end_dateOk || End_date == "" {
-			End_date = ""
+		EndDate, end_dateOk := item["end_date"].(time.Time)
+		if !end_dateOk {
+			EndDate = time.Time{}
 		}
 
+		start := StartDate.Format("2006-01-02")
+		end := EndDate.Format("2006-01-02")
 		// Create a new GetSaleTypeData object
 		RepPaySettingsData := models.GetRepPaySettingsData{
 			RecordId:  RecordId,
-			UniqueID:  Unique_id,
 			Name:      Name,
 			State:     State_name,
 			PayScale:  Pay_scale,
 			Position:  Position,
 			B_E:       B_e,
-			StartDate: Start_date,
-			EndDate:   End_date,
+			StartDate: start,
+			EndDate:   end,
 		}
-
 		RepPayCfg.RepPayList.RepPaySettingsList = append(RepPayCfg.RepPayList.RepPaySettingsList, RepPaySettingsData)
 	}
 
