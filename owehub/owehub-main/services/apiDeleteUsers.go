@@ -80,7 +80,6 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", username)
 			// Optionally, you can log a success message or perform additional actions
 		}
-
 	}
 
 	// Copy user codes to whereEleList

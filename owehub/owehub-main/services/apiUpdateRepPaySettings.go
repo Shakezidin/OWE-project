@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,9 +56,9 @@ func HandleUpdateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 		return
 	}
 
-	if len(UpdateRepPaySettingsData.UniqueID) == 0 || len(UpdateRepPaySettingsData.Name) == 0 ||
+	if len(UpdateRepPaySettingsData.Name) == 0 ||
 		len(UpdateRepPaySettingsData.State) == 0 || len(UpdateRepPaySettingsData.PayScale) == 0 ||
-		len(UpdateRepPaySettingsData.Position) == 0 || len(UpdateRepPaySettingsData.B_E) == 0 ||
+		len(UpdateRepPaySettingsData.Position) == 0 ||
 		len(UpdateRepPaySettingsData.StartDate) == 0 || len(UpdateRepPaySettingsData.EndDate) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -72,16 +73,27 @@ func HandleUpdateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 		return
 	}
 
-	// Populate query parameters in the correct order
+	StartDate, err := time.Parse("2006-01-02", UpdateRepPaySettingsData.StartDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		return
+	}
+	EndDate, err := time.Parse("2006-01-02", UpdateRepPaySettingsData.EndDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		return
+	}
+
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.RecordId)
-	queryParameters = append(queryParameters, UpdateRepPaySettingsData.UniqueID)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.Name)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.State)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.PayScale)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.Position)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.B_E)
-	queryParameters = append(queryParameters, UpdateRepPaySettingsData.StartDate)
-	queryParameters = append(queryParameters, UpdateRepPaySettingsData.EndDate)
+	queryParameters = append(queryParameters, StartDate)
+	queryParameters = append(queryParameters, EndDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRepPaySettingsDataFunction, queryParameters)

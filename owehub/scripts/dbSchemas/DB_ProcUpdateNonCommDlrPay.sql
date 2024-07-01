@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION update_non_comm_dlr_pay(
     p_balance          DOUBLE PRECISION,
     p_paid_amount      DOUBLE PRECISION,
     p_dba              VARCHAR,
-    p_date             VARCHAR,
+    p_date             DATE,
     OUT v_non_comm_dlr_pay_id INT
 )
 RETURNS INT

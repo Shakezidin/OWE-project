@@ -147,6 +147,7 @@ func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, 
 		endDate   time.Time
 	)
 
+	dlrcost = 0.0
 	dlrTier := DealerTierCfg.CalculateDlrTier(uniqueId, dealer, date)
 	if dlrTier == "OLD" {
 		for _, data := range pLoanFee.LoanFeeCfg.LoanFeeList {
@@ -171,8 +172,10 @@ func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, 
 			}
 
 			var st string
-			if len(state) > 0 {
+			if len(state) > 6 {
 				st = state[6:]
+			} else {
+				return
 			}
 
 			if data.Dealer == dealer && data.Installer == installer && data.State == st &&
@@ -181,6 +184,7 @@ func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, 
 				dlrcost += data.DlrCost
 			}
 		}
+		return dlrcost
 	} else {
 		dlrcost = TierLoanFeeCfg.CalculateDlrCost(dlrTier, installer, state, Type, date)
 	}

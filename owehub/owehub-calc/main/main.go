@@ -18,8 +18,8 @@ import (
 	"os/signal"
 	"time"
 
+	arCalc "OWEApp/owehub-calc/arcalc"
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
-	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
 
 	// repPayCalc "OWEApp/owehub-calc/reppaycalc"
 
@@ -87,19 +87,17 @@ func main() {
 		panic("Failed to load sale data from DB")
 	}
 
-	// log.FuncErrorTrace(0, "sales data ======== %v", dataMgmt.SaleDataStruct)
-
 	/* Perform Initial AR Calcualtion*/
-	// arCalc.ExecArInitialCalculation(arCalcResult)
+	go arCalc.ExecArInitialCalculation(arCalcResult)
 
 	/* Perform Initial DLR PAY Calcualtion*/
-	dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
+	// go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
-	// repPayCalc.ExecRepPayInitialCalculation(repPayResult)
+	// go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
 
-	repPayRs := <-repPayResult
-	dlrPayRs := <-dlrPayResult
+	// repPayRs := <-repPayResult
+	// dlrPayRs := <-dlrPayResult
 	arRs := <-arCalcResult
 
 	if arRs != "SUCCESS" {
@@ -109,19 +107,19 @@ func main() {
 		log.FuncDebugTrace(0, "AR Initial calculation completed sucessfully.")
 	}
 
-	if dlrPayRs != "SUCCESS" {
-		log.FuncErrorTrace(0, "Failed to perform initial calculations for DealerPay")
-		panic("Failed to perform initial calculations for DealerPay")
-	} else {
-		log.FuncDebugTrace(0, "DLR Pay Initial calculation completed sucessfully.")
-	}
+	// if dlrPayRs != "SUCCESS" {
+	// 	log.FuncErrorTrace(0, "Failed to perform initial calculations for DealerPay")
+	// 	panic("Failed to perform initial calculations for DealerPay")
+	// } else {
+	// 	log.FuncDebugTrace(0, "DLR Pay Initial calculation completed sucessfully.")
+	// }
 
-	if repPayRs != "SUCCESS" {
-		log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
-		panic("Failed to perform initial calculations for RepPay")
-	} else {
-		log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
-	}
+	// if repPayRs != "SUCCESS" {
+	// 	log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
+	// 	panic("Failed to perform initial calculations for RepPay")
+	// } else {
+	// 	log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
+	// }
 
 	/*Closing channels*/
 	close(arCalcResult)

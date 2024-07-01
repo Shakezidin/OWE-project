@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION create_new_dlr_oth(
     p_description             character varying,
     p_balance                 float,
     p_paid_amount             float,
-    p_date                    character varying,
+    p_date                    date,
     OUT v_dlr_oth_id    INT
 )
 RETURNS INT

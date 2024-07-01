@@ -9,7 +9,7 @@ CREATE OR REPLACE FUNCTION create_new_non_comm_dlr_pay(
     p_balance  float,
     p_paid_amount  float,
     p_dba  text,
-    p_date character varying,
+    p_date date,
     OUT v_non_comm_dlr_pay_id INT
 )
     RETURNS INT

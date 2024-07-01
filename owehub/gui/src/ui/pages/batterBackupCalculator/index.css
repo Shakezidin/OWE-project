@@ -7,8 +7,13 @@
   border-radius: 8px;
 }
 .wrapper-header {
-  border-bottom: 1px solid #000;
-  padding-bottom: 20px;
+  border-bottom: none;
+  background: #fff;
+  margin-inline: -1.5rem;
+  padding: 1.5rem;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  margin-top: -2rem;
 }
 
 .calc-input .inputLabel,
@@ -115,11 +120,12 @@
   font-weight: 600;
   border-radius: 4px;
   border: none;
+  
   padding-block: 12px;
 }
 
 .calc-green-btn {
-  background-color: #129537;
+  background-color: #0BAF11;
   color: #fff;
 }
 
@@ -237,9 +243,10 @@
 
 .battery-watt-wrapper {
   border-radius: 20px;
-  padding-left: 35px;
+  padding-left: 21px;
   padding-right: 25px;
-  padding-block: 38px;
+  padding-top: 14px;
+  padding-block: 25px;
 }
 
 .battery-watt-heading {
@@ -313,11 +320,11 @@
   width: 100%;
   margin-inline: auto;
   border: none;
-  font-weight: 700;
+  font-weight: 500;
   max-width: 480px;
-  font-size: 14px;
+  font-size: 12px;
   display: block;
-  padding-block: 16px;
+  padding: 1rem 2rem;
   border-radius: 12px;
   margin-bottom: 13px;
 }
@@ -373,20 +380,21 @@
   display: block;
   margin-bottom: 5px;
 }
+
 .calc-input-wrapper .input-inner-view {
+  border: none !important;
+  overflow: visible;
+}
+.calc-input-wrapper .input-inner-view  .input{
   border: 1px solid #ebebeb;
   border-radius: 4px;
-  background: #f8f8f8 !important;
 }
 
 .calc-input-wrapper .input-inner-view .input {
   background: transparent;
   padding-block: 22px;
 }
-.calc-input-wrapper .input-inner-view .input::placeholder {
-  color: #202020;
-  font-weight: 700;
-}
+
 
 .calc-input-wrapper .input-inner-view .input {
   color: #202020;
@@ -432,9 +440,7 @@
 .scrollbar .modal {
   height: 560px;
 }
-.batter-amp-wrapper {
-  gap: 64px;
-}
+
 .calc-category-label{
   font-size: 12px;
   color: #919191;
@@ -453,6 +459,11 @@
 }
 .breaker-quantity-toggler {
   gap: 24px;
+}
+
+.calc-btn:disabled{
+  background-color: #E7E7E7;
+  color: #919191;
 }
 @media (max-width: 1024px) {
   .breaker-size-label {
@@ -492,13 +503,6 @@
   .form-calc-details .calc-input .input-inner-view .input {
     background: transparent !important;
   }
-  .wrapper-header {
-    border-bottom: none;
-    background: #fff;
-    margin-inline: -1.5rem;
-    padding: 1.5rem;
-    margin-top: -2rem;
-  }
   .trash-btn{
     display: none !important;
   }
@@ -531,9 +535,7 @@
     border-bottom: 2px dashed #ebebeb;
     border-right: none;
   }
-  .batter-amp-wrapper {
-    gap: 40px;
-  }
+
   .batter-amp-wrapper {
     flex-direction: column;
   }
@@ -543,7 +545,6 @@
  
   .panel-container {
     width: 100%;
-    margin-top: 100px;
   }
 
   .battery-amp-wrapper {
@@ -559,19 +560,14 @@
   }
   .battery-amp {
     font-size: 12px;
-    padding-block: 6px;
+    padding-block: 10px;
   }
 
   .batter-amp-switch {
     width: 55px;
     height: 60px;
   }
-  .calc-select-wrapper,
-  .calc-input-wrapper {
-    flex: 1;
-    width: 100%;
-    min-width: 175px;
-  }
+
 
   .calc-input-container {
     gap: 26px;
@@ -594,17 +590,6 @@
     top: 19px;
   }
 
-  .battery-watt-wrapper {
-    align-items: flex-end;
-    position: absolute;
-    top: 28px;
-    transform: translateX(-50%);
-    left: 50%;
-    width: calc(100% - 22px);
-    margin-inline: auto;
-    padding-block: 16px;
-    min-height: 86px;
-  }
   .stats-btn {
     padding: 5px 4px;
     font-size: 10px;
