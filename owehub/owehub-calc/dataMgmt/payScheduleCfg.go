@@ -281,20 +281,6 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 				strings.EqualFold(data.PartnerName, partner) &&
 				strings.EqualFold(data.InstallerName, installer) &&
 				data.SaleType == Type &&
-				data.State == st {
-				log.FuncErrorTrace(0, "data.Dealer : %v ===== dealer : %v", data.Dealer, dealer)
-				log.FuncErrorTrace(0, "data.partnerName : %v ===== partrner : %v", data.PartnerName, partner)
-				log.FuncErrorTrace(0, "data.installer : %v ===== installer : %v", data.InstallerName, installer)
-				log.FuncErrorTrace(0, "data.state : %v ===== state : %v", data.State, state)
-				log.FuncErrorTrace(0, "data.saleType : %v ===== types : %v", data.SaleType, Type)
-				log.FuncErrorTrace(0, "data.startDate : %v ===== wc : %v", data.StartDate, wc)
-				log.FuncErrorTrace(0, "data.EndDate : %v ===== we : %v", data.EndDate, wc)
-			}
-
-			if data.Dealer == dealer &&
-				strings.EqualFold(data.PartnerName, partner) &&
-				strings.EqualFold(data.InstallerName, installer) &&
-				data.SaleType == Type &&
 				data.State == st &&
 				(startDate.Before(wc) || startDate.Equal(wc)) &&
 				(endDate.After(wc) || endDate.Equal(wc)) {

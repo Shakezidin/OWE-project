@@ -123,7 +123,8 @@ CREATE TABLE dealer_pay_calc_standard (
     sales_rep_type TEXT,
     r1_comm_paid FLOAT,
     r1_draw_paid FLOAT,
-    commission_model TEXT
+    commission_model TEXT,
+    dealer_dba text
 );
  
 CREATE VIEW pr_dlr_d_standard AS

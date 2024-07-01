@@ -256,8 +256,6 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	// Send the response
 	log.FuncInfoTrace(0, "Number of ar data List fetched : %v list %+v", len(arDataList.ArDataList), arDataList)
 	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, arDataList)
-
-	fmt.Println(data)
 }
 
 // Function to generate the base query
