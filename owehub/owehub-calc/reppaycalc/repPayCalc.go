@@ -92,7 +92,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData = make(map[string]interface{})
 	var shaky bool
 
-	status := saleData.ProjectStatus           //AJ
+	status := saleData.ProjectStatus //AJ
+	if status == "PTO'd" {
+		status = "PTO"
+	}
 	rep1 := saleData.PrimarySalesRep           //M
 	dealer := saleData.Dealer                  //A
 	source := saleData.Source                  //D
@@ -122,46 +125,46 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	apptSetter := saleData.Setter              //* confirm with shushank //O
 
 	// it is for testing purpose, we can hardcode the values due to missmach between consolidated_data_view and sheet
-	log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, rep1, dealer)
-	log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
-	log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
-	log.FuncFuncTrace(0, "Zidhin state (K): %v, wc (U): %v contracttotal (R): %v", state, wc, contractTotal)
-	log.FuncFuncTrace(0, "Zidhin epc (S): %v, homeOwner (H): %v rep2 (N): %v", epc, homeOwner, rep2)
-	log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
-	log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, setter : %v", ntp, permSub, shaky, apptSetter)
+	// log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, rep1, dealer)
+	// log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
+	// log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
+	// log.FuncFuncTrace(0, "Zidhin state (K): %v, wc (U): %v contracttotal (R): %v", state, wc, contractTotal)
+	// log.FuncFuncTrace(0, "Zidhin epc (S): %v, homeOwner (H): %v rep2 (N): %v", epc, homeOwner, rep2)
+	// log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
+	// log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, setter : %v", ntp, permSub, shaky, apptSetter)
 
-	status = "Cancel"                              //AJ
-	rep1 = "Brent Hart"                            //M
-	dealer = "OWE-AZ-22"                           //A
-	source = "REP"                                 //D
-	uniqueID = "OUR11404"                          //G
-	systemSize = 6.75                              //P
-	partner = "Dividend"                           //B
-	installer = "One World Energy"                 //C
-	loanType = "LF-DIV-12MONTH-25y-2.99"           //F
-	state = "AZ :: Arizona"                        //K
-	wc, _ = time.Parse("01-02-2006", "01-06-2023") //U
-	contractTotal = 35078.74                       //S (miss match)
-	epc = (systemSize * 1000) / contractTotal      //S
-	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Gary Aten"                            //H
-	rep2 = "Jesse Hart"                                //N
-	pto = time.Time{}                                  //AG
-	instSys = time.Time{}                              //AD
-	cancel, _ = time.Parse("01-02-2006", "01-12-2023") //AC
-	ntp = time.Time{}                                  //W
-	permSub = time.Time{}                              //X
-	if status == "HOLD" || status == "Cancel" {
-		shaky = true
-	} else {
-		shaky = false
-	} //* confirm with shushank //AB
-	types = "LOAN"                            //* not received from Colten yet //E
-	kwh = (systemSize * 1000) / contractTotal //Q
-	apptSetter = ""                           //O
-	payee := ""                               //confirm with sushank
-
+	// status = "Cancel"                              //AJ
+	// rep1 = "Brent Hart"                            //M
+	// dealer = "OWE-AZ-22"                           //A
+	// source = "REP"                                 //D
+	// uniqueID = "OUR11404"                          //G
+	// systemSize = 6.75                              //P
+	// partner = "Dividend"                           //B
+	// installer = "One World Energy"                 //C
+	// loanType = "LF-DIV-12MONTH-25y-2.99"           //F
+	// state = "AZ :: Arizona"                        //K
+	// wc, _ = time.Parse("01-02-2006", "01-06-2023") //U
+	// contractTotal = 35078.74                       //S (miss match)
+	// epc = (systemSize * 1000) / contractTotal      //S
+	// log.FuncErrorTrace(0, "epc = %v", epc)
+	// homeOwner = "Gary Aten"                            //H
+	// rep2 = "Jesse Hart"                                //N
+	// pto = time.Time{}                                  //AG
+	// instSys = time.Time{}                              //AD
+	// cancel, _ = time.Parse("01-02-2006", "01-12-2023") //AC
+	// ntp = time.Time{}                                  //W
+	// permSub = time.Time{}                              //X
+	// if status == "HOLD" || status == "Cancel" {
+	// 	shaky = true
+	// } else {
+	// 	shaky = false
+	// } //* confirm with shushank //AB
+	// types = "LOAN"                            //* not received from Colten yet //E
+	// kwh = (systemSize * 1000) / contractTotal //Q
+	// apptSetter = ""                           //O
 	//till here u can commment it out if u need to remove hard code values
+
+	payee := "" //confirm with sushank
 
 	//*==================== COMMON ==========================/
 	salesRepType := CalculateSalesRepType(uniqueID, rep1, rep2)                                                                                                     //DG
@@ -475,10 +478,13 @@ func CalculateOldRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[st
 	outData = make(map[string]interface{})
 	var shaky bool
 
-	dealer := saleData.Dealer                  //A
-	homeOwner := saleData.HomeOwner            //H
-	uniqueID := saleData.UniqueId              //G
-	status := saleData.ProjectStatus           //AJ
+	dealer := saleData.Dealer        //A
+	homeOwner := saleData.HomeOwner  //H
+	uniqueID := saleData.UniqueId    //G
+	status := saleData.ProjectStatus //AJ
+	if status == "PTO'd" {
+		status = "PTO"
+	}
 	rep1 := saleData.PrimarySalesRep           //M
 	source := saleData.Source                  //D
 	systemSize := saleData.SystemSize          //P

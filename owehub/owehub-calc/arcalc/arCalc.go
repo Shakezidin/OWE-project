@@ -120,6 +120,9 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["inst_sys"] = saleData.PvInstallCompletedDate
 	outData["pto"] = saleData.PtoDate
 	status = saleData.ProjectStatus
+	if status == "PTO'd" {
+		status = "PTO"
+	}
 	contractTotal := saleData.ContractTotal
 	systemSize := saleData.SystemSize
 	/* Calculated Fields */

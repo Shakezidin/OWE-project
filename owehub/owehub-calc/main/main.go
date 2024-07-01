@@ -18,8 +18,10 @@ import (
 	"os/signal"
 	"time"
 
+	arCalc "OWEApp/owehub-calc/arcalc"
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
+	repPayCalc "OWEApp/owehub-calc/reppaycalc"
 
 	// repPayCalc "OWEApp/owehub-calc/reppaycalc"
 
@@ -87,16 +89,14 @@ func main() {
 		panic("Failed to load sale data from DB")
 	}
 
-	// log.FuncErrorTrace(0, "sales data ======== %v", dataMgmt.SaleDataStruct)
-
 	/* Perform Initial AR Calcualtion*/
-	// arCalc.ExecArInitialCalculation(arCalcResult)
+	go arCalc.ExecArInitialCalculation(arCalcResult)
 
 	/* Perform Initial DLR PAY Calcualtion*/
-	dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
+	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
-	// repPayCalc.ExecRepPayInitialCalculation(repPayResult)
+	go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
 
 	repPayRs := <-repPayResult
 	dlrPayRs := <-dlrPayResult
