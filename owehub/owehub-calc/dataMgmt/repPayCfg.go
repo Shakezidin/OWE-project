@@ -36,7 +36,6 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 	rs.b_e, rs.start_date, rs.end_date
 	FROM rep_pay_settings rs
 	LEFT JOIN states st ON st.state_id = rs.state_id
-	LEFT JOIN rep_type rt ON rt.id = rs.pay_scale
 	`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
