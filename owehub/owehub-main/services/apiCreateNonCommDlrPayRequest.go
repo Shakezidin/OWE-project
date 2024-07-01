@@ -76,9 +76,9 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	if len(createNonCommDlrPay.UniqueID) > 0 {
-		query = `SELECT home_owner as customer, dealer as dealer_name FROM dealer_pay_calc_standard WHERE unique_id = $1`
+		query = `SELECT home_owner as customer, dealer as dealer_name FROM consolidated_data_view WHERE unique_id = $1`
 		whereEleList = append(whereEleList, createNonCommDlrPay.UniqueID)
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
@@ -87,13 +87,11 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		if len(data) > 0 {
 			customer = data[0]["customer"].(string)
 			dealerName = data[0]["dealer_name"].(string)
-			// dealerDBA = data[0]["dealerDBA"].(string)
 		}
 	}
 
 	if len(customer) > 0 {
 		query = fmt.Sprintf("SELECT SUM(ad.amount) as paid_amount FROM ap_dealer ad WHERE ad.unique_id = '%v' AND type = 'Non-COMM'", createNonCommDlrPay.UniqueID)
-
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get appt setters data from DB err: %v", err)
