@@ -126,6 +126,7 @@ const ConfigurePage: React.FC = () => {
                     className="configure-card-title"
                     onClick={toggleAccordion(setIsOpen)}
                   >
+                    
                     <p className="payer-type">{title}</p>
                     <div className="accordion-icon-container">
                       {isOpen ? (

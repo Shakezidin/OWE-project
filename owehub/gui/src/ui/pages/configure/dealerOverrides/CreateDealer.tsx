@@ -227,9 +227,10 @@ const CreateDealer: React.FC<dealerProps> = ({
                     options={dealerOption(newFormData)}
                     onChange={(newValue) => setDealerVal(newValue?.value!)}
                     value={
+                      !delaerVal ? undefined:
                       dealerOption(newFormData)?.find(
                         (option) => option.value === delaerVal
-                      ) || undefined
+                      )
                     }
                     
                   />

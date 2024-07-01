@@ -96,7 +96,7 @@ const DataTableHeaderr = (props: TableProps) => {
                 }),
                 menu: (baseStyles) => ({
                   ...baseStyles,
-                  width: '220px',
+                  width: '200px',
                   zIndex: 9999, // Add this line to set a higher zIndex value
                 }),
               }}

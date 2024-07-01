@@ -37,15 +37,18 @@
   gap: 28px;
   flex-wrap: wrap;
   padding: 14px 7px;
-  padding-left: 12px;
-  max-height: 0;
+  max-height: 1000px;
   overflow: hidden;
+  transition: max-height 0s ease, visibility 0s linear 0s;
 }
+
 .configure-cards.open {
   max-height: 1000px;
 }
 .configure-cards:not(.open) {
+  max-height: 0;
   visibility: hidden;
+  transition: max-height 0.5s ease, visibility 0s linear;
 }
 
 .card-heading {

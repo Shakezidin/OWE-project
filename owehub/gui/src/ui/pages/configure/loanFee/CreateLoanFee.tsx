@@ -81,17 +81,21 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     return Object.keys(error).length ? false : true;
   };
   React.useEffect(() => {
-    setNewFormData({
-      dealerName: editData?.dealer || '',
-      installerName: editData?.installer || '',
-      loanType: editData?.loan_type || '',
-      dlrMu: editData?.dlr_mu ? `${editData?.dlr_mu}` : '',
-      dlrCost: editData?.dlr_cost ? `${editData?.dlr_cost}` : '',
-      startDate: editData?.start_date || '',
-      endDate: editData?.end_date || '',
-      stateName: editData?.state || '',
-      oweCost: editData?.owe_cost ? `${editData?.owe_cost}` : '',
-    });
+    if(editMode){
+      console.log("jhgfgj", editData?.dealer);
+      setNewFormData({
+        dealerName: editData?.dealer || '',
+        installerName: editData?.installer || '',
+        loanType: editData?.loan_type || '',
+        dlrMu: editData?.dlr_mu ? `${editData?.dlr_mu}` : '',
+        dlrCost: editData?.dlr_cost ? `${editData?.dlr_cost}` : '',
+        startDate: editData?.start_date || '',
+        endDate: editData?.end_date || '',
+        stateName: editData?.state || '',
+        oweCost: editData?.owe_cost ? `${editData?.owe_cost}` : '',
+      });
+    }
+    
     getNewFormData();
   }, [editMode, editData]);
   console.log(newFormData, 'formdddd');
@@ -210,7 +214,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                         dealerName: newValue?.value!,
                       }));
                     }}
-                    value={dealerOption(newFormData)?.find(
+                    value={!newFormData.dealerName ? undefined: dealerOption(newFormData)?.find(
                       (option) => option.value === newFormData.dealerName
                     )}
                   />
