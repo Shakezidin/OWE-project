@@ -1,12 +1,11 @@
 CREATE OR REPLACE FUNCTION create_new_rep_pay_settings(
-    p_unique_id VARCHAR,
     p_name VARCHAR,
     p_state_name VARCHAR,
     p_pay_scale VARCHAR,
     p_position VARCHAR,
-    p_b_e VARCHAR,
-    p_start_date character varying,
-	p_end_date character varying,
+    p_b_e BOOLEAN,
+    p_start_date DATE,
+	p_end_date DATE,
     OUT v_rep_pay_settings_id INT
 )
 RETURNS INT
@@ -26,7 +25,6 @@ BEGIN
 
     -- Insert a new v_adder into v_adders table
     INSERT INTO rep_pay_settings (
-        unique_id,
         name,
         state_id,
         pay_scale,
@@ -36,7 +34,6 @@ BEGIN
         end_date
     )
     VALUES (
-        p_unique_id,
         p_name,
         v_state_id,
         p_pay_scale,

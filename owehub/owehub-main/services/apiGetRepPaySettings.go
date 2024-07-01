@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,7 +64,7 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	tableName := db.TableName_RepPaySettingss
 	query = `
-	 SELECT rs.id AS record_id, rs.unique_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
+	 SELECT rs.id AS record_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
 	 rs.b_e, rs.start_date, rs.end_date
 	 FROM rep_pay_settings rs
 	 JOIN states st ON st.state_id = rs.state_id`
@@ -88,10 +89,6 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 		if !Ok {
 			RecordId = 0.0
 		}
-		Unique_id, Ok := item["unique_id"].(string)
-		if !Ok || Unique_id == "" {
-			Unique_id = ""
-		}
 
 		Name, nameOk := item["name"].(string)
 		if !nameOk || Name == "" {
@@ -113,32 +110,33 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 			Position = ""
 		}
 
-		B_e, b_eOk := item["b_e"].(string)
-		if !b_eOk || B_e == "" {
-			B_e = ""
+		B_e, b_eOk := item["b_e"].(bool)
+		if !b_eOk {
+			B_e = false
 		}
 
-		Start_date, start_dateOk := item["start_date"].(string)
-		if !start_dateOk || Start_date == "" {
-			Start_date = ""
+		Start_date, start_dateOk := item["start_date"].(time.Time)
+		if !start_dateOk {
+			Start_date = time.Time{}
 		}
 
-		End_date, end_dateOk := item["end_date"].(string)
-		if !end_dateOk || End_date == "" {
-			End_date = ""
+		End_date, end_dateOk := item["end_date"].(time.Time)
+		if !end_dateOk {
+			End_date = time.Time{}
 		}
 
-		// Create a new GetSaleTypeData object
+		start := Start_date.Format("2006-01-02")
+		end := End_date.Format("2006-01-02")
+
 		RepPaySettingsData := models.GetRepPaySettingsData{
 			RecordId:  RecordId,
-			UniqueID:  Unique_id,
 			Name:      Name,
 			State:     State_name,
 			PayScale:  Pay_scale,
 			Position:  Position,
 			B_E:       B_e,
-			StartDate: Start_date,
-			EndDate:   End_date,
+			StartDate: start,
+			EndDate:   end,
 		}
 
 		RepPaySettingsList.RepPaySettingsList = append(RepPaySettingsList.RepPaySettingsList, RepPaySettingsData)
@@ -208,7 +206,7 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "position":
-				filtersBuilder.WriteString(fmt.Sprintf("rs.position %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.position) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "b_e":
 				filtersBuilder.WriteString(fmt.Sprintf("rs.b_e %s $%d", operator, len(whereEleList)+1))
@@ -251,7 +249,7 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY rs.id, rs.unique_id, rs.name, st.name, rs.pay_scale, rs.position, rs.b_e, rs.start_date, rs.end_date")
+		filtersBuilder.WriteString(" GROUP BY rs.id, rs.name, st.name, rs.pay_scale, rs.position, rs.b_e, rs.start_date, rs.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

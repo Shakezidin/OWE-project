@@ -66,8 +66,8 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	query = `
 	SELECT dor.id as record_id, dor.sub_dealer, vd.dealer_name, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name  
 	FROM dealer_override dor
-	JOIN v_dealer vd ON vd.id = dor.dealer_id
-	JOIN states st ON st.state_id = dor.state`
+	LEFT JOIN v_dealer vd ON vd.id = dor.dealer_id
+	LEFT JOIN states st ON st.state_id = dor.state`
 
 	filter, whereEleList = PrepareDealerFilters(tableName, dataReq, false)
 	if filter != "" {
