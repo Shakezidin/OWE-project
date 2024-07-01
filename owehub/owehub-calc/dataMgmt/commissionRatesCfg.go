@@ -158,8 +158,10 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installe
 			installer = "OWE"
 		}
 
-		if len(state) > 0 {
+		if len(state) > 6 {
 			state = state[6:]
+		}else {
+			return
 		}
 
 		for _, data := range cmmsnRatesCfg.cmmsnRatesList {
@@ -190,8 +192,10 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 		if len(rep1) > 0 {
 			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
 				var st string
-				if len(state) > 0 {
+				if len(state) > 6 {
 					st = state[6:]
+				}else {
+					return
 				}
 
 				if partner == data.Partner &&
@@ -211,8 +215,10 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 		if len(rep1) > 0 {
 			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
 				var st string
-				if len(state) > 0 {
+				if len(state) > 6 {
 					st = state[6:]
+				}else {
+					return
 				}
 
 				if partner == data.Partner &&

@@ -135,8 +135,10 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 			}
 
 			var st string
-			if len(state) > 0 {
+			if len(state) > 6 {
 				st = state[6:]
+			}else {
+				return
 			}
 
 			if data.Name == Rep1 && data.State == st && (startDate.Before(date) || startDate.Equal(date)) && (endDate.After(date) || endDate.Equal(date)) {

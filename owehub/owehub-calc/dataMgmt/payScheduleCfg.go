@@ -212,19 +212,12 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 			}
 
 			var st string
-			if len(state) > 0 {
+			if len(state) > 6 {
 				st = state[6:]
+			} else {
+				return 0.0
 			}
 
-			if data.Dealer == dealer {
-				log.FuncErrorTrace(0, "data.Dealer : %v ===== dealer : %v", data.Dealer, dealer)
-				log.FuncErrorTrace(0, "data.partnerName : %v ===== partrner : %v", data.PartnerName, partner)
-				log.FuncErrorTrace(0, "data.installer : %v ===== installer : %v", data.InstallerName, installer)
-				log.FuncErrorTrace(0, "data.state : %v ===== state : %v", data.State, state)
-				log.FuncErrorTrace(0, "data.saleType : %v ===== types : %v", data.SaleType, types)
-				log.FuncErrorTrace(0, "data.startDate : %v ===== wc : %v", data.StartDate, wc)
-				log.FuncErrorTrace(0, "data.EndDate : %v ===== we : %v", data.EndDate, wc)
-			}
 
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st && data.SaleType == types &&
 				(startDate.Before(wc) || startDate.Equal(wc)) && (endDate.After(wc) || endDate.Equal(wc)) {
@@ -273,8 +266,10 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 			}
 
 			var st string
-			if len(state) > 0 {
+			if len(state) > 6 {
 				st = state[6:]
+			} else {
+				return
 			}
 
 			if data.Dealer == dealer &&
@@ -330,8 +325,10 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, deale
 				continue
 			}
 			var st string
-			if len(state) > 0 {
+			if len(state) > 6 {
 				st = state[6:]
+			} else {
+				return
 			}
 
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer &&

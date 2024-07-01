@@ -167,12 +167,13 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 }
 
 func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct) (redLine float64, permitPayM1 float64, permitMax float64, installPayM2 float64) {
+	log.FuncErrorTrace(0, "uniqueId = %v", saleData.UniqueId)
 	var (
 		err   error
 		today = time.Now().Truncate(24 * time.Hour)
 	)
-	log.EnterFn(0, "GetRedLineForSaleData")
-	defer func() { log.ExitFn(0, "GetRedLineForSaleData", err) }()
+	log.EnterFn(0, "GetArSkdForSaleData")
+	defer func() { log.ExitFn(0, "GetArSkdForSaleData", err) }()
 
 	redLine = 0
 	permitPayM1 = 0
@@ -206,8 +207,10 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 		}
 		// }
 		var st string
-		if len(saleData.State) > 0 {
+		if len(saleData.State) > 6 {
 			st = saleData.State[6:]
+		} else {
+			return
 		}
 
 		if arSkd.PartnerName == saleData.Partner &&
@@ -253,8 +256,10 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				continue
 			}
 			var st string
-			if len(saleData.State) > 0 {
+			if len(saleData.State) > 6 {
 				st = saleData.State[6:]
+			} else {
+				return
 			}
 
 			ContractDate := saleData.ContractDate
@@ -301,8 +306,10 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				continue
 			}
 			var st string
-			if len(saleData.State) > 0 {
+			if len(saleData.State) > 6 {
 				st = saleData.State[6:]
+			} else {
+				return
 			}
 
 			if arSkd.PartnerName == saleData.Partner &&
