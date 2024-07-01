@@ -141,7 +141,12 @@ const FormComponent: React.FC = () => {
               (response) => {
                 console.log('Email sent successfully:', response);
                 toast.success('Email sent successfully');
-  
+                setPrimaryApplicance(
+                  primaryApplicances.map((item) => ({...item, isSelected: '' }))
+                );
+                setSecondaryApplicance(
+                  secondaryApplicances.map((item) => ({...item, isSelected: false }))
+                );
                 setProspectName('');
                 setEmail('');
                 setUploadedImages([]);
