@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -109,22 +110,24 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 			Position = ""
 		}
 
-		B_e, b_eOk := item["b_e"].(string)
-		if !b_eOk || B_e == "" {
-			B_e = ""
+		B_e, b_eOk := item["b_e"].(bool)
+		if !b_eOk {
+			B_e = false
 		}
 
-		Start_date, start_dateOk := item["start_date"].(string)
-		if !start_dateOk || Start_date == "" {
-			Start_date = ""
+		Start_date, start_dateOk := item["start_date"].(time.Time)
+		if !start_dateOk {
+			Start_date = time.Time{}
 		}
 
-		End_date, end_dateOk := item["end_date"].(string)
-		if !end_dateOk || End_date == "" {
-			End_date = ""
+		End_date, end_dateOk := item["end_date"].(time.Time)
+		if !end_dateOk {
+			End_date = time.Time{}
 		}
 
-		// Create a new GetSaleTypeData object
+		start := Start_date.Format("2006-01-02")
+		end := End_date.Format("2006-01-02")
+
 		RepPaySettingsData := models.GetRepPaySettingsData{
 			RecordId:  RecordId,
 			Name:      Name,
@@ -132,8 +135,8 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 			PayScale:  Pay_scale,
 			Position:  Position,
 			B_E:       B_e,
-			StartDate: Start_date,
-			EndDate:   End_date,
+			StartDate: start,
+			EndDate:   end,
 		}
 
 		RepPaySettingsList.RepPaySettingsList = append(RepPaySettingsList.RepPaySettingsList, RepPaySettingsData)
@@ -203,7 +206,7 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "position":
-				filtersBuilder.WriteString(fmt.Sprintf("rs.position %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.position) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "b_e":
 				filtersBuilder.WriteString(fmt.Sprintf("rs.b_e %s $%d", operator, len(whereEleList)+1))

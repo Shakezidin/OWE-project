@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,9 +56,9 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 		return
 	}
 
-	if len(createRepPaySettingsData.UniqueID) == 0 || len(createRepPaySettingsData.Name) == 0 ||
+	if len(createRepPaySettingsData.Name) == 0 ||
 		len(createRepPaySettingsData.State) == 0 || len(createRepPaySettingsData.PayScale) == 0 ||
-		len(createRepPaySettingsData.Position) == 0 || len(createRepPaySettingsData.B_E) == 0 ||
+		len(createRepPaySettingsData.Position) == 0 ||
 		len(createRepPaySettingsData.StartDate) == 0 || len(createRepPaySettingsData.EndDate) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -65,15 +66,26 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 		return
 	}
 
-	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createRepPaySettingsData.UniqueID)
+	StartDate, err := time.Parse("2006-01-02", createRepPaySettingsData.StartDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		return
+	}
+	EndDate, err := time.Parse("2006-01-02", createRepPaySettingsData.EndDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		return
+	}
+
 	queryParameters = append(queryParameters, createRepPaySettingsData.Name)
 	queryParameters = append(queryParameters, createRepPaySettingsData.State)
 	queryParameters = append(queryParameters, createRepPaySettingsData.PayScale)
 	queryParameters = append(queryParameters, createRepPaySettingsData.Position)
 	queryParameters = append(queryParameters, createRepPaySettingsData.B_E)
-	queryParameters = append(queryParameters, createRepPaySettingsData.StartDate)
-	queryParameters = append(queryParameters, createRepPaySettingsData.EndDate)
+	queryParameters = append(queryParameters, StartDate)
+	queryParameters = append(queryParameters, EndDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateRepPaySettingsDataFunction, queryParameters)

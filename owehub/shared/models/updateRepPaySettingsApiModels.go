@@ -6,7 +6,7 @@ type UpdateRepPaySettingsData struct {
 	State     string `json:"state"`
 	PayScale  string `json:"pay_scale"`
 	Position  string `json:"position"`
-	B_E       string `json:"b_e"`
+	B_E       bool   `json:"b_e"`
 	StartDate string `json:"start_date"`
 	EndDate   string `json:"end_date"`
 }
