@@ -50,10 +50,6 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 		if !Ok {
 			RecordId = 0.0
 		}
-		Unique_id, Ok := item["unique_id"].(string)
-		if !Ok || Unique_id == "" {
-			Unique_id = ""
-		}
 
 		Name, nameOk := item["name"].(string)
 		if !nameOk || Name == "" {
@@ -93,7 +89,6 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 		// Create a new GetSaleTypeData object
 		RepPaySettingsData := models.GetRepPaySettingsData{
 			RecordId:  RecordId,
-			UniqueID:  Unique_id,
 			Name:      Name,
 			State:     State_name,
 			PayScale:  Pay_scale,
@@ -140,8 +135,10 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 			}
 
 			var st string
-			if len(state) > 0 {
+			if len(state) > 6 {
 				st = state[6:]
+			}else {
+				return
 			}
 
 			if data.Name == Rep1 && data.State == st && (startDate.Before(date) || startDate.Equal(date)) && (endDate.After(date) || endDate.Equal(date)) {

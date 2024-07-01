@@ -55,7 +55,7 @@ func HandleUpdateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 		return
 	}
 
-	if len(UpdateRepPaySettingsData.UniqueID) == 0 || len(UpdateRepPaySettingsData.Name) == 0 ||
+	if len(UpdateRepPaySettingsData.Name) == 0 ||
 		len(UpdateRepPaySettingsData.State) == 0 || len(UpdateRepPaySettingsData.PayScale) == 0 ||
 		len(UpdateRepPaySettingsData.Position) == 0 || len(UpdateRepPaySettingsData.B_E) == 0 ||
 		len(UpdateRepPaySettingsData.StartDate) == 0 || len(UpdateRepPaySettingsData.EndDate) <= 0 {
@@ -74,7 +74,6 @@ func HandleUpdateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.RecordId)
-	queryParameters = append(queryParameters, UpdateRepPaySettingsData.UniqueID)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.Name)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.State)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.PayScale)

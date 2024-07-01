@@ -115,7 +115,7 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 	}
 
 	if len(uniqueId) > 0 {
-		if date.Before(bfrDate) {
+		if !date.IsZero() && date.Before(bfrDate) {
 			dlrtier = "OLD"
 		} else {
 			for _, data := range pDealerTier.DealerTierList.DealersTierList {

@@ -17,6 +17,8 @@ type GetArDataReq struct {
 	NTP         bool   `json:"ntp"`
 	Install     bool   `json:"install"`
 	PTO         bool   `json:"pto"`
+	PageNumber  int    `json:"page_number"`
+	PageSize    int    `json:"page_size"`
 }
 
 type GetArdata struct {

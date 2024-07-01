@@ -63,7 +63,7 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	tableName := db.TableName_RepPaySettingss
 	query = `
-	 SELECT rs.id AS record_id, rs.unique_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
+	 SELECT rs.id AS record_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
 	 rs.b_e, rs.start_date, rs.end_date
 	 FROM rep_pay_settings rs
 	 JOIN states st ON st.state_id = rs.state_id`
@@ -87,10 +87,6 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 		RecordId, Ok := item["record_id"].(int64)
 		if !Ok {
 			RecordId = 0.0
-		}
-		Unique_id, Ok := item["unique_id"].(string)
-		if !Ok || Unique_id == "" {
-			Unique_id = ""
 		}
 
 		Name, nameOk := item["name"].(string)
@@ -131,7 +127,6 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 		// Create a new GetSaleTypeData object
 		RepPaySettingsData := models.GetRepPaySettingsData{
 			RecordId:  RecordId,
-			UniqueID:  Unique_id,
 			Name:      Name,
 			State:     State_name,
 			PayScale:  Pay_scale,
@@ -251,7 +246,7 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY rs.id, rs.unique_id, rs.name, st.name, rs.pay_scale, rs.position, rs.b_e, rs.start_date, rs.end_date")
+		filtersBuilder.WriteString(" GROUP BY rs.id, rs.name, st.name, rs.pay_scale, rs.position, rs.b_e, rs.start_date, rs.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
