@@ -96,6 +96,8 @@ const ConfigurePage: React.FC = () => {
         { title: 'Commission Rates', route: ROUTES.CONFIG_COMMISSION_RATE },
         { title: 'Sales Types', route: ROUTES.CONFIG_SALE },
         { title: 'Loan Type', route: ROUTES.CONFIG_LOAN },
+        { title: 'DBA', route: ROUTES.CONFIG_DBA },
+        { title: 'REP CREDIT', route: ROUTES.CONFIG_REPCREDIT },
       ],
       state: useState<boolean>(true),
     },
