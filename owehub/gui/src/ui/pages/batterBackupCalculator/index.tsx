@@ -16,6 +16,7 @@ import emailjs from '@emailjs/browser';
 import CategoryPopup from './components/CategoryPopup';
 import { LuChevronRight } from 'react-icons/lu';
 import AppliancePopup from './components/AppliancePopup';
+import { sendMail } from '../../../utiles';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -44,22 +45,22 @@ const responsive = {
   },
 };
 export interface IPrimary {
-  water_heater:       string;
+  water_heater: string;
   cooking_appliances: string;
-  furnace:            string;
-  clothes_dryer:      string;
+  furnace: string;
+  clothes_dryer: string;
 }
 export interface ISecondary {
-  pool_pump:  boolean;
-  well_pump:  boolean;
+  pool_pump: boolean;
+  well_pump: boolean;
   ev_charger: boolean;
-  spa:        boolean;
+  spa: boolean;
 }
 export interface IDetail {
   panel_images_url: string[];
   prospect_name: string;
   sr_email_id: string;
-  primary_data:IPrimary;
+  primary_data: IPrimary;
   secondary_data: ISecondary;
 }
 
@@ -87,7 +88,7 @@ const Index = () => {
   const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
   const [applianceOpen, setApplianceOpen] = useState(false);
-
+  const [isPending,setIsPending] = useState(false)
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [detail, setDetail] = useState({} as IDetail);
   const [batter, setBattery] = useState<
@@ -166,41 +167,43 @@ const Index = () => {
   }, []);
 
   const shareImage = () => {
-    emailjs
-      .send(
-        'service_9h490v9',
-        'template_0xz1vie',
-        {
-          to_name: 'Sales Person',
-          from_name: 'owehub',
-          url: `${window.location.host}/battery-ui-generator/${id}`,
-          email: detail.sr_email_id,
-          reply_to: 'Sales Person',
-          message: 'visit the link below to see the battery panel genrated ui',
-        },
-        {
-          publicKey: '9zrYKpc6-M02ZEmHn',
-        }
-      )
-      .then(
-        (response) => {
-          console.log('Email sent successfully:', response);
-          setInputDetails({
-            prospectName: '',
-            lra: '',
-            continuousCurrent: '',
-            avgCapacity: '',
-          });
-          setBattery([]);
-        },
-        (error) => {
-          toast.error(error.text as string);
-          console.error('Failed to send email:', error);
-        }
-      );
+    return sendMail({
+      toMail: detail.sr_email_id,
+      message: `Hi ${inputDetails.prospectName},
+ 
+You have recieved a request from ${inputDetails.prospectName} to fill the information in battery calculation form.
+ 
+Please visit the below URL to complete the form.
+ 
+${window.location.protocol}//${window.location.host}/battery-ui-generator/${id}
+
+Thank you
+OWE Battery Calc
+    
+      `,
+      subject: 'Battery Calc Notification',
+    }).then(
+      (response) => {
+        console.log('Email sent successfully:', response);
+        toast.success('Email sent successfully:');
+        setInputDetails({
+          prospectName: '',
+          lra: '',
+          continuousCurrent: '',
+          avgCapacity: '',
+        });
+        setIsPending(false)
+        setBattery([]);
+      },
+      (error) => {
+        toast.error(error.text as string);
+        console.error('Failed to send email:', error);
+      }
+    );
   };
   const handleSubmit = async () => {
     try {
+      setIsPending(true)
       const data = await postCaller('set_prospect_load', {
         prospect_id: parseInt(id!),
         prospect_name: inputDetails.prospectName,
@@ -215,8 +218,8 @@ const Index = () => {
         })),
       });
       await shareImage();
-      await toast.success(data.message);
     } catch (error) {
+      setIsPending(false)
       toast.error((error as Error).message!);
     }
   };
@@ -282,8 +285,26 @@ const Index = () => {
         </div>
 
         <div className="mt3">
-          <button className="block ml-auto" style={{border:"none",backgroundColor:"#fff",padding:"8px 14px",borderRadius:4}} onClick={()=>setApplianceOpen(true)}>View appliance</button>
-        {applianceOpen &&  <AppliancePopup primaryDetail={detail.primary_data} secondaryDetail={detail.secondary_data} isOpen={applianceOpen} setIsOpen={setApplianceOpen} />}
+          <button
+            className="block ml-auto"
+            style={{
+              border: 'none',
+              backgroundColor: '#fff',
+              padding: '8px 14px',
+              borderRadius: 4,
+            }}
+            onClick={() => setApplianceOpen(true)}
+          >
+            View appliance
+          </button>
+          {applianceOpen && (
+            <AppliancePopup
+              primaryDetail={detail.primary_data}
+              secondaryDetail={detail.secondary_data}
+              isOpen={applianceOpen}
+              setIsOpen={setApplianceOpen}
+            />
+          )}
         </div>
 
         <div className="flex  flex-wrap">
@@ -524,6 +545,7 @@ const Index = () => {
           </button> */}
 
           <button
+          disabled={isPending}
             onClick={() => handleValidation() && handleSubmit()}
             className={`calc-btn text-white pointer ${batter.length ? 'calc-green-btn' : 'calc-grey-btn'}`}
           >

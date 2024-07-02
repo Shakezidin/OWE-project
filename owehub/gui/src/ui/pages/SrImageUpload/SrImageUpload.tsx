@@ -28,6 +28,7 @@ import { GoPlus } from 'react-icons/go';
 import { errorSwal } from '../../components/alert/ShowAlert';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { RiCloseCircleFill, RiCloseLine } from 'react-icons/ri';
+import { sendMail } from '../../../utiles';
 
 const primaryApplicances = [
   { name: 'Water heater', id: 1 },
@@ -95,19 +96,21 @@ const FormComponent: React.FC = () => {
   };
 
   const handleFormSubmit = async () => {
-    if(handleValidation()){
+    if (handleValidation()) {
       setIsUploading(true);
       try {
         const uploadedUrls = await uploadImages(uploadedImages);
-        const obj1:{[key:string]:string} = {}
-        const obj2:{[key:string]:boolean} = {}
+        const obj1: { [key: string]: string } = {};
+        const obj2: { [key: string]: boolean } = {};
         primaryApplicance.forEach((app) => {
-          if (app.isSelected){
-            obj1[app.name.toLocaleLowerCase()] = app.isSelected
-          } 
+          if (app.isSelected) {
+            obj1[app.name.toLocaleLowerCase().replaceAll(' ', '_')] =
+              app.isSelected;
+          }
         });
         secondaryApplicance.forEach((app) => {
-            obj2[app.name.toLocaleLowerCase()] = app.isSelected
+          obj2[app.name.toLocaleLowerCase().replaceAll(' ', '_')] =
+            app.isSelected;
         });
 
         const response = await postCaller('set_prospect_info', {
@@ -115,52 +118,57 @@ const FormComponent: React.FC = () => {
           sr_email_id: email,
           panel_images_url: uploadedUrls,
           ...obj1,
-          ...obj2
+          ...obj2,
         });
-  
+
         if (response.status > 201) {
           toast.error((response as Error).message);
         } else {
-          emailjs
-            .send(
-              'service_9h490v9',
-              'template_0xz1vie',
-              {
-                to_name: 'Sales Person',
-                from_name: 'owehub',
-                url: `${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`,
-                email: 'anshu.srivastava@ourworldenergy.com',
-                reply_to: 'Sales Person',
-                message: 'visit the link below to fill the form',
-              },
-              {
-                publicKey: '9zrYKpc6-M02ZEmHn',
-              }
-            )
-            .then(
-              (response) => {
-                console.log('Email sent successfully:', response);
-                toast.success('Email sent successfully');
-                setPrimaryApplicance(
-                  primaryApplicances.map((item) => ({...item, isSelected: '' }))
-                );
-                setSecondaryApplicance(
-                  secondaryApplicances.map((item) => ({...item, isSelected: false }))
-                );
-                setProspectName('');
-                setEmail('');
-                setUploadedImages([]);
-              },
-              (error) => {
-                toast.error(error.text as string);
-                console.error('Failed to send email:', error);
-              }
-            );
+          sendMail({
+            toMail: 'afnu@ourworldenergy.com',
+            message: `Hi ${prospectName},
+ 
+You have recieved a request from ${prospectName} to fill the information in battery calculation form.
+ 
+Please visit the below URL to complete the form.
+
+${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}
+
+Thank you
+OWE Battery Calc
+            `,
+            subject: 'Battery Calc Notification',
+          }).then(
+            (response) => {
+              console.log('Email sent successfully:', response);
+              toast.success('Email sent successfully');
+              setPrimaryApplicance(
+                primaryApplicances.map((item) => ({
+                  ...item,
+                  isSelected: '',
+                }))
+              );
+              setSecondaryApplicance(
+                secondaryApplicances.map((item) => ({
+                  ...item,
+                  isSelected: false,
+                }))
+              );
+              setProspectName('');
+              setEmail('');
+              setUploadedImages([]);
+              setIsUploading(false);
+            },
+            (error) => {
+              toast.error(error.text as string);
+              setIsUploading(false);
+              console.error('Failed to send email:', error);
+            }
+          );
         }
       } catch (error) {
         console.error('Error uploading images to Cloudinary:', error);
       } finally {
-        setIsUploading(false);
       }
     }
   };
