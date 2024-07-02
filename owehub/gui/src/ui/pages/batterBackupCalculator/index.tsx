@@ -169,9 +169,9 @@ const Index = () => {
   const shareImage = () => {
     return sendMail({
       toMail: detail.sr_email_id,
-      message: `Hi ${inputDetails.prospectName},
+      message: `Hi Sales Rep Team,
  
-You have recieved a request from ${inputDetails.prospectName} to fill the information in battery calculation form.
+You have recieved a request from Electrical Team to fill the information in battery calculation form.
  
 Please visit the below URL to complete the form.
  
