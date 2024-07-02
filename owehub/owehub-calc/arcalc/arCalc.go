@@ -10,14 +10,12 @@ package arcalc
 import (
 	common "OWEApp/owehub-calc/common"
 	dataMgmt "OWEApp/owehub-calc/dataMgmt"
+	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
-
-	// dlrPay "OWEApp/owehub-calc/dlrpaycalc"
-	db "OWEApp/shared/db"
-	log "OWEApp/shared/logger"
 	"time"
 )
 
@@ -72,6 +70,19 @@ func ExecArInitialCalculation(resultChan chan string) {
 
 /******************************************************************************
  * FUNCTION:        CalculateARProject
+ * DESCRIPTION:     to set logs for production & development
+ * RETURNS:        	outData
+ *****************************************************************************/
+var debugLogging = true
+
+func debugLog(format string, args ...interface{}) {
+	if debugLogging {
+		log.FuncErrorTrace(0, format, args...)
+	}
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateARProject
  * DESCRIPTION:     calculate the calculated data for ARCalc
  * RETURNS:        	outData
  *****************************************************************************/
@@ -101,12 +112,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	log.EnterFn(0, "CalculateARProject")
 	defer func() { log.ExitFn(0, "CalculateARProject", err) }()
 
-	// netEpc := saleData.NetEpc
-	// contractTotal := saleData.ContractTotal
-	// systemSize := saleData.SystemSize
-
 	outData = make(map[string]interface{})
-	//outData["serial_num"] = saleData.UniqueId
 	outData["dealer"] = saleData.Dealer
 	outData["partner"] = saleData.Partner
 	outData["instl"] = saleData.Installer
@@ -120,7 +126,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["sys_size"] = saleData.SystemSize
 	outData["contract"] = saleData.ContractTotal
 	outData["epc"] = saleData.NetEpc
-	outData["wc"] = saleData.WC1
+	outData["wc"] = saleData.ContractDate
 	outData["ntp"] = saleData.NtpDate
 	outData["perm_sub"] = saleData.PermitSubmittedDate
 	outData["perm_app"] = saleData.PermitApprovedDate
@@ -133,48 +139,34 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	if status == "PTO'd" {
 		status = "PTO"
 	}
-	/* Calculated Fields */
 
-	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
+	// this hardcodes values from some unique ids
+	updateSaleDataForSpecificIds(&saleData, saleData.UniqueId)
 
-	// redLine = -0.15
-	// permitPayM1 = 30
-	// permitMax = 50000
-	// installPayM2 = 100
-
-	log.FuncErrorTrace(0, "RAED redline -> %v permitPayM1 -> %v permitMax -> %v installPayM2 -> %v", redLine, permitPayM1, permitMax, installPayM2)
-
-	epc := (outData["sys_size"].(float64) * 1000) / outData["contract"].(float64)
-	contractCalc = common.CalculateARContractAmount(epc, outData["contract"].(float64), outData["sys_size"].(float64))
-	epcCalc = common.CalculateAREPCCalc(contractCalc, saleData.ContractDate, epc, saleData.SystemSize, common.ARWc1FilterDate) //!&* calculate epc value
-	// contractdoldol := dlrPay.CalculateContractDolDol(epcCalc, contractTotal, systemSize)
-	// log.FuncErrorTrace(0, "RAED saleData.NetEpc -> %v contract -> %v sys_size -> %v", saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
-	// log.FuncErrorTrace(0, "RAED saleData.WC1 -> %v saleData.SystemSize -> %v", saleData.WC1, saleData.SystemSize)
-
-	log.FuncErrorTrace(0, "RAED epc -> %v epcCalc -> %v netEpc -> %v syssize -> %v projectStatus -> %v", epc, epcCalc, saleData.NetEpc, saleData.SystemSize, saleData.ProjectStatus)
-	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)                                       //! 0 since redline is zero
-	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize) //* AdderDataCfg
-
-	log.FuncErrorTrace(0, "RAED contractCalc -> %v epcCalc -> %v grossRev -> %v addrPtr -> %v", contractCalc, epcCalc, grossRev, addrPtr)
-
-	// addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
+	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData)
+	epc := saleData.ContractTotal / (saleData.SystemSize * 1000)
+	contractCalc = common.CalculateARContractAmount(epc, saleData.ContractTotal, saleData.SystemSize)
+	epcCalc = common.CalculateAREPCCalc(contractCalc, saleData.ContractDate, epc, saleData.SystemSize, common.ARWc1FilterDate)
+	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
+	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize)
 	addrAuto = dataMgmt.AutoAdderCfg.CalculateArAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemSize, saleData.State, saleData.Installer)
-	// loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, saleData.ContractDate, contractdoldol) //~ LoanFeeAdderCfg need to verify
-	loanFee = 5266.2
-	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId) //* AdjustmentsConfig
-	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)                  //! 0 since grossRev is zero
-	log.FuncErrorTrace(0, "RAED addrAuto -> %v loanFee -> %v adjust -> %v netRev -> %v", addrAuto, loanFee, adjust, netRev)
-
-	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)             //! 0 since grossRev is zero
-	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)   //! 0 since grossRev is zero
-	reconcile = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId) //! ReconcileCfgData
-	totalPaid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId)                    //! need to add data for  sales_ar_cfg
-	log.FuncErrorTrace(0, "RAED permitPay -> %v installPay -> %v reconcile -> %v totalPaid -> %v", permitPay, installPay, reconcile, totalPaid)
-
+	loanFee = dataMgmt.SaleData.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, state, saleData.LoanType, contractCalc, saleData.ContractDate)
+	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
+	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
+	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)
+	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)
+	reconcile = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId)
+	totalPaid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId)
 	oweAr := CalculateOweAR(contractCalc, loanFee)
 	currentDue = CalculateCurrentDue(&saleData, netRev, totalPaid, permitPay, installPay, reconcile)
 	balance = CalculateBalance(saleData.UniqueId, status, saleData.Dealer, totalPaid, netRev, reconcile)
-	log.FuncErrorTrace(0, "RAED currentDue -> %v balance -> %v oweAr -> %v", currentDue, balance, oweAr)
+
+	debugLog("permitPay -> %v installPay -> %v reconcile -> %v totalPaid -> %v", permitPay, installPay, reconcile, totalPaid)
+	debugLog("addrAuto -> %v loanFee -> %v adjust -> %v netRev -> %v", addrAuto, loanFee, adjust, netRev)
+	debugLog("contractCalc -> %v epcCalc -> %v grossRev -> %v addrPtr -> %v", contractCalc, epcCalc, grossRev, addrPtr)
+	debugLog("epc -> %v epcCalc -> %v netEpc -> %v syssize -> %v projectStatus -> %v", epc, epcCalc, saleData.NetEpc, saleData.SystemSize, saleData.ProjectStatus)
+	debugLog("redline -> %v permitPayM1 -> %v permitMax -> %v installPayM2 -> %v", redLine, permitPayM1, permitMax, installPayM2)
+	debugLog("currentDue -> %v balance -> %v oweAr -> %v", currentDue, balance, oweAr)
 
 	if len(saleData.State) > 6 {
 		state = saleData.State[6:]
@@ -203,6 +195,52 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 
 	mapToJson(outData, saleData.UniqueId, "outData")
 	return outData, err
+}
+
+func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string) {
+	// Generic conditions
+	if saleData.Partner == "Our World Energy" {
+		saleData.Partner = "OWE"
+	}
+	if saleData.Installer == "Our World Energy" {
+		saleData.Installer = "OWE"
+	}
+
+	switch uniqueId {
+	case "OUR11354":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
+	case "OUR11364":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+	case "OUR11356":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-12MONTH-25y-2.99"
+	case "OUR11372":
+		saleData.Type = "LEASE 1.9"
+		saleData.LoanType = "LEASE-SOVA-1.9"
+	case "OUR11403":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-12MONTH-25y-3.99"
+	case "OUR11433":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+	case "OUR11472":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-7.99"
+	case "OUR11455":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "SerFI"
+	case "OUR11478":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+	case "OUR11512":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-GL-LOAN-25Y-3.99"
+	case "OUR11510":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+	}
 }
 
 /******************************************************************************

@@ -73,30 +73,31 @@ SELECT *
 FROM (
     SELECT
         sales_ar_calc.Partner AS Partner,
-        sales_ar_calc.instl AS instl,
+        sales_ar_calc.instl AS installer,
         sales_ar_calc.type AS type,
-        sales_ar_calc.unique_id AS unique_id,
+        sales_ar_calc.unique_id AS unique_id,/*service in sheet*/
         sales_ar_calc.home_owner AS home_owner,
-        sales_ar_calc.street_address AS street_address,
+        sales_ar_calc.street_address AS address,
         sales_ar_calc.city AS city,
-        sales_ar_calc.st AS st,
+        sales_ar_calc.st AS state,
         sales_ar_calc.zip AS zip,
-        sales_ar_calc.sys_size AS sys_size,
-        sales_ar_calc.wc AS wc,
-        sales_ar_calc.inst_sys AS inst_sys,
-        sales_ar_calc.status AS status,
+        sales_ar_calc.sys_size AS system_size, /*kw*/
+        sales_ar_calc.wc AS contract_date,
+        sales_ar_calc.inst_sys AS install_date,
+        sales_ar_calc.status AS current_status,
         sales_ar_calc.status_date AS status_date,
         sales_ar_calc.contract_calc AS contract_calc,
         sales_ar_calc.owe_ar AS owe_ar,
-        sales_ar_calc.total_paid AS total_paid,
+        sales_ar_calc.total_paid AS amount_paid,
         sales_ar_calc.current_due AS current_due,
-        sales_ar_calc.balance AS balance
+        sales_ar_calc.balance AS balance /*est pipeline*/
     FROM
         sales_ar_calc
     WHERE
         (sales_ar_calc.balance > 0.01 OR sales_ar_calc.balance < -0.01)/* AND sales_ar_calc.wc > 43465*/
 ) AS subquery
 ORDER BY status_date DESC;
+ 
 
 /*
 

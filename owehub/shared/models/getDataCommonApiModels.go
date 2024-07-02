@@ -20,3 +20,9 @@ type DataRequestBody struct {
 	Archived   bool     `json:"archived"`
 	Filters    []Filter `json:"filters"`
 }
+
+type MailRequestBody struct {
+	Message string `json:"message"`
+	Subject   string `json:"subject"`
+	ToMail   string `json:"to_mail"`
+}

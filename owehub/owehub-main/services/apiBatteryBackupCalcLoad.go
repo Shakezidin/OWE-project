@@ -198,6 +198,7 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	for _, breaker := range prospectLoadInfo.Breakers {
 		totalAmpere += breaker.CategoryAmpere
 	}
+	
 	prospectLoadInfo.TotalCategoryAmperes = totalAmpere
 	log.FuncDebugTrace(0, "prospect load reterived: %+v", prospectLoadInfo)
 	FormAndSendHttpResp(resp, "prospect load reterived Successfully", http.StatusOK, prospectLoadInfo)

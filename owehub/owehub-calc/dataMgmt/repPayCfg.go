@@ -84,8 +84,8 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 			EndDate = time.Time{}
 		}
 
-		start := StartDate.Format("2006-01-02")
-		end := EndDate.Format("2006-01-02")
+		start := StartDate.Format("01-02-2006")
+		end := EndDate.Format("01-02-2006")
 		// Create a new GetSaleTypeData object
 		RepPaySettingsData := models.GetRepPaySettingsData{
 			RecordId:  RecordId,
@@ -136,7 +136,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 			var st string
 			if len(state) > 6 {
 				st = state[6:]
-			}else {
+			} else {
 				return
 			}
 

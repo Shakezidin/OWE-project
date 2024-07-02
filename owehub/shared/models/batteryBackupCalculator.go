@@ -20,6 +20,50 @@ type ProspectInfoData struct {
 	Spa               bool     `json:"spa"`
 }
 
+type GetProspectInfo struct {
+	MultiImages  []string `json:"panel_images_url"`
+	ProspectName string   `json:"prospect_name"`
+	SREmailId    string   `json:"sr_email_id"`
+	Primary PrimaryData `json:"primary_data"`
+	Secondary SecondaryData `json:"secondary_data"`
+}
+
+type PrimaryData struct {
+	WaterHeater       string `json:"water_heater"`
+	CookingAppliances string `json:"cooking_appliances"`
+	Furnace           string `json:"furnace"`
+	ClothesDryer      string `json:"clothes_dryer"`
+}
+
+type SecondaryData struct {
+	PoolPump  bool `json:"pool_pump"`
+	WellPump  bool `json:"well_pump"`
+	EvCharger bool `json:"ev_charger"`
+	Spa       bool `json:"spa"`
+}
+
+type GetProspectInfoData struct {
+	MultiImages  []string     `json:"panel_images_url"`
+	ProspectName string       `json:"prospect_name"`
+	SREmailId    string       `json:"sr_email_id"`
+	Primay       PrimaryResp  `json:"primary_resp"`
+	Seondary     SeondaryResp `json:"secondary_resp"`
+}
+
+type PrimaryResp struct {
+	WaterHeater       string `json:"water_heater"`
+	CookingAppliances string `json:"cooking_appliances"`
+	Furnace           string `json:"furnace"`
+	ClothesDryer      string `json:"clothes_dryer"`
+}
+
+type SeondaryResp struct {
+	PoolPump  bool `json:"pool_pump"`
+	WellPump  bool `json:"well_pump"`
+	EvCharger bool `json:"ev_charger"`
+	Spa       bool `json:"spa"`
+}
+
 type ProspectInfoId struct {
 	ProspectId int `json:"prospect_id"`
 }

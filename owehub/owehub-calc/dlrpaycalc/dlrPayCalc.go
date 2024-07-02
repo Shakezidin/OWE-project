@@ -34,10 +34,10 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
+	count := 0
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var dlrPayData map[string]interface{}
 		dlrPayData, err = CalculateDlrPayProject(saleData)
-		log.FuncErrorTrace(0, "dealer data ====> : %+v", dlrPayData)
 
 		if err != nil || dlrPayData == nil {
 			if len(saleData.UniqueId) > 0 {
@@ -48,6 +48,15 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		} else {
 			dlrPayDataList = append(dlrPayDataList, dlrPayData)
 		}
+
+		if (count+1)%1000 == 0 && len(dlrPayDataList) > 0 {
+			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to insert initial dlr pay Data in DB err: %v", err)
+			}
+			dlrPayDataList = nil // Clear the dlrpayDataList
+		}
+		count++
 	}
 	/* Update Calculated and Fetched data PR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
