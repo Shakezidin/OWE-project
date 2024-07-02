@@ -142,6 +142,7 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	whereEleList = append(whereEleList, prospectInfoId.ProspectId)
+	log.FuncErrorTrace(0, "PROSPECT ID: %v", prospectInfoId.ProspectId)
 
 	tableName := db.TableName_Prospect_Info
 	query := `SELECT *
