@@ -193,21 +193,24 @@ const BatteryAmp = () => {
     setBatteryPower([...batteries]);
   };
 
-  const minRequired = (arr: any[], current: number, lra: number) => {
-    let totalAmp = 0;
-    const base = { amp: 60, lra: 185, current: 48 };
-    arr.forEach((item) => {
-      totalAmp += item.amp;
-    });
-
-    const requiredPowerwallsByBreakers = Math.ceil(totalAmp / base.amp);
+  const minRequired = (
+    arr: Ibattery[],
+    totalCategoryAmp: number,
+    lra: number
+  ) => {
+    let count = 1;
+    const base = { amp: 48, lra: 185 };
+    const firstBattery = 38;
+    count += Math.ceil((totalCategoryAmp - firstBattery) / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
-    const requiredPowerwallsByCurrent = Math.ceil(current / base.current);
-    return Math.max(
-      requiredPowerwallsByBreakers,
-      requiredPowerwallsByLRA,
-      requiredPowerwallsByCurrent
-    );
+    // arr.forEach((item) => {
+    //   if (item.amp >= 60) {
+    //     count += 2;
+    //   }
+    // });
+    console.log(count, 'bvvvhvhvhv', arr, totalCategoryAmp);
+
+    return Math.max(count, requiredPowerwallsByLRA);
   };
 
   const required = useMemo(() => {
@@ -251,7 +254,7 @@ to a Partial Home Back-up`,
           setInitialBattery([...batt]);
           const min = minRequired(
             [...batt],
-            data?.data?.continous_current,
+            data?.data?.total_catergory_amperes,
             data?.data?.lra
           );
           setOtherDeatil(data?.data);
@@ -279,10 +282,9 @@ to a Partial Home Back-up`,
       className="scrollbar   relative"
       style={{ backgroundColor: '#F2F2F2', paddingBottom: 100 }}
     >
-      <div className="batter-amp-container ">
-        <div className="wrapper-header mt0">
+        <div className="wrapper-header mt0 mx0">
           <h4 className="h4" style={{ fontWeight: 500 }}>
-          Electrical Panel
+            Electrical Panel
           </h4>
           <p
             className="mt1"
@@ -292,6 +294,7 @@ to a Partial Home Back-up`,
             Customise panel as per requirement
           </p>
         </div>
+      <div className="batter-amp-container ">
         <div className="py3  batter-amp-wrapper  ">
           <div
             className="battery-watt-wrapper bg-white"
@@ -400,8 +403,8 @@ to a Partial Home Back-up`,
 
             <span
               onClick={calculator}
-              style={{ fontSize: 12, fontWeight: 600 }}
-              className="pointer mt2 underline"
+              style={{ fontSize: 12, fontWeight: 600,marginTop:"1.2rem" }}
+              className="pointer check-btn"
             >
               check
             </span>
@@ -515,7 +518,15 @@ to a Partial Home Back-up`,
                     </div>
                   </div>
                   <div
-                    onClick={() => !mainDisabled && setMainOn((prev) => !prev)}
+                    onClick={() => {
+                      if (!mainDisabled ) {
+                        setMainOn((prev) => !prev)
+                        if (!mainOn) {
+                          setRequiredBattery(required)
+                          setBatteryPower(prev=>prev.map((battery)=>({...battery,isOn:true})))
+                        }
+                      }
+                    }}
                     className="batter-amp-switch pointer flex items-center justify-center"
                   >
                     <img src={mainOn ? on : off} alt="" className="pointer" />

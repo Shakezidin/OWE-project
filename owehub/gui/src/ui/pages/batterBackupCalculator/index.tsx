@@ -15,6 +15,7 @@ import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
 import emailjs from '@emailjs/browser';
 import CategoryPopup from './components/CategoryPopup';
 import { LuChevronRight } from 'react-icons/lu';
+import AppliancePopup from './components/AppliancePopup';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -42,10 +43,24 @@ const responsive = {
     items: 1,
   },
 };
+export interface IPrimary {
+  water_heater:       string;
+  cooking_appliances: string;
+  furnace:            string;
+  clothes_dryer:      string;
+}
+export interface ISecondary {
+  pool_pump:  boolean;
+  well_pump:  boolean;
+  ev_charger: boolean;
+  spa:        boolean;
+}
 export interface IDetail {
   panel_images_url: string[];
   prospect_name: string;
   sr_email_id: string;
+  primary_data:IPrimary;
+  secondary_data: ISecondary;
 }
 
 const Index = () => {
@@ -71,6 +86,8 @@ const Index = () => {
   type TError = typeof inputDetails & TBReakerError;
   const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
+  const [applianceOpen, setApplianceOpen] = useState(false);
+
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [detail, setDetail] = useState({} as IDetail);
   const [batter, setBattery] = useState<
@@ -262,6 +279,11 @@ const Index = () => {
             {' '}
             Lorem ipsum dolor sit amet consectetur, adipisicing elit.{' '}
           </p>
+        </div>
+
+        <div className="mt3">
+          <button className="block ml-auto" style={{border:"none",backgroundColor:"#fff",padding:"8px 14px",borderRadius:4}} onClick={()=>setApplianceOpen(true)}>View appliance</button>
+        {applianceOpen &&  <AppliancePopup primaryDetail={detail.primary_data} secondaryDetail={detail.secondary_data} isOpen={applianceOpen} setIsOpen={setApplianceOpen} />}
         </div>
 
         <div className="flex  flex-wrap">

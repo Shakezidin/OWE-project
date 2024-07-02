@@ -52,9 +52,10 @@ const WarningPopup = ({
           <button
             onClick={() => {
               setMainOn(false);
-              setMainDisabled(true);
+              setMainDisabled(false);
               setRequiredBattery((prev) => (prev ? prev - 1 : prev));
               handleClose();
+              setBatteryPower(prev=>prev.map((battery)=>({...battery,isOn:false})))
             }}
             className="calc-grey-btn warning-popup-btn pointer"
           >
