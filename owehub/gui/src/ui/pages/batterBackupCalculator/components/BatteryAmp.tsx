@@ -219,8 +219,12 @@ const BatteryAmp = () => {
 
   const calculator = () => {
     const consumption = (parseFloat(avgConsumption) / 365 / 24) * 0.6;
+    console.log(consumption, 'consumption: ');
+
     if (consumption >= 6) {
-      setCaluclatedBackup((prev) => (prev !== 1 ? prev + 1 : prev));
+      console.log('working block');
+
+      setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
     } else {
       setCaluclatedBackup(0);
       setMssg(`Your annual usage exceeds what is possible to back-up with the current battery 
@@ -235,7 +239,7 @@ to a Partial Home Back-up`,
       });
     }
   };
-
+console.log(caluclatedBackup,"backup")
   useEffect(() => {
     const getProspectDetail = async () => {
       try {
@@ -282,18 +286,18 @@ to a Partial Home Back-up`,
       className="scrollbar   relative"
       style={{ backgroundColor: '#F2F2F2', paddingBottom: 100 }}
     >
-        <div className="wrapper-header mt0 mx0">
-          <h4 className="h4" style={{ fontWeight: 500 }}>
-            Electrical Panel
-          </h4>
-          <p
-            className="mt1"
-            style={{ color: '#7F7F7F', fontSize: 12, fontWeight: 500 }}
-          >
-            {' '}
-            Customise panel as per requirement
-          </p>
-        </div>
+      <div className="wrapper-header mt0 mx0">
+        <h4 className="h4" style={{ fontWeight: 500 }}>
+          Electrical Panel
+        </h4>
+        <p
+          className="mt1"
+          style={{ color: '#7F7F7F', fontSize: 12, fontWeight: 500 }}
+        >
+          {' '}
+          Customise panel as per requirement
+        </p>
+      </div>
       <div className="batter-amp-container ">
         <div className="py3  batter-amp-wrapper  ">
           <div
@@ -403,7 +407,7 @@ to a Partial Home Back-up`,
 
             <span
               onClick={calculator}
-              style={{ fontSize: 12, fontWeight: 600,marginTop:"1.2rem" }}
+              style={{ fontSize: 12, fontWeight: 600, marginTop: '1.2rem' }}
               className="pointer check-btn"
             >
               check
@@ -519,11 +523,13 @@ to a Partial Home Back-up`,
                   </div>
                   <div
                     onClick={() => {
-                      if (!mainDisabled ) {
-                        setMainOn((prev) => !prev)
+                      if (!mainDisabled) {
+                        setMainOn((prev) => !prev);
                         if (!mainOn) {
-                          setRequiredBattery(required)
-                          setBatteryPower(prev=>prev.map((battery)=>({...battery,isOn:true})))
+                          setRequiredBattery(required);
+                          setBatteryPower((prev) =>
+                            prev.map((battery) => ({ ...battery, isOn: true }))
+                          );
                         }
                       }
                     }}
