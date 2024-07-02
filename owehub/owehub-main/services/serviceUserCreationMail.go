@@ -91,7 +91,7 @@ func SendMailToUserFromUI(resp http.ResponseWriter, req *http.Request) {
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient("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")
-	_, err = client.Send(message)
+	client.Send(message)
 
 	log.FuncErrorTrace(0, "Email send succesfully")
 	FormAndSendHttpResp(resp, "Email send succesfully to", http.StatusAccepted, dataReq.ToMail, 1)
