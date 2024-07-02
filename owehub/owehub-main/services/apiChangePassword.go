@@ -92,7 +92,7 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 			username, nameOk := data[0]["db_username"].(string)
 			if !nameOk || username == "" {
 				log.FuncErrorTrace(0, "empty username")
-				FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+				FormAndSendHttpResp(resp, "Failed to process the password, empty username", http.StatusInternalServerError, nil)
 				return
 			}
 		} else {
@@ -100,7 +100,8 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
 			return
 		}
-
+		
+		username = data[0]["db_username"].(string)
 		sqlStatement := fmt.Sprintf("ALTER ROLE %s WITH PASSWORD '%s';", username, changePasswordReq.NewPassword)
 		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
