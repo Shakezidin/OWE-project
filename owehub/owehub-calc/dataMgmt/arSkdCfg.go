@@ -182,9 +182,6 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 	for _, arSkd := range ArSkdConfig.ArSkdConfigList {
 		var startDate time.Time
 		var endDate time.Time
-
-		// 2006-01-02 : MM-DD-YY
-		// date Format("2006-01-02")
 		if len(arSkd.StartDate) > 0 {
 			startDate, err = time.Parse("2006-01-02", arSkd.StartDate)
 			if err != nil {
@@ -194,8 +191,6 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			log.FuncWarnTrace(0, "Empty StartDate Received in arSkd config")
 			continue
 		}
-
-		// 2006-01-02 : MM-DD-YY
 		if len(arSkd.EndDate) > 0 {
 			endDate, err = time.Parse("2006-01-02", arSkd.EndDate)
 			if err != nil {
@@ -265,7 +260,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			ContractDate := saleData.ContractDate
 			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
-				arSkd.SaleTypeName == saleData.LoanType &&
+				arSkd.SaleTypeName == saleData.Type &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "CREATED" &&
 				(startDate.Before(ContractDate) || startDate.Equal(ContractDate)) &&
