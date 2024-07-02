@@ -112,7 +112,7 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		prospectInfoId   models.ProspectInfoId
-		prospectInfoData models.ProspectInfoData
+		prospectInfoData models.GetProspectInfo
 		whereEleList     []interface{}
 		data             []map[string]interface{}
 	)
@@ -144,7 +144,7 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	whereEleList = append(whereEleList, prospectInfoId.ProspectId)
 
 	tableName := db.TableName_Prospect_Info
-	query := `SELECT prospect_id, prospect_name, sr_email_id, panel_images_url 
+	query := `SELECT *
 	 FROM ` + tableName +
 		` WHERE prospect_id = $1`
 
@@ -164,6 +164,14 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	prospectInfoData.SREmailId = data[0]["sr_email_id"].(string)
 	prospectInfoData.ProspectName = data[0]["prospect_name"].(string)
 	prospectInfoData.MultiImages = BytesToStringArray(data[0]["panel_images_url"].([]uint8))
+	prospectInfoData.Primary.WaterHeater = data[0]["water_heater"].(string)
+	prospectInfoData.Primary.CookingAppliances = data[0]["cooking_appliances"].(string)
+	prospectInfoData.Primary.Furnace = data[0]["furnace"].(string)
+	prospectInfoData.Primary.ClothesDryer = data[0]["clothes_dryer"].(string)
+	prospectInfoData.Secondary.PoolPump = data[0]["pool_pump"].(bool)
+	prospectInfoData.Secondary.WellPump = data[0]["well_pump"].(bool)
+	prospectInfoData.Secondary.EvCharger = data[0]["ev_charger"].(bool)
+	prospectInfoData.Secondary.Spa = data[0]["spa"].(bool)
 
 	log.FuncDebugTrace(0, "prospect info reterived: %+v", prospectInfoData)
 	FormAndSendHttpResp(resp, "prospect info reterived Successfully", http.StatusOK, prospectInfoData)
