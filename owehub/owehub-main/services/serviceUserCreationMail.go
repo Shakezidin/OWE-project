@@ -95,5 +95,4 @@ func SendMailToUserFromUI(resp http.ResponseWriter, req *http.Request) {
 
 	log.FuncErrorTrace(0, "Email send succesfully")
 	FormAndSendHttpResp(resp, "Email send succesfully to", http.StatusAccepted, dataReq.ToMail, 1)
-	return
 }
