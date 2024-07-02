@@ -125,7 +125,7 @@ const FormComponent: React.FC = () => {
           toast.error((response as Error).message);
         } else {
           sendMail({
-            toMail: 'afnu@ourworldenergy.com',
+            toMail: 'batterycalc@ourworldenergy.com',
             message: `Hi Electrical Team,
  
 You have recieved a request from Sales Rep Team to fill the information in battery calculation form.
