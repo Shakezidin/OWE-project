@@ -1,22 +1,68 @@
- /* Base styles */
-body {
-  font-family: Arial, sans-serif;
-}
 
-.container {
-  background-color: #1F222A;
+
+.sr-image-container {
+  background-color: #F2F2F2;
 }
 
 .form-container {
-  background-color: #1F222A;
   color: white;
-  padding: 79px 73px;
+  padding-inline:79px;
+  padding-bottom: 79px;
   border-radius: 10px;
   width: 100%;
   max-width: 700px;
   margin: auto;
   box-sizing: border-box;
   min-height: 100vh;
+}
+
+.sr-form-header{
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  background-color: #fff;
+  padding-bottom: 17px;
+  padding-left: 38px;
+  padding-top: 48px;
+  max-width: 700px;
+  margin: auto;
+}
+.prospect-input-field input {
+  padding-block: 17px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  padding-left: 24px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
+}
+.sr-appliance-wrapper{
+  border-radius: 8px;
+  margin-top: 18px;
+  padding-block: 14px;
+  padding-left: 24px;
+  padding-right: 20px;
+  background-color: #fff;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
+
+}
+
+.sr-appliance-header{
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F2F2F2;
+}
+.text-sm{
+  font-size: 14px;
+}
+.sr-appliance-body{
+  padding-top: 11px;
+}
+
+.text-dark-navy{
+  color:#272727;
+}
+
+.prospect-input-field input:focus{
+  outline: none;
+  width: 100%;
 }
 
 .image-buttons {
@@ -82,19 +128,22 @@ body {
   color: #7F7F7F;
 }
 
-.share-button {
-  background-color: #555;
+.send-button {
+  background-color: #129537;
   border: none;
-  color: #bbb;
-  padding: 15px;
+  padding: 13px;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   margin-bottom: 20px;
+  color: #fff;
   margin-top: 30px;
 }
 /* srImageUpload.css */
-
+.send-button:disabled{
+  color: #919191;
+  background-color: #E7E7E7;
+}
  
 
 /* Ensure the default styles for the share button */
@@ -110,18 +159,19 @@ body {
 .camera-icon {
   font-size: 40px;
 }
-.close-icon {
+.img-remove {
   position: absolute;
   top: -10px; /* Adjust as needed to position correctly */
   right: -10px; /* Adjust as needed to position correctly */
   border-radius: 50%;
- 
+ border: none;
   font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
+  background-color: #fff;
   z-index: 1; /* Ensure the badge is above the thumbnail */
 }
 
@@ -129,19 +179,19 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
- 
+ max-width: 100%;
 }
 
 .thumbnail-container {
   position: relative;
+  height: 52px;
 }
 
 .uploaded-image {
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   object-fit: cover;
-  border: 2px solid #2C2E35;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 /* Updated .image-number styles */
@@ -341,7 +391,8 @@ cursor: pointer;
 /* Media queries for mobile responsiveness */
 @media (max-width: 768px) {
   .form-container {
-    padding: 40px 20px;
+    padding-inline:  20px;
+    padding-bottom: 40px;
   }
 
   .image-buttons {
@@ -379,7 +430,7 @@ cursor: pointer;
 
  }
 
- .close-icon {
+ .img-remove {
   position: absolute;
   top: -5px;
   right: -5px;
@@ -439,7 +490,8 @@ cursor: pointer;
 
 @media (max-width: 480px) {
   .form-container {
-    padding: 30px 10px;
+    padding-inline: 10px;
+    padding-bottom:40px ;
   }
 
   .image-button {
@@ -468,7 +520,7 @@ cursor: pointer;
    
   
    }
-   .close-icon {
+   .img-remove {
     position: absolute;
     top: -5px;
     right: -5px;

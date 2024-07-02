@@ -19,6 +19,7 @@ interface Props {
   menuStyles?: CSSObjectWithLabel;
   dropdownIndicatorStyles?: CSSObjectWithLabel;
   marginTop?: string | number;
+  labelColor?: string;
 }
 
 const SelectOption: React.FC<Props> = ({
@@ -33,6 +34,7 @@ const SelectOption: React.FC<Props> = ({
   menuStyles = {},
   dropdownIndicatorStyles = {},
   marginTop = '25px',
+  labelColor,
 }) => {
   const scrollRef = useRef(null);
   useEffect(() => {
@@ -71,6 +73,7 @@ const SelectOption: React.FC<Props> = ({
             fontSize: '13px',
             cursor: 'pointer',
             background: state.isSelected ? '#377CF6' : '#fff',
+            color: labelColor || baseStyles.color,
           }),
           menu: (base) => ({
             ...base,

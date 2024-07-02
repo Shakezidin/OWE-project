@@ -18,10 +18,10 @@ import (
 	"os/signal"
 	"time"
 
+	arCalc "OWEApp/owehub-calc/arcalc"
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
-	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
 
-	// repPayCalc "OWEApp/owehub-calc/reppaycalc"
+	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
 
 	log "OWEApp/shared/logger"
 
@@ -87,18 +87,16 @@ func main() {
 		panic("Failed to load sale data from DB")
 	}
 
-	// log.FuncErrorTrace(0, "sales data ======== %v", dataMgmt.SaleDataStruct)
-
 	/* Perform Initial AR Calcualtion*/
-	// arCalc.ExecArInitialCalculation(arCalcResult)
+	go arCalc.ExecArInitialCalculation(arCalcResult)
 
 	/* Perform Initial DLR PAY Calcualtion*/
-	dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
+	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
-	// repPayCalc.ExecRepPayInitialCalculation(repPayResult)
+	// go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
 
-	repPayRs := <-repPayResult
+	// repPayRs := <-repPayResult
 	dlrPayRs := <-dlrPayResult
 	arRs := <-arCalcResult
 
@@ -116,12 +114,12 @@ func main() {
 		log.FuncDebugTrace(0, "DLR Pay Initial calculation completed sucessfully.")
 	}
 
-	if repPayRs != "SUCCESS" {
-		log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
-		panic("Failed to perform initial calculations for RepPay")
-	} else {
-		log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
-	}
+	// if repPayRs != "SUCCESS" {
+	// 	log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
+	// 	panic("Failed to perform initial calculations for RepPay")
+	// } else {
+	// 	log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
+	// }
 
 	/*Closing channels*/
 	close(arCalcResult)

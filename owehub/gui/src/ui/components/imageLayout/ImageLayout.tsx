@@ -19,8 +19,8 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
               data={image}
               aria-label={`Left ${index + 1}`}
               ></object> */}
-              <img style={{objectFit: "cover"}} className='leftView' src={image} alt={`Left ${index + 1}`} />
-            <div className="bottamTextView">
+              <img style={{objectFit: "cover"}} className='leftView m0' src={image} alt={`Left ${index + 1}`} />
+            <div className="bottamTextView m0">
               <div>
                 <span>
                   {index === 1

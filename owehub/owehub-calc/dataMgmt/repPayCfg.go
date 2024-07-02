@@ -36,7 +36,6 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 	rs.b_e, rs.start_date, rs.end_date
 	FROM rep_pay_settings rs
 	LEFT JOIN states st ON st.state_id = rs.state_id
-	LEFT JOIN rep_type rt ON rt.id = rs.pay_scale
 	`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -135,8 +134,10 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 			}
 
 			var st string
-			if len(state) > 0 {
+			if len(state) > 6 {
 				st = state[6:]
+			}else {
+				return
 			}
 
 			if data.Name == Rep1 && data.State == st && (startDate.Before(date) || startDate.Equal(date)) && (endDate.After(date) || endDate.Equal(date)) {

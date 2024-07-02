@@ -34,10 +34,10 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
+	count := 0
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var dlrPayData map[string]interface{}
 		dlrPayData, err = CalculateDlrPayProject(saleData)
-		log.FuncErrorTrace(0, "dealer data ====> : %+v", dlrPayData)
 
 		if err != nil || dlrPayData == nil {
 			if len(saleData.UniqueId) > 0 {
@@ -48,6 +48,15 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		} else {
 			dlrPayDataList = append(dlrPayDataList, dlrPayData)
 		}
+
+		if (count+1)%1000 == 0 && len(dlrPayDataList) > 0 {
+			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to insert initial dlr pay Data in DB err: %v", err)
+			}
+			dlrPayDataList = nil // Clear the dlrpayDataList
+		}
+		count++
 	}
 	/* Update Calculated and Fetched data PR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
@@ -143,6 +152,9 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	instSys = saleData.PvInstallCompletedDate
 	homeOwner = saleData.HomeOwner
 	status = saleData.ProjectStatus
+	if status == "PTO'd" {
+		status = "PTO"
+	}
 	dealer = saleData.Dealer
 	loanType = saleData.LoanType
 	partner = saleData.Partner
@@ -165,47 +177,47 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	permSub = saleData.PermitSubmittedDate //X
 
 	// it is for testing purpose, we can hardcode the values due to missmach between consolidated_data_view and sheet
-	log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, Rep1, dealer)
-	log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
-	log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
-	log.FuncFuncTrace(0, "Zidhin state (K): %v, wc (U): %v contracttotal (R): %v", state, wc, contractTotal)
-	log.FuncFuncTrace(0, "Zidhin epc (S): %v, homeOwner (H): %v rep2 (N): %v", epc, homeOwner, Rep2)
-	log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
-	log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, Type : %v", ntp, permSub, shaky, types)
+	// log.FuncFuncTrace(0, "Zidhin status(AJ): %v, rep1(M): %v, dealer(A): %v", status, Rep1, dealer)
+	// log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
+	// log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
+	// log.FuncFuncTrace(0, "Zidhin state (K): %v, wc (U): %v contracttotal (R): %v", state, wc, contractTotal)
+	// log.FuncFuncTrace(0, "Zidhin epc (S): %v, homeOwner (H): %v rep2 (N): %v", epc, homeOwner, Rep2)
+	// log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
+	// log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, Type : %v", ntp, permSub, shaky, types)
 
-	status = "PTO"                                 //AJ
-	Rep1 = "Matthew Tidwell"                       //M
-	dealer = "Parker and Sons"                     //A
-	source = "Parker and Sons"                     //D
-	uniqueID = "OUR18647"                          //G
-	systemSize = 12.555                            //P
-	partner = "LightReach"                         //B
-	installer = "One World Energy"                 //C
-	loanType = "LightReachLease1.99"               //F
-	state = "AZ :: Arizona"                        //K
-	wc, _ = time.Parse("01-02-2006", "10-20-2023") //U
-	contractTotal = 32015.25                       //R
-	netEpc = (systemSize * 1000) / contractTotal   //S
-	log.FuncErrorTrace(0, "epc = %v", epc)
-	homeOwner = "Joan Fenedick"                         //H
-	Rep2 = ""                                           //N
-	pto, _ = time.Parse("01-02-2006", "01-18-2024")     //AG
-	instSys, _ = time.Parse("01-02-2006", "11-27-2023") //AD
-	cancel = time.Time{}                                //AC
-	ntp, _ = time.Parse("01-02-2006", "10-21-2023")     //W
-	permSub, _ = time.Parse("01-02-2006", "11-04-2023") //X
-	if status == "Shaky" || status == "Cancel" {
-		shaky = true
-	} else {
-		shaky = false
-	} //* confirm with shushank //AB
-	types = "LEASE" //* not received from Colten yet //E
+	// status = "PTO"                                 //AJ
+	// Rep1 = "Matthew Tidwell"                       //M
+	// dealer = "Parker and Sons"                     //A
+	// source = "Parker and Sons"                     //D
+	// uniqueID = "OUR18647"                          //G
+	// systemSize = 12.555                            //P
+	// partner = "LightReach"                         //B
+	// installer = "One World Energy"                 //C
+	// loanType = "LightReachLease1.99"               //F
+	// state = "AZ :: Arizona"                        //K
+	// wc, _ = time.Parse("01-02-2006", "10-20-2023") //U
+	// contractTotal = 32015.25                       //R
+	// netEpc = (systemSize * 1000) / contractTotal   //S
+	// log.FuncErrorTrace(0, "epc = %v", epc)
+	// homeOwner = "Joan Fenedick"                         //H
+	// Rep2 = ""                                           //N
+	// pto, _ = time.Parse("01-02-2006", "01-18-2024")     //AG
+	// instSys, _ = time.Parse("01-02-2006", "11-27-2023") //AD
+	// cancel = time.Time{}                                //AC
+	// ntp, _ = time.Parse("01-02-2006", "10-21-2023")     //W
+	// permSub, _ = time.Parse("01-02-2006", "11-04-2023") //X
+	// if status == "Shaky" || status == "Cancel" {
+	// 	shaky = true
+	// } else {
+	// 	shaky = false
+	// } //* confirm with shushank //AB
+	// types = "LEASE" //* not received from Colten yet //E
 	//till here u can commment it out if u need to remove hard code values
 
 	dealerDBA = dataMgmt.VDealerCfg.CalculateDealerDBA(dealer)
 	statusDate = CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)
 	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, types, state, wc)
-	commission_models = "standardss" // temporary
+	commission_models = "standard" // temporary
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)

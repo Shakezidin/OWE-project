@@ -10,7 +10,6 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"strings"
 	"time"
 )
 
@@ -66,21 +65,23 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 
-	uidList := []string{"OUR18647"}
-	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
-	for i, uid := range uidList {
-		query += "'" + strings.ToUpper(uid) + "'"
-		if len(uidList) == 1 {
-			break
-		} else if i < len(uidList)-2 {
-			query += ","
-		} else {
-			query += "," + "'" + strings.ToUpper(uidList[i+1]) + "'"
-			break
-		}
-	}
+	// uidList := []string{"OUR18647"}
+	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
 
-	query += ");"
+	// query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
+	// for i, uid := range uidList {
+	// 	query += "'" + strings.ToUpper(uid) + "'"
+	// 	if len(uidList) == 1 {
+	// 		break
+	// 	} else if i < len(uidList)-2 {
+	// 		query += ","
+	// 	} else {
+	// 		query += "," + "'" + strings.ToUpper(uidList[i+1]) + "'"
+	// 		break
+	// 	}
+	// }
+
+	// query += ");"
 	// if uniqueID != "" {
 
 	// 	//query += " WHERE unique_id='" + uniqueID + "'"
@@ -99,9 +100,6 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 			query += ")"
 		}
 	*/
-
-	log.FuncInfoTrace(0, "RQUERY ============ %+v", query)
-
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
 		// log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
@@ -264,7 +262,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 			// log.FuncWarnTrace(0, "Empty value received in setter for Unique Id: %v", saleData.Setter)
 		}
 
-		_, _, saleData.RepPay, _ = PayScheduleCfg.CalculateRepDrawPerc(saleData.UniqueId, saleData.Dealer, saleData.Partner, saleData.Installer, saleData.Type, saleData.State, saleData.ContractDate)
+		// _, _, saleData.RepPay, _ = PayScheduleCfg.CalculateRepDrawPerc(saleData.UniqueId, saleData.Dealer, saleData.Partner, saleData.Installer, saleData.Type, saleData.State, saleData.ContractDate)
 
 		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)
 		saleDataList.SaleDataList = append(saleDataList.SaleDataList, saleData)

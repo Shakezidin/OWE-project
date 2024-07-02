@@ -40,7 +40,13 @@
   justify-content: center;
   cursor: pointer;
 }
+.tab-buttons{
+  display: flex;
+}
 
+.tab-buttons>div{
+  flex-basis: 33.33%;
+}
 @media screen and (max-width: 1024px) {
   .active {
     padding: 0 0 10px 5px;
@@ -77,4 +83,25 @@
     margin: 0 70px 0 0; /* Adjust this value to set the desired gap */
   }
 
+}
+
+@media (max-width: 767px) {
+
+  .welcomeOverProcessTitle{
+    font-size: 1.5rem;
+  }
+  .inactive,.active{
+    margin: 0;
+    font-size: 12px;
+    padding: 0 0 10px 5px;
+  }
+  .landing-table > div,.landing-table > div .table-box{
+    width: 100%;
+  }
+  .landing-table{
+    width: 100%;
+    overflow-x: auto;
+    flex-direction: column;
+    padding-right: 0;
+  }
 }

@@ -19,7 +19,7 @@ const CustomBox = (props: CustomBoxProps) => {
       <div className="boxBelowView">
         <span className="boxCommissionText">{title}</span>
         <br />
-        <span className="boxCommissionSubText">{description}</span>
+        <span className="boxCommissionSubText block">{description}</span>
       </div>
     </div>
   );

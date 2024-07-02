@@ -94,15 +94,15 @@ export const WelcomePage = () => {
 
             <div className="welcome-main">
               <div className="welcome-left-view">
-                <h1 className="welcome-text-black">
-                  Our <span className="welcome-text-blue">World</span> Revolves
-                  <br />
-                  Around <span className="welcome-text-green">
-                    Powering
-                  </span>{' '}
-                  Yours
-                  <br />
-                  <span className="welcome-sub-text">
+                <h1 className="welcome-text-black mx-auto">
+                  Our 
+                  <span className="welcome-text-blue inline-block mx1">World</span>
+
+                            Revolves 
+                          <br />
+                            Around
+                  <span className="welcome-text-green inline-block mx1">Powering</span> Yours
+                  <span className="welcome-sub-text block">
                     Your Trusted Solar Expert
                   </span>
                 </h1>
@@ -112,6 +112,7 @@ export const WelcomePage = () => {
                   className="welcome-right-view"
                   type="image/svg+xml"
                   data={LaptopImage}
+                  style={{ maxWidth: '100%' }}
                   aria-label="laptop"
                 ></object>
               </div>
@@ -161,18 +162,16 @@ export const WelcomePage = () => {
         <section className="welcomeAboutUsContainer">
           <div className="welcomeAboutUsView">
             <div className="welcomeAboutUsLeftView">
-              <object
+              <img
                 className="welcomeAboutUsBig"
-                type="image/svg+xml"
-                data={AboutUsBig}
-                aria-label="welcomeAboutUsBig"
-              ></object>
-              <object
+                src={AboutUsBig}
+                style={{ maxWidth: '100%' }}
+              ></img>
+              <img
                 className="welcomeAboutUsSmall"
-                type="image/svg+xml"
-                data={AboutUsSmall}
-                aria-label="welcomeAboutUsSmall"
-              ></object>
+                src={AboutUsSmall}
+                style={{ maxWidth: '100%' }}
+              ></img>
             </div>
 
             <div className="welcomeAboutUsRightView">

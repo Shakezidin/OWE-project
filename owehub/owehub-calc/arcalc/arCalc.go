@@ -48,29 +48,25 @@ func ExecArInitialCalculation(resultChan chan string) {
 		} else {
 			arDataList = append(arDataList, arData)
 		}
-
-		if count > 20 {
-			break
-		}
 		// Process and clear the batch every 1000 records
-		// if (i+1)%1000 == 0 && len(arDataList) > 0 {
-		err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
-		}
-		arDataList = nil // Clear the arDataList
-		// }
-		count++
-	}
-	/*
-		// Process remaining records if any
-		if len(arDataList) > 0 {
+		if (count+1)%1000 == 0 && len(arDataList) > 0 {
 			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
 			}
+			arDataList = nil // Clear the arDataList
 		}
-	*/
+		count++
+	}
+
+	// Process remaining records if any
+	if len(arDataList) > 0 {
+		err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
+		}
+	}
+
 	resultChan <- "SUCCESS"
 }
 
@@ -134,6 +130,9 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["inst_sys"] = saleData.PvInstallCompletedDate
 	outData["pto"] = saleData.PtoDate
 	status = saleData.ProjectStatus
+	if status == "PTO'd" {
+		status = "PTO"
+	}
 	/* Calculated Fields */
 
 	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
@@ -168,7 +167,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 
 	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)             //! 0 since grossRev is zero
 	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)   //! 0 since grossRev is zero
-	reconcile = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId) // ReconcileCfgData
+	reconcile = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId) //! ReconcileCfgData
 	totalPaid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId)                    //! need to add data for  sales_ar_cfg
 	log.FuncErrorTrace(0, "RAED permitPay -> %v installPay -> %v reconcile -> %v totalPaid -> %v", permitPay, installPay, reconcile, totalPaid)
 
@@ -177,8 +176,8 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	balance = CalculateBalance(saleData.UniqueId, status, saleData.Dealer, totalPaid, netRev, reconcile)
 	log.FuncErrorTrace(0, "RAED currentDue -> %v balance -> %v oweAr -> %v", currentDue, balance, oweAr)
 
-	if len(saleData.State) > 0 {
-		state = saleData.State[5:]
+	if len(saleData.State) > 6 {
+		state = saleData.State[6:]
 	}
 	if saleData.ProjectStatus == "PTO'd" {
 		status = "PTO"
@@ -343,7 +342,6 @@ func CalculatePTOPay(status string, grossRev, netRev, ptoPayM3, permitPay, insta
  * RETURNS:       balance
  *****************************************************************************/
 func CalculateBalance(uniqueID string, status string, dealer string, totalPaid float64, netRev float64, reconcile float64) (balance float64) {
-
 	log.EnterFn(0, "CalculateBalance")
 	defer func() { log.ExitFn(0, "CalculateBalance", nil) }()
 

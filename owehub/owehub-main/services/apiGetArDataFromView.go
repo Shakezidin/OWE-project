@@ -35,7 +35,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		query string
 		// queryForAlldata string
 		// filter string
-		// RecordCount     int64
+		RecordCount int64
 	)
 
 	log.EnterFn(0, "GetARDataFromView")
@@ -81,7 +81,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Generate the query
-	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses)
+	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, false)
 
 	// data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -253,16 +253,35 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 		arDataList.ArDataList = append(arDataList.ArDataList, arData)
 	}
-	// Send the response
-	log.FuncInfoTrace(0, "Number of ar data List fetched : %v list %+v", len(arDataList.ArDataList), arDataList)
-	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, arDataList)
 
-	fmt.Println(data)
+	query = ""
+	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
+
+	datacount, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get appt setters data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	count, ok := datacount[0]["count"].(int64)
+	if ok {
+		RecordCount = count
+	} else {
+		log.FuncErrorTrace(0, "Error: The 'count' value is not of type float64")
+	}
+	// Send the response
+	log.FuncInfoTrace(0, "Number of ar data List fetched : %v", len(arDataList.ArDataList))
+	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, arDataList, RecordCount)
 }
 
 // Function to generate the base query
-func getBaseQuery() string {
-	return `SELECT * FROM ar_data`
+func getBaseQuery(dataCount bool) string {
+	if !dataCount {
+		return `SELECT * FROM ar_data`
+	} else {
+		return `SELECT COUNT(*) as count FROM ar_data`
+	}
 }
 
 // Function to generate the WHERE clause based on parameters
@@ -319,11 +338,32 @@ func getOrderByClause(sortBy string) string {
 	return ""
 }
 
-func generateQuery(reportType, salePartner, sortBy string, statuses map[string]bool) string {
-	query := getBaseQuery()
-	query += getWhereClause(reportType, salePartner, statuses)
-	query += getOrderByClause(sortBy)
+func generateQuery(reportType, salePartner, sortBy string, statuses map[string]bool, datareq models.GetArDataReq, forDataCount bool) string {
+	var query string
+	if !forDataCount {
+		query += getBaseQuery(false)
+		query += getWhereClause(reportType, salePartner, statuses)
+		query += getOrderByClause(sortBy)
+		query += PrepareardataFilters(datareq)
+	} else {
+		query += getBaseQuery(true)
+	}
 	return query
+}
+
+func PrepareardataFilters(dataFilter models.GetArDataReq) (filters string) {
+	log.EnterFn(0, "PrepareApptSettersFilters")
+	defer func() { log.ExitFn(0, "PrepareApptSettersFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
+
+	filters = filtersBuilder.String()
+	return filters
 }
 
 // // query = ` SELECT  *

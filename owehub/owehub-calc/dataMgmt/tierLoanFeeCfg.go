@@ -169,8 +169,10 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) CalculateDlrCost(dlrTier, installer, s
 		}
 
 		var st string
-		if len(state) > 0 {
+		if len(state) > 6 {
 			st = state[6:]
+		} else {
+			return
 		}
 
 		if dlrTier == data.DealerTier && data.Installer == installer && data.State == st &&
