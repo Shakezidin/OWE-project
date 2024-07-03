@@ -108,7 +108,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Installer
-		Installer, ok := item["instl"].(string)
+		Installer, ok := item["installer"].(string)
 		if !ok || Installer == "" {
 			log.FuncErrorTrace(0, "Failed to get Installer for Record ID %v. Item: %+v\n", UniqueId, item)
 			Installer = ""
@@ -129,7 +129,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// StreetAddress
-		StreetAddress, ok := item["street_address"].(string)
+		StreetAddress, ok := item["address"].(string)
 		if !ok || StreetAddress == "" {
 			log.FuncErrorTrace(0, "Failed to get street address for Record ID %v. Item: %+v\n", UniqueId, item)
 			StreetAddress = ""
@@ -143,7 +143,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// St
-		St, ok := item["st"].(string)
+		St, ok := item["state"].(string)
 		if !ok || St == "" {
 			log.FuncErrorTrace(0, "Failed to get st for Record ID %v. Item: %+v\n", UniqueId, item)
 			St = ""
@@ -157,28 +157,28 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// PermitMax
-		Sys_size, ok := item["sys_size"].(float64)
+		Sys_size, ok := item["system_size"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", UniqueId, item)
 			Sys_size = 0.0
 		}
 
 		// Wc
-		Wc, ok := item["wc"].(time.Time)
+		Wc, ok := item["contract_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get wc for Record ID %v. Item: %+v\n", UniqueId, item)
 			Wc = time.Time{}
 		}
 
 		// InstSys
-		InstSys, ok := item["inst_sys"].(time.Time)
+		InstSys, ok := item["install_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get inst_sys for Record ID %v. Item: %+v\n", UniqueId, item)
 			InstSys = time.Time{}
 		}
 
 		// Status
-		Status, ok := item["status"].(string)
+		Status, ok := item["current_status"].(string)
 		if !ok || Status == "" {
 			log.FuncErrorTrace(0, "Failed to get status for Record ID %v. Item: %+v\n", UniqueId, item)
 			Status = ""
@@ -206,7 +206,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// TotalPaid
-		TotalPaid, ok := item["total_paid"].(float64)
+		TotalPaid, ok := item["amount_paid"].(float64)
 		if !ok || TotalPaid == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get tatal paid for Record ID %v. Item: %+v\n", UniqueId, item)
 			TotalPaid = 0.0
