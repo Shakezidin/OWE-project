@@ -16,7 +16,6 @@ import { FaMinus } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import Select from 'react-select';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import {
   AirConditioner,
   Clock,
@@ -39,6 +38,7 @@ import { ca } from 'date-fns/locale';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
+import { toCanvas } from 'html-to-image';
 const appliance = [
   {
     name: 'Air Conditioner',
@@ -161,19 +161,15 @@ const BatteryAmp = () => {
 
   const exportPdf = () => {
     if (form.current) {
-      const doc = new jsPDF();
       const element = form.current;
-
-      // Get current scroll position of the div
-      const scrollTop = element.scrollTop;
-
-      // Calculate total height of the div
       const scrollHeight = element.scrollHeight;
-
-      html2canvas(element, {
-        scrollY: -scrollTop,
-        windowHeight: scrollHeight,
-        scale: 1,
+      const filter = (node: HTMLElement) => {
+        const exclusionClasses = ['calc-btn-wrapper',];
+        return !exclusionClasses.some((classname) => node.classList?.contains(classname));
+      }
+      toCanvas(element, {
+       height:scrollHeight,
+       filter
       }).then((canvas) => {
         const imageData = canvas.toDataURL('image/png');
         const pdf = new jsPDF({
@@ -421,7 +417,7 @@ to a Partial Home Back-up`,
 
             <span
               onClick={calculator}
-              style={{ fontSize: 12, fontWeight: 600, marginTop: '1.2rem' }}
+              style={{ fontSize: 12, fontWeight: 600, marginTop: '1.5rem' }}
               className="pointer check-btn"
             >
               check

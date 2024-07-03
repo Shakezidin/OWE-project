@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import dummy from './lib/dummy_img.png';
 import Input from '../../components/text_input/Input';
-import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { TbMinus, TbPlus } from 'react-icons/tb';
 import { TfiTrash } from 'react-icons/tfi';
