@@ -103,126 +103,126 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		// Partner
 		Partner, ok := item["partner"].(string)
 		if !ok || Partner == "" {
-			// log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", UniqueId, item)
 			Partner = ""
 		}
 
 		// Installer
 		Installer, ok := item["instl"].(string)
 		if !ok || Installer == "" {
-			// log.FuncErrorTrace(0, "Failed to get Installer for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get Installer for Record ID %v. Item: %+v\n", UniqueId, item)
 			Installer = ""
 		}
 
 		// InstallerName
 		Type, ok := item["type"].(string)
 		if !ok || Type == "" {
-			// log.FuncErrorTrace(0, "Failed to get type name for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get type name for Record ID %v. Item: %+v\n", UniqueId, item)
 			Type = ""
 		}
 
 		// SaleTypeName
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok || HomeOwner == "" {
-			// log.FuncErrorTrace(0, "Failed to get sale type name for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get sale type name for Record ID %v. Item: %+v\n", UniqueId, item)
 			HomeOwner = ""
 		}
 
 		// StreetAddress
 		StreetAddress, ok := item["street_address"].(string)
 		if !ok || StreetAddress == "" {
-			// log.FuncErrorTrace(0, "Failed to get street address for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get street address for Record ID %v. Item: %+v\n", UniqueId, item)
 			StreetAddress = ""
 		}
 
 		// City
 		City, ok := item["city"].(string)
 		if !ok || City == "" {
-			// log.FuncErrorTrace(0, "Failed to get city for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get city for Record ID %v. Item: %+v\n", UniqueId, item)
 			City = ""
 		}
 
 		// St
 		St, ok := item["st"].(string)
 		if !ok || St == "" {
-			// log.FuncErrorTrace(0, "Failed to get st for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get st for Record ID %v. Item: %+v\n", UniqueId, item)
 			St = ""
 		}
 
 		// Zip
 		Zip, ok := item["zip"].(int64)
 		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get zip for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get zip for Record ID %v. Item: %+v\n", UniqueId, item)
 			Zip = 0
 		}
 
 		// PermitMax
 		Sys_size, ok := item["sys_size"].(float64)
 		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", UniqueId, item)
 			Sys_size = 0.0
 		}
 
 		// Wc
 		Wc, ok := item["wc"].(time.Time)
 		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get wc for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get wc for Record ID %v. Item: %+v\n", UniqueId, item)
 			Wc = time.Time{}
 		}
 
 		// InstSys
 		InstSys, ok := item["inst_sys"].(time.Time)
 		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get inst_sys for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get inst_sys for Record ID %v. Item: %+v\n", UniqueId, item)
 			InstSys = time.Time{}
 		}
 
 		// Status
 		Status, ok := item["status"].(string)
 		if !ok || Status == "" {
-			// log.FuncErrorTrace(0, "Failed to get status for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get status for Record ID %v. Item: %+v\n", UniqueId, item)
 			Status = ""
 		}
 
 		// Status
 		StatusDate, ok := item["status_date"].(time.Time)
 		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get status date for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get status date for Record ID %v. Item: %+v\n", UniqueId, item)
 			StatusDate = time.Time{}
 		}
 
 		// ContractCalc
 		ContractCalc, ok := item["contract_calc"].(float64)
 		if !ok || ContractCalc == 0.0 {
-			// log.FuncErrorTrace(0, "Failed to get contract calc for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get contract calc for Record ID %v. Item: %+v\n", UniqueId, item)
 			ContractCalc = 0.0
 		}
 
 		// OweAr
 		OweAr, ok := item["owe_ar"].(float64)
 		if !ok || OweAr == 0.0 {
-			// log.FuncErrorTrace(0, "Failed to get owe ar for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get owe ar for Record ID %v. Item: %+v\n", UniqueId, item)
 			OweAr = 0.0
 		}
 
 		// TotalPaid
 		TotalPaid, ok := item["total_paid"].(float64)
 		if !ok || TotalPaid == 0.0 {
-			// log.FuncErrorTrace(0, "Failed to get tatal paid for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get tatal paid for Record ID %v. Item: %+v\n", UniqueId, item)
 			TotalPaid = 0.0
 		}
 
 		// CurrentDue
 		CurrentDue, ok := item["current_due"].(float64)
 		if !ok || CurrentDue == 0.0 {
-			// log.FuncErrorTrace(0, "Failed to get current due for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get current due for Record ID %v. Item: %+v\n", UniqueId, item)
 			CurrentDue = 0.0
 		}
 
 		// Balance
 		Balance, ok := item["balance"].(float64)
 		if !ok || Balance == 0.0 {
-			// log.FuncErrorTrace(0, "Failed to get balance for Record ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get balance for Record ID %v. Item: %+v\n", UniqueId, item)
 			Balance = 0.0
 		}
 
