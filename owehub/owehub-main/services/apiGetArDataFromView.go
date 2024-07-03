@@ -32,10 +32,10 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		dataReq models.GetArDataReq
 		data    []map[string]interface{}
 		// whereEleList []interface{}
-		query string
-		// queryForAlldata string
-		// filter string
-		RecordCount int64
+		query           string
+		queryForAlldata string
+		orderby         string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "GetARDataFromView")
@@ -82,9 +82,11 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 
 	// Generate the query
 	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, false)
+	orderby += (query + getOrderByClause(dataReq.SortBy))
 
-	// data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	queryForAlldata += (orderby + PrepareardataFilters(dataReq))
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ar data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get ar data from DB", http.StatusBadRequest, nil)
@@ -254,8 +256,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		arDataList.ArDataList = append(arDataList.ArDataList, arData)
 	}
 
-	query = ""
-	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
+	query += generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
 
 	datacount, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
@@ -264,12 +265,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	count, ok := datacount[0]["count"].(int64)
-	if ok {
-		RecordCount = count
-	} else {
-		log.FuncErrorTrace(0, "Error: The 'count' value is not of type float64")
-	}
+	RecordCount = int64(len(datacount))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of ar data List fetched : %v", len(arDataList.ArDataList))
 	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, arDataList, RecordCount)
@@ -278,9 +274,13 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 // Function to generate the base query
 func getBaseQuery(dataCount bool) string {
 	if !dataCount {
-		return `SELECT * FROM ar_data`
+		return `SELECT partner, installer, type, unique_id, home_owner, address, city,
+		state, zip, system_size, contract_date, install_date, current_status, status_date,
+		contract_calc, owe_ar, amount_paid, current_due, balance FROM ar_data`
 	} else {
-		return `SELECT COUNT(*) as count FROM ar_data`
+		return ` GROUP BY partner, installer, type, unique_id, home_owner, address, city,
+		state, zip, system_size, contract_date, install_date, current_status, status_date,
+		contract_calc, owe_ar, amount_paid, current_due, balance`
 	}
 }
 
@@ -343,8 +343,6 @@ func generateQuery(reportType, salePartner, sortBy string, statuses map[string]b
 	if !forDataCount {
 		query += getBaseQuery(false)
 		query += getWhereClause(reportType, salePartner, statuses)
-		query += getOrderByClause(sortBy)
-		query += PrepareardataFilters(datareq)
 	} else {
 		query += getBaseQuery(true)
 	}
