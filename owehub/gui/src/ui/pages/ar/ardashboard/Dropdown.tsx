@@ -53,6 +53,7 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
     console.log(key === 'all');
 
     if (key !== 'all') {
+      
       dispatch(
         filterChange({ name: key, value: !selectedOptions.includes(option) })
       );
@@ -71,15 +72,19 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
           return options.map((o) => o.value);
         }
       } else {
-        if (prevSelectedOptions.includes(option)) {
-          return prevSelectedOptions.filter((o) => o !== option);
+        // Remove 'All' from prevSelectedOptions if it exists
+        const updatedOptions = prevSelectedOptions.filter((o) => o !== 'All');
+    
+        if (updatedOptions.includes(option)) {
+          return updatedOptions.filter((o) => o !== option);
         } else {
-          return [...prevSelectedOptions, option];
+          return [...updatedOptions, option];
         }
       }
     });
+    
   };
-  console.log(selectedOptions);
+  console.log(selectedOptions, "check");
   return (
     <div className="ar-dropdown-container" ref={dropdownRef}>
       <div className="dropdown-toggle" onClick={toggleDropdown}>

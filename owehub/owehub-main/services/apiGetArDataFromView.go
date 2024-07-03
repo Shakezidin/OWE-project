@@ -32,10 +32,10 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		dataReq models.GetArDataReq
 		data    []map[string]interface{}
 		// whereEleList []interface{}
-		query string
-		// queryForAlldata string
-		// filter string
-		RecordCount int64
+		query           string
+		queryForAlldata string
+		orderby         string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "GetARDataFromView")
@@ -72,7 +72,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	// Map to hold statuses
 	statuses := map[string]bool{
 		"Shaky":   dataReq.Shaky,
-		"Cancel":  dataReq.Cancel,
+		"CANCEL":  dataReq.Cancel,
 		"Sold":    dataReq.Sold,
 		"Permits": dataReq.Permits,
 		"NTP":     dataReq.NTP,
@@ -82,9 +82,11 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 
 	// Generate the query
 	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, false)
+	orderby += (query + getOrderByClause(dataReq.SortBy))
 
-	// data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	queryForAlldata += (orderby + PrepareardataFilters(dataReq))
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ar data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get ar data from DB", http.StatusBadRequest, nil)
@@ -108,7 +110,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Installer
-		Installer, ok := item["instl"].(string)
+		Installer, ok := item["installer"].(string)
 		if !ok || Installer == "" {
 			log.FuncErrorTrace(0, "Failed to get Installer for Record ID %v. Item: %+v\n", UniqueId, item)
 			Installer = ""
@@ -129,7 +131,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// StreetAddress
-		StreetAddress, ok := item["street_address"].(string)
+		StreetAddress, ok := item["address"].(string)
 		if !ok || StreetAddress == "" {
 			log.FuncErrorTrace(0, "Failed to get street address for Record ID %v. Item: %+v\n", UniqueId, item)
 			StreetAddress = ""
@@ -143,7 +145,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// St
-		St, ok := item["st"].(string)
+		St, ok := item["state"].(string)
 		if !ok || St == "" {
 			log.FuncErrorTrace(0, "Failed to get st for Record ID %v. Item: %+v\n", UniqueId, item)
 			St = ""
@@ -157,28 +159,28 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// PermitMax
-		Sys_size, ok := item["sys_size"].(float64)
+		Sys_size, ok := item["system_size"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", UniqueId, item)
 			Sys_size = 0.0
 		}
 
 		// Wc
-		Wc, ok := item["wc"].(time.Time)
+		Wc, ok := item["contract_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get wc for Record ID %v. Item: %+v\n", UniqueId, item)
 			Wc = time.Time{}
 		}
 
 		// InstSys
-		InstSys, ok := item["inst_sys"].(time.Time)
+		InstSys, ok := item["install_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get inst_sys for Record ID %v. Item: %+v\n", UniqueId, item)
 			InstSys = time.Time{}
 		}
 
 		// Status
-		Status, ok := item["status"].(string)
+		Status, ok := item["current_status"].(string)
 		if !ok || Status == "" {
 			log.FuncErrorTrace(0, "Failed to get status for Record ID %v. Item: %+v\n", UniqueId, item)
 			Status = ""
@@ -206,7 +208,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// TotalPaid
-		TotalPaid, ok := item["total_paid"].(float64)
+		TotalPaid, ok := item["amount_paid"].(float64)
 		if !ok || TotalPaid == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get tatal paid for Record ID %v. Item: %+v\n", UniqueId, item)
 			TotalPaid = 0.0
@@ -254,8 +256,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		arDataList.ArDataList = append(arDataList.ArDataList, arData)
 	}
 
-	query = ""
-	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
+	query += generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
 
 	datacount, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
@@ -264,12 +265,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	count, ok := datacount[0]["count"].(int64)
-	if ok {
-		RecordCount = count
-	} else {
-		log.FuncErrorTrace(0, "Error: The 'count' value is not of type float64")
-	}
+	RecordCount = int64(len(datacount))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of ar data List fetched : %v", len(arDataList.ArDataList))
 	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, arDataList, RecordCount)
@@ -278,9 +274,13 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 // Function to generate the base query
 func getBaseQuery(dataCount bool) string {
 	if !dataCount {
-		return `SELECT * FROM ar_data`
+		return `SELECT partner, installer, type, unique_id, home_owner, address, city,
+		state, zip, system_size, contract_date, install_date, current_status, status_date,
+		contract_calc, owe_ar, amount_paid, current_due, balance FROM ar_data`
 	} else {
-		return `SELECT COUNT(*) as count FROM ar_data`
+		return ` GROUP BY partner, installer, type, unique_id, home_owner, address, city,
+		state, zip, system_size, contract_date, install_date, current_status, status_date,
+		contract_calc, owe_ar, amount_paid, current_due, balance`
 	}
 }
 
@@ -295,19 +295,19 @@ func getWhereClause(reportType, salePartner string, statuses map[string]bool) st
 	case reportType == "ALL" && salePartner != "ALL":
 		conditions = append(conditions, "balance != 0")
 		conditions = append(conditions, generateStatusCondition(statuses))
-		conditions = append(conditions, "partner = '-ALL-'")
+		conditions = append(conditions, "Partner = 'ALL'")
 	case reportType == "current due" && salePartner == "ALL":
 		conditions = append(conditions, "current_due > 0", "balance < 0")
 		conditions = append(conditions, generateStatusCondition(statuses))
 	case reportType == "current due" && salePartner != "ALL":
 		conditions = append(conditions, "current_due > 0", "balance < 0")
 		conditions = append(conditions, generateStatusCondition(statuses))
-		conditions = append(conditions, "partner = '-ALL-'")
+		conditions = append(conditions, "Partner = 'ALL'")
 	case reportType == "overpaid" && salePartner == "ALL":
 		conditions = append(conditions, "current_due < 0", "balance >= 0")
 	case reportType == "overpaid" && salePartner != "ALL":
 		conditions = append(conditions, "current_due < 0", "balance >= 0")
-		conditions = append(conditions, "partner = 'ALL'")
+		conditions = append(conditions, "Partner = 'ALL'")
 	}
 
 	if len(conditions) > 0 {
@@ -326,7 +326,7 @@ func generateStatusCondition(statuses map[string]bool) string {
 	}
 
 	if len(statusConditions) > 0 {
-		return fmt.Sprintf("status IN (%s)", strings.Join(statusConditions, ", "))
+		return fmt.Sprintf("current_status IN (%s)", strings.Join(statusConditions, ", "))
 	}
 	return ""
 }
@@ -343,8 +343,6 @@ func generateQuery(reportType, salePartner, sortBy string, statuses map[string]b
 	if !forDataCount {
 		query += getBaseQuery(false)
 		query += getWhereClause(reportType, salePartner, statuses)
-		query += getOrderByClause(sortBy)
-		query += PrepareardataFilters(datareq)
 	} else {
 		query += getBaseQuery(true)
 	}

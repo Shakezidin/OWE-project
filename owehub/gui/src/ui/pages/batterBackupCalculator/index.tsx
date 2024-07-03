@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import dummy from './lib/dummy_img.png';
 import Input from '../../components/text_input/Input';
-import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { TbMinus, TbPlus } from 'react-icons/tb';
 import { TfiTrash } from 'react-icons/tfi';
@@ -70,13 +69,9 @@ const Index = () => {
   const [inputDetails, setInputDetails] = useState<{
     prospectName: string;
     lra: string;
-    continuousCurrent: number | string;
-    avgCapacity: number | string;
   }>({
     prospectName: '',
     lra: '',
-    continuousCurrent: '',
-    avgCapacity: '',
   });
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -131,20 +126,11 @@ const Index = () => {
     let { name, value } = e.target;
     if (
       name === 'continuousCurrent' ||
-      name === 'lra' ||
-      name === 'avgCapacity'
+      name === 'lra' 
     ) {
       value = value.replace(/[^0-9.]/g, '');
     }
-    if (name === 'avgCapacity') {
-      const perecentage = (60 / 100) * parseFloat(value);
-      const calc = (parseFloat(value) * perecentage) / 365 / 24;
-      setInputDetails((prev) => ({
-        ...prev,
-        avgCapacity: value,
-        continuousCurrent: calc ? (calc as number).toFixed(2) : '',
-      }));
-    }
+
     setInputDetails((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -169,9 +155,9 @@ const Index = () => {
   const shareImage = () => {
     return sendMail({
       toMail: detail.sr_email_id,
-      message: `Hi ${inputDetails.prospectName},
+      message: `Hi Sales Rep Team,
  
-You have recieved a request from ${inputDetails.prospectName} to fill the information in battery calculation form.
+You have recieved a request from Electrical Team to fill the information in battery calculation form.
  
 Please visit the below URL to complete the form.
  
@@ -189,8 +175,6 @@ OWE Battery Calc
         setInputDetails({
           prospectName: '',
           lra: '',
-          continuousCurrent: '',
-          avgCapacity: '',
         });
         setIsPending(false)
         setBattery([]);
@@ -208,8 +192,7 @@ OWE Battery Calc
         prospect_id: parseInt(id!),
         prospect_name: inputDetails.prospectName,
         lra: parseFloat(inputDetails.lra),
-        average_capacity: parseFloat(inputDetails.avgCapacity as string),
-        continous_current: parseFloat(inputDetails.continuousCurrent as string),
+       
         breakers: batter.map((battery) => ({
           ...battery,
           ampere: battery.amp.includes('70')
@@ -481,48 +464,7 @@ OWE Battery Calc
                   )}
                 </div>
 
-                <div className="mb3 calc-input">
-                  <Input
-                    onChange={inputHandler}
-                    value={inputDetails.avgCapacity}
-                    name="avgCapacity"
-                    type="text"
-                    placeholder=""
-                    label="Average Capacity"
-                  />
-
-                  {errors.avgCapacity && (
-                    <span className="error">
-                      {' '}
-                      {(errors.avgCapacity as string).replaceAll(
-                        'avgCapacity',
-                        'Average Capacity'
-                      )}{' '}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mb3 calc-input">
-                  <Input
-                    onChange={() => null}
-                    disabled
-                    readOnly
-                    value={inputDetails.continuousCurrent}
-                    name="continuousCurrent"
-                    type="text"
-                    placeholder=""
-                    label="Continuous Current"
-                  />
-                  {errors.continuousCurrent && (
-                    <span className="error">
-                      {' '}
-                      {(errors.continuousCurrent as string).replaceAll(
-                        'continuousCurrent',
-                        'Continuous Current'
-                      )}{' '}
-                    </span>
-                  )}
-                </div>
+             
               </div>
             </div>
           </div>
