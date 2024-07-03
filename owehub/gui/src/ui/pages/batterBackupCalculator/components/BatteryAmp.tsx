@@ -203,13 +203,6 @@ const BatteryAmp = () => {
     const firstBattery = 38;
     count += Math.ceil((totalCategoryAmp - firstBattery) / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
-    // arr.forEach((item) => {
-    //   if (item.amp >= 60) {
-    //     count += 2;
-    //   }
-    // });
-    console.log(count, 'bvvvhvhvhv', arr, totalCategoryAmp);
-
     return Math.max(count, requiredPowerwallsByLRA);
   };
 
@@ -217,13 +210,27 @@ const BatteryAmp = () => {
     return initial;
   }, [initial]);
 
+  const AddrequiredBattery = () => {
+    const consumption = Math.round(
+      ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+    );
+    let count = initial;
+
+    while (consumption >= count) {
+      count++;
+    }
+    setRequiredBattery(count);
+    setInitial(count);
+    setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
+  };
+
   const calculator = () => {
-    const consumption = (parseFloat(avgConsumption) / 365 / 24) * 0.6;
-    console.log(consumption, 'consumption: ');
+    const consumption = Math.round(
+      ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+    );
+    console.log(consumption, 'coms');
 
-    if (consumption >= 6) {
-      console.log('working block');
-
+    if (consumption <= initial) {
       setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
     } else {
       setCaluclatedBackup(0);
@@ -239,7 +246,7 @@ to a Partial Home Back-up`,
       });
     }
   };
-console.log(caluclatedBackup,"backup")
+
   useEffect(() => {
     const getProspectDetail = async () => {
       try {
@@ -258,7 +265,7 @@ console.log(caluclatedBackup,"backup")
           setInitialBattery([...batt]);
           const min = minRequired(
             [...batt],
-            data?.data?.total_catergory_amperes,
+            data?.data?.total_catergory_amperes * 0.6,
             data?.data?.lra
           );
           setOtherDeatil(data?.data);
@@ -341,9 +348,16 @@ console.log(caluclatedBackup,"backup")
                 <div
                   role="button"
                   onClick={() =>
-                    requiredBattery >= required
-                      ? undefined
-                      : setRequiredBattery((prev) => prev + 1)
+                    setRequiredBattery((prev) => {
+                      const consumption = Math.round(
+                        ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+                      );
+                      let init = prev + 1;
+                      if (init >= consumption && caluclatedBackup === 0) {     
+                        setCaluclatedBackup(1);
+                      }
+                      return init;
+                    })
                   }
                   className={`watt-counter-btn   pointer justify-center flex items-center ${requiredBattery >= required ? 'disable' : ''}`}
                 >
@@ -645,10 +659,12 @@ console.log(caluclatedBackup,"backup")
           popUpMsg={mssg}
           isOpen={isOpen}
           required={required}
+          AddrequiredBattery={AddrequiredBattery}
           setBatteryPower={setBatteryPower}
           setRequiredBattery={setRequiredBattery}
           setMainDisabled={setMainDisabled}
           setIsOpen={setIsOpen}
+          setCaluclatedBackup={setCaluclatedBackup}
         />
       )}
     </div>
