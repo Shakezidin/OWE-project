@@ -72,7 +72,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	// Map to hold statuses
 	statuses := map[string]bool{
 		"Shaky":   dataReq.Shaky,
-		"Cancel":  dataReq.Cancel,
+		"CANCEL":  dataReq.Cancel,
 		"Sold":    dataReq.Sold,
 		"Permits": dataReq.Permits,
 		"NTP":     dataReq.NTP,
@@ -295,19 +295,19 @@ func getWhereClause(reportType, salePartner string, statuses map[string]bool) st
 	case reportType == "ALL" && salePartner != "ALL":
 		conditions = append(conditions, "balance != 0")
 		conditions = append(conditions, generateStatusCondition(statuses))
-		conditions = append(conditions, "partner = '-ALL-'")
+		conditions = append(conditions, "Partner = 'ALL'")
 	case reportType == "current due" && salePartner == "ALL":
 		conditions = append(conditions, "current_due > 0", "balance < 0")
 		conditions = append(conditions, generateStatusCondition(statuses))
 	case reportType == "current due" && salePartner != "ALL":
 		conditions = append(conditions, "current_due > 0", "balance < 0")
 		conditions = append(conditions, generateStatusCondition(statuses))
-		conditions = append(conditions, "partner = '-ALL-'")
+		conditions = append(conditions, "Partner = 'ALL'")
 	case reportType == "overpaid" && salePartner == "ALL":
 		conditions = append(conditions, "current_due < 0", "balance >= 0")
 	case reportType == "overpaid" && salePartner != "ALL":
 		conditions = append(conditions, "current_due < 0", "balance >= 0")
-		conditions = append(conditions, "partner = 'ALL'")
+		conditions = append(conditions, "Partner = 'ALL'")
 	}
 
 	if len(conditions) > 0 {
@@ -326,7 +326,7 @@ func generateStatusCondition(statuses map[string]bool) string {
 	}
 
 	if len(statusConditions) > 0 {
-		return fmt.Sprintf("status IN (%s)", strings.Join(statusConditions, ", "))
+		return fmt.Sprintf("current_status IN (%s)", strings.Join(statusConditions, ", "))
 	}
 	return ""
 }
