@@ -98,6 +98,7 @@ const ConfigurePage: React.FC = () => {
         { title: 'Loan Type', route: ROUTES.CONFIG_LOAN },
         { title: 'DBA', route: ROUTES.CONFIG_DBA },
         { title: 'REP CREDIT', route: ROUTES.CONFIG_REPCREDIT },
+        { title: 'REP STATUS', route: ROUTES.CONFIG_REPSTATUS },
       ],
       state: useState<boolean>(true),
     },

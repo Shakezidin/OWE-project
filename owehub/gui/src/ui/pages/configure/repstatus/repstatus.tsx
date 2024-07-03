@@ -1,10 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchRepCreditList } from '../../../../redux/apiActions/config/repCreditAction';
+import { archiveRepStatus, fetchRepStatusList } from '../../../../redux/apiActions/config/repstatusAction';
 // import CreateTimeLine from "./CreateTimeLine";
-import CreateAr from './createrepcredit';
+import CreateAr from './createrepstatus';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
@@ -15,7 +16,7 @@ import { ARColumns } from '../../../../resources/static_data/configureHeaderData
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { errorSwal, showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -23,7 +24,8 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import { dateFormat } from '../../../../utiles/formatDate';
 import { DbaColumn } from '../../../../resources/static_data/configureHeaderData/DbaColumn';
 import { RepCreditcolumns } from '../../../../resources/static_data/configureHeaderData/RepCreditColumn';
-const RepCredit = () => {
+import { RepStatuscolumns } from '../../../../resources/static_data/configureHeaderData/RepStatusColumn';
+const RepStatus = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
@@ -44,8 +46,8 @@ const RepCredit = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const { data, count, isSuccess, isLoading } = useAppSelector(
-    (state) => state.repCredit
+  const { rep_status_list, count, isSuccess, isLoading } = useAppSelector(
+    (state) => state.repStatus
   );
   const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
@@ -55,7 +57,7 @@ const RepCredit = () => {
       archived: viewArchived ? true : undefined,
       filters,
     };
-    dispatch(fetchRepCreditList(pageNumber));
+    dispatch(fetchRepStatusList(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const RepCredit = () => {
         archived: viewArchived,
         filters,
       };
-      dispatch(fetchRepCreditList({ ...pageNumber }));
+      dispatch(fetchRepStatusList({ ...pageNumber }));
     }
   }, [isSuccess, currentPage, viewArchived, filters]);
   const filter = () => {
@@ -89,9 +91,9 @@ const RepCredit = () => {
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
 
-  const currentPageData = data?.slice();
+  const currentPageData = rep_status_list?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === data?.length;
+  const isAllRowsSelected = selectedRows.size === rep_status_list?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -144,69 +146,71 @@ const RepCredit = () => {
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
-      'Are Your Sure',
-      'This Action will archive your data',
+      'Are You Sure',
+      'This action will archive your data',
       'Yes',
       'No'
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => data[index].record_id
+        (index) => rep_status_list[index].record_id
       );
       if (archivedRows.length > 0) {
-        const newValue = {
-          record_id: archivedRows,
-          is_archived: true,
-        };
-
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
           filters,
         };
-
-        const res = await postCaller('archive_dba', newValue);
-        if (res.status === HTTP_STATUS.OK) {
+  
+        try {
+          await Promise.all(
+            archivedRows.map((recordId) =>
+              dispatch(archiveRepStatus(recordId.toString()))
+            )
+          );
+  
           setSelectedRows(new Set());
           setSelectAllChecked(false);
-          // If API call is successful, refetch commissions
-          dispatch(fetchRepCreditList(pageNumber));
-
-          setSelectAllChecked(false);
-          setSelectedRows(new Set());
-          await successSwal('Archived', 'The data has been archived ');
-        } else {
-          await successSwal('Archived', 'The data has been archived ');
+  
+          // Refetch the rep status list after archiving
+          dispatch(fetchRepStatusList(pageNumber));
+  
+          await successSwal('Archived', 'The data has been archived');
+        } catch (error) {
+          console.error('Error archiving rep status:', error);
+          await errorSwal('Error', 'Failed to archive the data');
         }
       }
     }
   };
+  
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      'Are Your Sure',
-      'This Action will archive your data',
+      'Are You Sure',
+      'This action will archive your data',
       'Yes',
       'No'
     );
     if (confirmed) {
-      const archived: number[] = [record_id];
-      let newValue = {
-        record_id: archived,
-        is_archived: true,
-      };
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller('archive_dba', newValue);
-      if (res.status === HTTP_STATUS.OK) {
+  
+      try {
+        await dispatch(archiveRepStatus(record_id.toString()));
+  
         setSelectedRows(new Set());
         setSelectAllChecked(false);
-        dispatch(fetchRepCreditList(pageNumber));
-        await successSwal('Archived', 'The data has been archived ');
-      } else {
-        await successSwal('Archived', 'The data has been archived ');
+  
+        // Refetch the rep status list after archiving
+        dispatch(fetchRepStatusList(pageNumber));
+  
+        await successSwal('Archived', 'The data has been archived');
+      } catch (error) {
+        console.error('Error archiving rep status:', error);
+        await errorSwal('Error', 'Failed to archive the data');
       }
     }
   };
@@ -219,11 +223,11 @@ const RepCredit = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Rep Credit"
+        linkparaSecond="Rep Status"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Rep Credit"
+          title="Rep Status"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
@@ -239,7 +243,7 @@ const RepCredit = () => {
           isOpen={filterOPen}
           resetOnChange={viewArchived}
           handleClose={filterClose}
-          columns={RepCreditcolumns}
+          columns={RepStatuscolumns}
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage}
@@ -259,12 +263,12 @@ const RepCredit = () => {
           <table>
             <thead>
               <tr>
-                {RepCreditcolumns?.map((item, key) => (
+                {RepStatuscolumns?.map((item, key) => (
                   <SortableHeader
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={data}
+                    data={rep_status_list}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -312,15 +316,11 @@ const RepCredit = () => {
                             )
                           }
                         />
-                        {el.record_id}
+                        {el.name || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.unique_id || 'N/A'}</td>
-                    <td>{el.approved_by || 'N/A'}</td>
-                    <td>{el.per_kw_amt || 'N/A'}</td>
-                    <td>{el.exact_amt || 'N/A'}</td>
-                    <td>{el.notes || 'N/A'}</td>
-                    <td>{el.date || 'N/A'}</td>
+                    <td>{el.status || 'N/A'}</td>
+                    
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
@@ -364,7 +364,7 @@ const RepCredit = () => {
             </p>
           )}
 
-          {data?.length > 0 ? (
+          {rep_status_list?.length > 0 ? (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
@@ -381,4 +381,4 @@ const RepCredit = () => {
   );
 };
 
-export default RepCredit;
+export default RepStatus;

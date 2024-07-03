@@ -41,7 +41,7 @@ export const ROUTES = {
   CONFIG_APREP: "/config/ap-rep",
   CONFIG_DBA: "/config/dba",
   CONFIG_REPCREDIT: "/config/repcredit",
-
+  CONFIG_REPSTATUS: "/config/repstatus",
 
   // other routes
   REPORT: '/report',

@@ -4,17 +4,12 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 
 import { ActionButton } from '../../../components/button/ActionButton';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {
-  createDBA,
-  updateDBA,
-} from '../../../../redux/apiActions/config/dbaaction';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { createRepCredit, updateRepCredit } from '../../../../redux/apiActions/config/repCreditAction';
+import { createRepStatus, updateRepStatus } from '../../../../redux/apiActions/config/repstatusAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -29,15 +24,10 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.ar);
-  
+  console.log("edit data", editData)
   const [createArData, setCreateArData] = useState({
-    unique_id: editData?.unique_id || '',
-    record_id: editData?.record_id || '',
-    Per_kw_amt: editData?.per_kw_amt || '',
-    Notes: editData?.notes || '',
-    Exact_amt: editData?.exact_amt || '',
-    Date: editData?.date || '',
-    Approved_by: editData?.approved_by || ''
+    name: editData?.name || '',
+    status: editData?.status || '',
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -77,25 +67,17 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
 
     if (editMode) {
       dispatch(
-        updateRepCredit({
+        updateRepStatus({
           ...createArData,
-          unique_id: createArData.unique_id,
-          Per_kw_amt: createArData.Per_kw_amt,
-          Date: createArData.Date,
-          Exact_amt: createArData.Exact_amt,
-          Approved_by: createArData.Approved_by,
-          Notes: createArData.Notes,
+          name: createArData.name,
+          status: createArData.status,
         })
       );
     } else {
       dispatch(
-        createRepCredit({
-          unique_id: createArData.unique_id,
-          Per_kw_amt: createArData.Per_kw_amt,
-          Date: createArData.Date,
-          Exact_amt: createArData.Exact_amt,
-          Approved_by: createArData.Approved_by,
-          Notes: createArData.Notes,
+        createRepStatus({
+          name: createArData.name,
+          status: createArData.status,
         })
       );
     }
@@ -120,7 +102,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? 'Create Rep Credit' : 'Update Rep Credit'}
+          {editMode === false ? 'Create Rep Status' : 'Update Rep Status'}
         </h3>
 
         <div className="modal-body">
@@ -131,75 +113,29 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="UID"
-                    value={createArData.unique_id}
-                    name="unique_id"
+                    label="Name"
+                    value={createArData.name}
+                    name="name"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.unique_id && <span className="error">{errors.unique_id}</span>}
+                  {errors.name && <span className="error">{errors.name}</span>}
                 </div>
 
-                <div className="create-input-field">
-                  <Input
-                    type={'date'}
-                    label="Date"
-                    value={createArData.Date}
-                    name="Date"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors.date && <span className="error">{errors.date}</span>}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Per Kw AMT"
-                    value={createArData.Per_kw_amt}
-                    name="Per_kw_amt"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors.Dba && <span className="error">{errors.Dba}</span>}
-                </div>
-
-              </div>
-              <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Approved By"
-                    value={createArData.Approved_by}
-                    name="Approved_by"
+                    label="Status"
+                    value={createArData.status}
+                    name="status"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.Approved_by && <span className="error">{errors.Approved_by}</span>}
+                  {errors.status && <span className="error">{errors.status}</span>}
                 </div>
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Exact Amt"
-                    value={createArData.Exact_amt}
-                    name="Exact_amt"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors.Exact_amt && <span className="error">{errors.Exact_amt}</span>}
-                </div>
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Notes"
-                    value={createArData.Notes}
-                    name="Notes"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors.Notes && <span className="error">{errors.Notes}</span>}
-                </div>
+
               </div>
+             
 
             </div>
           </div>

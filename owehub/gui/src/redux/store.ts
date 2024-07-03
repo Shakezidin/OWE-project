@@ -58,6 +58,7 @@ import rebateDataSlice from './apiSlice/configSlice/config_get_slice/rebateDataS
 import dealerPaySlice from './apiSlice/dealerPaySlice/dealerPaySlice';
 import dbaSlice from './apiSlice/configSlice/config_get_slice/dbaSlice';
 import repcreditSlice from './apiSlice/configSlice/config_get_slice/repcreditSlice';
+import repstatusSlice from './apiSlice/configSlice/config_get_slice/repstatusSlice';
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -79,6 +80,7 @@ export const store = configureStore({
     repaySettings: repPaySettingsSlice,
     dba: dbaSlice,
     repCredit: repcreditSlice,
+    repStatus: repstatusSlice,
     // post slice define
     createCommission: createCommissionReducer,
     createMarketing: createMarketingReduce,
