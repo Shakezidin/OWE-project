@@ -16,7 +16,6 @@ import { FaMinus } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import Select from 'react-select';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import {
   AirConditioner,
   Clock,
@@ -39,6 +38,7 @@ import { ca } from 'date-fns/locale';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
+import { toCanvas } from 'html-to-image';
 const appliance = [
   {
     name: 'Air Conditioner',
@@ -161,19 +161,15 @@ const BatteryAmp = () => {
 
   const exportPdf = () => {
     if (form.current) {
-      const doc = new jsPDF();
       const element = form.current;
-
-      // Get current scroll position of the div
-      const scrollTop = element.scrollTop;
-
-      // Calculate total height of the div
       const scrollHeight = element.scrollHeight;
-
-      html2canvas(element, {
-        scrollY: -scrollTop,
-        windowHeight: scrollHeight,
-        scale: 1,
+      const filter = (node: HTMLElement) => {
+        const exclusionClasses = ['calc-btn-wrapper',];
+        return !exclusionClasses.some((classname) => node.classList?.contains(classname));
+      }
+      toCanvas(element, {
+       height:scrollHeight,
+       filter
       }).then((canvas) => {
         const imageData = canvas.toDataURL('image/png');
         const pdf = new jsPDF({
@@ -193,31 +189,45 @@ const BatteryAmp = () => {
     setBatteryPower([...batteries]);
   };
 
-  const minRequired = (arr: any[], current: number, lra: number) => {
-    let totalAmp = 0;
-    const base = { amp: 60, lra: 185, current: 48 };
-    arr.forEach((item) => {
-      totalAmp += item.amp;
-    });
-
-    const requiredPowerwallsByBreakers = Math.ceil(totalAmp / base.amp);
+  const minRequired = (
+    arr: Ibattery[],
+    totalCategoryAmp: number,
+    lra: number
+  ) => {
+    let count = 1;
+    const base = { amp: 48, lra: 185 };
+    const firstBattery = 38;
+    count += Math.ceil((totalCategoryAmp - firstBattery) / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
-    const requiredPowerwallsByCurrent = Math.ceil(current / base.current);
-    return Math.max(
-      requiredPowerwallsByBreakers,
-      requiredPowerwallsByLRA,
-      requiredPowerwallsByCurrent
-    );
+    return Math.max(count, requiredPowerwallsByLRA);
   };
 
   const required = useMemo(() => {
     return initial;
   }, [initial]);
 
+  const AddrequiredBattery = () => {
+    const consumption = Math.round(
+      ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+    );
+    let count = initial;
+
+    while (consumption >= count) {
+      count++;
+    }
+    setRequiredBattery(count);
+    setInitial(count);
+    setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
+  };
+
   const calculator = () => {
-    const consumption = (parseFloat(avgConsumption) / 365 / 24) * 0.6;
-    if (consumption >= 6) {
-      setCaluclatedBackup((prev) => (prev !== 1 ? prev + 1 : prev));
+    const consumption = Math.round(
+      ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+    );
+    console.log(consumption, 'coms');
+
+    if (consumption <= initial) {
+      setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
     } else {
       setCaluclatedBackup(0);
       setMssg(`Your annual usage exceeds what is possible to back-up with the current battery 
@@ -251,7 +261,7 @@ to a Partial Home Back-up`,
           setInitialBattery([...batt]);
           const min = minRequired(
             [...batt],
-            data?.data?.continous_current,
+            data?.data?.total_catergory_amperes * 0.6,
             data?.data?.lra
           );
           setOtherDeatil(data?.data);
@@ -279,19 +289,19 @@ to a Partial Home Back-up`,
       className="scrollbar   relative"
       style={{ backgroundColor: '#F2F2F2', paddingBottom: 100 }}
     >
-      <div className="batter-amp-container ">
-        <div className="wrapper-header mt0">
-          <h4 className="h4" style={{ fontWeight: 500 }}>
+      <div className="wrapper-header mt0 mx0">
+        <h4 className="h4" style={{ fontWeight: 500 }}>
           Electrical Panel
-          </h4>
-          <p
-            className="mt1"
-            style={{ color: '#7F7F7F', fontSize: 12, fontWeight: 500 }}
-          >
-            {' '}
-            Customise panel as per requirement
-          </p>
-        </div>
+        </h4>
+        <p
+          className="mt1"
+          style={{ color: '#7F7F7F', fontSize: 12, fontWeight: 500 }}
+        >
+          {' '}
+          Customise panel as per requirement
+        </p>
+      </div>
+      <div className="batter-amp-container ">
         <div className="py3  batter-amp-wrapper  ">
           <div
             className="battery-watt-wrapper bg-white"
@@ -334,9 +344,16 @@ to a Partial Home Back-up`,
                 <div
                   role="button"
                   onClick={() =>
-                    requiredBattery >= required
-                      ? undefined
-                      : setRequiredBattery((prev) => prev + 1)
+                    setRequiredBattery((prev) => {
+                      const consumption = Math.round(
+                        ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+                      );
+                      let init = prev + 1;
+                      if (init >= consumption && caluclatedBackup === 0) {     
+                        setCaluclatedBackup(1);
+                      }
+                      return init;
+                    })
                   }
                   className={`watt-counter-btn   pointer justify-center flex items-center ${requiredBattery >= required ? 'disable' : ''}`}
                 >
@@ -400,8 +417,8 @@ to a Partial Home Back-up`,
 
             <span
               onClick={calculator}
-              style={{ fontSize: 12, fontWeight: 600 }}
-              className="pointer mt2 underline"
+              style={{ fontSize: 12, fontWeight: 600, marginTop: '1.5rem' }}
+              className="pointer check-btn"
             >
               check
             </span>
@@ -515,7 +532,17 @@ to a Partial Home Back-up`,
                     </div>
                   </div>
                   <div
-                    onClick={() => !mainDisabled && setMainOn((prev) => !prev)}
+                    onClick={() => {
+                      if (!mainDisabled) {
+                        setMainOn((prev) => !prev);
+                        if (!mainOn) {
+                          setRequiredBattery(required);
+                          setBatteryPower((prev) =>
+                            prev.map((battery) => ({ ...battery, isOn: true }))
+                          );
+                        }
+                      }
+                    }}
                     className="batter-amp-switch pointer flex items-center justify-center"
                   >
                     <img src={mainOn ? on : off} alt="" className="pointer" />
@@ -628,10 +655,12 @@ to a Partial Home Back-up`,
           popUpMsg={mssg}
           isOpen={isOpen}
           required={required}
+          AddrequiredBattery={AddrequiredBattery}
           setBatteryPower={setBatteryPower}
           setRequiredBattery={setRequiredBattery}
           setMainDisabled={setMainDisabled}
           setIsOpen={setIsOpen}
+          setCaluclatedBackup={setCaluclatedBackup}
         />
       )}
     </div>

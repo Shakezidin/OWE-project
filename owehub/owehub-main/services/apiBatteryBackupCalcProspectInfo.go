@@ -79,6 +79,8 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, prospectInfoData.WellPump)
 	queryParameters = append(queryParameters, prospectInfoData.EvCharger)
 	queryParameters = append(queryParameters, prospectInfoData.Spa)
+	queryParameters = append(queryParameters, prospectInfoData.Address)
+	queryParameters = append(queryParameters, prospectInfoData.HouseSquare)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateBatteryBackupCalcProspectInfo, queryParameters)
@@ -173,6 +175,8 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	prospectInfoData.Secondary.WellPump = data[0]["well_pump"].(bool)
 	prospectInfoData.Secondary.EvCharger = data[0]["ev_charger"].(bool)
 	prospectInfoData.Secondary.Spa = data[0]["spa"].(bool)
+	prospectInfoData.Address = data[0]["address"].(string)
+	prospectInfoData.HouseSquare = data[0]["house_square"].(float64)
 
 	log.FuncDebugTrace(0, "prospect info reterived: %+v", prospectInfoData)
 	FormAndSendHttpResp(resp, "prospect info reterived Successfully", http.StatusOK, prospectInfoData)

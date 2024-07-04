@@ -33,15 +33,16 @@ const ArDashBoardTable = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
-  const itemsPerPage = 10;
+  const itemsPerPage = 20;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [currentPage1, setCurrentPage1] = useState(1);
+  
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     const pageNumber = {
-      page_number: currentPage1,
+      page_number: currentPage,
       page_size: pageSize1,
       archived: viewArchived ? true : undefined,
       report_type: filters.report_type,
@@ -56,21 +57,35 @@ const ArDashBoardTable = () => {
       pto: filters.pto,
     };
      dispatch(getAR(pageNumber));
-  }, [dispatch, currentPage1, pageSize1, viewArchived, filters]);
+  }, [dispatch, currentPage, pageSize1, viewArchived, filters]);
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
-    setCurrentPage1(1); // Reset to the first page when changing items per page
+    setCurrentPage(1); // Reset to the first page when changing items per page
   };
   const handlePageChange = (page: number) => {
-    setCurrentPage1(page);
+    setCurrentPage(page);
+  };
+  const goToNextPage = () => {
+    setCurrentPage(currentPage + 1);
   };
 
-  const totalPages1 = Math.ceil(count / pageSize1);
-  const startIndex = (currentPage1 - 1) * pageSize1 + 1;
-  const endIndex = startIndex * pageSize1;
+  const goToPrevPage = () => {
+    setCurrentPage(currentPage - 1);
+  };
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const totalPages = Math.ceil(count / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
 
   const currentPageData = data?.slice();
+ 
+
+   
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
 
@@ -301,8 +316,8 @@ const ArDashBoardTable = () => {
                         <td>{el.status_date|| "N/A"}</td>
                         <td>{el.contract_calc|| "N/A"}</td>
                         <td>{el.owe_ar|| "N/A"}</td>
-                        <td>{el.total_paid|| "N/A"}</td>
-                        <td>{el.current_due|| "N/A"}</td>
+                        <td>{el?.total_paid}</td>
+                        <td>{el?.current_due}</td>
                         <td>{el.balance|| "N/A"}</td>
                         <td
                           style={{
@@ -323,9 +338,10 @@ const ArDashBoardTable = () => {
         </div>
 
         <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex>count?count:endIndex} of {currentPageData?.length} item
-          </p>
+        <p className="page-heading">
+                {startIndex} - {endIndex > count ? count : endIndex}{' '}
+                of {count} item
+              </p>
 
           {/* {
             commissionList?.length > 0 ? <Pagination
@@ -338,13 +354,15 @@ const ArDashBoardTable = () => {
 perPage={itemsPerPage}
             /> : null
           } */}
-          <PaginationComponent
-            currentPage={currentPage1}
-            itemsPerPage={pageSize1}
-            totalPages={totalPages1}
-            onPageChange={handlePageChange}
-            handleItemsPerPageChange={handleItemsPerPageChange}
-          />
+         <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
           {openIcon && (
             <HelpDashboard
               commission={editedCommission}

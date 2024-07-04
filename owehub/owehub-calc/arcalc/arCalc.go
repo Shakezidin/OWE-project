@@ -150,7 +150,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize)
 	addrAuto = dataMgmt.AutoAdderCfg.CalculateArAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemSize, saleData.State, saleData.Installer)
-	loanFee = dataMgmt.SaleData.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, state, saleData.LoanType, contractCalc, saleData.ContractDate)
+	loanFee = dataMgmt.SaleData.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, contractCalc, saleData.ContractDate)
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
 	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)
@@ -199,34 +199,30 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 
 func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string) {
 	// Generic conditions
-	if saleData.Partner == "Our World Energy" {
-		saleData.Partner = "OWE"
-	}
-	if saleData.Installer == "Our World Energy" {
+	if saleData.Installer == "One World Energy" { // for OUR11354
 		saleData.Installer = "OWE"
 	}
-
 	switch uniqueId {
 	case "OUR11354":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
-		saleData.LoanType = "Dividend"
+		saleData.Partner = "Dividend"
 	case "OUR11364":
 		saleData.Type = "LOAN"
-		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
-		saleData.LoanType = "Dividend"
+		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
+		saleData.Partner = "Dividend"
 	case "OUR11356":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-2.99"
-		saleData.LoanType = "Dividend"
+		saleData.Partner = "Dividend"
 	case "OUR11372":
 		saleData.Type = "LEASE 1.9"
 		saleData.LoanType = "LEASE-SOVA-1.9"
-		saleData.LoanType = "SOVA"
+		saleData.Partner = "SOVA"
 	case "OUR11403":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-3.99"
-		saleData.LoanType = "Dividend"
+		saleData.Partner = "Dividend"
 		// case "OUR11433":
 		// 	saleData.Type = "LOAN"
 		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"

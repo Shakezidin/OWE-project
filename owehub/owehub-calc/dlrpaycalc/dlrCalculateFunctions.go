@@ -608,7 +608,6 @@ func CalculatePayRateSemi(dealer, commission_models, rep_1 string, epcCalc, rl, 
 * RETURNS:         gross revenue
 *****************************************************************************/
 func CalculateAdderLf(dealer string, addr, expence, autoadder, loanfee, rebate, referral float64) (adderlf float64) {
-	log.FuncErrorTrace(0, "addr : %v expence : %v autoadder : %v loanFee : %v rabate : %v referral : %v", addr, expence, autoadder, loanfee, rebate, referral)
 	if len(dealer) > 0 {
 		return addr + expence + autoadder + loanfee + rebate + referral
 	}

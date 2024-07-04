@@ -9,6 +9,8 @@ package models
 type ProspectInfoData struct {
 	MultiImages       []string `json:"panel_images_url"`
 	ProspectName      string   `json:"prospect_name"`
+	HouseSquare       float64  `json:"house_square"`
+	Address           string   `json:"address"`
 	SREmailId         string   `json:"sr_email_id"`
 	WaterHeater       string   `json:"water_heater"`
 	CookingAppliances string   `json:"cooking_appliances"`
@@ -21,11 +23,13 @@ type ProspectInfoData struct {
 }
 
 type GetProspectInfo struct {
-	MultiImages  []string `json:"panel_images_url"`
-	ProspectName string   `json:"prospect_name"`
-	SREmailId    string   `json:"sr_email_id"`
-	Primary PrimaryData `json:"primary_data"`
-	Secondary SecondaryData `json:"secondary_data"`
+	MultiImages  []string      `json:"panel_images_url"`
+	ProspectName string        `json:"prospect_name"`
+	SREmailId    string        `json:"sr_email_id"`
+	HouseSquare  float64       `json:"house_square"`
+	Address      string        `json:"address"`
+	Primary      PrimaryData   `json:"primary_data"`
+	Secondary    SecondaryData `json:"secondary_data"`
 }
 
 type PrimaryData struct {
@@ -101,6 +105,8 @@ type GetProspectLoadInfo struct {
 	LRA                  float64          `json:"lra"`
 	AverageCapacity      float64          `json:"average_capacity"`
 	ContinousCurrent     float64          `json:"continous_current"`
+	HouseSquare          float64          `json:"house_square"`
+	Address              string           `json:"address"`
 	Breakers             []GetBreakerInfo `json:"breakers"`
 	TotalCategoryAmperes float64          `json:"total_catergory_amperes"`
 }

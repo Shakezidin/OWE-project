@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import dummy from './lib/dummy_img.png';
 import Input from '../../components/text_input/Input';
-import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { TbMinus, TbPlus } from 'react-icons/tb';
 import { TfiTrash } from 'react-icons/tfi';
@@ -15,6 +14,8 @@ import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
 import emailjs from '@emailjs/browser';
 import CategoryPopup from './components/CategoryPopup';
 import { LuChevronRight } from 'react-icons/lu';
+import AppliancePopup from './components/AppliancePopup';
+import { sendMail } from '../../../utiles';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -42,10 +43,24 @@ const responsive = {
     items: 1,
   },
 };
+export interface IPrimary {
+  water_heater: string;
+  cooking_appliances: string;
+  furnace: string;
+  clothes_dryer: string;
+}
+export interface ISecondary {
+  pool_pump: boolean;
+  well_pump: boolean;
+  ev_charger: boolean;
+  spa: boolean;
+}
 export interface IDetail {
   panel_images_url: string[];
   prospect_name: string;
   sr_email_id: string;
+  primary_data: IPrimary;
+  secondary_data: ISecondary;
 }
 
 const Index = () => {
@@ -54,13 +69,9 @@ const Index = () => {
   const [inputDetails, setInputDetails] = useState<{
     prospectName: string;
     lra: string;
-    continuousCurrent: number | string;
-    avgCapacity: number | string;
   }>({
     prospectName: '',
     lra: '',
-    continuousCurrent: '',
-    avgCapacity: '',
   });
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -71,6 +82,8 @@ const Index = () => {
   type TError = typeof inputDetails & TBReakerError;
   const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
+  const [applianceOpen, setApplianceOpen] = useState(false);
+  const [isPending,setIsPending] = useState(false)
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [detail, setDetail] = useState({} as IDetail);
   const [batter, setBattery] = useState<
@@ -113,20 +126,11 @@ const Index = () => {
     let { name, value } = e.target;
     if (
       name === 'continuousCurrent' ||
-      name === 'lra' ||
-      name === 'avgCapacity'
+      name === 'lra' 
     ) {
       value = value.replace(/[^0-9.]/g, '');
     }
-    if (name === 'avgCapacity') {
-      const perecentage = (60 / 100) * parseFloat(value);
-      const calc = (parseFloat(value) * perecentage) / 365 / 24;
-      setInputDetails((prev) => ({
-        ...prev,
-        avgCapacity: value,
-        continuousCurrent: calc ? (calc as number).toFixed(2) : '',
-      }));
-    }
+
     setInputDetails((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -149,47 +153,46 @@ const Index = () => {
   }, []);
 
   const shareImage = () => {
-    emailjs
-      .send(
-        'service_9h490v9',
-        'template_0xz1vie',
-        {
-          to_name: 'Sales Person',
-          from_name: 'owehub',
-          url: `${window.location.host}/battery-ui-generator/${id}`,
-          email: detail.sr_email_id,
-          reply_to: 'Sales Person',
-          message: 'visit the link below to see the battery panel genrated ui',
-        },
-        {
-          publicKey: '9zrYKpc6-M02ZEmHn',
-        }
-      )
-      .then(
-        (response) => {
-          console.log('Email sent successfully:', response);
-          setInputDetails({
-            prospectName: '',
-            lra: '',
-            continuousCurrent: '',
-            avgCapacity: '',
-          });
-          setBattery([]);
-        },
-        (error) => {
-          toast.error(error.text as string);
-          console.error('Failed to send email:', error);
-        }
-      );
+    return sendMail({
+      toMail: detail.sr_email_id,
+      message: `Hi Sales Rep Team,
+ 
+You have recieved a request from Electrical Team to fill the information in battery calculation form.
+ 
+Please visit the below URL to complete the form.
+ 
+${window.location.protocol}//${window.location.host}/battery-ui-generator/${id}
+
+Thank you
+OWE Battery Calc
+    
+      `,
+      subject: 'Battery Calc Notification',
+    }).then(
+      (response) => {
+        console.log('Email sent successfully:', response);
+        toast.success('Email sent successfully:');
+        setInputDetails({
+          prospectName: '',
+          lra: '',
+        });
+        setIsPending(false)
+        setBattery([]);
+      },
+      (error) => {
+        toast.error(error.text as string);
+        console.error('Failed to send email:', error);
+      }
+    );
   };
   const handleSubmit = async () => {
     try {
+      setIsPending(true)
       const data = await postCaller('set_prospect_load', {
         prospect_id: parseInt(id!),
         prospect_name: inputDetails.prospectName,
         lra: parseFloat(inputDetails.lra),
-        average_capacity: parseFloat(inputDetails.avgCapacity as string),
-        continous_current: parseFloat(inputDetails.continuousCurrent as string),
+       
         breakers: batter.map((battery) => ({
           ...battery,
           ampere: battery.amp.includes('70')
@@ -198,8 +201,8 @@ const Index = () => {
         })),
       });
       await shareImage();
-      await toast.success(data.message);
     } catch (error) {
+      setIsPending(false)
       toast.error((error as Error).message!);
     }
   };
@@ -262,6 +265,29 @@ const Index = () => {
             {' '}
             Lorem ipsum dolor sit amet consectetur, adipisicing elit.{' '}
           </p>
+        </div>
+
+        <div className="mt3">
+          <button
+            className="block ml-auto"
+            style={{
+              border: 'none',
+              backgroundColor: '#fff',
+              padding: '8px 14px',
+              borderRadius: 4,
+            }}
+            onClick={() => setApplianceOpen(true)}
+          >
+            View appliance
+          </button>
+          {applianceOpen && (
+            <AppliancePopup
+              primaryDetail={detail.primary_data}
+              secondaryDetail={detail.secondary_data}
+              isOpen={applianceOpen}
+              setIsOpen={setApplianceOpen}
+            />
+          )}
         </div>
 
         <div className="flex  flex-wrap">
@@ -438,48 +464,7 @@ const Index = () => {
                   )}
                 </div>
 
-                <div className="mb3 calc-input">
-                  <Input
-                    onChange={inputHandler}
-                    value={inputDetails.avgCapacity}
-                    name="avgCapacity"
-                    type="text"
-                    placeholder=""
-                    label="Average Capacity"
-                  />
-
-                  {errors.avgCapacity && (
-                    <span className="error">
-                      {' '}
-                      {(errors.avgCapacity as string).replaceAll(
-                        'avgCapacity',
-                        'Average Capacity'
-                      )}{' '}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mb3 calc-input">
-                  <Input
-                    onChange={() => null}
-                    disabled
-                    readOnly
-                    value={inputDetails.continuousCurrent}
-                    name="continuousCurrent"
-                    type="text"
-                    placeholder=""
-                    label="Continuous Current"
-                  />
-                  {errors.continuousCurrent && (
-                    <span className="error">
-                      {' '}
-                      {(errors.continuousCurrent as string).replaceAll(
-                        'continuousCurrent',
-                        'Continuous Current'
-                      )}{' '}
-                    </span>
-                  )}
-                </div>
+             
               </div>
             </div>
           </div>
@@ -502,6 +487,7 @@ const Index = () => {
           </button> */}
 
           <button
+          disabled={isPending}
             onClick={() => handleValidation() && handleSubmit()}
             className={`calc-btn text-white pointer ${batter.length ? 'calc-green-btn' : 'calc-grey-btn'}`}
           >

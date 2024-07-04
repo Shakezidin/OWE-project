@@ -88,8 +88,9 @@ const CategoryPopup = ({
               <div
                 key={ind}
                 onClick={() => handleClick(item)}
-                className="flex mb2 pointer items-center"
+                className="flex mb2 pointer items-center justify-between"
               >
+                <div className='flex items-center '>
                 {battery[isSelected] &&
                 battery[isSelected].category.name ===
                   item.name.toLocaleLowerCase() ? (
@@ -98,6 +99,10 @@ const CategoryPopup = ({
                   <PiCircle color="#A2A2A2" size={20} />
                 )}
                 <span className="ml2"> {item.name} </span>
+                </div>
+                <span>
+                  {item.ampere} AMP
+                </span>
               </div>
             );
           })}

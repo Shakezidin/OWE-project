@@ -15,6 +15,16 @@
   border-bottom-right-radius: 12px;
   margin-top: -2rem;
 }
+.check-btn{
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #172935;
+  color: #fff;
+  border-radius: 4px;
+  padding-inline: 1.6rem;
+}
 
 .calc-input .inputLabel,
 .calc-label {
@@ -419,7 +429,7 @@
 .grid-amp-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
+  gap: 16px;
 }
 
 .quantity-toggler-btn {
@@ -465,6 +475,17 @@
   background-color: #E7E7E7;
   color: #919191;
 }
+.calc-btn-wrapper {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  padding-top: 19px;
+  padding-bottom: 36px;
+  padding-inline: 30px;
+  filter: drop-shadow(0 -2px 12px rgba(0, 0, 0, 0.04));
+}
 @media (max-width: 1024px) {
   .breaker-size-label {
     flex-basis: calc(30% - 4px);
@@ -477,17 +498,7 @@
     padding-bottom: 109px !important;
   }
 
-  .calc-btn-wrapper {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #fff;
-    padding-top: 19px;
-    padding-bottom: 36px;
-    padding-inline: 30px;
-    filter: drop-shadow(0 -2px 12px rgba(0, 0, 0, 0.04));
-  }
+ 
 
   .breaker-quantity-toggler {
     gap: 12px;

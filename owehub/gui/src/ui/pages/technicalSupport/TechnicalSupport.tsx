@@ -9,10 +9,11 @@ import { FormInput } from '../../../core/models/data_models/typesModel';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import MicroLoader from '../../components/loader/MicroLoader';
+import axios from 'axios';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
+  const [selectedIssue, setSelectedIssue] = useState<string>('');
   const form = useRef<HTMLFormElement>(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -24,6 +25,78 @@ const TechnicalSupport: React.FC = () => {
   const [selectedFileName, setSelectedFileName] = useState('');
   const [fileSizeError, setFileSizeError] = useState('');
 
+
+
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const uploadFile = async (file: File): Promise<string> => {
+    if (!file) return '';
+  
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'xdfcmcf4');
+      formData.append('cloud_name', 'duscqq0ii');
+  
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/duscqq0ii/auto/upload`,
+        formData
+      );
+  
+      console.log('File uploaded successfully:', response.data.secure_url);
+      return response.data.secure_url;
+    } catch (error) {
+      console.error('Error uploading file to Cloudinary:', error);
+      throw error;
+    }
+  };
+  
+  // Modify your handleFileInputChange function to use the uploadFile function
+  const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
+  
+    if (file) {
+      const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+  
+      if (!allowedExtensions.includes(fileExtension)) {
+        setSelectedFileName('');
+        setFileSizeError('Only PNG, JPG, and PDF files are allowed');
+        return;
+      }
+  
+      if (file.size <= maxSize) {
+        setSelectedFileName(file.name);
+        setFileSizeError('');
+        setSelectedFile(file);
+  
+        try {
+          const uploadedFileUrl = await uploadFile(file);
+          console.log('Uploaded file URL:', uploadedFileUrl);
+          // You can use the uploadedFileUrl as needed, e.g., save it to state or send it to your backend
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          setFileSizeError('Error uploading file. Please try again.');
+        }
+      } else {
+        setSelectedFileName('');
+        setFileSizeError('File size exceeds the limit of 10 MB');
+      }
+    } else {
+      setSelectedFileName('');
+      setFileSizeError('');
+      setSelectedFile(null);
+    }
+  };
+ 
+
+
+
+
+
+
   const [errors, setErrors] = useState({
     firstName: '',
     lastName: '',
@@ -32,34 +105,37 @@ const TechnicalSupport: React.FC = () => {
     message: '',
   });
 
- 
+
   const emailRegex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 
   const [prevCont, setPrevCont] = useState('us')
 
+
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(selectedFile, "isuuee")
     // Validation logic
     const newErrors = {
       firstName: firstName ? '' : 'First name is required',
       lastName: lastName ? '' : 'Last name is required',
       email: emailRegex.test(email) ? '' : 'Email address is required',
-      phoneNumber: phoneNumber.slice(prevCont.length).trim()  ? '' : 'Phone number is required',
+      phoneNumber: phoneNumber.slice(prevCont.length).trim() ? '' : 'Phone number is required',
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
     if (form.current && Object.values(newErrors).every((err) => !err)) {
-      setIsSubmitting(true); 
+      setIsSubmitting(true);
       const file = fileInputRef.current?.files?.[0];
       const formData = new FormData(form.current);
       if (file) {
         formData.append('attachment', file);
       }
       emailjs
-        .sendForm('service_nof7okz', 'template_y3qbqr8', form.current, {
-          publicKey: 'iVTsTUymXutcfakaX',
+        .sendForm('service_1lawvxm', 'template_wfoo6zc', form.current, {
+          publicKey: 'XGFM59HCeodn-jEDl',
         })
         .then(
           (response: any) => {
@@ -71,7 +147,7 @@ const TechnicalSupport: React.FC = () => {
             setPhoneNumber(prevCont);
             setMessage('');
             setSelectedFileName(''); // Clear the selected file name
-            setSelectedIssue(null); // Clear the selected issue
+            setSelectedIssue(''); // Clear the selected issue
             if (fileInputRef.current) {
               fileInputRef.current.value = ''; // Clear the file input value
             }
@@ -87,69 +163,70 @@ const TechnicalSupport: React.FC = () => {
 
 
 
+
   const handleStateChange = (selectedOption: any) => {
     setSelectedIssue(selectedOption.value);
   };
 
   const options = [
-    { value: 'option1', label: 'OWE' },
-    { value: 'option2', label: 'OWE 2' },
-    { value: 'option3', label: 'OWE 3' },
+    { value: 'OWE', label: 'OWE' },
+    { value: 'OWE 2', label: 'OWE 2' },
+    { value: 'OWE 3', label: 'OWE 3' },
   ];
 
-  const handleFileInputChange = (e: FormInput) => {
-    const file = e.target.files?.[0];
-    const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
+  // const handleFileInputChange = (e: FormInput) => {
+  //   const file = e.target.files?.[0];
+  //   const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
 
-    if (file) {
-      const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
-      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+  //   if (file) {
+  //     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
+  //     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
 
-      if (!allowedExtensions.includes(fileExtension)) {
-        setSelectedFileName('');
-        setFileSizeError('Only PNG, JPG, and PDF files are allowed');
-        return;
-      }
+  //     if (!allowedExtensions.includes(fileExtension)) {
+  //       setSelectedFileName('');
+  //       setFileSizeError('Only PNG, JPG, and PDF files are allowed');
+  //       return;
+  //     }
 
-      if (file.size <= maxSize) {
-        setSelectedFileName(file.name);
-        setFileSizeError('');
-        // Perform further actions with the selected file
-      } else {
-        setSelectedFileName('');
-        setFileSizeError('File size exceeds the limit of 10 MB');
-      }
-    } else {
-      setSelectedFileName('');
-      setFileSizeError('');
-    }
-  };
+  //     if (file.size <= maxSize) {
+  //       setSelectedFileName(file.name);
+  //       setFileSizeError('');
+  //       // Perform further actions with the selected file
+  //     } else {
+  //       setSelectedFileName('');
+  //       setFileSizeError('File size exceeds the limit of 10 MB');
+  //     }
+  //   } else {
+  //     setSelectedFileName('');
+  //     setFileSizeError('');
+  //   }
+  // };
 
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
-  const trimmedValue = value.replace(/\s/g, ''); // Trim the input value
+    const { name, value } = e.target;
+    const trimmedValue = value.replace(/\s/g, ''); // Trim the input value
 
-  if (name === 'email') {
-    if (trimmedValue.length > 0) {
-      setEmail(trimmedValue); // Update the email state with the trimmed value
+    if (name === 'email') {
+      if (trimmedValue.length > 0) {
+        setEmail(trimmedValue); // Update the email state with the trimmed value
 
-      if (!emailRegex.test(trimmedValue)) {
-        setErrors({ ...errors, email: 'Please enter a valid email address.' });
+        if (!emailRegex.test(trimmedValue)) {
+          setErrors({ ...errors, email: 'Please enter a valid email address.' });
+        } else {
+          setErrors({ ...errors, email: '' });
+        }
       } else {
-        setErrors({ ...errors, email: '' });
+        setEmail(''); // Clear the email state if the trimmed value is empty
+        setErrors({ ...errors, email: 'Please enter an email address.' });
       }
-    } else {
-      setEmail(''); // Clear the email state if the trimmed value is empty
-      setErrors({ ...errors, email: 'Please enter an email address.' });
     }
-  }
-};
+  };
 
-  
+
 
   return (
     <>
@@ -160,7 +237,7 @@ const TechnicalSupport: React.FC = () => {
               <h3>Support</h3>
             </div>
             <div className="supportImage">
-                <object
+              <object
                 type="image/svg+xml"
                 data={ICONS.supportImage}
                 aria-label="support-icon"
@@ -181,7 +258,7 @@ const TechnicalSupport: React.FC = () => {
                   type={'text'}
                   label="First Name"
                   value={firstName}
-                  name="user_name"
+                  name="firstName"
                   placeholder={'Enter First Name'}
                   maxLength={100}
                   onChange={(e) => {
@@ -258,13 +335,18 @@ const TechnicalSupport: React.FC = () => {
                   }}
                   placeholder="Enter phone number"
                 />
+                <input
+                  type="hidden"
+                  name="phoneNumber"
+                  value={phoneNumber}
+                />
                 {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
               </div>
             </div>
 
             <div className="create-input-container-support" >
               <div className="create-input-field-support">
-                <label className="inputLabel-select select-type-label" style={{marginTop:"1px"}}>
+                <label className="inputLabel-select select-type-label" style={{ marginTop: "1px" }}>
                   Issue
                 </label>
                 <SelectOption
@@ -274,6 +356,11 @@ const TechnicalSupport: React.FC = () => {
                   value={options?.find(
                     (option) => option.value === selectedIssue
                   )}
+                />
+                <input
+                  type="hidden"
+                  name="selectedIssue"
+                  value={selectedIssue}
                 />
               </div>
 
@@ -285,10 +372,10 @@ const TechnicalSupport: React.FC = () => {
                   <input
                     type="file"
                     ref={fileInputRef}
-                    onChange={handleFileInputChange}
                     className="file-input"
-                    accept=".png, .jpg, .jpeg, .pdf"
-                  />
+                    onChange={handleFileInputChange}
+                  //  name="attachment"
+                    />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
                       {selectedFileName || '.jpg .jpeg .png .pdf'}

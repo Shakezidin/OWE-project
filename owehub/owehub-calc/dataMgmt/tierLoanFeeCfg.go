@@ -175,6 +175,10 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) CalculateDlrCost(dlrTier, installer, s
 			return
 		}
 
+		if data.Installer == "One World Energy" {
+			data.Installer = "OWE"
+		}
+
 		if dlrTier == data.DealerTier && data.Installer == installer && data.State == st &&
 			data.LoanType == LoanType &&
 			(startDate.Before(date) || startDate.Equal(date)) && (endDate.After(date) || endDate.Equal(date)) {
