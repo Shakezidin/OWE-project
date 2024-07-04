@@ -38,7 +38,8 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		RecordCount     int64
 		queryWithFiler  string
 		filter2         string
-		aurguments      string
+		orderby         string
+		offset          string
 	)
 
 	log.EnterFn(0, "GetARDataFromView")
@@ -78,38 +79,36 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	dateFormat := "2006-01-02"
-	if dataReq.UseCutoff == "YES" {
-		parsedDate, err := time.Parse(dateFormat, dataReq.PayRollEndDate)
-		if err != nil {
-			fmt.Println("Error parsing date:", err)
-			return
-		}
+	// dateFormat := "2006-01-02"
+	// if dataReq.UseCutoff == "YES" {
+	// 	parsedDate, err := time.Parse(dateFormat, dataReq.PayRollEndDate)
+	// 	if err != nil {
+	// 		fmt.Println("Error parsing date:", err)
+	// 		return
+	// 	}
 
-		adjustedDate := parsedDate.AddDate(0, 0, -5)
+	// 	adjustedDate := parsedDate.AddDate(0, 0, -5)
 
-		dataReq.PayRollEndDate = adjustedDate.Format(dateFormat)
-	}
+	// 	dataReq.PayRollEndDate = adjustedDate.Format(dateFormat)
+	// }
 
 	tableName := db.TableName_DLR_PAY_APCALC
 	if dataReq.DealerName == "ALL" {
-		query = `SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, 
-			loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, 
-			contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer NOT IN ('HOUSE')`
-		aurguments = " AND commission_model = $1 ORDER BY $2"
-		filter = PrepareDealerPayFilters(tableName, dataReq, false)
-		whereEleList = append(whereEleList, dataReq.CommissionModel, dataReq.SortBy)
+		query = fmt.Sprintf("SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer NOT IN ('HOUSE')  AND commission_model = '%v'", dataReq.CommissionModel)
+		filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq, false, false)
+		orderby = fmt.Sprintf(" ORDER BY %v", dataReq.SortBy)
+		offset, _ = PrepareDealerPayFilters(tableName, dataReq, false, true)
 	} else {
-		query = `SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, 
-			loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, 
-			contract_date, commission_model FROM dlr_pay_pr_data dlrpay`
-		aurguments = " WHERE dlrpay.dealer = $1 AND commission_model = $2 ORDER BY $3"
-		filter = PrepareDealerPayFilters(tableName, dataReq, false)
-		whereEleList = append(whereEleList, dataReq.DealerName, dataReq.CommissionModel, dataReq.SortBy)
+		query = fmt.Sprintf("SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer = '%v' AND commission_model = '%v'", dataReq.DealerName, dataReq.CommissionModel)
+		filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq, false, false)
+		orderby = fmt.Sprintf(" ORDER BY %v", dataReq.SortBy)
+		offset, _ = PrepareDealerPayFilters(tableName, dataReq, false, true)
 	}
 
 	if filter != "" {
-		queryWithFiler = query + aurguments + filter
+		queryWithFiler = query + filter + orderby + offset
+	}else{
+		queryWithFiler = query + orderby + offset
 	}
 	log.FuncErrorTrace(0, queryWithFiler)
 	// Append sorting and pagination filters
@@ -345,12 +344,12 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		dealerpayDataList.DealerPayList = append(dealerpayDataList.DealerPayList, dealerpayData)
 	}
 
-	filter2 = PrepareDealerPayFilters(tableName, dataReq, true)
+	filter2, _ = PrepareDealerPayFilters(tableName, dataReq, true, true)
 	if filter2 != "" {
-		queryForAlldata = query + filter2
+		queryForAlldata = query + filter + filter2
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, nil)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get dealer credit data from DB", http.StatusBadRequest, nil)
@@ -362,23 +361,121 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, dealerpayDataList, RecordCount)
 }
 
-func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, forDataCount bool) (filters string) {
+func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, forDataCount, offset bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareDealerCreditFilters")
 	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	// whereAdded := false // Flag to track if WHERE clause has been added
+	if !offset {
+		// Check if there are filters
+		if len(dataFilter.Filters) > 0 {
+			filtersBuilder.WriteString(" AND ")
+			// whereAdded = true // Set flag to true as WHERE clause is added
 
-	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model")
-	} else {
-		// Add pagination logic
-		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+			for i, filter := range dataFilter.Filters {
+				// Check if the column is a foreign key
+				column := filter.Column
+
+				// Determine the operator and value based on the filter operation
+				operator := GetFilterDBMappedOperator(filter.Operation)
+				value := filter.Data
+
+				// For "stw" and "edw" operations, modify the value with '%'
+				if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+					value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+				}
+
+				// Build the filter condition using correct db column name
+				if i > 0 {
+					filtersBuilder.WriteString(" AND ")
+				}
+				switch column {
+				case "unique_id":
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "home_owner":
+					filtersBuilder.WriteString(fmt.Sprintf("home_owner %s LOWER($%d)", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "current_status":
+					filtersBuilder.WriteString(fmt.Sprintf("current_status %s LOWER($%d)", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "status_date":
+					filtersBuilder.WriteString(fmt.Sprintf("status_date %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "dealer":
+					filtersBuilder.WriteString(fmt.Sprintf("dealer %s LOWER($%d)", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "today":
+					filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "amount":
+					filtersBuilder.WriteString(fmt.Sprintf("amount %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "sys_size":
+					filtersBuilder.WriteString(fmt.Sprintf("sys_size %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "rl":
+					filtersBuilder.WriteString(fmt.Sprintf("rl %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "contract_$$":
+					filtersBuilder.WriteString(fmt.Sprintf("contract_$$ %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "loan_fee":
+					filtersBuilder.WriteString(fmt.Sprintf("loan_fee %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "epc":
+					filtersBuilder.WriteString(fmt.Sprintf("epc %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "net_epc":
+					filtersBuilder.WriteString(fmt.Sprintf("net_epc %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "other_adders":
+					filtersBuilder.WriteString(fmt.Sprintf("other_adders %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "credit":
+					filtersBuilder.WriteString(fmt.Sprintf("credit %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "rep_pay":
+					filtersBuilder.WriteString(fmt.Sprintf("rep_pay %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "net_rev":
+					filtersBuilder.WriteString(fmt.Sprintf("net_rev %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "draw_amt":
+					filtersBuilder.WriteString(fmt.Sprintf("draw_amt %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "amt_paid":
+					filtersBuilder.WriteString(fmt.Sprintf("amt_paid %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "balance":
+					filtersBuilder.WriteString(fmt.Sprintf("balance %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				case "contract_date":
+					filtersBuilder.WriteString(fmt.Sprintf("contract_date %s $%d", operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+
+				default:
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+					whereEleList = append(whereEleList, value)
+				}
+
+			}
+		}
+	}
+	if offset {
+		if forDataCount {
+			filtersBuilder.WriteString(" GROUP BY unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model")
+		} else {
+			// Add pagination logic
+			if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+				offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+				filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+			}
 		}
 	}
 
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-	return filters
+	return filters, whereEleList
 }

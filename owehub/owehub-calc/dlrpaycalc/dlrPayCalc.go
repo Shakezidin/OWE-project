@@ -145,6 +145,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	// this row data is from sales data
 	outData = make(map[string]interface{})
+	// this hardcodes values from some unique ids
+	updateSaleDataForSpecificIds(&saleData, saleData.UniqueId)
 
 	uniqueID = saleData.UniqueId
 	wc = saleData.ContractDate
@@ -453,4 +455,48 @@ func mapToJson(outData map[string]interface{}, uid, fileName string) {
 		return
 	}
 	log.FuncFuncTrace(0, "success file name %v", fileName)
+}
+
+func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string) {
+	// Generic conditions
+	if saleData.Partner == "Our World Energy" {
+		saleData.Partner = "OWE"
+	}
+	if saleData.Installer == "Our World Energy" {
+		saleData.Installer = "OWE"
+	}
+
+	switch uniqueId {
+	case "OUR21563":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+	case "OUR21190":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+	case "OUR20338":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+		saleData.ContractTotal = 50126.92
+	case "OUR20063":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+	case "OUR19661":
+		saleData.Type = "LEASE"
+		saleData.LoanType = "LightReachLease1.99"
+	case "OUR19933":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-9.49"
+	case "OUR19797":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+	case "OUR19677":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+	case "OUR19571":
+		saleData.Type = "CHECK"
+		saleData.LoanType = ""
+	case "OUR19433":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+	}
 }
