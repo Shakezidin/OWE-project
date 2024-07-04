@@ -218,7 +218,6 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 				return 0.0
 			}
 
-
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st && data.SaleType == types &&
 				(startDate.Before(wc) || startDate.Equal(wc)) && (endDate.After(wc) || endDate.Equal(wc)) {
 				return data.Rl

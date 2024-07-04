@@ -7,14 +7,15 @@
 package models
 
 type GetDealerPay struct {
-	PayRollStartDate string `json:"pay_roll_start_date"`
-	PayRollEndDate   string `json:"pay_roll_end_date"`
-	UseCutoff        string `json:"use_cutoff"`
-	DealerName       string `json:"dealer_name"`
-	SortBy           string `json:"sort_by"`
-	PageNumber       int    `json:"page_number"`
-	PageSize         int    `json:"page_size"`
-	CommissionModel  string `json:"commission_model"`
+	PayRollStartDate string   `json:"pay_roll_start_date"`
+	PayRollEndDate   string   `json:"pay_roll_end_date"`
+	UseCutoff        string   `json:"use_cutoff"`
+	DealerName       string   `json:"dealer_name"`
+	SortBy           string   `json:"sort_by"`
+	PageNumber       int      `json:"page_number"`
+	PageSize         int      `json:"page_size"`
+	CommissionModel  string   `json:"commission_model"`
+	Filters          []Filter `json:"filters"`
 }
 
 type GetDealerPayPRData struct {

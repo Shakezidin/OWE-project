@@ -140,12 +140,12 @@ func LoadConfigurations() (err error) {
 	log.FuncErrorTrace(0, "===== DealerRepaymentConfig : %+v", DealerRepayConfig.DealerRepaymentList[0])
 
 	// //! auto adder
-	// err = AutoAdderCfg.LoadAutoAdderCfg()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get Auto Adder Data Config from DB err: %+v", err)
-	// 	return err
-	// }
-	// log.FuncErrorTrace(0, "===== AutoAdder : %+v", AdderDataCfg.AdderDataList[0])
+	err = AutoAdderCfg.LoadAutoAdderCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Auto Adder Data Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== AutoAdder : %+v", AdderDataCfg.AdderDataList[0])
 
 	//! comm rate
 	err = CmmsnRatesCfg.LoadcmmsnRatesCfg()
