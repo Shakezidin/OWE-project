@@ -16,6 +16,7 @@ import CategoryPopup from './components/CategoryPopup';
 import { LuChevronRight } from 'react-icons/lu';
 import AppliancePopup from './components/AppliancePopup';
 import { sendMail } from '../../../utiles';
+import ImagePopup from './components/ImagePopup';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -61,6 +62,8 @@ export interface IDetail {
   sr_email_id: string;
   primary_data: IPrimary;
   secondary_data: ISecondary;
+  house_square: number;
+  address: string;
 }
 
 const Index = () => {
@@ -83,9 +86,11 @@ const Index = () => {
   const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
   const [applianceOpen, setApplianceOpen] = useState(false);
-  const [isPending,setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [detail, setDetail] = useState({} as IDetail);
+  const [activeImg, setActiveImg] = useState(-1);
+  const [imgPopup, setImgPopup] = useState(false);
   const [batter, setBattery] = useState<
     {
       category: { name: string; ampere: number };
@@ -124,10 +129,7 @@ const Index = () => {
   };
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = e.target;
-    if (
-      name === 'continuousCurrent' ||
-      name === 'lra' 
-    ) {
+    if (name === 'continuousCurrent' || name === 'lra') {
       value = value.replace(/[^0-9.]/g, '');
     }
 
@@ -176,7 +178,7 @@ OWE Battery Calc
           prospectName: '',
           lra: '',
         });
-        setIsPending(false)
+        setIsPending(false);
         setBattery([]);
       },
       (error) => {
@@ -187,12 +189,12 @@ OWE Battery Calc
   };
   const handleSubmit = async () => {
     try {
-      setIsPending(true)
+      setIsPending(true);
       const data = await postCaller('set_prospect_load', {
         prospect_id: parseInt(id!),
         prospect_name: inputDetails.prospectName,
         lra: parseFloat(inputDetails.lra),
-       
+
         breakers: batter.map((battery) => ({
           ...battery,
           ampere: battery.amp.includes('70')
@@ -202,7 +204,7 @@ OWE Battery Calc
       });
       await shareImage();
     } catch (error) {
-      setIsPending(false)
+      setIsPending(false);
       toast.error((error as Error).message!);
     }
   };
@@ -278,13 +280,15 @@ OWE Battery Calc
             }}
             onClick={() => setApplianceOpen(true)}
           >
-            View appliance
+            View info
           </button>
           {applianceOpen && (
             <AppliancePopup
               primaryDetail={detail.primary_data}
               secondaryDetail={detail.secondary_data}
               isOpen={applianceOpen}
+              address={detail.address}
+              squareFoot={detail.house_square}
               setIsOpen={setApplianceOpen}
             />
           )}
@@ -309,7 +313,10 @@ OWE Battery Calc
                 >
                   {detail.panel_images_url.map((image, index) => {
                     return (
-                      <div className="block" key={index}>
+                      <div className="block" onClick={()=>{
+                        setActiveImg(index);
+                        setImgPopup(true);
+                      }} key={index}>
                         <img
                           src={image}
                           alt=""
@@ -463,8 +470,6 @@ OWE Battery Calc
                     </span>
                   )}
                 </div>
-
-             
               </div>
             </div>
           </div>
@@ -487,7 +492,7 @@ OWE Battery Calc
           </button> */}
 
           <button
-          disabled={isPending}
+            disabled={isPending}
             onClick={() => handleValidation() && handleSubmit()}
             className={`calc-btn text-white pointer ${batter.length ? 'calc-green-btn' : 'calc-grey-btn'}`}
           >
@@ -502,6 +507,11 @@ OWE Battery Calc
         isOpen={isCategoryOpen}
         setIsOpen={setIsCategoryOpen}
       />
+   {imgPopup &&   <ImagePopup
+        setIsOpen={setImgPopup}
+        active={activeImg}
+        imgs={detail.panel_images_url}
+      />}
     </div>
   );
 };

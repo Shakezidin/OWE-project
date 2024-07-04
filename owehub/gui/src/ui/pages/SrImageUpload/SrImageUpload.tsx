@@ -56,11 +56,14 @@ const FormComponent: React.FC = () => {
   const [address, setAddress] = useState<string>('');
   const [prospectName, setProspectName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [squareFeet,setSquareFeet] = useState("")
   const [error, setError] = useState<{
     email?: string;
     prospectName?: string;
     primaryAppliance?: string;
     secondaryAppliance?: string;
+    squareFeet?:string;
+    address?:string
   }>({});
 
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +89,14 @@ const FormComponent: React.FC = () => {
     }
     if (!prospectName.trim()) {
       tempError['prospectName'] = 'Prospect Name is required';
+    }
+
+    if (!address.trim()) {
+      tempError['address'] = 'Address is required'
+    }
+
+    if (!squareFeet.trim()) {
+      tempError["squareFeet"] = "House's Square Feet is required"
     }
     // if (!primaryApplicance.every((app) => !app.isSelected)) {
     //   tempError['primaryAppliance'] =
@@ -119,10 +130,13 @@ const FormComponent: React.FC = () => {
           panel_images_url: uploadedUrls,
           ...obj1,
           ...obj2,
+          house_square:parseFloat(squareFeet),
+          address
         });
 
         if (response.status > 201) {
           toast.error((response as Error).message);
+          setIsUploading(false);
         } else {
           sendMail({
             toMail: 'batterycalc@ourworldenergy.com',
@@ -172,6 +186,7 @@ OWE Battery Calc
       }
     }
   };
+console.log(error,"err");
 
   const uploadImages = async (imageArray: string[]): Promise<string[]> => {
     if (!imageArray || imageArray.length === 0) return [];
@@ -201,10 +216,7 @@ OWE Battery Calc
     }
   };
 
-  const videoConstraints = {
-    facingMode: useBackCamera ? { exact: 'environment' } : 'user',
-  };
-
+  
   const checkFormValidity = () => {
     if (email && uploadedImages.length > 0) {
       setIsFormValid(true);
@@ -249,6 +261,31 @@ OWE Battery Calc
               required
             />
             {error.email && <div className="error">{error.email}</div>}
+          </div>
+
+          <div className="prospect-input-field mt2">
+            <input
+              type="text"
+              placeholder="Enter Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+            {error.address && <div className="error">{error.address}</div>}
+          </div>
+          
+          <div className="prospect-input-field mt2">
+            <input
+              type="text"
+              placeholder="Enter House's Square Foot"
+              value={squareFeet}
+              onChange={(e) =>{ 
+                e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+                setSquareFeet(e.target.value)
+              }}
+              required
+            />
+            {error.squareFeet && <div className="error">{error.squareFeet}</div>}
           </div>
 
           <div className="sr-appliance-wrapper">

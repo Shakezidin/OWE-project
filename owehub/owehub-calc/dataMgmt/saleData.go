@@ -65,10 +65,10 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 
-	// uidList := []string{"OUR18647"}
+	// uidList := []string{"OUR21563"} //OUR21190
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
 
-	// query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
+	// query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ('OUR21563')"
 	// for i, uid := range uidList {
 	// 	query += "'" + strings.ToUpper(uid) + "'"
 	// 	if len(uidList) == 1 {
@@ -88,18 +88,18 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	// query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
 
 	// }
-	/*
-		if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
-			query += "WHERE unique_id IN ("
-			for i, id := range uniqueIDs {
-				if i != 0 {
-					query += ","
-				}
-				query += "'" + id + "'"
-			}
-			query += ")"
-		}
-	*/
+
+	// if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
+	// 	query += "WHERE unique_id IN ("
+	// 	for i, id := range uniqueIDs {
+	// 		if i != 0 {
+	// 			query += ","
+	// 		}
+	// 		query += "'" + id + "'"
+	// 	}
+	// 	query += ")"
+	// }
+
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
 		// log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
