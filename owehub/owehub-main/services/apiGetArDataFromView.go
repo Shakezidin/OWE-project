@@ -343,19 +343,44 @@ func generateQuery(reportType, salePartner, sortBy string, statuses map[string]b
 	if !forDataCount {
 		query += getBaseQuery(false)
 		query += getWhereClause(reportType, salePartner, statuses)
+		query += PrepareardataFilters(datareq, true)
 		query += getOrderByClause(sortBy)
-		query += PrepareardataFilters(datareq)
+		query += PrepareardataFilters(datareq, false)
 	} else {
 		query += getBaseQuery(true)
 	}
 	return query
 }
 
-func PrepareardataFilters(dataFilter models.GetArDataReq) (filters string) {
+func PrepareardataFilters(dataFilter models.GetArDataReq, check bool) (filters string) {
 	log.EnterFn(0, "PrepareApptSettersFilters")
 	defer func() { log.ExitFn(0, "PrepareApptSettersFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+
+	if check {
+		for i, filter := range dataFilter.Filters {
+			column := filter.Column
+
+			operator := GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
+
+			switch column {
+			case "unique_id":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(unique_id) %s LOWER($%s) ", operator, value))
+			}
+		}
+		filters = filtersBuilder.String()
+		return filters
+	}
 
 	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

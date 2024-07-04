@@ -7,18 +7,19 @@
 package models
 
 type GetArDataReq struct {
-	ReportType  string `json:"report_type"`
-	SalePartner string `json:"sale_partner"`
-	SortBy      string `json:"sort_by"`
-	Shaky       bool   `json:"shaky"`
-	Cancel      bool   `json:"cancel"`
-	Sold        bool   `json:"sold"`
-	Permits     bool   `json:"permits"`
-	NTP         bool   `json:"ntp"`
-	Install     bool   `json:"install"`
-	PTO         bool   `json:"pto"`
-	PageNumber  int    `json:"page_number"`
-	PageSize    int    `json:"page_size"`
+	ReportType  string   `json:"report_type"`
+	SalePartner string   `json:"sale_partner"`
+	SortBy      string   `json:"sort_by"`
+	Shaky       bool     `json:"shaky"`
+	Cancel      bool     `json:"cancel"`
+	Sold        bool     `json:"sold"`
+	Permits     bool     `json:"permits"`
+	NTP         bool     `json:"ntp"`
+	Install     bool     `json:"install"`
+	PTO         bool     `json:"pto"`
+	PageNumber  int      `json:"page_number"`
+	PageSize    int      `json:"page_size"`
+	Filters     []Filter `json:"filters"`
 }
 
 type GetArdata struct {

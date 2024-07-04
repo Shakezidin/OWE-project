@@ -210,36 +210,47 @@ func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId st
 	case "OUR11354":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
+		saleData.LoanType = "Dividend"
 	case "OUR11364":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+		saleData.LoanType = "Dividend"
 	case "OUR11356":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-2.99"
+		saleData.LoanType = "Dividend"
 	case "OUR11372":
 		saleData.Type = "LEASE 1.9"
 		saleData.LoanType = "LEASE-SOVA-1.9"
+		saleData.LoanType = "SOVA"
 	case "OUR11403":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-3.99"
-	case "OUR11433":
-		saleData.Type = "LOAN"
-		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
-	case "OUR11472":
-		saleData.Type = "LOAN"
-		saleData.LoanType = "LF-DIV-LOAN-25y-7.99"
-	case "OUR11455":
-		saleData.Type = "LOAN"
-		saleData.LoanType = "SerFI"
-	case "OUR11478":
-		saleData.Type = "LOAN"
-		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
-	case "OUR11512":
-		saleData.Type = "LOAN"
-		saleData.LoanType = "LF-GL-LOAN-25Y-3.99"
-	case "OUR11510":
-		saleData.Type = "LOAN"
-		saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+		saleData.LoanType = "Dividend"
+		// case "OUR11433":
+		// 	saleData.Type = "LOAN"
+		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+		// 	saleData.LoanType = ""
+		// case "OUR11472":
+		// 	saleData.Type = "LOAN"
+		// 	saleData.LoanType = "LF-DIV-LOAN-25y-7.99"
+		// 	saleData.LoanType = ""
+		// case "OUR11455":
+		// 	saleData.Type = "LOAN"
+		// 	saleData.LoanType = "SerFI"
+		// 	saleData.LoanType = ""
+		// case "OUR11478":
+		// 	saleData.Type = "LOAN"
+		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+		// 	saleData.LoanType = ""
+		// case "OUR11512":
+		// 	saleData.Type = "LOAN"
+		// 	saleData.LoanType = "LF-GL-LOAN-25Y-3.99"
+		// 	saleData.LoanType = ""
+		// case "OUR11510":
+		// 	saleData.Type = "LOAN"
+		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"
+		// 	saleData.LoanType = ""
 	}
 }
 
