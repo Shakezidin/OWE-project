@@ -87,6 +87,7 @@ interface IProject {
 
 export interface IProjects {
   unqiue_id: string;
+  customer:string
 }
 
 export const getProjects = createAsyncThunk(
@@ -97,7 +98,7 @@ export const getProjects = createAsyncThunk(
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      const projects = (data?.data || []) as string[];
+      const projects = (data?.data || []) as IProjects[];
       return { projects, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -123,7 +124,7 @@ export const getProjectDetail = createAsyncThunk(
 );
 
 interface IState {
-  projects: string[];
+  projects: IProjects[];
   error: string;
   isLoading: boolean;
   projectsCount: number;
