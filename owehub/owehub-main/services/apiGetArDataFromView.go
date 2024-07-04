@@ -375,7 +375,7 @@ func PrepareardataFilters(dataFilter models.GetArDataReq, check bool) (filters s
 
 			switch column {
 			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(unique_id) %s LOWER($%s) ", operator, value))
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(unique_id) %s LOWER(%s) ", operator, value))
 			}
 		}
 		filters = filtersBuilder.String()
