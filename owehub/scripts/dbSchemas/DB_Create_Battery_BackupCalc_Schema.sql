@@ -18,7 +18,9 @@ CREATE TABLE prospects_info (
     well_pump BOOLEAN,
     ev_charger BOOLEAN,
     spa BOOLEAN,
-    panel_images_url TEXT[]
+    panel_images_url TEXT[],
+    address TEXT,
+    house_square float
 );
 
 CREATE TABLE prospect_load_info (

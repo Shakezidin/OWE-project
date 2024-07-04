@@ -256,6 +256,10 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			} else {
 				return
 			}
+			if arSkd.InstallerName == "One World Energy" {
+				arSkd.InstallerName = "OWE"
+			}
+
 
 			ContractDate := saleData.ContractDate
 			if arSkd.PartnerName == saleData.Partner &&

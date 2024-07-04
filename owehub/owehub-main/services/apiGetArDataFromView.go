@@ -81,10 +81,11 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Generate the query
-	query = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, false)
+	var whereAdded bool
+	query, whereAdded = generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, false)
+	query = query + PrepareardataFilters(dataReq, true, whereAdded)
 	orderby += (query + getOrderByClause(dataReq.SortBy))
-
-	queryForAlldata += (orderby + PrepareardataFilters(dataReq))
+	queryForAlldata += (orderby + PrepareardataFilters(dataReq, false, whereAdded))
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, nil)
 	if err != nil {
@@ -256,7 +257,9 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		arDataList.ArDataList = append(arDataList.ArDataList, arData)
 	}
 
-	query += generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
+	//  query += generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
+	q, _ := generateQuery(dataReq.ReportType, dataReq.SalePartner, dataReq.SortBy, statuses, dataReq, true)
+	query += q
 
 	datacount, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
@@ -275,17 +278,17 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 func getBaseQuery(dataCount bool) string {
 	if !dataCount {
 		return `SELECT partner, installer, type, unique_id, home_owner, address, city,
-		state, zip, system_size, contract_date, install_date, current_status, status_date,
-		contract_calc, owe_ar, amount_paid, current_due, balance FROM ar_data`
+			state, zip, system_size, contract_date, install_date, current_status, status_date,
+			contract_calc, owe_ar, amount_paid, current_due, balance FROM ar_data`
 	} else {
 		return ` GROUP BY partner, installer, type, unique_id, home_owner, address, city,
-		state, zip, system_size, contract_date, install_date, current_status, status_date,
-		contract_calc, owe_ar, amount_paid, current_due, balance`
+			state, zip, system_size, contract_date, install_date, current_status, status_date,
+			contract_calc, owe_ar, amount_paid, current_due, balance`
 	}
 }
 
 // Function to generate the WHERE clause based on parameters
-func getWhereClause(reportType, salePartner string, statuses map[string]bool) string {
+func getWhereClause(reportType, salePartner string, statuses map[string]bool) (string, bool) {
 	var conditions []string
 
 	switch {
@@ -311,9 +314,9 @@ func getWhereClause(reportType, salePartner string, statuses map[string]bool) st
 	}
 
 	if len(conditions) > 0 {
-		return " WHERE " + strings.Join(conditions, " AND ")
+		return " WHERE " + strings.Join(conditions, " AND "), true
 	}
-	return ""
+	return "", false
 }
 
 func generateStatusCondition(statuses map[string]bool) string {
@@ -338,22 +341,55 @@ func getOrderByClause(sortBy string) string {
 	return ""
 }
 
-func generateQuery(reportType, salePartner, sortBy string, statuses map[string]bool, datareq models.GetArDataReq, forDataCount bool) string {
-	var query string
+func generateQuery(reportType, salePartner, sortBy string, statuses map[string]bool, datareq models.GetArDataReq, forDataCount bool) (query string, whereAdder bool) {
+	var que string
 	if !forDataCount {
 		query += getBaseQuery(false)
-		query += getWhereClause(reportType, salePartner, statuses)
+		que, whereAdder = getWhereClause(reportType, salePartner, statuses)
+		query += que
+		// query += PrepareardataFilters(datareq, true)
+		// query += getOrderByClause(sortBy)
+		// query += PrepareardataFilters(datareq, false)
 	} else {
 		query += getBaseQuery(true)
 	}
-	return query
+	return query, whereAdder
 }
 
-func PrepareardataFilters(dataFilter models.GetArDataReq) (filters string) {
+func PrepareardataFilters(dataFilter models.GetArDataReq, check, whereAdded bool) (filters string) {
 	log.EnterFn(0, "PrepareApptSettersFilters")
 	defer func() { log.ExitFn(0, "PrepareApptSettersFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+
+	if check {
+		if !whereAdded {
+			filtersBuilder.WriteString(" WHERE ")
+		} else {
+			filtersBuilder.WriteString(" AND ")
+		}
+		for i, filter := range dataFilter.Filters {
+			column := filter.Column
+
+			operator := GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
+
+			switch column {
+			case "unique_id":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(unique_id) %s LOWER('%s') ", operator, value))
+			}
+		}
+		filters = filtersBuilder.String()
+		return filters
+	}
 
 	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

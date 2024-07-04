@@ -143,6 +143,8 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
             pl.prospect_load_id,
             pl.prospect_id,
 						pi.prospect_name,
+						pi.address,
+						pi.house_square::numeric::float8,
             pl.lra::numeric::float8,
             pl.average_capacity::numeric::float8,
             pl.continous_current::numeric::float8,
@@ -164,7 +166,7 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 		WHERE
 			pl.prospect_id = $1
 		GROUP BY
-            pl.prospect_load_id, pl.prospect_id, pi.prospect_name, pl.lra, pl.average_capacity, pl.continous_current
+            pl.prospect_load_id, pl.prospect_id, pi.prospect_name, pi.address,pi.house_square, pl.lra, pl.average_capacity, pl.continous_current
 	`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -187,6 +189,8 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	prospectLoadInfo.ContinousCurrent = data[0]["continous_current"].(float64)
 	prospectLoadInfo.ProspectId = int(data[0]["prospect_id"].(int64))
 	prospectLoadInfo.ProspectName = data[0]["prospect_name"].(string)
+	prospectLoadInfo.Address = data[0]["address"].(string)
+	prospectLoadInfo.HouseSquare = data[0]["house_square"].(float64)
 
 	if err := json.Unmarshal(data[0]["breakers"].([]uint8), &prospectLoadInfo.Breakers); err != nil {
 		log.FuncErrorTrace(0, "Failed to Unmarshal Breakers Info from Prospect Load err: %+v", err)
@@ -198,7 +202,7 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	for _, breaker := range prospectLoadInfo.Breakers {
 		totalAmpere += breaker.CategoryAmpere
 	}
-	
+
 	prospectLoadInfo.TotalCategoryAmperes = totalAmpere
 	log.FuncDebugTrace(0, "prospect load reterived: %+v", prospectLoadInfo)
 	FormAndSendHttpResp(resp, "prospect load reterived Successfully", http.StatusOK, prospectLoadInfo)
