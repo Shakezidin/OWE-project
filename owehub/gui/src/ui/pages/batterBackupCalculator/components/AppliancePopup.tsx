@@ -4,11 +4,14 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 import { EvCharger, PoolPump, WellPump, Spa } from '../icons';
 import { IPrimary, ISecondary } from '..';
 import { CgClose } from 'react-icons/cg';
+import Input from '../../../components/text_input/Input';
 interface IPopPupProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
   primaryDetail: IPrimary;
   secondaryDetail: ISecondary;
+  address: string;
+  squareFoot: number;
 }
 const primaryApplicances = [
   { name: 'Water heater', id: 1, key: 'water_heater' },
@@ -17,23 +20,79 @@ const primaryApplicances = [
   { name: 'Clothes dryer', id: 4, key: 'clothes_dryer' },
 ];
 const secondaryApplicances = [
-  { name: 'Pool pump', id: 5, icon: <PoolPump color="#000" />,key:"pool_pump" },
-  { name: 'Well pump', id: 6, icon: <WellPump color="#000" />,key:"well_pump" },
-  { name: 'EV charger', id: 7, icon: <EvCharger color="#000" />,key:"ev_charger" },
-  { name: 'Spa', id: 8, icon: <Spa />,key:"spa" },
+  {
+    name: 'Pool pump',
+    id: 5,
+    icon: <PoolPump color="#000" />,
+    key: 'pool_pump',
+  },
+  {
+    name: 'Well pump',
+    id: 6,
+    icon: <WellPump color="#000" />,
+    key: 'well_pump',
+  },
+  {
+    name: 'EV charger',
+    id: 7,
+    icon: <EvCharger color="#000" />,
+    key: 'ev_charger',
+  },
+  { name: 'Spa', id: 8, icon: <Spa />, key: 'spa' },
 ];
 const AppliancePopup = ({
   isOpen,
   setIsOpen,
   primaryDetail,
   secondaryDetail,
+  squareFoot,
+  address,
 }: IPopPupProps) => {
   return (
     <div className="transparent-model p3">
-      <div className="scrollbar modal px2 py3  relative" style={{maxHeight:560}} >
-      <div className="absolute pointer" onClick={()=>setIsOpen(false)} style={{right:20,top:17}}>
-          <CgClose size={16} color='#0000004d'/>
+      <div
+        className="scrollbar modal px2 py3  relative"
+        style={{ maxHeight: 560 }}
+      >
+        <div
+          className="absolute pointer"
+          onClick={() => setIsOpen(false)}
+          style={{ right: 20, top: 17 }}
+        >
+          <CgClose size={16} color="#0000004d" />
         </div>
+
+        <div
+          className="calc-input-wrapper relative mb2"
+          style={{ width: '100%' }}
+        >
+          <Input
+            type="text"
+            name=""
+            label="Home Address"
+            placeholder={'Prospect Name'}
+            value={address}
+            readOnly
+            onChange={() => 0}
+          />
+        </div>
+
+        <div
+          className="calc-input-wrapper relative mb2"
+          style={{ width: '100%' }}
+        >
+          <Input
+            type="text"
+            name=""
+            label="House's Square Foot"
+            placeholder={'Prospect Name'}
+            value={`${squareFoot}`}
+            readOnly
+            disabled
+            onChange={() => 0}
+          />
+        </div>
+
         <div className="sr-appliance-wrapper">
           <div className="sr-appliance-header flex items-center">
             <div className="text-sm" style={{ flexBasis: '60%' }}>

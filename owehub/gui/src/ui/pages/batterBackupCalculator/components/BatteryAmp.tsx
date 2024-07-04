@@ -121,6 +121,7 @@ const BatteryAmp = () => {
   const [otherDeatil, setOtherDeatil] = useState<{
     continous_current?: number;
     lra?: number;
+    prospect_name?: string;
   }>({});
   const [requiredBattery, setRequiredBattery] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState({
@@ -164,12 +165,14 @@ const BatteryAmp = () => {
       const element = form.current;
       const scrollHeight = element.scrollHeight;
       const filter = (node: HTMLElement) => {
-        const exclusionClasses = ['calc-btn-wrapper',];
-        return !exclusionClasses.some((classname) => node.classList?.contains(classname));
-      }
+        const exclusionClasses = ['calc-btn-wrapper'];
+        return !exclusionClasses.some((classname) =>
+          node.classList?.contains(classname)
+        );
+      };
       toCanvas(element, {
-       height:scrollHeight,
-       filter
+        height: scrollHeight,
+        filter,
       }).then((canvas) => {
         const imageData = canvas.toDataURL('image/png');
         const pdf = new jsPDF({
@@ -261,7 +264,8 @@ to a Partial Home Back-up`,
           setInitialBattery([...batt]);
           const min = minRequired(
             [...batt],
-            data?.data?.total_catergory_amperes * 0.6,
+            data?.data?.total_catergory_amperes * 0.6 +
+              data?.data?.house_square,
             data?.data?.lra
           );
           setOtherDeatil(data?.data);
@@ -349,7 +353,7 @@ to a Partial Home Back-up`,
                         ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
                       );
                       let init = prev + 1;
-                      if (init >= consumption && caluclatedBackup === 0) {     
+                      if (init >= consumption && caluclatedBackup === 0) {
                         setCaluclatedBackup(1);
                       }
                       return init;
@@ -361,6 +365,32 @@ to a Partial Home Back-up`,
                 </div>
               </div>
             </div>
+          </div>
+
+          <div
+            style={{ width: '100%' }}
+            className="mt3 battery-watt-wrapper justify-between flex items-center bg-white"
+          >
+            <div
+              className="calc-input-wrapper relative"
+              style={{ width: '100%' }}
+            >
+              <Input
+                type="text"
+                name=""
+                label="Prospect Name"
+                placeholder={'Prospect Name'}
+                
+                value={otherDeatil.prospect_name!}
+                readOnly
+                disabled
+                onChange={()=>0}
+              />
+            
+              
+            </div>
+
+            
           </div>
           <div
             style={{ width: '100%' }}

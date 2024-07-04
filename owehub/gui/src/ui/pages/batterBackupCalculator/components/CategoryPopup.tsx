@@ -42,8 +42,16 @@ const CategoryPopup = ({
     { name: 'Stovetop', ampere: 15 },
     { name: 'AC Unit', ampere: 35 },
     { name: 'Electric Furnace', ampere: 65 },
+    { name: 'Room AC', ampere: 15 },
+    {
+      name: 'Dryer',
+      ampere: 24,
+    },
+    {
+      name: 'Washing Machine',
+      ampere: 13,
+    },
   ]);
-  console.log(isOpen, 'fjgnfjngjfng');
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -65,7 +73,10 @@ const CategoryPopup = ({
     setIsOpen(false);
     setBattery((prev) => {
       const init = [...prev];
-      init[isSelected].category = {...item,name:item.name.toLocaleLowerCase()};
+      init[isSelected].category = {
+        ...item,
+        name: item.name.toLocaleLowerCase(),
+      };
       return init;
     });
   };
@@ -77,32 +88,30 @@ const CategoryPopup = ({
       }}
       className="transparent-model items-end "
     >
-      <div className="category-container">
+      <div className="scrollbar category-container ">
         <div className=" category-popup-header ">
           <span>Select Category</span>
         </div>
 
-        <div className="categories-container">
+        <div className=" categories-container">
           {categories.map((item, ind) => {
             return (
               <div
                 key={ind}
                 onClick={() => handleClick(item)}
-                className="flex mb2 pointer items-center justify-between"
+                className="flex mb2 pr2 pointer items-center justify-between"
               >
-                <div className='flex items-center '>
-                {battery[isSelected] &&
-                battery[isSelected].category.name ===
-                  item.name.toLocaleLowerCase() ? (
-                  <IoCheckmarkCircle color="#129537" size={20} className="" />
-                ) : (
-                  <PiCircle color="#A2A2A2" size={20} />
-                )}
-                <span className="ml2"> {item.name} </span>
+                <div className="flex items-center ">
+                  {battery[isSelected] &&
+                  battery[isSelected].category.name ===
+                    item.name.toLocaleLowerCase() ? (
+                    <IoCheckmarkCircle color="#129537" size={20} className="" />
+                  ) : (
+                    <PiCircle color="#A2A2A2" size={20} />
+                  )}
+                  <span className="ml2"> {item.name} </span>
                 </div>
-                <span>
-                  {item.ampere} AMP
-                </span>
+                <span>{item.ampere} AMP</span>
               </div>
             );
           })}

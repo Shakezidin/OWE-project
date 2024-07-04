@@ -161,9 +161,12 @@
   transform: translateX(10px);
 }
 .category-container{
-  min-height: 70vh;
+  height: 70vh !important;
   background-color: #fff;
   width: 100%;
+}
+.calc-input-wrapper .input-inner-view .input:disabled{
+  background-color: #f2f2f2;
 }
 .category-popup-header{
   color: #919191;
