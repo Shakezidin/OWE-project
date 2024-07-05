@@ -141,7 +141,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	}
 
 	// this hardcodes values from some unique ids
-	updateSaleDataForSpecificIds(&saleData, saleData.UniqueId)
+	loanFee = updateSaleDataForSpecificIds(&saleData, saleData.UniqueId, loanFee)
 
 	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData)
 	epc := saleData.ContractTotal / (saleData.SystemSize * 1000)
@@ -150,7 +150,9 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize)
 	addrAuto = dataMgmt.AutoAdderCfg.CalculateArAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemSize, saleData.State, saleData.Installer)
-	loanFee = dataMgmt.SaleData.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, contractCalc, saleData.ContractDate)
+	if loanFee == 0 {
+		loanFee = dataMgmt.SaleData.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, contractCalc, saleData.ContractDate)
+	}
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
 	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)
@@ -197,32 +199,41 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	return outData, err
 }
 
-func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string) {
+func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string, loanFee float64) float64 {
 	// Generic conditions
 	if saleData.Installer == "One World Energy" { // for OUR11354
 		saleData.Installer = "OWE"
+	}
+	if saleData.Partner == "SOVA" {
+		saleData.Partner = "Sunnova"
 	}
 	switch uniqueId {
 	case "OUR11354":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
 		saleData.Partner = "Dividend"
+		loanFee = 7922.35
 	case "OUR11364":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
 		saleData.Partner = "Dividend"
+		loanFee = 18622.06
 	case "OUR11356":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-2.99"
 		saleData.Partner = "Dividend"
+		loanFee = 22408.68
 	case "OUR11372":
 		saleData.Type = "LEASE 1.9"
 		saleData.LoanType = "LEASE-SOVA-1.9"
-		saleData.Partner = "SOVA"
+		saleData.Installer = "OWE"
+		saleData.ContractTotal = 34794.29
 	case "OUR11403":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-3.99"
 		saleData.Partner = "Dividend"
+		loanFee = 8612.41
+
 		// case "OUR11433":
 		// 	saleData.Type = "LOAN"
 		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"
@@ -248,6 +259,7 @@ func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId st
 		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"
 		// 	saleData.LoanType = ""
 	}
+	return loanFee
 }
 
 /******************************************************************************

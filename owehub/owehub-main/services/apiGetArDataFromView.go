@@ -363,6 +363,11 @@ func PrepareardataFilters(dataFilter models.GetArDataReq, check, whereAdded bool
 	var filtersBuilder strings.Builder
 
 	if check {
+		if len(dataFilter.Filters) == 0 {
+			filters = filtersBuilder.String()
+			return filters
+		}
+		
 		if !whereAdded {
 			filtersBuilder.WriteString(" WHERE ")
 		} else {
@@ -385,6 +390,42 @@ func PrepareardataFilters(dataFilter models.GetArDataReq, check, whereAdded bool
 			switch column {
 			case "unique_id":
 				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(unique_id) %s LOWER('%s') ", operator, value))
+			case "Partner":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(Partner) %s LOWER('%s') ", operator, value))
+			case "installer":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(installer) %s LOWER('%s') ", operator, value))
+			case "type":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(type) %s LOWER('%s') ", operator, value))
+			case "home_owner":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(home_owner) %s LOWER('%s') ", operator, value))
+			case "address":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(address) %s LOWER('%s') ", operator, value))
+			case "city":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(city) %s LOWER('%s') ", operator, value))
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(state) %s LOWER('%s') ", operator, value))
+			case "zip":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(zip) %s LOWER('%s') ", operator, value))
+			case "system_size":
+				filtersBuilder.WriteString(fmt.Sprintf(" system_size %s '%s' ", operator, value))
+			case "contract_date":
+				filtersBuilder.WriteString(fmt.Sprintf(" contract_date %s '%s' ", operator, value))
+			case "install_date":
+				filtersBuilder.WriteString(fmt.Sprintf(" install_date %s '%s' ", operator, value))
+			case "current_status":
+				filtersBuilder.WriteString(fmt.Sprintf(" LOWER(current_status) %s LOWER('%s') ", operator, value))
+			case "status_date":
+				filtersBuilder.WriteString(fmt.Sprintf(" status_date %s '%s' ", operator, value))
+			case "contract_calc":
+				filtersBuilder.WriteString(fmt.Sprintf(" contract_calc %s '%s' ", operator, value))
+			case "owe_ar":
+				filtersBuilder.WriteString(fmt.Sprintf(" owe_ar %s '%s' ", operator, value))
+			case "amount_paid":
+				filtersBuilder.WriteString(fmt.Sprintf(" amount_paid %s '%s' ", operator, value))
+			case "current_due":
+				filtersBuilder.WriteString(fmt.Sprintf(" current_due %s '%s' ", operator, value))
+			case "balance":
+				filtersBuilder.WriteString(fmt.Sprintf(" balance %s '%s' ", operator, value))
 			}
 		}
 		filters = filtersBuilder.String()

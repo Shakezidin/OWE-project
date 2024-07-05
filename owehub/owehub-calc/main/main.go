@@ -22,6 +22,7 @@ import (
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
 
 	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
+	repPayCalc "OWEApp/owehub-calc/reppaycalc"
 
 	log "OWEApp/shared/logger"
 
@@ -94,7 +95,7 @@ func main() {
 	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
-	// go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
+	go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
 
 	// repPayRs := <-repPayResult
 	dlrPayRs := <-dlrPayResult
