@@ -56,30 +56,34 @@ const FormComponent: React.FC = () => {
   const [address, setAddress] = useState<string>('');
   const [prospectName, setProspectName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [squareFeet,setSquareFeet] = useState("")
+  const [squareFeet, setSquareFeet] = useState('');
   const [error, setError] = useState<{
     email?: string;
     prospectName?: string;
     primaryAppliance?: string;
     secondaryAppliance?: string;
-    squareFeet?:string;
-    address?:string
+    squareFeet?: string;
+    address?: string;
   }>({});
-
+  const [randomKey, setRandomKey] = useState(Date.now());
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files ? Array.from(event.target.files) : [];
+    const files = event.target.files?.length
+      ? Array.from(event.target.files)
+      : [];
     if (files.length > 5) {
       await errorSwal('error', 'Please select up to 5 files.');
       return;
     }
+    console.log(files, 'filess selected');
     const fileURLs = files.map((file) => URL.createObjectURL(file));
     setUploadedImages((prevImages) => [...prevImages, ...fileURLs]);
+    setRandomKey(Date.now());
   };
 
   const handleDeleteImage = (index: number) => {
     setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
-
+  console.log(uploadedImages, 'fff image');
   const handleValidation = () => {
     const tempError = {} as typeof error;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -92,11 +96,11 @@ const FormComponent: React.FC = () => {
     }
 
     if (!address.trim()) {
-      tempError['address'] = 'Address is required'
+      tempError['address'] = 'Address is required';
     }
 
     if (!squareFeet.trim()) {
-      tempError["squareFeet"] = "House's Square Feet is required"
+      tempError['squareFeet'] = "House's Square Feet is required";
     }
     // if (!primaryApplicance.every((app) => !app.isSelected)) {
     //   tempError['primaryAppliance'] =
@@ -130,8 +134,8 @@ const FormComponent: React.FC = () => {
           panel_images_url: uploadedUrls,
           ...obj1,
           ...obj2,
-          house_square:parseFloat(squareFeet),
-          address
+          house_square: parseFloat(squareFeet),
+          address,
         });
 
         if (response.status > 201) {
@@ -186,7 +190,7 @@ OWE Battery Calc
       }
     }
   };
-console.log(error,"err");
+  console.log(error, 'err');
 
   const uploadImages = async (imageArray: string[]): Promise<string[]> => {
     if (!imageArray || imageArray.length === 0) return [];
@@ -216,7 +220,6 @@ console.log(error,"err");
     }
   };
 
-  
   const checkFormValidity = () => {
     if (email && uploadedImages.length > 0) {
       setIsFormValid(true);
@@ -273,19 +276,21 @@ console.log(error,"err");
             />
             {error.address && <div className="error">{error.address}</div>}
           </div>
-          
+
           <div className="prospect-input-field mt2">
             <input
               type="text"
               placeholder="Enter House's Square Foot"
               value={squareFeet}
-              onChange={(e) =>{ 
+              onChange={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9.]/g, '');
-                setSquareFeet(e.target.value)
+                setSquareFeet(e.target.value);
               }}
               required
             />
-            {error.squareFeet && <div className="error">{error.squareFeet}</div>}
+            {error.squareFeet && (
+              <div className="error">{error.squareFeet}</div>
+            )}
           </div>
 
           <div className="sr-appliance-wrapper">
@@ -474,6 +479,7 @@ console.log(error,"err");
               <input
                 type="file"
                 multiple
+                key={randomKey}
                 maxLength={5}
                 accept=".jpg, .jpeg, .png, .gif, .bmp, .svg"
                 onChange={handleImageUpload}
