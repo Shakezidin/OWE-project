@@ -25,7 +25,7 @@ const ArDashBoardTable = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const { data, count, filters,isLoading } = useAppSelector((state) => state.ardata);
+  const { data, count, filters } = useAppSelector((state) => state.ardata);
   // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -33,7 +33,7 @@ const ArDashBoardTable = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
 
   const [sortKey, setSortKey] = useState('');
@@ -80,7 +80,7 @@ const ArDashBoardTable = () => {
   const totalPages = Math.ceil(count / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = data?.slice();
  
@@ -121,8 +121,8 @@ const ArDashBoardTable = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  // if (isLoading) {
-  //   return <div>Loading... {isLoading}</div>;
+  // if (loading) {
+  //   return <div>Loading... {loading}</div>;
   // }
 
   
@@ -229,8 +229,6 @@ const ArDashBoardTable = () => {
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
-
-  console.log(currentPageData,"sfgf")
 
   return (
     <div className="comm">
