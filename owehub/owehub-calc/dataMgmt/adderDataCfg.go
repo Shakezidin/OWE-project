@@ -168,12 +168,8 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId
 	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
 
 	if len(dealer) > 0 {
-		// for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
-		// if (data.UniqueId + data.Gc) == (uniqueId + "Partner") {
 		addrPtrSum += AdderDataCfg.CalculateAddrPartnerExpense(dealer, uniqueId, sysSize, true)
-		// }
 	}
-	// }
 	return addrPtrSum
 }
 
