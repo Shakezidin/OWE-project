@@ -58,7 +58,7 @@ const ProjectStatus = () => {
   const { projects, projectDetail, isLoading } = useAppSelector(
     (state) => state.projectManagement
   );
-  const location = useLocation(); // Use the useLocation hook to get the current URL
+  const location = useLocation();
   const projectId = new URLSearchParams(location.search).get('project_id');
 
   const getStatus = (arr: string[]) => {
@@ -475,10 +475,13 @@ const ProjectStatus = () => {
   }, []);
   const projectOption: Option[] = projects?.map?.(
     (item: (typeof projects)[0]) => ({
-      label: item,
-      value: item,
+      label: `${item.unqiue_id }-${item.customer}`,
+      value: item.unqiue_id,
     })
   );
+
+  
+
   useEffect(() => {
     if (activePopups) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -488,6 +491,11 @@ const ProjectStatus = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [activePopups]);
+   
+
+
+
+
 
   useEffect(() => {
     if (projectId) {
@@ -495,9 +503,10 @@ const ProjectStatus = () => {
       setSelectedProject(opt);
     } else if (projectOption.length) {
       const val = {
-        label: projectOption[0]?.value,
-        value: projectOption[0]?.value,
+        label: projectOption[0].label || '',
+        value: projectOption[0].value || '',
       };
+      console.log("val", val)
       setSelectedProject(val);
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
@@ -508,6 +517,8 @@ const ProjectStatus = () => {
       dispatch(getProjectDetail(selectedProject.value));
     }
   }, [selectedProject.value]);
+
+  console.log("options", projectOption, selectedProject)
 
   return (
     <div className="">
@@ -533,7 +544,6 @@ const ProjectStatus = () => {
                     onChange={(val) => {
                       if (val) {
                         setSelectedProject(val);
-                        // dispatch(getProjectDetail(val.value))
                       }
                     }}
                   />

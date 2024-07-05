@@ -25,6 +25,7 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 
 import { ROUTES } from '../../../../routes/routes';
 import { dateFormat } from '../../../../utiles/formatDate';
+import { showAlert } from '../../../components/alert/ShowAlert';
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -177,6 +178,13 @@ const TierLoanFee = () => {
     }
   };
   const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
     const archived: number[] = [record_id];
     let newValue = {
       record_id: archived,
@@ -193,6 +201,7 @@ const TierLoanFee = () => {
     if (res.status === HTTP_STATUS.OK) {
       dispatch(fetchTearLoan(pageNumber));
     }
+  }
   };
 
   const handleViewArchiveToggle = () => {
@@ -228,6 +237,7 @@ const TierLoanFee = () => {
           viewArchive={viewArchived}
           onpressAddNew={() => handleAddTierLoan()}
         />
+
         <FilterHoc
           resetOnChange={viewArchived}
           isOpen={filterOPen}
