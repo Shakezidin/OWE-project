@@ -40,7 +40,7 @@ func (ReconcileCfgData *ReconcileCfgStruct) LoadReconcileCfg() (err error) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
 		log.ConfWarnTrace(0, "Failed to get reconcile from DB err: %v", err)
-		err = fmt.Errorf("Failed to get reconsile cfg data from DB")
+		err = fmt.Errorf("failed to get reconsile cfg data from DB")
 		return err
 	}
 
