@@ -29,8 +29,8 @@ const ImagePopup = ({
   }
 
   return (
-    <div className="transparent-model">
-      <div className="flex items-center px2 justify-center" style={{ gap: 10 }}>
+    <div className="transparent-model scrollbar block">
+      <div className="flex items-center p2 justify-center" style={{ gap: 10 }}>
         <div
           onClick={() => setIsOpen(false)}
           className="absolute pointer"
@@ -61,8 +61,8 @@ const ImagePopup = ({
               <FaDownload color="#fff" />
             
           </div>
-          <img src={imgs?.[activeImg]} alt="" style={{ maxWidth: '100%' }} />
-          <div className="block text-white text-center" style={{color:"#fff"}} >
+          <img src={imgs?.[activeImg]} alt="" className='mt2' style={{ maxWidth: '100%' }} />
+          <div className="block  text-white text-center" style={{color:"#fff"}} >
             {activeImg+1}/{imgs?.length}
           </div>
         </div>
