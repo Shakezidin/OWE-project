@@ -9,7 +9,7 @@ const NotFound = () => {
       {isAuthenticated ? (
         <div className="text-center h5">Page Not Found</div>
       ) : (
-        <Navigate to="/login" />
+        <Navigate to="/" />
       )}
     </div>
   );
