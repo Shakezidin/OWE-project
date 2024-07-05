@@ -171,10 +171,8 @@ func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repC
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
 				if data.Amount > 0 {
-					log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
 					return data.Amount / repCount
 				} else {
-					log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
 					return perRepAddrShare
 				}
 			}
@@ -200,15 +198,11 @@ func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, stat
 	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
 
 	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
-	log.FuncErrorTrace(0, "PerRepDefOvrd+++++++=====================%v count- > %v", PerRepDefOvrd)
 
 	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount)
-	log.FuncErrorTrace(0, "PerRepAddrShare+++++++=====================%v count -> %v", PerRepAddrShare)
 
 	R1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, date)
-	log.FuncErrorTrace(0, "R1PayScale+++++++=====================%v count -> %v rep -> %v", R1PayScale, rep)
 	R1RebateCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
-	log.FuncErrorTrace(0, ",R1RebateCreditPercentage+++++++++++++++++++%v", R1RebateCreditPercentage)
 	R1RebateCreditDol := R1RebateCreditPercentage / repCount
 	if PerRepOverSHare > 0 {
 		return PerRepOverSHare
