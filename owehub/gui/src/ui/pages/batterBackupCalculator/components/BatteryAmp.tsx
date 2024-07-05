@@ -284,6 +284,7 @@ to a Partial Home Back-up`,
   useEffect(() => {
     if (requiredBattery >= required) {
       setMainOn(true);
+      setBatteryPower(prev=>prev.map((ba)=>({...ba,isOn:true})))
     }
   }, [required, requiredBattery]);
 

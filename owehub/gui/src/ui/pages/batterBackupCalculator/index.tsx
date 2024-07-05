@@ -313,10 +313,14 @@ OWE Battery Calc
                 >
                   {detail.panel_images_url.map((image, index) => {
                     return (
-                      <div className="block" onClick={()=>{
-                        setActiveImg(index);
-                        setImgPopup(true);
-                      }} key={index}>
+                      <div
+                        className="block"
+                        onClick={() => {
+                          setActiveImg(index);
+                          setImgPopup(true);
+                        }}
+                        key={index}
+                      >
                         <img
                           src={image}
                           alt=""
@@ -479,6 +483,10 @@ OWE Battery Calc
           <button
             onClick={() => {
               setBattery([]);
+              setInputDetails({
+                prospectName: '',
+                lra: '',
+              });
             }}
             className="calc-btn calc-grey-btn pointer"
           >
@@ -507,11 +515,13 @@ OWE Battery Calc
         isOpen={isCategoryOpen}
         setIsOpen={setIsCategoryOpen}
       />
-   {imgPopup &&   <ImagePopup
-        setIsOpen={setImgPopup}
-        active={activeImg}
-        imgs={detail.panel_images_url}
-      />}
+      {imgPopup && (
+        <ImagePopup
+          setIsOpen={setImgPopup}
+          active={activeImg}
+          imgs={detail.panel_images_url}
+        />
+      )}
     </div>
   );
 };
