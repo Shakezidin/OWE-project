@@ -183,7 +183,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// log.FuncFuncTrace(0, "Zidhin source  (D): %v, uniqueId (G): %v systemSize (P): %v", source, uniqueID, systemSize)
 	// log.FuncFuncTrace(0, "Zidhin partner (B): %v, installer (C): %v loanType (F): %v", partner, installer, loanType)
 	// log.FuncFuncTrace(0, "Zidhin state (K): %v, wc (U): %v contracttotal (R): %v", state, wc, contractTotal)
-	// log.FuncFuncTrace(0, "Zidhin epc (S): %v, homeOwner (H): %v rep2 (N): %v", epc, homeOwner, Rep2)
+	// log.FuncFuncTrace(0, "Zidhin epc (S): %v, homeOwner (H): %v rep2 (N): %v", netEpc, homeOwner, Rep2)
 	// log.FuncFuncTrace(0, "Zidhin pto (AG): %v, instSys (AD): %v cancel (AC): %v", pto, instSys, cancel)
 	// log.FuncFuncTrace(0, "Zidhin ntp (W): %v, pemsub: %v shaky: %v, Type : %v", ntp, permSub, shaky, types)
 
@@ -219,7 +219,20 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	dealerDBA = dataMgmt.VDealerCfg.CalculateDealerDBA(dealer)
 	statusDate = CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)
 	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, types, state, wc)
-	commission_models = "standard" // temporary
+	switch saleData.UniqueId {
+	case "OUR18978":
+		commission_models = "80/20"
+	case "OUR19020":
+		commission_models = "80/20"
+	case "OUR19045":
+		commission_models = "80/20"
+	case "OUR19088":
+		commission_models = "80/20"
+	case "OUR19086":
+		commission_models = "80/20"
+	default:
+		commission_models = "standard"
+	}
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
@@ -462,7 +475,7 @@ func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId st
 	if saleData.Partner == "Our World Energy" {
 		saleData.Partner = "OWE"
 	}
-	if saleData.Installer == "Our World Energy" {
+	if saleData.Installer == "One World Energy" {
 		saleData.Installer = "OWE"
 	}
 
@@ -498,5 +511,29 @@ func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId st
 	case "OUR19433":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-LOAN-25y-8.99"
+	case "OUR18978":
+		saleData.Type = "LEASE"
+		saleData.LoanType = "LightReachLease0.0"
+		saleData.Source = "Parker and Sons"
+		saleData.Partner = "LightReach"
+		saleData.ContractTotal = 40056.25
+	case "OUR19020":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-SN-LOAN-25Y-8.99"
+		saleData.Source = "Parker and Sons"
+	case "OUR19045":
+		saleData.Source = "Parker and Sons"
+		saleData.Partner = "LightReach"
+		saleData.Type = "LEASE"
+		saleData.LoanType = "LightReachLease0.0"
+	case "OUR19088":
+		saleData.Type = "LEASE 1.9"
+		saleData.LoanType = "LEASE-SOVA-1.9"
+		saleData.Source = "Parker and Sons"
+	case "OUR19086":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-LOAN-25y-6.99"
+		saleData.Source = "Parker and Sons"
+		saleData.Partner = "Dividend"
 	}
 }
