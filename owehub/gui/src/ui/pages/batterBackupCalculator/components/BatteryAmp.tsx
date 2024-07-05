@@ -321,7 +321,7 @@ to a Partial Home Back-up`,
               <div>
                 <h3 className="battery-watt-heading">
                   {' '}
-                  {requiredBattery} Batteries
+                  {requiredBattery} {requiredBattery>1?"Batteries":"Battery"}
                 </h3>
               </div>
               <div className="flex counter-btn-wrapper items-center">
