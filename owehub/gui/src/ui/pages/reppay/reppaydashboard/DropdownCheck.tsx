@@ -1,25 +1,34 @@
 import React, { useState, useEffect, useRef, SetStateAction } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import './DropdownWithCheckboxes.css';
+import {
+  handleChange as filterChange,
+  toggleAllDropdown,
+  toggleOffDropdowns,
+} from '../../../../redux/apiSlice/repPaySlice/repPaySlice';
+import { useAppDispatch } from '../../../../redux/hooks';
 
 interface Option {
   label: string;
   value: string;
+  key:string;
 }
 
 const options: Option[] = [
-  { value: 'All', label: 'All' },
-  { value: 'AP-DTH', label: 'AP-DTH' },
-  { value: 'AP-PDA', label: 'AP-PDA' },
-  { value: 'AP-ADV', label: 'AP-ADV' },
-  { value: 'AP-DED', label: 'AP-DED' },
-  { value: 'REP-COMM', label: 'REP-COMM' },
-  { value: 'REP BONUS', label: 'REP BONUS' },
-  { value: 'LEADER', label: 'LEADER' },
+  { value: 'All', label: 'All' , key: 'all'},
+  { value: 'AP-OTH', label: 'AP-OTH', key: 'ap_oth' },
+  { value: 'AP-PDA', label: 'AP-PDA', key:'ap_pda' },
+  { value: 'AP-ADV', label: 'AP-ADV',key:'ap_adv' },
+  { value: 'AP-DED', label: 'AP-DED', key:'ap_ded' },
+  { value: 'REP-COMM', label: 'REP-COMM', key:'rep_comm' },
+  { value: 'REP BONUS', label: 'REP BONUS', key:'rep_bonus' },
+  { value: 'LEADER-OVERRIDE', label: 'LEADER-OVRD' , key:'leader_ovrd'},
 ];
 
-const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:React.Dispatch<SetStateAction<boolean>>}) => {
+ 
 
+const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:React.Dispatch<SetStateAction<boolean>>}) => {
+  const dispatch = useAppDispatch();
   // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     options.map((o) => o.value)
@@ -44,25 +53,43 @@ const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:Rea
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  const handleOptionChange = (option: string, key: string) => {
+    console.log(key === 'all');
 
-  const handleOptionChange = (option: string) => {
+    if (key !== 'all') {
+      
+      dispatch(
+        filterChange({ name: key, value: !selectedOptions.includes(option) })
+      );
+    } else if (key === 'all' && !selectedOptions.includes('All')) {
+      dispatch(toggleAllDropdown());
+    } else {
+      dispatch(toggleOffDropdowns());
+    }
     setSelectedOptions((prevSelectedOptions) => {
       if (option === 'All') {
-        return prevSelectedOptions.includes('All')
-          ? []
-          : options.map((o) => o.value);
+        if (prevSelectedOptions.length === options.length) {
+          // If all options are already selected, uncheck them all
+          return [];
+        } else {
+          // If not all options are selected, select them all
+          return options.map((o) => o.value);
+        }
       } else {
-        const newSelectedOptions = prevSelectedOptions.includes(option)
-          ? prevSelectedOptions.filter((o) => o !== option)
-          : [...prevSelectedOptions, option];
-
-        return newSelectedOptions.length === options.length - 1
-          ? ['All', ...newSelectedOptions]
-          : newSelectedOptions;
+        // Remove 'All' from prevSelectedOptions if it exists
+        const updatedOptions = prevSelectedOptions.filter((o) => o !== 'All');
+    
+        if (updatedOptions.includes(option)) {
+          return updatedOptions.filter((o) => o !== option);
+        } else {
+          return [...updatedOptions, option];
+        }
       }
     });
+    
   };
-
+ 
+  
   return (
     <div className="dropdown-container" ref={dropdownRef}>
       <div className="dropdown-toggle" onClick={toggleDropdown}>
@@ -89,7 +116,7 @@ const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:Rea
               <input
                 type="checkbox"
                 checked={selectedOptions.includes(option.value)}
-                onChange={() => handleOptionChange(option.value)}
+                onChange={() => handleOptionChange(option.value, option.key)}
               />
               {option.label}
             </div>

@@ -18,6 +18,7 @@ import { ICONS } from '../../icons/Icons';
 const DashBoardTable: React.FC = () => {
   const [editedCommission] = useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const { data, count } = useAppSelector((state) => state.dealerPaySlice);
 
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -26,8 +27,6 @@ const DashBoardTable: React.FC = () => {
   const handleIconClose = () => setOpenIcon(false);
   // const handleClose = () => setOpen(false);
   const [editMode, setEditMode] = useState(false);
-
-  const {data} = useAppSelector((state) => state.dealerPaySlice)
 
   const dataUser = [
     {
@@ -243,6 +242,9 @@ const DashBoardTable: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentPageData = dataUser?.slice(startIndex, endIndex);
+
+
+  console.log(data, count,)
   return (
     <>
       <div className="dashBoard-container">
@@ -275,47 +277,69 @@ const DashBoardTable: React.FC = () => {
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
+               
                 <th>
                   <div className="table-header">
-                    <p>Sales Rep</p>{' '}
+                    <p>Rep 1</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Cust Name</p>{' '}
+                    <p>Home Owner</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Comm Model</p>{' '}
+                    <p>Contract Date</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Percent</p> <FaArrowDown style={{ color: '#667085' }} />
+                    <p>Contract Value</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Amt Prep</p> <FaArrowDown style={{ color: '#667085' }} />
+                    <p>Amount</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pipe Rem</p> <FaArrowDown style={{ color: '#667085' }} />
+                    <p>Amount Paid</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Curr Due</p> <FaArrowDown style={{ color: '#667085' }} />
+                    <p>Balance</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Proj Status</p>{' '}
+                    <p>Credit</p> <FaArrowDown style={{ color: '#667085' }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>EPC</p> <FaArrowDown style={{ color: '#667085' }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>NET EPC</p> <FaArrowDown style={{ color: '#667085' }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>NET REV</p> <FaArrowDown style={{ color: '#667085' }} />
+                  </div>
+                </th>
+                
+                <th>
+                  <div className="table-header">
+                    <p>Current Status</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
@@ -326,23 +350,30 @@ const DashBoardTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
+                    <p>Dba</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Status Date</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
                     <p>Sys Size</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Type</p> <FaArrowDown style={{ color: '#667085' }} />
+                    <p>Loan Fee</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Adder</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>AHJ</p> <FaArrowDown style={{ color: '#667085' }} />
+                    <p>Draw Amt</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
@@ -350,11 +381,8 @@ const DashBoardTable: React.FC = () => {
                     <p>RL</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
-                    <p>EPC</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
+
+                 
                 <th>
                   <div className="action-header">
                     <p>Help</p>
@@ -363,9 +391,9 @@ const DashBoardTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {dataUser.length > 0
-                ? dataUser.map((el, i) => (
-                    <tr key={i}>
+              {data.length > 0
+                ? data.map((el:any, index:any) => (
+                    <tr key={index}>
                       <td>
                         <CheckBox
                           checked={false}
@@ -385,23 +413,30 @@ const DashBoardTable: React.FC = () => {
                         }}
                         className="zoom-out-td"
                       >
-                        {el.pi}
+                        {el.unique_id}
                       </td>
-                      <td style={{ color: '#101828' }}>{el.dn}</td>
-                      <td style={{ color: '#101828' }}>{el.sr}</td>
-                      <td style={{ color: '#101828' }}>{el.cn}</td>
-                      <td style={{ color: '#101828' }}>{el.cm}</td>
-                      <td style={{ color: '#101828' }}>{el.pg}</td>
+                      <td style={{ color: '#101828' }}>{el.dealer}</td>
+                      <td style={{ color: '#101828' }}>{el.rep1}</td>
+                      <td style={{ color: '#101828' }}>{el.home_owner}</td>
+                      <td style={{ color: '#101828' }}>{el.contract_date}</td>
+                      <td style={{ color: '#101828' }}>{el.contract_value}</td>
                       <td style={{ color: '#63BC51', fontWeight: '500' }}>
-                        {el.amt}
+                        {el.amount}
                       </td>
                       <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
-                        {el.pipeline}
+                        {el.amt_paid} 
                       </td>
                       <td style={{ color: '#379DE3', fontWeight: '500' }}>
-                        {el.cd}
+                        {el.balance || "N/A"} 
                       </td>
-                      <td>
+                      <td style={{ color: '#15C31B', fontWeight: '500' }}>
+                        {el.credit || "N/A"} 
+                      </td>
+
+                      
+                      
+
+                      {/* <td>
                         {el.ps === 'Active' ? (
                           <span style={{ color: '#15C31B' }}>
                             <span
@@ -431,14 +466,20 @@ const DashBoardTable: React.FC = () => {
                             Inactive
                           </span>
                         )}
+                      </td> */}
+                      <td>{el.epc}</td>
+                      <td>{el.net_epc}</td>
+                      <td>{el.net_rev}</td>
+                      <td>
+                        {el.current_status} 
                       </td>
                       <td>{el.state}</td>
-                      <td>{el.sysSize}</td>
-                      <td>{el.type}</td>
-                      <td>{el.adder}</td>
-                      <td>{el.ajh}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.epc}</td>
+                      <td>{el.dba || "N/A"}</td>
+                      <td>{el.status_date}</td>
+                      <td>{el.sys_size}</td>
+                      <td>{el.loan_fee || "N/A"}</td>
+                      <td>{el.draw_amt || "N/A"}</td>
+                      <td>{el.rl || "N/A"}</td>
                       {/* <td
                         style={{ cursor: "pointer", color: "#101828" }}
                         onClick={() => handleIconOpen()}

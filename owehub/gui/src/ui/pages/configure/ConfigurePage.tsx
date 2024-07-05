@@ -58,6 +58,13 @@ const ConfigurePage: React.FC = () => {
       data: [
         { title: 'Rep Pay', route: ROUTES.CONFIG_REP_PAY_SETTINGS },
         { title: 'Rate Adjustments', route: ROUTES.CONFIG_RATE_ADJUSTMENTS },
+        { title: 'Rep Incent', route: ROUTES.CONFIG_REPINCENT },
+        { title: 'Ap Pda', route: ROUTES.CONFIG_APPDA },
+        { title: 'Ap Adv', route: ROUTES.CONFIG_APADV },
+        { title: 'Ap Ded', route: ROUTES.CONFIG_APDED },
+        { title: 'Ap Oth', route: ROUTES.CONFIG_APOTH },
+
+
       ],
       state: useState<boolean>(true),
     },
