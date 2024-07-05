@@ -4,7 +4,6 @@ import '../configure/configure.css';
 import { FaArrowDown } from 'react-icons/fa6';
 import CheckBox from '../../components/chekbox/CheckBox';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { setCurrentPage } from '../../../redux/apiSlice/paginationslice/paginationSlice';
 import HelpDashboard from './HelpDashboard';
 import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 import ProjectBreakdown from './ProjectBreakdown';
@@ -19,6 +18,8 @@ const DashBoardTable: React.FC = () => {
   const [editedCommission] = useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const { data, count } = useAppSelector((state) => state.dealerPaySlice);
+ 
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -221,30 +222,27 @@ const DashBoardTable: React.FC = () => {
     },
   ];
   const dispatch = useAppDispatch();
-  const currentPage = useAppSelector(
-    (state: any) => state.paginationType.currentPage
-  );
+  
   const itemsPerPage = 10;
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
+  const currentPageData = data?.slice();
+  // const isAnyRowSelected = selectedRows.size > 0;
+  // const isAllRowsSelected = selectedRows.size === data?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = dataUser?.slice(startIndex, endIndex);
-
-
-  console.log(data, count,)
+  const endIndex = currentPage * itemsPerPage;
   return (
     <>
       <div className="dashBoard-container">
@@ -504,11 +502,13 @@ const DashBoardTable: React.FC = () => {
             </tbody>
           </table>
         </div>
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {dataUser?.length} of {dataUser?.length} item
-          </p>
-          {dataUser?.length > 0 ? (
+        {data?.length > 0 ? (
+          <div className="page-heading-container">
+            <p className="page-heading">
+              Showing {startIndex} -{' '}
+              {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
@@ -518,8 +518,8 @@ const DashBoardTable: React.FC = () => {
               goToPrevPage={goToPrevPage}
               perPage={itemsPerPage}
             />
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
       {open && (
         <ProjectBreakdown

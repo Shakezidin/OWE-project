@@ -16,7 +16,7 @@ export const fetchApOth = createAsyncThunk(
   async (data: any) => {
     const response = await postCaller('get_apoth', data);
     return {
-      list: response.data.appt_setters_list,
+      list: response.data.ap_oth_list,
       count: response.dbRecCount,
     };
   }

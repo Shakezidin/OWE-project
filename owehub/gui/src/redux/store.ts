@@ -62,6 +62,9 @@ import repstatusSlice from './apiSlice/configSlice/config_get_slice/repstatusSli
 import repPaySlice from './apiSlice/repPaySlice/repPaySlice';
 import apRepSlice from './apiSlice/configSlice/config_get_slice/apRepSlice';
 import repIncentSlice from './apiSlice/configSlice/config_get_slice/repIncentSlice';
+import apPdaSlice from './apiSlice/configSlice/config_get_slice/apPdaSlice';
+import apOthSlice from './apiSlice/configSlice/config_get_slice/apOthSlice';
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -129,7 +132,9 @@ export const store = configureStore({
     dealerPaySlice,
     repPaySlice,
     apRepSlice,
-    repIncentSlice
+    repIncentSlice,
+    apPdaSlice,
+    apOthSlice
   },
 });
 
