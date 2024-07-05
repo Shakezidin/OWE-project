@@ -72,6 +72,7 @@ import SrImageUpload from './ui/pages/SrImageUpload/SrImageUpload';
 import Dba from './ui/pages/configure/dba/dba';
 import RepCredit from './ui/pages/configure/REP CREDIT/repcredit';
 import RepStatus from './ui/pages/configure/repstatus/repstatus';
+import NotFound from './ui/pages/NotFound/NotFound';
 
 
 function App() {
@@ -232,6 +233,7 @@ function App() {
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
+
           {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
@@ -274,6 +276,9 @@ function App() {
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp/>}/>
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload/>}/>
+        <Route path={ROUTES.NOT_FOUND} element={
+          <NotFound/>
+        } />
       </Routes>
     </BrowserRouter>
   );

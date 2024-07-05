@@ -3,8 +3,6 @@ import { getDealerPay } from "../../apiActions/dealerPayAction";
 import { toast } from "react-toastify";
 
 
-
-
 const initialState = {
     loading:false,
     data:[],

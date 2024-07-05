@@ -94,7 +94,7 @@ const DataTablle: React.FC = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
 
-  const filter = () => {};
+  const filter = () => { };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -108,12 +108,29 @@ const DataTablle: React.FC = () => {
   };
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
+
+  const formatDate = (dateString: string | undefined): string => {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
+
+    return `${day}.${month}.${year} ${hours}:${minutes}:${seconds} ${milliseconds}`;
+  };
+
+  console.log(data, "show data")
   return (
     <div className="commissionContainer">
       <DataTableHeaderr
         title={selectedTable.value?.replaceAll('_', ' ')}
-        onPressFilter={() => {}}
-        onPressImport={() => {}}
+        onPressFilter={() => { }}
+        onPressImport={() => { }}
         showImportIcon={false}
         showSelectIcon={true}
         showFilterIcon={false}
@@ -121,6 +138,7 @@ const DataTablle: React.FC = () => {
         selectMarginLeft1="-20px"
         selectedTable={selectedTable}
         setSelectedTable={setSelectedTable}
+        menuWidth="219px"
       />
       {isLoading || loading ? (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -149,7 +167,9 @@ const DataTablle: React.FC = () => {
                     <td>{startIndex + rowIndex + 1}</td>
                     {orderedColumns.map((columnName, colIndex) => (
                       <td key={colIndex}>
-                        {columnName === 'status' ? (
+                        {['fin_pv_redlined_date', 'contract_date', 'install_eta', 'mpu_reschedule_count', 'site_survey_scheduled_date'].includes(columnName) ? (
+                          formatDate(item[columnName] as string | undefined)
+                        ) : columnName === 'status' ? (
                           item[columnName] === 'Active' ? (
                             <span style={{ color: '#15C31B' }}>
                               <span
@@ -186,32 +206,25 @@ const DataTablle: React.FC = () => {
                                 <>
                                   {item.details.length > 5 ? (
                                     <>
-                                      {item.details.slice(0, 5)}...
+                                      {item.details.replace(/<\/?p>/g, '').slice(0, 5)}...
                                       <button
                                         onClick={() =>
                                           setOpenTooltipIndex(
-                                            openTooltipIndex === rowIndex
-                                              ? null
-                                              : rowIndex
+                                            openTooltipIndex === rowIndex ? null : rowIndex
                                           )
                                         }
                                         data-tooltip-id={`tooltip-${rowIndex}`}
-                                        data-tooltip-content={item.details}
+                                        data-tooltip-content={item.details.replace(/<\/?p>/g, '')}
                                         data-tooltip-place="bottom"
                                         style={{
                                           marginLeft: '5px',
                                           border: 'none',
                                           background: 'none',
-                                          color:
-                                            openTooltipIndex === rowIndex
-                                              ? '#F82C2C'
-                                              : '#3083e5',
+                                          color: openTooltipIndex === rowIndex ? '#F82C2C' : '#3083e5',
                                           cursor: 'pointer',
                                         }}
                                       >
-                                        {openTooltipIndex === rowIndex
-                                          ? 'Show less'
-                                          : 'Show more'}
+                                        {openTooltipIndex === rowIndex ? 'Show less' : 'Show more'}
                                       </button>
                                       <ReactTooltip
                                         id={`tooltip-${rowIndex}`}
@@ -220,11 +233,11 @@ const DataTablle: React.FC = () => {
                                       />
                                     </>
                                   ) : (
-                                    item.details
+                                    item.details.replace(/<\/?p>/g, '')
                                   )}
                                 </>
                               ) : (
-                                item.details.toString()
+                                item.details.toString().replace(/<\/?p>/g, '')
                               )
                             ) : (
                               replaceEmptyOrNull(item[columnName])

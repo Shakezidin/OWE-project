@@ -18,6 +18,7 @@ interface TableProps {
   selectMarginLeft1?: string;
   selectedTable: any;
   setSelectedTable: any;
+  menuWidth?: string;
 }
 
 const DataTableHeaderr = (props: TableProps) => {
@@ -65,7 +66,7 @@ const DataTableHeaderr = (props: TableProps) => {
                   borderRadius: '8px',
                   outline: 'none',
                   color: 'black',
-                  width: '200px',
+                  width: '219px',
                   fontSize: '13px',
                   border: '1px solid #d0d5dd',
                   marginRight: selectMarginLeft,
@@ -96,7 +97,7 @@ const DataTableHeaderr = (props: TableProps) => {
                 }),
                 menu: (baseStyles) => ({
                   ...baseStyles,
-                  width: '199px',
+                  width: props.menuWidth || '199px',
                   zIndex: 9999, // Add this line to set a higher zIndex value
                 }),
               }}
