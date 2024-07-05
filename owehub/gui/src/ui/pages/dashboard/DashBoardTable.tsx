@@ -27,6 +27,8 @@ const DashBoardTable: React.FC = () => {
   // const handleClose = () => setOpen(false);
   const [editMode, setEditMode] = useState(false);
 
+  const {data} = useAppSelector((state) => state.dealerPaySlice)
+
   const dataUser = [
     {
       pi: '1234567890',
