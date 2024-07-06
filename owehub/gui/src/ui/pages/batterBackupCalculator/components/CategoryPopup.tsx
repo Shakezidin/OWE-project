@@ -42,7 +42,7 @@ const CategoryPopup = ({
     { name: 'Stovetop', ampere: 15 },
     { name: 'AC Unit', ampere: 35 },
     { name: 'Electric Furnace', ampere: 65 },
-    { name: 'Room AC', ampere: 15 },
+    { name: 'Mini Split', ampere: 15 },
     {
       name: 'Dryer',
       ampere: 24,

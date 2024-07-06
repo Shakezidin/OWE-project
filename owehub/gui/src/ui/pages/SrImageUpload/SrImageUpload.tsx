@@ -258,7 +258,7 @@ OWE Battery Calc
             <input
               type="email"
               id="email"
-              placeholder="Enter Email"
+              placeholder="Enter Sales Rep Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

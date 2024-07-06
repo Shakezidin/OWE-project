@@ -57,16 +57,16 @@ type RepPay struct {
 
 func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		dataReq         models.RepPayRequest
-		data            []map[string]interface{}
-		whereEleList    []interface{}
-		query           string
-		queryWithFiler  string
-		queryForAlldata string
-		filter          string
-		RecordCount     int64
-		filterData      []map[string]interface{}
+		err     error
+		dataReq models.RepPayRequest
+		// data            []map[string]interface{}
+		whereEleList   []interface{}
+		query          string
+		queryWithFiler string
+		// queryForAlldata string
+		filter      string
+		RecordCount int64
+		filterData  []map[string]interface{}
 		// totalPerRepData []map[string]interface{}
 	)
 
@@ -111,7 +111,7 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	if dataReq.UseCutoff == "YES" {
 		parsedDate, err := time.Parse(dateFormat, dataReq.PayRollDate)
 		if err != nil {
-			fmt.Println("Error parsing date:", err)
+			FormAndSendHttpResp(resp, "error parsing date", http.StatusBadRequest, nil)
 			return
 		}
 		adjustedDate := parsedDate.AddDate(0, 0, -5)
@@ -256,21 +256,13 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	filter, whereEleList = prepareRepPayFilters(tableName, dataReq, true, true)
-	queryForAlldata = query + filter
+	paginatedList := paginate(repPayList, dataReq.PageNumber, dataReq.PageSize)
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get RepPayData data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get RepPayData data from DB", http.StatusBadRequest, nil)
-		return
-	}
-
-	RecordCount = int64(len(data))
+	RecordCount = int64(len(repPayList))
 	response := Response{
 		Message:     "Rep Pay Data",
 		RecordCount: RecordCount,
-		Data:        repPayList,
+		Data:        paginatedList,
 	}
 	log.FuncInfoTrace(0, "Number of RepPay List fetched : %v", (RecordCount))
 
@@ -279,6 +271,21 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		http.Error(resp, fmt.Sprintf("Failed to encode data as JSON: %v", err), http.StatusInternalServerError)
 		return
 	}
+}
+
+func paginate(repPayList []RepPay, page_number int, page_size int) []RepPay {
+	start := (page_number - 1) * page_size
+	end := page_number * page_size
+
+	if start >= len(repPayList) {
+		return []RepPay{}
+	}
+
+	if end > len(repPayList) {
+		end = len(repPayList)
+	}
+
+	return repPayList[start:end]
 }
 
 func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, forDataCount, reportFilter bool) (filters string, whereEleList []interface{}) {
@@ -443,11 +450,6 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 			if i < len(dataFilter.SortBy)-1 {
 				filtersBuilder.WriteString(",")
 			}
-		}
-	} else {
-		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 		}
 	}
 
