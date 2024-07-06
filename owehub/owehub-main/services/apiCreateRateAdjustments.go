@@ -55,7 +55,7 @@ func HandleCreateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	if (len(createRateAdjustmentsReq.UniqueId) <= 0) || (len(createRateAdjustmentsReq.PayScale) <= 0) ||
+	if (len(createRateAdjustmentsReq.PayScale) <= 0) ||
 		(len(createRateAdjustmentsReq.Position) <= 0) || (len(createRateAdjustmentsReq.Adjustment) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -78,7 +78,6 @@ func HandleCreateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createRateAdjustmentsReq.UniqueId)
 	queryParameters = append(queryParameters, createRateAdjustmentsReq.PayScale)
 	queryParameters = append(queryParameters, createRateAdjustmentsReq.Position)
 	queryParameters = append(queryParameters, createRateAdjustmentsReq.Adjustment)
