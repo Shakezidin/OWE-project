@@ -63,7 +63,7 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_rate_adjustments
 	query = `
-	SELECT ra.id as record_id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate
+	SELECT ra.id as record_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate
 	FROM rate_adjustments ra`
 
 	filter, whereEleList = PrepareRateAdjustmentsFilters(tableName, dataReq, false)
@@ -85,12 +85,6 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
-		}
-
-		UniqueId, ok := item["unique_id"].(string)
-		if !ok || UniqueId == "" {
-			log.FuncErrorTrace(0, "Failed to get unique id for Record ID %v. Item: %+v\n", RecordId, item)
-			UniqueId = ""
 		}
 
 		PayScale, ok := item["pay_scale"].(string)
@@ -125,7 +119,6 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 		rateAdjustmentData := models.GetRateAdjustments{
 			RecordId:   RecordId,
-			UniqueId:   UniqueId,
 			PayScale:   PayScale,
 			Position:   Position,
 			Adjustment: Adjustment,
@@ -228,7 +221,7 @@ func PrepareRateAdjustmentsFilters(tableName string, dataFilter models.DataReque
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ra.id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate")
+		filtersBuilder.WriteString(" GROUP BY ra.id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

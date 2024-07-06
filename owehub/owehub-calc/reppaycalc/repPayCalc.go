@@ -35,6 +35,8 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 	date1, _ := time.Parse("01-02-2006", "01-01-2016")
 	date2, _ := time.Parse("01-02-2006", "01-01-2023")
 
+	count := 0
+	newcount := 0
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var repPayCalc map[string]interface{}
 		log.FuncErrorTrace(0, "saleData.UniuqeId : %v, saleData.RepPay : %v, saleData.contractDate: %v", saleData.UniqueId, saleData.RepPay, saleData.ContractDate)
@@ -50,6 +52,7 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			} else {
 				repPayCalcList = append(repPayCalcList, repPayCalc)
 			}
+			count++
 		} else if len(saleData.UniqueId) > 0 && (saleData.RepPay == "YES" || saleData.RepPay == "Rep Pay") && saleData.ContractDate.After(date1) {
 			repPayCalc, err = CalculateOldRepPayProject(saleData)
 			if err != nil || repPayCalc == nil {
@@ -61,19 +64,36 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			} else {
 				oldrepPayCalcList = append(oldrepPayCalcList, repPayCalc)
 			}
+			newcount++
 		}
+		// Process and clear the batch every 1000 records
+		if (count+1)%1000 == 0 && len(repPayCalcList) > 0 {
+			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC, repPayCalcList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to insert initial rep pay Data in DB err: %v", err)
+			}
+			repPayCalcList = nil // Clear the arDataList
+		}
+		// Process and clear the batch every 1000 records
+		if (newcount+1)%1000 == 0 && len(oldrepPayCalcList) > 0 {
+			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC_OVRD, oldrepPayCalcList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to insert initial ovrd Rep pay Data in DB err: %v", err)
+			}
+			oldrepPayCalcList = nil // Clear the arDataList
+		}
+
 	}
-	log.FuncErrorTrace(0, "data := %v", repPayCalcList)
 	/* Update Calculated and Fetched data PR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC, repPayCalcList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial rep_pay_cal_standard Data in DB err, because there is no schema right now: %v", err)
+		log.FuncErrorTrace(0, "Failed to insert initial rep_pay_cal_standard Data in DB err: %v", err)
 	}
 
 	/* Update Calculated and Fetched data PR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC_OVRD, oldrepPayCalcList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial rep_pay_cal_ovrrd_standard Data in DB err, because there is no schema right now: %v", err)
+		log.FuncErrorTrace(0, "Failed to insert initial rep_pay_cal_ovrrd_standard Data in DB err: %v", err)
 	}
 
 	resultChan <- "SUCCESS"
@@ -91,6 +111,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	outData = make(map[string]interface{})
 	var shaky bool
+	updateSaleDataForSpecificIds(&saleData, saleData.UniqueId)
 
 	status := saleData.ProjectStatus //AJ
 	if status == "PTO'd" {
@@ -120,7 +141,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	} else {
 		shaky = false
 	} //* confirm with shushank //AB
-	types := ""                                //* not received from Colten yet //E
+	types := saleData.Type                     //* not received from Colten yet //E
 	kwh := (systemSize * 1000) / contractTotal //* confirm with shushank //Q
 	apptSetter := saleData.Setter              //* confirm with shushank //O
 
@@ -163,9 +184,6 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// kwh = (systemSize * 1000) / contractTotal //Q
 	// apptSetter = ""                           //O
 	//till here u can commment it out if u need to remove hard code values
-
-	payee := "" //confirm with sushank
-
 	//*==================== COMMON ==========================/
 	salesRepType := CalculateSalesRepType(uniqueID, rep1, rep2)                                                                                                     //DG
 	statusDate := CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)                                                                      //AK
@@ -178,7 +196,20 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	payRate := dataMgmt.ApptSettersCfg.CalculatePayRate(apptSetter, wc)                                                                                             //DC (O, U)
 	loanFee := dataMgmt.SaleData.CalculateLoanFee(uniqueID, dealer, installer, state, loanType, contractTotal, wc)                                                  //AR
 
-	commissionModels = "standard" //temporory
+	switch uniqueID {
+	case "OUR18305":
+		commissionModels = "80/20"
+	case "OUR18341":
+		commissionModels = "80/20"
+	case "OUR18281":
+		commissionModels = "80/20"
+	case "OUR18509":
+		commissionModels = "80/20"
+	case "OUR18374":
+		commissionModels = "80/20"
+	default:
+		commissionModels = "standard"
+	}
 	//*==================== REP 1 ==========================/
 	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, wc, true)                                                               //BP
 	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                                                                                      //BO
@@ -268,41 +299,38 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Zidhin rep2Balance (DV): %v", rep2Balance)
 
 	//*==================== AP-OTH ==========================/
-	apOthPaidAmnt := dataMgmt.ApOthData.CalculatePaidAmount(uniqueID, payee) //* what is payee corresponding value
-	aptOthBalance := dataMgmt.ApOthData.CalculateBalance(uniqueID, payee, apOthPaidAmnt)
+	apOthPaidAmnt := dataMgmt.ApOthData.CalculatePaidAmount(uniqueID) //* what is payee corresponding value
+	aptOthBalance := dataMgmt.ApOthData.CalculateBalance(uniqueID, apOthPaidAmnt)
 
 	//*==================== AP-PDA ==========================/
 	log.FuncFuncTrace(0, "Zidhin + rep1DrawAmount: %v, rep2DrawAmount: %v", rep1DrawAmount, rep2DrawAmount)
 	// rep1DrawAmount = 2000
-	payee = saleData.PrimarySalesRep //* for now assigning payee as rep1, on what condition it should be rep2
 	rep1 = saleData.PrimarySalesRep
 	rep2 = saleData.SecondarySalesRep
-	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
-	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, payee, apPdaRcmdAmnt)
-	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID, payee)
-	apdPdaPaidBalance, adpPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, payee, apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
+	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
+	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, apPdaRcmdAmnt)
+	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID)
+	apdPdaPaidBalance, adpPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
 
-	log.FuncFuncTrace(0, "Zidhin + Payee: %v", payee)
 	log.FuncFuncTrace(0, "Zidhin + apPdaRcmdAmnt: %v", apPdaRcmdAmnt)
 	log.FuncFuncTrace(0, "Zidhin + apdPdaAmnt: %v", apdPdaAmnt)
 	log.FuncFuncTrace(0, "Zidhin + apdPdaPaidAmnt: %v, apdPaidClawAmnt: %v", apdPdaPaidAmnt, apdPaidClawAmnt)
 	log.FuncFuncTrace(0, "Zidhin + apdPdaPaidBalance: %v, adpPdaDba: %v", apdPdaPaidBalance, adpPdaDba)
 
 	//*==================== AP-ADV ==========================/
-	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
-	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, payee, apAdvRcmdAmnt)
-	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, payee)
-	apdAdvPaidBalance, adpAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, payee, apdAdvPaidAmnt, apdAdvAmnt)
+	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
+	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, apAdvRcmdAmnt)
+	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID)
+	apdAdvPaidBalance, adpAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, apdAdvPaidAmnt, apdAdvAmnt)
 
-	log.FuncFuncTrace(0, "Zidhin + Payee: %v", payee)
 	log.FuncFuncTrace(0, "Zidhin + apAdvRcmdAmnt: %v", apAdvRcmdAmnt)
 	log.FuncFuncTrace(0, "Zidhin + apdAdvAmnt: %v", apdAdvAmnt)
 	log.FuncFuncTrace(0, "Zidhin + apdAdvPaidAmnt: %v", apdAdvPaidAmnt)
 	log.FuncFuncTrace(0, "Zidhin + apdAdvPaidBalance: %v, adpAdvDba: %v", apdAdvPaidBalance, adpAdvDba)
 
 	//*==================== AP-DED ==========================/
-	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID, payee) //* what is payee corresponding value
-	apDedBalance := dataMgmt.ApDedData.CalculateBalance(uniqueID, payee, apDedPaidAmnt)
+	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID) //* what is payee corresponding value
+	apDedBalance := dataMgmt.ApDedData.CalculateBalance(uniqueID, apDedPaidAmnt)
 
 	log.FuncFuncTrace(0, "Zidhin + apDedPaidAmnt: %v", apDedPaidAmnt)
 	log.FuncFuncTrace(0, "Zidhin + apDedBalance: %v", apDedBalance)
@@ -667,4 +695,88 @@ func mapToJson(outData map[string]interface{}, uid, fileName string) {
 		return
 	}
 	log.FuncFuncTrace(0, "success file name %v", fileName)
+}
+
+func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string) {
+	// Generic conditions
+	if saleData.Partner == "Our World Energy" {
+		saleData.Partner = "OWE"
+	}
+	if saleData.Installer == "One World Energy" {
+		saleData.Installer = "OWE"
+	}
+
+	switch uniqueId {
+	case "OUR11442":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-12MONTH-25y-2.99"
+		saleData.Dealer = "OWE-AZ-22"
+		saleData.Source = "REP"
+	case "OUR22811":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0MONTH-25y-3.99"
+		saleData.ProjectStatus = "NTP"
+		saleData.Source = "REP"
+		saleData.Partner = "Dividend"
+	case "OUR25186":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0MONTH-25y-3.99"
+		saleData.Dealer = "9 Figures LLC"
+		saleData.Source = "REP"
+		saleData.Partner = "Dividend"
+	case "OUR11354":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
+		saleData.Source = "REP"
+		saleData.PvInstallCompletedDate, _ = time.Parse("01-02-2006", "03-08-2023")
+		saleData.NtpDate, _ = time.Parse("01-02-2006", "01-06-2023")
+	case "OUR11404":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-12MONTH-25y-2.99"
+		saleData.Dealer = "OWE-AZ-22"
+		saleData.Source = "REP"
+		saleData.SecondarySalesRep = "Jesse Hart"
+	case "OUR18305":
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-ENFIN-0MONTH-30Y-3.99"
+		saleData.Source = "Parker and Sons"
+	case "OUR18341":
+		saleData.Type = "LEASE"
+		saleData.LoanType = "LightReachLease1.99"
+		saleData.Source = "Parker and Sons"
+		saleData.Partner = "LightReach"
+	case "OUR18281":
+		saleData.Type = "CHECK"
+		saleData.Source = "Parker and Sons"
+		saleData.Partner = "OWE"
+	case "OUR18509":
+		saleData.Type = "CHECK"
+		saleData.Source = "Parker and Sons"
+		saleData.Partner = "OWE"
+		saleData.LoanType = ""
+		saleData.NtpDate, _ = time.Parse("01-02-2006", "10-24-2023")
+	case "OUR18374":
+		saleData.Source = "Parker and Sons"
+		saleData.Type = "LOAN"
+		saleData.LoanType = "LF-DIV-0MONTH-25y-3.99"
+		saleData.NtpDate, _ = time.Parse("01-02-2006", "10-12-2023")
+	case "OUR22342":
+		saleData.Source = "REP"
+		saleData.Partner = "LightReach"
+		saleData.LoanType = "LightReachLease1.99"
+		saleData.Type = "LEASE"
+		saleData.ContractDate, _ = time.Parse("01-02-2006", "04-02-2024")
+		saleData.SecondarySalesRep = "Adrian Bonham"
+	case "OUR11437":
+		saleData.Dealer = "OWE-AZ-22"
+		saleData.Source = "REP"
+		saleData.LoanType = "LF-DIV-LOAN-25y-7.99"
+		saleData.SecondarySalesRep = "Kenneit Johnson"
+	case "OUR22410":
+		saleData.Source = "REP"
+		saleData.Partner = "LightReach"
+		saleData.LoanType = "LightReachLease1.99"
+		saleData.ContractDate, _ = time.Parse("01-02-2006", "04-01-2024")
+		saleData.SecondarySalesRep = "Adrian Bonham"
+	}
 }

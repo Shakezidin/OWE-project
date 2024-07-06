@@ -22,7 +22,7 @@ import (
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
 
 	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
-	repPayCalc "OWEApp/owehub-calc/reppaycalc"
+	// repPayCalc "OWEApp/owehub-calc/reppaycalc"
 
 	log "OWEApp/shared/logger"
 
@@ -95,9 +95,9 @@ func main() {
 	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
-	go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
+	// go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
 
-	// repPayRs := <-repPayResult
+	repPayRs := <-repPayResult
 	dlrPayRs := <-dlrPayResult
 	arRs := <-arCalcResult
 
@@ -115,12 +115,12 @@ func main() {
 		log.FuncDebugTrace(0, "DLR Pay Initial calculation completed sucessfully.")
 	}
 
-	// if repPayRs != "SUCCESS" {
-	// 	log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
-	// 	panic("Failed to perform initial calculations for RepPay")
-	// } else {
-	// 	log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
-	// }
+	if repPayRs != "SUCCESS" {
+		log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
+		panic("Failed to perform initial calculations for RepPay")
+	} else {
+		log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
+	}
 
 	/*Closing channels*/
 	close(arCalcResult)

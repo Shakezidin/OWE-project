@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION create_new_rate_adjustments(
-    p_unique_id         CHARACTER VARYING,
     p_pay_scale         CHARACTER VARYING,
     p_position          CHARACTER VARYING,
     p_adjustment        CHARACTER VARYING,
@@ -11,7 +10,6 @@ RETURNS INT
 AS $$
 BEGIN
 INSERT INTO rate_adjustments (
-    unique_id,
     pay_scale,
     position,
     adjustment,
@@ -19,7 +17,6 @@ INSERT INTO rate_adjustments (
     max_rate
 )
 VALUES (
-           p_unique_id,
            p_pay_scale,
            p_position,
            p_adjustment,
