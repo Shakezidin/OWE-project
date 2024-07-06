@@ -339,7 +339,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["epc_calc"] = epcCalc
 	outData["rep_draw_percentage"] = RepDrawPercentage
 	outData["rep_draw_max"] = repDrawMax
-	outData["rep_pay"] = repPay
+	outData["rep_pay"] = "YES" //* cant see any calculation happening here, used for filtering
 	outData["pay_rate"] = payRate
 	outData["loan_fee"] = loanFee
 	outData["rep_1_referral"] = rep1Referral
