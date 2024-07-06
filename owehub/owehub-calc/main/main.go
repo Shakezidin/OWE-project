@@ -95,7 +95,7 @@ func main() {
 	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
-	go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
+	// go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
 
 	// repPayRs := <-repPayResult
 	dlrPayRs := <-dlrPayResult
