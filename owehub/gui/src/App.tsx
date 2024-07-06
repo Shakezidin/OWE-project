@@ -78,6 +78,8 @@ import ApAdv from './ui/pages/configure/apAdv/ApAdv';
 import ApDed from './ui/pages/configure/apDed/ApDed';
 import ApOth from './ui/pages/configure/apOth/ApOth';
 import ApPda from './ui/pages/configure/apPda/ApPda';
+import TeamManagement from './ui/pages/teammanagement/dashboard';
+import TeamTable from './ui/pages/teammanagement/teamtable';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -280,6 +282,8 @@ function App() {
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
+          <Route path={ROUTES.TEAM_MANAGEMENT_DASHBOARD} element={<TeamManagement/>}/>
+          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable/>}/>
            
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
@@ -288,6 +292,7 @@ function App() {
         <Route path={ROUTES.NOT_FOUND} element={
           <NotFound/>
         } />
+        
       </Routes>
     </BrowserRouter>
   );
