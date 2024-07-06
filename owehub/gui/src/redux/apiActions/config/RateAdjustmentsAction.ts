@@ -3,7 +3,6 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface RateAdjustmentsParams {
-  unique_id: string;
   position: string;
   adjustment: string;
   pay_scale: String;

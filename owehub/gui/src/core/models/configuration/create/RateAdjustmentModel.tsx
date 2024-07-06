@@ -1,5 +1,4 @@
 export interface rateAdjustmentModel {
-  unique_id: string;
   pay_scale: string;
   position: string;
   adjustment: string;
