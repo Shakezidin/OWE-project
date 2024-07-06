@@ -246,51 +246,55 @@ CREATE TABLE rep_pay_cal_ovrrd_standard(
     pr_r2_dir_type varchar,
     pr_r2_dir_today date,
     pr_r2_dir_status varchar,
-    LEADER_OVRD varchar
+    LEADER_OVRD varchar,
+    team_count float,
+    rep_1_team varchar,
+    rep_2_team varchar,
+    per_team_kw float
 );
  
  
 CREATE VIEW pr_r1_d AS
 SELECT
-    rep_pay_cal_standard.dealer as dealer,
-    rep_pay_cal_standard.home_owner as home_owner,
-    rep_pay_cal_standard.unique_id as unique_id,
-    rep_pay_cal_standard.rep_1 as rep_1,
-    rep_pay_cal_standard.rep_1_dba as rep_1_dba,
-    rep_pay_cal_standard.status as status,
-    rep_pay_cal_standard.status_date as status_date,
-    rep_pay_cal_standard.rep_1_comm_paid as rep_1_comm_paid,
-    rep_pay_cal_standard.rep_1_balance as rep_1_balance,
-    rep_pay_cal_standard.system_size as system_size,
-    rep_pay_cal_standard.contract_total as contract_total,
-    rep_pay_cal_standard.loan_fee as loan_fee,
-    rep_pay_cal_standard.epc as epc,
-    rep_pay_cal_standard.rep_1_addr as rep_1_addr,
-    rep_pay_cal_standard.rep_1_rr as rep_1_rr,
-    rep_pay_cal_standard.rep_1_position as rep_1_position,
-    rep_pay_cal_standard.rep_1_net_epc as rep_1_net_epc,
-    rep_pay_cal_standard.rep_1_credit as rep_1_credit,
-    rep_pay_cal_standard.rep_2 as rep_2,
-    rep_pay_cal_standard.rep_1_comm_status_check as rep_1_comm_status_check,
-    rep_pay_cal_standard.rep_1_draw_amount as rep_1_draw_amount,
-    rep_pay_cal_standard.loan_type as loan_type,
+    rep_pay_cal_standard.dealer as dealer, 
+    rep_pay_cal_standard.home_owner as home_owner, 
+    rep_pay_cal_standard.unique_id as unique_id, 
+    rep_pay_cal_standard.rep_1 as rep_1, 
+    rep_pay_cal_standard.rep_1_dba as rep_1_dba, 
+    rep_pay_cal_standard.status as status, 
+    rep_pay_cal_standard.status_date as status_date, 
+    rep_pay_cal_standard.rep_1_comm_paid as rep_1_comm_paid, 
+    rep_pay_cal_standard.rep_1_balance as rep_1_balance, 
+    rep_pay_cal_standard.system_size as system_size, 
+    rep_pay_cal_standard.contract_total as contract_total, 
+    rep_pay_cal_standard.loan_fee as loan_fee, 
+    rep_pay_cal_standard.epc as epc, 
+    rep_pay_cal_standard.rep_1_addr as rep_1_addr, 
+    rep_pay_cal_standard.rep_1_rr as rep_1_rr, 
+    rep_pay_cal_standard.rep_1_position as rep_1_position, 
+    rep_pay_cal_standard.rep_1_net_epc as rep_1_net_epc, 
+    rep_pay_cal_standard.rep_1_credit as rep_1_credit, 
+    rep_pay_cal_standard.rep_2 as rep_2, 
+    rep_pay_cal_standard.rep_1_comm_status_check as rep_1_comm_status_check, 
+    rep_pay_cal_standard.rep_1_draw_amount as rep_1_draw_amount, 
+    rep_pay_cal_standard.loan_type as loan_type, 
     rep_pay_cal_standard.state as state,
     rep_pay_cal_standard.wc as wc,
     rep_pay_cal_standard.commission_model AS commission_model,
-    rep_pay_cal_standard.pr_r1_d_type AS pr_r1_d_type,
-    rep_pay_cal_standard.pr_r1_d_today AS pr_r1_d_today,
+    rep_pay_cal_standard.pr_r1_d_type AS pr_r1_d_type, 
+    rep_pay_cal_standard.pr_r1_d_today AS pr_r1_d_today, 
     rep_pay_cal_standard.pr_r1_d_status AS pr_r1_d_status,
     rep_pay_cal_standard.REP_COMM as sheet_type
 FROM
     rep_pay_cal_standard
 WHERE
 (
-    rep_pay_cal_standard.wc > '2018-12-31'  AND
-    rep_pay_cal_standard.rep_pay = 'YES'  AND
+    rep_pay_cal_standard.wc > '07-06-2019'  AND --mmddyyyy
     rep_pay_cal_standard.rep_1_balance <> 0    AND
     rep_pay_cal_standard.rep_1_draw_paid = 0  AND
     rep_pay_cal_standard.ntp IS NOT NULL    AND
-    rep_pay_cal_standard.inst_sys IS NULL
+    rep_pay_cal_standard.inst_sys IS NULL AND
+    rep_pay_cal_standard.rep_pay = 'YES'
 );
  
 CREATE VIEW pr_r1_f AS
@@ -323,26 +327,24 @@ SELECT
     rep_pay_cal_standard.pr_r1_f_type AS pr_r1_f_type,
     rep_pay_cal_standard.pr_r1_f_today AS pr_r1_f_today,
     rep_pay_cal_standard.pr_r1_f_status AS pr_r1_f_status,
-    rep_pay_cal_standard.REP_COMM as sheet_type
+    rep_pay_cal_standard.REP_COMM AS sheet_type
 FROM
     rep_pay_cal_standard
 WHERE
 (
-    rep_pay_cal_standard.wc > '2018-12-31'  AND
-        rep_pay_cal_standard.ntp IS NOT NULL    AND
-        rep_pay_cal_standard.rep_1_balance <> 0    AND
-     (
-        (
-            rep_pay_cal_standard.status = 'Hold' OR
-            rep_pay_cal_standard.status = 'Jeopardy'
-        )                                           OR
-        rep_pay_cal_standard.cancel IS NOT NULL OR
-        (
-            rep_pay_cal_standard.inst_sys IS NOT NULL AND
-            rep_pay_cal_standard.rep_pay = 'YES'
+    rep_pay_cal_standard.wc > '07-06-2019'
+    AND rep_pay_cal_standard.ntp IS NOT NULL
+    AND (
+        rep_pay_cal_standard.rep_1_balance <> 0
+        AND (
+            (rep_pay_cal_standard.status = 'Hold' OR rep_pay_cal_standard.status = 'Jeopardy')
+            OR rep_pay_cal_standard.cancel IS NOT NULL
+            OR rep_pay_cal_standard.inst_sys IS NOT NULL
         )
     )
+    AND rep_pay_cal_standard.rep_pay = 'YES'
 );
+
  
 CREATE VIEW pr_r1_b AS
 SELECT
@@ -353,8 +355,8 @@ SELECT
     rep_pay_cal_standard.per_team_kw AS per_team_kw,
     rep_pay_cal_standard.state AS status,
     rep_pay_cal_standard.status_date AS status_date,
-    rep_pay_cal_standard.rep_1_rl AS rep_2_rl,
-    rep_pay_cal_standard.rep_1_rate AS rep_2_rate,
+    rep_pay_cal_standard.rep_2_rl AS rep_2_rl,
+    rep_pay_cal_standard.rep_2_rate AS rep_2_rate,
     rep_pay_cal_standard.wc AS wc,
     rep_pay_cal_standard.state AS state,
     rep_pay_cal_standard.commission_model AS commission_model,
@@ -366,7 +368,7 @@ FROM
     rep_pay_cal_standard
 WHERE
 (
-    rep_pay_cal_standard.wc > '2018-12-31'  AND
+    rep_pay_cal_standard.wc > '07-06-2019'  AND
     rep_pay_cal_standard.rep_2_rate <> 0 AND
     rep_pay_cal_standard.inst_sys IS NOT NULL
 );
@@ -406,7 +408,7 @@ FROM
     rep_pay_cal_standard
 WHERE
 (
-    rep_pay_cal_standard.wc > '2018-12-31'  AND
+    rep_pay_cal_standard.wc > '07-06-2019'  AND
     rep_pay_cal_standard.rep_2_balance <> 0  AND
     rep_pay_cal_standard.rep_2_draw_paid = 0  AND
     rep_pay_cal_standard.ntp IS NOT NULL    AND
@@ -446,19 +448,21 @@ SELECT
     rep_pay_cal_standard.REP_COMM as sheet_type
 FROM
     rep_pay_cal_standard
-WHERE(
-    rep_pay_cal_standard.wc > '2018-12-31' AND
-    rep_pay_cal_standard.ntp IS NOT NULL AND
-    rep_pay_cal_standard.rep_2_balance != 0 AND
-    (
-        rep_pay_cal_standard.status = 'Hold' OR
-        rep_pay_cal_standard.status = 'Jeopardy' OR
-        rep_pay_cal_standard.cancel IS NOT NULL OR
-        rep_pay_cal_standard.inst_sys IS NOT NULL
-    ) AND
-    rep_pay_cal_standard.rep_pay = 'YES'
+WHERE
+(
+    rep_pay_cal_standard.wc > '07-06-2019'
+    AND rep_pay_cal_standard.ntp IS NOT NULL
+    AND (
+        rep_pay_cal_standard.rep_2_balance <> 0
+        AND (
+            (rep_pay_cal_standard.status = 'Hold' OR rep_pay_cal_standard.status = 'Jeopardy')
+            OR rep_pay_cal_standard.cancel IS NOT NULL
+            OR rep_pay_cal_standard.inst_sys IS NOT NULL
+        )
+    )
+    AND rep_pay_cal_standard.rep_pay = 'YES'
 );
- 
+
  
  
 CREATE VIEW pr_r2_b AS
@@ -483,7 +487,7 @@ FROM
     rep_pay_cal_standard
 WHERE
 (
-    rep_pay_cal_standard.wc > '2018-12-31'  AND
+    rep_pay_cal_standard.wc > '07-06-2019'  AND
     rep_pay_cal_standard.rep_2_max_rate <> 0 AND
     rep_pay_cal_standard.inst_sys IS NOT NULL
 );
@@ -509,7 +513,7 @@ FROM
     rep_pay_cal_ovrrd_standard
 WHERE
 (
-    rep_pay_cal_ovrrd_standard.wc > '2013-01-01'  AND
+    rep_pay_cal_ovrrd_standard.wc > '09-18-2013'  AND
     rep_pay_cal_ovrrd_standard.r1_sl_bal <> 0 AND
     rep_pay_cal_ovrrd_standard.inst_sys IS NOT NULL
 );
@@ -665,16 +669,19 @@ SELECT
     rep_pay_cal_standard.REP_COMM as sheet_type
 FROM
     rep_pay_cal_standard
-WHERE(
-    rep_pay_cal_standard.wc > '2018-12-31' AND
-    rep_pay_cal_standard.appt_balance <> 0 AND
-    (
-        rep_pay_cal_standard.status = 'Hold' OR
-        rep_pay_cal_standard.status = 'Jeopardy' OR
-        rep_pay_cal_standard.cancel IS NOT NULL OR
-        rep_pay_cal_standard.inst_sys IS NOT NULL
+WHERE
+(
+    rep_pay_cal_standard.wc > '07-06-2019'
+    AND (
+        rep_pay_cal_standard.appt_balance <> 0
+        AND (
+            (rep_pay_cal_standard.status = 'Hold' OR rep_pay_cal_standard.status = 'Jeopardy')
+            OR rep_pay_cal_standard.cancel IS NOT NULL
+            OR rep_pay_cal_standard.inst_sys IS NOT NULL
+        )
     )
 );
+
  
  
 CREATE VIEW rep_pay_pr_data AS
@@ -685,8 +692,8 @@ CREATE VIEW rep_pay_pr_data AS
         unique_id as unique_id,
         rep_1 as owe_contractor,
         rep_1_dba as DBA,
-        pr_r1_d_type as type, --need to calculate
-        pr_r1_d_today as Today, --need to calculate
+        pr_r1_d_type as type,
+        pr_r1_d_today as Today,
         rep_1_draw_amount as Amount,
         loan_type as finance_type,
         system_size as sys_size,
@@ -741,9 +748,9 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r1_f_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r1_f_status as rep_status,
+        sheet_type as sheet_type
 FROM pr_r1_f
 UNION ALL
     SELECT
@@ -756,7 +763,7 @@ UNION ALL
         pr_r1_b_type as type, --need to calculate
         pr_r1_b_today as Today, --need to calculate
         rep_2_rate as Amount,
-        NULL as finance_type, --need to calculate type
+        pr_r1_b_type as finance_type,
         NULL as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -858,7 +865,7 @@ UNION ALL
         pr_r2_b_type as type, --need to calculate
         pr_r2_b_today as Today, --need to calculate
         rep_2_max_rate as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_r2_b_type as finance_type,
         NULL as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -892,7 +899,7 @@ UNION ALL
         pr_r1_sl_type as type, --need to calculate
         pr_r1_sl_today as Today, --need to calculate
         r1_sl_balance as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_r1_sl_type as finance_type,--need to calculate type
         system_size as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -926,7 +933,7 @@ UNION ALL
         pr_r2_sl_type as type, --need to calculate
         pr_r2_sl_today as Today, --need to calculate
         r2_sl_balance as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_r2_sl_type as finance_type,--need to calculate type
         system_size as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -960,7 +967,7 @@ UNION ALL
         pr_r1_dm_type as type, --need to calculate
         pr_r1_dm_today as Today, --need to calculate
         r1_dm_balance as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_r1_dm_type as finance_type,--need to calculate type
         system_size as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -994,7 +1001,7 @@ UNION ALL
         pr_r2_dm_type as type, --need to calculate
         pr_r2_dm_today as Today, --need to calculate
         r2_dm_balance as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_r2_dm_type as finance_type,--need to calculate type
         system_size as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -1028,7 +1035,7 @@ UNION ALL
         pr_r1_dir_type as type, --need to calculate
         pr_r1_dir_today as Today, --need to calculate
         r1_dir_balance as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_r1_dir_type as finance_type,--need to calculate type
         system_size as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -1062,7 +1069,7 @@ UNION ALL
         pr_r2_dir_type as type, --need to calculate
         pr_r2_dir_today as Today, --need to calculate
         r2_dir_balance as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_r2_dir_type as finance_type,--need to calculate type
         system_size as sys_size,
         NULL as contract_total,
         NULL as loan_fee,
@@ -1096,7 +1103,7 @@ UNION ALL
         pr_appt_type as type, --need to calculate
         pr_appt_today as Today, --need to calculate
         appt_balance as Amount,
-        NULL as finance_type,--need to calculate type
+        pr_appt_type as finance_type,--need to calculate type
         NULL as sys_size,
         NULL as contract_total,
         NULL as loan_fee,

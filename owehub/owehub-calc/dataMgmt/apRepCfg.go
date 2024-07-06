@@ -121,7 +121,7 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 			Rep:         Rep,
 			Dba:         Dba,
 			Type:        Type,
-			Date:        Date.Format("2006-01-02"),
+			Date:        Date.Format("01-02-2006"),
 			Amount:      Amount,
 			Method:      Method,
 			Cbiz:        Cbiz,
