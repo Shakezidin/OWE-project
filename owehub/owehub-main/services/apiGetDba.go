@@ -98,9 +98,9 @@ func HandleGetDBADataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		DBA := models.GetDBA{
-			RecordId: RecordId,
-			Dba:   Dba,
-			PreferredName:     PreferredName,
+			RecordId:      RecordId,
+			Dba:           Dba,
+			PreferredName: PreferredName,
 		}
 
 		DBAList.DBAList = append(DBAList.DBAList, DBA)
@@ -159,6 +159,9 @@ func PrepareDBAFilters(tableName string, dataFilter models.DataRequestBody, forD
 				whereEleList = append(whereEleList, value)
 			case "dba":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.dba) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "record_id":
+				filtersBuilder.WriteString(fmt.Sprintf("ap.record_id %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

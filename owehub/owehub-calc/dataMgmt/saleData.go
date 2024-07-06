@@ -68,7 +68,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	// uidList := []string{"OUR21563"} //OUR21190
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
 
-	// query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ('OUR21563')"
+	// query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ('OUR22811')"
 	// for i, uid := range uidList {
 	// 	query += "'" + strings.ToUpper(uid) + "'"
 	// 	if len(uidList) == 1 {
@@ -296,15 +296,8 @@ func determineSystemType(sysSize float64, state string) string {
 func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, dealer, installer, state, loanType string, contractdoldol float64, contractDate time.Time) float64 {
 	log.EnterFn(0, "CalculateLoanFee")
 	defer func() { log.ExitFn(0, "CalculateLoanFee", nil) }()
-	var loanfee float64
-	// for _, data := range psaleDataList.SaleDataList {
-	// if data.UniqueId == uniqueId {
 	dlrCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, loanType, contractDate)
 	return (contractdoldol * dlrCost) / 100
-	// }
-	// }
-
-	return loanfee
 }
 
 func (psaleDataList *SaleDataList) CalculateRepRLoanFee(rep, uniqueId, dealer, installer, state, rep1, rep2, types string, sysSize, ContractDolDol float64, date time.Time) (r1LoanFee float64) {

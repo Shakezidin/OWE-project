@@ -89,7 +89,7 @@ func (pApDedData *ApDedCfgStruct) LoadApDedCfg() (err error) {
 * DESCRIPTION:     calculates the appt set dba value based on the provided data
 * RETURNS:         PaidAmnt
 *****************************************************************************/
-func (ApDedData *ApDedCfgStruct) GetApDedPaidAmount(UniqueId, payee string) (PaidAmnt float64) {
+func (ApDedData *ApDedCfgStruct) GetApDedPaidAmount(UniqueId string) (PaidAmnt float64) {
 	log.EnterFn(0, "GetApDedPaidAmount")
 	defer func() { log.ExitFn(0, "GetApDedPaidAmount", nil) }()
 	for _, data := range ApDedData.ApDedList {
@@ -105,7 +105,7 @@ func (ApDedData *ApDedCfgStruct) GetApDedPaidAmount(UniqueId, payee string) (Pai
  * DESCRIPTION:     calculates the Paid amount value based on the unique Id
  * RETURNS:         balance
  *****************************************************************************/
-func (ApDedData *ApDedCfgStruct) CalculateBalance(UniqueId, payee string, totalPaid float64) (balance float64) {
+func (ApDedData *ApDedCfgStruct) CalculateBalance(UniqueId string, totalPaid float64) (balance float64) {
 	log.EnterFn(0, "CalculateBalance")
 	defer func() { log.ExitFn(0, "CalculateBalance", nil) }()
 	for _, data := range ApDedData.ApDedList {
