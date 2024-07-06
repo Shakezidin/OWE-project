@@ -114,7 +114,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 	if len(Rep1) > 0 {
 		for _, data := range RepPayCfg.RepPayList.RepPaySettingsList {
 			if len(data.StartDate) > 0 {
-				startDate, err = time.Parse("01-02-2006", data.StartDate)
+				startDate, err = time.Parse("01-02-06", data.StartDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
 				}
@@ -124,7 +124,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 			}
 
 			if len(data.EndDate) > 0 {
-				endDate, err = time.Parse("01-02-2006", data.EndDate)
+				endDate, err = time.Parse("01-02-06", data.EndDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
 				}
