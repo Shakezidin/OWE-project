@@ -246,7 +246,11 @@ CREATE TABLE rep_pay_cal_ovrrd_standard(
     pr_r2_dir_type varchar,
     pr_r2_dir_today date,
     pr_r2_dir_status varchar,
-    LEADER_OVRD varchar
+    LEADER_OVRD varchar,
+    team_count float,
+    rep_1_team varchar,
+    rep_2_team varchar,
+    per_team_kw float
 );
  
  

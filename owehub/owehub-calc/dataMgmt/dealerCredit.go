@@ -104,7 +104,7 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 			Date = time.Time{}
 		}
 
-		dateString := Date.Format("2006-01-02")
+		dateString := Date.Format("01-02-2006")
 		DealerCreditData := models.GetDealerCredit{
 			RecordId:    RecordId,
 			UniqueID:    UniqueID,

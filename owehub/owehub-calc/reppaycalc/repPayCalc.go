@@ -32,14 +32,12 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 	)
 	log.EnterFn(0, "ExecRepPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecRepPayInitialCalculation", err) }()
-	date1, _ := time.Parse("01-02-2006", "01-01-2016")
-	date2, _ := time.Parse("01-02-2006", "01-01-2023")
-
+	date1, _ := time.Parse("02.01.2006 15:04:05 000", "01.01.2016 00:00:00 000")
+	date2, _ := time.Parse("02.01.2006 15:04:05 000", "01.01.2022 00:00:00 000")
 	count := 0
 	newcount := 0
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var repPayCalc map[string]interface{}
-		log.FuncErrorTrace(0, "saleData.UniuqeId : %v, saleData.RepPay : %v, saleData.contractDate: %v", saleData.UniqueId, saleData.RepPay, saleData.ContractDate)
 		saleData.RepPay = "YES" //for calculating reppay we need type, that's y I hardcoded this
 		if len(saleData.UniqueId) > 0 && (saleData.RepPay == "YES" || saleData.RepPay == "Rep Pay") && saleData.ContractDate.After(date2) {
 			repPayCalc, err = CalculateRepPayProject(saleData)
@@ -67,7 +65,7 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			newcount++
 		}
 		// Process and clear the batch every 1000 records
-		if (count+1)%1000 == 0 && len(repPayCalcList) > 0 {
+		if (count+1)%500 == 0 && len(repPayCalcList) > 0 {
 			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC, repPayCalcList)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to insert initial rep pay Data in DB err: %v", err)
@@ -75,7 +73,7 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			repPayCalcList = nil // Clear the arDataList
 		}
 		// Process and clear the batch every 1000 records
-		if (newcount+1)%1000 == 0 && len(oldrepPayCalcList) > 0 {
+		if (newcount+1)%500 == 0 && len(oldrepPayCalcList) > 0 {
 			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC_OVRD, oldrepPayCalcList)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to insert initial ovrd Rep pay Data in DB err: %v", err)
