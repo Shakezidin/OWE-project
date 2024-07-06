@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchDBAList, createDBA, updateDBA, archiveDBA } from '../../../apiActions/config/dbaaction';
+import {
+  fetchDBAList,
+  createDBA,
+  updateDBA,
+  archiveDBA,
+} from '../../../apiActions/config/dbaaction';
 
 interface DBAItem {
   record_id: number;
@@ -13,6 +18,7 @@ interface DBAState {
   isSuccess: boolean;
   isLoading: boolean;
   error: string | null;
+  isFormSubmitting: boolean;
 }
 
 const initialState: DBAState = {
@@ -21,12 +27,17 @@ const initialState: DBAState = {
   isSuccess: false,
   isLoading: false,
   error: null,
+  isFormSubmitting: false,
 };
 
 const dbaSlice = createSlice({
   name: 'dba',
   initialState,
-  reducers: {},
+  reducers: {
+    resetSuccess: (state) => {
+      state.isSuccess = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchDBAList.pending, (state, action) => {
@@ -35,10 +46,8 @@ const dbaSlice = createSlice({
       })
       .addCase(fetchDBAList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
         state.dba_list = action.payload.list || []; // Use an empty array if list is undefined
         state.count = action.payload.count;
-        console.log("Fetched DBA List:", action.payload);
       })
       .addCase(fetchDBAList.rejected, (state, action) => {
         state.isLoading = false;
@@ -48,28 +57,33 @@ const dbaSlice = createSlice({
       .addCase(createDBA.pending, (state, action) => {
         state.isLoading = true;
         state.error = null;
+        state.isFormSubmitting = true;
       })
       .addCase(createDBA.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.isFormSubmitting = false;
       })
       .addCase(createDBA.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
+        state.isFormSubmitting = false;
         state.error = action.payload as string;
       })
       .addCase(updateDBA.pending, (state, action) => {
         state.isLoading = true;
         state.error = null;
+        state.isFormSubmitting = true;
       })
       .addCase(updateDBA.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.isFormSubmitting = false;
       })
       .addCase(updateDBA.rejected, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = false;
         state.error = action.payload as string;
+        state.isFormSubmitting = false;
       })
       .addCase(archiveDBA.pending, (state, action) => {
         state.isLoading = true;
@@ -77,14 +91,12 @@ const dbaSlice = createSlice({
       })
       .addCase(archiveDBA.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
       })
       .addCase(archiveDBA.rejected, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = false;
         state.error = action.payload as string;
       });
   },
 });
-
+export const { resetSuccess } = dbaSlice.actions;
 export default dbaSlice.reducer;

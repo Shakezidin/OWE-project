@@ -164,7 +164,7 @@ const Dba = () => {
           filters,
         };
 
-        const res = await postCaller('archive_dba', newValue);
+        const res = await postCaller('update_dba_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
@@ -198,7 +198,7 @@ const Dba = () => {
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller('archive_dba', newValue);
+      const res = await postCaller('update_dba_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
