@@ -199,16 +199,12 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 
 			// Log any parsing errors
 			if errStart != nil {
-				log.FuncErrorTrace(0, "Error parsing start date:", errStart)
+				log.FuncErrorTrace(0, "Error parsing start date: %v", errStart)
 				continue
 			}
 			if errEnd != nil {
-				log.FuncErrorTrace(0, "Error parsing end date:", errEnd)
+				log.FuncErrorTrace(0, "Error parsing end date: %v", errEnd)
 				continue
-			}
-
-			if installer == "OWE" {
-				installer = "One World Energy"
 			}
 
 			var st string

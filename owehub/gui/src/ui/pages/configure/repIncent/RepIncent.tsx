@@ -75,12 +75,12 @@ const RepIncent = () => {
   };
   const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
-
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const endIndex = currentPage * itemsPerPage;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -354,10 +354,11 @@ const RepIncent = () => {
         <div className="page-heading-container">
           {data?.length > 0 ? (
             <>
-              <p className="page-heading">
-                {startIndex} - {endIndex > count ? count : endIndex}{' '}
-                of {count} item
-              </p>
+                <p className="page-heading">
+              Showing {startIndex} -{' '}
+              {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
 
               <Pagination
                 currentPage={currentPage}

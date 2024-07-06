@@ -16,7 +16,7 @@ export const fetchApPda = createAsyncThunk(
   async (data: any) => {
     const response = await postCaller('get_appda', data);
     return {
-      list: response.data.appt_setters_list,
+      list: response.data.ap_pda_list,
       count: response.dbRecCount,
     };
   }

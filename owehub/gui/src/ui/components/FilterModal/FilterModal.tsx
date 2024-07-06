@@ -248,7 +248,6 @@ const FilterModal: React.FC<TableProps> = ({
                     <div className="">
                       <SelectOption
                         options={[
-                          { value: 'Select', label: 'Select' },
                           ...options,
                         ]}
                         value={

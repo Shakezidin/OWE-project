@@ -131,7 +131,7 @@ func calculateStatusCheck(dealer, status string, expense, commTotal, credit, rep
 	var statusCheck float64
 
 	if len(dealer) > 0 {
-		if status == "Cancel" {
+		if status == "CANCEL" {
 			statusCheck = 0 - expense
 		} else if status == "Shaky" {
 			statusCheck = 0 - expense

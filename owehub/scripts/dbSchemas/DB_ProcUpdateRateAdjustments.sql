@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION update_rate_adjustments(
     p_id INT,
-    p_unique_id VARCHAR,
     p_pay_scale VARCHAR,
     p_position VARCHAR,
     p_adjustment VARCHAR,
@@ -13,7 +12,6 @@ AS $$
 BEGIN
     UPDATE rate_adjustments
     SET 
-        unique_id = p_unique_id,
         pay_scale = p_pay_scale,
         position = p_position,
         adjustment = p_adjustment,

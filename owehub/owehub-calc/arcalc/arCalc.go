@@ -140,8 +140,8 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 		status = "PTO"
 	}
 
-	// this hardcodes values from some unique ids
-	updateSaleDataForSpecificIds(&saleData, saleData.UniqueId)
+	// this hardcodes values for some unique ids
+	loanFee = updateSaleDataForSpecificIds(&saleData, saleData.UniqueId, loanFee)
 
 	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData)
 	epc := saleData.ContractTotal / (saleData.SystemSize * 1000)
@@ -150,7 +150,9 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize)
 	addrAuto = dataMgmt.AutoAdderCfg.CalculateArAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemSize, saleData.State, saleData.Installer)
-	loanFee = dataMgmt.SaleData.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, contractCalc, saleData.ContractDate)
+	if loanFee == 0 {
+		loanFee = dataMgmt.SaleData.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, contractCalc, saleData.ContractDate)
+	}
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
 	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)
@@ -197,32 +199,45 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	return outData, err
 }
 
-func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string) {
+func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId string, loanFee float64) float64 {
 	// Generic conditions
 	if saleData.Installer == "One World Energy" { // for OUR11354
 		saleData.Installer = "OWE"
+	}
+	if saleData.Partner == "SOVA" {
+		saleData.Partner = "Sunnova"
 	}
 	switch uniqueId {
 	case "OUR11354":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
 		saleData.Partner = "Dividend"
+		loanFee = 7922.35
 	case "OUR11364":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-0MONTH-25y-2.99"
 		saleData.Partner = "Dividend"
+		loanFee = 18622.06
 	case "OUR11356":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-2.99"
 		saleData.Partner = "Dividend"
+		loanFee = 22408.68
 	case "OUR11372":
 		saleData.Type = "LEASE 1.9"
 		saleData.LoanType = "LEASE-SOVA-1.9"
-		saleData.Partner = "SOVA"
+		saleData.Installer = "OWE"
+		saleData.ContractTotal = 34794.29
 	case "OUR11403":
 		saleData.Type = "LOAN"
 		saleData.LoanType = "LF-DIV-12MONTH-25y-3.99"
 		saleData.Partner = "Dividend"
+		loanFee = 8612.41
+	case "OUR24952":
+		saleData.Type = "LEASE"
+		saleData.LoanType = "LEASE-LightReach-2.99"
+		saleData.Partner = "LightReach"
+		// loanFee = 8612.41
 		// case "OUR11433":
 		// 	saleData.Type = "LOAN"
 		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"
@@ -248,6 +263,7 @@ func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId st
 		// 	saleData.LoanType = "LF-DIV-0Month-25y-2.99"
 		// 	saleData.LoanType = ""
 	}
+	return loanFee
 }
 
 /******************************************************************************
@@ -306,17 +322,12 @@ func CalculateOweAR(contractCalc float64, loanFee float64) float64 {
  * RETURNS:        	gross revenue
  *****************************************************************************/
 func CalculateGrossRev(epcCalc float64, redLine float64, systemSize float64) float64 {
-
 	log.EnterFn(0, "CalculateGrossRev")
 	defer func() { log.ExitFn(0, "CalculateGrossRev", nil) }()
 
 	if epcCalc > 0.0 {
-		// if redLine > 0.0 {
-		/* Calculate gross_rev */
 		return (epcCalc - redLine) * 1000 * systemSize
-		// }
 	}
-	/* Return 0 if EPC Calc is empty or cannot be parsed */
 	return 0
 }
 
@@ -418,25 +429,32 @@ func CalculateCurrentDue(saleData *dataMgmt.SaleDataStruct, netRev, totalPaid, p
 	if !saleData.CancelledDate.IsZero() || saleData.ProjectStatus == "Hold" || saleData.ProjectStatus == "Jeopardy" {
 		currentDue = (0 - totalPaid)
 	} else {
-		if !saleData.PermitSubmittedDate.IsZero() &&
-			(saleData.PermitSubmittedDate.Before(today) || saleData.PermitSubmittedDate.Equal(today)) {
+		truncatedPermitSubmittedDate := truncateToDay(saleData.PermitSubmittedDate)
 
-			if !saleData.PtoDate.IsZero() &&
-				(saleData.PtoDate.Before(today) || saleData.PtoDate.Equal(today)) {
+		if !truncatedPermitSubmittedDate.IsZero() &&
+			(truncatedPermitSubmittedDate.Before(today) || truncatedPermitSubmittedDate.Equal(today)) {
+
+			truncatedPtoDate := truncateToDay(saleData.PtoDate)
+			truncatedPvInstallCompletedDate := truncateToDay(saleData.PvInstallCompletedDate)
+
+			if !truncatedPtoDate.IsZero() &&
+				(truncatedPtoDate.Before(today) || truncatedPtoDate.Equal(today)) {
 
 				currentDue = common.Round(netRev-totalPaid, 2) + reconcile
 
-			} else if !saleData.PvInstallCompletedDate.IsZero() &&
-				(saleData.PvInstallCompletedDate.Before(today) || saleData.PvInstallCompletedDate.Equal(today)) {
+			} else if !truncatedPvInstallCompletedDate.IsZero() &&
+				(truncatedPvInstallCompletedDate.Before(today) || truncatedPvInstallCompletedDate.Equal(today)) {
 
 				currentDue = common.Round(permitPay+installPay-totalPaid, 2) + reconcile
-			} else if !saleData.PermitSubmittedDate.IsZero() &&
-				(saleData.PermitSubmittedDate.Before(today) || saleData.PermitSubmittedDate.Equal(today)) {
-
+			} else {
 				currentDue = common.Round(permitPay-totalPaid, 2) + reconcile
 			}
 		}
 	}
 
 	return currentDue
+}
+
+func truncateToDay(t time.Time) time.Time {
+	return t.Truncate(24 * time.Hour)
 }
