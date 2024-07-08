@@ -126,6 +126,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
           // localStorage.setItem('is_password_change_required', 'false');
           dispatch(logout());
           navigate('/login');
+          console.log("working");
+          
         } else {
           showToast(result.message, 'error');
         }
