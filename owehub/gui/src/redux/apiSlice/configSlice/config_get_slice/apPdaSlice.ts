@@ -41,7 +41,7 @@ const apPdaSlice = createSlice({
       })
       .addCase(fetchApPda.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload.list;
+        state.data = action.payload.list || [];
         state.totalcount = action.payload.count;
         
       })

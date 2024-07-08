@@ -1,5 +1,4 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
-
 export const ApPdaColumn: Column[] = [
   {
     name: 'unique_id',
@@ -9,23 +8,35 @@ export const ApPdaColumn: Column[] = [
   },
   { name: 'payee', displayName: 'Payee', type: 'string', isCheckbox: false },
   {
-    name: 'Amount_ovrd',
+    name: 'amount_ovrd',
     displayName: 'Amount Ovrd',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 
   {
     name: 'approved_by',
-    displayName: 'approved_by',
+    displayName: 'Approved By',
     type: 'string',
     isCheckbox: false,
   },
 
   {
-    name: 'Date',
+    name: 'date',
     displayName: 'Date',
     type: 'date',
+    isCheckbox: false,
+  },
+  {
+    name: 'customer',
+    displayName: 'Customer',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'dealer',
+    displayName: 'Dealer',
+    type: 'string',
     isCheckbox: false,
   },
   {
@@ -35,7 +46,7 @@ export const ApPdaColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'Description',
+    name: 'description',
     displayName: 'Description',
     type: 'string',
     isCheckbox: false,

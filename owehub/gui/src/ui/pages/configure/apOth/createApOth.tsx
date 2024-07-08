@@ -14,10 +14,10 @@ import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import {
-  createApttSetters,
-  fetchApptSetters,
-  updateApptSetters,
-} from '../../../../redux/apiActions/config/apptSetterAction';
+  createApOth,
+  fetchApOth,
+  updateApOth,
+} from '../../../../redux/apiActions/config/apOthAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
@@ -38,16 +38,20 @@ const CreateApOth: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess, isFormSubmitting } = useAppSelector(
-    (state) => state.apptsetters
+    (state) => state.apOthSlice
   );
+
+  console.log(editData, "fisklgh")
   const [createAppSettersData, setAppSettersData] = useState({
-    unique_id: editData?.unique_id || '',
-    name: editData?.name || '',
-    team_name: editData?.team_name || '',
-    pay_rate: editData?.pay_rate || '',
-    start_date: editData?.start_date || '',
-    end_date: editData?.end_date || '',
+    unique_id:  editData?.unique_id || '',
+    payee:  editData?.payee || '',
+    amount:   editData?.amount || '',
+    date:   editData?.date || '',
+    short_code:   editData?.short_code || '',
+    description:   editData?.description || '',
+    notes:   editData?.notes || '',
   });
+
   type TError = typeof createAppSettersData;
   const [errors, setErrors] = useState<TError>({} as TError);
 
@@ -55,8 +59,9 @@ const CreateApOth: React.FC<payScheduleProps> = ({
     const error: TError = {} as TError;
     for (const key in createAppSettersData) {
       if (!createAppSettersData[key as keyof typeof createAppSettersData]) {
-        error[key as keyof typeof createAppSettersData] =
-          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof createAppSettersData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -93,19 +98,26 @@ const CreateApOth: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (handleValidation()) {
+    if(handleValidation()){
       if (editMode) {
         dispatch(
-          updateApptSetters({
+          updateApOth({
             ...createAppSettersData,
             record_id: editData?.record_id!,
+            amount: parseInt(createAppSettersData.amount),
+
           })
         );
-      } else {
-        dispatch(createApttSetters(createAppSettersData));
       }
-    }
+      else {
+    const data = {
+      ...createAppSettersData,
+      amount: parseInt(createAppSettersData.amount), // Convert to number
+    };
+    dispatch(createApOth(data));}
+  }
   };
+
   useEffect(() => {
     if (isSuccess) {
       handleClose();
@@ -124,7 +136,7 @@ const CreateApOth: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? 'Create Appt Setters' : 'Update Appt Setters'}
+          {editMode === false ? 'Create Ap Oth' : 'Update Ap Oth'}
         </h3>
 
         <div className="modal-body">
@@ -144,10 +156,8 @@ const CreateApOth: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -156,72 +166,41 @@ className="error"
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Name"
-                    value={createAppSettersData.name}
-                    name="name"
+                    label="Payee"
+                    value={createAppSettersData.payee}
+                    name="payee"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.name && (
+                  {errors?.payee && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.name}
+                      {errors.payee}
                     </span>
                   )}
                 </div>
-                <div className="create-input-field">
-                  <label className="inputLabel-select">Team</label>
-                  <SelectOption
-                    options={teamsOption(newFormData)}
-                    onChange={(newValue) =>
-                      setAppSettersData((prev) => ({
-                        ...prev,
-                        team_name: newValue?.value!,
-                      }))
-                    }
-                    value={teamsOption(newFormData)?.find(
-                      (option) =>
-                        option.value === createAppSettersData.team_name
-                    )}
-                  />
-                  {errors?.team_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                  
-                        
-                      }}
-className="error"
-                    >
-                      {errors.team_name}
-                    </span>
-                  )}
-                </div>
+                 
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Pay Rate"
-                    value={createAppSettersData.pay_rate}
-                    name="pay_rate"
+                    label="Amount"
+                    value={createAppSettersData.amount}
+                    name="amount"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.pay_rate && (
+                  {errors?.amount && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.pay_rate}
+                      {errors.amount}
                     </span>
                   )}
                 </div>
@@ -229,55 +208,88 @@ className="error"
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start Date"
-                    value={createAppSettersData.start_date}
-                    name="start_date"
+                    label="Date"
+                    value={createAppSettersData.date}
+                    name="date"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.start_date && (
+                  {errors?.date && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.start_date}
+                      {errors.date}
                     </span>
                   )}
                 </div>
+
                 <div className="create-input-field">
                   <Input
-                    type={'date'}
-                    label="End Date"
-                    disabled={!createAppSettersData.start_date}
-                    value={createAppSettersData.end_date}
-                    min={
-                      createAppSettersData.start_date &&
-                      format(
-                        addDays(new Date(createAppSettersData.start_date), 1),
-                        'yyyy-MM-dd'
-                      )
-                    }
-                    name="end_date"
+                    type={'text'}
+                    label="Short Code"
+                    value={createAppSettersData.short_code}
+                    name="short_code"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.end_date && (
+                  {errors?.short_code && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.end_date}
+                      {errors.short_code}
                     </span>
                   )}
                 </div>
+
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Description"
+                    value={createAppSettersData.description}
+                    name="description"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.description && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.description}
+                    </span>
+                  )}
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Notes"
+                    value={createAppSettersData.notes}
+                    name="notes"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.notes && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.notes}
+                    </span>
+                  )}
+                </div>
+                
               </div>
             </div>
           </div>

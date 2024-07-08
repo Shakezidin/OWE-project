@@ -1,26 +1,14 @@
- import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
-
 import { ActionButton } from '../../../components/button/ActionButton';
-import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { teamsOption } from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
-import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
-import SelectOption from '../../../components/selectOption/SelectOption';
-import {
-  createApPda,
-  updateApPda,
-  fetchApPda
-} from '../../../../redux/apiActions/config/apPdaAction';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
+import { createApPda } from '../../../../redux/apiActions/config/apPdaAction';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apPdaSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
-import { addDays, format } from 'date-fns';
 import { firstCapitalize } from '../../../../utiles';
 
 interface payScheduleProps {
@@ -41,13 +29,13 @@ const CreateApPda: React.FC<payScheduleProps> = ({
     (state) => state.apPdaSlice
   );
   const [createAppSettersData, setAppSettersData] = useState({
-    unique_id: '',
-    payee: '',
-    amount_ovrd: '',
-    date: '',
-    approved_by: '',
-    description: '',
-    notes: '',
+    unique_id: editData?.unique_id || '',
+    payee: editData?.payee || '',
+    amount_ovrd: editData?.amount_ovrd || '',
+    date: editData?.date || '',
+    approved_by: editData?.approved_by || '',
+    description: editData?.description || '',
+    notes: editData?.notes || '',
   });
   type TError = typeof createAppSettersData;
   const [errors, setErrors] = useState<TError>({} as TError);
@@ -95,12 +83,13 @@ const CreateApPda: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-     const data = {
-          ...createAppSettersData,
-          amount_ovrd: parseInt(createAppSettersData.amount_ovrd), // Convert to number
-        };
-        dispatch(createApPda(data));
-      
+    if (handleValidation()) {
+      const data = {
+        ...createAppSettersData,
+        amount_ovrd: parseFloat(createAppSettersData.amount_ovrd), // Convert to number
+      };
+      dispatch(createApPda(data));
+    }
   };
   useEffect(() => {
     if (isSuccess) {
@@ -175,7 +164,10 @@ const CreateApPda: React.FC<payScheduleProps> = ({
                     value={createAppSettersData.amount_ovrd}
                     name="amount_ovrd"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+                      handleInputChange(e);
+                    }}
                   />
                   {errors?.amount_ovrd && (
                     <span

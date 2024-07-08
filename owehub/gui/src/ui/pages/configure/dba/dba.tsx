@@ -316,10 +316,10 @@ const Dba = () => {
                             )
                           }
                         />
-                        {el.record_id}
+                      {el.preferred_name || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.preferred_name || 'N/A'}</td>
+                    
                     <td>{el.dba || 'N/A'}</td>
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
