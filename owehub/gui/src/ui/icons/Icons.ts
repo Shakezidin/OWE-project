@@ -105,6 +105,9 @@ import lable_img from '../../resources/assets/lable_img.svg';
 import dbm from '../../resources/assets/dbm.svg';
 import teamgroup from '../../resources/assets/teamgroup.svg';
 import addicon from '../../resources/assets/addnew.svg';
+import TeamEdit from '../../resources/assets/TeamEdit.svg';
+
+
 
 
 
@@ -230,4 +233,5 @@ export const ICONS = {
   online: online,
   fil_white:fil_white,
   dbm:dbm,
+  TeamEdit:TeamEdit,
 };

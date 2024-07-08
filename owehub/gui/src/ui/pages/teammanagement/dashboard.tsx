@@ -5,6 +5,7 @@ import { ROUTES } from '../../../routes/routes';
 import { RiArrowRightLine } from 'react-icons/ri';
 import './dashboard.css';
 import { ICONS } from '../../icons/Icons';
+import NewTeam from './NewMember/NewTeam';
 
 interface AccordionSection {
   title: string;
@@ -21,7 +22,7 @@ const TeamManagement: React.FC = () => {
 
   const accordionSections: AccordionSection[] = [
     {
-      title: 'Dealer Pay',
+      title: '',
       data: [
         { title: 'Bizon',size: 27, route: ROUTES.TEAM_MANAGEMENT_TABLE },
         // { title: "Adders", route: ROUTES.CONFIG_ADDER },
@@ -31,16 +32,34 @@ const TeamManagement: React.FC = () => {
         { title: 'Propector',size: 36, route: ROUTES.TEAM_MANAGEMENT_TABLE },
         { title: 'Morgan',size: 89, route: ROUTES.TEAM_MANAGEMENT_TABLE },
         { title: 'Prime',size: 113, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-        { title: 'Light Work',size: 7887, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'Light Work',size: 78, route: ROUTES.TEAM_MANAGEMENT_TABLE },
       ],
       state: useState<boolean>(true),
     },
   ];
 
+  const [open2, setOpen2] = useState<boolean>(false);
+
+  
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
+  const onSubmitCreateTeam = () => {
+    console.log("")
+  }
+
   let prevColorIndex = -1;
 
   return (
     <>
+    {open2 && (
+        <NewTeam
+          handleClose2={handleClose2}
+          onSubmitCreateUser={onSubmitCreateTeam}
+        />
+      )}
       <div className="team-container">
         <div className="team-main">
           <div className="team-main-section">
@@ -58,7 +77,7 @@ const TeamManagement: React.FC = () => {
 
 
 
-                    <div>
+                    <div onClick={handleOpen2}>
                       <Link
                         to=""
                         className="create-new-card"

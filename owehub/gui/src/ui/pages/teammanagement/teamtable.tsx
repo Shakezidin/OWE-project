@@ -7,22 +7,28 @@ import { CommissionModel } from '../../../core/models/configuration/create/Commi
 import Pagination from '../../components/pagination/Pagination';
 import { ICONS } from '../../icons/Icons';
 import './dashboard.css'
+import AddMember from './NewMember/AddMember';
+import MoveMember from './NewMember/MoveMember';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
+import { ROUTES } from '../../../routes/routes';
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 const TeamTable: React.FC = () => {
   const [editedCommission] = useState<CommissionModel | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
-  
   const [currentPage, setCurrentPage] = useState(1);
+  const [open, setOpen] = useState<boolean>(false);
+  const [open1, setOpen1] = useState<boolean>(false);
 
-  const [openIcon, setOpenIcon] = useState<boolean>(false);
+  
   const handleOpen = () => setOpen(true);
-
-  const handleIconOpen = () => setOpenIcon(true);
-  const handleIconClose = () => setOpenIcon(false);
-  // const handleClose = () => setOpen(false);
-  const [editMode, setEditMode] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen1 = () => setOpen1(true);
+  const handleClose1 = () => {
+    setOpen1(false);
+  };
 
   const dataUser = [
     {
@@ -64,7 +70,7 @@ const TeamTable: React.FC = () => {
   ];
   const count = dataUser.length;
   const dispatch = useAppDispatch();
-  
+
   const itemsPerPage = 10;
 
   const paginate = (pageNumber: number) => {
@@ -80,37 +86,61 @@ const TeamTable: React.FC = () => {
   };
   const totalPages = Math.ceil(count / itemsPerPage);
   const currentPageData = dataUser?.slice();
-  // const isAnyRowSelected = selectedRows.size > 0;
-  // const isAllRowsSelected = selectedRows.size === data?.length;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
+  const onSubmitCreateUser = () => {
+    console.log("")
+    handleClose();
+  }
   return (
     <>
+    <div className="comm">
+      <Breadcrumb
+        head=""
+        linkPara="Team Management"
+        route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
+        linkparaSecond="Team Details"
+      />
+      {open && (
+        <AddMember
+          handleClose={handleClose}
+          onSubmitCreateUser={onSubmitCreateUser}
+        />
+      )}
+      {open1 && (
+        <MoveMember
+          handleClose1={handleClose1}
+          onSubmitCreateUser={onSubmitCreateUser}
+        />
+      )}
       <div className="dashBoard-container">
         <div
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
-            <div className='team-table-top'>
-                <div className='team-members-top'>
-                   <div className='team-members'>
-                   <span>Team Name</span>
-                   <h1>Bison</h1>
-                   </div>
-                   <div className='team-members'>
-                   <span>Manager</span>
-                      <h1>Glen Philips</h1>
-                   </div>
-                   <div className='team-members'>
-                   <span>Regional Manager</span>
-                      <h1>Ab Dev</h1>
-                   </div>
-                </div>
-                <div className='team-button-sec'>
-                   <button>+ Add New Member</button>
-                </div>
+          <div className='team-table-top'>
+            <div className='team-members-top'>
+              <div className='team-members'>
+                <span>Team Name</span>
+                <h1>Bison</h1>
+              </div>
+              <div className='team-members'>
+                <span>Manager</span>
+                <h1>Glen Philips</h1>
+              </div>
+              <div className='team-members'>
+                <span>Regional Manager</span>
+                <h1>Ab Dev</h1>
+              </div>
             </div>
+            <div className='team-button-sec'>
+              <button
+               onClick={() => {
+                handleOpen();
+              }}>+ Add New Member</button>
+            </div>
+          </div>
           <table>
             <thead>
               <tr>
@@ -123,15 +153,15 @@ const TeamTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                  <p>Phone Number</p>{' '}
-                    
+                    <p>Phone Number</p>{' '}
+
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
-               
+
                 <th>
                   <div className="table-header">
-                  <p>Email ID</p>{' '}
+                    <p>Email ID</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
@@ -140,7 +170,7 @@ const TeamTable: React.FC = () => {
                     <p>Offboard</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
-                </th>               
+                </th>
                 <th>
                   <div className="action-header">
                     <p>Move</p>
@@ -150,34 +180,34 @@ const TeamTable: React.FC = () => {
             </thead>
             <tbody>
               {dataUser.length > 0
-                ? dataUser.map((el:any, index:any) => (
-                    <tr key={index}>
-    
-                      <td
-                        style={{
-                          color: '101828',
-                          paddingLeft: '33px',
-                          fontWeight: '500',
-                        }}
-                      >
-                        {el.name}
-                      </td>
-                      <td style={{ color: '#101828' }}>{el.phoneNumber}</td>
-                      <td style={{ color: '#101828' }}>{el.emailId}</td>
-                      <td style={{ color: '#101828' }}>Remove</td>
-                      <td className="zoom-out-help">
-                      <img src={ICONS.online} style={{
+                ? dataUser.map((el: any, index: any) => (
+                  <tr key={index}>
+
+                    <td
+                      style={{
+                        color: '101828',
+                        paddingLeft: '33px',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {el.name}
+                    </td>
+                    <td style={{ color: '#101828' }}>{el.phoneNumber}</td>
+                    <td style={{ color: '#101828' }}>{el.emailId}</td>
+                    <td style={{ color: '#101828' }}>Remove</td>
+                    <td className="zoom-out-help">
+                      <img src={ICONS.TeamEdit} style={{
                         height: '18px',
                         width: '18px',
                         stroke: '0.2',
                       }}
-                      alt=""
-                      onClick={() => handleIconOpen()}
+                        alt=""
+                        onClick={() => handleOpen1()}
                       />
 
                     </td>
-                    </tr>
-                  ))
+                  </tr>
+                ))
                 : null}
             </tbody>
           </table>
@@ -200,6 +230,7 @@ const TeamTable: React.FC = () => {
             />
           </div>
         ) : null}
+      </div>
       </div>
     </>
   );
