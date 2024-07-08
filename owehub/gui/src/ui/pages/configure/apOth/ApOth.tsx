@@ -213,11 +213,11 @@ const ApOth = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Appt Setters"
+        linkparaSecond="Ap Oth"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Appt Setters"
+          title="Ap Oth"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
