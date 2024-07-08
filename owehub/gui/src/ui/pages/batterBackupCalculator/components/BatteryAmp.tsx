@@ -202,12 +202,13 @@ const BatteryAmp = () => {
     const firstBattery = 38;
     count += Math.ceil((totalCategoryAmp - firstBattery) / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
+    let externalBattery = 0
     arr.forEach((item)=>{
       if (item.amp>=60) {
-        count+=2
+        externalBattery=2
       }
     })
-    return Math.max(count, requiredPowerwallsByLRA);
+    return Math.max(count, requiredPowerwallsByLRA,externalBattery);
   };
 
   const required = useMemo(() => {
