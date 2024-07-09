@@ -5,6 +5,7 @@ export const ROUTES = {
   COMMISSION_DASHBOARD: '/dashboard',
   REPPAY_DASHBOARD: '/reppay/dashboard',
   AR_DASHBOARD: '/ar/dashboard',
+  TEAM_MANAGEMENT_DASHBOARD: '/teammanagement/dashboard',
   CONFIG_COMMISSION_RATE: '/config/commissionRate',
   CONFIG_DEALER_OVER: '/config/dealerOverrides',
   CONFIG_DEALER_TIER: '/config/dealerTier',
@@ -47,6 +48,8 @@ export const ROUTES = {
   CONFIG_APDED:"/config/ap-ded",
   CONFIG_APOTH:"/config/ap-oth",
   CONFIG_APPDA:"/config/ap-pda",
+  TEAM_MANAGEMENT_TABLE:"/team-management/table",
+
 
 
   // other routes
