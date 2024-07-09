@@ -75,6 +75,7 @@ const (
 	CreateRepCreditFuntion                   string = "create_rep_credit"
 	CreateDBAFuntion                         string = "create_dba"
 	UpdateApOthFuntion                       string = "update_ap_oth"
+	UpdateRepTeamFuntion                     string = "update_rep_team"
 	UpdateApOthArchiveFunction               string = "update_ap_oth_archive"
 	UpdateApDedFuntion                       string = "update_ap_ded"
 	UpdateApDedArchiveFunction               string = "update_ap_ded_archive"

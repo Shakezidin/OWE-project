@@ -223,6 +223,8 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveRepIncent.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveRepStatus.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveDba.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepTeam.sql';
 
 
 /* Battery Backup Calcuator Schema */

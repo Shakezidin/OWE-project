@@ -2,6 +2,7 @@
 /*Table to store the teams information for appointment setters*/
 CREATE TABLE teams (
     team_id serial NOT NULL,
+    description CHARACTER VARYING,
     team_name character varying UNIQUE,
     PRIMARY KEY (team_id)
 );
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     city VARCHAR(50),
     zipcode INT,
     country VARCHAR(50),
+    team_id INT,
     tables_permissions jsonb,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -80,6 +82,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
+    FOREIGN KEY (team_id) REFERENCES teams(team_id),
     PRIMARY KEY (user_id)
 );
 

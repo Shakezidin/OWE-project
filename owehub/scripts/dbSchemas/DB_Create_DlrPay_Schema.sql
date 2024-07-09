@@ -161,7 +161,7 @@ WHERE
     dealer_pay_calc_standard.wc > '2019-04-01'  AND
     dealer_pay_calc_standard.dealer <> 'House'  AND
     dealer_pay_calc_standard.r1_balance <> 0    AND
-    dealer_pay_calc_standard.r1_draw_paid <> 0  AND
+    dealer_pay_calc_standard.r1_draw_paid = 0   AND
     dealer_pay_calc_standard.ntp IS NOT NULL    AND
     dealer_pay_calc_standard.inst_sys IS NOT NULL
 );
