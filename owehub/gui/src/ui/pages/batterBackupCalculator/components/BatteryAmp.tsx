@@ -216,7 +216,7 @@ const BatteryAmp = () => {
   }, [initial]);
 
   const AddrequiredBattery = () => {
-    const consumption = Math.round(
+    const consumption = Math.ceil(
       ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
     );
     let count = initial;
@@ -230,7 +230,7 @@ const BatteryAmp = () => {
   };
 
   const calculator = () => {
-    const consumption = Math.round(
+    const consumption = Math.ceil(
       ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
     );
 
@@ -356,7 +356,7 @@ to a Partial Home Back-up`,
                   role="button"
                   onClick={() =>
                     setRequiredBattery((prev) => {
-                      const consumption = Math.round(
+                      const consumption = Math.ceil(
                         ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
                       )
                       let init = prev + 1;
