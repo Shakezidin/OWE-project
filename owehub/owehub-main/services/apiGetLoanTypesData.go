@@ -176,14 +176,26 @@ func PrepareLoanTypesFilters(tableName string, dataFilter models.DataRequestBody
 				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
 			}
 			// Build the filter condition using correct db column name
-			filtersBuilder.WriteString("LOWER(lt.")
-			filtersBuilder.WriteString(column)
-			filtersBuilder.WriteString(") ")
-			filtersBuilder.WriteString(operator)
-			filtersBuilder.WriteString(" LOWER($")
-			filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
-			filtersBuilder.WriteString(")")
-			whereEleList = append(whereEleList, value)
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
+			switch column {
+			case "record_id":
+				filtersBuilder.WriteString(fmt.Sprintf("lt.record_id %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "product_code":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lt.product_code) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "active":
+				filtersBuilder.WriteString(fmt.Sprintf("lt.active %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "adder":
+				filtersBuilder.WriteString(fmt.Sprintf("lt.adder %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "description":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lt.description) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			}
 		}
 	}
 
