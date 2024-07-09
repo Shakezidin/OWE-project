@@ -156,7 +156,7 @@ const RepIncent = () => {
           archived: viewArchived,
         };
 
-        const res = await postCaller('archive_rep_incent', newValue);
+        const res = await postCaller('update_rep_incentive_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRepIncent(pageNumber));
@@ -189,7 +189,7 @@ const RepIncent = () => {
         filters,
         archived: viewArchived,
       };
-      const res = await postCaller('archive_rep_incent', newValue);
+      const res = await postCaller('update_rep_incentive_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepIncent(pageNumber));
         setSelectedRows(new Set());
@@ -314,7 +314,7 @@ const RepIncent = () => {
                     || "N/A"}</td>
                     <td>{el.month
                     }</td>
-                    <td>{dateFormat(el.comment)}</td>
+                    <td>{el.comment}</td>
                    
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (

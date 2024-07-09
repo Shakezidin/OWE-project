@@ -189,7 +189,14 @@ const CreateApAdv: React.FC<payScheduleProps> = ({
                     value={createAppSettersData.amount_ovrd}
                     name="amount_ovrd"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
                   {errors?.amount_ovrd && (
                     <span

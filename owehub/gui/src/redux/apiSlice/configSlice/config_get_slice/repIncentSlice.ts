@@ -41,7 +41,7 @@ const repIncentSlice = createSlice({
       })
       .addCase(fetchRepIncent.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload.list;
+        state.data = action.payload.list || [];
         state.count = action.payload.count;
         
       })
@@ -56,7 +56,7 @@ const repIncentSlice = createSlice({
       .addCase(createRepIncent.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Rep Credit created successfully');
+        toast.success('Rep Incent created successfully');
       })
       .addCase(createRepIncent.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -69,7 +69,7 @@ const repIncentSlice = createSlice({
       .addCase(updateRepIncent.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Rep Credit updated successfully');
+        toast.success('Rep Incent updated successfully');
       })
       .addCase(updateRepIncent.rejected, (state, action) => {
         state.isFormSubmitting = false;

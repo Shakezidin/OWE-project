@@ -18,7 +18,7 @@ import {
   fetchApOth,
   updateApOth,
 } from '../../../../redux/apiActions/config/apOthAction';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apOthSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
 import { firstCapitalize } from '../../../../utiles';
@@ -191,7 +191,14 @@ const CreateApOth: React.FC<payScheduleProps> = ({
                     value={createAppSettersData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
                   {errors?.amount && (
                     <span
