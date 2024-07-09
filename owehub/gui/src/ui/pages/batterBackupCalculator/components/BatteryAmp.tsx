@@ -202,13 +202,13 @@ const BatteryAmp = () => {
     const firstBattery = 38;
     count += Math.ceil((totalCategoryAmp - firstBattery) / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
-    let externalBattery = 0
-    arr.forEach((item)=>{
-      if (item.amp>=60) {
-        externalBattery=2
+    let externalBattery = 0;
+    arr.forEach((item) => {
+      if (item.amp >= 60) {
+        externalBattery = 2;
       }
-    })
-    return Math.max(count, requiredPowerwallsByLRA,externalBattery);
+    });
+    return Math.max(count, requiredPowerwallsByLRA, externalBattery);
   };
 
   const required = useMemo(() => {
@@ -217,7 +217,7 @@ const BatteryAmp = () => {
 
   const AddrequiredBattery = () => {
     const consumption = Math.round(
-      ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+      ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
     );
     let count = initial;
 
@@ -231,7 +231,7 @@ const BatteryAmp = () => {
 
   const calculator = () => {
     const consumption = Math.round(
-      ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
+      ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
     );
 
     if (consumption <= initial) {
@@ -357,8 +357,8 @@ to a Partial Home Back-up`,
                   onClick={() =>
                     setRequiredBattery((prev) => {
                       const consumption = Math.round(
-                        ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
-                      );
+                        ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
+                      )
                       let init = prev + 1;
                       if (init >= consumption && caluclatedBackup === 0) {
                         setCaluclatedBackup(1);
