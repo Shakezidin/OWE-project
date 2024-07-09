@@ -11,19 +11,19 @@ export interface ReconcileEditParams {
   record_id: string;
 }
 
-export const fetchApptSetters = createAsyncThunk(
-  'apptsetters/fetchapptsetters',
+export const fetchApAdv = createAsyncThunk(
+  'apadv/fetchApAdv',
   async (data: any) => {
     const response = await postCaller('get_apadv', data);
     return {
-      list: response.data.appt_setters_list,
+      list: response.data.ap_adv_list,      
       count: response.dbRecCount,
     };
   }
 );
 
-export const createApttSetters = createAsyncThunk(
-  'create/appsetters',
+export const createApAdv = createAsyncThunk(
+  'create/createapadv',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_apadv', params);
@@ -37,8 +37,8 @@ export const createApttSetters = createAsyncThunk(
   }
 );
 
-export const updateApptSetters = createAsyncThunk(
-  'update/appsetters',
+export const updateApAdv = createAsyncThunk(
+  'update/updateapadv',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_apadv', params);

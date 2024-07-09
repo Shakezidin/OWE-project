@@ -13,7 +13,7 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApDedColumn } from '../../../../resources/static_data/configureHeaderData/apDedColumn';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
-import { fetchApptSetters } from '../../../../redux/apiActions/config/apptSetterAction';
+import { fetchApDed } from '../../../../redux/apiActions/config/apDedAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
@@ -33,8 +33,8 @@ const ApDed = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, isLoading, totalCount } = useAppSelector(
-    (state) => state.apptsetters
+  const { data, isLoading, totalcount } = useAppSelector(
+    (state) => state.apDedSlice
   );
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -55,7 +55,7 @@ const ApDed = () => {
       archived: viewArchived ? true : undefined,
       filters,
     };
-    dispatch(fetchApptSetters(pageNumber));
+    dispatch(fetchApDed(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const filter = () => {
@@ -73,7 +73,7 @@ const ApDed = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const totalPages = Math.ceil(totalcount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex * itemsPerPage;
@@ -156,10 +156,10 @@ const ApDed = () => {
           archived: viewArchived,
         };
 
-        const res = await postCaller('update_appt_setters_archive', newValue);
+        const res = await postCaller('update_apded_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
-          dispatch(fetchApptSetters(pageNumber));
+          dispatch(fetchApDed(pageNumber));
 
           setSelectAllChecked(false);
           setSelectedRows(new Set());
@@ -189,9 +189,9 @@ const ApDed = () => {
         filters,
         archived: viewArchived,
       };
-      const res = await postCaller('update_appt_setters_archive', newValue);
+      const res = await postCaller('update_apded_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        dispatch(fetchApptSetters(pageNumber));
+        dispatch(fetchApDed(pageNumber));
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
@@ -212,11 +212,11 @@ const ApDed = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Appt Setters"
+        linkparaSecond="Ap Ded"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Appt Setters"
+          title="Ap Ded"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
@@ -309,11 +309,12 @@ const ApDed = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.name}</td>
-                    <td>{el.team_name}</td>
-                    <td>{el.pay_rate}</td>
-                    <td>{dateFormat(el.start_date)}</td>
-                    <td>{dateFormat(el.end_date)}</td>
+                    <td>{el.payee}</td>
+                    <td>{el.amount}</td>
+                    <td>{el.date}</td>
+                    <td>{el.short_code}</td>
+                    <td>{el.description}</td>
+                    <td>{el.notes}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -353,8 +354,8 @@ const ApDed = () => {
           {data?.length > 0 ? (
             <>
               <p className="page-heading">
-                {startIndex} - {endIndex > totalCount ? totalCount : endIndex}{' '}
-                of {totalCount} item
+                {startIndex} - {endIndex > totalcount ? totalcount : endIndex}{' '}
+                of {totalcount} item
               </p>
 
               <Pagination

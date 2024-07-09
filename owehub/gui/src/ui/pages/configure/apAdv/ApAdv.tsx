@@ -10,10 +10,10 @@ import { TimeLineSlaModel } from '../../../../core/models/configuration/create/T
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import { ApAdvColumn  } from '../../../../resources/static_data/configureHeaderData/apAdvColumn';
+import { ApPdaColumn } from '../../../../resources/static_data/configureHeaderData/apPdaColumn';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
-import { fetchApptSetters } from '../../../../redux/apiActions/config/apptSetterAction';
+import { fetchApAdv } from '../../../../redux/apiActions/config/apAdvAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
@@ -33,8 +33,8 @@ const ApAdv = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, isLoading, totalCount } = useAppSelector(
-    (state) => state.apptsetters
+  const { data, isLoading, totalcount } = useAppSelector(
+    (state) => state.apAdvSlice
   );
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -55,7 +55,7 @@ const ApAdv = () => {
       archived: viewArchived ? true : undefined,
       filters,
     };
-    dispatch(fetchApptSetters(pageNumber));
+    dispatch(fetchApAdv(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const filter = () => {
@@ -73,14 +73,7 @@ const ApAdv = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
-
-  const currentPageData = data?.slice();
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === data?.length;
+   
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -89,6 +82,14 @@ const ApAdv = () => {
       setSortDirection('asc');
     }
   };
+  const totalPages = Math.ceil(totalcount / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
+
+  const currentPageData = data?.slice();
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === data?.length;
 
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
@@ -156,10 +157,10 @@ const ApAdv = () => {
           archived: viewArchived,
         };
 
-        const res = await postCaller('update_appt_setters_archive', newValue);
+        const res = await postCaller('update_apadv_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
-          dispatch(fetchApptSetters(pageNumber));
+          dispatch(fetchApAdv(pageNumber));
 
           setSelectAllChecked(false);
           setSelectedRows(new Set());
@@ -189,9 +190,9 @@ const ApAdv = () => {
         filters,
         archived: viewArchived,
       };
-      const res = await postCaller('update_appt_setters_archive', newValue);
+      const res = await postCaller('update_apadv_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        dispatch(fetchApptSetters(pageNumber));
+        dispatch(fetchApAdv(pageNumber));
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
@@ -204,7 +205,7 @@ const ApAdv = () => {
   //   return <div>Loading...</div>;
   // }
 
-  console.log(data);
+  console.log(data, "data");
 
   return (
     <div className="comm">
@@ -212,11 +213,11 @@ const ApAdv = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Appt Setters"
+        linkparaSecond="ap-adv"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Appt Setters"
+          title="Ap Adv"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
@@ -232,7 +233,7 @@ const ApAdv = () => {
           isOpen={filterOPen}
           resetOnChange={viewArchived}
           handleClose={filterClose}
-          columns={ApAdvColumn}
+          columns={ApPdaColumn}
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage}
@@ -253,7 +254,7 @@ const ApAdv = () => {
           <table>
             <thead>
               <tr>
-                {ApAdvColumn?.map((item, key) => (
+                {ApPdaColumn?.map((item, key) => (
                   <SortableHeader
                     key={key}
                     isCheckbox={item.isCheckbox}
@@ -284,7 +285,7 @@ const ApAdv = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={ApAdvColumn.length}>
+                  <td colSpan={ApPdaColumn.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -309,11 +310,15 @@ const ApAdv = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.name}</td>
-                    <td>{el.team_name}</td>
-                    <td>{el.pay_rate}</td>
-                    <td>{dateFormat(el.start_date)}</td>
-                    <td>{dateFormat(el.end_date)}</td>
+                    
+                    <td>{el.payee}</td>
+                    <td>{el.amount_ovrd}</td>
+                    <td>{el.approved_by}</td>
+                    <td>{dateFormat(el.date)}</td>
+                    <td>{el.customer}</td>
+                    <td>{el.dealer}</td>
+                    <td>{el.notes}</td>
+                    <td>{el.description}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -338,7 +343,7 @@ const ApAdv = () => {
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
-                  <td colSpan={ApAdvColumn.length}>
+                  <td colSpan={ApPdaColumn.length}>
                     <div className="data-not-found">
                       <DataNotFound />
                       <h3>Data Not Found</h3>
@@ -352,10 +357,11 @@ const ApAdv = () => {
         <div className="page-heading-container">
           {data?.length > 0 ? (
             <>
-              <p className="page-heading">
-                {startIndex} - {endIndex > totalCount ? totalCount : endIndex}{' '}
-                of {totalCount} item
-              </p>
+                 <p className="page-heading">
+              Showing {startIndex} -{' '}
+              {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
+              item
+            </p>
 
               <Pagination
                 currentPage={currentPage}
