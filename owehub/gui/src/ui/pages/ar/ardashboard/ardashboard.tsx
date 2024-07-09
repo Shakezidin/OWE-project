@@ -97,11 +97,7 @@ export const ARDashboardPage: React.FC = () => {
   const [selectedOption4, setSelectedOption4] = useState<string>(
     options3[0].label
   );
-  const handleSelectChange4 = (
-    selectedOption4: { value: string; label: string } | null
-  ) => {
-    setSelectedOption4(selectedOption4 ? selectedOption4.value : '');
-  };
+
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
 

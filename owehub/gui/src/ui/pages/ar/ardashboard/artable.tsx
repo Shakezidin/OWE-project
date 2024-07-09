@@ -30,15 +30,15 @@ const ArDashBoardTable = () => {
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState(false);
-  const [editedCommission, setEditedCommission] =
-    useState<CommissionModel | null>(null);
+  const [editedCommission, setEditedCommission] = useState<{
+    [key: string]: any;
+  }>({});
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     const pageNumber = {
@@ -56,7 +56,7 @@ const ArDashBoardTable = () => {
       install: filters.install,
       pto: filters.pto,
     };
-     dispatch(getAR(pageNumber));
+    dispatch(getAR(pageNumber));
   }, [dispatch, currentPage, pageSize1, viewArchived, filters]);
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
@@ -83,9 +83,7 @@ const ArDashBoardTable = () => {
   const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = data?.slice();
- 
 
-   
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
 
@@ -124,8 +122,6 @@ const ArDashBoardTable = () => {
   // if (loading) {
   //   return <div>Loading... {loading}</div>;
   // }
-
-  
 
   const Commissioncolumns = [
     {
@@ -225,8 +221,6 @@ const ArDashBoardTable = () => {
     },
   ];
 
-  
-
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
 
@@ -299,26 +293,25 @@ const ArDashBoardTable = () => {
                             {el.unique_id}
                           </div>
                         </td>
-                        <td>{el.partner || "N/A"}</td>
-                        <td>{el.installer || "N/A"}</td>
+                        <td>{el.partner || 'N/A'}</td>
+                        <td>{el.installer || 'N/A'}</td>
 
-                        
-                        <td>{el.type || "N/A"}</td>
-                        <td>{el.home_owner|| "N/A"}</td>
-                        <td>{el.street_address|| "N/A"}</td>
-                        <td>{el.city|| "N/A"}</td>
-                        <td>{el.st|| "N/A"}</td>
-                        <td>{el.zip|| "N/A"}</td>
-                        <td>{el.sys_size|| "N/A"}</td>
-                        <td>{el.wc|| "N/A"}</td>
-                        <td>{el.inst_sys|| "N/A"}</td>
-                        <td>{el.status|| "N/A"}</td>
-                        <td>{el.status_date|| "N/A"}</td>
-                        <td>{el.contract_calc|| "N/A"}</td>
-                        <td>{el.owe_ar|| "N/A"}</td>
+                        <td>{el.type || 'N/A'}</td>
+                        <td>{el.home_owner || 'N/A'}</td>
+                        <td>{el.street_address || 'N/A'}</td>
+                        <td>{el.city || 'N/A'}</td>
+                        <td>{el.st || 'N/A'}</td>
+                        <td>{el.zip || 'N/A'}</td>
+                        <td>{el.sys_size || 'N/A'}</td>
+                        <td>{el.wc || 'N/A'}</td>
+                        <td>{el.inst_sys || 'N/A'}</td>
+                        <td>{el.status || 'N/A'}</td>
+                        <td>{el.status_date || 'N/A'}</td>
+                        <td>{el.contract_calc || 'N/A'}</td>
+                        <td>{el.owe_ar || 'N/A'}</td>
                         <td>{el?.total_paid}</td>
                         <td>{el?.current_due}</td>
-                        <td>{el.balance|| "N/A"}</td>
+                        <td>{el.balance || 'N/A'}</td>
                         <td
                           style={{
                             height: '14px',
@@ -327,7 +320,12 @@ const ArDashBoardTable = () => {
                             cursor: 'pointer',
                           }}
                         >
-                          <BiSupport onClick={() => handleIconOpen()} />
+                          <BiSupport
+                            onClick={() => {
+                              setEditedCommission(el);
+                              handleIconOpen();
+                            }}
+                          />
                         </td>
                       </tr>
                     )
@@ -338,34 +336,27 @@ const ArDashBoardTable = () => {
         </div>
 
         <div className="page-heading-container">
-        <p className="page-heading">
-                {startIndex} - {endIndex > count ? count : endIndex}{' '}
-                of {count} item
-              </p>
+          <p className="page-heading">
+            {startIndex} - {endIndex > count ? count : endIndex} of {count} item
+          </p>
 
-          {/* {
-            commissionList?.length > 0 ? <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> : null
-          } */}
-         <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages} // You need to calculate total pages
-                paginate={paginate}
-                currentPageData={currentPageData}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-                perPage={itemsPerPage}
-              />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages} // You need to calculate total pages
+            paginate={paginate}
+            currentPageData={currentPageData}
+            goToNextPage={goToNextPage}
+            goToPrevPage={goToPrevPage}
+            perPage={itemsPerPage}
+          />
           {openIcon && (
             <HelpDashboard
-              data={{}}
+              data={{
+                id: editedCommission.unique_id,
+                name: editedCommission.partner,
+                state:editedCommission.state,
+                status:editedCommission.status
+              }}
               handleClose={handleIconClose}
             />
           )}
