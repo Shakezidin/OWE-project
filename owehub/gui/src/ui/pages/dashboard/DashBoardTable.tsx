@@ -15,6 +15,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import SortableHeader from '../../components/tableHeader/SortableHeader';
 import dealerPayColumn from '../../../resources/static_data/configureHeaderData/dealerPayColumn';
 import DataNotFound from '../../components/loader/DataNotFound';
+import { toggleRowSelection } from '../../components/chekbox/checkHelper';
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
@@ -258,19 +259,28 @@ const DashBoardTable = ({
               ) : currentPageData.length > 0 ? (
                 currentPageData.map((el: any, index: any) => (
                   <tr key={index}>
-                    <td
-                      onClick={() => {
-                        handleOpen();
-                      }}
-                      style={{
-                        color: '101828',
-                        cursor: 'pointer',
-                        fontWeight: '500',
-                      }}
-                      className="zoom-out-td"
-                    >
-                      {el.unique_id}
-                    </td>
+                      <td style={{ fontWeight: '500' }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(index)}
+                            onChange={() => {
+                              if (currentPageData?.length === 1) {
+                                setSelectAllChecked(true);
+                                setSelectedRows(new Set([0]));
+                              } else {
+                                toggleRowSelection(
+                                  index,
+                                  selectedRows,
+                                  setSelectedRows,
+                                  setSelectAllChecked
+                                );
+                              }
+                            }}
+                          />
+                          <span className="zoom-out-td">{el.unique_id}</span>
+                        </div>
+                      </td>
+                  
                     <td style={{ color: '#101828' }}>{el.dealer}</td>
                     <td style={{ color: '#101828' }}>{el.rep1}</td>
                     <td style={{ color: '#101828' }}>{el.home_owner}</td>

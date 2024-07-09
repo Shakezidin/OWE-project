@@ -98,8 +98,8 @@ const RepPayData = createSlice({
       })
       .addCase(getRepPay.fulfilled, (state, action) => {
         state.isLoading = false;
-        // state.count = action.payload.count;
-        // state.data = action.payload.list;
+        state.count = action.payload?.count || 0;
+        state.data = action.payload?.list || [];
       })
       .addCase(getRepPay.rejected, (state, action) => {
         state.isLoading = false;
