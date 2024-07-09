@@ -12,7 +12,6 @@ import PaginationComponent from '../../../components/pagination/PaginationCompon
 import { MdOutlineHelp } from 'react-icons/md';
 import { ICONS } from '../../../icons/Icons';
 import { getRepPay } from '../../../../redux/apiActions/repPayAction';
- 
 
 const RepDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
@@ -21,7 +20,9 @@ const RepDashBoardTable = () => {
   const handleOpen = () => setOpen(true);
   const dispatch = useAppDispatch();
   // const loading = useAppSelector((state) => state.comm.loading);
-  const { data, count, filters,isLoading } = useAppSelector((state) => state.repPaySlice);
+  const { data, count, filters, isLoading } = useAppSelector(
+    (state) => state.repPaySlice
+  );
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -41,20 +42,20 @@ const RepDashBoardTable = () => {
       page_number: currentPage,
       page_size: pageSize1,
       archived: viewArchived ? true : undefined,
-      pay_roll_start_date: "2022-06-01",
-      pay_roll_end_date: "2022-06-01",
+      pay_roll_start_date: '2022-06-01',
+      pay_roll_end_date: '2022-06-01',
       use_cutoff: filters.use_cutoff,
       report_type: filters.report_type,
-      sort_by: "home_owner",
+      sort_by: 'home_owner',
       ap_oth: filters.ap_oth,
       ap_pda: filters.ap_pda,
       ap_ded: filters.ap_ded,
       ap_adv: filters.ap_adv,
-      rep_comm:filters.rep_comm,
-      rep_bonus:filters.rep_bonus,
-      leader_ovrd:filters.leader_ovrd,
+      rep_comm: filters.rep_comm,
+      rep_bonus: filters.rep_bonus,
+      leader_ovrd: filters.leader_ovrd,
     };
-     dispatch(getRepPay(pageNumber));
+    dispatch(getRepPay(pageNumber));
   }, [dispatch, currentPage, pageSize1, viewArchived, filters]);
 
   const handleItemsPerPageChange = (e: any) => {
@@ -470,7 +471,7 @@ const RepDashBoardTable = () => {
   ];
 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
@@ -671,8 +672,7 @@ const RepDashBoardTable = () => {
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
 
-
-  console.log(filters, "filtets")
+  console.log(filters, 'filtets');
 
   return (
     <div className="comm">
@@ -716,87 +716,88 @@ const RepDashBoardTable = () => {
             <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? 'selected' : ''}
-                  >
-                    <td style={{ fontWeight: '500' }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() => {
-                            // If there's only one row of data and the user clicks its checkbox, select all rows
-                            if (currentPageData?.length === 1) {
-                              setSelectAllChecked(true);
-                              setSelectedRows(new Set([0]));
-                            } else {
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              );
-                            }
-                          }}
-                        />
-                        <span className="zoom-out-td">{el.partner}</span>
-                      </div>
-                    </td>
-                    <td>{el.installer}</td>
-
-                    <div
-                      className={`state-container ${el.state === 'NTP' ? 'ntp-bg ntp-width' : el.state === 'PTO' ? 'pto-bg pto-width' : 'install-bg install-width'}`}
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
                     >
-                      <td
-                        className={`state-text ${el.state === 'NTP' ? 'ntp-color' : el.state === 'PTO' ? 'pto-color' : 'install-color'}`}
-                      >
-                        {el.state}
+                      <td style={{ fontWeight: '500' }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(i)}
+                            onChange={() => {
+                              // If there's only one row of data and the user clicks its checkbox, select all rows
+                              if (currentPageData?.length === 1) {
+                                setSelectAllChecked(true);
+                                setSelectedRows(new Set([0]));
+                              } else {
+                                toggleRowSelection(
+                                  i,
+                                  selectedRows,
+                                  setSelectedRows,
+                                  setSelectAllChecked
+                                );
+                              }
+                            }}
+                          />
+                          <span className="zoom-out-td">{el.partner}</span>
+                        </div>
                       </td>
-                    </div>
+                      <td>{el.installer}</td>
 
-                    <td>{el.sub_total}</td>
+                      <div
+                        className={`state-container ${el.state === 'NTP' ? 'ntp-bg ntp-width' : el.state === 'PTO' ? 'pto-bg pto-width' : 'install-bg install-width'}`}
+                      >
+                        <td
+                          className={`state-text ${el.state === 'NTP' ? 'ntp-color' : el.state === 'PTO' ? 'pto-color' : 'install-color'}`}
+                        >
+                          {el.state}
+                        </td>
+                      </div>
 
-                    <td>{el.draw_amt}</td>
-                    <td>{el.amt_paid}</td>
-                    <td>{el.balance}</td>
+                      <td>{el.sub_total}</td>
 
-                    <td>{el.rate}</td>
-                    <td style={{ color: '#0096D3' }}>${el.amount}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                      <td>{el.draw_amt}</td>
+                      <td>{el.amt_paid}</td>
+                      <td>{el.balance}</td>
 
-                    <td>{el.fin_type}</td>
-                    <td>{el.sys_size}</td>
-                    <td>{el.contract}</td>
-                    <td>{el.loan_fee}</td>
-                    <td>{el.epc}</td>
-                    <td>{el.address}</td>
-                    <td>{el.rr}</td>
-                    <td>{el.comm_rate}</td>
-                    <td>{el.net_epc}</td>
-                    <td>{el.credit}</td>
-                    <td>{el.rep_2}</td>
-                    <td>{el.net_comm}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.dealer_code}</td>
-                    <td>{el.contr_date}</td>
-                    <td>{el.state}</td>
-                    <td>{el.status_date}</td>
-                    <td className="zoom-out-help">
-                      <img src={ICONS.online} style={{
-                        height: '18px',
-                        width: '18px',
-                        stroke: '0.2',
-                      }}
-                      alt=""
-                      onClick={() => handleIconOpen()}
-                      />
+                      <td>{el.rate}</td>
+                      <td style={{ color: '#0096D3' }}>${el.amount}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
 
-                    </td>
-                  </tr>
-                ))
+                      <td>{el.fin_type}</td>
+                      <td>{el.sys_size}</td>
+                      <td>{el.contract}</td>
+                      <td>{el.loan_fee}</td>
+                      <td>{el.epc}</td>
+                      <td>{el.address}</td>
+                      <td>{el.rr}</td>
+                      <td>{el.comm_rate}</td>
+                      <td>{el.net_epc}</td>
+                      <td>{el.credit}</td>
+                      <td>{el.rep_2}</td>
+                      <td>{el.net_comm}</td>
+                      <td>{el.sale_price}</td>
+                      <td>{el.rep_type}</td>
+                      <td>{el.rl}</td>
+                      <td>{el.dealer_code}</td>
+                      <td>{el.contr_date}</td>
+                      <td>{el.state}</td>
+                      <td>{el.status_date}</td>
+                      <td className="zoom-out-help">
+                        <img
+                          src={ICONS.online}
+                          style={{
+                            height: '18px',
+                            width: '18px',
+                            stroke: '0.2',
+                          }}
+                          alt=""
+                          onClick={() => handleIconOpen()}
+                        />
+                      </td>
+                    </tr>
+                  ))
                 : null}
             </tbody>
           </table>
@@ -804,7 +805,8 @@ const RepDashBoardTable = () => {
 
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {currentPageData?.length} of {currentPageData?.length} item
+            {startIndex} - {currentPageData?.length} of{' '}
+            {currentPageData?.length} item
           </p>
 
           {
@@ -827,8 +829,8 @@ const RepDashBoardTable = () => {
           }
           {openIcon && (
             <HelpDashboard
-              commission={editedCommission}
-              editMode={editMode}
+              data={{}}
+            
               handleClose={handleIconClose}
             />
           )}

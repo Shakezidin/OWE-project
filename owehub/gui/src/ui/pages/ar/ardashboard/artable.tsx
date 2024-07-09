@@ -365,8 +365,7 @@ perPage={itemsPerPage}
               />
           {openIcon && (
             <HelpDashboard
-              commission={editedCommission}
-              editMode={editMode}
+              data={{}}
               handleClose={handleIconClose}
             />
           )}

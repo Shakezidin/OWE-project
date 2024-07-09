@@ -45,4 +45,5 @@ export const comissionValueData = [
   { value: 'All', label: 'All' },
   { value: 'Percentage', label: 'Percentage' },
   { value: 'RL', label: 'RL' },
+  { value: 'standard', label: 'Standard' },
 ];
