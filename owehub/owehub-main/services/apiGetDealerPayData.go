@@ -395,16 +395,16 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, f
 					filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "home_owner":
-					filtersBuilder.WriteString(fmt.Sprintf("home_owner %s LOWER($%d)", operator, len(whereEleList)+1))
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(home_owner) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "current_status":
-					filtersBuilder.WriteString(fmt.Sprintf("current_status %s LOWER($%d)", operator, len(whereEleList)+1))
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(current_status) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "status_date":
 					filtersBuilder.WriteString(fmt.Sprintf("status_date %s $%d", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "dealer":
-					filtersBuilder.WriteString(fmt.Sprintf("dealer %s LOWER($%d)", operator, len(whereEleList)+1))
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(dealer) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "today":
 					filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))
