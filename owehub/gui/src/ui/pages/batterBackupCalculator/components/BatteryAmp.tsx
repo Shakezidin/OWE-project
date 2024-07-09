@@ -662,7 +662,7 @@ to a Partial Home Back-up`,
           <div className="calc-btn-wrapper">
             <button
               onClick={exportPdf}
-              disabled={caluclatedBackup !== 1}
+              disabled={!Boolean(avgConsumption.trim())}
               className="calc-btn text-white pointer calc-green-btn"
               style={{ maxWidth: '100%' }}
             >
