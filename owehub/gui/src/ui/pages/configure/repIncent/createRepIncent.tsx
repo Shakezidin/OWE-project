@@ -41,10 +41,10 @@ const CreateRepIncent: React.FC<payScheduleProps> = ({
     (state) => state.repIncentSlice
   );
   const [createAppSettersData, setAppSettersData] = useState({
-    name: editData.name || '',
-    doll_div_kw: editData.doll_div_kw || '',
-    month: editData.month || '',
-    comment: editData || '',
+    name: editData?.name || '',
+    doll_div_kw: editData?.doll_div_kw || '',
+    month: editData?.month || '',
+    comment: editData?.comment || '',
   });
   type TError = typeof createAppSettersData;
   const [errors, setErrors] = useState<TError>({} as TError);
@@ -200,7 +200,7 @@ const CreateRepIncent: React.FC<payScheduleProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'date'}
+                    type={'text'}
                     label="Comment"
                     value={createAppSettersData.comment}
                     name="comment"

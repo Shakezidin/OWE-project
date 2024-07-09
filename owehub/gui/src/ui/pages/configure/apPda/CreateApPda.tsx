@@ -6,7 +6,7 @@ import { ActionButton } from '../../../components/button/ActionButton';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { createApPda } from '../../../../redux/apiActions/config/apPdaAction';
+import { createApPda, updateApPda } from '../../../../redux/apiActions/config/apPdaAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apPdaSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { firstCapitalize } from '../../../../utiles';
@@ -84,6 +84,17 @@ const CreateApPda: React.FC<payScheduleProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
+      if (editMode) {
+        dispatch(
+          updateApPda({
+            ...createAppSettersData,
+            record_id: editData?.record_id!,
+            amount_ovrd: parseInt(createAppSettersData.amount_ovrd),
+
+          })
+        );
+      }
+      else {
       const data = {
         ...createAppSettersData,
         amount_ovrd: parseFloat(createAppSettersData.amount_ovrd), // Convert to number
@@ -91,6 +102,8 @@ const CreateApPda: React.FC<payScheduleProps> = ({
       dispatch(createApPda(data));
     }
   };
+}
+
   useEffect(() => {
     if (isSuccess) {
       handleClose();
