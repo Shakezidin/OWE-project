@@ -283,10 +283,11 @@ export const RepPayDashboardPage: React.FC = () => {
                           Reset
                         </button>
                         <button
-                          className="close-calender"
+                          className="apply-calender"
                           onClick={handleToggleDatePicker}
                         >
-                          Close
+                          Apply
+                          
                         </button>
                       </div>
                     )}
