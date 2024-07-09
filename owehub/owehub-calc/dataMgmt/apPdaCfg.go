@@ -88,7 +88,7 @@ func (pApPdaData *ApPdaCfgStruct) LoadApPdaCfg() (err error) {
 * DESCRIPTION:     calculates the ap pda balance, dba value based on the provided data
 * RETURNS:         balance, dba
 *****************************************************************************/
-func (pApPdaData *ApPdaCfgStruct) GetApPdaBalance(UniqueId, payee string, paidAmount, amount, clawAmnt float64) (balance float64, dba string) {
+func (pApPdaData *ApPdaCfgStruct) GetApPdaBalance(UniqueId string, paidAmount, amount, clawAmnt float64) (balance float64, dba string) {
 	log.EnterFn(0, "GetApPdaBalance")
 	defer func() { log.ExitFn(0, "GetApPdaBalance", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
@@ -109,7 +109,7 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaBalance(UniqueId, payee string, paidAm
 * DESCRIPTION:     calculates the ap pda paid amount, clawamnt value based on the provided data
 * RETURNS:         PaidAmnt, clawAmnt
 *****************************************************************************/
-func (pApPdaData *ApPdaCfgStruct) GetApPdaPaidAmount(UniqueId, payee string) (PaidAmnt, clawAmnt float64) {
+func (pApPdaData *ApPdaCfgStruct) GetApPdaPaidAmount(UniqueId string) (PaidAmnt, clawAmnt float64) {
 	log.EnterFn(0, "GetApPdaPaidAmount")
 	defer func() { log.ExitFn(0, "GetApPdaPaidAmount", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
@@ -125,7 +125,7 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaPaidAmount(UniqueId, payee string) (Pa
 * DESCRIPTION:     calculates the pda amount value based on the provided data
 * RETURNS:         pda amount
 *****************************************************************************/
-func (pApPdaData *ApPdaCfgStruct) GetApPdaAmount(UniqueId, payee string, rcmdAmnt float64) (balance float64) {
+func (pApPdaData *ApPdaCfgStruct) GetApPdaAmount(UniqueId string, rcmdAmnt float64) (balance float64) {
 	log.EnterFn(0, "GetApPdaAmount")
 	defer func() { log.ExitFn(0, "GetApPdaAmount", nil) }()
 	for _, data := range pApPdaData.ApPdaList {
@@ -147,7 +147,7 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaAmount(UniqueId, payee string, rcmdAmn
 * DESCRIPTION:     calculates the pda rcm amount value based on the provided data
 * RETURNS:         pda rcm amount
 *****************************************************************************/
-func (pApPdaData *ApPdaCfgStruct) GetApPdaRcmdAmount(UniqueId, payee, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (balance float64) {
+func (pApPdaData *ApPdaCfgStruct) GetApPdaRcmdAmount(UniqueId, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (balance float64) {
 	log.EnterFn(0, "GetApPdaRcmdAmount")
 	defer func() { log.ExitFn(0, "GetApPdaRcmdAmount", nil) }()
 	for _, data := range pApPdaData.ApPdaList {

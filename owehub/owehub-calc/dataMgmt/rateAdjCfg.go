@@ -48,12 +48,6 @@ func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) LoadRateAdjustmentsCfg() (er
 			continue
 		}
 
-		UniqueId, ok := item["unique_id"].(string)
-		if !ok || UniqueId == "" {
-			log.FuncErrorTrace(0, "Failed to get unique id for Record ID %v. Item: %+v\n", RecordId, item)
-			UniqueId = ""
-		}
-
 		PayScale, ok := item["pay_scale"].(string)
 		if !ok || PayScale == "" {
 			log.FuncErrorTrace(0, "Failed to get pay scale for Record ID %v. Item: %+v\n", RecordId, item)
@@ -86,7 +80,6 @@ func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) LoadRateAdjustmentsCfg() (er
 
 		rateAdjustmentData := models.GetRateAdjustments{
 			RecordId:   RecordId,
-			UniqueId:   UniqueId,
 			PayScale:   PayScale,
 			Position:   Position,
 			Adjustment: Adjustment,

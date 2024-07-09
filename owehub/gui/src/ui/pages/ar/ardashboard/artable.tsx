@@ -33,7 +33,7 @@ const ArDashBoardTable = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
 
   const [sortKey, setSortKey] = useState('');
@@ -80,7 +80,7 @@ const ArDashBoardTable = () => {
   const totalPages = Math.ceil(count / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = data?.slice();
  

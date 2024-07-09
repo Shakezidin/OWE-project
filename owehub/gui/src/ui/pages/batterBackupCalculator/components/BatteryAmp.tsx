@@ -202,7 +202,13 @@ const BatteryAmp = () => {
     const firstBattery = 38;
     count += Math.ceil((totalCategoryAmp - firstBattery) / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
-    return Math.max(count, requiredPowerwallsByLRA);
+    let externalBattery = 0
+    arr.forEach((item)=>{
+      if (item.amp>=60) {
+        externalBattery=2
+      }
+    })
+    return Math.max(count, requiredPowerwallsByLRA,externalBattery);
   };
 
   const required = useMemo(() => {
@@ -227,7 +233,6 @@ const BatteryAmp = () => {
     const consumption = Math.round(
       ((parseFloat(avgConsumption) / 365 / 24) * 0.6) / 13.5
     );
-    console.log(consumption, 'coms');
 
     if (consumption <= initial) {
       setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
@@ -265,7 +270,7 @@ to a Partial Home Back-up`,
           const min = minRequired(
             [...batt],
             data?.data?.total_catergory_amperes * 0.6 +
-              data?.data?.house_square,
+              (data?.data?.house_square * 1.5) / 120,
             data?.data?.lra
           );
           setOtherDeatil(data?.data);
@@ -284,6 +289,7 @@ to a Partial Home Back-up`,
   useEffect(() => {
     if (requiredBattery >= required) {
       setMainOn(true);
+      setBatteryPower((prev) => prev.map((ba) => ({ ...ba, isOn: true })));
     }
   }, [required, requiredBattery]);
 
@@ -321,7 +327,8 @@ to a Partial Home Back-up`,
               <div>
                 <h3 className="battery-watt-heading">
                   {' '}
-                  {requiredBattery} {requiredBattery>1?"Batteries":"Battery"}
+                  {requiredBattery}{' '}
+                  {requiredBattery > 1 ? 'Batteries' : 'Battery'}
                 </h3>
               </div>
               <div className="flex counter-btn-wrapper items-center">
@@ -380,17 +387,12 @@ to a Partial Home Back-up`,
                 name=""
                 label="Prospect Name"
                 placeholder={'Prospect Name'}
-                
                 value={otherDeatil.prospect_name!}
                 readOnly
                 disabled
-                onChange={()=>0}
+                onChange={() => 0}
               />
-            
-              
             </div>
-
-            
           </div>
           <div
             style={{ width: '100%' }}

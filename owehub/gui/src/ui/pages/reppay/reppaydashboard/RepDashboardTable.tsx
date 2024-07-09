@@ -11,6 +11,8 @@ import { BiSupport } from 'react-icons/bi';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import { MdOutlineHelp } from 'react-icons/md';
 import { ICONS } from '../../../icons/Icons';
+import { getRepPay } from '../../../../redux/apiActions/repPayAction';
+ 
 
 const RepDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
@@ -19,6 +21,7 @@ const RepDashBoardTable = () => {
   const handleOpen = () => setOpen(true);
   const dispatch = useAppDispatch();
   // const loading = useAppSelector((state) => state.comm.loading);
+  const { data, count, filters,isLoading } = useAppSelector((state) => state.repPaySlice);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -38,9 +41,21 @@ const RepDashBoardTable = () => {
       page_number: currentPage,
       page_size: pageSize1,
       archived: viewArchived ? true : undefined,
+      pay_roll_start_date: "2022-06-01",
+      pay_roll_end_date: "2022-06-01",
+      use_cutoff: filters.use_cutoff,
+      report_type: filters.report_type,
+      sort_by: "home_owner",
+      ap_oth: filters.ap_oth,
+      ap_pda: filters.ap_pda,
+      ap_ded: filters.ap_ded,
+      ap_adv: filters.ap_adv,
+      rep_comm:filters.rep_comm,
+      rep_bonus:filters.rep_bonus,
+      leader_ovrd:filters.leader_ovrd,
     };
-    dispatch(fetchCommissions(pageNumber));
-  }, [dispatch, currentPage, pageSize1, viewArchived]);
+     dispatch(getRepPay(pageNumber));
+  }, [dispatch, currentPage, pageSize1, viewArchived, filters]);
 
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
@@ -655,6 +670,9 @@ const RepDashBoardTable = () => {
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
+
+
+  console.log(filters, "filtets")
 
   return (
     <div className="comm">

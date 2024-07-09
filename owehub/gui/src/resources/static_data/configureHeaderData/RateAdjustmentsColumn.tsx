@@ -23,16 +23,10 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 // "PrAN0l"
 export const RateAdjustmentsColumns: Column[] = [
   {
-    name: 'unique_id',
-    displayName: 'Unique ID',
-    type: 'string',
-    isCheckbox: true,
-  },
-  {
     name: 'pay_scale',
     displayName: 'Pay Scale',
     type: 'string',
-    isCheckbox: false,
+    isCheckbox: true,
   },
   {
     name: 'position',

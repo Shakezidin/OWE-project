@@ -73,7 +73,13 @@ import Dba from './ui/pages/configure/dba/dba';
 import RepCredit from './ui/pages/configure/REP CREDIT/repcredit';
 import RepStatus from './ui/pages/configure/repstatus/repstatus';
 import NotFound from './ui/pages/NotFound/NotFound';
-
+import RepIncent from './ui/pages/configure/repIncent/RepIncent';
+import ApAdv from './ui/pages/configure/apAdv/ApAdv';
+import ApDed from './ui/pages/configure/apDed/ApDed';
+import ApOth from './ui/pages/configure/apOth/ApOth';
+import ApPda from './ui/pages/configure/apPda/ApPda';
+import TeamManagement from './ui/pages/teammanagement/dashboard';
+import TeamTable from './ui/pages/teammanagement/teamtable';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -148,6 +154,11 @@ function App() {
         <Route path={ROUTES.CONFIG_DBA} element={<Dba/>}/>
         <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit/>}/>
         <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus/>}/>
+        <Route path = {ROUTES.CONFIG_REPINCENT} element={<RepIncent/>}/>
+        <Route path = {ROUTES.CONFIG_APADV} element={<ApAdv/>}/>
+        <Route path = {ROUTES.CONFIG_APDED} element={<ApDed/>}/>
+        <Route path = {ROUTES.CONFIG_APOTH} element={<ApOth/>}/>
+        <Route path = {ROUTES.CONFIG_APPDA} element={<ApPda/>}/>
       
       </Route>
     );
@@ -271,6 +282,8 @@ function App() {
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
+          <Route path={ROUTES.TEAM_MANAGEMENT_DASHBOARD} element={<TeamManagement/>}/>
+          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable/>}/>
            
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
@@ -279,6 +292,7 @@ function App() {
         <Route path={ROUTES.NOT_FOUND} element={
           <NotFound/>
         } />
+        
       </Routes>
     </BrowserRouter>
   );

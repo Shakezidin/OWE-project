@@ -7,16 +7,15 @@ interface Ipaginate {
   pay_roll_end_date?:string,
   use_cutoff?:string;
   dealer_name?:string;
-  sort_by?:string;
-  commission_model?:string;
+  sort_by?:string
+  commission_model:string;
 }
 
 export const getDealerPay = createAsyncThunk(
-  'get/get_dealerpay',
+  'get/dealer-pay',
   async (params: Ipaginate, { rejectWithValue }) => {
     try {
       const resp = await postCaller('get_dealerpay', params);
-      console.log(resp, "message-----")
       const count = resp.dbRecCount || 0;
       const list = resp.data.dealer_pay_list || [];
       return { count, list };
@@ -25,4 +24,3 @@ export const getDealerPay = createAsyncThunk(
     }
   }
 );
-

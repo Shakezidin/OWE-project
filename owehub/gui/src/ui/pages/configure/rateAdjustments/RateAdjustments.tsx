@@ -282,9 +282,9 @@ const RateAdjustments = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                 <th>
+                <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
@@ -314,10 +314,9 @@ const RateAdjustments = () => {
                             )
                           }
                         />
-                        {el.unique_id}
+                        {el.pay_scale}
                       </div>
                     </td>
-                    <td> {el.pay_scale}</td>
                     <td>{el.position}</td>
                     <td>{el.adjustment}</td>
                     <td>{el.min_rate}</td>

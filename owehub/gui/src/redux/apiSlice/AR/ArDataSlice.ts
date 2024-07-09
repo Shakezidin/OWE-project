@@ -30,8 +30,8 @@ const initialState: IState = {
   isSuccess: 0,
   count: 0,
   filters: {
-    report_type: 'All',
-    sale_partner: 'All',
+    report_type: 'ALL',
+    sale_partner: 'ALL',
     sort_by: 'Partner',
     shaky: true,
     cancel: true,
@@ -68,6 +68,7 @@ const ArData = createSlice({
         ntp: true,
         install: true,
         pto: true,
+        sold:true,
       };
     },
 
@@ -80,6 +81,7 @@ const ArData = createSlice({
         ntp: false,
         install: false,
         pto: false,
+        sold:false,
       };
     },
   },

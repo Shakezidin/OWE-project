@@ -7,13 +7,12 @@ import DashBoardTable from './DashBoardTable';
 import DashBoardChart from './DashBoardChart';
 import { comissionValueData } from '../../../resources/static_data/StaticData';
 import FilterModal from '../../components/FilterModal/FilterModal';
-import 'react-date-range/dist/styles.css'; 
-import 'react-date-range/dist/theme/default.css'; 
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
 import { useAppDispatch } from '../../../redux/hooks';
-import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
-import { format } from 'date-fns';
 import moment from 'moment';
+import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState({
@@ -31,13 +30,6 @@ export const DashboardPage: React.FC = () => {
   const handleToggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
   };
-  const handleSelectDateRange = (ranges: any) => {
-    setSelectionRange(ranges.selection);
-  };
-  const handleApplyDateRange = () => {
-    console.log('Selected Date Range:', selectionRange);
-    setShowDatePicker(false);
-  };
 
   const handleResetDates = () => {
     setSelectionRange({
@@ -46,15 +38,23 @@ export const DashboardPage: React.FC = () => {
       key: 'selection',
     });
   };
-  const itemsPerPage = 10;
+  const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1);
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
+  /* const [selectedOption, setSelectedOption] = useState<string>(
+    payRollData[0].label
+  );*/
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
 
+  /* const handleSelectChange = (
+    selectedOption: { value: string; label: string } | null
+  ) => {
+  setSelectedOption(selectedOption ? selectedOption.value : "");
+  };*/
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -73,9 +73,9 @@ export const DashboardPage: React.FC = () => {
       pay_roll_start_date:moment(selectionRange.startDate).format('YYYY-MM-DD HH:mm:ss'),
       pay_roll_end_date:moment(selectionRange.endDate).format('YYYY-MM-DD HH:mm:ss'),
       use_cutoff: "NO",
-  dealer_name: "ALL",
+      dealer_name: "ALL",
       sort_by:"unique_id",
-      commission_model:selectedOption2
+      commission_model:"standard"
     }))
   },[currentPage, selectedOption2, selectionRange])
 
@@ -90,36 +90,36 @@ export const DashboardPage: React.FC = () => {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
+ 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
+ console.log(selectionRange.startDate, "selectionRange")
+ console.log(selectionRange.endDate, "endDate")
+
   return (
     <>
       <div className="Dashboard-section-container">
-        <div className="white-back">
+        <div className='white-back'>
           <div className="DashboardPage-container">
             <div className="rep-manage-user">
+
+
               <div className="dash-head-input" style={{ minWidth: '185px' }}>
-                <div
-                  className="rep-drop_label"
-                  style={{ backgroundColor: '#57B3F1' }}
-                >
+                <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
                   <img src={ICONS.lable_img} alt="" />
                 </div>
-                <div className="rep-up relative">
-                  <label
-                    className="inputLabel"
-                    style={{
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style=
+                    {{
                       color: '#344054',
                       position: 'absolute',
                       left: '8px',
                       top: '-6px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
+                      whiteSpace: 'nowrap'
+                    }}>
                     Commission Model
                   </label>
                   <Select
@@ -145,7 +145,7 @@ export const DashboardPage: React.FC = () => {
                         marginRight: '33px',
                         marginBottom: '2px',
                         boxShadow: 'none',
-                        marginTop: '18px',
+                        marginTop: '18px'
                       }),
                       indicatorSeparator: () => ({
                         display: 'none',
@@ -156,56 +156,62 @@ export const DashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-18px',
+                        marginLeft: '-18px'
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '13px',
                         color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected
-                          ? '#377CF6'
-                          : '#ffffff',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected
-                            ? '#377CF6'
-                            : '#DDEBFF',
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
-
-                        color: selectedOption2 ? '#292929' : '#8b8484',
+                  
+                        color:selectedOption2? '#292929' : '#8b8484' ,
                         width: 'fit-content',
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,
                         width: '131px',
-                        left: -31,
+                        left: -31
+                        
                       }),
                     }}
                   />
                 </div>
               </div>
 
-              <div className="dash-head-input" style={{ width: '250px' }}>
-                <div
-                  className="rep-drop_label"
-                  style={{ backgroundColor: '#C470C7' }}
-                >
+              {/* <div className="dash-head-input">
+              <label className="inputLabel" style={{ color: '#344054' }}>
+                Set Default
+              </label>
+              <label
+                className="inputLabel dashboard-chart-view"
+                style={{ color: '#0493CE' }}
+              >
+                Chart View
+              </label>
+            </div> */}
+
+              <div className="dash-head-input" style={{ width: "250px" }}>
+
+
+                <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
-                <div className="rep-up relative">
-                  <label
-                    className="inputLabel"
-                    style={{
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style=
+                    {{
                       color: '#344054',
                       position: 'absolute',
                       left: '12px',
                       top: '-9px',
                       whiteSpace: 'nowrap',
-                      zIndex: 99,
-                    }}
-                  >
+                      zIndex: 99
+                    }}>
                     Payroll Date
                   </label>
 
@@ -215,6 +221,7 @@ export const DashboardPage: React.FC = () => {
                       top: '7px',
                       backgroundColor: 'white',
                       marginLeft: '6px',
+
                     }}
                     ref={datePickerRef}
                   >
@@ -223,8 +230,7 @@ export const DashboardPage: React.FC = () => {
                       onClick={handleToggleDatePicker}
                       style={{ color: '#292929' }}
                     >
-                      {selectionRange.startDate.toLocaleDateString() !==
-                      selectionRange.endDate.toLocaleDateString()
+                      {selectionRange.startDate.toLocaleDateString() !== selectionRange.endDate.toLocaleDateString()
                         ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
                         : 'Select Date'}
                     </label>
@@ -232,7 +238,7 @@ export const DashboardPage: React.FC = () => {
                       <div className="calender-container">
                         <DateRangePicker
                           ranges={[selectionRange]}
-                          onChange={handleSelectDateRange}
+                          onChange={handleSelect}
                         />
                         <button
                           className="reset-calender"
@@ -241,25 +247,25 @@ export const DashboardPage: React.FC = () => {
                           Reset
                         </button>
                         <button
-                          className="apply-calender"
-                          onClick={handleApplyDateRange}
+                          className="close-calender"
+                          onClick={handleToggleDatePicker}
                         >
-                          Apply
+                          Close
                         </button>
                       </div>
                     )}
                   </div>
                 </div>
               </div>
+
             </div>
 
             <div className="dashboard-payroll">
               <div className="Line-container">
                 <div className="line-graph">
                   <div
-                    className={`filter-line ${
-                      active === 0 ? 'active-filter-line' : ''
-                    }`}
+                    className={`filter-line ${active === 0 ? 'active-filter-line' : ''
+                      }`}
                     onClick={() => setActive(0)}
                   >
                     {active === 0 ? (
@@ -269,9 +275,8 @@ export const DashboardPage: React.FC = () => {
                     )}
                   </div>
                   <div
-                    className={`filter-disable ${
-                      active === 1 ? 'active-filter-line' : ''
-                    }`}
+                    className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
+                      }`}
                     style={{ backgroundColor: '#377CF6' }}
                   >
                     {active === 1 ? (
@@ -285,11 +290,7 @@ export const DashboardPage: React.FC = () => {
                     onClick={() => setFilterModal(true)}
                     style={{ backgroundColor: '#377CF6' }}
                   >
-                    <img
-                      src={ICONS.fil_white}
-                      alt=""
-                      style={{ height: '15px', width: '15px' }}
-                    />
+                    <img src={ICONS.fil_white} alt="" style={{ height: '15px', width: '15px' }} />
                   </div>
                 </div>
               </div>
@@ -297,6 +298,7 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div className="">
             <DashboardTotal />
+            {/* <DonutChart /> */}
           </div>
         </div>
 
@@ -306,7 +308,7 @@ export const DashboardPage: React.FC = () => {
             columns={[]}
             page_number={1}
             page_size={10}
-            fetchFunction={() => {}}
+            fetchFunction={() => { }}
           />
         )}
 

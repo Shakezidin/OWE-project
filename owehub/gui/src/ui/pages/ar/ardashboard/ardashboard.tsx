@@ -29,19 +29,20 @@ export const ARDashboardPage: React.FC = () => {
     { value: 'QC/Permit/NTP', label: 'QC/Permit/NTP', key: 'permits' },
     { value: 'Install', label: 'Install', key: 'install' },
     { value: 'PTO', label: 'PTO', key: 'pto' },
+    { value: 'SOLD', label: 'SOLD', key: 'sold' },
   ];
 
   const options1 = [
-    { value: 'All', label: 'All' },
+    { value: 'ALL', label: 'All' },
     { value: 'Current Due', label: 'Current Due' },
     { value: 'Overpaid', label: 'Overpaid' },
   ];
   const options2 = [
-    { value: 'All', label: 'All' },
+    { value: 'ALL', label: 'All' },
     { value: 'N/A', label: 'N/A' },
   ];
   const options3 = [
-    { value: 'All', label: 'All' },
+    { value: 'ALL', label: 'All' },
     { value: 'Partner', label: 'Partner' },
     { value: 'Installer', label: 'Installer' },
     { value: 'Type', label: 'Type' },

@@ -59,6 +59,12 @@ import dealerPaySlice from './apiSlice/dealerPaySlice/dealerPaySlice';
 import dbaSlice from './apiSlice/configSlice/config_get_slice/dbaSlice';
 import repcreditSlice from './apiSlice/configSlice/config_get_slice/repcreditSlice';
 import repstatusSlice from './apiSlice/configSlice/config_get_slice/repstatusSlice';
+import repPaySlice from './apiSlice/repPaySlice/repPaySlice';
+import apRepSlice from './apiSlice/configSlice/config_get_slice/apRepSlice';
+import repIncentSlice from './apiSlice/configSlice/config_get_slice/repIncentSlice';
+import apPdaSlice from './apiSlice/configSlice/config_get_slice/apPdaSlice';
+import apOthSlice from './apiSlice/configSlice/config_get_slice/apOthSlice';
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -123,7 +129,12 @@ export const store = configureStore({
     filterSlice,
     userSlice,
     dealerCredit:dealerCreditSlice,
-    dealerPaySlice
+    dealerPaySlice,
+    repPaySlice,
+    apRepSlice,
+    repIncentSlice,
+    apPdaSlice,
+    apOthSlice
   },
 });
 
