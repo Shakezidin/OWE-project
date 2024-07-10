@@ -129,13 +129,10 @@ const BatteryAmp = () => {
   const [initial, setInitial] = useState(0);
 
   const { id } = useParams();
-  const [appliances, setAppliances] = useState([...appliance]);
   const [batteryPower, setBatteryPower] = useState<Ibattery[]>([]);
   const [initialBattery, setInitialBattery] = useState<Ibattery[]>([]);
   const [mainOn, setMainOn] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-  const [avgConsumption, setAvgConsumption] = useState('');
-  const [caluclatedBackup, setCaluclatedBackup] = useState(-1);
   const [mainDisabled, setMainDisabled] = useState(true);
   const [mssg, setMssg] = useState('');
   const [btnText, setBtnText] = useState({
@@ -202,42 +199,6 @@ const BatteryAmp = () => {
   const required = useMemo(() => {
     return initial;
   }, [initial]);
-
-  const AddrequiredBattery = () => {
-    const consumption = Math.ceil(
-      ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
-    );
-    let count = initial;
-
-    while (consumption >= count) {
-      count++;
-    }
-    setRequiredBattery(count);
-    setInitial(count);
-    setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
-  };
-
-  const calculator = () => {
-    const consumption = Math.ceil(
-      ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
-    );
-
-    if (consumption <= initial) {
-      setCaluclatedBackup((prev) => (prev < 1 ? 1 : prev));
-    } else {
-      setCaluclatedBackup(0);
-      setMssg(`Your annual usage exceeds what is possible to back-up with the current battery 
-        configuration. In-order for your 
-        house to remain eligible for a Full 
-        Home Back-up we will be adding x batteries to your system.`);
-      setIsOpen(true);
-      setBtnText({
-        primaryText: 'Proceed with Full Home Back-up',
-        secondaryText: `I would like to downgrade
-to a Partial Home Back-up`,
-      });
-    }
-  };
 
   useEffect(() => {
     const getProspectDetail = async () => {
@@ -349,14 +310,7 @@ to a Partial Home Back-up`,
                   role="button"
                   onClick={() =>
                     setRequiredBattery((prev) => {
-                      const consumption = Math.ceil(
-                        ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) /
-                          13.5
-                      );
                       let init = prev + 1;
-                      if (init >= consumption && caluclatedBackup === 0) {
-                        setCaluclatedBackup(1);
-                      }
                       return init;
                     })
                   }
@@ -388,67 +342,7 @@ to a Partial Home Back-up`,
               />
             </div>
           </div>
-          <div
-            style={{ width: '100%' }}
-            className="mt3 battery-watt-wrapper justify-between flex items-center bg-white"
-          >
-            <div
-              className="calc-input-wrapper relative"
-              style={{ flexBasis: 168 }}
-            >
-              <Input
-                type="text"
-                name=""
-                label="Enter annual Usage"
-                placeholder={'Annual Usage'}
-                style={{
-                  border:
-                    caluclatedBackup === 1
-                      ? '1px solid #129537'
-                      : caluclatedBackup === 0
-                        ? '1px solid #F44336'
-                        : undefined,
-                }}
-                value={avgConsumption}
-                onChange={(e) => {
-                  e.target.value = e.target.value.replace(/[^0-9.]/g, '');
-                  setAvgConsumption(e.target.value);
-                }}
-              />
-              {!!(caluclatedBackup === 0) && (
-                <IoCloseCircle
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    transform: 'translateY(30%)',
-                    right: 5,
-                  }}
-                  size={17}
-                  color="#F44336"
-                />
-              )}
-              {!!(caluclatedBackup === 1) && (
-                <FaCircleCheck
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    transform: 'translateY(30%)',
-                    right: 5,
-                  }}
-                  size={17}
-                  color="#129537"
-                />
-              )}
-            </div>
-
-            <span
-              onClick={calculator}
-              style={{ fontSize: 12, fontWeight: 600, marginTop: '1.5rem' }}
-              className="pointer check-btn"
-            >
-              check
-            </span>
-          </div>
+        
           <div
             className="bg-white mt3 panel-container p3 flex-grow-1 relative"
             style={{ borderRadius: 20 }}
@@ -656,7 +550,6 @@ to a Partial Home Back-up`,
           <div className="calc-btn-wrapper">
             <button
               onClick={exportPdf}
-              disabled={!Boolean(avgConsumption.trim())}
               className="calc-btn text-white pointer calc-green-btn"
               style={{ maxWidth: '100%' }}
             >
@@ -681,12 +574,11 @@ to a Partial Home Back-up`,
           popUpMsg={mssg}
           isOpen={isOpen}
           required={required}
-          AddrequiredBattery={AddrequiredBattery}
           setBatteryPower={setBatteryPower}
           setRequiredBattery={setRequiredBattery}
           setMainDisabled={setMainDisabled}
           setIsOpen={setIsOpen}
-          setCaluclatedBackup={setCaluclatedBackup}
+    
         />
       )}
     </div>
