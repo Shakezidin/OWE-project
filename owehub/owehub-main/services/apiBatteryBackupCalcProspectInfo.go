@@ -81,6 +81,7 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, prospectInfoData.Spa)
 	queryParameters = append(queryParameters, prospectInfoData.Address)
 	queryParameters = append(queryParameters, prospectInfoData.HouseSquare)
+	queryParameters = append(queryParameters, prospectInfoData.SysSize)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateBatteryBackupCalcProspectInfo, queryParameters)
