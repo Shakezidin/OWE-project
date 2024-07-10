@@ -82,13 +82,21 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 		FormAndSendHttpResp(resp, "Failed to get install cost data from DB", http.StatusBadRequest, nil)
 		return
 	}
+	// Process retrieved data
+	amountPrepaid, _ := data[0]["amount_prepaid"].(float64)
+	pipelineRemaining, _ := data[0]["pipeline_remaining"].(float64)
+	currentDue, _ := data[0]["current_due"].(float64)
 
-	dealerPayTileDate := models.GetDealerPayTileData{}
+	// Prepare response data structure
+	dealerPayTileData := models.GetDealerPayTileData{
+		AmountPrepaid:     amountPrepaid,
+		PipelineRemaining: pipelineRemaining,
+		CurrentDue:        currentDue,
+	}
 
-	dealerPayTileDate.AmountPrepaid = data[0]["amount_prepaid"].(float64)
-	dealerPayTileDate.PipelineRemaining = data[0]["pipeline_remaining"].(float64)
-	dealerPayTileDate.CurrentDue = data[0]["current_due"].(float64)
+	// Log the data being sent
+	log.FuncDebugTrace(0, "dlr pay tiles data: %+v", dealerPayTileData)
 
-	log.FuncDebugTrace(0, "prospect load reterived: %+v", dealerPayTileDate)
-	FormAndSendHttpResp(resp, "prospect load reterived Successfully", http.StatusOK, dealerPayTileDate)
+	// Send response using FormAndSendHttpResp function
+	FormAndSendHttpResp(resp, "dealer pay tales data retrieved successfully", http.StatusOK, dealerPayTileData)
 }
