@@ -55,7 +55,6 @@ const repCreditSlice = createSlice({
         state.isLoading = false;
         state.data = action.payload.list || [];
         state.count = action.payload.count;
-        console.log("slice data check", action.payload);
       })
       .addCase(fetchRepCreditList.rejected, (state, action) => {
         state.isLoading = false;
@@ -93,7 +92,6 @@ const repCreditSlice = createSlice({
       })
       .addCase(archiveRepCredit.fulfilled, (state) => {
         state.isLoading = false;
-        state.isSuccess = true;
         toast.success('Rep Credit archived successfully');
       })
       .addCase(archiveRepCredit.rejected, (state, action) => {

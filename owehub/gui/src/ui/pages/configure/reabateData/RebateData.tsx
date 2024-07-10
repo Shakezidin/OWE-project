@@ -60,38 +60,53 @@ const RebeteData: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const { data, isLoading,  isSuccess } = useAppSelector(
+  const { data,count, isLoading, isSuccess } = useAppSelector(
     (state) => state.rebate
   );
+  console.log(count, "yftfrtyretyrrytre")
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-      archived: viewArchived,
+      archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchRebateData(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived: viewArchived,
+        filters,
+      };
+      dispatch(fetchRebateData({ ...pageNumber }));
+    }
+  }, [isSuccess, currentPage, viewArchived, filters]);
+ 
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-
   const filter = () => {
     setFilterOpen(true);
   };
 
-  const totalPages = Math.ceil(dbCount / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
+
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -104,9 +119,9 @@ const RebeteData: React.FC = () => {
     handleOpen();
   };
 
-  const currentPageData = data.slice();
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -190,10 +205,10 @@ const RebeteData: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Rebate Data"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => { }}
+          onPressArchive={() => { }}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           checked={isAllRowsSelected}
           viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
@@ -255,7 +270,7 @@ const RebeteData: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
                   </div>
                 </th>
               </tr>
@@ -285,20 +300,36 @@ const RebeteData: React.FC = () => {
                             )
                           }
                         />
-                        {el.customer_verf}
+                         <td>{el.unique_id || 'N/A'}</td>
                       </div>
                     </td>
-                    <td>{el.type}</td>
-                    <td>{el.item}</td>
-                    <td>{el.amount}</td>
-                    <td>{el.rep_doll_divby_per}</td>
-                    <td>{el.notes}</td>
-                    <td>{el.rep1_name}</td>
-                    <td>{el.rep2_name}</td>
-                    <td>{el.sys_size}</td>
-                    <td>{el.rep_count}</td>
-                    <td>{el.type_rd_mktg}</td>
-
+                    <td>{el.customer_verf || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.item || 'N/A'}</td>
+                    <td>{el.amount || 'N/A'}</td>
+                    <td>{el.rep_doll_divby_per || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
+                    <td>{el.rep1_name || 'N/A'}</td>
+                    <td>{el.rep2_name || 'N/A'}</td>
+                    <td>{el.sys_size || 'N/A'}</td>
+                    <td>{el.state || 'N/A'}</td>
+                    <td>{el.rep_count || 'N/A'}</td>
+                    <td>{el.per_rep_addr_share || 'N/A'}</td>
+                    <td>{el.per_rep_def_ovrd || 'N/A'}</td>
+                    <td>{el.per_rep_ovrd_share || 'N/A'}</td>
+                    <td>{el.rep1_def_resp || 'N/A'}</td>
+                    <td>{el.r1_pay_scale || 'N/A'}</td>
+                    <td>{el.r1_rebate_credit || 'N/A'}</td>
+                    <td>{el.r1_rebate_credit_perc || 'N/A'}</td>
+                    <td>{el.r1_addr_resp || 'N/A'}</td>
+                    <td>{el.r2_pay_scale || 'N/A'}</td>
+                    <td>{el.r2_rebate_credit || 'N/A'}</td>
+                    <td>{el.r2_rebate_credit_perc || 'N/A'}</td>
+                    <td>{el.rep2_def_resp || 'N/A'}</td>
+                    <td>{el.r2_addr_resp || 'N/A'}</td>
+                    <td>{el.start_date || 'N/A'}</td>
+                    <td>{el.end_date || 'N/A'}</td>
+                    {/* <td>{el.type_rd_mktg || 'N/A'}</td> */}
                     <td>
                       {selectedRows.size > 0 ? (
                         <div className="action-icon">
@@ -349,10 +380,10 @@ const RebeteData: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {commissionList?.length > 0 && (
+        {/* {data?.length > 0 && (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {dbCount} of {commissionList?.length} item
+              {currentPage} - {10} of {data?.length} item
             </p>
             <Pagination
               currentPage={currentPage}
@@ -364,7 +395,27 @@ const RebeteData: React.FC = () => {
               perPage={itemsPerPage}
             />
           </div>
-        )}
+        )} */}
+         <div className="page-heading-container">
+          {!!count && (
+            <p className="page-heading">
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
+          )}
+
+          {data?.length > 0 ? (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+            />
+          ) : null}
+        </div>
       </div>
     </div>
   );

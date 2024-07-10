@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 interface IState {
   data: any;
   error: string;
+  count: number;
   isLoading: boolean;
   isFormSubmitting: boolean;
   isSuccess: boolean;
@@ -17,10 +18,12 @@ interface IState {
 const initialState: IState = {
   data: [],
   error: '',
+  count: 0,
   isLoading: false,
   isFormSubmitting: false,
   isSuccess: false,
 };
+
 
 const rebateDataSlice = createSlice({
   name: 'Rebate Data Slice',
@@ -39,7 +42,8 @@ const rebateDataSlice = createSlice({
         fetchRebateData.fulfilled,
         (state, action: PayloadAction<any | null>) => {
           state.isLoading = false;
-          state.data = action.payload ? action.payload : [];
+          state.data = action.payload.list ? action.payload.list : [];
+          state.count = action.payload.count;
         }
       )
       .addCase(fetchRebateData.rejected, (state, action) => {
