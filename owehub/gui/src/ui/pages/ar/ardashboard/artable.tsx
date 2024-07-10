@@ -8,10 +8,10 @@ import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/pagin
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import '../../configure/configure.css';
-import HelpDashboard from '../../dashboard/HelpDashboard';
 import { BiSupport } from 'react-icons/bi';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import { getAR } from '../../../../redux/apiActions/config/arAction';
+import ArHelp from './ArHelp';
 
 const ArDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
@@ -350,12 +350,17 @@ const ArDashBoardTable = () => {
             perPage={itemsPerPage}
           />
           {openIcon && (
-            <HelpDashboard
+            <ArHelp
               data={{
                 id: editedCommission.unique_id,
                 name: editedCommission.partner,
-                state:editedCommission.state,
-                status:editedCommission.status
+                home_owner: editedCommission.home_owner,
+                state:editedCommission.st,
+                sys_size:editedCommission.sys_size,
+                contract_calc: editedCommission.contract_calc,
+                current_due: editedCommission.current_due,
+                balance: editedCommission.balance,
+                
               }}
               handleClose={handleIconClose}
             />
