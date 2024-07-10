@@ -12,6 +12,7 @@ interface IPopPupProps {
   secondaryDetail: ISecondary;
   address: string;
   squareFoot: number;
+  systemSize: number;
 }
 const primaryApplicances = [
   { name: 'Water heater', id: 1, key: 'water_heater' },
@@ -47,6 +48,7 @@ const AppliancePopup = ({
   secondaryDetail,
   squareFoot,
   address,
+  systemSize
 }: IPopPupProps) => {
   return (
     <div className="transparent-model p3">
@@ -73,6 +75,22 @@ const AppliancePopup = ({
             placeholder={'Prospect Name'}
             value={address}
             readOnly
+            onChange={() => 0}
+          />
+        </div>
+
+        <div
+          className="calc-input-wrapper relative mb2"
+          style={{ width: '100%' }}
+        >
+          <Input
+            type="text"
+            name=""
+            label="System Size"
+            placeholder={'System Size'}
+            value={`${systemSize}`}
+            readOnly
+            disabled
             onChange={() => 0}
           />
         </div>
