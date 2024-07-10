@@ -64,6 +64,8 @@ import apRepSlice from './apiSlice/configSlice/config_get_slice/apRepSlice';
 import repIncentSlice from './apiSlice/configSlice/config_get_slice/repIncentSlice';
 import apPdaSlice from './apiSlice/configSlice/config_get_slice/apPdaSlice';
 import apOthSlice from './apiSlice/configSlice/config_get_slice/apOthSlice';
+import apAdvSlice from './apiSlice/configSlice/config_get_slice/apAdvSlice';
+import apDedSlice from './apiSlice/configSlice/config_get_slice/apDedSlice';
 
 export const store = configureStore({
   reducer: {
@@ -134,7 +136,9 @@ export const store = configureStore({
     apRepSlice,
     repIncentSlice,
     apPdaSlice,
-    apOthSlice
+    apOthSlice,
+    apAdvSlice,
+    apDedSlice
   },
 });
 

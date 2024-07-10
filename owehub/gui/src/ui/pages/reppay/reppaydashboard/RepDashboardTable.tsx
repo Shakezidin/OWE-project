@@ -12,7 +12,7 @@ import PaginationComponent from '../../../components/pagination/PaginationCompon
 import { MdOutlineHelp } from 'react-icons/md';
 import { ICONS } from '../../../icons/Icons';
 import { getRepPay } from '../../../../redux/apiActions/repPayAction';
- 
+import DataNotFound from '../../../components/loader/DataNotFound';
 
 const RepDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
@@ -21,7 +21,7 @@ const RepDashBoardTable = () => {
   const handleOpen = () => setOpen(true);
   const dispatch = useAppDispatch();
   // const loading = useAppSelector((state) => state.comm.loading);
-  const { data, count, filters,isLoading } = useAppSelector((state) => state.repPaySlice);
+  const { data, count, filters } = useAppSelector((state) => state.repPaySlice);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -41,20 +41,21 @@ const RepDashBoardTable = () => {
       page_number: currentPage,
       page_size: pageSize1,
       archived: viewArchived ? true : undefined,
-      pay_roll_start_date: "2022-06-01",
-      pay_roll_end_date: "2022-06-01",
+      pay_roll_start_date: '2022-06-01',
+      pay_roll_end_date: '2022-06-01',
       use_cutoff: filters.use_cutoff,
-      report_type: filters.report_type,
-      sort_by: "home_owner",
+      report_type: filters.report_type.toUpperCase(),
+      sort_by: ['home_owner', 'unique_id'],
       ap_oth: filters.ap_oth,
       ap_pda: filters.ap_pda,
       ap_ded: filters.ap_ded,
       ap_adv: filters.ap_adv,
-      rep_comm:filters.rep_comm,
-      rep_bonus:filters.rep_bonus,
-      leader_ovrd:filters.leader_ovrd,
+      rep_comm: filters.rep_comm,
+      rep_bonus: filters.rep_bonus,
+      leader_ovrd: filters.leader_ovrd,
+      commission_model: filters.commission_model,
     };
-     dispatch(getRepPay(pageNumber));
+    dispatch(getRepPay(pageNumber));
   }, [dispatch, currentPage, pageSize1, viewArchived, filters]);
 
   const handleItemsPerPageChange = (e: any) => {
@@ -470,7 +471,7 @@ const RepDashBoardTable = () => {
   ];
 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
@@ -484,7 +485,7 @@ const RepDashBoardTable = () => {
     handleOpen();
   };
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
   const totalPages1 = Math.ceil(commissionList?.length / pageSize1);
@@ -526,143 +527,173 @@ const RepDashBoardTable = () => {
   // }
 
   const Commissioncolumns = [
-    { name: 'partner', displayName: 'UID', type: 'string', isCheckbox: true },
+    { name: 'unique_id', displayName: 'UID', type: 'string', isCheckbox: true },
     {
-      name: 'installer',
+      name: 'home_owner',
       displayName: 'Home Owner',
       type: 'string',
       isCheckbox: false,
     },
     {
-      name: 'state',
-      displayName: 'Curr Stat',
+      name: 'current_status',
+      displayName: 'Current Status',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'owe_contractor',
+      displayName: 'Owe Contractor',
+      type: 'string',
+      isCheckbox: false,
+    },
+
+    {
+      name: 'DBA',
+      displayName: 'DBA',
+      type: 'string',
+      isCheckbox: false,
+    },
+    { name: 'type', displayName: 'Type', type: 'string', isCheckbox: false },
+    { name: 'Today', displayName: 'Today', type: 'date', isCheckbox: false },
+
+    {
+      name: 'finance_type',
+      displayName: 'Finance Type',
+      type: 'string',
+      isCheckbox: false,
+    },
+
+    {
+      name: 'sys_size',
+      displayName: 'Sys Size',
+      type: 'string',
+      isCheckbox: false,
+    },
+
+    {
+      name: 'contract_total',
+      displayName: 'Contract Total',
+      type: 'string',
+      isCheckbox: false,
+    },
+
+    {
+      name: 'loan_fee',
+      displayName: 'Loan Fee',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'epc',
+      displayName: 'epc',
+      type: 'number',
+      isCheckbox: false,
+    },
+    {
+      name: 'adders',
+      displayName: 'Adders',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'r_r',
+      displayName: 'r_r',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'comm_rate',
+      displayName: 'Comm Rate',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'net_epc',
+      displayName: 'Net Epc',
+      type: 'number',
+      isCheckbox: false,
+    },
+    {
+      name: 'credit',
+      displayName: 'Credit',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'rep_2',
+      displayName: 'Rep 2',
+      type: 'string',
+      isCheckbox: false,
+    },
+
+    {
+      name: 'net_comm',
+      displayName: 'Net Comm',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'draw_amt',
+      displayName: 'Draw Amount',
+      type: 'number',
+      isCheckbox: false,
+    },
+    {
+      name: 'amt_paid',
+      displayName: 'Amount Paid',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'balance',
+      displayName: 'Balance',
+      type: 'number',
+      isCheckbox: false,
+    },
+
+    {
+      name: 'dealer_code',
+      displayName: 'Dealer Code',
       type: 'string',
       isCheckbox: false,
     },
     {
       name: 'sub_total',
       displayName: 'Sub Total',
-      type: 'date',
-      isCheckbox: false,
-    },
-
-    {
-      name: 'rep_type',
-      displayName: 'Draw AMT',
-      type: 'string',
-      isCheckbox: false,
-    },
-    { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Bal', type: 'number', isCheckbox: false },
-
-    { name: 'rate', displayName: 'Percent', type: 'number', isCheckbox: false },
-
-    {
-      name: 'installer',
-      displayName: 'Amt',
-      type: 'string',
-      isCheckbox: false,
-    },
-    { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
-
-    {
-      name: 'start_date',
-      displayName: 'Type',
-      type: 'date',
-      isCheckbox: false,
-    },
-
-    {
-      name: 'state',
-      displayName: 'Fin Type',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'sale_type',
-      displayName: 'Sys Size',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'sale_price',
-      displayName: 'Contract',
-      type: 'number',
-      isCheckbox: false,
-    },
-    {
-      name: 'rep_type',
-      displayName: 'Loan Fee',
-      type: 'string',
-      isCheckbox: false,
-    },
-    { name: 'rl', displayName: 'EPC', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Address', type: 'number', isCheckbox: false },
-    { name: 'start_date', displayName: 'R+R', type: 'date', isCheckbox: false },
-    {
-      name: 'end_date',
-      displayName: 'Comm Rate',
-      type: 'date',
-      isCheckbox: false,
-    },
-
-    {
-      name: 'installer',
-      displayName: 'Net EPC',
-      type: 'string',
-      isCheckbox: false,
-    },
-    { name: 'state', displayName: 'Credit', type: 'string', isCheckbox: false },
-    {
-      name: 'sale_type',
-      displayName: 'Rep 2',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'sale_price',
-      displayName: 'Net Comm',
       type: 'number',
       isCheckbox: false,
     },
 
     {
-      name: 'sale_price',
-      displayName: 'Owe Contr',
-      type: 'number',
-      isCheckbox: false,
-    },
-    { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
-    {
-      name: 'rl',
-      displayName: 'Comm Model',
+      name: 'max_per_rep',
+      displayName: 'Max Per Rep',
       type: 'number',
       isCheckbox: false,
     },
 
     {
-      name: 'start_date',
-      displayName: 'DLR Code',
-      type: 'date',
+      name: 'total_per_rep',
+      displayName: 'Total Per Rep',
+      type: 'string',
       isCheckbox: false,
     },
     {
-      name: 'end_date',
-      displayName: 'Contr date',
-      type: 'date',
-      isCheckbox: false,
-    },
-
-    {
-      name: 'start_date',
-      displayName: 'State',
-      type: 'date',
+      name: 'commission_model',
+      displayName: 'Commission Model',
+      type: 'string',
       isCheckbox: false,
     },
 
     {
-      name: 'stat_date',
-      displayName: 'Start Date',
+      name: 'rep_status',
+      displayName: 'Rep Status',
+      type: 'string',
+      isCheckbox: false,
+    },
+
+    {
+      name: 'sheet_type',
+      displayName: 'Sheet Type',
       type: 'string',
       isCheckbox: false,
     },
@@ -670,9 +701,6 @@ const RepDashBoardTable = () => {
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
-
-
-  console.log(filters, "filtets")
 
   return (
     <div className="comm">
@@ -714,12 +742,9 @@ const RepDashBoardTable = () => {
             </thead>
 
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? 'selected' : ''}
-                  >
+              {currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500' }}>
                       <div className="flex-check">
                         <CheckBox
@@ -739,83 +764,71 @@ const RepDashBoardTable = () => {
                             }
                           }}
                         />
-                        <span className="zoom-out-td">{el.partner}</span>
+                        <span className="zoom-out-td">{el.unique_id}</span>
                       </div>
                     </td>
-                    <td>{el.installer}</td>
-
-                    <div
-                      className={`state-container ${el.state === 'NTP' ? 'ntp-bg ntp-width' : el.state === 'PTO' ? 'pto-bg pto-width' : 'install-bg install-width'}`}
-                    >
-                      <td
-                        className={`state-text ${el.state === 'NTP' ? 'ntp-color' : el.state === 'PTO' ? 'pto-color' : 'install-color'}`}
-                      >
-                        {el.state}
-                      </td>
-                    </div>
-
-                    <td>{el.sub_total}</td>
-
-                    <td>{el.draw_amt}</td>
-                    <td>{el.amt_paid}</td>
-                    <td>{el.balance}</td>
-
-                    <td>{el.rate}</td>
-                    <td style={{ color: '#0096D3' }}>${el.amount}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-
-                    <td>{el.fin_type}</td>
+                    <td>{el.home_owner}</td>
+                    <td>{el.current_status}</td>
+                    <td>{el.owe_contractor}</td>
+                    <td>{el.DBA}</td>
+                    <td>{el.type}</td>
+                    <td>{el.Today}</td>
+                    <td>{el.finance_type}</td>
                     <td>{el.sys_size}</td>
-                    <td>{el.contract}</td>
+                    <td>{el.contract_total}</td>
                     <td>{el.loan_fee}</td>
                     <td>{el.epc}</td>
-                    <td>{el.address}</td>
-                    <td>{el.rr}</td>
+                    <td>{el.adders}</td>
+                    <td>{el.r_r}</td>
                     <td>{el.comm_rate}</td>
                     <td>{el.net_epc}</td>
                     <td>{el.credit}</td>
                     <td>{el.rep_2}</td>
                     <td>{el.net_comm}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
+                    <td>{el.draw_amt}</td>
+                    <td>{el.amt_paid}</td>
+                    <td>{el.balance}</td>
                     <td>{el.dealer_code}</td>
-                    <td>{el.contr_date}</td>
-                    <td>{el.state}</td>
-                    <td>{el.status_date}</td>
+                    <td>{el.sub_total}</td>
+                    <td>{el.max_per_rep}</td>
+                    <td>{el.total_per_rep}</td>
+                    <td>{el.commission_model}</td>
+                    <td>{el.rep_status}</td>
+                    <td>{el.sheet_type}</td>
                     <td className="zoom-out-help">
-                      <img src={ICONS.online} style={{
-                        height: '18px',
-                        width: '18px',
-                        stroke: '0.2',
-                      }}
-                      alt=""
-                      onClick={() => handleIconOpen()}
+                      <img
+                        src={ICONS.online}
+                        style={{
+                          height: '18px',
+                          width: '18px',
+                          stroke: '0.2',
+                        }}
+                        alt=""
+                        onClick={() => handleIconOpen()}
                       />
-
                     </td>
                   </tr>
                 ))
-                : null}
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={12}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {currentPageData?.length} of {currentPageData?.length} item
-          </p>
-
-          {
-            // commissionList?.length > 0 ? <Pagination
-            //   currentPage={currentPage}
-            //   totalPages={totalPages} // You need to calculate total pages
-            //   paginate={paginate}
-            //   currentPageData={currentPageData}
-            //   goToNextPage={goToNextPage}
-            //   goToPrevPage={goToPrevPage}
-            // /> : null
+        {!!currentPageData.length && (
+          <div className="page-heading-container">
+            <p className="page-heading">
+              {startIndex} - {currentPageData?.length} of{' '}
+              {currentPageData?.length} item
+            </p>
 
             <PaginationComponent
               currentPage={currentPage}
@@ -824,15 +837,12 @@ const RepDashBoardTable = () => {
               onPageChange={handlePageChange}
               handleItemsPerPageChange={handleItemsPerPageChange}
             />
-          }
-          {openIcon && (
-            <HelpDashboard
-              commission={editedCommission}
-              editMode={editMode}
-              handleClose={handleIconClose}
-            />
-          )}
-        </div>
+
+            {openIcon && (
+              <HelpDashboard data={{}} handleClose={handleIconClose} />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

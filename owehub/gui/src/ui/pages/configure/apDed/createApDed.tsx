@@ -14,10 +14,10 @@ import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import {
-  createApttSetters,
-  fetchApptSetters,
-  updateApptSetters,
-} from '../../../../redux/apiActions/config/apptSetterAction';
+  createApDed,
+  fetchApDed,
+  updateApDed,
+} from '../../../../redux/apiActions/config/apDedAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
@@ -42,11 +42,11 @@ const CreateApDed: React.FC<payScheduleProps> = ({
   );
   const [createAppSettersData, setAppSettersData] = useState({
     unique_id: editData?.unique_id || '',
-    name: editData?.name || '',
-    team_name: editData?.team_name || '',
-    pay_rate: editData?.pay_rate || '',
-    start_date: editData?.start_date || '',
-    end_date: editData?.end_date || '',
+    payee: editData?.payee || '',
+    amount: editData?.amount || '',
+    date: editData?.date || '',
+    short_code: editData?.short_code || '',
+    description: editData?.description || '',
   });
   type TError = typeof createAppSettersData;
   const [errors, setErrors] = useState<TError>({} as TError);
@@ -96,13 +96,17 @@ const CreateApDed: React.FC<payScheduleProps> = ({
     if (handleValidation()) {
       if (editMode) {
         dispatch(
-          updateApptSetters({
+          updateApDed({
             ...createAppSettersData,
             record_id: editData?.record_id!,
           })
         );
       } else {
-        dispatch(createApttSetters(createAppSettersData));
+        const data = {
+          ...createAppSettersData,
+          amount: parseInt(createAppSettersData.amount), // Convert to number
+        };
+        dispatch(createApDed(data));
       }
     }
   };
@@ -130,7 +134,7 @@ const CreateApDed: React.FC<payScheduleProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-              <div className="create-input-container">
+            <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -144,10 +148,8 @@ const CreateApDed: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -156,72 +158,48 @@ className="error"
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Name"
-                    value={createAppSettersData.name}
-                    name="name"
+                    label="Payee"
+                    value={createAppSettersData.payee}
+                    name="payee"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.name && (
+                  {errors?.payee && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.name}
+                      {errors.payee}
                     </span>
                   )}
                 </div>
-                <div className="create-input-field">
-                  <label className="inputLabel-select">Team</label>
-                  <SelectOption
-                    options={teamsOption(newFormData)}
-                    onChange={(newValue) =>
-                      setAppSettersData((prev) => ({
-                        ...prev,
-                        team_name: newValue?.value!,
-                      }))
-                    }
-                    value={teamsOption(newFormData)?.find(
-                      (option) =>
-                        option.value === createAppSettersData.team_name
-                    )}
-                  />
-                  {errors?.team_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                  
-                        
-                      }}
-className="error"
-                    >
-                      {errors.team_name}
-                    </span>
-                  )}
-                </div>
+
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Pay Rate"
-                    value={createAppSettersData.pay_rate}
-                    name="pay_rate"
+                    label="Amount"
+                    value={createAppSettersData.amount}
+                    name="amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
-                  {errors?.pay_rate && (
+                  {errors?.amount && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.pay_rate}
+                      {errors.amount}
                     </span>
                   )}
                 </div>
@@ -229,55 +207,70 @@ className="error"
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start Date"
-                    value={createAppSettersData.start_date}
-                    name="start_date"
+                    label="Date"
+                    value={createAppSettersData.date}
+                    name="date"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.start_date && (
+                  {errors?.date && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.start_date}
+                      {errors.date}
                     </span>
                   )}
                 </div>
+
                 <div className="create-input-field">
                   <Input
-                    type={'date'}
-                    label="End Date"
-                    disabled={!createAppSettersData.start_date}
-                    value={createAppSettersData.end_date}
-                    min={
-                      createAppSettersData.start_date &&
-                      format(
-                        addDays(new Date(createAppSettersData.start_date), 1),
-                        'yyyy-MM-dd'
-                      )
-                    }
-                    name="end_date"
+                    type={'text'}
+                    label="Short Code"
+                    value={createAppSettersData.short_code}
+                    name="short_code"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.end_date && (
+                  {errors?.short_code && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {errors.end_date}
+                      {errors.short_code}
                     </span>
                   )}
                 </div>
+
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Description"
+                    value={createAppSettersData.description}
+                    name="description"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.description && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.description}
+                    </span>
+                  )}
+                </div>
+
+                 
+
+              
               </div>
             </div>
           </div>

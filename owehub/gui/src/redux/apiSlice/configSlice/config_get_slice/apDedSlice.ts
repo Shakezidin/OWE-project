@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import {
-  fetchRepIncent,
-  createRepIncent,
-  updateRepIncent
-} from '../../../apiActions/config/repIncentAction';
+  fetchApDed,
+  updateApDed,
+  createApDed
+} from '../../../apiActions/config/apDedAction';
 
  
 
@@ -14,7 +14,7 @@ interface IState {
   error: string;
   data: [];
   isSuccess: boolean;
-  count: number;
+  totalcount: number;
 }
 
 const initialState: IState = {
@@ -23,11 +23,11 @@ const initialState: IState = {
   error: '',
   data: [],
   isSuccess: false,
-  count: 0,
+  totalcount: 0,
 };
 
-const repIncentSlice = createSlice({
-  name: 'repIncentSlice',
+const apDedSlice = createSlice({
+  name: 'apDedSlice',
   initialState,
   reducers: {
     resetSuccess: (state) => {
@@ -36,42 +36,42 @@ const repIncentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchRepIncent.pending, (state) => {
+      .addCase(fetchApDed.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchRepIncent.fulfilled, (state, action) => {
+      .addCase(fetchApDed.fulfilled, (state, action) => {
         state.isLoading = false;
         state.data = action.payload.list || [];
-        state.count = action.payload.count;
+        state.totalcount = action.payload.count || [];
         
       })
-      .addCase(fetchRepIncent.rejected, (state, action) => {
+      .addCase(fetchApDed.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
       })
-      .addCase(createRepIncent.pending, (state) => {
+      .addCase(createApDed.pending, (state) => {
         state.isFormSubmitting = true;
       })
-      .addCase(createRepIncent.fulfilled, (state) => {
+      .addCase(createApDed.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Rep Incent created successfully');
+        toast.success('Create ApDed created successfully');
       })
-      .addCase(createRepIncent.rejected, (state, action) => {
+      .addCase(createApDed.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
       })
-      .addCase(updateRepIncent.pending, (state) => {
+      .addCase(updateApDed.pending, (state) => {
         state.isFormSubmitting = true;
       })
-      .addCase(updateRepIncent.fulfilled, (state) => {
+      .addCase(updateApDed.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Rep Incent updated successfully');
+        toast.success('Ap Ded updated successfully');
       })
-      .addCase(updateRepIncent.rejected, (state, action) => {
+      .addCase(updateApDed.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
@@ -80,6 +80,6 @@ const repIncentSlice = createSlice({
   },
 });
 
-export const { resetSuccess } = repIncentSlice.actions;
+export const { resetSuccess } = apDedSlice.actions;
 
-export default repIncentSlice.reducer;
+export default apDedSlice.reducer;

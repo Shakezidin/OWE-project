@@ -69,9 +69,9 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 		ad."r2_referral_credit_$" AS r2_referral_credit, ad.r2_referral_credit_perc AS r2_referral_credit_perc, ad.r2_addr_resp,
 		ud1.name AS rep_1_name, ud2.name AS rep_2_name, st.name AS state
 		FROM referral_data ad
-		JOIN states st ON st.state_id = ad.state_id
-		JOIN user_details ud1 ON ud1.user_id = ad.rep_1
-		JOIN user_details ud2 ON ud2.user_id = ad.rep_2`
+		LEFT JOIN states st ON st.state_id = ad.state_id
+		LEFT JOIN user_details ud1 ON ud1.user_id = ad.rep_1
+		LEFT JOIN user_details ud2 ON ud2.user_id = ad.rep_2`
 
 	filter, whereEleList = PrepareReferralDataFilters(tableName, dataReq, false)
 	if filter != "" {

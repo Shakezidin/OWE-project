@@ -53,7 +53,7 @@ const repCreditSlice = createSlice({
       })
       .addCase(fetchRepCreditList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload.list;
+        state.data = action.payload.list || [];
         state.count = action.payload.count;
         console.log("slice data check", action.payload);
       })

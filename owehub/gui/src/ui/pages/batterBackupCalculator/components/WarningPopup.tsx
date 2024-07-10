@@ -16,7 +16,7 @@ interface IPopPupProps {
     secondaryText: string;
   };
   AddrequiredBattery: () => void;
-  setCaluclatedBackup:React.Dispatch<SetStateAction<number>>;
+  setCaluclatedBackup: React.Dispatch<SetStateAction<number>>;
 }
 const WarningPopup = ({
   isOpen,
@@ -29,7 +29,7 @@ const WarningPopup = ({
   popUpMsg,
   btnText,
   AddrequiredBattery,
-  setCaluclatedBackup
+  setCaluclatedBackup,
 }: IPopPupProps) => {
   const handleClose = () => {
     setIsOpen?.((prev) => !prev);
@@ -68,13 +68,10 @@ const WarningPopup = ({
               setMainOn(false);
               setMainDisabled(false);
               if (
-                btnText.secondaryText !==
-                'I would like to downgrade to a Partial Home Back-up'
+                btnText.secondaryText ===
+                'I would like to switch to a partial home back-up.'
               ) {
                 setRequiredBattery((prev) => (prev ? prev - 1 : prev));
-              }
-              if(btnText.secondaryText==="I would like to switch to a partial home back-up."){
-                
               }
               handleClose();
               setBatteryPower((prev) =>

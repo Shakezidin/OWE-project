@@ -68,9 +68,9 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 			rd.r1_pay_scale, rd.rep_1_def_resp, rd.r1_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd."r1_rebate_credit_$", rd.r1_rebate_credit_perc, 
 			rd."r2_rebate_credit_$", rd.r2_rebate_credit_perc,  rd.start_date, rd.end_date
 			FROM rebate_data rd
-			JOIN states st ON st.state_id = rd.state_id
-			JOIN user_details ud1 ON ud1.user_id = rd.rep_1
-			JOIN user_details ud2 ON ud2.user_id = rd.rep_2`
+			LEFT JOIN states st ON st.state_id = rd.state_id
+			LEFT JOIN user_details ud1 ON ud1.user_id = rd.rep_1
+			LEFT JOIN user_details ud2 ON ud2.user_id = rd.rep_2`
 
 	filter, whereEleList = PrepareRebateDataFilters(tableName, dataReq, false)
 	if filter != "" {
