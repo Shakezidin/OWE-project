@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
@@ -14,8 +14,113 @@ import { getAR } from '../../../../redux/apiActions/config/arAction';
 import ArHelp from './ArHelp';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+export const Commissioncolumns = [
+  {
+    name: 'unique_id',
+    displayName: 'UID',
+    type: 'string',
+    isCheckbox: true,
+  },
+  {
+    name: 'partner',
+    displayName: 'Partner',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'installer',
+    displayName: 'Installer',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'type',
+    displayName: 'Type',
+    type: 'string',
+    isCheckbox: false,
+  },
 
-const ArDashBoardTable = () => {
+  {
+    name: 'home_owner',
+    displayName: 'Home Owner',
+    type: 'number',
+    isCheckbox: false,
+  },
+  {
+    name: 'street_Address',
+    displayName: 'Strt Add',
+    type: 'string',
+    isCheckbox: false,
+  },
+  { name: 'city', displayName: 'City', type: 'string', isCheckbox: false },
+  { name: 'st', displayName: 'State', type: 'string', isCheckbox: false },
+  { name: 'zip', displayName: 'Zip', type: 'string', isCheckbox: false },
+  {
+    name: 'sys-size',
+    displayName: 'Sys Size',
+    type: 'string',
+    isCheckbox: false,
+  },
+  { name: 'wc', displayName: 'WC', type: 'string', isCheckbox: false },
+  {
+    name: 'inst_sys',
+    displayName: 'Inst Sys',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'status',
+    displayName: 'Status',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'status_date',
+    displayName: 'Status Date',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'contract_calc',
+    displayName: 'Contract Calc',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'owe_ar',
+    displayName: 'Owe Ar',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'total_paid',
+    displayName: 'Total Paid',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'current_due',
+    displayName: 'Current Due',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'balance',
+    displayName: 'Balance',
+    type: 'string',
+    isCheckbox: false,
+  },
+];
+const ArDashBoardTable = ({
+  setCurrentPage,
+  currentPage,
+  additionalFilter,
+}: {
+  currentPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  additionalFilter: FilterModel[];
+}) => {
   const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -43,7 +148,6 @@ const ArDashBoardTable = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -59,9 +163,17 @@ const ArDashBoardTable = () => {
       ntp: filters.ntp,
       install: filters.install,
       pto: filters.pto,
+      filters: additionalFilter,
     };
     dispatch(getAR(pageNumber));
-  }, [dispatch, currentPage, pageSize1, viewArchived, filters]);
+  }, [
+    dispatch,
+    currentPage,
+    pageSize1,
+    viewArchived,
+    filters,
+    additionalFilter,
+  ]);
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
@@ -126,104 +238,6 @@ const ArDashBoardTable = () => {
   // if (loading) {
   //   return <div>Loading... {loading}</div>;
   // }
-
-  const Commissioncolumns = [
-    {
-      name: 'unique_id',
-      displayName: 'UID',
-      type: 'string',
-      isCheckbox: true,
-    },
-    {
-      name: 'partner',
-      displayName: 'Partner',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'installer',
-      displayName: 'Installer',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'type',
-      displayName: 'Type',
-      type: 'string',
-      isCheckbox: false,
-    },
-
-    {
-      name: 'home_owner',
-      displayName: 'Home Owner',
-      type: 'number',
-      isCheckbox: false,
-    },
-    {
-      name: 'street_Address',
-      displayName: 'Strt Add',
-      type: 'string',
-      isCheckbox: false,
-    },
-    { name: 'city', displayName: 'City', type: 'string', isCheckbox: false },
-    { name: 'st', displayName: 'State', type: 'string', isCheckbox: false },
-    { name: 'zip', displayName: 'Zip', type: 'string', isCheckbox: false },
-    {
-      name: 'sys-size',
-      displayName: 'Sys Size',
-      type: 'string',
-      isCheckbox: false,
-    },
-    { name: 'wc', displayName: 'WC', type: 'string', isCheckbox: false },
-    {
-      name: 'inst_sys',
-      displayName: 'Inst Sys',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'status',
-      displayName: 'Status',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'status_date',
-      displayName: 'Status Date',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'contract_calc',
-      displayName: 'Contract Calc',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'owe_ar',
-      displayName: 'Owe Ar',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'total_paid',
-      displayName: 'Total Paid',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'current_due',
-      displayName: 'Current Due',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'balance',
-      displayName: 'Balance',
-      type: 'string',
-      isCheckbox: false,
-    },
-  ];
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
