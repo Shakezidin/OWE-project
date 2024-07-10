@@ -213,7 +213,7 @@ const ApAdv = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="ap-adv"
+        linkparaSecond="Ap Adv"
       />
       <div className="commissionContainer">
         <TableHeader

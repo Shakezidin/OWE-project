@@ -31,7 +31,8 @@ CREATE OR REPLACE FUNCTION create_prospect_info(
     IN ev_charger BOOLEAN,
     IN spa BOOLEAN,
     IN address TEXT,
-    IN house_square DOUBLE PRECISION
+    IN house_square DOUBLE PRECISION,
+    IN sys_size DOUBLE PRECISION
 )
 RETURNS INT
 LANGUAGE plpgsql
@@ -43,8 +44,8 @@ BEGIN
     base_id := LOWER(REPLACE(prospect_name, ' ', '_')) || '_' || LOWER(REPLACE(sr_email_id, '@', '_'));  
     generated_id := generate_unique_id(base_id);
 */ 
-    INSERT INTO prospects_info (prospect_name, sr_email_id, panel_images_url, water_heater,cooking_appliances, furnace, clothes_dryer, pool_pump, well_pump, ev_charger ,spa, address, house_square)
-    VALUES (prospect_name, sr_email_id, panel_images_url, water_heater,cooking_appliances, furnace, clothes_dryer, pool_pump, well_pump, ev_charger ,spa, address, house_square)
+    INSERT INTO prospects_info (prospect_name, sr_email_id, panel_images_url, water_heater,cooking_appliances, furnace, clothes_dryer, pool_pump, well_pump, ev_charger ,spa, address, house_square,sys_size)
+    VALUES (prospect_name, sr_email_id, panel_images_url, water_heater,cooking_appliances, furnace, clothes_dryer, pool_pump, well_pump, ev_charger ,spa, address, house_square,sys_size)
     RETURNING prospect_id INTO v_generated_id;
 
     RETURN v_generated_id;

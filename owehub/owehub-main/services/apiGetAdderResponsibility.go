@@ -63,7 +63,7 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 
 	tableName := db.TableName_AdderResponsibility
 	query = `
-	 SELECT ar.id as record_id, ar.unique_id, ar.pay_scale, ar.percentage, ar.is_archived
+	 SELECT ar.id as record_id, ar.pay_scale, ar.percentage, ar.is_archived
 	 FROM adder_responsibility ar`
 
 	filter, whereEleList = PrepareAdderResponsibilityFilters(tableName, dataReq, false)
@@ -86,14 +86,6 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
-
-		// Unique_id
-		Unique_id, ok := item["unique_id"].(string)
-		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
-			Unique_id = ""
-		}
-
 		// Pay_scale
 		Pay_scale, ok := item["pay_scale"].(string)
 		if !ok || Pay_scale == "" {
@@ -110,7 +102,6 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 
 		AdderResponsibilityData := models.GetAdderResponsibilityReq{
 			RecordId:   RecordId,
-			UniqueId:   Unique_id,
 			Pay_Scale:  Pay_scale,
 			Percentage: Percentage,
 		}
@@ -170,9 +161,6 @@ func PrepareAdderResponsibilityFilters(tableName string, dataFilter models.DataR
 				filtersBuilder.WriteString(" AND ")
 			}
 			switch column {
-			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "pay_scale":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -204,7 +192,7 @@ func PrepareAdderResponsibilityFilters(tableName string, dataFilter models.DataR
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ar.id, ar.unique_id, ar.pay_scale, ar.percentage")
+		filtersBuilder.WriteString(" GROUP BY ar.id, ar.pay_scale, ar.percentage")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

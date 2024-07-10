@@ -141,6 +141,7 @@ const ApDed = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
+        // @ts-ignore
         (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
@@ -200,11 +201,7 @@ const ApDed = () => {
       }
     }
   };
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  console.log(data);
+ 
 
   return (
     <div className="comm">
@@ -309,12 +306,12 @@ const ApDed = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.payee}</td>
-                    <td>{el.amount}</td>
-                    <td>{el.date}</td>
-                    <td>{el.short_code}</td>
-                    <td>{el.description}</td>
-                    <td>{el.notes}</td>
+                    <td>{el.payee ||"N/A"}</td>
+                    <td>{el.amount ||"N/A"}</td>
+                    <td>{el.date ||"N/A"}</td>
+                    <td>{el.short_code ||"N/A"}</td>
+                    <td>{el.description ||"N/A"}</td>
+                    <td>{el.dealer ||"N/A"}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

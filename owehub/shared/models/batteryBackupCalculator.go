@@ -20,6 +20,7 @@ type ProspectInfoData struct {
 	WellPump          bool     `json:"well_pump"`
 	EvCharger         bool     `json:"ev_charger"`
 	Spa               bool     `json:"spa"`
+	SysSize           float64  `json:"system_size"`
 }
 
 type GetProspectInfo struct {
@@ -30,6 +31,7 @@ type GetProspectInfo struct {
 	Address      string        `json:"address"`
 	Primary      PrimaryData   `json:"primary_data"`
 	Secondary    SecondaryData `json:"secondary_data"`
+	SysSize      float64       `json:"system_size"`
 }
 
 type PrimaryData struct {
@@ -109,4 +111,5 @@ type GetProspectLoadInfo struct {
 	Address              string           `json:"address"`
 	Breakers             []GetBreakerInfo `json:"breakers"`
 	TotalCategoryAmperes float64          `json:"total_catergory_amperes"`
+	SysSize              float64          `json:"system_size`
 }

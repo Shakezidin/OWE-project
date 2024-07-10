@@ -64,6 +64,7 @@ export interface IDetail {
   secondary_data: ISecondary;
   house_square: number;
   address: string;
+  SysSize:number
 }
 
 const Index = () => {
@@ -284,6 +285,7 @@ OWE Battery Calc
           </button>
           {applianceOpen && (
             <AppliancePopup
+            systemSize={detail.SysSize}
               primaryDetail={detail.primary_data}
               secondaryDetail={detail.secondary_data}
               isOpen={applianceOpen}

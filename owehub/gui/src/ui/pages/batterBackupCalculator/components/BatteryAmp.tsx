@@ -115,13 +115,11 @@ export interface Ibattery {
 }
 
 const BatteryAmp = () => {
-  // const [battery, setBattery] = useState<
-  //   { quantity: number; amp: number; note: string }[]
-  // >([]);
   const [otherDeatil, setOtherDeatil] = useState<{
     continous_current?: number;
     lra?: number;
     prospect_name?: string;
+    SysSize?: number;
   }>({});
   const [requiredBattery, setRequiredBattery] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState({
@@ -129,21 +127,7 @@ const BatteryAmp = () => {
     value: 'June',
   });
   const [initial, setInitial] = useState(0);
-  // const arrayGen = (battery: Ibattery[]) => {
-  //   const arr = [];
-  //   for (let index = 0; index < battery.length; index++) {
-  //     let count = 0;
-  //     if (battery[index].quantity > 1) {
-  //       while (battery[index].quantity > count) {
-  //         arr.push({ ...battery[index], isOn: true });
-  //         count++;
-  //       }
-  //     } else {
-  //       arr.push({ ...battery[index], isOn: true });
-  //     }
-  //   }
-  //   return arr;
-  // };
+
   const { id } = useParams();
   const [appliances, setAppliances] = useState([...appliance]);
   const [batteryPower, setBatteryPower] = useState<Ibattery[]>([]);
@@ -211,6 +195,10 @@ const BatteryAmp = () => {
     return Math.max(count, requiredPowerwallsByLRA, externalBattery);
   };
 
+  const roundToTenthsPlace = (number: number) => {
+    return Math.round(number * 10) / 10;
+  };
+
   const required = useMemo(() => {
     return initial;
   }, [initial]);
@@ -267,11 +255,16 @@ to a Partial Home Back-up`,
           })) as Ibattery[];
           setBatteryPower([...batt]);
           setInitialBattery([...batt]);
-          const min = minRequired(
-            [...batt],
-            data?.data?.total_catergory_amperes * 0.6 +
-              (data?.data?.house_square * 1.5) / 120,
-            data?.data?.lra
+          const min = Math.ceil(
+            Math.max(
+              minRequired(
+                [...batt],
+                data?.data?.total_catergory_amperes * 0.6 +
+                  (data?.data?.house_square * 1.5) / 120,
+                data?.data?.lra
+              ),
+              roundToTenthsPlace(data?.data?.SysSize) / 14
+            )
           );
           setOtherDeatil(data?.data);
           setInitial(min);
@@ -357,8 +350,9 @@ to a Partial Home Back-up`,
                   onClick={() =>
                     setRequiredBattery((prev) => {
                       const consumption = Math.ceil(
-                        ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) / 13.5
-                      )
+                        ((parseFloat(avgConsumption) / 365 / 24) * 6 * 0.6) /
+                          13.5
+                      );
                       let init = prev + 1;
                       if (init >= consumption && caluclatedBackup === 0) {
                         setCaluclatedBackup(1);
