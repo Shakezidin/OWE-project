@@ -300,7 +300,7 @@ const RebeteData: React.FC = () => {
                             )
                           }
                         />
-                         <td>{el.unique_id || 'N/A'}</td>
+                         <span>{el.unique_id || 'N/A'}</span>
                       </div>
                     </td>
                     <td>{el.customer_verf || 'N/A'}</td>

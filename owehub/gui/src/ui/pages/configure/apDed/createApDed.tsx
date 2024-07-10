@@ -99,6 +99,7 @@ const CreateApDed: React.FC<payScheduleProps> = ({
           updateApDed({
             ...createAppSettersData,
             record_id: editData?.record_id!,
+            amount: parseInt(createAppSettersData.amount), // Convert to number
           })
         );
       } else {
