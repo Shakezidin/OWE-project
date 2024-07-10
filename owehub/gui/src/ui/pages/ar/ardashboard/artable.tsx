@@ -12,6 +12,8 @@ import { BiSupport } from 'react-icons/bi';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import { getAR } from '../../../../redux/apiActions/config/arAction';
 import ArHelp from './ArHelp';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 const ArDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
@@ -25,7 +27,9 @@ const ArDashBoardTable = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const { data, count, filters } = useAppSelector((state) => state.ardata);
+  const { data, count, filters, isLoading } = useAppSelector(
+    (state) => state.ardata
+  );
   // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -264,73 +268,90 @@ const ArDashBoardTable = () => {
             </thead>
 
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map(
-                    (el: (typeof currentPageData)[0], i: any) => (
-                      <tr
-                        key={i}
-                        className={selectedRows.has(i) ? 'selected' : ''}
-                      >
-                        <td style={{ fontWeight: '500', color: 'black' }}>
-                          <div className="flex-check">
-                            <CheckBox
-                              checked={selectedRows.has(i)}
-                              onChange={() => {
-                                // If there's only one row of data and the user clicks its checkbox, select all rows
-                                if (currentPageData?.length === 1) {
-                                  setSelectAllChecked(true);
-                                  setSelectedRows(new Set([0]));
-                                } else {
-                                  toggleRowSelection(
-                                    i,
-                                    selectedRows,
-                                    setSelectedRows,
-                                    setSelectAllChecked
-                                  );
-                                }
-                              }}
-                            />
-                            {el.unique_id}
-                          </div>
-                        </td>
-                        <td>{el.partner || 'N/A'}</td>
-                        <td>{el.installer || 'N/A'}</td>
-
-                        <td>{el.type || 'N/A'}</td>
-                        <td>{el.home_owner || 'N/A'}</td>
-                        <td>{el.street_address || 'N/A'}</td>
-                        <td>{el.city || 'N/A'}</td>
-                        <td>{el.st || 'N/A'}</td>
-                        <td>{el.zip || 'N/A'}</td>
-                        <td>{el.sys_size || 'N/A'}</td>
-                        <td>{el.wc || 'N/A'}</td>
-                        <td>{el.inst_sys || 'N/A'}</td>
-                        <td>{el.status || 'N/A'}</td>
-                        <td>{el.status_date || 'N/A'}</td>
-                        <td>{el.contract_calc || 'N/A'}</td>
-                        <td>{el.owe_ar || 'N/A'}</td>
-                        <td>{el?.total_paid}</td>
-                        <td>{el?.current_due}</td>
-                        <td>{el.balance || 'N/A'}</td>
-                        <td
-                          style={{
-                            height: '14px',
-                            width: '14px',
-                            stroke: '0.2',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          <BiSupport
-                            onClick={() => {
-                              setEditedCommission(el);
-                              handleIconOpen();
+              {isLoading ? (
+                <tr>
+                  <td colSpan={8}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map(
+                  (el: (typeof currentPageData)[0], i: any) => (
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
+                      <td style={{ fontWeight: '500', color: 'black' }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(i)}
+                            onChange={() => {
+                              // If there's only one row of data and the user clicks its checkbox, select all rows
+                              if (currentPageData?.length === 1) {
+                                setSelectAllChecked(true);
+                                setSelectedRows(new Set([0]));
+                              } else {
+                                toggleRowSelection(
+                                  i,
+                                  selectedRows,
+                                  setSelectedRows,
+                                  setSelectAllChecked
+                                );
+                              }
                             }}
                           />
-                        </td>
-                      </tr>
-                    )
+                          {el.unique_id}
+                        </div>
+                      </td>
+                      <td>{el.partner || 'N/A'}</td>
+                      <td>{el.installer || 'N/A'}</td>
+
+                      <td>{el.type || 'N/A'}</td>
+                      <td>{el.home_owner || 'N/A'}</td>
+                      <td>{el.street_address || 'N/A'}</td>
+                      <td>{el.city || 'N/A'}</td>
+                      <td>{el.st || 'N/A'}</td>
+                      <td>{el.zip || 'N/A'}</td>
+                      <td>{el.sys_size || 'N/A'}</td>
+                      <td>{el.wc || 'N/A'}</td>
+                      <td>{el.inst_sys || 'N/A'}</td>
+                      <td>{el.status || 'N/A'}</td>
+                      <td>{el.status_date || 'N/A'}</td>
+                      <td>{el.contract_calc || 'N/A'}</td>
+                      <td>{el.owe_ar || 'N/A'}</td>
+                      <td>{el?.total_paid}</td>
+                      <td>{el?.current_due}</td>
+                      <td>{el.balance || 'N/A'}</td>
+                      <td
+                        style={{
+                          height: '14px',
+                          width: '14px',
+                          stroke: '0.2',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <BiSupport
+                          onClick={() => {
+                            setEditedCommission(el);
+                            handleIconOpen();
+                          }}
+                        />
+                      </td>
+                    </tr>
                   )
-                : null}
+                )
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -355,12 +376,11 @@ const ArDashBoardTable = () => {
                 id: editedCommission.unique_id,
                 name: editedCommission.partner,
                 home_owner: editedCommission.home_owner,
-                state:editedCommission.st,
-                sys_size:editedCommission.sys_size,
+                state: editedCommission.st,
+                sys_size: editedCommission.sys_size,
                 contract_calc: editedCommission.contract_calc,
                 current_due: editedCommission.current_due,
                 balance: editedCommission.balance,
-                
               }}
               handleClose={handleIconClose}
             />
