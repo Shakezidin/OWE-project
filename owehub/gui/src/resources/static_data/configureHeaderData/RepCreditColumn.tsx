@@ -1,7 +1,7 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const RepCreditcolumns: Column[] = [
-  { name: 'unique_id', displayName: 'Unique ID', type: 'string', isCheckbox: true },
+  { name: 'unique_id', displayName: 'Unique Id', type: 'string', isCheckbox: true },
   {
     name: 'approved_by',
     displayName: 'Approved By',
@@ -16,7 +16,7 @@ export const RepCreditcolumns: Column[] = [
   },
   {
     name: 'exact_amt',
-    displayName: 'AMT',
+    displayName: 'Exact AMT',
     type: 'number',
     isCheckbox: false,
   },
