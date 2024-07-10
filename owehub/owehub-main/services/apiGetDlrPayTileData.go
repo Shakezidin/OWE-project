@@ -98,5 +98,5 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	log.FuncDebugTrace(0, "dlr pay tiles data: %+v", dealerPayTileData)
 
 	// Send response using FormAndSendHttpResp function
-	FormAndSendHttpResp(resp, "Prospect load retrieved successfully", http.StatusOK, dealerPayTileData)
+	FormAndSendHttpResp(resp, "dealer pay tales data retrieved successfully", http.StatusOK, dealerPayTileData)
 }
