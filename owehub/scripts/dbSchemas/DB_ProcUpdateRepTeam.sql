@@ -4,12 +4,11 @@ CREATE OR REPLACE FUNCTION update_rep_team(
     p_delete_mode BOOLEAN DEFAULT FALSE,
     OUT v_ar_id INT
 )
-RETURNS INT
 AS $$
 DECLARE
     v_user_id INT;
 BEGIN
-    FOR v_user_id IN ARRAY p_user_ids LOOP
+    FOREACH v_user_id IN ARRAY p_user_ids LOOP
         IF p_delete_mode THEN
             -- Delete mode: Update user_details to set team_id to NULL
             UPDATE user_details
@@ -30,8 +29,7 @@ BEGIN
         END IF;
     END LOOP;
 
-    -- Return the count of users updated
+    -- Set the count of users updated to the OUT parameter
     v_ar_id := cardinality(p_user_ids);
-    RETURN v_ar_id;
 END;
 $$ LANGUAGE plpgsql;

@@ -118,25 +118,17 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		}
 
 		// ChgDlr
-		ChgDlrVal, ok := item["chg_dlr"].(int64)
-		ChgDlr := 0
+		ChgDlr, ok := item["chg_dlr"].(bool)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get chg dlr for Record ID %v. Item: %+v\n", RecordId, item)
-			ChgDlr = 0 // Default ChgDlr value of 0
-		} else {
-			ChgDlr = int(ChgDlrVal)
+			ChgDlr = false // Default ChgDlr value of false
 		}
-
 		// PaySrc
-		PaySrcVal, ok := item["pay_src"].(int64)
-		PaySrc := 0
+		PaySrc, ok := item["pay_src"].(bool)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get pay src for Record ID %v. Item: %+v\n", RecordId, item)
-			PaySrc = 0 // Default PaySrc value of 0
-		} else {
-			PaySrc = int(PaySrcVal)
+			PaySrc = false // Default PaySrc value of false
 		}
-
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
