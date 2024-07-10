@@ -16,7 +16,7 @@ export const RepCreditcolumns: Column[] = [
   },
   {
     name: 'exact_amt',
-    displayName: 'AMT',
+    displayName: 'Exact AMT',
     type: 'number',
     isCheckbox: false,
   },

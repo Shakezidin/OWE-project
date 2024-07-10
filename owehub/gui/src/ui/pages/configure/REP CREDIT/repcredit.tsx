@@ -312,7 +312,7 @@ const RepCredit = () => {
                             )
                           }
                         />
-                       <td>{el.unique_id || 'N/A'}</td>
+                       <span>{el.unique_id || 'N/A'}</span>
                       </div>
                     </td>
                     
