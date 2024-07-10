@@ -776,7 +776,6 @@ CREATE TABLE leader_override (
 
 CREATE TABLE adder_responsibility (
     id serial NOT NULL,
-    unique_id varchar NOT NULL,
     pay_scale text,
     percentage float,
     is_archived BOOLEAN DEFAULT FALSE,

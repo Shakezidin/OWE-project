@@ -31,6 +31,7 @@ type GetProspectInfo struct {
 	Address      string        `json:"address"`
 	Primary      PrimaryData   `json:"primary_data"`
 	Secondary    SecondaryData `json:"secondary_data"`
+	SysSize      float64       `json:"system_size"`
 }
 
 type PrimaryData struct {
