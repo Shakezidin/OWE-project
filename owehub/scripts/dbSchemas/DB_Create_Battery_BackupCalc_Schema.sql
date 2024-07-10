@@ -20,7 +20,8 @@ CREATE TABLE prospects_info (
     spa BOOLEAN,
     panel_images_url TEXT[],
     address TEXT,
-    house_square float
+    house_square float,
+    sys_size float
 );
 
 CREATE TABLE prospect_load_info (
