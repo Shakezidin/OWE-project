@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION create_rep_credit(
     p_unique_id      CHARACTER VARYING,
-    p_per_kw          CHARACTER VARYING,
+    p_per_kw          DOUBLE PRECISION,
     p_amount         DOUBLE PRECISION,
     p_date           DATE,
     p_approved     CHARACTER VARYING,
