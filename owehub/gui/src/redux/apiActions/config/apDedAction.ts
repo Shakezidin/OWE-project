@@ -12,7 +12,7 @@ export interface ReconcileEditParams {
 }
 
 export const fetchApDed = createAsyncThunk(
-  'apptsetters/fetchapptsetters',
+  'get/ap-ded',
   async (data: any) => {
     const response = await postCaller('get_apded', data);
     return {
@@ -23,7 +23,7 @@ export const fetchApDed = createAsyncThunk(
 );
 
 export const createApDed = createAsyncThunk(
-  'create/appsetters',
+  'create/ap-ded',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_apded', params);
@@ -38,7 +38,7 @@ export const createApDed = createAsyncThunk(
 );
 
 export const updateApDed = createAsyncThunk(
-  'update/appsetters',
+  'update/ap-ded',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_apded', params);
