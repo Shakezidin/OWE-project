@@ -14,7 +14,8 @@ export const getrefralData = createAsyncThunk(
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      const list = data.referral_data_list||[];
+      
+      const list = data?.data?.referral_data_list||[];
       return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);

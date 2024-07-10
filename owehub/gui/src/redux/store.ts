@@ -119,7 +119,7 @@ export const store = configureStore({
     ar: arSlice,
     dlrOth,
     nonComm,
-    refralDataSlice,
+    refralDataSlice: refralDataSlice,
     autoadder: autoAdderSlice,
     perfomanceSlice,
     ardata: ArDataSlice,

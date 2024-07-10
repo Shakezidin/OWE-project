@@ -15,6 +15,7 @@ export const fetchRebateData = createAsyncThunk(
   'RebateData/fetchRebateData',
   async (data: any) => {
     const response = await postCaller('get_rebate_data', data);
+    console.log("rebate data action", response)
     const list = response?.data?.rebate_data_list;
     return { list, count: response.dbRecCount };
   }
