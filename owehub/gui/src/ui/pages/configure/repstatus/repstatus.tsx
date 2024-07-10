@@ -163,11 +163,8 @@ const RepStatus = () => {
         };
   
         try {
-          await Promise.all(
-            archivedRows.map((recordId) =>
-              dispatch(archiveRepStatus(recordId.toString()))
-            )
-          );
+          
+         await dispatch(archiveRepStatus(archivedRows))
   
           setSelectedRows(new Set());
           setSelectAllChecked(false);
@@ -199,7 +196,7 @@ const RepStatus = () => {
       };
   
       try {
-        await dispatch(archiveRepStatus(record_id.toString()));
+        await dispatch(archiveRepStatus([record_id]));
   
         setSelectedRows(new Set());
         setSelectAllChecked(false);

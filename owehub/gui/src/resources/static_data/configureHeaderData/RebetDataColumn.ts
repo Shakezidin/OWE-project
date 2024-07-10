@@ -2,11 +2,18 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const RebeteDataColumn: Column[] = [
   {
-    name: 'cutomer_ver',
-    displayName: 'Cust Ver',
+    name: 'unique_id',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },
+  {
+    name: 'cutomer_ver',
+    displayName: 'Cust Ver',
+    type: 'string',
+    isCheckbox: false,
+  },
+  
   { name: 'type', displayName: 'Type', type: 'string', isCheckbox: false },
   { name: 'item', displayName: 'Item', type: 'string', isCheckbox: false },
   { name: 'amt', displayName: 'Amount', type: 'string', isCheckbox: false },
