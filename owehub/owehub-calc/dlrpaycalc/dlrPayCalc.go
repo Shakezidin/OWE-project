@@ -348,6 +348,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["per_team_sales"] = perTeamSales
 	outData["per_team_kw"] = perTeamKw
 	outData["commission_model"] = commission_models
+	outData["r1_comm_paid"] = r1CommPaid
 
 	//first sheet calculation
 
