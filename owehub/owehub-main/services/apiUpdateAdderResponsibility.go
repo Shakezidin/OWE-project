@@ -55,7 +55,7 @@ func HandleUpdateAdderResponsibilityDataRequest(resp http.ResponseWriter, req *h
 		return
 	}
 
-	if (len(UpdateAdderResponsibilityReq.Unique_Id) <= 0) || (len(UpdateAdderResponsibilityReq.Pay_Scale) <= 0) {
+	if len(UpdateAdderResponsibilityReq.Pay_Scale) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
@@ -77,7 +77,6 @@ func HandleUpdateAdderResponsibilityDataRequest(resp http.ResponseWriter, req *h
 	}
 
 	queryParameters = append(queryParameters, UpdateAdderResponsibilityReq.Record_Id)
-	queryParameters = append(queryParameters, UpdateAdderResponsibilityReq.Unique_Id)
 	queryParameters = append(queryParameters, UpdateAdderResponsibilityReq.Pay_Scale)
 	queryParameters = append(queryParameters, UpdateAdderResponsibilityReq.Percentage)
 

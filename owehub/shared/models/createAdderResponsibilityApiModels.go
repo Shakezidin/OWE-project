@@ -7,7 +7,6 @@
 package models
 
 type CreateAdderResponsibilityReq struct {
-	Unique_Id  string  `json:"unique_id"`
 	Pay_Scale  string  `json:"pay_scale"`
 	Percentage float64 `json:"percentage"`
 }
