@@ -51,3 +51,13 @@ type GetDealerPayPRData struct {
 type GetDealerPayPRDataList struct {
 	DealerPayList []GetDealerPayPRData `json:"dealer_pay_list"`
 }
+
+type GetDlrPayTileDataReq struct {
+	Dealer string `json:"dealer"`
+}
+
+type GetDealerPayTileData struct {
+	AmountPrepaid     float64 `json:"amount_prepaid"`
+	PipelineRemaining float64 `json:"pipeline_remaining"`
+	CurrentDue        float64 `json:"current_due"`
+}

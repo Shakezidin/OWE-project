@@ -1472,6 +1472,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_dlrpay_tiledata",
+		apiHandler.HandleManageDlrPayTileDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
