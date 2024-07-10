@@ -27,12 +27,12 @@ const ArHelp: React.FC<ButtonProps> = ({ data, handleClose }) => {
 
   const [state, setState] = useState({
     uid: data.id || '',
-    partner: data?.name || '',
+    partner: data?.name || 'N/A',
     home_owner: data?.home_owner || '',
     state: data?.state || '',
     sys_size: data?.sys_size || '',
     contract_calc: data?.contract_calc || '',
-    current_due: data?.current_due || '',
+    current_due: data?.current_due || 'N/A',
     balance: data?.balance || '',
     message: '',
   });
