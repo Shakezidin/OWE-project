@@ -72,18 +72,6 @@ func HandleUpdateMarketingFeeRequest(resp http.ResponseWriter, req *http.Request
 		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
-	if int64(updateMarketingFeeReq.ChgDlr) <= int64(0) {
-		err = fmt.Errorf("Invalid ChgDlr Value Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid ChgDlr Value, Update failed", http.StatusBadRequest, nil)
-		return
-	}
-	if int64(updateMarketingFeeReq.PaySrc) <= int64(0) {
-		err = fmt.Errorf("Invalid PaySrc Value Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PaySrc Value, Update failed", http.StatusBadRequest, nil)
-		return
-	}
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateMarketingFeeReq.RecordId)
 	queryParameters = append(queryParameters, updateMarketingFeeReq.Source)
