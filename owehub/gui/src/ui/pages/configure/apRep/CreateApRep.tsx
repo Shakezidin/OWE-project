@@ -107,27 +107,44 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
     const { isValid, errors } = validateConfigForm(
       createArData!,
       validationRules
-    );
+    ); 
     if (!isValid) {
       setErrors(errors);
       return;
     }
 
      
-      dispatch(
-        createApRep({
-          unique_id: createArData.unique_id,
-          rep: createArData.rep,
-          dba: createArData.dba,
-          final: createArData.type,
-          date: createArData.date,
-          amount: parseInt(createArData.amount),
-          method:createArData.method,
-          cbiz:createArData.cbiz,
-          transaction:createArData.transaction,
-          notes:createArData.notes
-        })
-      );
+      // dispatch(
+      //   createApRep({
+      //     unique_id: createArData.unique_id,
+      //     rep: createArData.rep,
+      //     dba: createArData.dba,
+      //     final: createArData.type,
+      //     date: createArData.date,
+      //     amount: parseInt(createArData.amount),
+      //     method:createArData.method,
+      //     cbiz:createArData.cbiz,
+      //     transaction:createArData.transaction,
+      //     notes:createArData.notes
+      //   })
+      // );
+      if (editMode) {
+        dispatch(
+          updateApRep({
+            ...createArData,
+            record_id: editData?.record_id!,
+            amount: parseInt(createArData.amount),
+
+          })
+        );
+      }
+      else {
+      const data = {
+        ...createArData,
+        amount: parseFloat(createArData.amount), // Convert to number
+      };
+      dispatch(createApRep(data));
+    }
     
   };
 
@@ -148,7 +165,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? 'Create AR' : 'Update AR'}
+          {editMode === false ? 'Create AP Rep' : 'Update Ap Rep'}
         </h3>
 
         <div className="modal-body">
