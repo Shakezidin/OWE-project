@@ -60,7 +60,7 @@ const RebeteData: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const { data,count, isLoading, isSuccess } = useAppSelector(
+  const { data, count, isLoading, isSuccess } = useAppSelector(
     (state) => state.rebate
   );
   console.log(count, "yftfrtyretyrrytre")
@@ -85,7 +85,7 @@ const RebeteData: React.FC = () => {
       dispatch(fetchRebateData({ ...pageNumber }));
     }
   }, [isSuccess, currentPage, viewArchived, filters]);
- 
+
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -156,6 +156,58 @@ const RebeteData: React.FC = () => {
     setFilters(req.filters);
   };
 
+  const handleTimeLineSla = () => {
+    setEditMode(false);
+    setEditedCommission(null);
+    handleOpen();
+  };
+
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+    setCurrentPage(1);
+  };
+  const handleArchiveAllClick = async () => {
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
+      const archivedRows = Array.from(selectedRows).map(
+        (index) => data[index].record_id
+      );
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true,
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          filters,
+        };
+
+        const res = await postCaller('update_rep_credit_archive', newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          setSelectedRows(new Set());
+          setSelectAllChecked(false);
+          // If API call is successful, refetch commissions
+          dispatch(fetchRebateData(pageNumber));
+
+          setSelectAllChecked(false);
+          setSelectedRows(new Set());
+          await successSwal('Archived', 'The data has been archived ');
+        } else {
+          await successSwal('Archived', 'The data has been archived ');
+        }
+      }
+    }
+  };
+
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
@@ -194,26 +246,27 @@ const RebeteData: React.FC = () => {
     );
   }
 
+
   return (
     <div className="comm">
       <Breadcrumb
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="rebate-data"
+        linkparaSecond="Rebate Data"
       />
       <div className="commissionContainer">
         <TableHeader
           title="Rebate Data"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
           viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
-          onpressExport={() => handleExportOpen()}
-          onpressAddNew={() => handleAddCommission()}
+          onpressExport={() => { }}
+          onpressAddNew={() => handleTimeLineSla()}
         />
         {exportOPen && (
           <div className="export-modal">
@@ -268,11 +321,14 @@ const RebeteData: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
-                  </div>
-                </th>
+
+                {viewArchived === true ? null : (
+                  <th className={!viewArchived && selectedRows.size < 2 ? '' : 'd-none'}>
+                    <div className="action-header">
+                      {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                    </div>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -300,7 +356,7 @@ const RebeteData: React.FC = () => {
                             )
                           }
                         />
-                         <span>{el.unique_id || 'N/A'}</span>
+                        <span>{el.unique_id || 'N/A'}</span>
                       </div>
                     </td>
                     <td>{el.customer_verf || 'N/A'}</td>
@@ -396,7 +452,7 @@ const RebeteData: React.FC = () => {
             />
           </div>
         )} */}
-         <div className="page-heading-container">
+        <div className="page-heading-container">
           {!!count && (
             <p className="page-heading">
               {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}

@@ -15,7 +15,7 @@ export const DealerCreditColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'exact_amt',
+    name: 'exact_amount',
     displayName: 'Exact Amt',
     type: 'string',
     isCheckbox: false,

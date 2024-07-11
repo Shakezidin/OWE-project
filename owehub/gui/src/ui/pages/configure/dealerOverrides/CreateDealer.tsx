@@ -44,6 +44,7 @@ const CreateDealer: React.FC<dealerProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [newFormData, setNewFormData] = useState<any>([]);
+  
   const tableData = {
     tableNames: ['sub_dealer', 'dealer', 'states'],
   };
@@ -183,6 +184,8 @@ const CreateDealer: React.FC<dealerProps> = ({
       console.error('Error submitting form:', error);
     }
   };
+
+  console.log(dealerOption(createDealer), "check dealer")
 
   /**render UI */
   return (

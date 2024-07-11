@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { getReferralData } from '../../../apiActions/refralDataAction';
+import { getrefralData } from '../../../apiActions/config/refralDataAction';
 
 interface IState {
   isLoading: boolean;
@@ -29,15 +29,16 @@ const refralDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getReferralData.pending,(state,action)=>{
+    builder.addCase(getrefralData.pending,(state,action)=>{
       state.isLoading = true
     })
-    .addCase(getReferralData.fulfilled,(state,action)=>{
+    .addCase(getrefralData.fulfilled,(state,action)=>{
       state.isLoading = false;
       state.data = action.payload.list;
       state.count = action.payload.count;
+      console.log("ref slice")
     })
-    .addCase(getReferralData.rejected,(state,action)=>{
+    .addCase(getrefralData.rejected,(state,action)=>{
       state.isLoading = false;
       state.error = action.payload as string;
       toast.error(action.payload as string);
@@ -45,6 +46,7 @@ const refralDataSlice = createSlice({
 
   },
 });
+
 
 export const { resetSuccess } = refralDataSlice.actions;
 

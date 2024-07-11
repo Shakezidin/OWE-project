@@ -51,7 +51,7 @@ const ReferalData: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const { loading, dbCount } = useAppSelector((state) => state.comm);
+  const { data, count, isLoading } = useAppSelector((state) => state.refralDataSlice);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -64,7 +64,7 @@ const ReferalData: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [refresh,setRefresh] = useState(1)
+  const [refresh, setRefresh] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -73,7 +73,7 @@ const ReferalData: React.FC = () => {
       filters,
     };
     dispatch(getrefralData(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,refresh]);
+  }, [dispatch, currentPage, viewArchived, filters, refresh]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -91,10 +91,10 @@ const ReferalData: React.FC = () => {
     setFilterOpen(true);
   };
 
-  const totalPages = Math.ceil(dbCount / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -107,9 +107,10 @@ const ReferalData: React.FC = () => {
     handleOpen();
   };
 
-  const currentPageData = commissionList?.slice();
+  const currentPageData = data?.slice();
+  console.log("refer", data)
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const isAllRowsSelected = selectedRows.size === data.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -196,10 +197,10 @@ const ReferalData: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Referal Data"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => { }}
+          onPressArchive={() => { }}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           viewArchive={viewArchived}
@@ -262,13 +263,13 @@ const ReferalData: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {loading ? (
+              {isLoading ? (
                 <tr>
                   <td colSpan={currentPageData.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -292,35 +293,36 @@ const ReferalData: React.FC = () => {
                             )
                           }
                         />
-                        {el.partner}
+                        {el.new_customer || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+
+                    <td>{el.referrer_serial || 'N/A'}</td>
+                    <td>{el.referrer_name || 'N/A'}</td>
+                    <td>{el.amount || 'N/A'}</td>
+                    <td>{el.rep_doll_divby_per || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.rep_1_name || 'N/A'}</td>
+                    <td>{el.rep_2_name || 'N/A'}</td>
+                    <td>{el.sys_size || 'N/A'}</td>
+                    <td>{el.state || 'N/A'}</td>
+                    <td>{el.rep_count || 'N/A'}</td>
+                    <td>{el.per_rep_addr_share || 'N/A'}</td>
+                    <td>{el.per_rep_ovrd_share || 'N/A'}</td>
+                    <td>{el.per_rep_ovrd_share || 'N/A'}</td>
+                    <td>{el.per_rep_addr_share || 'N/A'}</td>
+                    <td>{el.r1_pay_scale || 'N/A'}</td>
+                    <td>{el.r1_referral_credit_$ || 'N/A'}</td>
+                    <td>{el.r1_referral_credit_perc || 'N/A'}</td>
+                    <td>{el.r1_addr_resp || 'N/A'}</td>
+                    <td>{el.r2_pay_scale || 'N/A'}</td>
+                    <td>{el.r2_referral_credit_$ || 'N/A'}</td>
+                    <td>{el.r2_referral_credit_perc || 'N/A'}</td>
+                    <td>{el.r2_addr_resp || 'N/A'}</td>
+                    <td>{el.r2_addr_resp || 'N/A'}</td>
+                    <td>{el.start_date || 'N/A'}</td>
+                    <td>{el.end_date || 'N/A'}</td>
                     <td>
                       {selectedRows.size > 0 ? (
                         <div className="action-icon">
@@ -375,11 +377,11 @@ const ReferalData: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {currentPageData?.length > 0 ? (
+        {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
-              {currentPageData?.length} item
+              {startIndex} - {endIndex > count ? count : endIndex} of{' '}
+              {count} item
             </p>
 
             <Pagination
