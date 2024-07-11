@@ -107,7 +107,7 @@ const DealerCredit: React.FC = () => {
 
 
 
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data.length;
   const handleSort = (key: any) => {
@@ -152,7 +152,7 @@ const DealerCredit: React.FC = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => data[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -317,8 +317,8 @@ const DealerCredit: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.length > 0 ? (
-                data?.map((el: any, i: any) => (
+              {currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
@@ -386,7 +386,7 @@ const DealerCredit: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {data?.length > 0 ? (
+        {currentPageData?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}

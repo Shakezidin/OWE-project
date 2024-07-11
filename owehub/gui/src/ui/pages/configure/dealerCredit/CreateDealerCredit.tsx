@@ -116,7 +116,8 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
       name === 'permitMax' ||
       name === 'redline' ||
       name === 'ptoPay' ||
-      name === 'permitPay'
+      name === 'permitPay'||
+      name==="exact_amt"
     ) {
       if (/^\d+(\.\d*)?$/.test(value) || value === '') {
         setDealerCredit((prev) => ({ ...prev, [name]: value }));

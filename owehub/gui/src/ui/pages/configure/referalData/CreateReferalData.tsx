@@ -125,6 +125,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
   };
   const handleInputChange = (e: FormInput) => {
     let { name, value } = e.target;
+    console.log(e.target.name,"value",e.target.value);
     if (
       name === 'rep_doll_divby_per' ||
       name === 'syz_size' ||
@@ -158,7 +159,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
             ...createCommission,
             rep_doll_divby_per: parseFloat(createCommission.rep_doll_divby_per),
             sys_size: parseFloat(createCommission.sys_size),
-            rep_count: parseFloat(createCommission.sys_size),
+            rep_count: parseFloat(createCommission.rep_count),
             r1_pay_scale: parseFloat(createCommission.r1_pay_scale),
             r2_pay_scale: parseFloat(createCommission.r2_pay_scale),
             per_rep_addr_share: parseFloat(createCommission.per_rep_addr_share),
@@ -176,7 +177,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
             ...cleanedFormData,
             rep_doll_divby_per: parseFloat(cleanedFormData.rep_doll_divby_per),
             sys_size: parseFloat(cleanedFormData.sys_size),
-            rep_count: parseFloat(cleanedFormData.sys_size),
+            rep_count: parseFloat(cleanedFormData.rep_count),
             r1_pay_scale: parseFloat(cleanedFormData.r1_pay_scale),
             r2_pay_scale: parseFloat(cleanedFormData.r2_pay_scale),
             per_rep_addr_share: parseFloat(createCommission.per_rep_addr_share),
@@ -344,7 +345,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     label="Rep Doll / Per"
                     value={createCommission.rep_doll_divby_per}
                     name="rep_doll_divby_per"
-                    placeholder={'Referrer Name'}
+                    placeholder={'Rep Doll / Per'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.rep_doll_divby_per && (
@@ -386,7 +387,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     label="Type"
                     value={createCommission.type}
                     name="type"
-                    placeholder={'Notes'}
+                    placeholder={'Type'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.type && (
@@ -449,7 +450,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     label="Rep2 Name"
                     value={createCommission.rep_2_name}
                     name="rep_2_name"
-                    placeholder={'Notes'}
+                    placeholder={'Rep2 Name'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.rep_2_name && (
@@ -473,14 +474,14 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     placeholder={'Sys Size'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.rep_2_name && (
+                  {errors?.sys_size && (
                     <span
                       style={{
                         display: 'block',
                       }}
                       className="error"
                     >
-                      {errors.rep_2_name}
+                      {errors.sys_size}
                     </span>
                   )}
                 </div>
@@ -572,7 +573,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="r1_referral_credit_$"
+                    label="R1 Referral Credit_$"
                     value={createCommission.r1_referral_credit_$}
                     name="r1_referral_credit_$"
                     placeholder={'R1 Pay Scale'}
@@ -635,7 +636,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="R2 Pay Scale"
+                    label="R2 Referral Credit"
                     value={createCommission.r2_referral_credit_$}
                     name="r2_referral_credit_$"
                     placeholder={'R2 Referral credit $'}
