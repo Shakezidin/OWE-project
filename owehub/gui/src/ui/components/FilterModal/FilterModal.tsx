@@ -180,7 +180,7 @@ const FilterModal: React.FC<TableProps> = ({
 
     filters.forEach((filter, index) => {
       if (!filter.Column) {
-        newErrors[`column${index}`] = `Please provide Column`;
+        newErrors[`column${index}`] = `Please provide Column Name`;
       }
       if (!filter.Operation) {
         newErrors[`operation${index}`] = `Please provide Operation`;

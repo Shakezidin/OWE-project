@@ -7,7 +7,7 @@ export const RepIncentColumn: Column[] = [
     type: 'string',
     isCheckbox: true,
   },
-  { name: 'Kw deduction', displayName: 'Kw Deduction', type: 'string', isCheckbox: false },
+  { name: 'Kw deduction', displayName: 'Kw Deduction', type: 'number', isCheckbox: false },
   {
     name: 'month',
     displayName: 'Month',

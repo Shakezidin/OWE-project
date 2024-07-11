@@ -17,10 +17,13 @@ import { DateRangePicker } from 'react-date-range';
 import moment from 'moment';
 import { handleChange as filterChange } from '../../../../redux/apiSlice/repPaySlice/repPaySlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { Commissioncolumns } from './RepDashboardTable';
 export const RepPayDashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const [active, setActive] = React.useState<number>(0);
+  const [additionalFilter,setAdditionalFilter] = useState<FilterModel[]>([])
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectionRange, setSelectionRange] = useState({
@@ -32,7 +35,7 @@ export const RepPayDashboardPage: React.FC = () => {
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
-  const itemsPerPage = 10
+  const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
@@ -121,48 +124,70 @@ export const RepPayDashboardPage: React.FC = () => {
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
   };
-  
 
   return (
     <>
-
-
       <div className="rep-Dashboard-section-container">
-        <div className='rep-white-back'>
+        <div className="rep-white-back">
           <div className="rep-Dashboard-container">
             <div className="rep-manage-user">
-
-
               <div className="rep-dash-head-input">
-                <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#8E81E0' }}
+                >
                   <img src={ICONS.vector} alt="" />
                 </div>
-                <div className='rep-up'>
-                  <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "10px" }}>
+                <div className="rep-up">
+                  <label
+                    className="rep-inputLabel"
+                    style={{ color: '#344054', marginLeft: '10px' }}
+                  >
                     Includes
                   </label>
-                  <div className='drop-d'> <DropdownWithCheckboxes isOpen={isOpen} setIsOpen={setIsOpen} /></div>
+                  <div className="drop-d">
+                    {' '}
+                    <DropdownWithCheckboxes
+                      isOpen={isOpen}
+                      setIsOpen={setIsOpen}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="rep-dash-head-input" style={{ minWidth: "155px" }}>
-                <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
+              <div
+                className="rep-dash-head-input"
+                style={{ minWidth: '155px' }}
+              >
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#57B3F1' }}
+                >
                   <img src={ICONS.lable_img} alt="" />
                 </div>
-                <div className='rep-up relative'>
-                  <label className="rep-inputLabel" style=
-                    {{
-                      color: '#344054', position: 'absolute', left: '8px',
+                <div className="rep-up relative">
+                  <label
+                    className="rep-inputLabel"
+                    style={{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '8px',
                       top: '-10px',
-                      whiteSpace: 'nowrap'
-                    }}>
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     Commission Model
                   </label>
                   <Select
                     options={comissionValueData}
-                    value={{ value: filters.commission_model, label: filters.commission_model }}
+                    value={{
+                      value: filters.commission_model,
+                      label: filters.commission_model,
+                    }}
                     onFocus={() => setIsOpen(false)}
-                    onChange={(value) => handleChange('commission_model', value?.value!)}
+                    onChange={(value) =>
+                      handleChange('commission_model', value?.value!)
+                    }
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
@@ -181,8 +206,7 @@ export const RepPayDashboardPage: React.FC = () => {
                         // marginRight: '32px',
                         // marginBottom: '0px',
                         boxShadow: 'none',
-                        marginTop: '15px'
-
+                        marginTop: '15px',
                       }),
 
                       indicatorSeparator: () => ({
@@ -194,15 +218,19 @@ export const RepPayDashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-18px'
+                        marginLeft: '-18px',
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '13px',
                         color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        backgroundColor: state.isSelected
+                          ? '#377CF6'
+                          : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                          backgroundColor: state.isSelected
+                            ? '#377CF6'
+                            : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
@@ -212,35 +240,39 @@ export const RepPayDashboardPage: React.FC = () => {
                       menu: (baseStyles) => ({
                         ...baseStyles,
                         width: '131px',
-                        left: -31
+                        left: -31,
                       }),
                       input: (baseStyles) => ({
                         ...baseStyles,
                         '&:focus': {
                           border: 'none',
-                          outline: 'none'
-                        }
-                      })
+                          outline: 'none',
+                        },
+                      }),
                     }}
                   />
                 </div>
-
               </div>
 
               <div className="rep-dash-head-input">
-                <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#C470C7' }}
+                >
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
-                <div className='rep-up relative'>
-                  <label className="date-inputLabel" style=
-                    {{
+                <div className="rep-up relative">
+                  <label
+                    className="date-inputLabel"
+                    style={{
                       color: '#344054',
                       position: 'absolute',
                       left: '12px',
                       top: '-9px',
                       whiteSpace: 'nowrap',
-                      zIndex: 99
-                    }}>
+                      zIndex: 99,
+                    }}
+                  >
                     Payroll Date
                   </label>
 
@@ -250,7 +282,6 @@ export const RepPayDashboardPage: React.FC = () => {
                       top: '7px',
                       backgroundColor: 'white',
                       marginLeft: '6px',
-
                     }}
                     ref={datePickerRef}
                   >
@@ -260,14 +291,19 @@ export const RepPayDashboardPage: React.FC = () => {
                       style={{ color: '#292929' }}
                     >
                       <span className="date-text">
-                        {selectionRange.startDate.toLocaleDateString() !== selectionRange.endDate.toLocaleDateString()
-                          ? <React.Fragment>
+                        {selectionRange.startDate.toLocaleDateString() !==
+                        selectionRange.endDate.toLocaleDateString() ? (
+                          <React.Fragment>
                             <span className="date-range-large">
                               {`${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`}
                             </span>
-                            <span className="date-range-small">Date Selected</span>
+                            <span className="date-range-small">
+                              Date Selected
+                            </span>
                           </React.Fragment>
-                          : 'Select Date'}
+                        ) : (
+                          'Select Date'
+                        )}
                       </span>
                     </label>
                     {showDatePicker && (
@@ -287,7 +323,6 @@ export const RepPayDashboardPage: React.FC = () => {
                           onClick={handleToggleDatePicker}
                         >
                           Apply
-                          
                         </button>
                       </div>
                     )}
@@ -295,24 +330,39 @@ export const RepPayDashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="rep-dash-head-input" style={{ minWidth: "120px" }}>
-              <div className='rep-drop_label' style={{ backgroundColor: "#63ACA3" }}>
+              <div
+                className="rep-dash-head-input"
+                style={{ minWidth: '120px' }}
+              >
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#63ACA3' }}
+                >
                   <img src={ICONS.report1} alt="" />
                 </div>
-                <div className='rep-up relative'>
-                  <label className="rep-inputLabel" style=
-                    {{
-                      color: '#344054', position: 'absolute', left: '8px',
+                <div className="rep-up relative">
+                  <label
+                    className="rep-inputLabel"
+                    style={{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '8px',
                       top: '-10px',
-                      whiteSpace: 'nowrap'
-                    }}>
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     Report Type
                   </label>
                   <Select
                     options={reportData}
-                    value={{ value: filters.report_type, label: filters.report_type }}
+                    value={{
+                      value: filters.report_type,
+                      label: filters.report_type,
+                    }}
                     onFocus={() => setIsOpen(false)}
-                    onChange={(value) => handleChange('report_type', value?.value!)}
+                    onChange={(value) =>
+                      handleChange('report_type', value?.value!)
+                    }
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
@@ -331,8 +381,7 @@ export const RepPayDashboardPage: React.FC = () => {
                         // marginRight: '26px',
                         // marginBottom: '0px',
                         boxShadow: 'none',
-                        marginTop: '15px'
-
+                        marginTop: '15px',
                       }),
 
                       indicatorSeparator: () => ({
@@ -344,15 +393,19 @@ export const RepPayDashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-18px'
+                        marginLeft: '-18px',
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '13px',
                         color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        backgroundColor: state.isSelected
+                          ? '#377CF6'
+                          : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                          backgroundColor: state.isSelected
+                            ? '#377CF6'
+                            : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
@@ -363,38 +416,49 @@ export const RepPayDashboardPage: React.FC = () => {
                         ...baseStyles,
                         width: '131px',
                         left: -31,
-                        zIndex: 99
+                        zIndex: 99,
                       }),
                       input: (baseStyles) => ({
                         ...baseStyles,
                         '&:focus': {
                           border: 'none',
-                          outline: 'none'
-                        }
-                      })
+                          outline: 'none',
+                        },
+                      }),
                     }}
                   />
                 </div>
-
               </div>
               <div className="rep-dash-head-input">
-                <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#57B3F1' }}
+                >
                   <img src={ICONS.lable_img} alt="" />
                 </div>
-                <div className='rep-up relative'>
-                  <label className="rep-inputLabel" style=
-                    {{
-                      color: '#344054', position: 'absolute', left: '8px',
+                <div className="rep-up relative">
+                  <label
+                    className="rep-inputLabel"
+                    style={{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '8px',
                       top: '-10px',
-                      whiteSpace: 'nowrap'
-                    }}>
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     Cut Off
                   </label>
                   <Select
                     options={cutOff}
-                    value={{ value: filters.use_cutoff, label: filters.use_cutoff }}
+                    value={{
+                      value: filters.use_cutoff,
+                      label: filters.use_cutoff,
+                    }}
                     onFocus={() => setIsOpen(false)}
-                    onChange={(value) => handleChange('use_cutoff', value?.value!)}
+                    onChange={(value) =>
+                      handleChange('use_cutoff', value?.value!)
+                    }
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
@@ -413,8 +477,7 @@ export const RepPayDashboardPage: React.FC = () => {
                         // marginRight: '32px',
                         // marginBottom: '0px',
                         boxShadow: 'none',
-                        marginTop: '15px'
-
+                        marginTop: '15px',
                       }),
 
                       indicatorSeparator: () => ({
@@ -426,15 +489,19 @@ export const RepPayDashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-18px'
+                        marginLeft: '-18px',
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '13px',
                         color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        backgroundColor: state.isSelected
+                          ? '#377CF6'
+                          : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                          backgroundColor: state.isSelected
+                            ? '#377CF6'
+                            : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
@@ -444,29 +511,28 @@ export const RepPayDashboardPage: React.FC = () => {
                       menu: (baseStyles) => ({
                         ...baseStyles,
                         width: '131px',
-                        left: -31
+                        left: -31,
                       }),
                       input: (baseStyles) => ({
                         ...baseStyles,
                         '&:focus': {
                           border: 'none',
-                          outline: 'none'
-                        }
-                      })
+                          outline: 'none',
+                        },
+                      }),
                     }}
                   />
                 </div>
-
               </div>
-
             </div>
 
             <div className="rep-dashboard-payroll">
               <div className="Line-container">
                 <div className="rep-line-graph">
                   <div
-                    className={`rep-filter-line ${active === 0 ? 'rep-active-filter-line' : ''
-                      }`}
+                    className={`rep-filter-line ${
+                      active === 0 ? 'rep-active-filter-line' : ''
+                    }`}
                     onClick={() => setActive(0)}
                   >
                     {active === 0 ? (
@@ -476,8 +542,9 @@ export const RepPayDashboardPage: React.FC = () => {
                     )}
                   </div>
                   <div
-                    className={`filter-disable ${active === 1 ? 'rep-active-filter-line' : ''
-                      }`}
+                    className={`filter-disable ${
+                      active === 1 ? 'rep-active-filter-line' : ''
+                    }`}
                     // onClick={() => setActive(1)}
                     style={{ backgroundColor: '#377CF6' }}
                   >
@@ -492,7 +559,11 @@ export const RepPayDashboardPage: React.FC = () => {
                     style={{ backgroundColor: '#377CF6' }}
                     onClick={() => setFilterModal(true)}
                   >
-                    <img src={ICONS.fil_white} alt="" style={{ height: '15px', width: '15px' }} />
+                    <img
+                      src={ICONS.fil_white}
+                      alt=""
+                      style={{ height: '15px', width: '15px' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -502,24 +573,26 @@ export const RepPayDashboardPage: React.FC = () => {
             <RepPayDashboardTotal />
             {/* <DonutChart /> */}
           </div>
-
         </div>
 
+        <FilterHoc
+          isOpen={filterModal}
+          resetOnChange={false}
+          handleClose={filterClose}
+          columns={Commissioncolumns}
+          page_number={1}
+          page_size={10}
+          fetchFunction={(req:{filters:FilterModel[]}) => {
+            setCurrentPage(1)
+            setAdditionalFilter(req.filters)
+          }}
+        />
 
-        {filterModal && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={[]}
-            page_number={1}
-            page_size={10}
-            fetchFunction={() => { }}
-          />
-        )}
         <div className="" style={{ marginTop: '8px' }}>
           {active === 0 && <RepDashBoardTable />}
           {active === 1 && <RepDashBoardChart />}
         </div>
-      </div >
+      </div>
     </>
   );
 };
