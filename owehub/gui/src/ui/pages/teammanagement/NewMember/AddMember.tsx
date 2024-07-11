@@ -69,6 +69,17 @@ const AddMember: React.FC<createUserProps> = ({
                         <div className="createProfileInputView">
                             <div className="createProfileTextView">
                                 <div className="create-input-container">
+                                <div className="tm-create-input-field">
+                                    <Input
+                                            type={'text'}
+                                            label="Unique ID"
+                                            value={formData.email_id}
+                                            placeholder={'OWE012345'}
+                                            onChange={(e) => handleInputChange(e)}
+                                            name={'email_id'}
+                                            disabled={formData.isEdit}
+                                        />
+                                    </div>
                                     <div className="tm-create-input-field">
                                         <Input
                                             type={'text'}
@@ -80,7 +91,11 @@ const AddMember: React.FC<createUserProps> = ({
                                             maxLength={100}
                                         />
                                     </div>
-                                    <div className="tm-create-input-field">
+                                    
+
+                                </div>
+                                <div className="create-input-container">
+                                <div className="tm-create-input-field">
                                         <Input
                                             type={'text'}
                                             label="Last Name"
@@ -91,21 +106,6 @@ const AddMember: React.FC<createUserProps> = ({
                                             maxLength={100}
                                         />
                                     </div>
-
-                                </div>
-                                <div className="create-input-container">
-                                    <div className="tm-create-input-field">
-                                        <Input
-                                            type={'text'}
-                                            label="Unique ID"
-                                            value={formData.email_id}
-                                            placeholder={'OWE012345'}
-                                            onChange={(e) => handleInputChange(e)}
-                                            name={'email_id'}
-                                            disabled={formData.isEdit}
-                                        />
-                                    </div>
-
                                     <div
                                         className="tm-create-input-field"
                                         style={{ marginTop: -3 }}

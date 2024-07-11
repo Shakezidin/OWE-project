@@ -91,7 +91,7 @@ const MoveMember: React.FC<createUserProps> = ({
                                     <div className="tm-create-input-field">
                                         <Input
                                             type={'text'}
-                                            label="Current Role"
+                                            label="Current Team"
                                             value={formData.first_name}
                                             placeholder={'United Wholesales'}
                                             onChange={(e) => handleInputChange(e)}
