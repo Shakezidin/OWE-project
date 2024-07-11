@@ -755,7 +755,7 @@ CREATE TABLE install_cost (
 
 CREATE TABLE leader_override (
     id serial NOT NULL,
-    -- unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar,
     team_id INT,
     leader_name text,
     type text,
@@ -873,7 +873,7 @@ CREATE TABLE ar (
 
 CREATE TABLE appt_setters (
     id serial NOT NULL,
-    -- unique_id varchar NOT NULL,
+    unique_id varchar,
     name character varying,
     team_id INT,
     pay_rate character varying,
