@@ -37,13 +37,13 @@ export const DealerCreditColumn: Column[] = [
   {
     name: 'total_amt',
     displayName: 'Total Amt.',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'sys_size',
     displayName: 'Sys Size',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 ];
