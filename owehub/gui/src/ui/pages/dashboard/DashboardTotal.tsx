@@ -1,11 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ICONS } from '../../icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { getDealerPayTileData } from '../../../redux/apiActions/dealerPayAction';
 
 
 const DashboardTotal: React.FC = () => {
-  const data = [
+ const dispatch = useAppDispatch();
+
+  const { tileData } = useAppSelector(
+    (state) => state.dealerPaySlice
+  );
+ 
+  useEffect(() => {
+    dispatch(getDealerPayTileData({ dealer: 'OWE-AZ' }));
+  }, [dispatch]);
+  console.log(tileData, "tile data")
+
+
+  // const data1 = [
+  //   {
+  //     doller: '$120,450',
+  //     paid: 'Amount Prepaid',
+  //     img: ICONS.rep1,
+  //     border: '1px solid #63BC51',
+  //     boxBorder: '0.5px solid #63BC51',
+  //     background: ICONS.tot1
+  //   },
+  //   {
+  //     doller: '$100,320',
+  //     paid: 'Pipeline Remaining',
+  //     img: ICONS.rep2,
+  //     border: '1px solid #D768A8',
+  //     boxBorder: '0.5px solid #D768A8',
+  //     background: ICONS.tot2
+  //   },
+  //   {
+  //     doller: '$100,320',
+  //     paid: 'Current Due',
+  //     img: ICONS.rep3,
+  //     border: '1px solid #3993D0',
+  //     boxBorder: '0.5px solid #3993D0',
+  //     background: ICONS.tot3
+  //   },
+  // ];
+ 
+  const data1 = [
     {
-      doller: '$120,450',
+      doller: '$' + tileData.amount_prepaid.toFixed(2),
       paid: 'Amount Prepaid',
       img: ICONS.rep1,
       border: '1px solid #63BC51',
@@ -13,7 +54,7 @@ const DashboardTotal: React.FC = () => {
       background: ICONS.tot1
     },
     {
-      doller: '$100,320',
+      doller: '$' + tileData.pipeline_remaining.toFixed(2),
       paid: 'Pipeline Remaining',
       img: ICONS.rep2,
       border: '1px solid #D768A8',
@@ -21,7 +62,7 @@ const DashboardTotal: React.FC = () => {
       background: ICONS.tot2
     },
     {
-      doller: '$100,320',
+      doller: '$' + tileData.current_due.toFixed(2),
       paid: 'Current Due',
       img: ICONS.rep3,
       border: '1px solid #3993D0',
@@ -29,12 +70,14 @@ const DashboardTotal: React.FC = () => {
       background: ICONS.tot3
     },
   ];
+ 
+ 
   return (
     <>
       <div className="">
         <div className="commission-section-dash">
-          {data.length > 0
-            ? data.map((el, i) => (
+          {data1.length > 0
+            ? data1.map((el, i) => (
                 <div
                   className="total-commisstion"
                   style={{
