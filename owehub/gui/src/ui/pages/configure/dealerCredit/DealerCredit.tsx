@@ -225,7 +225,7 @@ const DealerCredit: React.FC = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Dealer-Credit"
+        linkparaSecond="Dealer Credit"
       />
       <div className="commissionContainer">
         <TableHeader
