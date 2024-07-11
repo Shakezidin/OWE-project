@@ -24,6 +24,16 @@ type RepPayRequest struct {
 	Filters         []Filter `json:"filters"`
 }
 
+type GetRepPayTileDataReq struct {
+	Dealer string `json:"dealer"`
+}
+
+type GetRepPayTileData struct {
+	AmountPrepaid     float64 `json:"amount_prepaid"`
+	PipelineRemaining float64 `json:"pipeline_remaining"`
+	CurrentDue        float64 `json:"current_due"`
+}
+
 // type Filter struct {
 // 	Column    string      `json:"Column"`
 // 	Operation string      `json:"operation"`
