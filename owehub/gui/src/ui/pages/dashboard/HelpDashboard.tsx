@@ -6,15 +6,15 @@ import { ActionButton } from '../../components/button/ActionButton';
 import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 
 interface ButtonProps {
-  editMode: boolean;
   handleClose: () => void;
-  commission: CommissionModel | null;
+  data: {
+    id?: string;
+    name?: string;
+    state?: string;
+    status?: string;
+  };
 }
-const HelpDashboard: React.FC<ButtonProps> = ({
-  editMode,
-  handleClose,
-  commission,
-}) => {
+const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handleFileInputChange = (e: any) => {
     const file = e.target.files?.[0];
@@ -22,19 +22,21 @@ const HelpDashboard: React.FC<ButtonProps> = ({
   };
 
   const [state, setState] = useState({
-    project_id: '',
-    dealer_name: '',
+    project_id: data.id || '',
+    dealer_name: data?.name || '',
     sale_rep: '',
     customer_name: '',
     amount_prepaid: '',
     pipeline_remaining: '',
     current_date: '',
-    project_status: '',
-    state: '',
+    project_status: data?.status || '',
+    state: data?.state || '',
     message: '',
   });
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setState((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,

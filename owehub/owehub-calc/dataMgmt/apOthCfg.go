@@ -89,7 +89,7 @@ func (pApOthData *ApOthCfgStruct) LoadApOthCfg() (err error) {
  * DESCRIPTION:     calculates the Paid amount value based on the unique Id
  * RETURNS:         totalPaid
  *****************************************************************************/
-func (pApOthData *ApOthCfgStruct) CalculatePaidAmount(UniqueId, payee string) (totalPaid float64) {
+func (pApOthData *ApOthCfgStruct) CalculatePaidAmount(UniqueId string) (totalPaid float64) {
 	log.EnterFn(0, "CalculatePaidAmount")
 	defer func() { log.ExitFn(0, "CalculatePaidAmount", nil) }()
 	for _, data := range pApOthData.ApOthList {
@@ -105,7 +105,7 @@ func (pApOthData *ApOthCfgStruct) CalculatePaidAmount(UniqueId, payee string) (t
  * DESCRIPTION:     calculates the balance value based on the unique Id
  * RETURNS:         balance
  *****************************************************************************/
-func (pApOthData *ApOthCfgStruct) CalculateBalance(UniqueId, payee string, totalPaid float64) (balance float64) {
+func (pApOthData *ApOthCfgStruct) CalculateBalance(UniqueId string, totalPaid float64) (balance float64) {
 	log.EnterFn(0, "CalculateBalance")
 	defer func() { log.ExitFn(0, "CalculateBalance", nil) }()
 	for _, data := range pApOthData.ApOthList {

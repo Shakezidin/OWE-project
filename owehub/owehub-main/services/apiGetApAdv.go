@@ -213,7 +213,7 @@ func PrepareApAdvFilters(tableName string, dataFilter models.DataRequestBody, fo
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.notes) %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_code) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -243,7 +243,7 @@ func PrepareApAdvFilters(tableName string, dataFilter models.DataRequestBody, fo
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+			filtersBuilder.WriteString(fmt.Sprintf(" ORDER BY ap.id OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 		}
 	}
 

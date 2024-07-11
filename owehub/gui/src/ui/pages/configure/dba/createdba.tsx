@@ -12,7 +12,7 @@ import {
   updateDBA,
 } from '../../../../redux/apiActions/config/dbaaction';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/dbaSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
@@ -26,7 +26,7 @@ const Createdba: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.ar);
+  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.dba);
   const [createArData, setCreateArData] = useState({
     preferred_name: editData?.preferred_name || '',
     dba: editData?.dba || '',
@@ -47,18 +47,22 @@ const Createdba: React.FC<payScheduleProps> = ({
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const validationRules = {
-      record_id: [
-        {
-          condition: (value: any) => !!value,
-          message: 'Unique Id is required',
-        },
-      ],
+    const validationRules:{[key:string]:any} = {
+      
       preferred_name: [
         { condition: (value: any) => !!value, message: 'Name is required' },
       ],
       DBA: [{ condition: (value: any) => !!value, message: 'DBA is required' }],
-    };
+    }
+    if (editMode) {
+      
+       validationRules.record_id = [
+        {
+          condition: (value: any) => !!value,
+          message: 'Unique Id is required',
+        },
+      ]
+    }
     const { isValid, errors } = validateConfigForm(
       createArData!,
       validationRules
@@ -96,6 +100,7 @@ const Createdba: React.FC<payScheduleProps> = ({
     };
   }, [isSuccess]);
 
+
   
 
   return (
@@ -114,17 +119,6 @@ const Createdba: React.FC<payScheduleProps> = ({
             <div className="createProfileTextView">
 
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Record Id"
-                    value={createArData.record_id}
-                    name="record_id"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors.record_id && <span className="error">{errors.Dba}</span>}
-                </div>
                 <div className="create-input-field">
                   <Input
                     type={'text'}

@@ -103,6 +103,12 @@ import user from '../../resources/assets/sales.svg';
 import vector from '../../resources/assets/Vector1.svg';
 import lable_img from '../../resources/assets/lable_img.svg';
 import dbm from '../../resources/assets/dbm.svg';
+import teamgroup from '../../resources/assets/teamgroup.svg';
+import addicon from '../../resources/assets/addnew.svg';
+import TeamEdit from '../../resources/assets/TeamEdit.svg';
+
+
+
 
 
 export const ICONS = {
@@ -152,7 +158,8 @@ export const ICONS = {
   editIconUser: editIconUser,
   filtercomm: filtercomm,
   AddIcon: AddIcon,
-  
+  teamgroup:teamgroup,
+  addicon:addicon,
   exportIcon: exportIcon,
   importIcon: importIcon,
   BlackAddIcon: BlackAddIcon,
@@ -226,4 +233,5 @@ export const ICONS = {
   online: online,
   fil_white:fil_white,
   dbm:dbm,
+  TeamEdit:TeamEdit,
 };

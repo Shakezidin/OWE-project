@@ -8,7 +8,6 @@ package models
 
 type UpdateAdderResponsibilityReq struct {
 	Record_Id  int64   `json:"record_id"`
-	Unique_Id  string  `json:"unique_id"`
 	Pay_Scale  string  `json:"pay_scale"`
 	Percentage float64 `json:"percentage"`
 }

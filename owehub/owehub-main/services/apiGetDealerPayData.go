@@ -94,12 +94,18 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	tableName := db.TableName_DLR_PAY_APCALC
 	if dataReq.DealerName == "ALL" {
-		query = fmt.Sprintf("SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer NOT IN ('HOUSE')  AND commission_model = '%v'", dataReq.CommissionModel)
+		query = fmt.Sprintf("SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer NOT IN ('HOUSE')")
+		if dataReq.CommissionModel != "ALL" {
+			query += fmt.Sprintf(" AND commission_model = '%v'", dataReq.CommissionModel)
+		}
 		filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq, false, false)
 		orderby = fmt.Sprintf(" ORDER BY %v", dataReq.SortBy)
 		offset, _ = PrepareDealerPayFilters(tableName, dataReq, false, true)
 	} else {
-		query = fmt.Sprintf("SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer = '%v' AND commission_model = '%v'", dataReq.DealerName, dataReq.CommissionModel)
+		query = fmt.Sprintf("SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer = '%v'")
+		if dataReq.CommissionModel != "ALL" {
+			query += fmt.Sprintf(" AND commission_model = '%v'", dataReq.CommissionModel)
+		}
 		filter, whereEleList = PrepareDealerPayFilters(tableName, dataReq, false, false)
 		orderby = fmt.Sprintf(" ORDER BY %v", dataReq.SortBy)
 		offset, _ = PrepareDealerPayFilters(tableName, dataReq, false, true)
@@ -107,7 +113,7 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	if filter != "" {
 		queryWithFiler = query + filter + orderby + offset
-	}else{
+	} else {
 		queryWithFiler = query + orderby + offset
 	}
 	log.FuncErrorTrace(0, queryWithFiler)
@@ -395,16 +401,16 @@ func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, f
 					filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "home_owner":
-					filtersBuilder.WriteString(fmt.Sprintf("home_owner %s LOWER($%d)", operator, len(whereEleList)+1))
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(home_owner) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "current_status":
-					filtersBuilder.WriteString(fmt.Sprintf("current_status %s LOWER($%d)", operator, len(whereEleList)+1))
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(current_status) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "status_date":
 					filtersBuilder.WriteString(fmt.Sprintf("status_date %s $%d", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "dealer":
-					filtersBuilder.WriteString(fmt.Sprintf("dealer %s LOWER($%d)", operator, len(whereEleList)+1))
+					filtersBuilder.WriteString(fmt.Sprintf("LOWER(dealer) %s LOWER($%d)", operator, len(whereEleList)+1))
 					whereEleList = append(whereEleList, value)
 				case "today":
 					filtersBuilder.WriteString(fmt.Sprintf("today %s $%d", operator, len(whereEleList)+1))

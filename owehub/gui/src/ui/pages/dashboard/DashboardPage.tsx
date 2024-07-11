@@ -7,13 +7,16 @@ import DashBoardTable from './DashBoardTable';
 import DashBoardChart from './DashBoardChart';
 import { comissionValueData } from '../../../resources/static_data/StaticData';
 import FilterModal from '../../components/FilterModal/FilterModal';
-import 'react-date-range/dist/styles.css'; 
-import 'react-date-range/dist/theme/default.css'; 
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
-import { useAppDispatch } from '../../../redux/hooks';
-import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
-import { format } from 'date-fns';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import moment from 'moment';
+import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
+import FilterHoc from '../../components/FilterModal/FilterHoc';
+import dealerPayColumn from '../../../resources/static_data/configureHeaderData/dealerPayColumn';
+import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
+import { useLocation } from 'react-router-dom';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState({
@@ -22,6 +25,7 @@ export const DashboardPage: React.FC = () => {
     key: 'selection',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
+
   const dispatch = useAppDispatch();
 
   const handleSelect = (ranges: any) => {
@@ -30,13 +34,6 @@ export const DashboardPage: React.FC = () => {
 
   const handleToggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
-  };
-  const handleSelectDateRange = (ranges: any) => {
-    setSelectionRange(ranges.selection);
-  };
-  const handleApplyDateRange = () => {
-    console.log('Selected Date Range:', selectionRange);
-    setShowDatePicker(false);
   };
 
   const handleResetDates = () => {
@@ -50,11 +47,20 @@ export const DashboardPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
-
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  /* const [selectedOption, setSelectedOption] = useState<string>(
+    payRollData[0].label
+  );*/
   const [selectedOption2, setSelectedOption2] = useState<string>(
-    comissionValueData[0].label
+    comissionValueData[comissionValueData.length - 1].value
   );
-
+  const { isActive } = useAppSelector((state) => state.filterSlice);
+  const { pathname } = useLocation();
+  /* const handleSelectChange = (
+    selectedOption: { value: string; label: string } | null
+  ) => {
+  setSelectedOption(selectedOption ? selectedOption.value : "");
+  };*/
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -66,18 +72,25 @@ export const DashboardPage: React.FC = () => {
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(()=>{
-    dispatch(getDealerPay({
-      page_number:currentPage,
-      page_size:itemsPerPage,
-      pay_roll_start_date:moment(selectionRange.startDate).format('YYYY-MM-DD HH:mm:ss'),
-      pay_roll_end_date:moment(selectionRange.endDate).format('YYYY-MM-DD HH:mm:ss'),
-      use_cutoff: "NO",
-  dealer_name: "ALL",
-      sort_by:"unique_id",
-      commission_model:selectedOption2
-    }))
-  },[currentPage, selectedOption2, selectionRange])
+  useEffect(() => {
+    dispatch(
+      getDealerPay({
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        pay_roll_start_date: moment(selectionRange.startDate).format(
+          'YYYY-MM-DD HH:mm:ss'
+        ),
+        pay_roll_end_date: moment(selectionRange.endDate).format(
+          'YYYY-MM-DD HH:mm:ss'
+        ),
+        use_cutoff: 'NO',
+        dealer_name: 'ALL',
+        sort_by: 'unique_id',
+        commission_model: selectedOption2.toLowerCase(),
+        filters,
+      })
+    );
+  }, [currentPage, selectedOption2, selectionRange, filters]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -95,6 +108,10 @@ export const DashboardPage: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  const fetchFunction = (req: any) => {
+    setCurrentPage(1);
+    setFilters(req.filters);
+  };
 
   return (
     <>
@@ -187,6 +204,18 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* <div className="dash-head-input">
+              <label className="inputLabel" style={{ color: '#344054' }}>
+                Set Default
+              </label>
+              <label
+                className="inputLabel dashboard-chart-view"
+                style={{ color: '#0493CE' }}
+              >
+                Chart View
+              </label>
+            </div> */}
+
               <div className="dash-head-input" style={{ width: '250px' }}>
                 <div
                   className="rep-drop_label"
@@ -232,7 +261,7 @@ export const DashboardPage: React.FC = () => {
                       <div className="calender-container">
                         <DateRangePicker
                           ranges={[selectionRange]}
-                          onChange={handleSelectDateRange}
+                          onChange={handleSelect}
                         />
                         <button
                           className="reset-calender"
@@ -242,7 +271,7 @@ export const DashboardPage: React.FC = () => {
                         </button>
                         <button
                           className="apply-calender"
-                          onClick={handleApplyDateRange}
+                          onClick={handleToggleDatePicker}
                         >
                           Apply
                         </button>
@@ -281,10 +310,24 @@ export const DashboardPage: React.FC = () => {
                     )}
                   </div>
                   <div
-                    className="filter-line"
+                    className="filter-line relative"
                     onClick={() => setFilterModal(true)}
                     style={{ backgroundColor: '#377CF6' }}
                   >
+                    {isActive[pathname] && (
+                      <span
+                        className="absolute"
+                        style={{
+                          border: '1px solid #fff',
+                          borderRadius: '50%',
+                          backgroundColor: '#2DC74F',
+                          width: 8,
+                          height: 8,
+                          top: 0,
+                          right: -2,
+                        }}
+                      ></span>
+                    )}
                     <img
                       src={ICONS.fil_white}
                       alt=""
@@ -297,21 +340,27 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div className="">
             <DashboardTotal />
+            {/* <DonutChart /> */}
           </div>
         </div>
 
-        {filterModal && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={[]}
-            page_number={1}
-            page_size={10}
-            fetchFunction={() => {}}
-          />
-        )}
+        <FilterHoc
+          isOpen={filterModal}
+          handleClose={filterClose}
+          resetOnChange={false}
+          columns={dealerPayColumn}
+          page_number={currentPage}
+          page_size={10}
+          fetchFunction={fetchFunction}
+        />
 
         <div className="" style={{ marginTop: '8px' }}>
-          {active === 0 && <DashBoardTable />}
+          {active === 0 && (
+            <DashBoardTable
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
           {active === 1 && <DashBoardChart />}
         </div>
       </div>

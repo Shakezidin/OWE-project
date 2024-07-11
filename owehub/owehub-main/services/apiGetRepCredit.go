@@ -197,7 +197,7 @@ func PrepareRepCreditFilters(tableName string, dataFilter models.DataRequestBody
 				filtersBuilder.WriteString(fmt.Sprintf("ap.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.notes) %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

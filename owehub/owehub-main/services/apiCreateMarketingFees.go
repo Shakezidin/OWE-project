@@ -64,18 +64,6 @@ func HandleCreateMarketingFeesRequest(resp http.ResponseWriter, req *http.Reques
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createMarketingFees.ChgDlr <= 0 {
-		err = fmt.Errorf("Invalid Chg Dlr Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Dhg Dlr Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createMarketingFees.PaySrc <= 0 {
-		err = fmt.Errorf("Invalid Pay Source Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Pay Source Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createMarketingFees.Source)

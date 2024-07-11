@@ -186,11 +186,11 @@ CREATE TABLE marketing_fees (
     dba character varying,
     state_id INT,
     fee_rate character varying,
-    chg_dlr integer,
-    pay_src integer,
+    chg_dlr BOOLEAN,
+    pay_src BOOLEAN,
+    description character varying,
     start_date character varying NOT NULL,
     end_date character varying,
-    description character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -692,7 +692,7 @@ CREATE TABLE rep_pay_settings (
     id serial NOT NULL,
     name TEXT,
     state_id INT,
-    pay_scale TEXT,
+    pay_scale INT,
     position TEXT,
     b_e BOOLEAN,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -701,6 +701,7 @@ CREATE TABLE rep_pay_settings (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
+    FOREIGN KEY (pay_scale) REFERENCES rep_type(id), 
     PRIMARY KEY (id)
 );
 
@@ -775,7 +776,6 @@ CREATE TABLE leader_override (
 
 CREATE TABLE adder_responsibility (
     id serial NOT NULL,
-    unique_id varchar NOT NULL,
     pay_scale text,
     percentage float,
     is_archived BOOLEAN DEFAULT FALSE,

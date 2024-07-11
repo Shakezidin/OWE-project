@@ -150,6 +150,7 @@ func calculateStatusCheck(dealer, status string, expense, commTotal, credit, rep
 *****************************************************************************/
 func calculateR1Balance(dealerStrings string, statusCheckValues, r1CommPaidValues float64) float64 {
 	var balance float64
+	balance = 0.0
 	if len(dealerStrings) > 0 {
 		if !math.IsNaN(statusCheckValues) && !math.IsNaN(r1CommPaidValues) {
 			balance = math.Round((statusCheckValues-r1CommPaidValues)*100) / 100

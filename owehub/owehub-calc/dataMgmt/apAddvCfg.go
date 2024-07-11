@@ -89,7 +89,7 @@ func (pApAdvData *ApAdvCfgStruct) LoadApAdvCfg() (err error) {
 * DESCRIPTION:     calculates the adv paid amount value based on the provided data
 * RETURNS:         PaidAmnt float64
 *****************************************************************************/
-func (pApAdvData *ApAdvCfgStruct) GetApAdvPaidAmount(UniqueId, payee string) (PaidAmnt float64) {
+func (pApAdvData *ApAdvCfgStruct) GetApAdvPaidAmount(UniqueId string) (PaidAmnt float64) {
 	log.EnterFn(0, "GetApAdvPaidAmount")
 	defer func() { log.ExitFn(0, "GetApAdvPaidAmount", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
@@ -105,7 +105,7 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvPaidAmount(UniqueId, payee string) (Pa
 * DESCRIPTION:     calculates the appt set dba value based on the provided data
 * RETURNS:         float64
 *****************************************************************************/
-func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId, payee string, rcmdAmnt float64) float64 {
+func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId string, rcmdAmnt float64) float64 {
 	log.EnterFn(0, "GetApAdvAmount")
 	defer func() { log.ExitFn(0, "GetApAdvAmount", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
@@ -127,7 +127,7 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId, payee string, rcmdAmn
 * DESCRIPTION:     calculates the rc amount value based on the provided data
 * RETURNS:         rcmdAmnt
 *****************************************************************************/
-func (pApAdvData *ApAdvCfgStruct) GetApAdvRcmdAmount(UniqueId, payee, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (rcmdAmnt float64) {
+func (pApAdvData *ApAdvCfgStruct) GetApAdvRcmdAmount(UniqueId, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (rcmdAmnt float64) {
 	log.EnterFn(0, "GetApAdvRcmdAmount")
 	defer func() { log.ExitFn(0, "GetApAdvRcmdAmount", nil) }()
 	for _, data := range pApAdvData.ApAdvList {
@@ -147,7 +147,7 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvRcmdAmount(UniqueId, payee, rep1, rep2
 * DESCRIPTION:     calculates the adv balance and dba value based on the provided data
 * RETURNS:         balance, dba
 *****************************************************************************/
-func (pApAdvData *ApAdvCfgStruct) GetApAdvBalance(UniqueId, payee string, paidAmount, amount float64) (balance float64, dba string) {
+func (pApAdvData *ApAdvCfgStruct) GetApAdvBalance(UniqueId string, paidAmount, amount float64) (balance float64, dba string) {
 	log.EnterFn(0, "GetApAdvBalance")
 	defer func() { log.ExitFn(0, "GetApAdvBalance", nil) }()
 	for _, data := range pApAdvData.ApAdvList {

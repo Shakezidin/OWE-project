@@ -325,6 +325,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["ovrd_total"] = ovrdTotal
 	outData["status_check"] = statusCheck
 	outData["contract_$$"] = contractDolDol
+	outData["r1_draw_paid"] = r1DrawPaid
 
 	// this is for 2nd sheet (DEALER PAY)
 	outData["dlr_draw_max"] = DlrDrawMax // nocal
@@ -347,6 +348,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["per_team_sales"] = perTeamSales
 	outData["per_team_kw"] = perTeamKw
 	outData["commission_model"] = commission_models
+	outData["r1_comm_paid"] = r1CommPaid
 
 	//first sheet calculation
 
@@ -478,7 +480,6 @@ func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId st
 	if saleData.Installer == "One World Energy" {
 		saleData.Installer = "OWE"
 	}
-
 	switch uniqueId {
 	case "OUR21563":
 		saleData.Type = "LOAN"
@@ -535,5 +536,31 @@ func updateSaleDataForSpecificIds(saleData *dataMgmt.SaleDataStruct, uniqueId st
 		saleData.LoanType = "LF-DIV-LOAN-25y-6.99"
 		saleData.Source = "Parker and Sons"
 		saleData.Partner = "Dividend"
+	case "OUR18996":
+		saleData.Source = "REP"
+		saleData.LoanType = "LEASE-SOVA-1.9"
+		saleData.SecondarySalesRep = "Melissa Bush"
+		saleData.Type = "LEASE 1.9"
+		saleData.ContractTotal = 40052
+	case "OUR18986":
+		saleData.Source = "REP"
+		saleData.LoanType = "LEASE-SOVA-0.0"
+		saleData.Type = "LEASE 0.0"
+	case "OUR19009":
+		saleData.Source = "REP"
+		saleData.Partner = "Dividend"
+		saleData.LoanType = "LF-DIV-0MONTH-25y-3.99"
+		saleData.Type = "LOAN"
+	case "OUR18992":
+		saleData.Source = "REP"
+		saleData.LoanType = "LEASE-SOVA-1.9"
+		saleData.ContractTotal = 22669.27
+		saleData.Type = "LEASE 1.9"
+	case "OUR19003":
+		saleData.Source = "REP"
+		saleData.Partner = "OWE"
+		saleData.Type = "CHECK"
+		saleData.SecondarySalesRep = "Michael Abeel"
+		saleData.ContractTotal = 14880
 	}
 }

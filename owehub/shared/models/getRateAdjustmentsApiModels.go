@@ -8,7 +8,6 @@ package models
 
 type GetRateAdjustments struct {
 	RecordId   int64   `json:"record_id"`
-	UniqueId   string  `json:"unique_id"`
 	PayScale   string  `json:"pay_scale"`
 	Position   string  `json:"position"`
 	Adjustment string  `json:"adjustment"`

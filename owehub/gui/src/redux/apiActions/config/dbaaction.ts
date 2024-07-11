@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 
 interface IPaginate {
   page_number: number;
@@ -35,6 +36,7 @@ export const createDBA = createAsyncThunk(
   async (param: ICreateDBA, { rejectWithValue }) => {
     try {
       const data = await postCaller('create_dba', param);
+      toast.success(data?.message)
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

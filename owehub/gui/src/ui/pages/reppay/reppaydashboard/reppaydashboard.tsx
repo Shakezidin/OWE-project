@@ -14,8 +14,12 @@ import DropdownWithCheckboxes from './DropdownCheck';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
+import moment from 'moment';
+import { handleChange as filterChange } from '../../../../redux/apiSlice/repPaySlice/repPaySlice';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
 export const RepPayDashboardPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -28,6 +32,8 @@ export const RepPayDashboardPage: React.FC = () => {
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1);
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -36,6 +42,7 @@ export const RepPayDashboardPage: React.FC = () => {
   const filterClose = () => {
     setFilterModal(false);
   };
+  const { filters } = useAppSelector((state) => state.repPaySlice);
   const handleToggleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
   };
@@ -51,16 +58,16 @@ export const RepPayDashboardPage: React.FC = () => {
     });
   };
 
-  const includeData = [
-    { value: 'All', label: 'All' },
-    { value: 'AP-DTH', label: 'AP-DTH' },
-    { value: 'AP-PDA', label: 'AP-PDA' },
-    { value: 'AP-ADV', label: 'AP-ADV' },
-    { value: 'AP-DED', label: 'AP-DED' },
-    { value: 'REP-COMM', label: 'REP-COMM' },
-    { value: 'REP BONUS', label: 'REP BONUS' },
-    { value: 'LEADER', label: 'LEADER' },
-  ];
+  // const includeData = [
+  //   { value: 'All', label: 'All' },
+  //   { value: 'AP-DTH', label: 'AP-DTH' },
+  //   { value: 'AP-PDA', label: 'AP-PDA' },
+  //   { value: 'AP-ADV', label: 'AP-ADV' },
+  //   { value: 'AP-DED', label: 'AP-DED' },
+  //   { value: 'REP-COMM', label: 'REP-COMM' },
+  //   { value: 'REP BONUS', label: 'REP BONUS' },
+  //   { value: 'LEADER', label: 'LEADER' },
+  // ];
 
   const reportData = [
     { value: 'All', label: 'All' },
@@ -111,6 +118,10 @@ export const RepPayDashboardPage: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  const handleChange = (name: string, value: string) => {
+    dispatch(filterChange({ name, value }));
+  };
+  
 
   return (
     <>
@@ -149,11 +160,9 @@ export const RepPayDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={comissionValueData}
-                    value={comissionValueData.find(
-                      (option) => option.value === selectedOption2
-                    )}
+                    value={{ value: filters.commission_model, label: filters.commission_model }}
                     onFocus={() => setIsOpen(false)}
-                    onChange={handleSelectChange2}
+                    onChange={(value) => handleChange('commission_model', value?.value!)}
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
@@ -274,10 +283,11 @@ export const RepPayDashboardPage: React.FC = () => {
                           Reset
                         </button>
                         <button
-                          className="close-calender"
+                          className="apply-calender"
                           onClick={handleToggleDatePicker}
                         >
-                          Close
+                          Apply
+                          
                         </button>
                       </div>
                     )}
@@ -300,11 +310,9 @@ export const RepPayDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={reportData}
-                    value={reportData.find(
-                      (option) => option.value === selectedOption4
-                    )}
+                    value={{ value: filters.report_type, label: filters.report_type }}
                     onFocus={() => setIsOpen(false)}
-                    onChange={handleSelectChange4}
+                    onChange={(value) => handleChange('report_type', value?.value!)}
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
@@ -354,7 +362,8 @@ export const RepPayDashboardPage: React.FC = () => {
                       menu: (baseStyles) => ({
                         ...baseStyles,
                         width: '131px',
-                        left: -31
+                        left: -31,
+                        zIndex: 99
                       }),
                       input: (baseStyles) => ({
                         ...baseStyles,
@@ -383,11 +392,9 @@ export const RepPayDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={cutOff}
-                    value={cutOff.find(
-                      (option) => option.value === selectedOption3
-                    )}
+                    value={{ value: filters.use_cutoff, label: filters.use_cutoff }}
                     onFocus={() => setIsOpen(false)}
-                    onChange={handleSelectChange3}
+                    onChange={(value) => handleChange('use_cutoff', value?.value!)}
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,

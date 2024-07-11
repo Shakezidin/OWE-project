@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION update_adder_responsibility(
     p_id INT,
-    p_unique_id               VARCHAR,
     p_pay_scale               VARCHAR,
     p_percentage              DOUBLE PRECISION,
     OUT v_adder_responsibility_id INT
@@ -10,7 +9,6 @@ AS $$
 BEGIN
     UPDATE adder_responsibility
     SET 
-        unique_id = p_unique_id,
         pay_scale = p_pay_scale,
         percentage = p_percentage,
         updated_at = CURRENT_TIMESTAMP
