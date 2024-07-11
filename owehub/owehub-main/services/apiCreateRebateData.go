@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -56,15 +57,8 @@ func HandleCreateRebateDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	if (len(createRebateDataReq.UniqueId) <= 0) || (len(createRebateDataReq.CustomerVerf) <= 0) ||
-		(len(createRebateDataReq.TypeRdMktg) <= 0) || (len(createRebateDataReq.Item) <= 0) ||
-		(len(createRebateDataReq.Amount) <= 0) || (len(createRebateDataReq.Notes) <= 0) ||
-		(len(createRebateDataReq.Type) <= 0) || (len(createRebateDataReq.Rep_1_Name) <= 0) ||
-		(len(createRebateDataReq.Rep_2_Name) <= 0) || (len(createRebateDataReq.State) <= 0) ||
-		(len(createRebateDataReq.Rep1DefResp) <= 0) || (len(createRebateDataReq.R1AddrResp) <= 0) ||
-		(len(createRebateDataReq.PerRepDefOvrd) <= 0) || (len(createRebateDataReq.R1RebateCredit) <= 0) ||
-		(len(createRebateDataReq.R1RebateCreditPerc) <= 0) || (len(createRebateDataReq.R2RebateCredit) <= 0) ||
-		(len(createRebateDataReq.R2RebateCreditPerc) <= 0) || (len(createRebateDataReq.StartDate) <= 0) ||
-		(len(createRebateDataReq.EndDate) <= 0) {
+		(len(createRebateDataReq.Date) <= 0) || (len(createRebateDataReq.Type) <= 0) ||
+		(len(createRebateDataReq.Item) <= 0) || (len(createRebateDataReq.Notes) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -77,70 +71,30 @@ func HandleCreateRebateDataRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Invalid RepDollDivbyPer Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createRebateDataReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid Sys Size Not Allowed")
+	if createRebateDataReq.Amount <= float64(0) {
+		err = fmt.Errorf("Invalid Amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Amount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createRebateDataReq.RepCount <= float64(0) {
-		err = fmt.Errorf("Invalid Rep Count Not Allowed")
+
+	date, err := time.Parse("2006-01-02", createRebateDataReq.Date)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rep Count Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createRebateDataReq.PerRepAddrShare <= float64(0) {
-		err = fmt.Errorf("Invalid Per Rep Addr Share Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per Rep Addr Share Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createRebateDataReq.PerRepOvrdShare <= float64(0) {
-		err = fmt.Errorf("Invalid Per Rep Ovrd Share Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per Rep Ovrd Share Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createRebateDataReq.R1PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid R1 Pay Scale Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1 Pay Scale Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createRebateDataReq.R2PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid R2 Pay Scale Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R2 Pay Scale Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid end date not allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createRebateDataReq.UniqueId)
 	queryParameters = append(queryParameters, createRebateDataReq.CustomerVerf)
-	queryParameters = append(queryParameters, createRebateDataReq.TypeRdMktg)
+	queryParameters = append(queryParameters, createRebateDataReq.UniqueId)
+	queryParameters = append(queryParameters, date)
+	queryParameters = append(queryParameters, createRebateDataReq.Type)
 	queryParameters = append(queryParameters, createRebateDataReq.Item)
 	queryParameters = append(queryParameters, createRebateDataReq.Amount)
 	queryParameters = append(queryParameters, createRebateDataReq.RepDollDivbyPer)
 	queryParameters = append(queryParameters, createRebateDataReq.Notes)
-	queryParameters = append(queryParameters, createRebateDataReq.Type)
-	queryParameters = append(queryParameters, createRebateDataReq.Rep_1_Name)
-	queryParameters = append(queryParameters, createRebateDataReq.Rep_2_Name)
-	queryParameters = append(queryParameters, createRebateDataReq.SysSize)
-	queryParameters = append(queryParameters, createRebateDataReq.RepCount)
-	queryParameters = append(queryParameters, createRebateDataReq.State)
-	queryParameters = append(queryParameters, createRebateDataReq.PerRepAddrShare)
-	queryParameters = append(queryParameters, createRebateDataReq.PerRepOvrdShare)
-	queryParameters = append(queryParameters, createRebateDataReq.R1PayScale)
-	queryParameters = append(queryParameters, createRebateDataReq.Rep1DefResp)
-	queryParameters = append(queryParameters, createRebateDataReq.R1AddrResp)
-	queryParameters = append(queryParameters, createRebateDataReq.R2PayScale)
-	queryParameters = append(queryParameters, createRebateDataReq.PerRepDefOvrd)
-	queryParameters = append(queryParameters, createRebateDataReq.R1RebateCredit)
-	queryParameters = append(queryParameters, createRebateDataReq.R1RebateCreditPerc)
-	queryParameters = append(queryParameters, createRebateDataReq.R2RebateCredit)
-	queryParameters = append(queryParameters, createRebateDataReq.R2RebateCreditPerc)
-	queryParameters = append(queryParameters, createRebateDataReq.StartDate)
-	queryParameters = append(queryParameters, createRebateDataReq.EndDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateRebateDataFunction, queryParameters)

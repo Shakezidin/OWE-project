@@ -60,9 +60,8 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 		len(createRepPaySettingsData.State) == 0 || len(createRepPaySettingsData.PayScale) == 0 ||
 		len(createRepPaySettingsData.Position) == 0 ||
 		len(createRepPaySettingsData.StartDate) == 0 || len(createRepPaySettingsData.EndDate) <= 0 {
-		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, createRepPaySettingsData)
 		return
 	}
 
