@@ -44,6 +44,4 @@ export const ApPdaColumn: Column[] = [
     displayName: 'Notes',
     type: 'string',
     isCheckbox: false,
-  }, 
-
 ];
