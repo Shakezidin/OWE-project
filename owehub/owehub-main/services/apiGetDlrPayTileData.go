@@ -62,18 +62,41 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	if dataReq.Dealer == "ALL" {
 		query = `
-			SELECT
-				(SELECT SUM(r1_comm_paid) FROM dealer_pay_calc_standard WHERE inst_sys IS NULL) AS amount_prepaid,
-				(SELECT SUM(r1_balance) FROM dealer_pay_calc_standard WHERE unique_id IS NOT NULL AND dealer NOT IN ('HOUSE')) AS pipeline_remaining,
-				(SELECT SUM(r1_draw_amt) FROM dealer_pay_calc_standard) AS current_due
-		`
+		SELECT
+		(SELECT SUM(r1_comm_paid) 
+		 FROM dealer_pay_calc_standard 
+		 WHERE inst_sys IS NULL 
+		   AND r1_comm_paid IS NOT NULL) AS amount_prepaid,
+		
+		(SELECT SUM(r1_balance)
+		 FROM dealer_pay_calc_standard 
+		 WHERE unique_id IS NOT NULL 
+		   AND dealer NOT IN ('HOUSE') 
+		   AND r1_balance != 'NaN') AS pipeline_remaining,
+		
+		(SELECT SUM(draw_amt) 
+		 FROM dlr_pay_pr_data 
+		 WHERE draw_amt IS NOT NULL) AS current_due`
 	} else {
 		query = fmt.Sprintf(`
-			SELECT
-				(SELECT SUM(r1_comm_paid) FROM dealer_pay_calc_standard WHERE inst_sys IS NULL AND dealer = '%v') AS amount_prepaid,
-				(SELECT SUM(r1_balance) FROM dealer_pay_calc_standard WHERE unique_id IS NOT NULL AND dealer = '%v') AS pipeline_remaining,
-				(SELECT SUM(r1_draw_amt) FROM dealer_pay_calc_standard WHERE dealer = '%v') AS current_due
-		`, dataReq.Dealer, dataReq.Dealer, dataReq.Dealer)
+		SELECT
+			(SELECT r1_comm_paid 
+			 FROM dealer_pay_calc_standard 
+			 WHERE inst_sys IS NULL 
+			   AND dealer = '%v' 
+			   AND r1_comm_paid != 'NaN' AND r1_comm_paid != 'Infinity') AS amount_prepaid,
+			
+			(SELECT r1_balance 
+			 FROM dealer_pay_calc_standard 
+			 WHERE unique_id IS NOT NULL 
+			   AND dealer = '%v' 
+			   AND r1_balance != 'NaN' AND r1_balance != 'Infinity') AS pipeline_remaining,
+			
+			(SELECT draw_amt 
+			 FROM dlr_pay_pr_data 
+			 WHERE dealer = '%v' 
+			 AND draw_amt != 'NaN' AND draw_amt != 'Infinity') AS current_due`,
+			dataReq.Dealer, dataReq.Dealer, dataReq.Dealer)
 	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -82,7 +105,7 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 		FormAndSendHttpResp(resp, "Failed to get install cost data from DB", http.StatusBadRequest, nil)
 		return
 	}
-	// Process retrieved data
+
 	amountPrepaid, _ := data[0]["amount_prepaid"].(float64)
 	pipelineRemaining, _ := data[0]["pipeline_remaining"].(float64)
 	currentDue, _ := data[0]["current_due"].(float64)
