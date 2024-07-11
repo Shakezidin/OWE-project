@@ -12,6 +12,7 @@ RETURNS INT
 AS $$
 DECLARE
     v_state_id INT;
+    v_pay_id INT;
 BEGIN
     -- Get the state_id based on the provided state_name
     SELECT state_id INTO v_state_id
@@ -21,6 +22,15 @@ BEGIN
     -- Check if the state exists
     IF v_state_id IS NULL THEN
         RAISE EXCEPTION 'State % not found', p_state_name;
+    END IF;
+
+    SELECT id INTO v_pay_id
+    FROM rep_type
+    WHERE rep_type = p_pay_scale;
+
+    -- Check if the state exists
+    IF v_pay_id IS NULL THEN
+        RAISE EXCEPTION 'rep type % not found', p_pay_scale;
     END IF;
 
     -- Insert a new v_adder into v_adders table
@@ -36,7 +46,7 @@ BEGIN
     VALUES (
         p_name,
         v_state_id,
-        p_pay_scale,
+        v_pay_id,
         p_position,
         p_b_e,
         p_start_date,

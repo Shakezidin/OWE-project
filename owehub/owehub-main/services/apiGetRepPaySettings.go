@@ -64,10 +64,11 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	tableName := db.TableName_RepPaySettingss
 	query = `
-	 SELECT rs.id AS record_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
+	 SELECT rs.id AS record_id, rs.name, st.name AS state_name, rt.rep_type AS pay_scale, rs.position,
 	 rs.b_e, rs.start_date, rs.end_date
 	 FROM rep_pay_settings rs
-	 JOIN states st ON st.state_id = rs.state_id`
+	 LEFT JOIN states st ON st.state_id = rs.state_id
+	 LEFT JOIN rep_type rt ON rt.id = rs.pay_scale`
 
 	filter, whereEleList = PrepareRepPaySettingsFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -249,7 +250,7 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY rs.id, rs.name, st.name, rs.pay_scale, rs.position, rs.b_e, rs.start_date, rs.end_date")
+		filtersBuilder.WriteString(" GROUP BY rs.id, rs.name, st.name, rt.rep_type, rs.position, rs.b_e, rs.start_date, rs.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
