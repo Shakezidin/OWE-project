@@ -1,8 +1,7 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const RepPaySettingsColumns: Column[] = [
-  { name: 'unique_id', displayName: 'Unique ID', type: 'string', isCheckbox: true },
-  { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
+  { name: 'name', displayName: 'Name', type: 'string', isCheckbox: true },
   { name: 'state', displayName: 'State', type: 'string', isCheckbox: false },
   {
     name: 'pay_scale',
@@ -17,6 +16,6 @@ export const RepPaySettingsColumns: Column[] = [
     isCheckbox: false,
   },
   { name: 'b_e', displayName: 'BE', type: 'string', isCheckbox: false },
-  { name: 'start', displayName: 'Start', type: 'date', isCheckbox: false },
-  { name: 'end', displayName: 'End', type: 'date', isCheckbox: false },
+  { name: 'start_date', displayName: 'Start Date', type: 'date', isCheckbox: false },
+  { name: 'end_date', displayName: 'End Date', type: 'date', isCheckbox: false },
 ];

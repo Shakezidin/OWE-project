@@ -192,7 +192,7 @@ const ReferalData: React.FC = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Referal-data"
+        linkparaSecond="Referal Data"
       />
       <div className="commissionContainer">
         <TableHeader
