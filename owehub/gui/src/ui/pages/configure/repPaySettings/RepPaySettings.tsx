@@ -314,7 +314,7 @@ const RepPaySettings = () => {
                     <td>{el?.pay_scale || 'N/A'}</td>
 
                     <td>{el?.position}</td>
-                    <td>{el?.b_e|| 'N/A'}</td>
+                    <td>{el?.b_e?.trim?.()|| 'N/A'}</td>
                     <td>{dateFormat(el?.start_date)}</td>
                     <td>{dateFormat(el?.end_date)}</td>
                     <td>
