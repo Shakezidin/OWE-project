@@ -89,6 +89,9 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy marketing_fees(source_id,dba,state_id,fee_rate,chg_dlr,pay_src,description,start_date,end_date) FROM '/docker-entrypoint-initdb.d/marketing_fees.csv' DELIMITER ',' CSV;
 \copy adder_responsibility(pay_scale,percentage) FROM '/docker-entrypoint-initdb.d/adder_responsibility.csv' DELIMITER ',' CSV;
 \copy noncomm_dlrpay(unique_id,date,exact_amount,approved_by,notes) FROM '/docker-entrypoint-initdb.d/non_comm.csv' DELIMITER ',' CSV;
+\copy dlr_oth(unique_id,payee,amount,date,description,balance,paid_amount,dba) FROM '/docker-entrypoint-initdb.d/dlr_oth.csv' DELIMITER ',' CSV;
+\copy appt_setters(name,team_id,pay_rate,start_date,end_date) FROM '/docker-entrypoint-initdb.d/appt_setters.csv' DELIMITER ',' CSV;
+\copy leader_override(team_id,leader_name,type,term,qual,sales_q,team_kw_q,pay_rate,start_date,end_date) FROM '/docker-entrypoint-initdb.d/leader_override.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 

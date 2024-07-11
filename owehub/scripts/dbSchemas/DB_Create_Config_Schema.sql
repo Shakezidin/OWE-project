@@ -682,7 +682,8 @@ CREATE TABLE dlr_oth(
     paid_amount float,
     is_archived BOOLEAN DEFAULT FALSE,
     commission_model text,
-    date DATE NOT NULL,
+    date DATE,
+    dba text,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -756,7 +757,7 @@ CREATE TABLE install_cost (
 
 CREATE TABLE leader_override (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    -- unique_id varchar NOT NULL UNIQUE,
     team_id INT,
     leader_name text,
     type text,
@@ -874,7 +875,7 @@ CREATE TABLE ar (
 
 CREATE TABLE appt_setters (
     id serial NOT NULL,
-    unique_id varchar NOT NULL,
+    -- unique_id varchar NOT NULL,
     name character varying,
     team_id INT,
     pay_rate character varying,
