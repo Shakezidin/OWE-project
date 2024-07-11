@@ -144,10 +144,7 @@ export const ARDashboardPage: React.FC = () => {
 
                   <Select
                     options={options1}
-                    value={{
-                      value: filters.report_type,
-                      label: filters.report_type,
-                    }}
+                    value={options1.find((opt)=>opt.value===filters.report_type)}
                     onChange={(value) =>
                       handleChange('report_type', value?.value!)
                     }
@@ -246,10 +243,7 @@ export const ARDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={options2}
-                    value={{
-                      value: filters.sale_partner,
-                      label: filters.sale_partner,
-                    }}
+                    value={options1.find((opt)=>opt.value===filters.sale_partner)}
                     onChange={(value) =>
                       handleChange('sale_partner', value?.value!)
                     }

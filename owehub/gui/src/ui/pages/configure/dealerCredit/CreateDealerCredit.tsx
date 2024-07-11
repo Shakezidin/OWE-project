@@ -116,7 +116,8 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
       name === 'permitMax' ||
       name === 'redline' ||
       name === 'ptoPay' ||
-      name === 'permitPay'
+      name === 'permitPay'||
+      name==="exact_amt"
     ) {
       if (/^\d+(\.\d*)?$/.test(value) || value === '') {
         setDealerCredit((prev) => ({ ...prev, [name]: value }));
@@ -323,6 +324,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
         <div className="createUserActionButton">
           <ActionButton title={'Cancel'} type="button" onClick={handleClose} />
           <ActionButton
+          disabled={isFormSubmitting}
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => { }}

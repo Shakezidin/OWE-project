@@ -49,8 +49,8 @@ const DealerCredit: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, dbCount } = useAppSelector((state) => state.dealerCredit);
-
+  const { data, dbCount,isLoading } = useAppSelector((state) => state.dealerCredit);
+  const {isSuccess} = useAppSelector(state=>state.dealerCredit)
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -59,6 +59,7 @@ const DealerCredit: React.FC = () => {
     useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [refresh,setRefresh] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -71,7 +72,7 @@ const DealerCredit: React.FC = () => {
       filters,
     };
     dispatch(getDealerCredit(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  }, [dispatch, currentPage, viewArchived, filters,isSuccess,refresh]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -92,7 +93,7 @@ const DealerCredit: React.FC = () => {
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditData(null);
@@ -107,7 +108,7 @@ const DealerCredit: React.FC = () => {
 
 
 
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data.length;
   const handleSort = (key: any) => {
@@ -152,7 +153,7 @@ const DealerCredit: React.FC = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => data[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -171,7 +172,7 @@ const DealerCredit: React.FC = () => {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
           // If API call is successful, refetch commissions
-
+          setRefresh(prev=>prev+1)
 
           setSelectAllChecked(false);
           setSelectedRows(new Set());
@@ -204,6 +205,7 @@ const DealerCredit: React.FC = () => {
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
+        setRefresh(prev=>prev+1)
 
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -225,7 +227,7 @@ const DealerCredit: React.FC = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Dealer-Credit"
+        linkparaSecond="Dealer Credit"
       />
       <div className="commissionContainer">
         <TableHeader
@@ -317,8 +319,18 @@ const DealerCredit: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.length > 0 ? (
-                data?.map((el: any, i: any) => (
+              {
+                isLoading?
+                <tr>
+                <td colSpan={DealerCreditColumn.length}>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <MicroLoader />
+                  </div>
+                </td>
+              </tr>
+              
+              :currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
@@ -386,7 +398,7 @@ const DealerCredit: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {data?.length > 0 ? (
+        {currentPageData?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               Showing {startIndex} -{' '}
