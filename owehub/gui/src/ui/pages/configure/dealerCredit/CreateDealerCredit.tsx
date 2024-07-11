@@ -323,6 +323,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
         <div className="createUserActionButton">
           <ActionButton title={'Cancel'} type="button" onClick={handleClose} />
           <ActionButton
+          disabled={isFormSubmitting}
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => { }}

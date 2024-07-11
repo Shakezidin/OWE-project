@@ -50,7 +50,7 @@ const DealerCredit: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const { data, dbCount } = useAppSelector((state) => state.dealerCredit);
-
+  const {isSuccess} = useAppSelector(state=>state.dealerCredit)
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -71,7 +71,7 @@ const DealerCredit: React.FC = () => {
       filters,
     };
     dispatch(getDealerCredit(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  }, [dispatch, currentPage, viewArchived, filters,isSuccess]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);

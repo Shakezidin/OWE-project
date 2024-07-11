@@ -15,6 +15,8 @@ import ArHelp from './ArHelp';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+
+
 export const Commissioncolumns = [
   {
     name: 'unique_id',
@@ -48,7 +50,7 @@ export const Commissioncolumns = [
     isCheckbox: false,
   },
   {
-    name: 'street_Address',
+    name: 'street_address',
     displayName: 'Strt Add',
     type: 'string',
     isCheckbox: false,
@@ -57,7 +59,7 @@ export const Commissioncolumns = [
   { name: 'st', displayName: 'State', type: 'string', isCheckbox: false },
   { name: 'zip', displayName: 'Zip', type: 'string', isCheckbox: false },
   {
-    name: 'sys-size',
+    name: 'sys_size',
     displayName: 'Sys Size',
     type: 'string',
     isCheckbox: false,

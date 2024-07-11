@@ -17,13 +17,13 @@ export const DealerCreditColumn: Column[] = [
   {
     name: 'exact_amount',
     displayName: 'Exact Amt',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'per_kw_amt',
     displayName: 'Per KW Amt',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 
