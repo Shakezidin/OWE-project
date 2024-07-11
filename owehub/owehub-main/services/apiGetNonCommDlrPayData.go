@@ -167,7 +167,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 			Date = time.Time{}
 		}
 		date := Date.Format("2006-01-02")
-		
+
 		NonCommDlrPayData := models.GetNonCommDlrPay{
 			RecordId:    RecordId,
 			UniqueID:    UniqueID,
@@ -251,8 +251,8 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 			case "dealer_dba":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "exact_amtount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "exact_amount":
+				filtersBuilder.WriteString(fmt.Sprintf("ndp.exact_amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "approved_by":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.approved_by) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -270,7 +270,7 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.dba) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.date) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ndp.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

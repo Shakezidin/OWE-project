@@ -63,14 +63,42 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_auto_adder
 	query = `
-			SELECT rd.id as record_id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type, 
-			ud1.name as rep_1_name, ud2.name as rep_2_name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share,
-			rd.r1_pay_scale, rd.rep_1_def_resp, rd.r1_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd."r1_rebate_credit_$", rd.r1_rebate_credit_perc, 
-			rd."r2_rebate_credit_$", rd.r2_rebate_credit_perc,  rd.start_date, rd.end_date
-			FROM rebate_data rd
-			LEFT JOIN states st ON st.state_id = rd.state_id
-			LEFT JOIN user_details ud1 ON ud1.user_id = rd.rep_1
-			LEFT JOIN user_details ud2 ON ud2.user_id = rd.rep_2`
+			SELECT 
+    rd.id AS record_id, 
+    rd.unique_id, 
+    rd.customer_verf, 
+    rd.type_rd_mktg, 
+    rd.item, 
+    rd.amount, 
+    rd.rep_doll_divby_per, 
+    rd.notes, 
+    rd.type, 
+    ud1.name AS rep_1_name, 
+    ud2.name AS rep_2_name, 
+    rd.sys_size, 
+    rd.rep_count, 
+    st.name AS state_name, 
+    rd.per_rep_addr_share, 
+    rd.per_rep_ovrd_share, 
+    rd.r1_pay_scale, 
+    rd.r1_addr_resp, 
+    rd.r2_pay_scale, 
+    rd.per_rep_def_ovrd, 
+    rd."r1_rebate_credit_$", 
+    rd.r1_rebate_credit_perc, 
+    rd."r2_rebate_credit_$", 
+    rd.r2_rebate_credit_perc, 
+    rd.date, 
+    rd.r2_addr_resp
+FROM 
+    rebate_data rd
+LEFT JOIN 
+    states st ON st.state_id = rd.state_id
+LEFT JOIN 
+    user_details ud1 ON ud1.user_id = rd.rep_1
+LEFT JOIN 
+    user_details ud2 ON ud2.user_id = rd.rep_2
+`
 
 	filter, whereEleList = PrepareRebateDataFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -411,9 +439,6 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 			case "r1_pay_scale":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_pay_scale %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "rep_1_def_resp":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_1_def_resp %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "r1_addr_resp":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_addr_resp %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -438,11 +463,11 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 			case "r2_rebate_credit_perc":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.r2_rebate_credit_perc %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.start_date %s $%d", operator, len(whereEleList)+1))
+			case "r2_addr_resp":
+				filtersBuilder.WriteString(fmt.Sprintf("rd.rr2_addr_resp %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.end_date %s $%d", operator, len(whereEleList)+1))
+			case "date":
+				filtersBuilder.WriteString(fmt.Sprintf("rd.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -469,7 +494,7 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 	// }
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY rd.id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type, ud1.name, ud2.name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share, rd.r1_pay_scale, rd.rep_1_def_resp, rd.r1_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd.r1_rebate_credit_$, rd.r1_rebate_credit_perc, rd.r2_rebate_credit_$, rd.r2_rebate_credit_perc,  rd.start_date, rd.end_date")
+		filtersBuilder.WriteString(" GROUP BY rd.id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type, ud1.name, ud2.name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share, rd.r1_pay_scale, rd.r1_addr_resp, rd.r2_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd.r1_rebate_credit_$, rd.r1_rebate_credit_perc, rd.r2_rebate_credit_$, rd.r2_rebate_credit_perc,  rd.date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
