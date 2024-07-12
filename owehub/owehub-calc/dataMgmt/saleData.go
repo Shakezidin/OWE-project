@@ -68,7 +68,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	// uidList := []string{"OUR21563"} //OUR21190
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
 
-	// query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ('OUR22811')"
+	// query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ('OUR07569')"
 	// for i, uid := range uidList {
 	// 	query += "'" + strings.ToUpper(uid) + "'"
 	// 	if len(uidList) == 1 {
