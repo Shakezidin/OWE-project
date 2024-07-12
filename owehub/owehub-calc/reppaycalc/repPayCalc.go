@@ -65,7 +65,7 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			newcount++
 		}
 		// Process and clear the batch every 1000 records
-		if (count+1)%500 == 0 && len(repPayCalcList) > 0 {
+		if (count+1)%200 == 0 && len(repPayCalcList) > 0 {
 			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC, repPayCalcList)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to insert initial rep pay Data in DB err: %v", err)
@@ -73,7 +73,7 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 			repPayCalcList = nil // Clear the arDataList
 		}
 		// Process and clear the batch every 1000 records
-		if (newcount+1)%500 == 0 && len(oldrepPayCalcList) > 0 {
+		if (newcount+1)%200 == 0 && len(oldrepPayCalcList) > 0 {
 			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_REP_PAY_APCALC_OVRD, oldrepPayCalcList)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to insert initial ovrd Rep pay Data in DB err: %v", err)

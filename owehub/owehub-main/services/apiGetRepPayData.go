@@ -297,23 +297,42 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	if reportFilter {
 		switch dataFilter.ReportType {
 		case "ALL":
-			filtersBuilder.WriteString(" rep.status_date <= $1")
-			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			filtersBuilder.WriteString(" rep.unique_id IS NOT NULL")
+			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "STANDARD":
-			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
-			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
+			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "ACTIVE+":
-			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
-			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
+			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "ACTIVE":
-			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
-			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
+			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "INACTIVE":
-			filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status != 'Active'")
-			whereEleList = append(whereEleList, dataFilter.PayRollDate)
+			filtersBuilder.WriteString(" rep.rep_status != 'Active'")
+			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		}
 	}
 
+	// if reportFilter {
+	// 	switch dataFilter.ReportType {
+	// 	case "ALL":
+	// 		filtersBuilder.WriteString(" rep.status_date <= $1")
+	// 		whereEleList = append(whereEleList, dataFilter.PayRollDate)
+	// 	case "STANDARD":
+	// 		filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
+	// 		whereEleList = append(whereEleList, dataFilter.PayRollDate)
+	// 	case "ACTIVE+":
+	// 		filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
+	// 		whereEleList = append(whereEleList, dataFilter.PayRollDate)
+	// 	case "ACTIVE":
+	// 		filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status = 'Active'")
+	// 		whereEleList = append(whereEleList, dataFilter.PayRollDate)
+	// 	case "INACTIVE":
+	// 		filtersBuilder.WriteString(" rep.status_date <= $1 AND rep.rep_status != 'Active'")
+	// 		whereEleList = append(whereEleList, dataFilter.PayRollDate)
+	// 	}
+	// }
 	statuses := map[string]bool{
 		"AP_OTH":      dataFilter.ApOth,
 		"AP_PDA":      dataFilter.ApPda,
