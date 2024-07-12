@@ -8,7 +8,6 @@ package models
 
 type GetAdderCreditReq struct {
 	RecordId  int64   `json:"record_id"`
-	UniqueId  string  `json:"unique_id"`
 	Pay_Scale string  `json:"pay_scale"`
 	Type      string  `json:"type"`
 	Min_Rate  float64 `json:"min_rate"`

@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,10 +56,9 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	if (len(UpdateLeaderOverrideReq.UniqueID) <= 0) || (len(UpdateLeaderOverrideReq.TeamName) <= 0) ||
+	if (len(UpdateLeaderOverrideReq.TeamName) <= 0) ||
 		(len(UpdateLeaderOverrideReq.LeaderName) <= 0) || (len(UpdateLeaderOverrideReq.Type) <= 0) ||
-		(len(UpdateLeaderOverrideReq.Term) <= 0) || (len(UpdateLeaderOverrideReq.Qual) <= 0) ||
-		(len(UpdateLeaderOverrideReq.PayRate) <= 0) {
+		(len(UpdateLeaderOverrideReq.Term) <= 0) || (len(UpdateLeaderOverrideReq.Qual) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
@@ -66,6 +66,13 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	if UpdateLeaderOverrideReq.RecordId <= int64(0) {
+		err = fmt.Errorf("Invalid Record Id, unable to proceed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if UpdateLeaderOverrideReq.PayRate <= float64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
@@ -85,9 +92,20 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
+	StartDate, err := time.Parse("2006-01-02", UpdateLeaderOverrideReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	EndDate, err := time.Parse("2006-01-02", UpdateLeaderOverrideReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.RecordId)
-	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.UniqueID)
 	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.TeamName)
 	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.Type)
 	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.LeaderName)
@@ -96,8 +114,8 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.SalesQ)
 	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.TeamKwQ)
 	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.PayRate)
-	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.StartDate)
-	queryParameters = append(queryParameters, UpdateLeaderOverrideReq.EndDate)
+	queryParameters = append(queryParameters, StartDate)
+	queryParameters = append(queryParameters, EndDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateLeaderOverrideFunction, queryParameters)
