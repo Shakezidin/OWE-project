@@ -203,6 +203,9 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, f
 			case "dealer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "sub_dealer":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.sub_dealer) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "start_date":
 				filtersBuilder.WriteString(fmt.Sprintf("dor.start_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
