@@ -570,6 +570,7 @@ CREATE TABLE rebate_data (
     r2_rebate_credit_perc float,
     r2_addr_resp float,
     adder_amount float,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),

@@ -363,12 +363,12 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 	defer func() { log.ExitFn(0, "PreparerebateFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	// whereAdded := false // Flag to track if WHERE clause has been added
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
-		// whereAdded = true // Set flag to true as WHERE clause is added
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -476,22 +476,22 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 		}
 	}
 
-	// Handle the Archived field
-	// if dataFilter.Archived {
-	// 	if whereAdded {
-	// 		filtersBuilder.WriteString(" AND ")
-	// 	} else {
-	// 		filtersBuilder.WriteString(" WHERE ")
-	// 	}
-	// 	filtersBuilder.WriteString("rd.is_archived = TRUE")
-	// } else {
-	// 	if whereAdded {
-	// 		filtersBuilder.WriteString(" AND ")
-	// 	} else {
-	// 		filtersBuilder.WriteString(" WHERE ")
-	// 	}
-	// 	filtersBuilder.WriteString("rd.is_archived = FALSE")
-	// }
+	//Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("rd.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("rd.is_archived = FALSE")
+	}
 
 	if forDataCount == true {
 		filtersBuilder.WriteString(" GROUP BY rd.id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type, ud1.name, ud2.name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share, rd.r1_pay_scale, rd.r1_addr_resp, rd.r2_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd.r1_rebate_credit_$, rd.r1_rebate_credit_perc, rd.r2_rebate_credit_$, rd.r2_rebate_credit_perc,  rd.date")
