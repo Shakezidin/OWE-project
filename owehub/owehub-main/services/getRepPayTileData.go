@@ -18,7 +18,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetInstallCostDataRequest
+ * FUNCTION:		HandleManageRepPayTileDataRequest
  * DESCRIPTION:     handler for get InstallCost data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -31,11 +31,11 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 		query   string
 	)
 
-	log.EnterFn(0, "HandleGetInstallCostDataRequest")
-	defer func() { log.ExitFn(0, "HandleGetInstallCostDataRequest", err) }()
+	log.EnterFn(0, "HandleManageRepPayTileDataRequest")
+	defer func() { log.ExitFn(0, "HandleManageRepPayTileDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get install cost data request")
+		err = fmt.Errorf("HTTP Request body is null in get reppay tile data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get dlr_oth  data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get reppay tile  data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get dlr_oth  data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get dlr_oth  data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get reppay tile data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get reppay tile data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -74,8 +74,8 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get install cost data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get install cost data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get reppay tile data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get reppay tile data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -91,8 +91,8 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	// Log the data being sent
-	log.FuncDebugTrace(0, "dlr pay tiles data: %+v", dealerPayTileData)
+	log.FuncDebugTrace(0, "rep pay tiles data: %+v", dealerPayTileData)
 
 	// Send response using FormAndSendHttpResp function
-	FormAndSendHttpResp(resp, "dealer pay tales data retrieved successfully", http.StatusOK, dealerPayTileData)
+	FormAndSendHttpResp(resp, "rep pay tales data retrieved successfully", http.StatusOK, dealerPayTileData)
 }
