@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchRepStatusList, createRepStatus, updateRepStatus, archiveRepStatus } from '../../../apiActions/config/repstatusAction';
+import { toast } from 'react-toastify';
 
 interface RepStatusItem {
   record_id: number;
@@ -26,7 +27,11 @@ const initialState: RepStatusState = {
 const repStatusSlice = createSlice({
   name: 'repStatus',
   initialState,
-  reducers: {},
+  reducers: {
+    resetSuccess: (state) => {
+      state.isSuccess = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRepStatusList.pending, (state, action) => {
@@ -35,7 +40,6 @@ const repStatusSlice = createSlice({
       })
       .addCase(fetchRepStatusList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
         state.rep_status_list = action.payload.list || [];
         state.count = action.payload.count;
         console.log("Fetched Rep Status List:", action.payload);
@@ -52,6 +56,7 @@ const repStatusSlice = createSlice({
       .addCase(createRepStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        toast.success("Rep Status created successfully")
       })
       .addCase(createRepStatus.rejected, (state, action) => {
         state.isLoading = false;
@@ -65,6 +70,7 @@ const repStatusSlice = createSlice({
       .addCase(updateRepStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        toast.success("Rep Status updated successfully")
       })
       .addCase(updateRepStatus.rejected, (state, action) => {
         state.isLoading = false;
@@ -77,14 +83,15 @@ const repStatusSlice = createSlice({
       })
       .addCase(archiveRepStatus.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
+       
       })
       .addCase(archiveRepStatus.rejected, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = false;
+       
         state.error = action.payload as string;
       });
   },
 });
 
+export const { resetSuccess } = repStatusSlice.actions;
 export default repStatusSlice.reducer;

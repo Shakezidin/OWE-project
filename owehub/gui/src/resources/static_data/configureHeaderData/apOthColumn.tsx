@@ -11,23 +11,23 @@ export const ApOthColumn: Column[] = [
   {
     name: 'amount',
     displayName: 'Amount',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
-    name: 'Date',
+    name: 'date',
     displayName: 'Date',
     type: 'date',
     isCheckbox: false,
   },
   {
-    name: 'Short_code',
+    name: 'short_code',
     displayName: 'Short Code',
     type: 'string',
     isCheckbox: false,
   },
   {
-    name: 'Description',
+    name: 'description',
     displayName: 'Description',
     type: 'string',
     isCheckbox: false,

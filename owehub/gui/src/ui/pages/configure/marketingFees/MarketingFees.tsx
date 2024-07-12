@@ -11,7 +11,6 @@ import { MarketingFeeModel } from '../../../../core/models/configuration/create/
 
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { MarketingFeesColumn } from '../../../../resources/static_data/configureHeaderData/MarketingFeeColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import FilterModal from '../../../components/FilterModal/FilterModal';
@@ -206,7 +205,8 @@ const MarketingFees: React.FC = () => {
   };
 
   const fetchFunction = (req: any) => {
-    dispatch(fetchmarketingFees(req));
+    setCurrentPage(1)
+    setFilters(req.filters)
   };
 
   return (
@@ -312,17 +312,17 @@ const MarketingFees: React.FC = () => {
                         {el.source}
                       </div>
                     </td>
-                    <td>{el.dba}</td>
-                    <td>{el.state}</td>
-                    <td>{el.fee_rate}</td>
+                    <td>{el.dba?.trim?.()||"N/A"}</td>
+                    <td>{el.state ||"N/A"}</td>
+                    <td>{el.fee_rate ||"N/A"}</td>
                     <td>
-                      {el.chg_dlr}
+                      {el.chg_dlr?.trim?.() ||"N/A"}
                       {/* <div className="">
                       <img src={img} alt="" />
                     </div> */}
                     </td>
-                    <td>{el.pay_src}</td>
-                    <td>{el.description}</td>
+                    <td>{el.pay_src?.trim?.() ||"N/A"}</td>
+                    <td>{el.description?.trim?.() ||"N/A"}</td>
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)} </td>
                     <td>
@@ -368,12 +368,12 @@ const MarketingFees: React.FC = () => {
           <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
-              {currentPageData?.length} item
+              {totalCount} item
             </p>
 
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
+              totalPages={totalPages} 
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}

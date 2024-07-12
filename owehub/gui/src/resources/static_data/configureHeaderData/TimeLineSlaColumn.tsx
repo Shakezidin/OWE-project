@@ -9,7 +9,7 @@ export const TimeLineSlaColumns: Column[] = [
     isCheckbox: true,
   },
   { name: 'state', displayName: 'State', type: 'string', isCheckbox: false },
-  { name: 'days', displayName: 'Days', type: 'string', isCheckbox: false },
+  { name: 'days', displayName: 'Days', type: 'number', isCheckbox: false },
   {
     name: 'start_date',
     displayName: 'Start Date',

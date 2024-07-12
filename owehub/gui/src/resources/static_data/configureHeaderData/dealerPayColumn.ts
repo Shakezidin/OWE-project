@@ -27,7 +27,7 @@ export default [
   {
     name: 'contract_date',
     displayName: 'Contract Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {

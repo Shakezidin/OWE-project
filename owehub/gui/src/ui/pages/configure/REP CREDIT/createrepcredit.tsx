@@ -12,7 +12,7 @@ import {
   updateDBA,
 } from '../../../../redux/apiActions/config/dbaaction';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repcreditSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { createRepCredit, updateRepCredit } from '../../../../redux/apiActions/config/repCreditAction';
 interface payScheduleProps {
@@ -28,11 +28,10 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.ar);
+  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.repCredit);
   
   const [createArData, setCreateArData] = useState({
     unique_id: editData?.unique_id || '',
-    record_id: editData?.record_id || '',
     Per_kw_amt: editData?.per_kw_amt || '',
     Notes: editData?.notes || '',
     Exact_amt: editData?.exact_amt || '',
@@ -55,16 +54,19 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const validationRules = {
-      record_id: [
+      unique_id: [
         {
           condition: (value: any) => !!value,
           message: 'Unique Id is required',
         },
       ],
-      preferred_name: [
-        { condition: (value: any) => !!value, message: 'Name is required' },
+      Per_kw_amt: [
+        { condition: (value: any) => !!value, message: 'Per Kw AMT is required' },
       ],
-      DBA: [{ condition: (value: any) => !!value, message: 'DBA is required' }],
+      Notes: [{ condition: (value: any) => !!value, message: 'Notes is required' }],
+      Date: [{ condition: (value: any) => !!value, message: 'Date is required' }],
+      Approved_by: [{ condition: (value: any) => !!value, message: 'Approved By is required' }],
+      Exact_amt: [{ condition: (value: any) => !!value, message: 'Exact Amt is required' }],
     };
     const { isValid, errors } = validateConfigForm(
       createArData!,
@@ -80,20 +82,21 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
         updateRepCredit({
           ...createArData,
           unique_id: createArData.unique_id,
-          Per_kw_amt: createArData.Per_kw_amt,
+          Per_kw_amt: parseInt(createArData.Per_kw_amt),
           Date: createArData.Date,
-          Exact_amt: createArData.Exact_amt,
+          Exact_amt: parseInt(createArData.Exact_amt),
           Approved_by: createArData.Approved_by,
           Notes: createArData.Notes,
+          record_id: editData.record_id
         })
       );
     } else {
       dispatch(
         createRepCredit({
           unique_id: createArData.unique_id,
-          Per_kw_amt: createArData.Per_kw_amt,
+          Per_kw_amt: parseInt(createArData.Per_kw_amt),
           Date: createArData.Date,
-          Exact_amt: createArData.Exact_amt,
+          Exact_amt: parseInt(createArData.Exact_amt),
           Approved_by: createArData.Approved_by,
           Notes: createArData.Notes,
         })
@@ -104,12 +107,9 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
   useEffect(() => {
     if (isSuccess) {
       handleClose();
+      dispatch(resetSuccess());
     }
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
-  }, [isSuccess]);
-
+  }, [isSuccess, dispatch]);
 
 
   return (
@@ -131,7 +131,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="UID"
+                    label="Unique Id"
                     value={createArData.unique_id}
                     name="unique_id"
                     placeholder={'Enter'}
@@ -149,7 +149,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.date && <span className="error">{errors.date}</span>}
+                  {errors.Date && <span className="error">{errors.Date}</span>}
                 </div>
 
                 <div className="create-input-field">
@@ -161,7 +161,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.Dba && <span className="error">{errors.Dba}</span>}
+                  {errors.Per_kw_amt && <span className="error">{errors.Per_kw_amt}</span>}
                 </div>
 
               </div>

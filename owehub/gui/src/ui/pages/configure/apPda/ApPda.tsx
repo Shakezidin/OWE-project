@@ -214,7 +214,7 @@ const ApPda = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="ap-pda"
+        linkparaSecond="Ap Pda"
       />
       <div className="commissionContainer">
         <TableHeader

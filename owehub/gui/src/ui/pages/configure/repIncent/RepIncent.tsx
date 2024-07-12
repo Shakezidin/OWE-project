@@ -141,6 +141,7 @@ const RepIncent = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
+        // @ts-ignore
         (index:any) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
@@ -313,8 +314,8 @@ const RepIncent = () => {
                     <td>{el.doll_div_kw
                     || "N/A"}</td>
                     <td>{el.month
-                    }</td>
-                    <td>{el.comment}</td>
+                    ||"N/A"}</td>
+                    <td>{el.comment||"N/A"}</td>
                    
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (

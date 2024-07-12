@@ -46,7 +46,7 @@ export const createDealerCredit = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_dealercredit', params);
-      if (data instanceof Error) {
+      if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
 
@@ -64,10 +64,9 @@ export const updateDealerCredit = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_dealercredit', params);
-      if (data instanceof Error) {
+      if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

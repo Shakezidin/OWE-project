@@ -1,5 +1,4 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
-
 export const ApDedColumn: Column[] = [
   {
     name: 'unique_id',
@@ -11,31 +10,31 @@ export const ApDedColumn: Column[] = [
   {
     name: 'amount',
     displayName: 'Amount',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
-    name: 'Date',
+    name: 'date',
     displayName: 'Date',
     type: 'date',
     isCheckbox: false,
   },
   {
-    name: 'Short_code',
+    name: 'short_code',
     displayName: 'Short Code',
     type: 'string',
     isCheckbox: false,
   },
   {
-    name: 'Description',
+    name: 'description',
     displayName: 'Description',
     type: 'string',
     isCheckbox: false,
   },
 
   {
-    name: 'notes',
-    displayName: 'Notes',
+    name: 'dealer',
+    displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
   },

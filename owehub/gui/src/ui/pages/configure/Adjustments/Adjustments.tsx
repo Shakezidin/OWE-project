@@ -282,7 +282,6 @@ const Adjustments = () => {
                     <tr key={item.record_id}>
                       <td style={{ paddingRight: 0, textAlign: 'left' }}>
                         <div className="flex-check">
-                          <td style={{ paddingInline: 0 }}>
                             <CheckBox
                               checked={selectedRows.has(ind)}
                               onChange={() =>
@@ -294,8 +293,11 @@ const Adjustments = () => {
                                 )
                               }
                             />
-                          </td>
+                       
+                          <span>
+
                           {item.unique_id}
+                          </span>
                         </div>
                       </td>
                       <td>{item.customer || 'N/A'}</td>

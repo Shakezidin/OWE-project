@@ -57,6 +57,7 @@ const FormComponent: React.FC = () => {
   const [prospectName, setProspectName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [squareFeet, setSquareFeet] = useState('');
+  const [systemSize, setSystemSize] = useState('');
   const [error, setError] = useState<{
     email?: string;
     prospectName?: string;
@@ -64,6 +65,7 @@ const FormComponent: React.FC = () => {
     secondaryAppliance?: string;
     squareFeet?: string;
     address?: string;
+    systemSize?: string;
   }>({});
   const [randomKey, setRandomKey] = useState(Date.now());
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -102,10 +104,9 @@ const FormComponent: React.FC = () => {
     if (!squareFeet.trim()) {
       tempError['squareFeet'] = "House's Square Feet is required";
     }
-    // if (!primaryApplicance.every((app) => !app.isSelected)) {
-    //   tempError['primaryAppliance'] =
-    //     ' Please Select at least  Primary Applicance';
-    // }
+    if (!systemSize.trim()) {
+      tempError['systemSize'] = 'System Size is required';
+    }
     setError({ ...tempError });
     return !Boolean(Object.keys(tempError).length);
   };
@@ -136,6 +137,7 @@ const FormComponent: React.FC = () => {
           ...obj2,
           house_square: parseFloat(squareFeet),
           address,
+          system_size: parseFloat(systemSize),
         });
 
         if (response.status > 201) {
@@ -190,7 +192,6 @@ OWE Battery Calc
       }
     }
   };
-  console.log(error, 'err');
 
   const uploadImages = async (imageArray: string[]): Promise<string[]> => {
     if (!imageArray || imageArray.length === 0) return [];
@@ -275,6 +276,24 @@ OWE Battery Calc
               required
             />
             {error.address && <div className="error">{error.address}</div>}
+          </div>
+
+          <div className="prospect-input-field mt2">
+            <input
+              type="text"
+              placeholder="Enter System Size"
+              value={systemSize}
+              onChange={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+                setSystemSize((prev) =>
+                  parseFloat(e.target.value) <= 100 || e.target.value==="" ? e.target.value : prev
+                );
+              }}
+              required
+            />
+            {error.systemSize && (
+              <div className="error">{error.systemSize}</div>
+            )}
           </div>
 
           <div className="prospect-input-field mt2">

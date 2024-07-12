@@ -175,7 +175,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Type/M2M"
+                    label="Type M2M"
                     value={createTimeLine.type_m2m}
                     name="type_m2m"
                     placeholder={'Enter'}

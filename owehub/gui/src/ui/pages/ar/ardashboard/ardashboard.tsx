@@ -6,19 +6,24 @@ import {
   payRollData,
 } from '../../../../resources/static_data/StaticData';
 import FilterModal from '../../../components/FilterModal/FilterModal';
-import ArDashBoardTable from './artable';
+import ArDashBoardTable, { Commissioncolumns } from './artable';
 import ArDropdownWithCheckboxes from './Dropdown';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Select from 'react-select';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { handleChange as filterChange } from '../../../../redux/apiSlice/AR/ArDataSlice';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { useLocation } from 'react-router-dom';
 
 export const ARDashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const dispatch = useAppDispatch();
+  const [additionalFilter, setAdditionalFilter] = useState<FilterModel[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const filterClose = () => {
     setFilterModal(false);
   };
@@ -68,7 +73,8 @@ export const ARDashboardPage: React.FC = () => {
   // used for close date click outside anywhere
   const datePickerRef = useRef<HTMLDivElement>(null);
   const { filters } = useAppSelector((state) => state.ardata);
-
+  const { isActive } = useAppSelector((state) => state.filterSlice);
+  const { pathname } = useLocation();
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -104,33 +110,44 @@ export const ARDashboardPage: React.FC = () => {
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
   };
+  const fetchFunction = (req: any) => {
+    setCurrentPage(1);
+    setAdditionalFilter(req.filters);
+  };
 
   return (
     <>
       <div className="ar-Dashboard-section-container">
-        <div className='ar-white-back'>
+        <div className="ar-white-back">
           <div className="ar-Dashboard-container">
             <div className="rep-manage-user">
-
-              <div className="ar-dash-head-input" style={{ width: '157px' }}>
-                <div className='rep-drop_label' style={{ backgroundColor: "#63ACA3" }}>
+              <div className="ar-dash-head-input" style={{ width: '128px' }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#63ACA3',flexShrink:0 }}
+                >
                   <img src={ICONS.report1} alt="" />
                 </div>
-                <div className='rep-up relative'>
-                  <label className="inputLabel" style={{
-                    color: '#344054',
-                    position: 'absolute',
-                    left: '9px',
-                    top: '-6px',
-                    whiteSpace: 'nowrap'
-                  }}>
+                <div className="rep-up relative">
+                  <label
+                    className="inputLabel"
+                    style={{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '9px',
+                      top: '-6px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     Report Types
                   </label>
 
                   <Select
                     options={options1}
-                    value={{ value: filters.report_type, label: filters.report_type }}
-                    onChange={(value) => handleChange('report_type', value?.value!)}
+                    value={options1.find((opt)=>opt.value===filters.report_type)}
+                    onChange={(value) =>
+                      handleChange('report_type', value?.value!)
+                    }
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
@@ -146,7 +163,7 @@ export const ARDashboardPage: React.FC = () => {
                         backgroundColor: '#ffffff',
                         cursor: 'pointer',
                         boxShadow: 'none',
-                        marginTop: '18px'
+                        marginTop: '18px',
                       }),
                       placeholder: (baseStyles) => ({
                         ...baseStyles,
@@ -154,7 +171,6 @@ export const ARDashboardPage: React.FC = () => {
                       }),
                       indicatorSeparator: () => ({
                         display: 'none',
-
                       }),
                       dropdownIndicator: (baseStyles, state) => ({
                         ...baseStyles,
@@ -162,15 +178,19 @@ export const ARDashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-18px'
+                        marginLeft: '-18px',
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '12px',
                         color: state.isSelected ? '#ffffff' : '#000000',
-                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        backgroundColor: state.isSelected
+                          ? '#377CF6'
+                          : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                          backgroundColor: state.isSelected
+                            ? '#377CF6'
+                            : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
@@ -181,7 +201,7 @@ export const ARDashboardPage: React.FC = () => {
                         ...baseStyles,
                         width: '7rem',
                         zIndex: 999,
-                        marginLeft: '-31px'
+                        marginLeft: '-31px',
                       }),
                       menuList: (base) => ({
                         ...base,
@@ -201,23 +221,29 @@ export const ARDashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="ar-dash-head-input" style={{ width: "134px" }}>
-                <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
+              <div className="ar-dash-head-input" style={{ width: '134px' }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#C470C7',flexShrink:0 }}
+                >
                   <img src={ICONS.user} alt="" />
                 </div>
-                <div className='rep-up relative'>
-                  <label className="inputLabel" style={{
-                    color: '#344054',
-                    position: 'absolute',
-                    left: '8px',
-                    top: '-6px',
-                    whiteSpace: 'nowrap'
-                  }}>
+                <div className="rep-up relative">
+                  <label
+                    className="inputLabel"
+                    style={{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '8px',
+                      top: '-6px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     Sales Partner
                   </label>
                   <Select
                     options={options2}
-                    value={{ value: filters.sale_partner, label: filters.sale_partner }}
+                    value={options1.find((opt)=>opt.value===filters.sale_partner)}
                     onChange={(value) =>
                       handleChange('sale_partner', value?.value!)
                     }
@@ -238,7 +264,7 @@ export const ARDashboardPage: React.FC = () => {
                         marginRight: '11px',
                         boxShadow: 'none',
                         marginBottom: '2px',
-                        marginTop: '18px'
+                        marginTop: '18px',
                       }),
                       placeholder: (baseStyles) => ({
                         ...baseStyles,
@@ -253,15 +279,19 @@ export const ARDashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-18px'
+                        marginLeft: '-18px',
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '12px',
                         color: state.isSelected ? '#ffffff' : '#000000',
-                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        backgroundColor: state.isSelected
+                          ? '#377CF6'
+                          : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                          backgroundColor: state.isSelected
+                            ? '#377CF6'
+                            : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
@@ -292,12 +322,18 @@ export const ARDashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="ar-dash-head-input" style={{ width: "115px" }}>
-                <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
+              <div className="ar-dash-head-input" style={{ width: '115px' }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#8E81E0',flexShrink:0 }}
+                >
                   <img src={ICONS.vector} alt="" />
                 </div>
-                <div className='rep-up'>
-                  <label className="inputLabel" style={{ color: '#344054', marginLeft: '8px' }}>
+                <div className="rep-up">
+                  <label
+                    className="inputLabel"
+                    style={{ color: '#344054', marginLeft: '8px' }}
+                  >
                     Includes
                   </label>
                   <ArDropdownWithCheckboxes options={options} />
@@ -305,22 +341,28 @@ export const ARDashboardPage: React.FC = () => {
               </div>
 
               <div className="ar-dash-head-input">
-                <div className='rep-drop_label' style={{ backgroundColor: "#EE824D" }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#EE824D',flexShrink:0, }}
+                >
                   <img src={ICONS.element} alt="" />
                 </div>
-                <div className='rep-up relative'>
-                  <label className="inputLabel" style={{
-                    color: '#344054',
-                    position: 'absolute',
-                    left: '9px',
-                    top: '-6px',
-                    whiteSpace: 'nowrap'
-                  }}>
+                <div className="rep-up relative">
+                  <label
+                    className="inputLabel"
+                    style={{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '9px',
+                      top: '-6px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     Elements
                   </label>
                   <Select
                     options={options3}
-                    value={{ value: filters.sort_by, label: filters.sort_by }}
+                    value={options3.find((opt)=>opt.value===filters.sort_by)}
                     onChange={(value) => handleChange('sort_by', value?.value!)}
                     styles={{
                       control: (baseStyles, state) => ({
@@ -338,7 +380,7 @@ export const ARDashboardPage: React.FC = () => {
                         cursor: 'pointer',
                         boxShadow: 'none',
                         marginBottom: '2px',
-                        marginTop: '18px'
+                        marginTop: '18px',
                       }),
                       placeholder: (baseStyles) => ({
                         ...baseStyles,
@@ -354,15 +396,19 @@ export const ARDashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-18px'
+                        marginLeft: '-18px',
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '12px',
                         color: state.isSelected ? '#ffffff' : '#000000',
-                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        backgroundColor: state.isSelected
+                          ? '#377CF6'
+                          : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                          backgroundColor: state.isSelected
+                            ? '#377CF6'
+                            : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
@@ -375,7 +421,7 @@ export const ARDashboardPage: React.FC = () => {
                         // height: 'auto',
                         // overflowY: 'auto',
                         zIndex: 999,
-                        marginLeft: '-32px'
+                        marginLeft: '-32px',
                       }),
                       menuList: (base) => ({
                         ...base,
@@ -394,17 +440,15 @@ export const ARDashboardPage: React.FC = () => {
                   />
                 </div>
               </div>
-
-
             </div>
 
             <div className="dashboard-payroll">
-
               <div className="Line-container">
                 <div className="ar-line-graph">
                   <div
-                    className={`rep-filter-line ${active === 0 ? 'rep-active-filter-line' : ''
-                      }`}
+                    className={`rep-filter-line ${
+                      active === 0 ? 'rep-active-filter-line' : ''
+                    }`}
                     onClick={() => setActive(0)}
                   >
                     {active === 0 ? (
@@ -414,8 +458,9 @@ export const ARDashboardPage: React.FC = () => {
                     )}
                   </div>
                   <div
-                    className={`filter-disable ${active === 1 ? 'rep-active-filter-line' : ''
-                      }`}
+                    className={`filter-disable ${
+                      active === 1 ? 'rep-active-filter-line' : ''
+                    }`}
                     // onClick={() => setActive(1)}
                     style={{ backgroundColor: '#377CF6' }}
                   >
@@ -426,11 +471,29 @@ export const ARDashboardPage: React.FC = () => {
                     )}
                   </div>
                   <div
-                    className="rep-filter-line"
+                    className="rep-filter-line relative"
                     onClick={() => setFilterModal(true)}
                     style={{ backgroundColor: '#377CF6' }}
                   >
-                    <img src={ICONS.fil_white} alt="" style={{ height: '15px', width: '15px' }} />
+                    {isActive[pathname] && (
+                      <span
+                        className="absolute"
+                        style={{
+                          border: '1px solid #fff',
+                          borderRadius: '50%',
+                          backgroundColor: '#2DC74F',
+                          width: 8,
+                          height: 8,
+                          top: 0,
+                          right: -2,
+                        }}
+                      ></span>
+                    )}
+                    <img
+                      src={ICONS.fil_white}
+                      alt=""
+                      style={{ height: '15px', width: '15px' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -438,20 +501,26 @@ export const ARDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {filterModal && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={[]}
-            page_number={1}
-            page_size={10}
-            fetchFunction={() => { }}
-          />
-        )}
+        <FilterHoc
+          isOpen={filterModal}
+          resetOnChange={false}
+          handleClose={filterClose}
+          columns={Commissioncolumns}
+          page_number={1}
+          page_size={10}
+          fetchFunction={fetchFunction}
+        />
+
         <div className="" style={{ marginTop: '8px' }}>
-          {active === 0 && <ArDashBoardTable />}
+          {active === 0 && (
+            <ArDashBoardTable
+              additionalFilter={additionalFilter}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>
   );
 };
-

@@ -106,7 +106,7 @@ import dbm from '../../resources/assets/dbm.svg';
 import teamgroup from '../../resources/assets/teamgroup.svg';
 import addicon from '../../resources/assets/addnew.svg';
 import TeamEdit from '../../resources/assets/TeamEdit.svg';
-
+import cutOff from "../../resources/assets/cutoff_icon.svg"
 
 
 
@@ -136,6 +136,7 @@ export const ICONS = {
   filter2: require('../../resources/assets/filter2.png'),
   groupIcon: require('../../resources/assets/Group2.png'),
   arrowNext: require('../../resources/assets/Vector.svg'),
+  cutOff,
   
 
   groupActiveIcon: groupActive,

@@ -25,6 +25,7 @@ import Loading from '../../../components/loader/Loading';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { dateFormat } from '../../../../utiles/formatDate';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -48,7 +49,7 @@ const RepPaySettings = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [refetch,setRefetch] = useState(1)
+  const [refetch, setRefetch] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -57,7 +58,7 @@ const RepPaySettings = () => {
       filters,
     };
     dispatch(fetchRepaySettings(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,refetch]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -81,7 +82,7 @@ const RepPaySettings = () => {
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = repPaySettingsList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -114,6 +115,26 @@ const RepPaySettings = () => {
     handleOpen();
   };
 
+  if (sortKey) {
+    currentPageData.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue =
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
+      }
+    });
+  }
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
     setFilters(req.filters);
@@ -193,11 +214,11 @@ const RepPaySettings = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Rep Pay Settings"
+        linkparaSecond="Rep Pay "
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Rep Pay Settings"
+          title="Rep Pay "
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
@@ -253,15 +274,23 @@ const RepPaySettings = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                 <th>
+                <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={RepPaySettingsColumns.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -277,15 +306,15 @@ const RepPaySettings = () => {
                             )
                           }
                         />
-                        {el?.unique_id}
+                        {el?.name}
                       </div>
                     </td>
-                    <td>{el?.name}</td>
-                    <td>{el?.state}</td>
-                    <td>{el?.pay_scale}</td>
+
+                    <td>{el?.state|| 'N/A'}</td>
+                    <td>{el?.pay_scale || 'N/A'}</td>
 
                     <td>{el?.position}</td>
-                    <td>{el?.b_e}</td>
+                    <td>{el?.b_e?.trim?.()|| 'N/A'}</td>
                     <td>{dateFormat(el?.start_date)}</td>
                     <td>{dateFormat(el?.end_date)}</td>
                     <td>
@@ -325,8 +354,8 @@ const RepPaySettings = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
-            {currentPageData?.length} item
+            {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+            {dbCount} item
           </p>
 
           {currentPageData?.length > 0 ? (
