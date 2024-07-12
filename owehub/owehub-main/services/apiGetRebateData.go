@@ -403,16 +403,16 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_doll_divby_per %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.notes %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.type %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep1_name":
-				filtersBuilder.WriteString(fmt.Sprintf("ud1.name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud1.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep2_name":
-				filtersBuilder.WriteString(fmt.Sprintf("ud2.name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud2.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.sys_size %s $%d", operator, len(whereEleList)+1))
@@ -421,7 +421,7 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_count %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_addr_share":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_addr_share %s $%d", operator, len(whereEleList)+1))
@@ -430,13 +430,13 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_ovrd_share %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_pay_scale %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.r1_pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_addr_resp":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_addr_resp %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r2_pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.r2_pay_scale %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.r2_pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_def_ovrd":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_def_ovrd %s $%d", operator, len(whereEleList)+1))
@@ -463,7 +463,7 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}
