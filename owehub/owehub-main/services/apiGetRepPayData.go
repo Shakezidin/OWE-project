@@ -179,7 +179,6 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range Finaldata {
 		var repPay RepPay
 		skip := false
-
 		for column, value := range item {
 			switch column {
 			case "home_owner":
@@ -405,15 +404,15 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	filtersBuilder.WriteString(" WHERE net_comm != 'NaN' AND balance != 'NaN' AND")
 	if reportFilter {
 		switch dataFilter.ReportType {
-		case "ALL", "STANDARD", "ACTIVE+":
+		case "ALL":
 			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.unique_id IS NOT NULL")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
-		// case "STANDARD":
-		// 	filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
-		// 	// whereEleList = append(whereEleList, dataFilter.PayRollDate)
-		// case "ACTIVE+":
-		// 	filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
-		// 	// whereEleList = append(whereEleList, dataFilter.PayRollDate)
+		case "STANDARD":
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
+			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
+		case "ACTIVE+":
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
+			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "ACTIVE":
 			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
