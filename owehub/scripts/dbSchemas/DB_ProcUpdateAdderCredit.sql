@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION update_adder_credit(
     p_id INT,
-    p_unique_id               VARCHAR,
     p_pay_scale               VARCHAR,
     p_type                    VARCHAR,
     p_min_rate                DOUBLE PRECISION,
@@ -12,7 +11,6 @@ AS $$
 BEGIN
     UPDATE adder_credit
     SET 
-        unique_id = p_unique_id,
         pay_scale = p_pay_scale,
         type = p_type,
         min_rate = p_min_rate,

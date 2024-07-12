@@ -63,7 +63,7 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	tableName := db.TableName_leader_override
 	query = `
-	SELECT lo.id as record_id, lo.unique_id, lo.leader_name, lo.type, lo.term, lo.qual, lo.sales_q, lo.team_kw_q, lo.pay_rate, lo.start_date, lo.end_date, ts.team_name
+	SELECT lo.id as record_id, lo.leader_name, lo.type, lo.term, lo.qual, lo.sales_q, lo.team_kw_q, lo.pay_rate, lo.start_date, lo.end_date, ts.team_name
 	FROM leader_override lo
 	JOIN teams ts ON ts.team_id = lo.team_id`
 
@@ -166,7 +166,6 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 		// Create a new GetMarketingFeesData object
 		leaderOverrideData := models.GetLeaderOverride{
 			RecordId:   RecordId,
-			UniqueID:   UniqueID,
 			TeamName:   TeamName,
 			LeaderName: LeaderName,
 			Type:       Type,
@@ -237,9 +236,6 @@ func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataReques
 				filtersBuilder.WriteString(" AND ")
 			}
 			switch column {
-			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "team_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ts.team_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -296,7 +292,7 @@ func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataReques
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY lo.id, lo.unique_id, lo.leader_name, lo.type, lo.term, lo.qual, lo.sales_q, lo.team_kw_q, lo.pay_rate, lo.start_date, lo.end_date, ts.team_name")
+		filtersBuilder.WriteString(" GROUP BY lo.id, lo.leader_name, lo.type, lo.term, lo.qual, lo.sales_q, lo.team_kw_q, lo.pay_rate, lo.start_date, lo.end_date, ts.team_name")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

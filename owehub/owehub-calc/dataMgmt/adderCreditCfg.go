@@ -82,7 +82,6 @@ func (pAdderCredit *AdderCreditCfgStruct) LoadAdderCreditCfg() (err error) {
 
 		AdderCreditData := models.GetAdderCreditReq{
 			RecordId:  RecordId,
-			UniqueId:  Unique_id,
 			Pay_Scale: Pay_scale,
 			Type:      Type,
 			Min_Rate:  Min_Rate,
@@ -111,4 +110,3 @@ func (pAdderCredit *AdderCreditCfgStruct) CalculateR1RebateCreditPercentage(R1Pa
 	}
 	return R1RebateCreditPercentage
 }
-

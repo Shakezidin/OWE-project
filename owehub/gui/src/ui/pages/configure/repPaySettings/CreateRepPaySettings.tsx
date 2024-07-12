@@ -26,12 +26,14 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repPaySettingsSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { firstCapitalize } from '../../../../utiles';
-
+import { IPayScale } from './types';
+import Switch from '../../../components/Switch';
 interface createRepPayProps {
   handleClose: () => void;
   editMode: boolean;
   editData: RepayEditParams | null;
   setRefetch: Dispatch<SetStateAction<number>>;
+  payScaleOption: IPayScale[];
 }
 
 const CreateRepPaySettings: React.FC<createRepPayProps> = ({
@@ -39,6 +41,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   editMode,
   editData,
   setRefetch,
+  payScaleOption,
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.repaySettings);
@@ -47,16 +50,18 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const [createRePayData, setCreatePayData] = useState({
-    unique_id: editData?.unique_id || '',
     name: editData?.name || '',
     state: editData?.state || '',
     pay_scale: editData?.pay_scale || '',
     position: editData?.position || '',
-    b_e: editData?.b_e || '',
+    b_e: editData?.b_e ? 'yes' : 'no',
     start_date: editData?.start_date || '',
     end_date: editData?.end_date || '',
   });
-
+  const payScale = payScaleOption.map((it) => ({
+    label: it.rep_type,
+    value: it.rep_type,
+  }));
   const [errors, setErrors] = useState<typeof createRePayData>(
     {} as typeof createRePayData
   );
@@ -71,7 +76,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   const handleValidation = () => {
     const error: any = {};
     for (const key in createRePayData) {
-      if (tableData.tableNames.includes(key)) {
+      if (tableData.tableNames.includes(key) || key === 'b_e') {
         continue;
       }
       if (!createRePayData[key as keyof typeof createRePayData]) {
@@ -114,12 +119,11 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
     e.preventDefault();
     if (handleValidation()) {
       const data = {
-        unique_id: createRePayData.unique_id,
         name: createRePayData.name,
         state: createRePayData.state,
         pay_scale: createRePayData.pay_scale,
         position: createRePayData.position,
-        b_e: createRePayData.b_e,
+        b_e: createRePayData.b_e === 'yes',
         start_date: createRePayData.start_date,
         end_date: createRePayData.end_date,
       };
@@ -156,26 +160,6 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Unique Id"
-                    value={createRePayData.unique_id}
-                    name="unique_id"
-                    placeholder={'Enter'}
-                    onChange={(e) => handlePayInputChange(e)}
-                  />
-                  {errors?.unique_id && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.unique_id}
-                    </span>
-                  )}
-                </div>
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -216,6 +200,27 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                     </span>
                   )}
                 </div>
+
+                <div className="create-input-field">
+                  <label className="inputLabel-select">Pay Scale</label>
+                  <SelectOption
+                    options={payScale}
+                    onChange={(newValue) => handleChange(newValue, 'pay_scale')}
+                    value={payScale?.find(
+                      (option) => option.value === createRePayData.pay_scale
+                    )}
+                  />
+                  {errors?.pay_scale && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.pay_scale}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="create-input-container">
@@ -239,7 +244,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                     </span>
                   )}
                 </div>
-                <div className="create-input-field">
+                {/* <div className="create-input-field">
                   <Input
                     type={'text'}
                     label="BE"
@@ -255,35 +260,12 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                       }}
                       className="error"
                     >
-                      {errors.b_e.replaceAll("B e","Be")}
+                      {errors.b_e.replaceAll('B e', 'Be')}
                     </span>
                   )}
-                </div>
+                </div> */}
+
                 <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Pay Scale"
-                    value={createRePayData.pay_scale}
-                    name="pay_scale"
-                    placeholder={'Enter'}
-                    onChange={(e) => handlePayInputChange(e)}
-                  />
-                  {errors?.pay_scale && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.pay_scale}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="create-input-container">
-
-              <div className="create-input-field">
                   <Input
                     type={'date'}
                     label="Start Date"
@@ -303,6 +285,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                     </span>
                   )}
                 </div>
+
                 <div className="create-input-field">
                   <Input
                     type={'date'}
@@ -331,7 +314,31 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                     </span>
                   )}
                 </div>
-              
+
+                <div className="create-input-field">
+                  <label className="inputLabel-select">BE</label>
+                  <SelectOption
+                    options={[
+                      { value: 'yes', label: 'Yes' },
+                      { value: 'no', label: 'No' },
+                    ]}
+                    onChange={(newValue) => handleChange(newValue, 'b_e')}
+                    value={{
+                      value: createRePayData['b_e'],
+                      label: createRePayData['b_e'] === 'yes' ? 'Yes' : 'No',
+                    }}
+                  />
+                  {errors?.pay_scale && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.pay_scale}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>

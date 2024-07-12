@@ -55,7 +55,7 @@ func HandleUpdateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	if (len(UpdateAdderCreditReq.Unique_Id) <= 0) || (len(UpdateAdderCreditReq.Pay_Scale) <= 0) ||
+	if (len(UpdateAdderCreditReq.Pay_Scale) <= 0) ||
 		(len(UpdateAdderCreditReq.Type) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -85,7 +85,6 @@ func HandleUpdateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, UpdateAdderCreditReq.RecordId)
-	queryParameters = append(queryParameters, UpdateAdderCreditReq.Unique_Id)
 	queryParameters = append(queryParameters, UpdateAdderCreditReq.Pay_Scale)
 	queryParameters = append(queryParameters, UpdateAdderCreditReq.Type)
 	queryParameters = append(queryParameters, UpdateAdderCreditReq.Min_Rate)

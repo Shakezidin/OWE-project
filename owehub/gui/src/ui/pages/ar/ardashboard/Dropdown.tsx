@@ -21,6 +21,7 @@ interface ArDropdownWithCheckboxesProps {
 
 const DropIcon = () =>{
   return <svg
+  style={{flexShrink:0}}
   height="20"
   width="20"
   viewBox="0 0 20 20"
