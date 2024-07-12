@@ -49,25 +49,24 @@ export const ARDashboardPage: React.FC = () => {
   const options3 = [
     { value: 'ALL', label: 'All' },
     { value: 'Partner', label: 'Partner' },
-    { value: 'Installer', label: 'Installer' },
-    { value: 'Type', label: 'Type' },
-    { value: 'Service', label: 'Service' },
-    { value: 'Home Owner', label: 'Home Owner' },
-    { value: 'Street Address', label: 'Street Address' },
-    { value: 'City', label: 'City' },
-    { value: 'ST', label: 'State' },
-    { value: 'Zip', label: 'Zip' },
-    { value: 'KW', label: 'KW' },
-    { value: 'Contract Date', label: 'Contract Date' },
-    { value: 'Install date', label: 'Install date' },
-    { value: 'Current Status', label: 'Current Status' },
-    { value: 'Status date', label: 'Status date' },
-    { value: 'Contract', label: 'Contract' },
-    { value: 'AR Total', label: 'AR Total' },
-    { value: 'Amt paid', label: 'Amt paid' },
-    { value: 'Current Due', label: 'Current Due' },
-    { value: 'Est Pipeline', label: 'Est Pipeline' },
-    { value: 'Subtotal', label: 'Subtotal' },
+    { value: 'installer', label: 'Installer' },
+    { value: 'type', label: 'Type' },
+    { value: 'unique_id', label: 'Service' },
+    { value: 'home_owner', label: 'Home Owner' },
+    { value: 'address', label: 'Street Address' },
+    { value: 'city', label: 'City' },
+    { value: 'state', label: 'State' },
+    { value: 'zip', label: 'Zip' },
+    { value: 'system_size', label: 'KW' },
+    { value: 'contract_date', label: 'Contract Date' },
+    { value: 'install_date', label: 'Install date' },
+    { value: 'current_status', label: 'Current Status' },
+    { value: 'status_date', label: 'Status date' },
+    { value: 'contract_calc', label: 'Contract' },
+    { value: 'owe_ar', label: 'AR Total' },
+    { value: 'amount_paid', label: 'Amt paid' },
+    { value: 'current_due', label: 'Current Due' },
+    { value: 'balance', label: 'Est Pipeline' },
   ];
 
   // used for close date click outside anywhere
@@ -358,7 +357,7 @@ export const ARDashboardPage: React.FC = () => {
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    Elements
+                    Sort By
                   </label>
                   <Select
                     options={options3}
