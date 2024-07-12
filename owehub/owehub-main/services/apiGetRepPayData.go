@@ -405,20 +405,20 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	filtersBuilder.WriteString(" WHERE net_comm != 'NaN' AND balance != 'NaN' AND")
 	if reportFilter {
 		switch dataFilter.ReportType {
-		case "ALL":
-			filtersBuilder.WriteString(" rep.unique_id IS NOT NULL")
+		case "ALL", "STANDARD", "ACTIVE+":
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.unique_id IS NOT NULL")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
-		case "STANDARD":
-			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
-			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
-		case "ACTIVE+":
-			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
-			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
+		// case "STANDARD":
+		// 	filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
+		// 	// whereEleList = append(whereEleList, dataFilter.PayRollDate)
+		// case "ACTIVE+":
+		// 	filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
+		// 	// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "ACTIVE":
-			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "INACTIVE":
-			filtersBuilder.WriteString(" rep.rep_status != 'Active'")
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status != 'Active'")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		}
 	}
