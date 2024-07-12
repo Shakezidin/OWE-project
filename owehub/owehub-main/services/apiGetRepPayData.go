@@ -129,11 +129,13 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	maxPerRepQuery := `SELECT 
 		owe_contractor, MAX(Amount) AS total_amount
 		FROM ` + db.ViewName_REP_PAY + `
+		WHERE Amount != 'NaN' 
 		GROUP BY owe_contractor;
 	`
 	totalPerRepQuery := `SELECT 
 		owe_contractor, SUM(Amount) AS total_amount
 		FROM ` + db.ViewName_REP_PAY + `
+		WHERE Amount != 'NaN' 
 		GROUP BY owe_contractor;
 	`
 
@@ -400,7 +402,7 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	filtersBuilder.WriteString(" WHERE")
+	filtersBuilder.WriteString(" WHERE net_comm != 'NaN' AND balance != 'NaN' AND")
 	if reportFilter {
 		switch dataFilter.ReportType {
 		case "ALL":
