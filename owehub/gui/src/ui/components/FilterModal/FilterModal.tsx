@@ -101,6 +101,8 @@ const FilterModal: React.FC<TableProps> = ({
       setErrors({});
     }
   };
+  console.log(filters, 'filterrrrr', columns);
+
   useEffect(() => {
     const resetFilters = filters
       .filter((_, ind) => ind === 0)
@@ -167,6 +169,8 @@ const FilterModal: React.FC<TableProps> = ({
       return 'number';
     } else if (type === 'date') {
       return 'date';
+    } else if (type === 'boolean') {
+      return 'boolean';
     } else {
       return 'text';
     }
@@ -204,6 +208,14 @@ const FilterModal: React.FC<TableProps> = ({
       setApplyFilters([...formattedFilters]);
       dispatch(activeFilter({ name: pathname }));
       handleClose();
+      // @ts-ignore
+      req.filters = formattedFilters.map((filter) => ({
+        ...filter,
+        Data:
+          filter.Data === 'yes' || filter.Data === 'no'
+            ? filter.Data === 'yes'
+            : filter.Data,
+      }));
       fetchFunction(req);
     }
   };
@@ -212,7 +224,6 @@ const FilterModal: React.FC<TableProps> = ({
     handleClose();
     setErrors({});
   };
-  console.log(filters, 'filtersss', applyFilters);
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -241,90 +252,122 @@ const FilterModal: React.FC<TableProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-              {filters?.map((filter, index) => (
-                <div className="create-input-container" key={index}>
-                  <div className="create-input-field">
-                    <label className="inputLabel-select" style={{fontWeight:400}}>Column Name</label>
-                    <div className="">
-                      <SelectOption
-                        options={[
-                          ...options,
-                        ]}
-                        value={
-                          options.find(
-                            (option) => option.value === filter.Column
-                          ) || undefined
-                        }
-                        onChange={(selectedOption: any) => {
-                          handleChange(index, 'Column', selectedOption.value);
-                          setErrors({ ...errors, [`column${index}`]: '' });
-                        }}
-                      />
+              {filters?.map((filter, index) => {
+                const type = getInputType(filter.Column);
+                return (
+                  <div className="create-input-container" key={index}>
+                    <div className="create-input-field">
+                      <label
+                        className="inputLabel-select"
+                        style={{ fontWeight: 400 }}
+                      >
+                        Column Name
+                      </label>
+                      <div className="">
+                        <SelectOption
+                          options={[...options]}
+                          value={
+                            options.find(
+                              (option) => option.value === filter.Column
+                            ) || undefined
+                          }
+                          onChange={(selectedOption: any) => {
+                            handleChange(index, 'Column', selectedOption.value);
+                            setErrors({ ...errors, [`column${index}`]: '' });
+                          }}
+                        />
 
-                      {errors[`column${index}`] && (
+                        {errors[`column${index}`] && (
+                          <span style={{ color: 'red', fontSize: '12px' }}>
+                            {errors[`column${index}`]}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="create-input-field">
+                      <label
+                        className="inputLabel-select"
+                        style={{ fontWeight: 400 }}
+                      >
+                        Operation
+                      </label>
+                      <OperationSelect
+                        options={options}
+                        columnType={
+                          columns.find(
+                            (option) => option.name === filter.Column
+                          )?.type || ''
+                        }
+                        value={filter.Operation}
+                        onChange={(value: any) => {
+                          handleChange(index, 'Operation', value);
+                          setErrors({ ...errors, [`operation${index}`]: '' });
+                        }}
+                        errors={errors}
+                        index={index}
+                      />
+                    </div>
+
+                    <div className="create-input-field">
+                      {type === 'boolean' ? (
+                        <SelectOption
+                          onChange={(newValue) =>
+                            handleDataChange(index, newValue?.value!)
+                          }
+                          value={
+                            filter.Data
+                              ? {
+                                  value: filter.Data,
+                                  label: filter.Data === 'yes' ? 'Yes' : 'No',
+                                }
+                              : undefined
+                          }
+                          options={[
+                            { value: 'yes', label: 'Yes' },
+                            { value: 'no', label: 'No' },
+                          ]}
+                        />
+                      ) : (
+                        <Input
+                          type={type}
+                          label="Data"
+                          name="Data"
+                          onKeyUp={(e) => {
+                            if (e.key === 'Enter') {
+                              applyFilter();
+                            }
+                          }}
+                          value={filter.Data}
+                          onChange={(e: any) => {
+                            handleDataChange(index, e.target.value);
+                            setErrors({ ...errors, [`data${index}`]: '' });
+                          }}
+                          placeholder={'Enter'}
+                        />
+                      )}
+                      {errors[`data${index}`] && (
                         <span style={{ color: 'red', fontSize: '12px' }}>
-                          {errors[`column${index}`]}
+                          {errors[`data${index}`]}
                         </span>
                       )}
                     </div>
-                  </div>
-                  <div className="create-input-field">
-                    <label className="inputLabel-select" style={{fontWeight:400}}>Operation</label>
-                    <OperationSelect
-                      options={options}
-                      columnType={
-                        columns.find((option) => option.name === filter.Column)
-                          ?.type || ''
-                      }
-                      value={filter.Operation}
-                      onChange={(value: any) => {
-                        handleChange(index, 'Operation', value);
-                        setErrors({ ...errors, [`operation${index}`]: '' });
-                      }}
-                      errors={errors}
-                      index={index}
-                    />
-                  </div>
-
-                  <div className="create-input-field">
-                    <Input
-                      type={getInputType(filter.Column)}
-                      label="Data"
-                      name="Data"
-                      onKeyUp={(e) => {
-                        if (e.key === 'Enter') {
-                          applyFilter();
-                        }
-                      }}
-                      value={filter.Data}
-                      onChange={(e: any) => {
-                        handleDataChange(index, e.target.value);
-                        setErrors({ ...errors, [`data${index}`]: '' });
-                      }}
-                      placeholder={'Enter'}
-                    />
-                    {errors[`data${index}`] && (
-                      <span style={{ color: 'red', fontSize: '12px' }}>
-                        {errors[`data${index}`]}
-                      </span>
+                    {index !== 0 && (
+                      // <div
+                      //     className="cross-btn"
+                      //     onClick={() => handleRemoveRow(index)}
+                      // >
+                      //     <img src={ICONS.cross} alt="" />
+                      // </div>
+                      <div
+                        className="fildelb-btn"
+                        onClick={() => handleRemoveRow(index)}
+                      >
+                        <img src={ICONS.deleteIcon} alt="" />
+                      </div>
                     )}
                   </div>
-                  {index !== 0 && (
-                    // <div
-                    //     className="cross-btn"
-                    //     onClick={() => handleRemoveRow(index)}
-                    // >
-                    //     <img src={ICONS.cross} alt="" />
-                    // </div>
-                    <div
-                      className="fildelb-btn"
-                      onClick={() => handleRemoveRow(index)}
-                    >
-                      <img src={ICONS.deleteIcon} alt="" />
-                    </div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

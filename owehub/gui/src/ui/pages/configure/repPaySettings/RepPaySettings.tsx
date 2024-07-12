@@ -26,7 +26,7 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { dateFormat } from '../../../../utiles/formatDate';
 import MicroLoader from '../../../components/loader/MicroLoader';
-
+import { IPayScale } from './types';
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -50,6 +50,7 @@ const RepPaySettings = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [refetch, setRefetch] = useState(1);
+  const [payScale, setPayScale] = useState<IPayScale[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -59,6 +60,18 @@ const RepPaySettings = () => {
     };
     dispatch(fetchRepaySettings(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters, refetch]);
+
+  useEffect(() => {
+    const getRepPay = async () => {
+      try {
+        const data = await postCaller('get_rep_type', {});
+        setPayScale(data?.data?.ap_pda_list);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getRepPay();
+  }, []);
 
   const filter = () => {
     setFilterOpen(true);
@@ -123,7 +136,15 @@ const RepPaySettings = () => {
         return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
-      } else {
+      } 
+      else if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+        return sortDirection === 'asc'
+          ? aValue?-1:1
+          : bValue?-1:1
+      }
+      
+      
+      else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
           typeof aValue === 'number' ? aValue : parseFloat(aValue);
@@ -243,6 +264,7 @@ const RepPaySettings = () => {
         {open && (
           <CreateRepPaySettings
             editMode={editMode}
+            payScaleOption={payScale}
             handleClose={handleClose}
             editData={editedRepPaySettings}
             setRefetch={setRefetch}
@@ -310,11 +332,11 @@ const RepPaySettings = () => {
                       </div>
                     </td>
 
-                    <td>{el?.state|| 'N/A'}</td>
+                    <td>{el?.state || 'N/A'}</td>
                     <td>{el?.pay_scale || 'N/A'}</td>
 
                     <td>{el?.position}</td>
-                    <td>{el?.b_e?.trim?.()|| 'N/A'}</td>
+                    <td>{el?.b_e ? 'Yes' : 'No'}</td>
                     <td>{dateFormat(el?.start_date)}</td>
                     <td>{dateFormat(el?.end_date)}</td>
                     <td>
