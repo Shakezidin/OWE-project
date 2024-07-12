@@ -118,6 +118,9 @@ CREATE TABLE rep_type (
     id serial NOT NULL,
     rep_type character varying NOT NULL,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
