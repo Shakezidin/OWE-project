@@ -49,6 +49,7 @@ const DealerOverRides: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [dealer,setDealer] = useState<{[key:string]:any}>({})
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -58,6 +59,18 @@ const DealerOverRides: React.FC = () => {
     };
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
+
+  const getnewformData = async () => {
+    const tableData = {
+      tableNames: ['sub_dealer', 'dealer', 'states'],
+    };
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setDealer((prev) => ({ ...prev, ...res.data }));
+  };
+
+  useEffect(() => {
+    getnewformData();
+  }, []);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -226,9 +239,9 @@ const DealerOverRides: React.FC = () => {
           }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           viewArchive={viewArchived}
-          onpressExport={() => { }}
+          onpressExport={() => {}}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
@@ -250,6 +263,7 @@ const DealerOverRides: React.FC = () => {
             dealerData={editedDealer}
             editMode={editMode}
             page_number={currentPage}
+            dealer={dealer}
             page_size={itemsPerPage}
           />
         )}
@@ -279,9 +293,9 @@ const DealerOverRides: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                 <th>
+                <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
@@ -311,14 +325,14 @@ const DealerOverRides: React.FC = () => {
                             )
                           }
                         />
-                        {el.sub_dealer}
+                        {el.sub_dealer||"N/A"}
                       </div>
                     </td>
-                    <td>{el.dealer}</td>
-                    <td>{el.pay_rate}</td>
-                    <td>{el.state}</td>
-                    <td>{dateFormat(el.start_date)}</td>
-                    <td>{dateFormat(el.end_date)}</td>
+                    <td>{el.dealer||"N/A"}</td>
+                    <td>{el.pay_rate||"N/A"}</td>
+                    <td>{el.state?.trim?.()||"N/A"}</td>
+                    <td>{dateFormat(el.start_date)||"N/A"}</td>
+                    <td>{dateFormat(el.end_date)||"N/A"}</td>
                     {viewArchived === true ? null : (
                       <td>
                         {selectedRows.size === 1 ? (

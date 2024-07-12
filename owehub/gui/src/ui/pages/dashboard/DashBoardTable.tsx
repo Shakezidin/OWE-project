@@ -34,7 +34,7 @@ const DashBoardTable = ({
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [openIcon, setOpenIcon] = useState<boolean>(false);
-  const [editData,setEditData] = useState<any>({})
+  const [editData, setEditData] = useState<any>({});
   const handleOpen = () => setOpen(true);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -101,152 +101,31 @@ const DashBoardTable = ({
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
-            <thead>
-              {/* <tr>
-                <th>
-                  <div className="table-header">
-                    <p>Project ID</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Dealer Name</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-
-                <th>
-                  <div className="table-header">
-                    <p>Rep 1</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Home Owner</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Contract Date</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Contract Value</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Amount</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Amount Paid</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Balance</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Credit</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>EPC</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>NET EPC</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>NET REV</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-
-                <th>
-                  <div className="table-header">
-                    <p>Current Status</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Dba</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Status Date</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sys Size</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Loan Fee</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Draw Amt</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>RL</p> <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-
-                <th>
-                  <div className="action-header">
-                    <p>Help</p>
-                  </div>
-                </th>
-              </tr> */}
-              <tr>
-                {dealerPayColumn?.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={data}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-              </tr>
-            </thead>
+            {!!currentPageData.length && (
+              <thead>
+                <tr>
+                  {dealerPayColumn?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={data}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
+                </tr>
+              </thead>
+            )}
             <tbody>
               {loading ? (
                 <tr>
@@ -259,38 +138,44 @@ const DashBoardTable = ({
               ) : currentPageData.length > 0 ? (
                 currentPageData.map((el: any, index: any) => (
                   <tr key={index}>
-                      <td style={{ fontWeight: '500' }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(index)}
-                            onChange={() => {
-                              if (currentPageData?.length === 1) {
-                                setSelectAllChecked(true);
-                                setSelectedRows(new Set([0]));
-                              } else {
-                                toggleRowSelection(
-                                  index,
-                                  selectedRows,
-                                  setSelectedRows,
-                                  setSelectAllChecked
-                                );
-                              }
-                            }}
-                          />
-                          <span className="zoom-out-td">{el.unique_id}</span>
-                        </div>
-                      </td>
-                  
-                    <td style={{ color: '#101828' }}>{el.dealer}</td>
-                    <td style={{ color: '#101828' }}>{el.rep1}</td>
-                    <td style={{ color: '#101828' }}>{el.home_owner}</td>
-                    <td style={{ color: '#101828' }}>{el.contract_date}</td>
-                    <td style={{ color: '#101828' }}>{el.contract_value}</td>
+                    <td style={{ fontWeight: '500' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(index)}
+                          onChange={() => {
+                            if (currentPageData?.length === 1) {
+                              setSelectAllChecked(true);
+                              setSelectedRows(new Set([0]));
+                            } else {
+                              toggleRowSelection(
+                                index,
+                                selectedRows,
+                                setSelectedRows,
+                                setSelectAllChecked
+                              );
+                            }
+                          }}
+                        />
+                        <span className="zoom-out-td">{el.unique_id}</span>
+                      </div>
+                    </td>
+
+                    <td style={{ color: '#101828' }}>{el.dealer || 'N/A'}</td>
+                    <td style={{ color: '#101828' }}>{el.rep1 || 'N/A'}</td>
+                    <td style={{ color: '#101828' }}>
+                      {el.home_owner || 'N/A'}
+                    </td>
+                    <td style={{ color: '#101828' }}>
+                      {el.contract_date || 'N/A'}
+                    </td>
+                    <td style={{ color: '#101828' }}>
+                      {el.contract_value || 'N/A'}
+                    </td>
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
-                      {el.amount}
+                      {el.amount || 'N/A'}
                     </td>
                     <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
-                      {el.amt_paid}
+                      {el.amt_paid || 'N/A'}
                     </td>
                     <td style={{ color: '#379DE3', fontWeight: '500' }}>
                       {el.balance || 'N/A'}
@@ -360,9 +245,8 @@ const DashBoardTable = ({
                         }}
                         alt=""
                         onClick={() => {
-                          setEditData(el)
-                          handleIconOpen()
-
+                          setEditData(el);
+                          handleIconOpen();
                         }}
                       />
                     </td>
@@ -411,10 +295,10 @@ const DashBoardTable = ({
       {openIcon && (
         <HelpDashboard
           data={{
-            id:editData.unique_id,
-            name:editData.dealer,
-            state:editData.state,
-            status:editData.current_status
+            id: editData.unique_id,
+            name: editData.dealer,
+            state: editData.state,
+            status: editData.current_status,
           }}
           handleClose={handleIconClose}
         />

@@ -434,7 +434,7 @@ export const RepPayDashboardPage: React.FC = () => {
                   className="rep-drop_label"
                   style={{ backgroundColor: '#57B3F1' }}
                 >
-                  <img src={ICONS.lable_img} alt="" />
+                  <img src={ICONS.cutOff} alt="" />
                 </div>
                 <div className="rep-up relative">
                   <label
@@ -588,7 +588,7 @@ export const RepPayDashboardPage: React.FC = () => {
           }}
         />
 
-        <div className="" style={{ marginTop: '8px' }}>
+        <div className="pb2" style={{ marginTop: '8px' }}>
           {active === 0 && <RepDashBoardTable />}
           {active === 1 && <RepDashBoardChart />}
         </div>

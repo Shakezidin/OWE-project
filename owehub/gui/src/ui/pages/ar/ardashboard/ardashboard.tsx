@@ -121,10 +121,10 @@ export const ARDashboardPage: React.FC = () => {
         <div className="ar-white-back">
           <div className="ar-Dashboard-container">
             <div className="rep-manage-user">
-              <div className="ar-dash-head-input" style={{ width: '157px' }}>
+              <div className="ar-dash-head-input" style={{ width: '128px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#63ACA3' }}
+                  style={{ backgroundColor: '#63ACA3',flexShrink:0 }}
                 >
                   <img src={ICONS.report1} alt="" />
                 </div>
@@ -224,7 +224,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '134px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#C470C7' }}
+                  style={{ backgroundColor: '#C470C7',flexShrink:0 }}
                 >
                   <img src={ICONS.user} alt="" />
                 </div>
@@ -325,7 +325,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '115px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#8E81E0' }}
+                  style={{ backgroundColor: '#8E81E0',flexShrink:0 }}
                 >
                   <img src={ICONS.vector} alt="" />
                 </div>
@@ -343,7 +343,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input">
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#EE824D' }}
+                  style={{ backgroundColor: '#EE824D',flexShrink:0, }}
                 >
                   <img src={ICONS.element} alt="" />
                 </div>

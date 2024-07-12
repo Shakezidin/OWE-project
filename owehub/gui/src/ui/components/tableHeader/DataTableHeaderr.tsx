@@ -1,7 +1,7 @@
 import { ICONS } from '../../icons/Icons';
 import { IoAddSharp } from 'react-icons/io5';
 import '../../pages/configure/configure.css';
-import React, { useEffect } from 'react';
+import React, { SetStateAction, useEffect } from 'react';
 import { BiSearch, BiChevronDown } from 'react-icons/bi';
 import '../tableHeader/dataTableHeader.css';
 import { getDataTableName } from '../../../redux/apiActions/dataTableAction';
@@ -19,6 +19,7 @@ interface TableProps {
   selectedTable: any;
   setSelectedTable: any;
   menuWidth?: string;
+  setCurrentPage: React.Dispatch<SetStateAction<number>>;
 }
 
 const DataTableHeaderr = (props: TableProps) => {
@@ -46,6 +47,7 @@ const DataTableHeaderr = (props: TableProps) => {
 
   const handleTableChange = (selectedOption: any | null) => {
     setSelectedTable(selectedOption);
+    props.setCurrentPage(1);
   };
 
   return (
