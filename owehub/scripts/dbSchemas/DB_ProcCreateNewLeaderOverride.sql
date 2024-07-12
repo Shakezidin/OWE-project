@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION create_new_leader_override (
-       p_unique_id character varying,
        p_team_name character varying,
        p_type character varying,
        p_leader_name character varying,
@@ -7,9 +6,9 @@ CREATE OR REPLACE FUNCTION create_new_leader_override (
        p_qual character varying,
        p_sales_q double precision,
        p_team_kw_q double precision,
-       p_pay_rate character varying,
-       p_start_date character varying,
-       p_end_date character varying,
+       p_pay_rate double precision,
+       p_start_date date,
+       p_end_date date,
        OUT v_leader_override_id INT
 )
        RETURNS INT
@@ -26,7 +25,6 @@ IF v_team_id IS NULL THEN
 END IF;
 
 INSERT INTO leader_override (
-    unique_id,
     team_id,
     leader_name,
     type,
@@ -39,7 +37,6 @@ INSERT INTO leader_override (
     end_date
 )
 VALUES (
-           p_unique_id,
            v_team_id,
            p_leader_name,
            p_type,

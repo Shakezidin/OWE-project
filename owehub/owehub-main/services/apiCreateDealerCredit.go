@@ -94,7 +94,7 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Failed to get Unique ID, does not exist", http.StatusBadRequest, nil)
 		return
 	}
 
