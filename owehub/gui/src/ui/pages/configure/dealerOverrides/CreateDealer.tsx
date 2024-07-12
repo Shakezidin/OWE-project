@@ -21,6 +21,7 @@ interface dealerProps {
   dealerData: DealerModel | null;
   page_number: number;
   page_size: number;
+  dealer: { [key: string]: any };
 }
 
 const CreateDealer: React.FC<dealerProps> = ({
@@ -29,6 +30,7 @@ const CreateDealer: React.FC<dealerProps> = ({
   page_number,
   page_size,
   dealerData,
+  dealer,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -37,16 +39,14 @@ const CreateDealer: React.FC<dealerProps> = ({
     sub_dealers: dealerData ? dealerData?.sub_dealer : '',
     pay_rate: dealerData ? dealerData?.pay_rate : '',
     start_date: dealerData ? dealerData?.start_date : '',
-    end_date: dealerData ? dealerData?.end_date: '',
+    end_date: dealerData ? dealerData?.end_date : '',
     state: dealerData ? dealerData?.state : '',
   });
   const [delaerVal, setDealerVal] = useState(dealerData?.dealer || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [newFormData, setNewFormData] = useState<any>([]);
-  const tableData = {
-    tableNames: ['sub_dealer', 'dealer', 'states'],
-  };
+
   const formatDate = (date: string) => {
     const isValid = new Date(date);
     if (!isNaN(isValid.getTime())) {
@@ -58,25 +58,22 @@ const CreateDealer: React.FC<dealerProps> = ({
   const userType = {
     role: 'sub_dealer',
   };
-  const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setNewFormData(res.data);
-  };
+
+  useEffect(() => {
+    if (dealer) {
+      console.log(dealer, 'dealer');
+
+      setNewFormData((prev: any) => ({ ...prev, ...dealer }));
+    }
+  }, [dealer]);
+  console.log(newFormData, 'formDataaaaaa');
+
   const getUser = async () => {
     const res = await postCaller(EndPoints.get_user_by_role, userType);
-    setNewFormData(res.data);
+    setNewFormData((prev: any) => ({ ...prev, ...res.data }));
   };
   useEffect(() => {
     getUser();
-    getNewFormData();
-  }, []);
-
-  const getnewformData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setCreateDealer((prev) => ({ ...prev, ...res.data }));
-  };
-  useEffect(() => {
-    getnewformData();
   }, []);
 
   const handleDealerInputChange = (e: FormInput) => {
@@ -184,6 +181,8 @@ const CreateDealer: React.FC<dealerProps> = ({
     }
   };
 
+  console.log(dealerOption(createDealer), 'check dealer');
+
   /**render UI */
   return (
     <div className="transparent-model">
@@ -227,12 +226,12 @@ const CreateDealer: React.FC<dealerProps> = ({
                     options={dealerOption(newFormData)}
                     onChange={(newValue) => setDealerVal(newValue?.value!)}
                     value={
-                      !delaerVal ? undefined:
-                      dealerOption(newFormData)?.find(
-                        (option) => option.value === delaerVal
-                      )
+                      !delaerVal
+                        ? undefined
+                        : dealerOption(newFormData)?.find(
+                            (option) => option.value === delaerVal
+                          )
                     }
-                    
                   />
                   {errors.delaerVal && (
                     <span className="error">{errors.delaerVal}</span>
@@ -259,24 +258,20 @@ const CreateDealer: React.FC<dealerProps> = ({
                   </label>
                   <SelectOption
                     menuListStyles={{ height: '230px' }}
-                    options={stateOption(createDealer)}
+                    options={stateOption(newFormData)}
                     onChange={(newValue) => {
                       setCreateDealer((prev) => ({
                         ...prev,
                         state: newValue?.value!,
                       }));
                     }}
-                    value={stateOption(createDealer)?.find(
+                    value={stateOption(newFormData)?.find(
                       (option) => option.value === createDealer.state
                     )}
                   />
 
                   {errors?.state && (
-                    <span
-                    className="error"
-                    >
-                      {errors.state}
-                    </span>
+                    <span className="error">{errors.state}</span>
                   )}
                 </div>
                 <div className="create-input-field">

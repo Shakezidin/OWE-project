@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -226,80 +227,73 @@ LEFT JOIN
 		}
 
 		// r1_pay_scale
-		R1_pay_scale, ok := item["r1_pay_scale"].(float64)
+		R1_pay_scale, ok := item["r1_pay_scale"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_pay_scale = 0.0
+			R1_pay_scale = ""
 		}
 
 		// rep_1_def_resp
-		Rep_1_def_resp, ok := item["rep_1_def_resp"].(string)
-		if !ok || Rep_1_def_resp == "" {
+		Rep_1_def_resp, ok := item["rep_1_def_resp"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get rep_1_def_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep_1_def_resp = ""
+			Rep_1_def_resp = 0.0
 		}
 
 		// r1_addr_resp
-		R1_addr_resp, ok := item["r1_addr_resp"].(string)
-		if !ok || R1_addr_resp == "" {
+		R1_addr_resp, ok := item["r1_addr_resp"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_addr_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_addr_resp = ""
+			R1_addr_resp = 0.0
 		}
 
 		// r2_pay_scale
-		R2_pay_scale, ok := item["r2_pay_scale"].(float64)
+		R2_pay_scale, ok := item["r2_pay_scale"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r2_pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_pay_scale = 0.0
+			R2_pay_scale = ""
 		}
 
 		// per_rep_def_ovrd
-		Per_rep_def_ovrd, ok := item["per_rep_def_ovrd"].(string)
-		if !ok || Per_rep_def_ovrd == "" {
+		Per_rep_def_ovrd, ok := item["per_rep_def_ovrd"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get per_rep_def_ovrd for Record ID %v. Item: %+v\n", RecordId, item)
-			Per_rep_def_ovrd = ""
+			Per_rep_def_ovrd = 00.0
 		}
 
 		// r1_rebate_credit_$
-		R1_rebate_credit, ok := item["r1_rebate_credit_$"].(string)
-		if !ok || R1_rebate_credit == "" {
+		R1_rebate_credit, ok := item["r1_rebate_credit_$"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_$ for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_rebate_credit = ""
+			R1_rebate_credit = 0.0
 		}
 
 		// r1_rebate_credit_perc
-		R1_rebate_credit_perc, ok := item["r1_rebate_credit_perc"].(string)
-		if !ok || R1_rebate_credit_perc == "" {
+		R1_rebate_credit_perc, ok := item["r1_rebate_credit_perc"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_rebate_credit_perc = ""
+			R1_rebate_credit_perc = 0.0
 		}
 
 		// project_base_cost
-		R2_rebate_credit, ok := item["r2_rebate_credit_$"].(string)
-		if !ok || R2_rebate_credit == "" {
+		R2_rebate_credit, ok := item["r2_rebate_credit_$"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_rebate_credit = ""
+			R2_rebate_credit = 0.0
 		}
 
 		// crt_addr
-		R2_rebate_credit_perc, ok := item["r2_rebate_credit_perc"].(string)
-		if !ok || R2_rebate_credit_perc == "" {
+		R2_rebate_credit_perc, ok := item["r2_rebate_credit_perc"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_rebate_credit_perc = ""
+			R2_rebate_credit_perc = 0.0
 		}
 
 		// start_date
-		Start_date, ok := item["start_date"].(string)
-		if !ok || Start_date == "" {
+		Date, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			Start_date = ""
-		}
-
-		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			Date = time.Time{}
 		}
 
 		RebateData := models.GetRebateData{
@@ -328,8 +322,7 @@ LEFT JOIN
 			R1RebateCreditPerc: R1_rebate_credit_perc,
 			R2RebateCredit:     R2_rebate_credit,
 			R2RebateCreditPerc: R2_rebate_credit_perc,
-			StartDate:          Start_date,
-			EndDate:            EndDate,
+			Date:               Date,
 		}
 
 		RebateDataList.RebateDataList = append(RebateDataList.RebateDataList, RebateData)

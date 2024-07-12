@@ -50,9 +50,9 @@ const Createdba: React.FC<payScheduleProps> = ({
     const validationRules:{[key:string]:any} = {
       
       preferred_name: [
-        { condition: (value: any) => !!value, message: 'Name is required' },
+        { condition: (value: any) => !!value, message: 'Preferred Name is required' },
       ],
-      DBA: [{ condition: (value: any) => !!value, message: 'DBA is required' }],
+      dba: [{ condition: (value: any) => !!value, message: 'DBA is required' }],
     }
     if (editMode) {
       
@@ -140,7 +140,7 @@ const Createdba: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.Dba && <span className="error">{errors.Dba}</span>}
+                  {errors.dba && <span className="error">{errors.dba}</span>}
                 </div>
 
               </div>

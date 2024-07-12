@@ -15,8 +15,6 @@ interface IPopPupProps {
     primaryText: string;
     secondaryText: string;
   };
-  AddrequiredBattery: () => void;
-  setCaluclatedBackup: React.Dispatch<SetStateAction<number>>;
 }
 const WarningPopup = ({
   isOpen,
@@ -28,8 +26,6 @@ const WarningPopup = ({
   setBatteryPower,
   popUpMsg,
   btnText,
-  AddrequiredBattery,
-  setCaluclatedBackup,
 }: IPopPupProps) => {
   const handleClose = () => {
     setIsOpen?.((prev) => !prev);
@@ -67,12 +63,9 @@ const WarningPopup = ({
             onClick={() => {
               setMainOn(false);
               setMainDisabled(false);
-              if (
-                btnText.secondaryText ===
-                'I would like to switch to a partial home back-up.'
-              ) {
-                setRequiredBattery((prev) => (prev ? prev - 1 : prev));
-              }
+
+              setRequiredBattery((prev) => (prev ? prev - 1 : prev));
+
               handleClose();
               setBatteryPower((prev) =>
                 prev.map((battery) => ({ ...battery, isOn: false }))
@@ -90,11 +83,7 @@ const WarningPopup = ({
               setBatteryPower((prev) =>
                 prev.map((battery) => ({ ...battery, isOn: true }))
               );
-              if (btnText.primaryText === 'Proceed with Full Home Back-up') {
-                AddrequiredBattery();
-              } else {
-                setRequiredBattery(required);
-              }
+              setRequiredBattery(required);
             }}
             className="calc-green-btn pointer warning-popup-btn"
           >

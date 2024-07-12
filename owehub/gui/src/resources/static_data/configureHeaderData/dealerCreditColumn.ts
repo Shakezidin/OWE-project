@@ -15,15 +15,15 @@ export const DealerCreditColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'exact_amt',
+    name: 'exact_amount',
     displayName: 'Exact Amt',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
-    name: 'per_kw_amt',
+    name: 'per_kw_amount',
     displayName: 'Per KW Amt',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 
@@ -35,15 +35,15 @@ export const DealerCreditColumn: Column[] = [
   },
   { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
   {
-    name: 'total_amt',
+    name: 'total_amount',
     displayName: 'Total Amt.',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'sys_size',
     displayName: 'Sys Size',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 ];

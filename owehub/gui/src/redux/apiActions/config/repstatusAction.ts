@@ -13,7 +13,7 @@ interface ICreateRepStatus {
 }
 
 interface IUpdateRepStatus extends ICreateRepStatus {
-  // record_id: string;
+  record_id: string;
 }
 
 export const fetchRepStatusList = createAsyncThunk(
@@ -56,9 +56,9 @@ export const updateRepStatus = createAsyncThunk(
 
 export const archiveRepStatus = createAsyncThunk(
   '/archive_rep_status',
-  async (recordId: string, { rejectWithValue }) => {
+  async (param: number[], { rejectWithValue }) => {
     try {
-      const data = await postCaller('archive_rep_status', { record_id: recordId });
+      const data = await postCaller('update_rep_status_archive', { record_id: param , is_archived: true});
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

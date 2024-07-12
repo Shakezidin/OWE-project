@@ -142,6 +142,7 @@ const ApAdv = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
+        // @ts-ignore
         (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
@@ -213,7 +214,7 @@ const ApAdv = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="ap-adv"
+        linkparaSecond="Ap Adv"
       />
       <div className="commissionContainer">
         <TableHeader
@@ -311,14 +312,13 @@ const ApAdv = () => {
                       </div>
                     </td>
                     
-                    <td>{el.payee}</td>
-                    <td>{el.amount_ovrd}</td>
-                    <td>{el.approved_by}</td>
-                    <td>{dateFormat(el.date)}</td>
-                    <td>{el.customer}</td>
-                    <td>{el.dealer}</td>
-                    <td>{el.notes}</td>
-                    <td>{el.description}</td>
+                    <td>{el.payee ||"N/A"}</td>
+                    <td>{el.amount_ovrd ||"N/A"}</td>
+                    <td>{el.approved_by  ||"N/A"}</td>
+                    <td>{dateFormat(el.date) ||"N/A"}</td>
+                    <td>{el.customer  ||"N/A"}</td>
+                    <td>{el.dealer  ||"N/A"}</td>
+                    <td>{el.notes  ||"N/A"}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

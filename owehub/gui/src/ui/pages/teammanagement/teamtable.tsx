@@ -166,14 +166,13 @@ const TeamTable: React.FC = () => {
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>Offboard</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
+                  <div className="action-header" style={{ paddingRight: '94px' }}>
+                    <p>Move</p>{' '}
                   </div>
                 </th>
                 <th>
-                  <div className="action-header">
-                    <p>Move</p>
+                  <div className="table-header" style={{ paddingRight: '34px' }}>
+                    <p>Offboard</p>{' '}
                   </div>
                 </th>
               </tr>
@@ -194,8 +193,7 @@ const TeamTable: React.FC = () => {
                     </td>
                     <td style={{ color: '#101828' }}>{el.phoneNumber}</td>
                     <td style={{ color: '#101828' }}>{el.emailId}</td>
-                    <td style={{ color: '#101828' }}>Remove</td>
-                    <td className="zoom-out-help">
+                    <td className="zoom-out-help" style={{paddingLeft:'18px'}}>
                       <img src={ICONS.TeamEdit} style={{
                         height: '18px',
                         width: '18px',
@@ -203,6 +201,16 @@ const TeamTable: React.FC = () => {
                       }}
                         alt=""
                         onClick={() => handleOpen1()}
+                      />
+                    </td>
+                    <td className="zoom-out-help" style={{paddingLeft:'30px'}}>
+                      <img src={ICONS.deleteIcon} style={{
+                        height: '18px',
+                        width: '18px',
+                        stroke: '0.2',
+                        
+                      }}
+                        alt=""
                       />
 
                     </td>

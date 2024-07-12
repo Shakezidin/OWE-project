@@ -73,6 +73,7 @@ const dealerCredit = createSlice({
       .addCase(updateDealerCredit.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

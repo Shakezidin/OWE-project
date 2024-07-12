@@ -42,7 +42,7 @@ const CreateRepIncent: React.FC<payScheduleProps> = ({
   );
   const [createAppSettersData, setAppSettersData] = useState({
     name: editData?.name || '',
-    doll_div_kw: editData?.doll_div_kw || '',
+    Kw_Deduction: editData?.doll_div_kw || '',
     month: editData?.month || '',
     comment: editData?.comment || '',
   });
@@ -97,14 +97,14 @@ const CreateRepIncent: React.FC<payScheduleProps> = ({
             dispatch(
                 updateRepIncent({
                   ...createAppSettersData,
-                  doll_div_kw: parseInt(createAppSettersData.doll_div_kw),
+                  doll_div_kw: parseInt(createAppSettersData.Kw_Deduction),
                   record_id: editData?.record_id!,
                 })
               );
         } else {
         const data = {
             ...createAppSettersData,
-            doll_div_kw: parseInt(createAppSettersData.doll_div_kw), // Convert to number
+            doll_div_kw: parseInt(createAppSettersData.Kw_Deduction), // Convert to number
           };
           dispatch(createRepIncent(data));
         }
@@ -160,19 +160,26 @@ const CreateRepIncent: React.FC<payScheduleProps> = ({
                   <Input
                     type={'text'}
                     label="Kw Deduction"
-                    value={createAppSettersData.doll_div_kw}
-                    name="doll_div_kw"
+                    value={createAppSettersData.Kw_Deduction}
+                    name="Kw_Deduction"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
-                  {errors?.doll_div_kw && (
+                  {errors?.Kw_Deduction && (
                     <span
                       style={{
                         display: 'block',
                       }}
                       className="error"
                     >
-                      {errors.doll_div_kw}
+                      {errors.Kw_Deduction}
                     </span>
                   )}
                 </div>

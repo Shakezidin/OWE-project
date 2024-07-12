@@ -348,7 +348,7 @@ export const DashboardPage: React.FC = () => {
           isOpen={filterModal}
           handleClose={filterClose}
           resetOnChange={false}
-          columns={dealerPayColumn}
+          columns={dealerPayColumn.filter((col)=>col.name!=="help")}
           page_number={currentPage}
           page_size={10}
           fetchFunction={fetchFunction}

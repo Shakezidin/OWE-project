@@ -49,9 +49,7 @@ const DataTablle: React.FC = () => {
     return str.trim().split(/\s+/).length;
   };
 
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage,setCurrentPage] = useState(1)
   const itemsPerPage = 30;
   const start = (currentPage - 1) * itemsPerPage + 1;
   const end = currentPage * itemsPerPage;
@@ -83,15 +81,15 @@ const DataTablle: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
 
   const filter = () => { };
@@ -126,7 +124,7 @@ const DataTablle: React.FC = () => {
 
   console.log(data, "show data")
   return (
-    <div className="commissionContainer">
+    <div className="commissionContainer" style={{overflow:"visible"}}>
       <DataTableHeaderr
         title={selectedTable.value?.replaceAll('_', ' ')}
         onPressFilter={() => { }}
@@ -134,6 +132,7 @@ const DataTablle: React.FC = () => {
         showImportIcon={false}
         showSelectIcon={true}
         showFilterIcon={false}
+        setCurrentPage={setCurrentPage}
         selectMarginLeft="-10px"
         selectMarginLeft1="-20px"
         selectedTable={selectedTable}

@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,10 +56,9 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	if (len(createLeaderOverrideReq.UniqueID) <= 0) || (len(createLeaderOverrideReq.TeamName) <= 0) ||
+	if (len(createLeaderOverrideReq.TeamName) <= 0) ||
 		(len(createLeaderOverrideReq.LeaderName) <= 0) || (len(createLeaderOverrideReq.Type) <= 0) ||
-		(len(createLeaderOverrideReq.Term) <= 0) || (len(createLeaderOverrideReq.Qual) <= 0) ||
-		(len(createLeaderOverrideReq.PayRate) <= 0) {
+		(len(createLeaderOverrideReq.Term) <= 0) || (len(createLeaderOverrideReq.Qual) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -71,6 +71,12 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 		FormAndSendHttpResp(resp, "Invalid Sales Q Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
+	if createLeaderOverrideReq.PayRate <= float64(0) {
+		err = fmt.Errorf("Invalid PayRate Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid PayRate Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
 	if createLeaderOverrideReq.TeamKwQ <= float64(0) {
 		err = fmt.Errorf("Invalid team Kw Q  Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -78,8 +84,18 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createLeaderOverrideReq.UniqueID)
+	StartDate, err := time.Parse("2006-01-02", createLeaderOverrideReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	EndDate, err := time.Parse("2006-01-02", createLeaderOverrideReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	queryParameters = append(queryParameters, createLeaderOverrideReq.TeamName)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.Type)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.LeaderName)
@@ -88,8 +104,8 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	queryParameters = append(queryParameters, createLeaderOverrideReq.SalesQ)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.TeamKwQ)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.PayRate)
-	queryParameters = append(queryParameters, createLeaderOverrideReq.StartDate)
-	queryParameters = append(queryParameters, createLeaderOverrideReq.EndDate)
+	queryParameters = append(queryParameters, StartDate)
+	queryParameters = append(queryParameters, EndDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateLeaderOverrideFunction, queryParameters)

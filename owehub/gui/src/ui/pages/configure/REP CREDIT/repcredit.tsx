@@ -165,7 +165,7 @@ const RepCredit = () => {
           filters,
         };
 
-        const res = await postCaller('archive_dba', newValue);
+        const res = await postCaller('update_rep_credit_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
@@ -199,7 +199,7 @@ const RepCredit = () => {
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller('archive_dba', newValue);
+      const res = await postCaller('update_rep_credit_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
@@ -312,10 +312,10 @@ const RepCredit = () => {
                             )
                           }
                         />
-                        {el.record_id}
+                       <span>{el.unique_id || 'N/A'}</span>
                       </div>
                     </td>
-                    <td>{el.unique_id || 'N/A'}</td>
+                    
                     <td>{el.approved_by || 'N/A'}</td>
                     <td>{el.per_kw_amt || 'N/A'}</td>
                     <td>{el.exact_amt || 'N/A'}</td>

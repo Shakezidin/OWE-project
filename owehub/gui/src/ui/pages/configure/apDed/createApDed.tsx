@@ -18,7 +18,7 @@ import {
   fetchApDed,
   updateApDed,
 } from '../../../../redux/apiActions/config/apDedAction';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apDedSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
 import { firstCapitalize } from '../../../../utiles';
@@ -38,7 +38,7 @@ const CreateApDed: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess, isFormSubmitting } = useAppSelector(
-    (state) => state.apptsetters
+    (state) => state.apDedSlice
   );
   const [createAppSettersData, setAppSettersData] = useState({
     unique_id: editData?.unique_id || '',
@@ -99,6 +99,7 @@ const CreateApDed: React.FC<payScheduleProps> = ({
           updateApDed({
             ...createAppSettersData,
             record_id: editData?.record_id!,
+            amount: parseInt(createAppSettersData.amount), // Convert to number
           })
         );
       } else {
@@ -128,7 +129,7 @@ const CreateApDed: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? 'Create Appt Setters' : 'Update Appt Setters'}
+          {editMode === false ? 'Create Ap Ded' : 'Update Ap Ded'}
         </h3>
 
         <div className="modal-body">
