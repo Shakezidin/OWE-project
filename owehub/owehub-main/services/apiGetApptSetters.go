@@ -65,7 +65,7 @@ func HandleGetApptSettersDataRequest(resp http.ResponseWriter, req *http.Request
 	query = `
 	 SELECT ap.id as record_id, ap.unique_id, ap.name, tm.team_name, ap.pay_rate, ap.start_date, ap.end_date, ap.is_archived
 	 FROM appt_setters ap
-	 JOIN teams tm ON tm.team_id = ap.team_id`
+	 LEFT JOIN teams tm ON tm.team_id = ap.team_id`
 
 	filter, whereEleList = PrepareApptSettersFilters(tableName, dataReq, false)
 	if filter != "" {
