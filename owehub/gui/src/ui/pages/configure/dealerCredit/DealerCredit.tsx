@@ -349,13 +349,13 @@ const DealerCredit: React.FC = () => {
                       </div>
                     </td>
 
-                    <td>{dateFormat(el.date)}</td>
-                    <td>{el.exact_amount}</td>
-                    <td>{el.per_kw_amount}</td>
-                    <td>{el.approved_by}</td>
-                    <td>{el.notes}</td>
-                    <td>{el.total_amount}</td>
-                    <td>{el.sys_size}</td>
+                    <td>{dateFormat(el.date)||"N/A"}</td>
+                    <td>{el.exact_amount ||"N/A"}</td>
+                    <td>{el.per_kw_amount||"N/A"}</td>
+                    <td>{el.approved_by||"N/A"}</td>
+                    <td>{el.notes||"N/A"}</td>
+                    <td>{el.total_amount||"N/A"}</td>
+                    <td>{el.sys_size||"N/A"}</td>
 
 
                     {viewArchived === true ? null : (

@@ -122,10 +122,10 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// amount
-		Amount, ok := item["amount"].(string)
-		if !ok || Amount == "" {
+		Amount, ok := item["amount"].(float64)
+		if !ok || Amount == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Amount = ""
+			Amount = 0.0
 		}
 
 		// rep_doll_divby_per
