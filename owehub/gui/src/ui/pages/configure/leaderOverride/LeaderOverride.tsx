@@ -48,7 +48,7 @@ const LeaderOverride = () => {
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<ILeaderRow | null>(
     null
   );
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -295,19 +295,19 @@ const LeaderOverride = () => {
                             )
                           }
                         />
-                        {el.team_name}
+                        {el.team_name  || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.unique_id}</td>
-                    <td>{el.leader_name}</td>
-                    <td>{el.type}</td>
-                    <td>{el.term}</td>
-                    <td>{el.qual}</td>
-                    <td>{el.sales_q}</td>
-                    <td>{el.team_kw_q}</td>
-                    <td>{el.pay_rate}</td>
-                    <td>{dateFormat(el.start_date)}</td>
-                    <td>{dateFormat(el.end_date)}</td>
+                    <td>{el.unique_id  || 'N/A'}</td>
+                    <td>{el.leader_name  || 'N/A'}</td>
+                    <td>{el.type  || 'N/A'}</td>
+                    <td>{el.term  || 'N/A'}</td>
+                    <td>{el.qual  || 'N/A'}</td>
+                    <td>{el.sales_q  || 'N/A'}</td>
+                    <td>{el.team_kw_q  || 'N/A'}</td>
+                    <td>{el.pay_rate  || 'N/A'}</td>
+                    <td>{dateFormat(el.start_date)  || 'N/A'}</td>
+                    <td>{dateFormat(el.end_date)  || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
