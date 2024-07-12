@@ -16,7 +16,7 @@ BEGIN
     SET 
         name = p_name,
         state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state_name) LIMIT 1),
-        pay_scale = (SELECT if FROM rep_type WHERE LOWER(rep_type) = LOWER(p_pay_scale) LIMIT 1),
+        pay_scale = (SELECT id FROM rep_type WHERE LOWER(rep_type) = LOWER(p_pay_scale) LIMIT 1),
         position = p_position,
         b_e = p_b_e,
         start_date = p_start_date,
