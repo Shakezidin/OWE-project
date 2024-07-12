@@ -30,5 +30,6 @@ type CreateUserReq struct {
 	City              string            `json:"city"`
 	Zipcode           string            `json:"zipcode"`
 	Country           string            `json:"country"`
+	TeamName          string            `json:"team_name"`
 	TablesPermissions []TablePermission `json:"tables_permissions"`
 }

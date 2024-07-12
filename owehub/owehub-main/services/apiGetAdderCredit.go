@@ -63,7 +63,7 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_AdderCredit
 	query = `
-	  SELECT ac.id as record_id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate
+	  SELECT ac.id as record_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate
 	  FROM adder_credit ac`
 
 	filter, whereEleList = PrepareAdderCreditFilters(tableName, dataReq, false)
@@ -90,11 +90,6 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// Unique_id
-		Unique_id, ok := item["unique_id"].(string)
-		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
-			Unique_id = ""
-		}
 
 		// Pay_scale
 		Pay_scale, ok := item["pay_scale"].(string)
@@ -126,7 +121,6 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 
 		AdderCreditData := models.GetAdderCreditReq{
 			RecordId:  RecordId,
-			UniqueId:  Unique_id,
 			Pay_Scale: Pay_scale,
 			Type:      Type,
 			Min_Rate:  Min_Rate,
@@ -190,9 +184,6 @@ func PrepareAdderCreditFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(" AND ")
 			}
 			switch column {
-			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ac.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "pay_scale":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ac.pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -230,7 +221,7 @@ func PrepareAdderCreditFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ac.id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate")
+		filtersBuilder.WriteString(" GROUP BY ac.id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
