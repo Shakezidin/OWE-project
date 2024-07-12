@@ -1,13 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 
-export interface ReconcileEditParams {
+interface ReconcileEditParams {
   unique_id: string;
-  name: string;
-  team_name: string;
-  pay_rate: number;
-  start_date: string;
-  end_date: string;
+  customer_verf: string;
+  type: string;
+  item: string;
+  amount: number;
+  rep_doll_divby_per: number;
+  notes: string;
+  date: string
+}
+interface IUpdateREBATE extends ReconcileEditParams {
   record_id: string;
 }
 
@@ -25,13 +30,10 @@ export const fetchRebateData = createAsyncThunk(
 
 export const createRebateData = createAsyncThunk(
   'create/rebatedata',
-  async (params: any, { rejectWithValue, dispatch }) => {
+  async (params: ReconcileEditParams, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_rebate_data', params);
-      if (data instanceof Error) {
-        return rejectWithValue((data as Error).message);
-      }
-      await dispatch(fetchRebateData({ page_number: 1, page_size: 10 }));
+      toast.success(data?.message);
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -41,13 +43,14 @@ export const createRebateData = createAsyncThunk(
 
 export const updateRebateData = createAsyncThunk(
   'update/rebatedata',
-  async (params: any, { rejectWithValue, dispatch }) => {
+  async (params: IUpdateREBATE, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_rebate_data', params);
       await dispatch(fetchRebateData({ page_number: 1, page_size: 10 }));
-      return data.data;
+      return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
   }
 );
+

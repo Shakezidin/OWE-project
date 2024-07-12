@@ -28,6 +28,8 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { fetchRebateData } from '../../../../redux/apiActions/config/rebateDataAction';
+import CreateRebate from './CreateRebateData';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface Column {
   name: string;
   displayName: string;
@@ -36,6 +38,7 @@ interface Column {
 
 
 const RebeteData: React.FC = () => {
+  const [editedAr, setEditedAr] = useState(null);
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
@@ -53,9 +56,7 @@ const RebeteData: React.FC = () => {
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -63,7 +64,8 @@ const RebeteData: React.FC = () => {
   const { data, count, isLoading, isSuccess } = useAppSelector(
     (state) => state.rebate
   );
-  console.log(count, "yftfrtyretyrrytre")
+  
+ 
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -85,7 +87,7 @@ const RebeteData: React.FC = () => {
       dispatch(fetchRebateData({ ...pageNumber }));
     }
   }, [isSuccess, currentPage, viewArchived, filters]);
-
+  
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -107,17 +109,9 @@ const RebeteData: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
 
-  const handleAddCommission = () => {
-    setEditMode(false);
-    setEditedCommission(null);
-    handleOpen();
-  };
+ 
 
-  const handleEditCommission = (commission: CommissionModel) => {
-    setEditMode(true);
-    setEditedCommission(commission);
-    handleOpen();
-  };
+  
 
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -158,7 +152,12 @@ const RebeteData: React.FC = () => {
 
   const handleTimeLineSla = () => {
     setEditMode(false);
-    setEditedCommission(null);
+    setEditedAr(null);
+    handleOpen();
+  };
+  const handleEdit = (data: any) => {
+    setEditMode(true);
+    setEditedAr(data);
     handleOpen();
   };
 
@@ -191,7 +190,7 @@ const RebeteData: React.FC = () => {
           filters,
         };
 
-        const res = await postCaller('update_rep_credit_archive', newValue);
+        const res = await postCaller('update_rebate_data_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
@@ -289,10 +288,10 @@ const RebeteData: React.FC = () => {
           page_size={itemsPerPage}
         />
         {open && (
-          <CreateRebateData
-            commission={editedCommission}
+          <CreateRebate
             editMode={editMode}
             handleClose={handleClose}
+            editData={editedAr}
           />
         )}
         <div
@@ -307,7 +306,7 @@ const RebeteData: React.FC = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={commissionList}
+                    data={data}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -332,15 +331,15 @@ const RebeteData: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
+            {isLoading ? (
                 <tr>
-                  <td colSpan={currentPageData.length}>
+                  <td colSpan={10}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
                 </tr>
-              ) : currentPageData?.length > 0 ? (
+              )  : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -361,6 +360,7 @@ const RebeteData: React.FC = () => {
                     </td>
                     <td>{el.customer_verf || 'N/A'}</td>
                     <td>{el.type || 'N/A'}</td>
+                    <td>{el.type_rd_mktg || 'N/A'}</td>
                     <td>{el.item || 'N/A'}</td>
                     <td>{el.amount || 'N/A'}</td>
                     <td>{el.rep_doll_divby_per || 'N/A'}</td>
@@ -383,44 +383,28 @@ const RebeteData: React.FC = () => {
                     <td>{el.r2_rebate_credit_perc || 'N/A'}</td>
                     <td>{el.rep2_def_resp || 'N/A'}</td>
                     <td>{el.r2_addr_resp || 'N/A'}</td>
-                    <td>{el.start_date || 'N/A'}</td>
-                    <td>{el.end_date || 'N/A'}</td>
-                    {/* <td>{el.type_rd_mktg || 'N/A'}</td> */}
-                    <td>
-                      {selectedRows.size > 0 ? (
+                    <td>{dateFormat(el.start_date)  || 'N/A'}</td>
+                    {/* <td>{el.end_date || 'N/A'}</td> */}
+                    {!viewArchived && selectedRows.size < 2 && (
+                      <td>
                         <div className="action-icon">
                           <div
-                            className="action-archive"
-                            style={{ cursor: 'not-allowed' }}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'not-allowed' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
+                            className=""
                             style={{ cursor: 'pointer' }}
                             onClick={() => handleArchiveClick(el.record_id)}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div
-                            className="action-archive"
+                            className=""
+                            onClick={() => handleEdit(el)}
                             style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditCommission(el)}
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      )}
-                    </td>
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (
