@@ -298,7 +298,7 @@ const LeaderOverride = () => {
                         {el.team_name  || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.unique_id  || 'N/A'}</td>
+                    
                     <td>{el.leader_name  || 'N/A'}</td>
                     <td>{el.type  || 'N/A'}</td>
                     <td>{el.term  || 'N/A'}</td>
