@@ -18,7 +18,6 @@ interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: {
-    unique_id: string;
     pay_scale: string;
     percentage: string;
     record_id: number;
@@ -38,7 +37,6 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
   );
 
   const [createAdderResponsbilityData, setAdderResponsbilityData] = useState({
-    unique_id: editData ? editData?.unique_id : '',
     pay_scale: editData ? editData?.pay_scale : '',
     percentage: editData ? editData?.percentage : '',
     record_id: editData ? editData?.record_id : 0,
@@ -74,7 +72,6 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
       if (editMode) {
         dispatch(
           updateAdderResponsibility({
-            unique_id: createAdderResponsbilityData.unique_id,
             pay_scale: createAdderResponsbilityData.pay_scale,
             percentage: parseInt(createAdderResponsbilityData.percentage, 10),
             record_id: editData?.record_id!,
@@ -83,7 +80,6 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
       } else {
         dispatch(
           createAdderResponsibility({
-            unique_id: createAdderResponsbilityData.unique_id,
             pay_scale: createAdderResponsbilityData.pay_scale,
             percentage: parseInt(createAdderResponsbilityData.percentage, 10),
           })
@@ -119,28 +115,6 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Unique Id"
-                    value={createAdderResponsbilityData.unique_id}
-                    name="unique_id"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.unique_id && (
-                    <span
-                      style={{
-                        display: 'block',
-                  
-                       
-                      }}
-className="error"
-                    >
-                      {errors.unique_id}
-                    </span>
-                  )}
-                </div>
                 <div className="create-input-field">
                   <Input
                     type={'text'}

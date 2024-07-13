@@ -192,7 +192,7 @@ const LeaderOverride = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Learder Override"
+        linkparaSecond="Leader Override"
       />
       <div className="commissionContainer">
         <TableHeader

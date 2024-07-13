@@ -352,7 +352,7 @@ className="error"
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start"
+                    label="Start Date"
                     value={formData.start}
                     name="start"
                     placeholder={'Enter'}
@@ -380,7 +380,7 @@ className="error"
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
+                    label="End Date"
                     value={formData.end}
                     name="end"
                     min={
