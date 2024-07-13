@@ -311,7 +311,7 @@ const DealerOverRides: React.FC = () => {
                 </tr>
               ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
-                  <tr key={i}>
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox

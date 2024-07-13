@@ -38,6 +38,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   setRefetch,
 }) => {
   const dispatch = useDispatch();
+  console.log(timeLineSlaData, "f g data")
   const [createTimeLine, setCreateTimeLine] = useState<TimeLineSlaModel>({
     record_id: timeLineSlaData ? timeLineSlaData?.record_id : 0,
     type_m2m: timeLineSlaData ? timeLineSlaData?.type_m2m : '',

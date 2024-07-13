@@ -9,6 +9,7 @@ import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { createRebateData, updateRebateData } from '../../../../redux/apiActions/config/rebateDataAction';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -22,7 +23,7 @@ const CreateRebate: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.rebate);
-
+console.log("revabte update", editData);
 const [createArData, setCreateArData] = useState({
   unique_id: editData?.unique_id || '',
   customer_verf: editData?.customer_verf || '',
@@ -31,7 +32,7 @@ const [createArData, setCreateArData] = useState({
   amount: editData?.amount || '',
   rep_doll_divby_per: editData?.rep_doll_divby_per || '',
   notes: editData?.notes || '',
-  date: editData?.date || '',
+  date: editData?.start_date || '',
 });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -52,7 +53,7 @@ const [createArData, setCreateArData] = useState({
       unique_id: [
         { condition: (value: any) => !!value, message: 'Unique Id is required' },
       ],
-      customer_verf: [{ condition: (value: any) => !!value, message: 'Customer Verf is required' }],
+      customer_verf: [{ condition: (value: any) => !!value, message: 'Customer Ver is required' }],
       type: [
         { condition: (value: any) => !!value, message: 'Type is required' },
       ],
@@ -61,7 +62,7 @@ const [createArData, setCreateArData] = useState({
       amount: [
         { condition: (value: any) => !!value, message: 'Amount is required' },
       ],
-      rep_doll_divby_per: [{ condition: (value: any) => !!value, message: 'Rep Doll Divby per is required' }],
+      rep_doll_divby_per: [{ condition: (value: any) => !!value, message: 'Rep$/% is required' }],
       
       notes: [
         { condition: (value: any) => !!value, message: 'Notes is required' },
@@ -112,7 +113,7 @@ const [createArData, setCreateArData] = useState({
           rep_doll_divby_per: parseInt(createArData.rep_doll_divby_per),
           notes: createArData.notes,
           type: createArData.type,
-          date: createArData.date,
+          date: (createArData.date),
         })
       );
     }
@@ -138,7 +139,7 @@ const [createArData, setCreateArData] = useState({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? 'Create DBA' : 'Update DBA'}
+          {editMode === false ? 'Create Rebate Data' : 'Update Rebate Data'}
         </h3>
 
         <div className="modal-body">
@@ -161,7 +162,7 @@ const [createArData, setCreateArData] = useState({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Customer Verf"
+                    label="Customer Ver"
                     value={createArData.customer_verf}
                     name="customer_verf"
                     placeholder={'Enter'}
@@ -202,7 +203,7 @@ const [createArData, setCreateArData] = useState({
                 <div className="create-input-field">
                   <Input
                     type={'number'}
-                    label="Rep Doll Divby Per"
+                    label="Rep$/%"
                     value={createArData.rep_doll_divby_per}
                     name="rep_doll_divby_per"
                     placeholder={'Enter'}
@@ -229,7 +230,7 @@ const [createArData, setCreateArData] = useState({
               <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Date"
+                    label="Start Date"
                     value={createArData.date}
                     name="date"
                     placeholder={'Enter'}

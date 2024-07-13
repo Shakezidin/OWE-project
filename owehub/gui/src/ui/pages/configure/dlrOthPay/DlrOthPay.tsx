@@ -299,15 +299,15 @@ const DlrOthPay: React.FC = () => {
                             )
                           }
                         />
-                        {el.unique_id}
+                        {el.unique_id || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.payee}</td>
-                    <td>{el.amount}</td>
-                    <td>{el.description}</td>
-                    <td>{el.balance}</td>
-                    <td>{el.paid_amount}</td>
-                    <td>{dateFormat(el.date)}</td>
+                    <td>{el.payee || 'N/A'}</td>
+                    <td>{el.amount || 'N/A'}</td>
+                    <td>{el.description || 'N/A'}</td>
+                    <td>{el.balance || 'N/A'}</td>
+                    <td>{el.paid_amount || 'N/A'}</td>
+                    <td>{dateFormat(el.date) || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

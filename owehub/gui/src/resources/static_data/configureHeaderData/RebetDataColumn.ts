@@ -144,6 +144,6 @@ export const RebeteDataColumn: Column[] = [
   { name: 'r2_rebate_credit_perc', displayName: 'R2 Rebate Credit %', type: 'string', isCheckbox: false },
   { name: 'rep2_def_resp', displayName: 'Rep2 Def Resp', type: 'string', isCheckbox: false },
   { name: 'r2_addr_resp', displayName: 'R2 Addr Resp', type: 'string', isCheckbox: false },
-  { name: 'start_date', displayName: 'Start date', type: 'string', isCheckbox: false },
+  { name: 'start_date', displayName: 'Date', type: 'date', isCheckbox: false },
  
 ];
