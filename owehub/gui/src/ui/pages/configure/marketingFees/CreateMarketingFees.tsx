@@ -124,7 +124,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
       description: [
         {
           condition: (value: any) => !!value,
-          message: 'Description is required',
+          message: 'Notes is required',
         },
       ],
       start_date: [
@@ -314,30 +314,33 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                     <span className="error">{errors.end_date}</span>
                   )}
                 </div>
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Notes"
+                    value={createMarketing.description}
+                    name="notes"
+                    placeholder={'Enter'}
+                    onChange={(e) =>
+                      setCreateMarketing((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                  />
+                  {errors?.description && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.description}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <div className="create-input-field-note">
-                <label htmlFor="" className="inputLabel">
-                  Note
-                </label>{' '}
-                <br />
-                <textarea
-                  name={createMarketing.description}
-                  id=""
-                  rows={4}
-                  onChange={(e) =>
-                    setCreateMarketing((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
-                  }
-                  value={createMarketing.description}
-                  placeholder="Type"
-                ></textarea>
-                {errors.description && (
-                  <span className="error">{errors.description}</span>
-                )}
-              </div>
             </div>
           </div>
         </div>
