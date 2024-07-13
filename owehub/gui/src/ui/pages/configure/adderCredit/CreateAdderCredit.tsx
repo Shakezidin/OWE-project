@@ -32,7 +32,7 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
     (state) => state.addercredit
   );
   const [createAdderCreditData, setAdderCreditData] = useState({
-    unique_id: editData?.unique_id || '',
+
     pay_scale: editData?.pay_scale || '',
     type: editData?.type || '',
     min_rate: editData?.min_rate || '',
@@ -59,7 +59,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
       if (editMode) {
         dispatch(
           updateAdderCredit({
-            unique_id: createAdderCreditData.unique_id,
             pay_scale: createAdderCreditData.pay_scale,
             type: createAdderCreditData.type,
             max_rate: parseFloat(createAdderCreditData.max_rate), // Parsing string to integer
@@ -70,7 +69,7 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
       } else {
         dispatch(
           createAdderCredit({
-            unique_id: createAdderCreditData.unique_id,
+            
             pay_scale: createAdderCreditData.pay_scale,
             type: createAdderCreditData.type,
             max_rate: parseFloat(createAdderCreditData.max_rate), // Parsing string to integer
@@ -124,29 +123,7 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Unique Id"
-                    value={createAdderCreditData.unique_id}
-                    name="unique_id"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-
-                  {errors?.unique_id && (
-                    <span
-                      style={{
-                        display: 'block',
-                  
-                       
-                      }}
-className="error"
-                    >
-                      {errors.unique_id}
-                    </span>
-                  )}
-                </div>
+              
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -239,6 +216,7 @@ className="error"
                     </span>
                   )}
                 </div>
+                
               </div>
             </div>
           </div>
