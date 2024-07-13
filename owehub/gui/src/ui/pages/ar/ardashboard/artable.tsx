@@ -15,8 +15,6 @@ import ArHelp from './ArHelp';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
-
-
 export const Commissioncolumns = [
   {
     name: 'unique_id',
@@ -46,7 +44,7 @@ export const Commissioncolumns = [
   {
     name: 'home_owner',
     displayName: 'Home Owner',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
   },
   {
@@ -57,18 +55,18 @@ export const Commissioncolumns = [
   },
   { name: 'city', displayName: 'City', type: 'string', isCheckbox: false },
   { name: 'st', displayName: 'State', type: 'string', isCheckbox: false },
-  { name: 'zip', displayName: 'Zip', type: 'string', isCheckbox: false },
+  { name: 'zip', displayName: 'Zip', type: 'number', isCheckbox: false },
   {
     name: 'sys_size',
     displayName: 'Sys Size',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
-  { name: 'wc', displayName: 'WC', type: 'string', isCheckbox: false },
+  { name: 'wc', displayName: 'WC', type: 'date', isCheckbox: false },
   {
     name: 'inst_sys',
     displayName: 'Inst Sys',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
@@ -80,37 +78,37 @@ export const Commissioncolumns = [
   {
     name: 'status_date',
     displayName: 'Status Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'contract_calc',
     displayName: 'Contract Calc',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'owe_ar',
     displayName: 'Owe Ar',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'total_paid',
     displayName: 'Total Paid',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'current_due',
     displayName: 'Current Due',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'balance',
     displayName: 'Balance',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 ];
@@ -252,36 +250,38 @@ const ArDashBoardTable = ({
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
-            <thead>
-              <tr>
-                {Commissioncolumns?.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={data}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-                {viewArchived === true ? null : (
-                  <th>
-                    <div className="action-header">
-                      <p>Help</p>
-                    </div>
-                  </th>
-                )}
-              </tr>
-            </thead>
+            {!!currentPageData?.length && (
+              <thead>
+                <tr>
+                  {Commissioncolumns?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={data}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
+                  {viewArchived === true ? null : (
+                    <th>
+                      <div className="action-header">
+                        <p>Help</p>
+                      </div>
+                    </th>
+                  )}
+                </tr>
+              </thead>
+            )}
 
             <tbody>
               {isLoading ? (
@@ -360,7 +360,7 @@ const ArDashBoardTable = ({
                 )
               ) : (
                 <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
+                  <td colSpan={12}>
                     <div className="data-not-found">
                       <DataNotFound />
                       <h3>Data Not Found</h3>
@@ -373,19 +373,24 @@ const ArDashBoardTable = ({
         </div>
 
         <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex > count ? count : endIndex} of {count} item
-          </p>
+          {!!currentPageData.length && (
+            <>
+              <p className="page-heading">
+                {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+                item
+              </p>
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages} // You need to calculate total pages
-            paginate={paginate}
-            currentPageData={currentPageData}
-            goToNextPage={goToNextPage}
-            goToPrevPage={goToPrevPage}
-            perPage={itemsPerPage}
-          />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </>
+          )}
           {openIcon && (
             <ArHelp
               data={{

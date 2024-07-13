@@ -86,7 +86,7 @@ export const DashboardPage: React.FC = () => {
         use_cutoff: 'NO',
         dealer_name: 'ALL',
         sort_by: 'unique_id',
-        commission_model: selectedOption2.toLowerCase(),
+        commission_model: selectedOption2,
         filters,
       })
     );
@@ -348,7 +348,7 @@ export const DashboardPage: React.FC = () => {
           isOpen={filterModal}
           handleClose={filterClose}
           resetOnChange={false}
-          columns={dealerPayColumn}
+          columns={dealerPayColumn.filter((col)=>col.name!=="help")}
           page_number={currentPage}
           page_size={10}
           fetchFunction={fetchFunction}

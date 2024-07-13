@@ -66,10 +66,10 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 	query = `
 	SELECT tlf.id as record_id, tr.tier_name as dealer_tier, ptr.partner_name as installer, st.name as state, lnt.product_code as loan_type, tlf.owe_cost, tlf.dlr_mu, tlf.dlr_cost, tlf.start_date, tlf.end_date
 	FROM tier_loan_fee tlf
-	JOIN tier tr ON tlf.dealer_tier = tr.id
-	JOIN partners ptr ON tlf.installer_id = ptr.partner_id
-	JOIN states st ON tlf.state_id = st.state_id
-	JOIN loan_type lnt ON tlf.loan_type = lnt.id
+	LEFT JOIN tier tr ON tlf.dealer_tier = tr.id
+	LEFT JOIN partners ptr ON tlf.installer_id = ptr.partner_id
+	LEFT JOIN states st ON tlf.state_id = st.state_id
+	LEFT JOIN loan_type lnt ON tlf.loan_type = lnt.id
 	`
 
 	filter, whereEleList = PrepareTierLoanFeesFilters(tableName, dataReq, false)

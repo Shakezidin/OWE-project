@@ -219,6 +219,7 @@ const (
 	TableName_rep_incent                     string = "rep_incent"
 	TableName_rep_status                     string = "rep_status"
 	TableName_rep_credit                     string = "rep_credit"
+	TableName_rep_type                       string = "rep_type"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
@@ -231,7 +232,7 @@ const (
 	TableName_Prospect_Load             string = "prospect_load_info"
 	TableName_Breaker_Info              string = "breaker_info"
 	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
-	ViewName_REP_PAY                   string = "rep_pay_pr_data"
+	ViewName_REP_PAY                    string = "rep_pay_pr_data"
 )
 
 /******************************************************************************

@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -226,80 +227,73 @@ LEFT JOIN
 		}
 
 		// r1_pay_scale
-		R1_pay_scale, ok := item["r1_pay_scale"].(float64)
+		R1_pay_scale, ok := item["r1_pay_scale"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_pay_scale = 0.0
+			R1_pay_scale = ""
 		}
 
 		// rep_1_def_resp
-		Rep_1_def_resp, ok := item["rep_1_def_resp"].(string)
-		if !ok || Rep_1_def_resp == "" {
+		Rep_1_def_resp, ok := item["rep_1_def_resp"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get rep_1_def_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep_1_def_resp = ""
+			Rep_1_def_resp = 0.0
 		}
 
 		// r1_addr_resp
-		R1_addr_resp, ok := item["r1_addr_resp"].(string)
-		if !ok || R1_addr_resp == "" {
+		R1_addr_resp, ok := item["r1_addr_resp"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_addr_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_addr_resp = ""
+			R1_addr_resp = 0.0
 		}
 
 		// r2_pay_scale
-		R2_pay_scale, ok := item["r2_pay_scale"].(float64)
+		R2_pay_scale, ok := item["r2_pay_scale"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r2_pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_pay_scale = 0.0
+			R2_pay_scale = ""
 		}
 
 		// per_rep_def_ovrd
-		Per_rep_def_ovrd, ok := item["per_rep_def_ovrd"].(string)
-		if !ok || Per_rep_def_ovrd == "" {
+		Per_rep_def_ovrd, ok := item["per_rep_def_ovrd"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get per_rep_def_ovrd for Record ID %v. Item: %+v\n", RecordId, item)
-			Per_rep_def_ovrd = ""
+			Per_rep_def_ovrd = 00.0
 		}
 
 		// r1_rebate_credit_$
-		R1_rebate_credit, ok := item["r1_rebate_credit_$"].(string)
-		if !ok || R1_rebate_credit == "" {
+		R1_rebate_credit, ok := item["r1_rebate_credit_$"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_$ for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_rebate_credit = ""
+			R1_rebate_credit = 0.0
 		}
 
 		// r1_rebate_credit_perc
-		R1_rebate_credit_perc, ok := item["r1_rebate_credit_perc"].(string)
-		if !ok || R1_rebate_credit_perc == "" {
+		R1_rebate_credit_perc, ok := item["r1_rebate_credit_perc"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_rebate_credit_perc = ""
+			R1_rebate_credit_perc = 0.0
 		}
 
 		// project_base_cost
-		R2_rebate_credit, ok := item["r2_rebate_credit_$"].(string)
-		if !ok || R2_rebate_credit == "" {
+		R2_rebate_credit, ok := item["r2_rebate_credit_$"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_rebate_credit = ""
+			R2_rebate_credit = 0.0
 		}
 
 		// crt_addr
-		R2_rebate_credit_perc, ok := item["r2_rebate_credit_perc"].(string)
-		if !ok || R2_rebate_credit_perc == "" {
+		R2_rebate_credit_perc, ok := item["r2_rebate_credit_perc"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_rebate_credit_perc = ""
+			R2_rebate_credit_perc = 0.0
 		}
 
 		// start_date
-		Start_date, ok := item["start_date"].(string)
-		if !ok || Start_date == "" {
+		Date, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			Start_date = ""
-		}
-
-		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			Date = time.Time{}
 		}
 
 		RebateData := models.GetRebateData{
@@ -328,8 +322,7 @@ LEFT JOIN
 			R1RebateCreditPerc: R1_rebate_credit_perc,
 			R2RebateCredit:     R2_rebate_credit,
 			R2RebateCreditPerc: R2_rebate_credit_perc,
-			StartDate:          Start_date,
-			EndDate:            EndDate,
+			Date:               Date,
 		}
 
 		RebateDataList.RebateDataList = append(RebateDataList.RebateDataList, RebateData)
@@ -363,12 +356,12 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 	defer func() { log.ExitFn(0, "PreparerebateFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	// whereAdded := false // Flag to track if WHERE clause has been added
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
-		// whereAdded = true // Set flag to true as WHERE clause is added
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -410,16 +403,16 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_doll_divby_per %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.notes %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.type %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep1_name":
-				filtersBuilder.WriteString(fmt.Sprintf("ud1.name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud1.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep2_name":
-				filtersBuilder.WriteString(fmt.Sprintf("ud2.name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud2.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.sys_size %s $%d", operator, len(whereEleList)+1))
@@ -428,7 +421,7 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_count %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_addr_share":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_addr_share %s $%d", operator, len(whereEleList)+1))
@@ -437,13 +430,13 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_ovrd_share %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_pay_scale %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.r1_pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_addr_resp":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_addr_resp %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r2_pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("rd.r2_pay_scale %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.r2_pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_def_ovrd":
 				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_def_ovrd %s $%d", operator, len(whereEleList)+1))
@@ -470,28 +463,28 @@ func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("rd.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}
 	}
 
-	// Handle the Archived field
-	// if dataFilter.Archived {
-	// 	if whereAdded {
-	// 		filtersBuilder.WriteString(" AND ")
-	// 	} else {
-	// 		filtersBuilder.WriteString(" WHERE ")
-	// 	}
-	// 	filtersBuilder.WriteString("rd.is_archived = TRUE")
-	// } else {
-	// 	if whereAdded {
-	// 		filtersBuilder.WriteString(" AND ")
-	// 	} else {
-	// 		filtersBuilder.WriteString(" WHERE ")
-	// 	}
-	// 	filtersBuilder.WriteString("rd.is_archived = FALSE")
-	// }
+	//Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("rd.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("rd.is_archived = FALSE")
+	}
 
 	if forDataCount == true {
 		filtersBuilder.WriteString(" GROUP BY rd.id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type, ud1.name, ud2.name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share, rd.r1_pay_scale, rd.r1_addr_resp, rd.r2_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd.r1_rebate_credit_$, rd.r1_rebate_credit_perc, rd.r2_rebate_credit_$, rd.r2_rebate_credit_perc,  rd.date")

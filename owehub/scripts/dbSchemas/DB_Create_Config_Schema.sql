@@ -118,6 +118,9 @@ CREATE TABLE rep_type (
     id serial NOT NULL,
     rep_type character varying NOT NULL,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
@@ -570,6 +573,7 @@ CREATE TABLE rebate_data (
     r2_rebate_credit_perc float,
     r2_addr_resp float,
     adder_amount float,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -755,7 +759,6 @@ CREATE TABLE install_cost (
 
 CREATE TABLE leader_override (
     id serial NOT NULL,
-    unique_id varchar,
     team_id INT,
     leader_name text,
     type text,
@@ -763,10 +766,10 @@ CREATE TABLE leader_override (
     qual text,
     sales_q float,
     team_kw_q float,
-    pay_rate character varying,
+    pay_rate double precision,
     is_archived BOOLEAN DEFAULT FALSE,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    start_date date NOT NULL,
+    end_date date,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (team_id) REFERENCES teams(team_id),
@@ -785,7 +788,6 @@ CREATE TABLE adder_responsibility (
 
 CREATE TABLE adder_credit (
     id serial NOT NULL,
-    unique_id varchar,
     pay_scale text,
     type text,
     min_rate float,

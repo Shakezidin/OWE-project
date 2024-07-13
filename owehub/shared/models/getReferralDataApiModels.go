@@ -12,7 +12,7 @@ type GetReferralData struct {
 	NewCustomer          string  `json:"new_customer"`
 	ReferrerSerial       string  `json:"referrer_serial"`
 	ReferrerName         string  `json:"referrer_name"`
-	Amount               string  `json:"amount"`
+	Amount               float64 `json:"amount"`
 	RepDollDivbyPer      float64 `json:"rep_doll_divby_per"`
 	Notes                string  `json:"notes"`
 	Type                 string  `json:"type"`

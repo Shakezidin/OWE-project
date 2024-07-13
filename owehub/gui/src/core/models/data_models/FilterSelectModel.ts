@@ -36,6 +36,9 @@ export const getOperationsForColumnType = (columnType: string) => {
     options.push({ value: 'lst', label: 'Before' });
     options.push({ value: 'lsteqs', label: 'On and Before' });
   }
+  if (columnType === 'boolean') {
+    options.push({ value: 'eqs', label: 'Equals' });
+  }
   return options;
 };
 

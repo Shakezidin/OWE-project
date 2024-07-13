@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION update_leader_override (
     p_id INT,
-    p_unique_id           VARCHAR,
     p_team_name VARCHAR,
     p_type VARCHAR,
     p_leader_name VARCHAR,
@@ -8,9 +7,9 @@ CREATE OR REPLACE FUNCTION update_leader_override (
     p_qual VARCHAR,
     p_sales_q DOUBLE PRECISION,
     p_team_kw_q DOUBLE PRECISION,
-    p_pay_rate VARCHAR,
-    p_start_date              VARCHAR,
-	  p_end_date                VARCHAR,
+    p_pay_rate DOUBLE PRECISION,
+    p_start_date              DATE,
+	  p_end_date                DATE,
     OUT v_leader_override_id INT
 )
 RETURNS INT 
@@ -18,7 +17,6 @@ AS $$
 BEGIN
   UPDATE leader_override
     SET 
-        unique_id = p_unique_id,
         team_id = (SELECT team_id FROM teams WHERE LOWER(team_name) = LOWER(p_team_name) LIMIT 1),
         leader_name = p_leader_name,
         type = p_type,

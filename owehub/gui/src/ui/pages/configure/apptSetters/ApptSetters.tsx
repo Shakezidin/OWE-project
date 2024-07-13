@@ -306,12 +306,12 @@ const ApptSetters = () => {
                             )
                           }
                         />
-                        {el.unique_id}
+                        {el.unique_id ||"N/A"}
                       </div>
                     </td>
-                    <td>{el.name}</td>
-                    <td>{el.team_name}</td>
-                    <td>{el.pay_rate}</td>
+                    <td>{el.name ||"N/A"}</td>
+                    <td>{el.team_name ||"N/A"}</td>
+                    <td>{el.pay_rate ||"N/A"}</td>
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>

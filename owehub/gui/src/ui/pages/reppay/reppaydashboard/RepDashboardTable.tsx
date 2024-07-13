@@ -641,8 +641,6 @@ const RepDashBoardTable = () => {
     setCurrentPage1(page);
   };
 
-
-
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex * itemsPerPage;
@@ -699,8 +697,6 @@ const RepDashBoardTable = () => {
   //   return <div>Loading... {loading}</div>;
   // }
 
-
-
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
 
@@ -708,40 +704,42 @@ const RepDashBoardTable = () => {
     <div className="comm">
       <div className="commissionContainer">
         <div
-          className="TableContainer"
+          className="TableContainer pb3"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
-            <thead>
-              <tr>
-                {Commissioncolumns?.map((item, key) => (
-                  <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={commissionList}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={
-                      sortKey === item.name ? sortDirection : undefined
-                    }
-                    onClick={() => handleSort(item.name)}
-                  />
-                ))}
-                {viewArchived === true ? null : (
-                  <th>
-                    <div className="action-header">
-                      <p>Help</p>
-                    </div>
-                  </th>
-                )}
-              </tr>
-            </thead>
+            {!!currentPageData.length && (
+              <thead>
+                <tr>
+                  {Commissioncolumns?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={commissionList}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={
+                        sortKey === item.name ? sortDirection : undefined
+                      }
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))}
+                  {viewArchived === true ? null : (
+                    <th>
+                      <div className="action-header">
+                        <p>Help</p>
+                      </div>
+                    </th>
+                  )}
+                </tr>
+              </thead>
+            )}
 
             <tbody>
               {currentPageData?.length > 0 ? (
@@ -769,34 +767,34 @@ const RepDashBoardTable = () => {
                         <span className="zoom-out-td">{el.unique_id}</span>
                       </div>
                     </td>
-                    <td>{el.home_owner}</td>
-                    <td>{el.current_status}</td>
-                    <td>{el.owe_contractor}</td>
-                    <td>{el.DBA}</td>
-                    <td>{el.type}</td>
-                    <td>{el.Today}</td>
-                    <td>{el.finance_type}</td>
-                    <td>{el.sys_size}</td>
-                    <td>{el.contract_total}</td>
-                    <td>{el.loan_fee}</td>
-                    <td>{el.epc}</td>
-                    <td>{el.adders}</td>
-                    <td>{el.r_r}</td>
-                    <td>{el.comm_rate}</td>
-                    <td>{el.net_epc}</td>
-                    <td>{el.credit}</td>
-                    <td>{el.rep_2}</td>
-                    <td>{el.net_comm}</td>
-                    <td>{el.draw_amt}</td>
-                    <td>{el.amt_paid}</td>
-                    <td>{el.balance}</td>
-                    <td>{el.dealer_code}</td>
-                    <td>{el.sub_total}</td>
-                    <td>{el.max_per_rep}</td>
-                    <td>{el.total_per_rep}</td>
-                    <td>{el.commission_model}</td>
-                    <td>{el.rep_status}</td>
-                    <td>{el.sheet_type}</td>
+                    <td>{el.home_owner || "N/A"}</td>
+                    <td>{el.current_status || "N/A"}</td>
+                    <td>{el.owe_contractor || "N/A"}</td>
+                    <td>{el.DBA || "N/A"}</td>
+                    <td>{el.type || "N/A"}</td>
+                    <td>{el.Today || "N/A"}</td>
+                    <td>{el.finance_type || "N/A"}</td>
+                    <td>{el.sys_size || "N/A"}</td>
+                    <td>{el.contract_total || "N/A"}</td>
+                    <td>{el.loan_fee || "N/A"}</td>
+                    <td>{el.epc || "N/A"}</td>
+                    <td>{el.adders || "N/A"}</td>
+                    <td>{el.r_r || "N/A"}</td>
+                    <td>{el.comm_rate || "N/A"}</td>
+                    <td>{el.net_epc || "N/A"}</td>
+                    <td>{el.credit || "N/A"}</td>
+                    <td>{el.rep_2 || "N/A"}</td>
+                    <td>{el.net_comm || "N/A"}</td>
+                    <td>{el.draw_amt || "N/A"}</td>
+                    <td>{el.amt_paid || "N/A"}</td>
+                    <td>{el.balance || "N/A"}</td>
+                    <td>{el.dealer_code || "N/A"}</td>
+                    <td>{el.sub_total || "N/A"}</td>
+                    <td>{el.max_per_rep || "N/A"}</td>
+                    <td>{el.total_per_rep || "N/A"}</td>
+                    <td>{el.commission_model || "N/A"}</td>
+                    <td>{el.rep_status|| "N/A"}</td>
+                    <td>{el.sheet_type || "N/A"}</td>
                     <td className="zoom-out-help">
                       <img
                         src={ICONS.online}

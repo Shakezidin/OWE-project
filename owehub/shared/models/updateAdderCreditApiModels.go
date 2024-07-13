@@ -8,7 +8,6 @@ package models
 
 type UpdateAdderCredit struct {
 	RecordId  int64   `json:"record_id"`
-	Unique_Id string  `json:"unique_id"`
 	Pay_Scale string  `json:"pay_scale"`
 	Type      string  `json:"type"`
 	Min_Rate  float64 `json:"min_rate"`
