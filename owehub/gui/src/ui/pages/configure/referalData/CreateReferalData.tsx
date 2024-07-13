@@ -61,24 +61,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
     amount: '',
     rep_doll_divby_per: '',
     notes: '',
-    type: '',
-    rep_1_name: '',
-    rep_2_name: '',
-    sys_size: '',
-    rep_count: '',
-    state: '',
-    per_rep_addr_share: '',
-    per_rep_ovrd_share: '',
-    r1_pay_scale: '',
-    r1_referral_credit_$: '',
-    r1_referral_credit_perc: '',
-    r1_addr_resp: '',
-    r2_pay_scale: '',
-    r2_referral_credit_$: '',
-    r2_referral_credit_perc: '',
-    r2_addr_resp: '',
     start_date: '',
-    end_date: '',
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -140,7 +123,6 @@ const CreateReferalData: React.FC<ButtonProps> = ({
       setCreateCommission((prev) => ({
         ...prev,
         [name]: value,
-        end_date: '',
       }));
       return;
     }
@@ -152,6 +134,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    console.log(true)
     if (handleValidation()) {
       try {
         if (createCommission.record_id) {
@@ -258,27 +241,6 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                 </div>
 
                 <div className="create-input-field">
-                  <label className="inputLabel-select">State</label>
-                  <SelectOption
-                    options={stateOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, 'state')}
-                    value={stateOption(newFormData)?.find(
-                      (option) => option.value === createCommission.state
-                    )}
-                  />
-                  {errors?.state && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.state}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
                   <Input
                     type={'text'}
                     label="Referrer Serial"
@@ -328,6 +290,11 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     name="amount"
                     placeholder={'Amount'}
                     onChange={(e) => handleInputChange(e)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'e' || e.key === 'E') {
+                        e.preventDefault();
+                      }
+                    }}               
                   />
                   {errors?.amount && (
                     <span
@@ -344,7 +311,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Rep Doll / Per"
+                    label="Rep Doll DivBy Per"
                     value={createCommission.rep_doll_divby_per}
                     name="rep_doll_divby_per"
                     placeholder={'Rep Doll / Per'}
@@ -385,354 +352,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
-                    label="Type"
-                    value={createCommission.type}
-                    name="type"
-                    placeholder={'Type'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.type && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.type}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Rep1 Name"
-                    value={createCommission.rep_1_name}
-                    name="rep_1_name"
-                    placeholder={'Notes'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.rep_1_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.rep_1_name}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="R1 Adder Resp"
-                    value={createCommission.r1_addr_resp}
-                    name="r1_addr_resp"
-                    placeholder={'R1 Adder Resp'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r1_addr_resp && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r1_addr_resp}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Rep2 Name"
-                    value={createCommission.rep_2_name}
-                    name="rep_2_name"
-                    placeholder={'Rep2 Name'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.rep_2_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.rep_2_name}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Sys Size"
-                    value={createCommission.sys_size}
-                    name="sys_size"
-                    placeholder={'Sys Size'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.sys_size && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.sys_size}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Rep Count"
-                    value={createCommission.rep_count}
-                    name="rep_count"
-                    placeholder={'Rep Count'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.rep_count && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.rep_count}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Per Rep Addr Share"
-                    value={createCommission.per_rep_addr_share}
-                    name="per_rep_addr_share"
-                    placeholder={'Per Rep Addr Share'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.per_rep_addr_share && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.per_rep_addr_share}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Per Rep Ovrd Share"
-                    value={createCommission.per_rep_ovrd_share}
-                    name="per_rep_ovrd_share"
-                    placeholder={'Per Rep Ovrd Share'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.per_rep_ovrd_share && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.per_rep_ovrd_share}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="R1 Pay Scale"
-                    value={createCommission.r1_pay_scale}
-                    name="r1_pay_scale"
-                    placeholder={'R1 Pay Scale'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r1_pay_scale && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r1_pay_scale}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="R1 Referral Credit_$"
-                    value={createCommission.r1_referral_credit_$}
-                    name="r1_referral_credit_$"
-                    placeholder={'R1 Pay Scale'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r1_referral_credit_$ && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r1_referral_credit_$}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="R1 Referral Credit Perc"
-                    value={createCommission.r1_referral_credit_perc}
-                    name="r1_referral_credit_perc"
-                    placeholder={'R1 Referral Credit Perc'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r1_referral_credit_perc && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r1_referral_credit_perc}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="R2 Pay Scale"
-                    value={createCommission.r2_pay_scale}
-                    name="r2_pay_scale"
-                    placeholder={'R2 Pay Scale'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r2_pay_scale && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r2_pay_scale}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="R2 Referral Credit"
-                    value={createCommission.r2_referral_credit_$}
-                    name="r2_referral_credit_$"
-                    placeholder={'R2 Referral credit $'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r2_referral_credit_$ && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r2_referral_credit_$}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="R2 Adder Resp"
-                    value={createCommission.r2_addr_resp}
-                    name="r2_addr_resp"
-                    placeholder={'R2 Adder Resp'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r2_addr_resp && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r2_addr_resp}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="R2 Referral Credit Perc"
-                    value={createCommission.r2_referral_credit_perc}
-                    name="r2_referral_credit_perc"
-                    placeholder={'R2 Referral Credit Perc'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.r2_referral_credit_perc && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.r2_referral_credit_perc}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
                     type={'date'}
                     label="Start Date"
                     value={createCommission.start_date}
                     name="start_date"
-                    placeholder={'Start Date'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.start_date && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.start_date}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'date'}
-                    label="End Date"
-                    value={createCommission.end_date}
-                    name="end_date"
-                    min={
-                      createCommission.start_date &&
-                      format(
-                        addDays(new Date(createCommission.start_date), 1),
-                        'yyyy-MM-dd'
-                      )
-                    }
-                    disabled={!createCommission.start_date}
                     placeholder={'Start Date'}
                     onChange={(e) => handleInputChange(e)}
                   />
