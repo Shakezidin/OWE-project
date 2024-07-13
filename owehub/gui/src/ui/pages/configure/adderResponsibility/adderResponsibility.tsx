@@ -313,10 +313,9 @@ const AdderResponsibility = () => {
                             )
                           }
                         />
-                        {el.unique_id}
+                        {el.pay_scale}
                       </div>
                     </td>
-                    <td> {el.pay_scale}</td>
                     <td>{el.percentage}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (

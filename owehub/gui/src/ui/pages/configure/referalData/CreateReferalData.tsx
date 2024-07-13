@@ -125,7 +125,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
   };
   const handleInputChange = (e: FormInput) => {
     let { name, value } = e.target;
-    console.log(e.target.name,"value",e.target.value);
+    console.log(e.target.name, 'value', e.target.value);
     if (
       name === 'rep_doll_divby_per' ||
       name === 'syz_size' ||
@@ -156,14 +156,15 @@ const CreateReferalData: React.FC<ButtonProps> = ({
       try {
         if (createCommission.record_id) {
           const res = await postCaller('update_referraldata', {
-            ...createCommission,
+            record_id: createCommission.record_id,
+            unique_id: createCommission.unique_id,
+            new_customer: createCommission.new_customer,
+            referrer_serial: createCommission.referrer_serial,
+            referrer_name: createCommission.referrer_name,
+            start_date: createCommission.start_date,
+            amount: parseFloat(createCommission.amount),
             rep_doll_divby_per: parseFloat(createCommission.rep_doll_divby_per),
-            sys_size: parseFloat(createCommission.sys_size),
-            rep_count: parseFloat(createCommission.rep_count),
-            r1_pay_scale: parseFloat(createCommission.r1_pay_scale),
-            r2_pay_scale: parseFloat(createCommission.r2_pay_scale),
-            per_rep_addr_share: parseFloat(createCommission.per_rep_addr_share),
-            per_rep_ovrd_share: parseFloat(createCommission.per_rep_ovrd_share),
+            notes: createCommission.notes,
           });
           if (res.status === 200) {
             handleClose();
@@ -173,16 +174,17 @@ const CreateReferalData: React.FC<ButtonProps> = ({
           }
         } else {
           const { record_id, ...cleanedFormData } = createCommission;
-          const res = await postCaller('create_referraldata', {
-            ...cleanedFormData,
-            rep_doll_divby_per: parseFloat(cleanedFormData.rep_doll_divby_per),
-            sys_size: parseFloat(cleanedFormData.sys_size),
-            rep_count: parseFloat(cleanedFormData.rep_count),
-            r1_pay_scale: parseFloat(cleanedFormData.r1_pay_scale),
-            r2_pay_scale: parseFloat(cleanedFormData.r2_pay_scale),
-            per_rep_addr_share: parseFloat(createCommission.per_rep_addr_share),
-            per_rep_ovrd_share: parseFloat(createCommission.per_rep_ovrd_share),
-          });
+          const data = {
+            unique_id: createCommission.unique_id,
+            new_customer: createCommission.new_customer,
+            referrer_serial: createCommission.referrer_serial,
+            referrer_name: createCommission.referrer_name,
+            start_date: createCommission.start_date,
+            amount: parseFloat(createCommission.amount),
+            rep_doll_divby_per: parseFloat(createCommission.rep_doll_divby_per),
+            notes: createCommission.notes,
+          };
+          const res = await postCaller('create_referraldata', data);
           if (res.status === 200) {
             handleClose();
             setRefresh((prev) => prev + 1);
@@ -320,7 +322,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="Amount"
                     value={createCommission.amount}
                     name="amount"
@@ -467,7 +469,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="Sys Size"
                     value={createCommission.sys_size}
                     name="sys_size"
@@ -509,7 +511,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="Per Rep Addr Share"
                     value={createCommission.per_rep_addr_share}
                     name="per_rep_addr_share"
@@ -530,7 +532,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="Per Rep Ovrd Share"
                     value={createCommission.per_rep_ovrd_share}
                     name="per_rep_ovrd_share"
@@ -593,7 +595,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="R1 Referral Credit Perc"
                     value={createCommission.r1_referral_credit_perc}
                     name="r1_referral_credit_perc"
@@ -614,7 +616,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="R2 Pay Scale"
                     value={createCommission.r2_pay_scale}
                     name="r2_pay_scale"
@@ -635,7 +637,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="R2 Referral Credit"
                     value={createCommission.r2_referral_credit_$}
                     name="r2_referral_credit_$"
@@ -677,7 +679,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="R2 Referral Credit Perc"
                     value={createCommission.r2_referral_credit_perc}
                     name="r2_referral_credit_perc"
