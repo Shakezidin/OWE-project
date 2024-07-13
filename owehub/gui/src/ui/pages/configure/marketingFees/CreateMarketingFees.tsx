@@ -3,23 +3,16 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import {
-  chg_dlrOption,
-  dbaOption,
   sourceOption,
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { updateMarketingForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createMarketingSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import {
-  chldlrData,
-  dbaData,
-} from '../../../../resources/static_data/StaticData';
 import { MarketingFeeModel } from '../../../../core/models/configuration/create/MarketingFeeModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import { fetchmarketingFees } from '../../../../redux/apiSlice/configSlice/config_get_slice/marketingSlice';
 import { FormEvent } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
