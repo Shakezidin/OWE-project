@@ -80,19 +80,19 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	} else {
 		query = fmt.Sprintf(`
 		SELECT
-			(SELECT r1_comm_paid 
+			(SELECT SUM(r1_comm_paid) 
 			 FROM dealer_pay_calc_standard 
 			 WHERE inst_sys IS NULL 
 			   AND dealer = '%v' 
 			   AND r1_comm_paid != 'NaN' AND r1_comm_paid != 'Infinity') AS amount_prepaid,
 			
-			(SELECT r1_balance 
+			(SELECT SUM(r1_balance) 
 			 FROM dealer_pay_calc_standard 
 			 WHERE unique_id IS NOT NULL 
 			   AND dealer = '%v' 
 			   AND r1_balance != 'NaN' AND r1_balance != 'Infinity') AS pipeline_remaining,
 			
-			(SELECT draw_amt 
+			(SELECT SUM(draw_amt) 
 			 FROM dlr_pay_pr_data 
 			 WHERE dealer = '%v' 
 			 AND draw_amt != 'NaN' AND draw_amt != 'Infinity') AS current_due`,

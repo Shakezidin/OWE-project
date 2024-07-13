@@ -284,7 +284,9 @@ SELECT
     rep_pay_cal_standard.pr_r1_d_type AS pr_r1_d_type, 
     rep_pay_cal_standard.pr_r1_d_today AS pr_r1_d_today, 
     rep_pay_cal_standard.pr_r1_d_status AS pr_r1_d_status,
-    rep_pay_cal_standard.REP_COMM as sheet_type
+    rep_pay_cal_standard.REP_COMM as sheet_type,
+    rep_pay_cal_standard.cancel AS cancel_date,
+    rep_pay_cal_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_standard
 WHERE
@@ -327,7 +329,9 @@ SELECT
     rep_pay_cal_standard.pr_r1_f_type AS pr_r1_f_type,
     rep_pay_cal_standard.pr_r1_f_today AS pr_r1_f_today,
     rep_pay_cal_standard.pr_r1_f_status AS pr_r1_f_status,
-    rep_pay_cal_standard.REP_COMM AS sheet_type
+    rep_pay_cal_standard.REP_COMM AS sheet_type,
+    rep_pay_cal_standard.cancel AS cancel_date,
+    rep_pay_cal_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_standard
 WHERE
@@ -337,7 +341,7 @@ WHERE
     AND (
         rep_pay_cal_standard.rep_1_balance <> 0
         AND (
-            (rep_pay_cal_standard.status = 'Hold' OR rep_pay_cal_standard.status = 'Jeopardy')
+            (rep_pay_cal_standard.status = 'HOLD' OR rep_pay_cal_standard.status = 'JEOPARDY' OR rep_pay_cal_standard.status = 'CANCEL')
             OR rep_pay_cal_standard.cancel IS NOT NULL
             OR rep_pay_cal_standard.inst_sys IS NOT NULL
         )
@@ -363,7 +367,9 @@ SELECT
     rep_pay_cal_standard.pr_r1_b_type AS pr_r1_b_type,
     rep_pay_cal_standard.pr_r1_b_today AS pr_r1_b_today,
     rep_pay_cal_standard.pr_r1_b_status AS pr_r1_b_status,
-    rep_pay_cal_standard.REP_BONUS as sheet_type
+    rep_pay_cal_standard.REP_BONUS as sheet_type,
+    rep_pay_cal_standard.cancel AS cancel_date,
+    rep_pay_cal_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_standard
 WHERE
@@ -403,7 +409,9 @@ SELECT
     rep_pay_cal_standard.pr_r2_d_type AS pr_r2_d_type,
     rep_pay_cal_standard.pr_r2_d_today AS pr_r2_d_today,
     rep_pay_cal_standard.pr_r2_d_status AS pr_r2_d_status,
-    rep_pay_cal_standard.REP_COMM as sheet_type
+    rep_pay_cal_standard.REP_COMM as sheet_type,
+    rep_pay_cal_standard.cancel AS cancel_date,
+    rep_pay_cal_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_standard
 WHERE
@@ -445,7 +453,9 @@ SELECT
     rep_pay_cal_standard.pr_r2_f_type AS pr_r2_f_type,
     rep_pay_cal_standard.pr_r2_f_today AS pr_r2_f_today,
     rep_pay_cal_standard.pr_r2_f_status AS pr_r2_f_status,
-    rep_pay_cal_standard.REP_COMM as sheet_type
+    rep_pay_cal_standard.REP_COMM as sheet_type,
+    rep_pay_cal_standard.cancel AS cancel_date,
+    rep_pay_cal_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_standard
 WHERE
@@ -455,7 +465,7 @@ WHERE
     AND (
         rep_pay_cal_standard.rep_2_balance <> 0
         AND (
-            (rep_pay_cal_standard.status = 'Hold' OR rep_pay_cal_standard.status = 'Jeopardy')
+            (rep_pay_cal_standard.status = 'HOLD' OR rep_pay_cal_standard.status = 'JEOPARDY' OR rep_pay_cal_standard.status = 'CANCEL')
             OR rep_pay_cal_standard.cancel IS NOT NULL
             OR rep_pay_cal_standard.inst_sys IS NOT NULL
         )
@@ -482,7 +492,9 @@ SELECT
     rep_pay_cal_standard.pr_r2_b_type AS pr_r2_b_type,
     rep_pay_cal_standard.pr_r2_b_today AS pr_r2_b_today,
     rep_pay_cal_standard.pr_r2_b_status AS pr_r2_b_status,
-    rep_pay_cal_standard.REP_BONUS as sheet_type
+    rep_pay_cal_standard.REP_BONUS as sheet_type,
+    rep_pay_cal_standard.cancel AS cancel_date,
+    rep_pay_cal_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_standard
 WHERE
@@ -508,7 +520,10 @@ SELECT
     rep_pay_cal_ovrrd_standard.pr_r1_sl_type AS pr_r1_sl_type,
     rep_pay_cal_ovrrd_standard.pr_r1_sl_today AS pr_r1_sl_today,
     rep_pay_cal_ovrrd_standard.pr_r1_sl_status AS pr_r1_sl_status,
-    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type
+    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type,
+    rep_pay_cal_ovrrd_standard.wc AS wc,
+    rep_pay_cal_ovrrd_standard.cancel AS cancel_date,
+    rep_pay_cal_ovrrd_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -534,7 +549,10 @@ SELECT
     rep_pay_cal_ovrrd_standard.pr_r1_dm_type AS pr_r1_dm_type,
     rep_pay_cal_ovrrd_standard.pr_r1_dm_today AS pr_r1_dm_today,
     rep_pay_cal_ovrrd_standard.pr_r1_dm_status AS pr_r1_dm_status,
-    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type
+    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type,
+    rep_pay_cal_ovrrd_standard.wc AS wc,
+    rep_pay_cal_ovrrd_standard.cancel AS cancel_date,
+    rep_pay_cal_ovrrd_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -560,7 +578,10 @@ SELECT
     rep_pay_cal_ovrrd_standard.pr_r1_dir_type AS pr_r1_dir_type,
     rep_pay_cal_ovrrd_standard.pr_r1_dir_today AS pr_r1_dir_today,
     rep_pay_cal_ovrrd_standard.pr_r1_dir_status AS pr_r1_dir_status,
-    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type
+    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type,
+    rep_pay_cal_ovrrd_standard.wc AS wc,
+    rep_pay_cal_ovrrd_standard.cancel AS cancel_date,
+    rep_pay_cal_ovrrd_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -586,7 +607,10 @@ SELECT
     rep_pay_cal_ovrrd_standard.pr_r2_sl_type AS pr_r2_sl_type,
     rep_pay_cal_ovrrd_standard.pr_r2_sl_today AS pr_r2_sl_today,
     rep_pay_cal_ovrrd_standard.pr_r2_sl_status AS pr_r2_sl_status,
-    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type
+    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type,
+    rep_pay_cal_ovrrd_standard.wc AS wc,
+    rep_pay_cal_ovrrd_standard.cancel AS cancel_date,
+    rep_pay_cal_ovrrd_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -612,7 +636,10 @@ SELECT
     rep_pay_cal_ovrrd_standard.pr_r2_dm_type AS pr_r2_dm_type,
     rep_pay_cal_ovrrd_standard.pr_r2_dm_today AS pr_r2_dm_today,
     rep_pay_cal_ovrrd_standard.pr_r2_dm_status AS pr_r2_dm_status,
-    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type
+    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type,
+    rep_pay_cal_ovrrd_standard.wc AS wc,
+    rep_pay_cal_ovrrd_standard.cancel AS cancel_date,
+    rep_pay_cal_ovrrd_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_ovrrd_standard
 WHERE
@@ -638,7 +665,10 @@ SELECT
     rep_pay_cal_ovrrd_standard.pr_r2_dir_type AS pr_r2_dir_type,
     rep_pay_cal_ovrrd_standard.pr_r2_dir_today AS pr_r2_dir_today,
     rep_pay_cal_ovrrd_standard.pr_r2_dir_status AS pr_r2_dir_status,
-    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type
+    rep_pay_cal_ovrrd_standard.LEADER_OVRD AS sheet_type,
+    rep_pay_cal_ovrrd_standard.wc AS wc,
+    rep_pay_cal_ovrrd_standard.cancel AS cancel_date,
+    rep_pay_cal_ovrrd_standard.inst_sys as pv_install_completed_date
     
 FROM
     rep_pay_cal_ovrrd_standard
@@ -666,7 +696,9 @@ SELECT
     rep_pay_cal_standard.pr_appt_type AS pr_appt_type,
     rep_pay_cal_standard.pr_appt_today AS pr_appt_today,
     rep_pay_cal_standard.pr_appt_status AS pr_appt_status,
-    rep_pay_cal_standard.REP_COMM as sheet_type
+    rep_pay_cal_standard.REP_COMM as sheet_type,
+    rep_pay_cal_standard.cancel AS cancel_date,
+    rep_pay_cal_standard.inst_sys as pv_install_completed_date
 FROM
     rep_pay_cal_standard
 WHERE
@@ -675,7 +707,7 @@ WHERE
     AND (
         rep_pay_cal_standard.appt_balance <> 0
         AND (
-            (rep_pay_cal_standard.status = 'Hold' OR rep_pay_cal_standard.status = 'Jeopardy')
+            (rep_pay_cal_standard.status = 'HOLD' OR rep_pay_cal_standard.status = 'JEOPARDY' OR rep_pay_cal_standard.status = 'CANCEL')
             OR rep_pay_cal_standard.cancel IS NOT NULL
             OR rep_pay_cal_standard.inst_sys IS NOT NULL
         )
@@ -716,7 +748,10 @@ CREATE VIEW rep_pay_pr_data AS
         NULL as total_per_rep,
         commission_model AS commission_model,
         pr_r1_d_status as rep_status,
-        sheet_type as sheet_type
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r1_d
 UNION ALL
     SELECT
@@ -750,7 +785,10 @@ UNION ALL
         NULL as total_per_rep,
         commission_model AS commission_model,
         pr_r1_f_status as rep_status,
-        sheet_type as sheet_type
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r1_f
 UNION ALL
     SELECT
@@ -782,9 +820,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r1_b_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r1_b_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r1_b
 UNION ALL
 SELECT
@@ -816,9 +857,12 @@ SELECT
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r2_d_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r2_d_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r2_d
 UNION ALL
     SELECT
@@ -850,9 +894,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r2_f_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r2_f_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r2_f
 UNION ALL
     SELECT
@@ -884,9 +931,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r2_b_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r2_b_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r2_b
 UNION ALL
     SELECT
@@ -918,9 +968,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r1_sl_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r1_sl_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r1_sl
 UNION ALL
     SELECT
@@ -952,9 +1005,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r2_sl_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r2_sl_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r2_sl
 UNION ALL
     SELECT
@@ -986,9 +1042,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r1_dm_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r1_dm_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r1_dm
 UNION ALL
     SELECT
@@ -1020,9 +1079,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r2_dm_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r2_dm_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r2_dm
 UNION ALL
     SELECT
@@ -1054,9 +1116,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r1_dir_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r1_dir_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r1_dir
 UNION ALL
     SELECT
@@ -1088,9 +1153,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_r2_dir_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_r2_dir_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_r2_dir
 UNION ALL
     SELECT
@@ -1122,9 +1190,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_appt_status as rep_status,
-    sheet_type as sheet_type
+        commission_model AS commission_model,
+        pr_appt_status as rep_status,
+        sheet_type as sheet_type,
+        wc AS wc,
+        cancel_date AS cancel_date,
+        pv_install_completed_date as pv_install_completed_date
 FROM pr_appt
 UNION ALL
     SELECT
@@ -1156,9 +1227,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_oth_status as rep_status,
-    AP_OTH as sheet_type
+        commission_model AS commission_model,
+        pr_oth_status as rep_status,
+        AP_OTH as sheet_type,
+        wc AS wc,
+        cancel AS cancel_date,
+        inst_sys as pv_install_completed_date
 FROM rep_pay_cal_standard -- for ap-oth
 UNION ALL
     SELECT
@@ -1190,9 +1264,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_ded_status as rep_status,
-    AP_DED as sheet_type
+        commission_model AS commission_model,
+        pr_ded_status as rep_status,
+        AP_DED as sheet_type,
+        wc AS wc,
+        cancel AS cancel_date,
+        inst_sys as pv_install_completed_date
 FROM rep_pay_cal_standard -- for ap-ded
 UNION ALL
     SELECT
@@ -1224,9 +1301,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_pda_status as rep_status,
-    AP_PDA as sheet_type
+        commission_model AS commission_model,
+        pr_pda_status as rep_status,
+        AP_PDA as sheet_type,
+        wc AS wc,
+        cancel AS cancel_date,
+        inst_sys as pv_install_completed_date
 FROM rep_pay_cal_standard -- for ap-pda
 UNION ALL
     SELECT
@@ -1258,9 +1338,12 @@ UNION ALL
         NULL as subtotal,
         NULL as max_per_rep,
         NULL as total_per_rep,
-    commission_model AS commission_model,
-    pr_adv_status as rep_status,
-    AP_ADV as sheet_type
+        commission_model AS commission_model,
+        pr_adv_status as rep_status,
+        AP_ADV as sheet_type,
+        wc AS wc,
+        cancel AS cancel_date,
+        inst_sys as pv_install_completed_date
 FROM rep_pay_cal_standard -- for ap-ADV
  
  

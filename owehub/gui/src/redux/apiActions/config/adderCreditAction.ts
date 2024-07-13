@@ -3,7 +3,6 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 
 export interface ReconcileEditParams {
-  unique_id: string;
   pay_scale: string;
   type: string;
   min_rate: string;
