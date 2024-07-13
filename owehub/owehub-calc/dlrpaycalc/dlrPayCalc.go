@@ -169,7 +169,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	Rep2 = saleData.SecondarySalesRep
 	source = saleData.Source
 	types = saleData.Type
-	if status == "HOLD" || status == "Cancel" {
+	if status == "HOLD" || status == "CANCEL" || status == "JEOPARDY" {
 		shaky = true
 	} else {
 		shaky = false
@@ -341,14 +341,11 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["per_rep_kw"] = perRepkW
 	outData["contract_calc"] = contractCalc
 	outData["epc_calc"] = epcCalc
-	outData["pay_rate_semi"] = payRateSemi
-	outData["expense"] = expense
-	outData["loan_fee"] = loanFee
 	outData["team_count"] = teamCount
 	outData["per_team_sales"] = perTeamSales
 	outData["per_team_kw"] = perTeamKw
-	outData["commission_model"] = commission_models
 	outData["r1_comm_paid"] = r1CommPaid
+	outData["commission_model"] = commission_models
 
 	//first sheet calculation
 
