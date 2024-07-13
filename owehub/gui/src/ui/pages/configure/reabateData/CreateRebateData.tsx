@@ -230,7 +230,7 @@ const [createArData, setCreateArData] = useState({
               <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start Date"
+                    label="Date"
                     value={createArData.date}
                     name="date"
                     placeholder={'Enter'}
