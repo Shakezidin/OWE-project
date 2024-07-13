@@ -150,10 +150,10 @@ LEFT JOIN
 		}
 
 		// amount
-		Amount, ok := item["amount"].(string)
-		if !ok || Amount == "" {
+		Amount, ok := item["amount"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Amount = ""
+			Amount = 0.0
 		}
 
 		// rep_doll_divby_per
@@ -290,11 +290,13 @@ LEFT JOIN
 		}
 
 		// start_date
-		Date, ok := item["start_date"].(time.Time)
+		Date, ok := item["date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			Date = time.Time{}
 		}
+
+		date := Date.Format("2006-01-02")
 
 		RebateData := models.GetRebateData{
 			RecordId:           RecordId,
@@ -322,7 +324,7 @@ LEFT JOIN
 			R1RebateCreditPerc: R1_rebate_credit_perc,
 			R2RebateCredit:     R2_rebate_credit,
 			R2RebateCreditPerc: R2_rebate_credit_perc,
-			Date:               Date,
+			Date:               date,
 		}
 
 		RebateDataList.RebateDataList = append(RebateDataList.RebateDataList, RebateData)

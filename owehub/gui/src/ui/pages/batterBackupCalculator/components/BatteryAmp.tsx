@@ -135,6 +135,7 @@ const BatteryAmp = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [mainDisabled, setMainDisabled] = useState(true);
   const [mssg, setMssg] = useState('');
+  const [totalAmp, setTotalAmp] = useState(0);
   const [btnText, setBtnText] = useState({
     primaryText: '',
     secondaryText: '',
@@ -169,7 +170,17 @@ const BatteryAmp = () => {
 
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
-    batteries[index].isOn = !batteries[index].isOn;
+    const ampValue   = batteries[index].category_ampere * 0.6
+    const remain =
+      avavilableAmpPercentage.remainingAmps -
+      ampValue;
+    if (remain >= 0 && !batteries[index].isOn) {
+      batteries[index].isOn = true;
+    } else if (batteries[index].isOn) {
+      batteries[index].isOn = false;
+    }else{
+      toast.error(`Cannot turn on this breaker needs ${ampValue} amp.`);
+    }
     setBatteryPower([...batteries]);
   };
 
@@ -178,10 +189,9 @@ const BatteryAmp = () => {
     totalCategoryAmp: number,
     lra: number
   ) => {
-    let count = 1;
+    let count = 0;
     const base = { amp: 48, lra: 185 };
-    const firstBattery = 38;
-    count += Math.ceil((totalCategoryAmp - firstBattery) / base.amp);
+    count += Math.ceil(totalCategoryAmp / base.amp);
     const requiredPowerwallsByLRA = Math.ceil(lra / base.lra);
     let externalBattery = 0;
     arr.forEach((item) => {
@@ -195,6 +205,21 @@ const BatteryAmp = () => {
   const roundToTenthsPlace = (number: number) => {
     return Math.round(number * 10) / 10;
   };
+
+  const avavilableAmpPercentage = useMemo(() => {
+    const ampCapacity = requiredBattery * 48;
+    setTotalAmp(ampCapacity);
+    let selectedAmp = 0;
+    batteryPower.forEach((item) => {
+      if (item.isOn) {
+        selectedAmp += item.category_ampere * 0.6;
+      }
+    });
+
+    const remainingAmps = ampCapacity - selectedAmp;
+    const percentage = (remainingAmps / ampCapacity) * 100;
+    return { percentage, remainingAmps };
+  }, [requiredBattery, batteryPower]);
 
   const required = useMemo(() => {
     return initial;
@@ -216,17 +241,25 @@ const BatteryAmp = () => {
           })) as Ibattery[];
           setBatteryPower([...batt]);
           setInitialBattery([...batt]);
+          const addedAmp =
+            data?.data?.total_catergory_amperes * 0.6 +
+            ((data?.data?.house_square * 1.5) / 120) * 0.6;
           const min = Math.ceil(
             Math.max(
-              minRequired(
-                [...batt],
-                data?.data?.total_catergory_amperes * 0.6 +
-                  (data?.data?.house_square * 1.5) / 120,
-                data?.data?.lra
-              ),
+              minRequired([...batt], addedAmp, data?.data?.lra),
               roundToTenthsPlace(data?.data?.SysSize) / 14
             )
           );
+
+          let max = 0;
+
+          batt.forEach((battery) => {
+            if (battery.amp >= 60) {
+              max = 2;
+            }
+          });
+          setTotalAmp(Math.max(addedAmp, max, data?.data?.lra / 185));
+
           setOtherDeatil(data?.data);
           setInitial(min);
           setRequiredBattery(min);
@@ -253,7 +286,7 @@ const BatteryAmp = () => {
       className="scrollbar   relative"
       style={{ backgroundColor: '#F2F2F2', paddingBottom: 100 }}
     >
-      <div className="wrapper-header mt0 mx0">
+      <div className="wrapper-header mt0 mx0" style={{backgroundColor:"#fff",borderBottomLeftRadius:12,borderBottomRightRadius:12}}>
         <h4 className="h4" style={{ fontWeight: 500 }}>
           Electrical Panel
         </h4>
@@ -268,7 +301,7 @@ const BatteryAmp = () => {
       <div className="batter-amp-container ">
         <div className="py3  batter-amp-wrapper  ">
           <div
-            className="battery-watt-wrapper bg-white"
+            className="battery-watt-wrapper sticky-wrapper bg-white"
             style={{ width: '100%' }}
           >
             <p
@@ -289,17 +322,21 @@ const BatteryAmp = () => {
                 <div
                   role="button"
                   onClick={() => {
-                    if (required && requiredBattery <= required) {
-                      setIsOpen(true);
-                      setMssg(
-                        `You are attempting to reduce the total number of batteries below our recommended minimum for a Full Home Back-Up.We cannot gaurentee the effectiveness in which this battery configuration can support your home. Would you like to remain at the recommended battery quantity for a Full Home Back-Up or reduce the number of batteries in this system and switch to a Partial Home Back-up`
-                      );
-                      setBtnText({
-                        primaryText: `I would like to remain with the recommended configuration.`,
-                        secondaryText: `I would like to switch to a partial home back-up.`,
-                      });
-                    } else {
-                      setRequiredBattery((prev) => (prev ? prev - 1 : prev));
+                    if (requiredBattery > 1) {
+                      if (required && requiredBattery <= required) {
+                        setIsOpen(true);
+                        setMssg(
+                          `You are attempting to reduce the total number of batteries below our recommended minimum for a Full Home Back-Up.We cannot gaurentee the effectiveness in which this battery configuration can support your home. Would you like to remain at the recommended battery quantity for a Full Home Back-Up or reduce the number of batteries in this system and switch to a Partial Home Back-up`
+                        );
+                        setBtnText({
+                          primaryText: `I would like to remain with the recommended configuration.`,
+                          secondaryText: `I would like to switch to a partial home back-up.`,
+                        });
+                      } else {
+                        setRequiredBattery((prev) =>
+                          prev > 1 ? prev - 1 : prev
+                        );
+                      }
                     }
                   }}
                   className="watt-counter-btn pointer justify-center flex items-center"
@@ -310,8 +347,12 @@ const BatteryAmp = () => {
                   role="button"
                   onClick={() =>
                     setRequiredBattery((prev) => {
-                      let init = prev + 1;
-                      return init;
+                      if (prev < required) {
+                        let init = prev + 1;
+                        return init;
+                      } else {
+                        return prev;
+                      }
                     })
                   }
                   className={`watt-counter-btn   pointer justify-center flex items-center ${requiredBattery >= required ? 'disable' : ''}`}
@@ -320,11 +361,39 @@ const BatteryAmp = () => {
                 </div>
               </div>
             </div>
+
+            {!mainOn && (
+              <>
+                <div className="battery-progress-bar  mt2 relative">
+                  <div
+                    className="progress"
+                    style={{
+                      width: `${avavilableAmpPercentage.percentage > 0 ? avavilableAmpPercentage.percentage : 0}%`,
+                    }}
+                  ></div>
+                </div>
+                <div className="flex mt1 items-center justify-between">
+                  <p
+                    style={{ fontWeight: 500, color: '#1660F0', fontSize: 12 }}
+                  >
+                    {' '}
+                    {avavilableAmpPercentage.remainingAmps} Amp Remaining
+                  </p>
+
+                  <p
+                    style={{ fontWeight: 500, color: '#919191', fontSize: 12 }}
+                  >
+                    {' '}
+                    {totalAmp} Total Amp{' '}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
 
           <div
             style={{ width: '100%' }}
-            className="mt3 battery-watt-wrapper justify-between flex items-center bg-white"
+            className="mt3 battery-watt-wrapper  justify-between flex items-center bg-white"
           >
             <div
               className="calc-input-wrapper relative"
@@ -342,7 +411,7 @@ const BatteryAmp = () => {
               />
             </div>
           </div>
-        
+
           <div
             className="bg-white mt3 panel-container p3 flex-grow-1 relative"
             style={{ borderRadius: 20 }}
@@ -451,20 +520,7 @@ const BatteryAmp = () => {
                       <span>Full Home Backup</span>
                     </div>
                   </div>
-                  <div
-                    onClick={() => {
-                      if (!mainDisabled) {
-                        setMainOn((prev) => !prev);
-                        if (!mainOn) {
-                          setRequiredBattery(required);
-                          setBatteryPower((prev) =>
-                            prev.map((battery) => ({ ...battery, isOn: true }))
-                          );
-                        }
-                      }
-                    }}
-                    className="batter-amp-switch pointer flex items-center justify-center"
-                  >
+                  <div className="batter-amp-switch pointer flex items-center justify-center">
                     <img src={mainOn ? on : off} alt="" className="pointer" />
                   </div>
                 </div>
@@ -502,6 +558,7 @@ const BatteryAmp = () => {
                                 : '#F44336',
                               fontSize: 10,
                               color: '#fff',
+                              fontWeight: 700,
                             }}
                           >
                             {' '}
@@ -515,7 +572,7 @@ const BatteryAmp = () => {
                               className="block"
                               style={{ fontSize: 10, lineHeight: 1.2 }}
                             >
-                              {item.category_name}
+                              {item.category_name} ({item.category_ampere})
                             </span>
                           </div>
                         </div>
@@ -578,7 +635,6 @@ const BatteryAmp = () => {
           setRequiredBattery={setRequiredBattery}
           setMainDisabled={setMainDisabled}
           setIsOpen={setIsOpen}
-    
         />
       )}
     </div>

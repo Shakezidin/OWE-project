@@ -3,23 +3,16 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import {
-  chg_dlrOption,
-  dbaOption,
   sourceOption,
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { updateMarketingForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createMarketingSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import {
-  chldlrData,
-  dbaData,
-} from '../../../../resources/static_data/StaticData';
 import { MarketingFeeModel } from '../../../../core/models/configuration/create/MarketingFeeModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import { fetchmarketingFees } from '../../../../redux/apiSlice/configSlice/config_get_slice/marketingSlice';
 import { FormEvent } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
@@ -131,7 +124,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
       description: [
         {
           condition: (value: any) => !!value,
-          message: 'Description is required',
+          message: 'Notes is required',
         },
       ],
       start_date: [
@@ -321,30 +314,33 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                     <span className="error">{errors.end_date}</span>
                   )}
                 </div>
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Notes"
+                    value={createMarketing.description}
+                    name="notes"
+                    placeholder={'Enter'}
+                    onChange={(e) =>
+                      setCreateMarketing((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                  />
+                  {errors?.description && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.description}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <div className="create-input-field-note">
-                <label htmlFor="" className="inputLabel">
-                  Note
-                </label>{' '}
-                <br />
-                <textarea
-                  name={createMarketing.description}
-                  id=""
-                  rows={4}
-                  onChange={(e) =>
-                    setCreateMarketing((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
-                  }
-                  value={createMarketing.description}
-                  placeholder="Type"
-                ></textarea>
-                {errors.description && (
-                  <span className="error">{errors.description}</span>
-                )}
-              </div>
             </div>
           </div>
         </div>

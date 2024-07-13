@@ -8,11 +8,9 @@
 }
 .wrapper-header {
   border-bottom: none;
-  background: #fff;
   margin-inline: -1.5rem;
   padding: 1.5rem;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  background-color: #313752;
   margin-top: -2rem;
 }
 .check-btn{
@@ -24,6 +22,21 @@
   color: #fff;
   border-radius: 4px;
   padding-inline: 1.6rem;
+}
+
+.battery-progress-bar{
+  background-color: #D5EBF8;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 15px;
+}
+
+.battery-progress-bar .progress{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #1660F0;
 }
 
 .calc-input .inputLabel,
@@ -253,7 +266,13 @@
   left: 10px;
   bottom: 10px;
 }
-
+.sticky-wrapper{
+  position: sticky;
+  top: 0px;
+  transition: all 500ms;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+  z-index: 50;
+}
 .battery-watt-wrapper {
   border-radius: 20px;
   padding-left: 21px;
@@ -326,6 +345,8 @@
 .batter-amp-container {
   padding-bottom: 20px;
   max-width: 1182px;
+  position: relative;
+  z-index: 1;
   margin-inline: auto;
 }
 
@@ -484,8 +505,7 @@
   right: 0;
   bottom: 0;
   background-color: #fff;
-  padding-top: 19px;
-  padding-bottom: 36px;
+  padding-block: 14px;
   padding-inline: 30px;
   filter: drop-shadow(0 -2px 12px rgba(0, 0, 0, 0.04));
 }

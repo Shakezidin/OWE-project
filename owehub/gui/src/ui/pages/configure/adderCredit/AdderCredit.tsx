@@ -25,6 +25,7 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { checkLastPage } from '../../../../utiles';
 const AdderCredit = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -150,16 +151,16 @@ const AdderCredit = () => {
       const res = await postCaller('update_adder_credit_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchAdderCredit(pageNumber));
-        setSelectedRows(new Set())
-        setSelectAllChecked(false)
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
+        checkLastPage(currentPage,totalPages,setCurrentPage)
       } else {
         await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
 
-  console.log(data);
 
   return (
     <div className="comm">
@@ -239,9 +240,9 @@ const AdderCredit = () => {
                   />
                 ))}
                 <th>
-                {(!viewArchived && selectedRows.size<2) &&  <div className="action-header">
+                  <div className="action-header">
                     <p>Action</p>
-                  </div>}
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -270,33 +271,48 @@ const AdderCredit = () => {
                             )
                           }
                         />
-                        {el.unique_id}
+                        {el.pay_scale}
                       </div>
                     </td>
-                    <td>{el.pay_scale}</td>
                     <td>{el.type}</td>
-                    <td>{el.max_rate}</td>
                     <td>{el.min_rate}</td>
+                    <td>{el.max_rate}</td>
 
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick([el.record_id])}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            onClick={() => handleEdit(el)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{
+                            cursor:
+                              !viewArchived && selectedRows.size < 2
+                                ? 'pointer'
+                                : 'not-allowed',
+                          }}
+                          onClick={() =>
+                            !viewArchived &&
+                            selectedRows.size < 2 &&
+                            handleArchiveClick([el.record_id])
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      )}
+                        <div
+                          className=""
+                          onClick={() =>
+                            !viewArchived &&
+                            selectedRows.size < 2 &&
+                            handleEdit(el)
+                          }
+                          style={{
+                            cursor:
+                              !viewArchived && selectedRows.size < 2
+                                ? 'pointer'
+                                : 'not-allowed',
+                          }}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))

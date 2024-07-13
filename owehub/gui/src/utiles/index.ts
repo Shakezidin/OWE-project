@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react"
 import { postCaller } from "../infrastructure/web_api/services/apiUrl"
 
 export const firstCapitalize = (str:string)=>{
@@ -6,4 +7,12 @@ export const firstCapitalize = (str:string)=>{
 }
 export const sendMail = ({toMail,message,subject}:{toMail:string,message:string,subject:string}) =>{
     return postCaller("sendmail",{subject,message,to_mail:toMail})
+}
+
+
+export const checkLastPage = (current:number,total:number,setCurrentPage:Dispatch<SetStateAction<number>>) =>{
+    if (current===total && current>1) {
+        setCurrentPage(prev=>prev-1)
+    }
+    return
 }
