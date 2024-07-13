@@ -1,10 +1,9 @@
-import { ChangeEvent, FC, InputHTMLAttributes } from 'react';
+import {  FC, InputHTMLAttributes } from 'react';
 import './Input.css';
 import { ReactComponent as EYE_ICON } from '../../../resources/assets/eye-icon.svg';
 import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-off-icon.svg';
 import { ICONS } from '../../icons/Icons';
 import { FormInput } from '../../../core/models/data_models/typesModel';
-import { format } from 'date-fns';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:

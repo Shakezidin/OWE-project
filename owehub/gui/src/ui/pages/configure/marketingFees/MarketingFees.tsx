@@ -14,12 +14,9 @@ import Pagination from '../../../components/pagination/Pagination';
 import { MarketingFeesColumn } from '../../../../resources/static_data/configureHeaderData/MarketingFeeColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import FilterModal from '../../../components/FilterModal/FilterModal';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import {
   errorSwal,
@@ -295,7 +292,7 @@ const MarketingFees: React.FC = () => {
                 </tr>
               ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
-                  <tr key={i} className={ selectedRows.has(i)? `selected`:""}>
+                  <tr key={i} >
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
@@ -323,8 +320,8 @@ const MarketingFees: React.FC = () => {
                     </td>
                     <td>{el.pay_src?.trim?.() ||"N/A"}</td>
                     <td>{el.description?.trim?.() ||"N/A"}</td>
-                    <td>{dateFormat(el.start_date)}</td>
-                    <td>{dateFormat(el.end_date)} </td>
+                    <td>{dateFormat(el.start_date.trim())}</td>
+                    <td>{dateFormat(el.end_date.trim())} </td>
                     <td>
                       
                     {!viewArchived && selectedRows.size<2 && (
