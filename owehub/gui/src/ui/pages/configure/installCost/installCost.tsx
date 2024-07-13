@@ -173,7 +173,7 @@ const InstallCost = () => {
     setFilters(req.filters);
   };
 
-  console.log(timelinesla_list, 'arrr');
+
 
   return (
     <div className="comm">
@@ -241,7 +241,7 @@ const InstallCost = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={timelinesla_list}
+                    data={currentPageData}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -257,7 +257,7 @@ const InstallCost = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
@@ -280,7 +280,7 @@ const InstallCost = () => {
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
-                          checked={selectedRows.has(el.record_id)}
+                          checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
                               el.record_id,
