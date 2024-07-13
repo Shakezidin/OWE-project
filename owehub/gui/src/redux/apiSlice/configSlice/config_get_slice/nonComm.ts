@@ -54,7 +54,7 @@ const nonComm = createSlice({
       .addCase(createNonComm.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Form submission completed');
+        toast.success('Non Comm Created Successfully');
       })
       .addCase(createNonComm.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -67,7 +67,7 @@ const nonComm = createSlice({
       .addCase(updateNoncom.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Details updated successfully');
+        toast.success('Non Comm updated successfully');
       })
       .addCase(updateNoncom.rejected, (state, action) => {
         state.isFormSubmitting = false;
