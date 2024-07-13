@@ -15,6 +15,7 @@ import { stateOption } from '../../../../core/models/data_models/SelectDataModel
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -34,12 +35,14 @@ const CreateDealer: React.FC<dealerProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
+  console.log("edit", dealerData)
+   console.log(dealerData, "d d data")
   const [createDealer, setCreateDealer] = useState({
     record_id: dealerData ? dealerData?.record_id : 0,
     sub_dealers: dealerData ? dealerData?.sub_dealer : '',
     pay_rate: dealerData ? dealerData?.pay_rate : '',
-    start_date: dealerData ? dealerData?.start_date : '',
-    end_date: dealerData ? dealerData?.end_date : '',
+    start_date: dealerData ? (dealerData?.start_date) : '',
+    end_date: dealerData ? (dealerData?.end_date) : '',
     state: dealerData ? dealerData?.state : '',
   });
   const [delaerVal, setDealerVal] = useState(dealerData?.dealer || '');
