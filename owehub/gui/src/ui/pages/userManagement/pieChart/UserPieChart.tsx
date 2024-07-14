@@ -77,8 +77,8 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               </div>
             ) : (
               <div className="data-not-found " style={{ width: '100%' }}>
-                <DataNotFound title="" />
-                <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
+                <DataNotFound title={loading ? 'Searching..' : 'No SaleRep Found'} />
+             
               </div>
             )}
 
@@ -167,8 +167,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           </div>
         ) : (
           <div className="data-not-found">
-            <DataNotFound title="" />
-            <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
+            <DataNotFound title={loading ? 'Searching..' : 'No SaleRep Found'} />
           </div>
         )}
 

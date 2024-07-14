@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import '../../configure/configure.css';
 import HelpDashboard from '../../dashboard/HelpDashboard';
