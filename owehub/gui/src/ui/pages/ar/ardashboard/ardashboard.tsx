@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './ardashboard.css';
 import { ICONS } from '../../../icons/Icons';
-import {
-  comissionValueData,
-  payRollData,
-} from '../../../../resources/static_data/StaticData';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import ArDashBoardTable, { Commissioncolumns } from './artable';
 import ArDropdownWithCheckboxes from './Dropdown';
 import 'react-date-range/dist/styles.css'; // main style file
