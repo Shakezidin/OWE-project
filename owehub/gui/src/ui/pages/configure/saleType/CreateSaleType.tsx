@@ -14,14 +14,14 @@ interface salesProps {
   handleClose: () => void;
   salesTypeData: SalesTypeModel | null;
   editMode: boolean;
-  setRefetch:Dispatch<SetStateAction<number>>
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 const CreateSaleType: React.FC<salesProps> = ({
   handleClose,
   salesTypeData,
   editMode,
-  setRefetch
+  setRefetch,
 }) => {
   const dispatch = useDispatch();
   console.log(salesTypeData);
@@ -30,19 +30,20 @@ const CreateSaleType: React.FC<salesProps> = ({
     type_name: salesTypeData ? salesTypeData?.type_name : '',
     description: salesTypeData ? salesTypeData?.description : '',
   });
-  const [isPending, setIsPending] = useState(false)
-  const [errors,setErrors] = useState<SalesTypeModel>({} as SalesTypeModel)
+  const [isPending, setIsPending] = useState(false);
+  const [errors, setErrors] = useState<SalesTypeModel>({} as SalesTypeModel);
 
   const handleValidation = () => {
-    const error:SalesTypeModel  = {} as SalesTypeModel;
+    const error: SalesTypeModel = {} as SalesTypeModel;
     for (const key in createSales) {
-      if (key==="record_id") {
+      if (key === 'record_id') {
         continue;
       }
       if (!createSales[key as keyof typeof createSales]) {
         // @ts-ignore
-        error[key as keyof SalesTypeModel] =
-          firstCapitalize(`${key.replace('_', ' ')} is required`);
+        error[key as keyof SalesTypeModel] = firstCapitalize(
+          `${key.replace('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -61,7 +62,7 @@ const CreateSaleType: React.FC<salesProps> = ({
   const submitSalesType = async (e: FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
-      setIsPending(true)
+      setIsPending(true);
       try {
         dispatch(updateSalesForm(createSales));
         if (createSales.record_id) {
@@ -69,25 +70,25 @@ const CreateSaleType: React.FC<salesProps> = ({
           if (res.status === 200) {
             toast.success(res.message);
             handleClose();
-            setIsPending(false)
-            setRefetch(prev=>prev+1)
+            setIsPending(false);
+            setRefetch((prev) => prev + 1);
           } else {
-            setIsPending(false)
+            setIsPending(false);
             toast.error(res.message);
           }
         } else {
           const { record_id, ...cleanedFormData } = createSales;
-          const res = await postCaller(
-            EndPoints.create_saletype,
-            {description:cleanedFormData.description.trim(),type_name:cleanedFormData.type_name.trim()}
-          );
+          const res = await postCaller(EndPoints.create_saletype, {
+            description: cleanedFormData.description.trim(),
+            type_name: cleanedFormData.type_name.trim(),
+          });
           if (res.status === 200) {
             toast.success(res.message);
             handleClose();
-            setIsPending(false)
-            setRefetch(prev=>prev+1)
+            setIsPending(false);
+            setRefetch((prev) => prev + 1);
           } else {
-            setIsPending(false)
+            setIsPending(false);
             toast.error(res.message);
           }
         }
@@ -120,17 +121,15 @@ const CreateSaleType: React.FC<salesProps> = ({
                       onChange={(e) => handleSalesChange(e)}
                     />
                     {errors?.type_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                  
-                        
-                      }}
-className="error"
-                    >
-                      {errors.type_name}
-                    </span>
-                  )}
+                      <span
+                        style={{
+                          display: 'block',
+                        }}
+                        className="error"
+                      >
+                        {errors.type_name}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="create-input-field-note">
@@ -143,17 +142,17 @@ className="error"
                     id=""
                     rows={4}
                     value={createSales.description}
-                    onChange={(e) => !e.target.value.startsWith(" ") && handleSalesChange(e)}
+                    onChange={(e) =>
+                      !e.target.value.startsWith(' ') && handleSalesChange(e)
+                    }
                     placeholder="Type"
                   ></textarea>
                   {errors?.description && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.description}
                     </span>

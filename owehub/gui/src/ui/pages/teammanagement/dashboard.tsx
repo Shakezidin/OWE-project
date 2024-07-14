@@ -9,7 +9,7 @@ import NewTeam from './NewMember/NewTeam';
 
 interface AccordionSection {
   title: string;
-  data: { title: string;size: number; route: string }[];
+  data: { title: string; size: number; route: string }[];
   state: [boolean, React.Dispatch<React.SetStateAction<boolean>>] | undefined;
 }
 
@@ -17,22 +17,19 @@ const TeamManagement: React.FC = () => {
   const cardColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
 
-
-
-
   const accordionSections: AccordionSection[] = [
     {
       title: '',
       data: [
-        { title: 'Bizon',size: 27, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'Bizon', size: 27, route: ROUTES.TEAM_MANAGEMENT_TABLE },
         // { title: "Adders", route: ROUTES.CONFIG_ADDER },
-        { title: 'Pirates',size: 74, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'Pirates', size: 74, route: ROUTES.TEAM_MANAGEMENT_TABLE },
         // { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE },
-        { title: 'UNTD',size: 65, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-        { title: 'Propector',size: 36, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-        { title: 'Morgan',size: 89, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-        { title: 'Prime',size: 113, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-        { title: 'Light Work',size: 78, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'UNTD', size: 65, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'Propector', size: 36, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'Morgan', size: 89, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'Prime', size: 113, route: ROUTES.TEAM_MANAGEMENT_TABLE },
+        { title: 'Light Work', size: 78, route: ROUTES.TEAM_MANAGEMENT_TABLE },
       ],
       state: useState<boolean>(true),
     },
@@ -40,21 +37,20 @@ const TeamManagement: React.FC = () => {
 
   const [open2, setOpen2] = useState<boolean>(false);
 
-  
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
     setOpen2(false);
   };
 
   const onSubmitCreateTeam = () => {
-    console.log("")
-  }
+    console.log('');
+  };
 
   let prevColorIndex = -1;
 
   return (
     <>
-    {open2 && (
+      {open2 && (
         <NewTeam
           handleClose2={handleClose2}
           onSubmitCreateUser={onSubmitCreateTeam}
@@ -72,16 +68,8 @@ const TeamManagement: React.FC = () => {
                   className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
                   <div className={`team-cards ${isOpen ? 'open' : ''}`}>
-
-
-
-
-
                     <div onClick={handleOpen2}>
-                      <Link
-                        to=""
-                        className="create-new-card"
-                      >
+                      <Link to="" className="create-new-card">
                         <div className="team-cust-file">
                           <div className="team-cust-group">
                             <img src={ICONS.addicon} alt="" />
@@ -91,17 +79,21 @@ const TeamManagement: React.FC = () => {
                       </Link>
                     </div>
 
-                    
-                   {data.map((item, index) => {
+                    {data.map((item, index) => {
                       let randomColorIndex;
                       let randomCardColor;
                       let randomArrowColor;
 
                       do {
-                        randomColorIndex = Math.floor(Math.random() * cardColors.length);
+                        randomColorIndex = Math.floor(
+                          Math.random() * cardColors.length
+                        );
                         randomCardColor = cardColors[randomColorIndex];
                         randomArrowColor = arrowColors[randomColorIndex];
-                      } while (index > 0 && randomColorIndex === prevColorIndex);
+                      } while (
+                        index > 0 &&
+                        randomColorIndex === prevColorIndex
+                      );
 
                       // Update the previous color index
                       prevColorIndex = randomColorIndex;
@@ -131,10 +123,7 @@ const TeamManagement: React.FC = () => {
                         </div>
                       );
                     })}
-
-
                   </div>
-
                 </div>
               );
             })}

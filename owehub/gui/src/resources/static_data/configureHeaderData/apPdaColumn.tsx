@@ -50,5 +50,5 @@ export const ApPdaColumn: Column[] = [
     displayName: 'Description',
     type: 'string',
     isCheckbox: false,
-  }
+  },
 ];

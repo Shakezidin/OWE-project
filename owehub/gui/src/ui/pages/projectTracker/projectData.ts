@@ -41,7 +41,7 @@ export const projectDashData = [
     para: 'All Sales',
     percentColor: '#8E81E0',
     key: 'SalesPeriod',
-    percent: 80
+    percent: 80,
   },
   {
     ruppes: '$620,450.05',
@@ -49,14 +49,14 @@ export const projectDashData = [
     iconBgColor: '#FFE6E6',
     percentColor: '#C470C7',
     key: 'cancellation_period',
-    percent: 30
+    percent: 30,
   },
   {
     ruppes: '$620,450.05',
     para: 'Total Installation',
     percentColor: '#63ACA3',
     key: 'installation_period',
-    percent: 50
+    percent: 50,
   },
 ];
 export const projectStatusHeadData = [

@@ -298,7 +298,6 @@ const ProjectPerformence = () => {
                       >
                         <DataNotFound />
                       </div>
-                      <span>No Data Found</span>
                     </td>
                   </tr>
                 ) : (

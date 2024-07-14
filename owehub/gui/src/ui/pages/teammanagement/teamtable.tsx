@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 import Pagination from '../../components/pagination/Pagination';
 import { ICONS } from '../../icons/Icons';
-import './dashboard.css'
+import './dashboard.css';
 import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
@@ -20,7 +20,6 @@ const TeamTable: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [open1, setOpen1] = useState<boolean>(false);
 
-  
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -90,155 +89,168 @@ const TeamTable: React.FC = () => {
 
   const endIndex = currentPage * itemsPerPage;
   const onSubmitCreateUser = () => {
-    console.log("")
+    console.log('');
     handleClose();
-  }
+  };
   return (
     <>
-    <div className="comm">
-      <Breadcrumb
-        head=""
-        linkPara="Team Management"
-        route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
-        linkparaSecond="Team Details"
-      />
-      {open && (
-        <AddMember
-          handleClose={handleClose}
-          onSubmitCreateUser={onSubmitCreateUser}
+      <div className="comm">
+        <Breadcrumb
+          head=""
+          linkPara="Team Management"
+          route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
+          linkparaSecond="Team Details"
         />
-      )}
-      {open1 && (
-        <MoveMember
-          handleClose1={handleClose1}
-          onSubmitCreateUser={onSubmitCreateUser}
-        />
-      )}
-      <div className="dashBoard-container">
-        <div
-          className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
-        >
-          <div className='team-table-top'>
-            <div className='team-members-top'>
-              <div className='team-members'>
-                <span>Team Name</span>
-                <h1>Bison</h1>
+        {open && (
+          <AddMember
+            handleClose={handleClose}
+            onSubmitCreateUser={onSubmitCreateUser}
+          />
+        )}
+        {open1 && (
+          <MoveMember
+            handleClose1={handleClose1}
+            onSubmitCreateUser={onSubmitCreateUser}
+          />
+        )}
+        <div className="dashBoard-container">
+          <div
+            className="TableContainer"
+            style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+          >
+            <div className="team-table-top">
+              <div className="team-members-top">
+                <div className="team-members">
+                  <span>Team Name</span>
+                  <h1>Bison</h1>
+                </div>
+                <div className="team-members">
+                  <span>Manager</span>
+                  <h1>Glen Philips</h1>
+                </div>
+                <div className="team-members">
+                  <span>Regional Manager</span>
+                  <h1>Ab Dev</h1>
+                </div>
               </div>
-              <div className='team-members'>
-                <span>Manager</span>
-                <h1>Glen Philips</h1>
-              </div>
-              <div className='team-members'>
-                <span>Regional Manager</span>
-                <h1>Ab Dev</h1>
+              <div className="team-button-sec">
+                <button
+                  onClick={() => {
+                    handleOpen();
+                  }}
+                >
+                  + Add New Member
+                </button>
               </div>
             </div>
-            <div className='team-button-sec'>
-              <button
-               onClick={() => {
-                handleOpen();
-              }}>+ Add New Member</button>
-            </div>
-          </div>
-          <table>
-            <thead>
-              <tr>
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ paddingLeft: '34px' }}>
+                    <div className="table-header">
+                      <p>Sales Rep</p>{' '}
+                      <FaArrowDown style={{ color: '#667085' }} />
+                    </div>
+                  </th>
+                  <th>
+                    <div className="table-header">
+                      <p>Phone Number</p>{' '}
+                      <FaArrowDown style={{ color: '#667085' }} />
+                    </div>
+                  </th>
 
-                <th style={{ paddingLeft: '34px' }}>
-                  <div className="table-header">
-                    <p>Sales Rep</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Phone Number</p>{' '}
-
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-
-                <th>
-                  <div className="table-header">
-                    <p>Email ID</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="action-header" style={{ paddingRight: '94px' }}>
-                    <p>Move</p>{' '}
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header" style={{ paddingRight: '34px' }}>
-                    <p>Offboard</p>{' '}
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataUser.length > 0
-                ? dataUser.map((el: any, index: any) => (
-                  <tr key={index}>
-
-                    <td
-                      style={{
-                        color: '101828',
-                        paddingLeft: '33px',
-                        fontWeight: '500',
-                      }}
+                  <th>
+                    <div className="table-header">
+                      <p>Email ID</p>{' '}
+                      <FaArrowDown style={{ color: '#667085' }} />
+                    </div>
+                  </th>
+                  <th>
+                    <div
+                      className="action-header"
+                      style={{ paddingRight: '94px' }}
                     >
-                      {el.name}
-                    </td>
-                    <td style={{ color: '#101828' }}>{el.phoneNumber}</td>
-                    <td style={{ color: '#101828' }}>{el.emailId}</td>
-                    <td className="zoom-out-help" style={{paddingLeft:'18px'}}>
-                      <img src={ICONS.TeamEdit} style={{
-                        height: '18px',
-                        width: '18px',
-                        stroke: '0.2',
-                      }}
-                        alt=""
-                        onClick={() => handleOpen1()}
-                      />
-                    </td>
-                    <td className="zoom-out-help" style={{paddingLeft:'30px'}}>
-                      <img src={ICONS.deleteIcon} style={{
-                        height: '18px',
-                        width: '18px',
-                        stroke: '0.2',
-                        
-                      }}
-                        alt=""
-                      />
-
-                    </td>
-                  </tr>
-                ))
-                : null}
-            </tbody>
-          </table>
-        </div>
-        {dataUser?.length > 0 ? (
-          <div className="page-heading-container">
-            <p className="page-heading">
-              Showing {startIndex} -{' '}
-              {endIndex > count ? count : endIndex} of {count}{' '}
-              item
-            </p>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
+                      <p>Move</p>{' '}
+                    </div>
+                  </th>
+                  <th>
+                    <div
+                      className="table-header"
+                      style={{ paddingRight: '34px' }}
+                    >
+                      <p>Offboard</p>{' '}
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataUser.length > 0
+                  ? dataUser.map((el: any, index: any) => (
+                      <tr key={index}>
+                        <td
+                          style={{
+                            color: '101828',
+                            paddingLeft: '33px',
+                            fontWeight: '500',
+                          }}
+                        >
+                          {el.name}
+                        </td>
+                        <td style={{ color: '#101828' }}>{el.phoneNumber}</td>
+                        <td style={{ color: '#101828' }}>{el.emailId}</td>
+                        <td
+                          className="zoom-out-help"
+                          style={{ paddingLeft: '18px' }}
+                        >
+                          <img
+                            src={ICONS.TeamEdit}
+                            style={{
+                              height: '18px',
+                              width: '18px',
+                              stroke: '0.2',
+                            }}
+                            alt=""
+                            onClick={() => handleOpen1()}
+                          />
+                        </td>
+                        <td
+                          className="zoom-out-help"
+                          style={{ paddingLeft: '30px' }}
+                        >
+                          <img
+                            src={ICONS.deleteIcon}
+                            style={{
+                              height: '18px',
+                              width: '18px',
+                              stroke: '0.2',
+                            }}
+                            alt=""
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  : null}
+              </tbody>
+            </table>
           </div>
-        ) : null}
-      </div>
+          {dataUser?.length > 0 ? (
+            <div className="page-heading-container">
+              <p className="page-heading">
+                Showing {startIndex} - {endIndex > count ? count : endIndex} of{' '}
+                {count} item
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </>
   );

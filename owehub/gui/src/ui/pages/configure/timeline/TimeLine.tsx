@@ -7,13 +7,11 @@ import CreateTimeLine from './CreateTimeLine';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { TimeLineSlaColumns } from '../../../../resources/static_data/configureHeaderData/TimeLineSlaColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -26,6 +24,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -50,17 +49,17 @@ const TimeLine = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [filters,setFilters] = useState<FilterModel[]>([])
-  const [refetch, setRefetch] = useState(1)
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch, setRefetch] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
-      filters
+      filters,
     };
     dispatch(fetchTimeLineSla(pageNumber));
-  }, [dispatch, currentPage, viewArchived,filters,refetch]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -138,7 +137,7 @@ const TimeLine = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         };
 
         const res = await postCaller(
@@ -189,7 +188,7 @@ const TimeLine = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
-        filters
+        filters,
       };
       const res = await postCaller(
         EndPoints.update_timelinesla_archive,
@@ -211,7 +210,7 @@ const TimeLine = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
   const handleTimeLineSla = () => {
     setEditMode(false);
@@ -225,8 +224,8 @@ const TimeLine = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   if (error) {
     return (
@@ -308,7 +307,7 @@ const TimeLine = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
@@ -370,10 +369,7 @@ const TimeLine = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

@@ -62,26 +62,25 @@
   padding: 0 !important;
   border: 0 !important;
 }
-.stats-wrapper{
+.stats-wrapper {
   gap: 20px;
 }
 
-.pie-chart-container{
+.pie-chart-container {
   height: 300px !important;
 }
 
-
 @media screen and (min-width: 1025px) and (max-width: 1400px) {
-  .pie-section-1, .pie-section-2{
+  .pie-section-1,
+  .pie-section-2 {
     width: 100%;
-  } 
+  }
   .chart-view {
     flex-direction: column;
   }
 }
 @media (max-width: 1024px) {
-
-  .pie-chart-container{
+  .pie-chart-container {
     height: 200px !important;
   }
   .stats-wrapper {
@@ -92,26 +91,25 @@
     margin-inline: auto;
   }
 
-  .stats-wrapper > *{
-    font-size: 12px  !important;
+  .stats-wrapper > * {
+    font-size: 12px !important;
   }
 
-  .stats-wrapper > h3{
-    font-size: 12px  !important;
+  .stats-wrapper > h3 {
+    font-size: 12px !important;
   }
-  .pie-section-1{
+  .pie-section-1 {
     width: 60%;
-  } 
+  }
 
-  .pie-section-2{
+  .pie-section-2 {
     width: 40%;
   }
 
-  .onboarding-mask-img{
+  .onboarding-mask-img {
     width: 124px;
   }
   .mask-chart-img {
     width: 124px;
   }
- 
 }

@@ -1,30 +1,29 @@
-
 import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { archiveRepStatus, fetchRepStatusList } from '../../../../redux/apiActions/config/repstatusAction';
-// import CreateTimeLine from "./CreateTimeLine";
+import {
+  archiveRepStatus,
+  fetchRepStatusList,
+} from '../../../../redux/apiActions/config/repstatusAction';
 import CreateAr from './createrepstatus';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import { ARColumns } from '../../../../resources/static_data/configureHeaderData/ARColumn';
 import { ROUTES } from '../../../../routes/routes';
-import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { errorSwal, showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
-import { dateFormat } from '../../../../utiles/formatDate';
-import { DbaColumn } from '../../../../resources/static_data/configureHeaderData/DbaColumn';
-import { RepCreditcolumns } from '../../../../resources/static_data/configureHeaderData/RepCreditColumn';
 import { RepStatuscolumns } from '../../../../resources/static_data/configureHeaderData/RepStatusColumn';
+
 const RepStatus = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -34,9 +33,6 @@ const RepStatus = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
-
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -161,17 +157,16 @@ const RepStatus = () => {
           page_size: itemsPerPage,
           filters,
         };
-  
+
         try {
-          
-         await dispatch(archiveRepStatus(archivedRows))
-  
+          await dispatch(archiveRepStatus(archivedRows));
+
           setSelectedRows(new Set());
           setSelectAllChecked(false);
-  
+
           // Refetch the rep status list after archiving
           dispatch(fetchRepStatusList(pageNumber));
-  
+
           await successSwal('Archived', 'The data has been archived');
         } catch (error) {
           console.error('Error archiving rep status:', error);
@@ -180,7 +175,7 @@ const RepStatus = () => {
       }
     }
   };
-  
+
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are You Sure',
@@ -194,16 +189,16 @@ const RepStatus = () => {
         page_size: itemsPerPage,
         filters,
       };
-  
+
       try {
         await dispatch(archiveRepStatus([record_id]));
-  
+
         setSelectedRows(new Set());
         setSelectAllChecked(false);
-  
+
         // Refetch the rep status list after archiving
         dispatch(fetchRepStatusList(pageNumber));
-  
+
         await successSwal('Archived', 'The data has been archived');
       } catch (error) {
         console.error('Error archiving rep status:', error);
@@ -211,8 +206,6 @@ const RepStatus = () => {
       }
     }
   };
-
-
 
   return (
     <div className="comm">
@@ -280,7 +273,11 @@ const RepStatus = () => {
                   />
                 ))}
                 {viewArchived === true ? null : (
-                  <th className={!viewArchived && selectedRows.size < 2 ? '' : 'd-none'}>
+                  <th
+                    className={
+                      !viewArchived && selectedRows.size < 2 ? '' : 'd-none'
+                    }
+                  >
                     <div className="action-header">
                       {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                     </div>
@@ -317,7 +314,7 @@ const RepStatus = () => {
                       </div>
                     </td>
                     <td>{el.status || 'N/A'}</td>
-                    
+
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
@@ -343,10 +340,7 @@ const RepStatus = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

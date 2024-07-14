@@ -8,14 +8,19 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repstatusSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
-import { createRepCredit, updateRepCredit } from '../../../../redux/apiActions/config/repCreditAction';
-import { createRepStatus, updateRepStatus } from '../../../../redux/apiActions/config/repstatusAction';
+import {
+  createRepCredit,
+  updateRepCredit,
+} from '../../../../redux/apiActions/config/repCreditAction';
+import {
+  createRepStatus,
+  updateRepStatus,
+} from '../../../../redux/apiActions/config/repstatusAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: any;
 }
-
 
 const CreateRepCredit: React.FC<payScheduleProps> = ({
   handleClose,
@@ -24,7 +29,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess, isLoading } = useAppSelector((state) => state.repStatus);
-  console.log("dudfguyfds", editData)
+  console.log('dudfguyfds', editData);
   const [createArData, setCreateArData] = useState({
     name: editData?.name || '',
     status: editData?.status || '',
@@ -33,8 +38,6 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
 
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -49,7 +52,9 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
       status: [
         { condition: (value: any) => !!value, message: 'Status is required' },
       ],
-      name: [{ condition: (value: any) => !!value, message: 'Name is required' }],
+      name: [
+        { condition: (value: any) => !!value, message: 'Name is required' },
+      ],
     };
     const { isValid, errors } = validateConfigForm(
       createArData!,
@@ -66,7 +71,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
           ...createArData,
           name: createArData.name,
           status: createArData.status,
-          record_id: createArData.record_id
+          record_id: createArData.record_id,
         })
       );
     } else {
@@ -79,17 +84,12 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
     }
   };
 
-
-  
-
   useEffect(() => {
     if (isSuccess) {
       handleClose();
       dispatch(resetSuccess());
     }
   }, [isSuccess, dispatch]);
-
-
 
   return (
     <div className="transparent-model">
@@ -105,7 +105,6 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
@@ -128,12 +127,11 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.status && <span className="error">{errors.status}</span>}
+                  {errors.status && (
+                    <span className="error">{errors.status}</span>
+                  )}
                 </div>
-
               </div>
-             
-
             </div>
           </div>
         </div>
@@ -147,7 +145,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             disabled={isLoading}
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

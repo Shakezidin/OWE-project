@@ -300,16 +300,16 @@ p.loginResendOtp {
 }
 
 /*Login Responsive*/
-@media screen and (max-width: 1024px){
-  .container{
+@media screen and (max-width: 1024px) {
+  .container {
     flex-direction: column;
     justify-content: center;
     gap: 30px;
   }
-  .loginBox{
-      flex: 0 0;
+  .loginBox {
+    flex: 0 0;
   }
-  .mainContainer{
+  .mainContainer {
     background-position: 25%;
   }
 }

@@ -361,10 +361,7 @@ const ArDashBoardTable = ({
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={12}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

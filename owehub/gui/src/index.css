@@ -38,13 +38,12 @@
   --project-icon-color-3: #19b87e;
   --project-icon-color-4: #de2e2e;
 
-
-  --primary-color: #377CF6;
-  --secondary-color: #63ACA3;
-  --teritary-color: #8E81E0;
-  --orange-color: #EE824D;
-  --purpink-color: #C470C7;
-  --primary-light-color: #D5E4FF;
+  --primary-color: #377cf6;
+  --secondary-color: #63aca3;
+  --teritary-color: #8e81e0;
+  --orange-color: #ee824d;
+  --purpink-color: #c470c7;
+  --primary-light-color: #d5e4ff;
 }
 a {
   text-decoration: none;
@@ -168,7 +167,7 @@ input[type='password']::-ms-clear {
   border-radius: 1.5rem;
   margin-top: 0.5rem;
 }
- ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
 }
 
@@ -388,7 +387,7 @@ br {
   margin-bottom: -15px !important;
 }
 
-.scrollbar{
+.scrollbar {
   overflow: auto;
   height: 100vh;
 }
@@ -396,9 +395,9 @@ br {
 .scrollbar::-webkit-scrollbar {
   display: initial !important;
   width: 10px !important;
-  height: auto !important;;
+  height: auto !important;
   scrollbar-width: thin !important;
-  -ms-overflow-style: auto  !important;
+  -ms-overflow-style: auto !important;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
@@ -416,34 +415,32 @@ br {
   background-color: transparent;
 }
 
-.bg-white{
+.bg-white {
   background-color: var(--white-color);
 }
 
-.bg-primary{
+.bg-primary {
   background-color: var(--primary-color);
 }
 
-.bg-secondary{
+.bg-secondary {
   background-color: var(--secondary-color);
 }
-.d-none{
+.d-none {
   display: none;
 }
 
-
-@media (max-width:1024px) {
+@media (max-width: 1024px) {
   .modal {
-    max-width:750px;
+    max-width: 750px;
   }
-  .create-input-container{
+  .create-input-container {
     gap: 15px;
     margin-left: 0.5rem !important;
   }
 }
 
-
-.main-container{
+.main-container {
   max-width: 1900px;
   margin-inline: auto;
 }

@@ -68,7 +68,7 @@ const ArData = createSlice({
         ntp: true,
         install: true,
         pto: true,
-        sold:true,
+        sold: true,
       };
     },
 
@@ -81,7 +81,7 @@ const ArData = createSlice({
         ntp: false,
         install: false,
         pto: false,
-        sold:false,
+        sold: false,
       };
     },
   },

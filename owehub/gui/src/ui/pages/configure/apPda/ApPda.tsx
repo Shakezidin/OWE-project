@@ -5,25 +5,21 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApPdaColumn } from '../../../../resources/static_data/configureHeaderData/apPdaColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { fetchApPda } from '../../../../redux/apiActions/config/apPdaAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import CreateApPda from './CreateApPda';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const ApPda = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -36,7 +32,6 @@ const ApPda = () => {
   const { data, isLoading, totalcount } = useAppSelector(
     (state) => state.apPdaSlice
   );
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -140,9 +135,8 @@ const ApPda = () => {
       'No'
     );
     if (confirmed) {
-     
       const archivedRows = Array.from(selectedRows).map(
-         // @ts-ignore
+        // @ts-ignore
         (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
@@ -274,13 +268,14 @@ const ApPda = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-              
-                  <th>
-                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-              
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -311,15 +306,15 @@ const ApPda = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    
-                    <td>{el.payee||"N/A"}</td>
+
+                    <td>{el.payee || 'N/A'}</td>
                     <td>{el.amount_ovrd}</td>
-                    <td>{el.approved_by||"N/A"}</td>
+                    <td>{el.approved_by || 'N/A'}</td>
                     <td>{dateFormat(el.date)}</td>
-                    <td>{el.customer||"N/A"}</td>
-                    <td>{el.dealer||"N/A"}</td>
-                    <td>{el.notes||"N/A"}</td>
-                    <td>{el.description||"N/A"}</td>
+                    <td>{el.customer || 'N/A'}</td>
+                    <td>{el.dealer || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
+                    <td>{el.description || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -345,10 +340,7 @@ const ApPda = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={ApPdaColumn.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -358,11 +350,11 @@ const ApPda = () => {
         <div className="page-heading-container">
           {data?.length > 0 ? (
             <>
-                 <p className="page-heading">
-              Showing {startIndex} -{' '}
-              {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
-              item
-            </p>
+              <p className="page-heading">
+                Showing {startIndex} -{' '}
+                {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
+                item
+              </p>
 
               <Pagination
                 currentPage={currentPage}

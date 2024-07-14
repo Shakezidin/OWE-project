@@ -16,6 +16,16 @@ export const RepPaySettingsColumns: Column[] = [
     isCheckbox: false,
   },
   { name: 'b_e', displayName: 'BE', type: 'boolean', isCheckbox: false },
-  { name: 'start_date', displayName: 'Start Date', type: 'date', isCheckbox: false },
-  { name: 'end_date', displayName: 'End Date', type: 'date', isCheckbox: false },
+  {
+    name: 'start_date',
+    displayName: 'Start Date',
+    type: 'date',
+    isCheckbox: false,
+  },
+  {
+    name: 'end_date',
+    displayName: 'End Date',
+    type: 'date',
+    isCheckbox: false,
+  },
 ];

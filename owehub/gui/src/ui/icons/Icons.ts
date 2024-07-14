@@ -106,10 +106,7 @@ import dbm from '../../resources/assets/dbm.svg';
 import teamgroup from '../../resources/assets/teamgroup.svg';
 import addicon from '../../resources/assets/addnew.svg';
 import TeamEdit from '../../resources/assets/TeamEdit.svg';
-import cutOff from "../../resources/assets/cutoff_icon.svg"
-
-
-
+import cutOff from '../../resources/assets/cutoff_icon.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -137,7 +134,6 @@ export const ICONS = {
   groupIcon: require('../../resources/assets/Group2.png'),
   arrowNext: require('../../resources/assets/Vector.svg'),
   cutOff,
-  
 
   groupActiveIcon: groupActive,
   viewChart: viewChart,
@@ -159,8 +155,8 @@ export const ICONS = {
   editIconUser: editIconUser,
   filtercomm: filtercomm,
   AddIcon: AddIcon,
-  teamgroup:teamgroup,
-  addicon:addicon,
+  teamgroup: teamgroup,
+  addicon: addicon,
   exportIcon: exportIcon,
   importIcon: importIcon,
   BlackAddIcon: BlackAddIcon,
@@ -219,20 +215,20 @@ export const ICONS = {
   per2: per2,
   pmshadedgraph: pmshadedgraph,
   lable_img: lable_img,
-  includes_icon:includes_icon,
+  includes_icon: includes_icon,
   sales_per: sales_per,
   ntp_per: ntp_per,
   installed_per: installed_per,
   cancelled_per: cancelled_per,
-  tot1:tot1,
-  tot2:tot2,
-  tot3:tot3,
+  tot1: tot1,
+  tot2: tot2,
+  tot3: tot3,
   report1: report1,
   element: element,
   user: user,
   vector: vector,
   online: online,
-  fil_white:fil_white,
-  dbm:dbm,
-  TeamEdit:TeamEdit,
+  fil_white: fil_white,
+  dbm: dbm,
+  TeamEdit: TeamEdit,
 };

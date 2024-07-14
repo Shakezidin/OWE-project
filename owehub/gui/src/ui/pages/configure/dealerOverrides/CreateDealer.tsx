@@ -35,14 +35,14 @@ const CreateDealer: React.FC<dealerProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  console.log("edit", dealerData)
-   console.log(dealerData, "d d data")
+  console.log('edit', dealerData);
+  console.log(dealerData, 'd d data');
   const [createDealer, setCreateDealer] = useState({
     record_id: dealerData ? dealerData?.record_id : 0,
     sub_dealers: dealerData ? dealerData?.sub_dealer : '',
     pay_rate: dealerData ? dealerData?.pay_rate : '',
-    start_date: dealerData ? (dealerData?.start_date) : '',
-    end_date: dealerData ? (dealerData?.end_date) : '',
+    start_date: dealerData ? dealerData?.start_date : '',
+    end_date: dealerData ? dealerData?.end_date : '',
     state: dealerData ? dealerData?.state : '',
   });
   const [delaerVal, setDealerVal] = useState(dealerData?.dealer || '');

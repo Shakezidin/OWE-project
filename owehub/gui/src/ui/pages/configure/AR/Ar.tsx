@@ -8,13 +8,9 @@ import CreateAr from './CreateAr';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ARColumns } from '../../../../resources/static_data/configureHeaderData/ARColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -24,6 +20,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -33,8 +30,6 @@ const AR = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -285,7 +280,11 @@ const AR = () => {
                   />
                 ))}
                 {viewArchived === true ? null : (
-                  <th className={!viewArchived && selectedRows.size < 2 ? '' : 'd-none'}>
+                  <th
+                    className={
+                      !viewArchived && selectedRows.size < 2 ? '' : 'd-none'
+                    }
+                  >
                     <div className="action-header">
                       {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                     </div>
@@ -356,10 +355,7 @@ const AR = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

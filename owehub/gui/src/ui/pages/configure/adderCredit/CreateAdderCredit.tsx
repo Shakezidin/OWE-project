@@ -32,7 +32,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
     (state) => state.addercredit
   );
   const [createAdderCreditData, setAdderCreditData] = useState({
-
     pay_scale: editData?.pay_scale || '',
     type: editData?.type || '',
     min_rate: editData?.min_rate || '',
@@ -45,8 +44,9 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
     const error: TError = {} as TError;
     for (const key in createAdderCreditData) {
       if (!createAdderCreditData[key as keyof typeof createAdderCreditData]) {
-        error[key as keyof typeof createAdderCreditData] =
-          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof createAdderCreditData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -69,7 +69,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
       } else {
         dispatch(
           createAdderCredit({
-            
             pay_scale: createAdderCreditData.pay_scale,
             type: createAdderCreditData.type,
             max_rate: parseFloat(createAdderCreditData.max_rate), // Parsing string to integer
@@ -123,7 +122,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-              
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -138,10 +136,8 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.pay_scale}
                     </span>
@@ -161,10 +157,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.type}
                     </span>
@@ -184,10 +178,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.max_rate}
                     </span>
@@ -207,16 +199,13 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.min_rate}
                     </span>
                   )}
                 </div>
-                
               </div>
             </div>
           </div>

@@ -1,17 +1,17 @@
 import React from 'react';
-
-const DataNotFound = () => {
+import './NoRecordFound.css';
+interface Params {
+  title?: string;
+}
+const DataNotFound = ({ title = 'No Record Found' }: Params) => {
   return (
-    <div>
+    <div className="data-not-found">
       <iframe
         src="https://lottie.host/embed/9dea7242-6297-49e3-a5cc-05794806e22b/ZOnDIpjPzg.json"
         style={{ border: 'none' }}
         title="data"
       ></iframe>
-      {/* <iframe src="https://lottie.host/embed/b91e984d-4b8b-42e3-9e2a-d3c2ae3356ba/XCyt7B9J5G.json"
-         style={{border:"none"}}
-         title='data'
-        ></iframe> */}
+      <h2 className="no-record-text">{title}</h2>
     </div>
   );
 };

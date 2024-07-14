@@ -39,7 +39,9 @@
   padding: 14px 7px;
   max-height: 1000px;
   overflow: hidden;
-  transition: max-height 0s ease, visibility 0s linear 0s;
+  transition:
+    max-height 0s ease,
+    visibility 0s linear 0s;
 }
 
 .configure-cards.open {
@@ -48,7 +50,9 @@
 .configure-cards:not(.open) {
   max-height: 0;
   visibility: hidden;
-  transition: max-height 0.5s ease, visibility 0s linear;
+  transition:
+    max-height 0.5s ease,
+    visibility 0s linear;
 }
 
 .card-heading {
@@ -93,7 +97,7 @@
   transition: all 0.4s ease;
 }
 
-.pay-card:hover .card-heading{
+.pay-card:hover .card-heading {
   color: #fff !important;
 }
 .pay-card:hover {
@@ -165,28 +169,23 @@
 .bg-salmon:hover {
   transition: all 500ms;
   background-color: #ee824d !important;
- 
 }
 
 .bg-light-blue:hover {
   transition: all 500ms;
   background-color: #57b3f1 !important;
- 
 }
-.bg-purple:hover{
+.bg-purple:hover {
   transition: all 500ms;
-  background-color: #C470C7 !important;
- 
+  background-color: #c470c7 !important;
 }
 
-.bg-light-green:hover{
+.bg-light-green:hover {
   transition: all 500ms;
-  background-color: #63ACA3 !important;
- 
+  background-color: #63aca3 !important;
 }
 
-.bg-dark-blue:hover{
+.bg-dark-blue:hover {
   transition: all 500ms;
-  background-color: #6761DA !important;
- 
+  background-color: #6761da !important;
 }

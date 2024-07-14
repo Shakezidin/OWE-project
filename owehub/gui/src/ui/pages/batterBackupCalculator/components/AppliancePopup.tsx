@@ -48,7 +48,7 @@ const AppliancePopup = ({
   secondaryDetail,
   squareFoot,
   address,
-  systemSize
+  systemSize,
 }: IPopPupProps) => {
   return (
     <div className="transparent-model p3">

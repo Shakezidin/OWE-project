@@ -16,7 +16,7 @@ const COLORS = [
   '#57B3F1',
   '#EE824D',
   '#52cafe',
-  "#C470C7",
+  '#C470C7',
   '#9e84a0',
 ];
 const randomHsl = () => `hsla(${Math.random() * 360}, 100%, 50%, 1)`;

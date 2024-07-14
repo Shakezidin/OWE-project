@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ICONS } from '../../../icons/Icons';
-import { FaArrowDown } from 'react-icons/fa6';
 import { UserRoleBasedListModel } from '../../../../core/models/api_models/UserManagementModel';
 import { UserSaleRepresentTableColumn } from '../../../../resources/static_data/UserManagementColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
@@ -32,7 +31,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-  let sortedData = [...data]
+  let sortedData = [...data];
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -107,14 +106,13 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                         checked={selectedRows.has(i)}
                         onChange={() => {
                           // If there's only one row of sortedData and the user clicks its checkbox, select all rows
-                         
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            );
-                          
+
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          );
                         }}
                       />
                       {el.user_code}
@@ -155,10 +153,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
             ) : (
               <tr style={{ border: 0 }}>
                 <td colSpan={10}>
-                  <div className="data-not-found">
-                    <DataNotFound />
-                    <h3>Data Not Found</h3>
-                  </div>
+                  <DataNotFound />
                 </td>
               </tr>
             )}

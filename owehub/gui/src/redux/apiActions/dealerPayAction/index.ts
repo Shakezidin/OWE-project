@@ -28,12 +28,13 @@ export const getDealerPay = createAsyncThunk(
 );
 
 export const getDealerPayTileData = createAsyncThunk(
-  
   'get/dealer-pay-tile-data',
   async (params: { dealer: string }, { rejectWithValue }) => {
     try {
-      const resp = await postCaller('get_dlrpay_tiledata', { ALL: params.dealer });
-      console.log(resp, "tile action")
+      const resp = await postCaller('get_dlrpay_tiledata', {
+        ALL: params.dealer,
+      });
+      console.log(resp, 'tile action');
       return resp.data;
     } catch (error) {
       rejectWithValue((error as Error).message);

@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { CiEdit } from 'react-icons/ci';
 import '../configure.css';
-import { RiDeleteBin5Line } from 'react-icons/ri';
-// import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { getrefralData } from '../../../../redux/apiActions/config/refralDataAction';
-
-// import FilterCommission from "./FilterCommission";
-
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreateReferalData from './CreateReferalData';
 import Loading from '../../../components/loader/Loading';
@@ -32,14 +20,9 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 
 const ReferalData: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -51,8 +34,9 @@ const ReferalData: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const { data, count, isLoading } = useAppSelector((state) => state.refralDataSlice);
-  console.log(data, "data --------------------------")
+  const { data, count, isLoading } = useAppSelector(
+    (state) => state.refralDataSlice
+  );
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -65,7 +49,7 @@ const ReferalData: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [refresh, setRefresh] = useState(1)
+  const [refresh, setRefresh] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -109,7 +93,7 @@ const ReferalData: React.FC = () => {
   };
 
   const currentPageData = data?.slice();
-  console.log("refer", data)
+  console.log('refer', data);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data.length;
   const handleSort = (key: any) => {
@@ -167,10 +151,7 @@ const ReferalData: React.FC = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller(
-        "update_referraldata_archive",
-        newValue
-      );
+      const res = await postCaller('update_referraldata_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
@@ -315,7 +296,7 @@ const ReferalData: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
@@ -399,10 +380,7 @@ const ReferalData: React.FC = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -412,8 +390,8 @@ const ReferalData: React.FC = () => {
         {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex > count ? count : endIndex} of{' '}
-              {count} item
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
             </p>
 
             <Pagination

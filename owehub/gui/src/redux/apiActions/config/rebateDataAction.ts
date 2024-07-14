@@ -10,7 +10,7 @@ interface ReconcileEditParams {
   amount: number;
   rep_doll_divby_per: number;
   notes: string;
-  date: string
+  date: string;
 }
 interface IUpdateREBATE extends ReconcileEditParams {
   record_id: string;
@@ -20,13 +20,11 @@ export const fetchRebateData = createAsyncThunk(
   'RebateData/fetchRebateData',
   async (data: any) => {
     const response = await postCaller('get_rebate_data', data);
-    console.log("rebate data action", response)
+    console.log('rebate data action', response);
     const list = response?.data?.rebate_data_list;
     return { list, count: response.dbRecCount };
   }
 );
-
-
 
 export const createRebateData = createAsyncThunk(
   'create/rebatedata',
@@ -53,4 +51,3 @@ export const updateRebateData = createAsyncThunk(
     }
   }
 );
-

@@ -11,23 +11,27 @@ import { useAppDispatch } from '../../../../redux/hooks';
 interface Option {
   label: string;
   value: string;
-  key:string;
+  key: string;
 }
 
 const options: Option[] = [
-  { value: 'All', label: 'All' , key: 'all'},
+  { value: 'All', label: 'All', key: 'all' },
   { value: 'AP-OTH', label: 'AP-OTH', key: 'ap_oth' },
-  { value: 'AP-PDA', label: 'AP-PDA', key:'ap_pda' },
-  { value: 'AP-ADV', label: 'AP-ADV',key:'ap_adv' },
-  { value: 'AP-DED', label: 'AP-DED', key:'ap_ded' },
-  { value: 'REP-COMM', label: 'REP-COMM', key:'rep_comm' },
-  { value: 'REP BONUS', label: 'REP BONUS', key:'rep_bonus' },
-  { value: 'LEADER-OVERRIDE', label: 'LEADER-OVRD' , key:'leader_ovrd'},
+  { value: 'AP-PDA', label: 'AP-PDA', key: 'ap_pda' },
+  { value: 'AP-ADV', label: 'AP-ADV', key: 'ap_adv' },
+  { value: 'AP-DED', label: 'AP-DED', key: 'ap_ded' },
+  { value: 'REP-COMM', label: 'REP-COMM', key: 'rep_comm' },
+  { value: 'REP BONUS', label: 'REP BONUS', key: 'rep_bonus' },
+  { value: 'LEADER-OVERRIDE', label: 'LEADER-OVRD', key: 'leader_ovrd' },
 ];
 
- 
-
-const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:React.Dispatch<SetStateAction<boolean>>}) => {
+const DropdownWithCheckboxes = ({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+}) => {
   const dispatch = useAppDispatch();
   // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
@@ -57,7 +61,6 @@ const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:Rea
     console.log(key === 'all');
 
     if (key !== 'all') {
-      
       dispatch(
         filterChange({ name: key, value: !selectedOptions.includes(option) })
       );
@@ -78,7 +81,7 @@ const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:Rea
       } else {
         // Remove 'All' from prevSelectedOptions if it exists
         const updatedOptions = prevSelectedOptions.filter((o) => o !== 'All');
-    
+
         if (updatedOptions.includes(option)) {
           return updatedOptions.filter((o) => o !== option);
         } else {
@@ -86,23 +89,17 @@ const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:Rea
         }
       }
     });
-    
   };
- 
-  
+
   return (
     <div className="dropdown-container" ref={dropdownRef}>
       <div className="dropdown-toggle" onClick={toggleDropdown}>
         <span className="toggle-text">
-          {selectedOptions.length > 0 ? (
-            selectedOptions.includes('All') ? (
-              'All'
-            ) : (
-              ''
-            )
-          ) : (
-            'All'
-          )}
+          {selectedOptions.length > 0
+            ? selectedOptions.includes('All')
+              ? 'All'
+              : ''
+            : 'All'}
         </span>
         {selectedOptions.length > 0 && !selectedOptions.includes('All') && (
           <span className="selected-count">{selectedOptions.length}</span>

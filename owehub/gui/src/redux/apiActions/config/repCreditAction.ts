@@ -25,7 +25,7 @@ export const fetchRepCreditList = createAsyncThunk(
   async (param: IPaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller('get_rep_credit', param);
-      console.log("rep credit action", data);
+      console.log('rep credit action', data);
       const list = data?.data?.rep_credit_list;
       return { list, count: data.dbRecCount };
     } catch (error) {
@@ -62,7 +62,9 @@ export const archiveRepCredit = createAsyncThunk(
   '/archive_rep_credit',
   async (recordId: string, { rejectWithValue }) => {
     try {
-      const data = await postCaller('archive_rep_credit', { record_id: recordId });
+      const data = await postCaller('archive_rep_credit', {
+        record_id: recordId,
+      });
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

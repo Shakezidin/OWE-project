@@ -6,7 +6,7 @@ export const LeaderOverrideColumns: Column[] = [
     type: 'string',
     isCheckbox: true,
   },
- 
+
   {
     name: 'leader_name',
     displayName: 'Leader Name',

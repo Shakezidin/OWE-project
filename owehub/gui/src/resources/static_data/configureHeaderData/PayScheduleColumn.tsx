@@ -72,6 +72,4 @@ export const PayScheduleColumns: Column[] = [
     type: 'date',
     isCheckbox: false,
   },
-
-
 ];

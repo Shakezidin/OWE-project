@@ -10,34 +10,27 @@ import CreateRepPaySettings from './CreateRepPaySettings';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { RepPaySettingsModel } from '../../../../core/models/configuration/create/RepPaySettingsModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { RepPaySettingsColumns } from '../../../../resources/static_data/configureHeaderData/RepPaySettingsColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { dateFormat } from '../../../../utiles/formatDate';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { IPayScale } from './types';
+
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -51,6 +44,7 @@ const RepPaySettings = () => {
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [refetch, setRefetch] = useState(1);
   const [payScale, setPayScale] = useState<IPayScale[]>([]);
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -136,15 +130,9 @@ const RepPaySettings = () => {
         return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
-      } 
-      else if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
-        return sortDirection === 'asc'
-          ? aValue?-1:1
-          : bValue?-1:1
-      }
-      
-      
-      else {
+      } else if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+        return sortDirection === 'asc' ? (aValue ? -1 : 1) : bValue ? -1 : 1;
+      } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
           typeof aValue === 'number' ? aValue : parseFloat(aValue);
@@ -364,10 +352,7 @@ const RepPaySettings = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

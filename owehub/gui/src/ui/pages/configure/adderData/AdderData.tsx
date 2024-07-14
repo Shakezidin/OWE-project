@@ -258,9 +258,11 @@ const AdderData = () => {
                   />
                 ))}
                 <th>
-               {(!viewArchived && selectedRows.size<2) &&   <div className="action-header">
-                    <p>Action</p>
-                  </div>}
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  )}
                 </th>
               </tr>
             </thead>
@@ -327,10 +329,7 @@ const AdderData = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={AdderDataColumn.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

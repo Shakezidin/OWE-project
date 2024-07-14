@@ -2,29 +2,21 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { ICONS } from '../../../icons/Icons';
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { InstallCostColumns } from '../../../../resources/static_data/configureHeaderData/InstallCostColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import {
   getInstallCost,
   ICost,
 } from '../../../../redux/apiActions/config/installCostAction';
 import CreateInstallCost from './CreateInstallCost';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -42,8 +34,6 @@ const InstallCost = () => {
   const { data: timelinesla_list, isSuccess } = useAppSelector(
     (state) => state.installConstSlice
   );
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -74,11 +64,9 @@ const InstallCost = () => {
     setCurrentPage(pageNumber);
   };
 
-  const {
-    data: commissionList,
-    isLoading,
-    dbCount,
-  } = useAppSelector((state) => state.installConstSlice);
+  const { isLoading, dbCount } = useAppSelector(
+    (state) => state.installConstSlice
+  );
   const goToNextPage = () => {
     setCurrentPage(currentPage + 1);
   };
@@ -172,8 +160,6 @@ const InstallCost = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
-
-
 
   return (
     <div className="comm">
@@ -320,10 +306,7 @@ const InstallCost = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

@@ -38,5 +38,4 @@ export const ApDedColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
- 
 ];

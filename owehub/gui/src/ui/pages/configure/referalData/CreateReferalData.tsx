@@ -134,7 +134,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log(true)
+    console.log(true);
     if (handleValidation()) {
       try {
         if (createCommission.record_id) {
@@ -294,7 +294,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       if (e.key === 'e' || e.key === 'E') {
                         e.preventDefault();
                       }
-                    }}               
+                    }}
                   />
                   {errors?.amount && (
                     <span

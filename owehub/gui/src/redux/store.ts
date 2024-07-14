@@ -130,7 +130,7 @@ export const store = configureStore({
     dataTableSlice,
     filterSlice,
     userSlice,
-    dealerCredit:dealerCreditSlice,
+    dealerCredit: dealerCreditSlice,
     dealerPaySlice,
     repPaySlice,
     apRepSlice,
@@ -138,7 +138,7 @@ export const store = configureStore({
     apPdaSlice,
     apOthSlice,
     apAdvSlice,
-    apDedSlice
+    apDedSlice,
   },
 });
 

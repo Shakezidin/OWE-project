@@ -123,7 +123,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '128px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#63ACA3',flexShrink:0 }}
+                  style={{ backgroundColor: '#63ACA3', flexShrink: 0 }}
                 >
                   <img src={ICONS.report1} alt="" />
                 </div>
@@ -143,7 +143,9 @@ export const ARDashboardPage: React.FC = () => {
 
                   <Select
                     options={options1}
-                    value={options1.find((opt)=>opt.value===filters.report_type)}
+                    value={options1.find(
+                      (opt) => opt.value === filters.report_type
+                    )}
                     onChange={(value) =>
                       handleChange('report_type', value?.value!)
                     }
@@ -223,7 +225,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '134px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#C470C7',flexShrink:0 }}
+                  style={{ backgroundColor: '#C470C7', flexShrink: 0 }}
                 >
                   <img src={ICONS.user} alt="" />
                 </div>
@@ -242,7 +244,9 @@ export const ARDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={options2}
-                    value={options1.find((opt)=>opt.value===filters.sale_partner)}
+                    value={options1.find(
+                      (opt) => opt.value === filters.sale_partner
+                    )}
                     onChange={(value) =>
                       handleChange('sale_partner', value?.value!)
                     }
@@ -324,7 +328,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '115px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#8E81E0',flexShrink:0 }}
+                  style={{ backgroundColor: '#8E81E0', flexShrink: 0 }}
                 >
                   <img src={ICONS.vector} alt="" />
                 </div>
@@ -342,7 +346,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input">
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#EE824D',flexShrink:0, }}
+                  style={{ backgroundColor: '#EE824D', flexShrink: 0 }}
                 >
                   <img src={ICONS.element} alt="" />
                 </div>
@@ -361,7 +365,9 @@ export const ARDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={options3}
-                    value={options3.find((opt)=>opt.value===filters.sort_by)}
+                    value={options3.find(
+                      (opt) => opt.value === filters.sort_by
+                    )}
                     onChange={(value) => handleChange('sort_by', value?.value!)}
                     styles={{
                       control: (baseStyles, state) => ({

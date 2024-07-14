@@ -1,12 +1,10 @@
-
-
 .sr-image-container {
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
 }
 
 .form-container {
   color: white;
-  padding-inline:79px;
+  padding-inline: 79px;
   padding-bottom: 79px;
   border-radius: 10px;
   width: 100%;
@@ -16,7 +14,7 @@
   min-height: 100vh;
 }
 
-.sr-form-header{
+.sr-form-header {
   background-color: #fff;
   padding-bottom: 17px;
   padding-left: 38px;
@@ -32,7 +30,7 @@
   padding-left: 24px;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
 }
-.sr-appliance-wrapper{
+.sr-appliance-wrapper {
   border-radius: 8px;
   margin-top: 18px;
   padding-block: 14px;
@@ -40,25 +38,24 @@
   padding-right: 20px;
   background-color: #fff;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
-
 }
 
-.sr-appliance-header{
+.sr-appliance-header {
   padding-bottom: 12px;
-  border-bottom: 1px solid #F2F2F2;
+  border-bottom: 1px solid #f2f2f2;
 }
-.text-sm{
+.text-sm {
   font-size: 14px;
 }
-.sr-appliance-body{
+.sr-appliance-body {
   padding-top: 11px;
 }
 
-.text-dark-navy{
-  color:#272727;
+.text-dark-navy {
+  color: #272727;
 }
 
-.prospect-input-field input:focus{
+.prospect-input-field input:focus {
   outline: none;
   width: 100%;
 }
@@ -71,8 +68,8 @@
 }
 
 .image-button {
-  background-color: #1F222A;
-  border: 2px solid #2C2E35;
+  background-color: #1f222a;
+  border: 2px solid #2c2e35;
   color: #bbb;
   cursor: pointer;
   border-radius: 10px;
@@ -115,15 +112,15 @@
 .form-group input {
   width: calc(100% - 10px);
   padding: 10px;
-  background-color: #1F222A;
-  border: 2px solid #2C2E35;
+  background-color: #1f222a;
+  border: 2px solid #2c2e35;
   color: white;
   border-radius: 5px;
   box-sizing: border-box;
 }
 
 .form-group input[readonly] {
-  color: #7F7F7F;
+  color: #7f7f7f;
 }
 
 .send-button {
@@ -138,11 +135,10 @@
   margin-top: 30px;
 }
 /* srImageUpload.css */
-.send-button:disabled{
+.send-button:disabled {
   color: #919191;
-  background-color: #E7E7E7;
+  background-color: #e7e7e7;
 }
- 
 
 /* Ensure the default styles for the share button */
 .share-button {
@@ -162,7 +158,7 @@
   top: -10px; /* Adjust as needed to position correctly */
   right: -10px; /* Adjust as needed to position correctly */
   border-radius: 50%;
- border: none;
+  border: none;
   font-size: 30px;
   display: flex;
   align-items: center;
@@ -177,7 +173,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
- max-width: 100%;
+  max-width: 100%;
 }
 
 .thumbnail-container {
@@ -210,35 +206,31 @@
   z-index: 1; /* Ensure the badge is above the thumbnail */
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for depth */
 }
- 
 
 .lower-btns {
   display: flex;
   justify-content: space-between; /* Distribute items evenly */
   align-items: center; /* Center items vertically */
   gap: 128px; /* Adjust as needed */
-   
-
 }
 
 .upper-btns {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap:460px;
- 
+  gap: 460px;
 }
 
-.camera-icon{
-font-size: 40px;
-cursor: pointer;
+.camera-icon {
+  font-size: 40px;
+  cursor: pointer;
 }
 .back-button {
   display: flex;
   align-items: center; /* Center vertically */
   justify-content: center; /* Center horizontally */
   color: #bbb;
-  
+
   cursor: pointer;
 }
 
@@ -247,13 +239,12 @@ cursor: pointer;
 }
 
 .back-icon {
-font-size: 20px;
-cursor: pointer;
+  font-size: 20px;
+  cursor: pointer;
 }
- 
 
 .add-more {
-  color: #7F7F7F;
+  color: #7f7f7f;
   cursor: pointer;
   text-align: center;
   align-self: center;
@@ -261,7 +252,7 @@ cursor: pointer;
 }
 
 .add-moree {
-  color: #7F7F7F;
+  color: #7f7f7f;
   cursor: pointer;
   text-align: center;
   align-self: center;
@@ -273,18 +264,17 @@ cursor: pointer;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #1F222A;
+  background-color: #1f222a;
   color: white;
 }
 
- 
 .back-button {
   align-self: flex-start;
   margin: 20px;
-   
+
   border: none;
   color: #bbb;
-  
+
   cursor: pointer;
 }
 
@@ -297,13 +287,12 @@ cursor: pointer;
   min-height: 100vh;
 }
 
- 
-
 .camera-part {
   height: 85%;
 }
 
-.webcam, .captured-image {
+.webcam,
+.captured-image {
   width: 100%;
   height: 90%;
   border-radius: 10px;
@@ -320,7 +309,7 @@ cursor: pointer;
   cursor: pointer;
   margin-left: 62px;
 }
- 
+
 .circle-inner {
   width: 50px;
   height: 50px;
@@ -329,7 +318,7 @@ cursor: pointer;
 }
 
 .next-button {
-  background-color: #2E7D32;
+  background-color: #2e7d32;
   border: none;
   color: white;
   padding: 15px 30px;
@@ -351,7 +340,7 @@ cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #14161D;
+  background-color: #14161d;
   padding: 10px;
   border-radius: 5px;
 }
@@ -374,7 +363,7 @@ cursor: pointer;
 }
 
 .image-date {
-  color: #7F7F7F;
+  color: #7f7f7f;
   font-size: 12px;
 }
 
@@ -389,7 +378,7 @@ cursor: pointer;
 /* Media queries for mobile responsiveness */
 @media (max-width: 768px) {
   .form-container {
-    padding-inline:  20px;
+    padding-inline: 20px;
     padding-bottom: 40px;
   }
 
@@ -408,7 +397,7 @@ cursor: pointer;
     width: 40px;
     height: 40px;
   }
-  .upper-btns{
+  .upper-btns {
     gap: 217px;
     margin-bottom: -22px;
   }
@@ -417,31 +406,29 @@ cursor: pointer;
     width: 100%;
   }
 
- .lower-btns{
- 
-  display: flex;
-  justify-content: space-between; /* Distribute items evenly */
-  align-items: center; /* Center items vertically */
-  gap: 110px; /* Adjust as needed */
-  margin-top: 10px;
- 
+  .lower-btns {
+    display: flex;
+    justify-content: space-between; /* Distribute items evenly */
+    align-items: center; /* Center items vertically */
+    gap: 110px; /* Adjust as needed */
+    margin-top: 10px;
+  }
 
- }
+  .img-remove {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    color: black;
+    font-size: 20px;
+    cursor: pointer;
+  }
 
- .img-remove {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  color: black;
-  font-size: 20px;
-  cursor: pointer;
-}
- 
- .uploaded-images{
-  margin-top: 0;
- }
- 
-  .webcam, .captured-image {
+  .uploaded-images {
+    margin-top: 0;
+  }
+
+  .webcam,
+  .captured-image {
     height: auto;
   }
 
@@ -449,9 +436,8 @@ cursor: pointer;
     width: 42px;
     height: 43px;
     margin-left: 0;
-
   }
-   
+
   .circle-inner {
     width: 38px;
     height: 37px;
@@ -478,18 +464,17 @@ cursor: pointer;
     margin-bottom: 10px;
   }
 
-  .add-more, .add-moree {
+  .add-more,
+  .add-moree {
     margin-left: 0;
     text-align: center;
   }
- 
-   
 }
 
 @media (max-width: 480px) {
   .form-container {
     padding-inline: 10px;
-    padding-bottom:40px ;
+    padding-bottom: 40px;
   }
 
   .image-button {
@@ -509,16 +494,13 @@ cursor: pointer;
     height: 35px;
     margin-left: 0;
   }
-  .lower-btns{
- 
+  .lower-btns {
     display: flex;
     justify-content: space-between; /* Distribute items evenly */
     align-items: center; /* Center items vertically */
     gap: 55px; /* Adjust as needed */
-   
-  
-   }
-   .img-remove {
+  }
+  .img-remove {
     position: absolute;
     top: -5px;
     right: -5px;
@@ -535,7 +517,7 @@ cursor: pointer;
     padding: 10px 20px;
   }
 
-  .upper-btns{
+  .upper-btns {
     gap: 197px;
   }
 }

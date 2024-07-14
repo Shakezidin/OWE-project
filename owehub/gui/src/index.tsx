@@ -7,9 +7,9 @@ import reportWebVitals from './reportWebVitals';
 import './index.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import 'basscss/css/basscss.css'
+import 'basscss/css/basscss.css';
 import 'react-multi-carousel/lib/styles.css';
-import "./http"
+import './http';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
