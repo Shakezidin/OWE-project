@@ -112,10 +112,12 @@ const ArDashBoardTable = ({
   setCurrentPage,
   currentPage,
   additionalFilter,
+  includedFilter,
 }: {
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
   additionalFilter: FilterModel[];
+  includedFilter: string[];
 }) => {
   const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
@@ -134,7 +136,11 @@ const ArDashBoardTable = ({
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
+  // const options = [
+  //   { value: 'All', label: 'All', key: 'all' },
+  //   { value: 'QC/Permit/NTP', label: 'QC/Permit/NTP', key: 'permits' },
+  //   { value: 'SOLD', label: 'SOLD', key: 'sold' },
+  // ];
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -143,13 +149,13 @@ const ArDashBoardTable = ({
       report_type: filters.report_type,
       sale_partner: filters.sale_partner,
       sort_by: filters.sort_by,
-      shaky: filters.shaky,
-      cancel: filters.cancel,
-      sold: filters.sold,
-      permits: filters.permits,
-      ntp: filters.ntp,
-      install: filters.install,
-      pto: filters.pto,
+      shaky: includedFilter.includes('Shaky'),
+      cancel: includedFilter.includes('Cancel'),
+      sold: includedFilter.includes("SOLD"),
+      permits: includedFilter.includes("QC/Permit/NTP"),
+      ntp: includedFilter.includes("QC/Permit/NTP"),
+      install: includedFilter.includes("Install"),
+      pto: includedFilter.includes('PTO'),
       filters: additionalFilter,
     };
     dispatch(getAR(pageNumber));
@@ -160,6 +166,7 @@ const ArDashBoardTable = ({
     viewArchived,
     filters,
     additionalFilter,
+    includedFilter
   ]);
 
   const goToNextPage = () => {

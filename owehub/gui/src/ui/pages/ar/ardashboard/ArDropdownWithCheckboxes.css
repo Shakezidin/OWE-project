@@ -42,7 +42,7 @@
   margin-top: 6px;
   overflow-y: auto;
   width: 160px;
-  height: 220px;
+  height: 220px !important;
   box-sizing: border-box;
   color: #000000;
   box-shadow: 5px 5px 5px rgba(43, 42, 42, 0.3);

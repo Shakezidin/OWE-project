@@ -24,21 +24,40 @@ const options: Option[] = [
   { value: 'REP BONUS', label: 'REP BONUS', key: 'rep_bonus' },
   { value: 'LEADER-OVERRIDE', label: 'LEADER-OVRD', key: 'leader_ovrd' },
 ];
+const DropIcon = () => {
+  return (
+    <svg
+      style={{ flexShrink: 0 }}
+      height="20"
+      width="20"
+      viewBox="0 0 20 20"
+      aria-hidden="true"
+      focusable="false"
+      className="css-tj5bde-Svg"
+    >
+      <path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path>
+    </svg>
+  );
+};
 
 const DropdownWithCheckboxes = ({
   isOpen,
   setIsOpen,
+  selectedOptions,
+  setSelectedOptions,
+  resetPage
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+  selectedOptions: string[];
+  setSelectedOptions: React.Dispatch<SetStateAction<string[]>>;
+  resetPage:()=>void;
 }) => {
   const dispatch = useAppDispatch();
   // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    options.map((o) => o.value)
-  );
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  console.log(selectedOptions, 'optionssss');
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -58,37 +77,28 @@ const DropdownWithCheckboxes = ({
     setIsOpen(!isOpen);
   };
   const handleOptionChange = (option: string, key: string) => {
-    console.log(key === 'all');
-
-    if (key !== 'all') {
-      dispatch(
-        filterChange({ name: key, value: !selectedOptions.includes(option) })
-      );
-    } else if (key === 'all' && !selectedOptions.includes('All')) {
-      dispatch(toggleAllDropdown());
-    } else {
-      dispatch(toggleOffDropdowns());
-    }
     setSelectedOptions((prevSelectedOptions) => {
       if (option === 'All') {
         if (prevSelectedOptions.length === options.length) {
-          // If all options are already selected, uncheck them all
           return [];
         } else {
           // If not all options are selected, select them all
           return options.map((o) => o.value);
         }
       } else {
-        // Remove 'All' from prevSelectedOptions if it exists
         const updatedOptions = prevSelectedOptions.filter((o) => o !== 'All');
-
         if (updatedOptions.includes(option)) {
           return updatedOptions.filter((o) => o !== option);
         } else {
-          return [...updatedOptions, option];
+          let arr = [...updatedOptions, option];
+          if (arr.length + 1 === options.length && !arr.includes('All')) {
+            arr.push('All');
+          }
+          return arr;
         }
       }
     });
+    resetPage()
   };
 
   return (
@@ -104,10 +114,10 @@ const DropdownWithCheckboxes = ({
         {selectedOptions.length > 0 && !selectedOptions.includes('All') && (
           <span className="selected-count">{selectedOptions.length}</span>
         )}
-        <FiChevronDown className="drop-icon" />
+        <DropIcon />
       </div>
       {isOpen && (
-        <div className="dropdown-menu">
+        <div className=" scrollbar dropdown-menu ">
           {options.map((option) => (
             <div key={option.value} className="dropdown-item">
               <input

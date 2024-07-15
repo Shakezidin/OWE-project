@@ -20,6 +20,20 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { Commissioncolumns } from './RepDashboardTable';
+import { useLocation } from 'react-router-dom';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+
+const options = [
+  { value: 'All', label: 'All', key: 'all' },
+  { value: 'AP-OTH', label: 'AP-OTH', key: 'ap_oth' },
+  { value: 'AP-PDA', label: 'AP-PDA', key: 'ap_pda' },
+  { value: 'AP-ADV', label: 'AP-ADV', key: 'ap_adv' },
+  { value: 'AP-DED', label: 'AP-DED', key: 'ap_ded' },
+  { value: 'REP-COMM', label: 'REP-COMM', key: 'rep_comm' },
+  { value: 'REP BONUS', label: 'REP BONUS', key: 'rep_bonus' },
+  { value: 'LEADER-OVERRIDE', label: 'LEADER-OVRD', key: 'leader_ovrd' },
+];
 export const RepPayDashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const [active, setActive] = React.useState<number>(0);
@@ -31,12 +45,29 @@ export const RepPayDashboardPage: React.FC = () => {
     endDate: new Date(),
     key: 'selection',
   });
+  const [selectedInculdes, setSelectedincludes] = useState<string[]>(() =>
+    options.map((opt) => opt.value)
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const { isActive } = useAppSelector((state) => state.filterSlice);
+  const { pathname } = useLocation();
+
+
+  useEffect(()=>{
+    (async()=>{
+      const data = await postCaller("get_reppay_tiledata",{dealer:"ALL"})
+      if (data.status>201) {
+        toast.error(data?.message)
+      }
+      console.log(data,"dataaaa");
+      
+    })()
+  },[])
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -121,8 +152,12 @@ export const RepPayDashboardPage: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  const resetPage = () => {
+    setCurrentPage(1);
+  };
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
+    resetPage();
   };
 
   return (
@@ -149,7 +184,10 @@ export const RepPayDashboardPage: React.FC = () => {
                     {' '}
                     <DropdownWithCheckboxes
                       isOpen={isOpen}
+                      selectedOptions={selectedInculdes}
+                      setSelectedOptions={setSelectedincludes}
                       setIsOpen={setIsOpen}
+                      resetPage={resetPage}
                     />
                   </div>
                 </div>
@@ -430,11 +468,8 @@ export const RepPayDashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="rep-dash-head-input">
-                <div
-                  className="rep-drop_label"
-                  style={{ backgroundColor: '#57B3F1' }}
-                >
-                  <img src={ICONS.cutOff} alt="" />
+                <div>
+                  <img src={ICONS.cutOff} alt="" className="rep-drop_label" />
                 </div>
                 <div className="rep-up relative">
                   <label
@@ -555,10 +590,24 @@ export const RepPayDashboardPage: React.FC = () => {
                     )}
                   </div>
                   <div
-                    className="rep-filter-line"
+                    className="rep-filter-line relative"
                     style={{ backgroundColor: '#377CF6' }}
                     onClick={() => setFilterModal(true)}
                   >
+                    {isActive[pathname] && (
+                      <span
+                        className="absolute"
+                        style={{
+                          border: '1px solid #fff',
+                          borderRadius: '50%',
+                          backgroundColor: '#2DC74F',
+                          width: 8,
+                          height: 8,
+                          top: 0,
+                          right: -2,
+                        }}
+                      ></span>
+                    )}
                     <img
                       src={ICONS.fil_white}
                       alt=""
@@ -589,7 +638,14 @@ export const RepPayDashboardPage: React.FC = () => {
         />
 
         <div className="pb2" style={{ marginTop: '8px' }}>
-          {active === 0 && <RepDashBoardTable />}
+          {active === 0 && (
+            <RepDashBoardTable
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              addtionalFIlter={additionalFilter}
+              dropdownFilter={selectedInculdes}
+            />
+          )}
           {active === 1 && <RepDashBoardChart />}
         </div>
       </div>
