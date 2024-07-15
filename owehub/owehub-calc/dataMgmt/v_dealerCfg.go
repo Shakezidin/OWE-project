@@ -42,6 +42,7 @@ func (pVDealerCfg *VDealerCfgStruct) LoadVDealerCfg() (err error) {
 		return err
 	}
 
+	VDealerCfg.VDealerList = VDealerCfg.VDealerList[:0]
 	for _, item := range data {
 
 		DealerCode, ok := item["dealer_code"].(string)

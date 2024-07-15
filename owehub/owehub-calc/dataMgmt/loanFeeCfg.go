@@ -43,6 +43,7 @@ func (pLoanFee *LoanFeeCfgStruct) LoadLoanFeeCfg() (err error) {
 		return
 	}
 
+	pLoanFee.LoanFeeCfg.LoanFeeList = pLoanFee.LoanFeeCfg.LoanFeeList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

@@ -43,6 +43,7 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 	}
 
 	// Assuming you have data as a slice of maps, as in your previous code
+	pMarketingFee.MarketingFeeCfg.MarketingFeesList = pMarketingFee.MarketingFeeCfg.MarketingFeesList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

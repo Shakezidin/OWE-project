@@ -58,7 +58,8 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 
 	if (len(createLeaderOverrideReq.TeamName) <= 0) ||
 		(len(createLeaderOverrideReq.LeaderName) <= 0) || (len(createLeaderOverrideReq.Type) <= 0) ||
-		(len(createLeaderOverrideReq.Term) <= 0) || (len(createLeaderOverrideReq.Qual) <= 0) {
+		(len(createLeaderOverrideReq.Term) <= 0) || (len(createLeaderOverrideReq.Qual) <= 0) ||
+		(len(createLeaderOverrideReq.StartDate) <= 0) || (len(createLeaderOverrideReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)

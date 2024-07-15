@@ -155,7 +155,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 		return
 	}
 
-	log.FuncErrorTrace(0, "autoadder data : %v", data[0])
+	AutoAdderCfg.AutoAdderList = AutoAdderCfg.AutoAdderList[:0]
 	for _, item := range data {
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {

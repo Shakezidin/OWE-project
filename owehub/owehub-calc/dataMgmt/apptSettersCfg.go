@@ -40,6 +40,7 @@ func (pApptSettersCfg *ApptSettersCfgStruct) LoadApptSettersCfg() (err error) {
 		return err
 	}
 
+	pApptSettersCfg.ApptSettersList.ApptSettersList = pApptSettersCfg.ApptSettersList.ApptSettersList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

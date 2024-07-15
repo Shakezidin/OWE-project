@@ -41,6 +41,7 @@ func (pDealerTier *DealerTierCfgStruct) LoadDealerTierCfg() (err error) {
 		return
 	}
 
+	pDealerTier.DealerTierList.DealersTierList = pDealerTier.DealerTierList.DealersTierList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

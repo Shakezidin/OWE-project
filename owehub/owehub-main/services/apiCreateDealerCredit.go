@@ -98,6 +98,11 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
+	if len(data) <= 0 {
+		FormAndSendHttpResp(resp, "Invalid Unique Id", http.StatusBadRequest, nil)
+		return
+	}
+
 	sysSize = data[0]["system_size"].(float64)
 	if createDealerReq.ExactAmount > 0 {
 		totalAmount = createDealerReq.ExactAmount

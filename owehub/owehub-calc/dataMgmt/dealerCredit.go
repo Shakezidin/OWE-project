@@ -42,6 +42,7 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 		return err
 	}
 
+	DealerCreditCfg.DealerCreditList.DealerCreditList = DealerCreditCfg.DealerCreditList.DealerCreditList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
