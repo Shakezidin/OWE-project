@@ -78,6 +78,15 @@ const AdderData = () => {
     }
   }, [isSuccess, currentPage, viewArchived, filters]);
 
+  const totalPages = Math.ceil(count / itemsPerPage);
+
+  const currentPageData = commissionList?.slice();
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === commissionList?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const endIndex = currentPage * itemsPerPage;
+
   const filter = () => {
     setFilterOpen(true);
   };
@@ -93,15 +102,7 @@ const AdderData = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(count / itemsPerPage);
-  console.log(count);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
-  const currentPageData = commissionList?.slice();
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList?.length;
+ 
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -299,9 +300,9 @@ const AdderData = () => {
                     <td>{el.exact_amount}</td>
                     <td>{el.per_kw_amt}</td>
                     <td>{el.rep_percent}</td>
-                    <td>{el.description}</td>
-                    <td>{el.notes}</td>
-                    <td>{el.type_ad_mktg}</td>
+                    <td>{el.description || "N/A"}</td>
+                    <td>{el.notes || "N/A"}</td>
+                    <td>{el.type_ad_mktg || "N/A"}</td>
                     <td>{el.sys_size}</td>
                     <td>{el.adder_cal}</td>
                     <td>
@@ -339,7 +340,7 @@ const AdderData = () => {
         <div className="page-heading-container">
           {!!count && (
             <p className="page-heading">
-              {currentPage} - {endIndex > count ? count : endIndex} of {count}{' '}
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
               item
             </p>
           )}

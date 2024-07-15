@@ -41,16 +41,16 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
 
   const [createArData, setCreateArData] = useState({
     // customer_name:editData?.customer_name || "",
-    unique_id: editData.unique_id || '',
-    rep: editData.rep || '',
-    dba:  editData.dba  || '',
-    final: editData.final || '',
-    date: editData.date || '',
-    amount:  editData.amount || '',
-    method: editData.method || '',
-    cbiz:editData.cbiz || '',
-    transaction: editData.transaction || '',
-    notes: editData.notes || '',
+    unique_id: editData?.unique_id || '',
+    rep: editData?.rep || '',
+    dba:  editData?.dba  || '',
+    final: editData?.final || '',
+    date: editData?.date || '',
+    amount:  editData?.amount || '',
+    method: editData?.method || '',
+    cbiz:editData?.cbiz || '',
+    transaction: editData?.transaction || '',
+    notes: editData?.notes || '',
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);

@@ -78,12 +78,12 @@ const AdderCredit = () => {
   };
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
-
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const endIndex = currentPage * itemsPerPage;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -329,8 +329,9 @@ const AdderCredit = () => {
           {data?.length > 0 ? (
             <>
               <p className="page-heading">
-                {startIndex} - {endIndex > totalCount ? totalCount : endIndex}{' '}
-                of {currentPageData?.length} item
+                Showing {startIndex} -{' '}
+                {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
+                item
               </p>
 
               <Pagination
