@@ -24,6 +24,16 @@ const TeamTable: React.FC = () => {
   const [open1, setOpen1] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { id } = useParams();
+  const location = useLocation();
+
+  // Function to get query parameters
+  const getQueryParams = (search:any) => {
+    return new URLSearchParams(search);
+  };
+
+  // Extract team-name from the query parameters
+  const queryParams = getQueryParams(location.search);
+  const teamName = queryParams.get('team-name');
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -101,7 +111,7 @@ const TeamTable: React.FC = () => {
   useEffect(() => {
   if(id){
   const  data = {
-    team_name:"4WaySafety",
+    team_name:teamName,
     manager_id: 0,
     team_id:parseInt(id),
     }

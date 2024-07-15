@@ -319,13 +319,19 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                   <label className="inputLabel-select">BE</label>
                   <SelectOption
                     options={[
+                      { value: '', label: 'Select' },
                       { value: 'yes', label: 'Yes' },
                       { value: 'no', label: 'No' },
                     ]}
                     onChange={(newValue) => handleChange(newValue, 'b_e')}
                     value={{
-                      value: createRePayData['b_e'],
-                      label: createRePayData['b_e'] === 'yes' ? 'Yes' : 'No',
+                      value: createRePayData['b_e'] || '',
+                      label:
+                        createRePayData['b_e'] === 'yes'
+                          ? 'Yes'
+                          : createRePayData['b_e'] === 'no'
+                            ? 'No'
+                            : 'Select',
                     }}
                   />
                   {errors?.pay_scale && (

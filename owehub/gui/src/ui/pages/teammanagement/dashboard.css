@@ -81,7 +81,7 @@
   justify-content: space-between;
 
   width: 210px;
-  height: 104px;
+  min-height: 104px;
   border: none;
   border-radius: 12px;
   padding: 14px;

@@ -196,14 +196,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     value={newFormData.gc}
                     name="gc"
                     placeholder={'Enter'}
-                    onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(
-                        /[^0-9.]/g,
-                        ''
-                      );
-                      e.target.value = sanitizedValue;
-                      handleChange(e);
-                    }}
+                    onChange={handleChange}
                   />
                   {errors?.gc && (
                     <span

@@ -143,7 +143,7 @@ const TeamManagement: React.FC = () => {
                                 <img src={ICONS.teamgroup} alt="" />
                                 <h4>{item.team_strength} members</h4>
                               </div>
-                              <Link to = {`/team-management/${item.team_id}?team-manager=${item.manager_id}`}>
+                              <Link to = {`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}>
                               <div
                                 className="team-arrow-wrapper"
                                 style={{ color: randomArrowColor }}

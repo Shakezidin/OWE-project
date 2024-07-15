@@ -141,7 +141,7 @@ const CommissionRate: React.FC = () => {
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This action will archive selected data?',
+      'This action will archive selected data',
       'Yes',
       'No'
     );
