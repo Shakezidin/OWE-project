@@ -103,7 +103,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
   };
   const handlePayInputChange = (e: FormInput) => {
     let { name, value } = e.target;
-    if (name === 'start_Date') {
+    if (name === 'start_date') {
       setCreatePayData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -458,7 +458,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                     label="Start Date"
                     value={createPayData.start_date}
                     name="start_date"
-                    placeholder={'1/04/2004'}
+                    placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />
                   {errors?.start_date && (
@@ -488,9 +488,11 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                         'yyyy-MM-dd'
                       )
                     }
-                    placeholder={'1/04/2004'}
+                    
+                    placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />
+
                   {errors?.end_date && (
                     <span
                       style={{

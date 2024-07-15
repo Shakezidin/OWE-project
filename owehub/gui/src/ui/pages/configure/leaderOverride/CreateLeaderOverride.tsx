@@ -131,7 +131,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success('Form Submitted Successfully');
+      toast.success('Leader Override created successfully');
     }
   }, [isSuccess]);
 
