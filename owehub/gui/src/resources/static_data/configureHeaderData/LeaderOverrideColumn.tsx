@@ -37,13 +37,13 @@ export const LeaderOverrideColumns: Column[] = [
   {
     name: 'start_date',
     displayName: 'Start Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'end_date',
     displayName: 'End Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
 ];
