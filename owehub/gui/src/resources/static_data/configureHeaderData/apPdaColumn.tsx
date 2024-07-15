@@ -45,10 +45,4 @@ export const ApPdaColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  {
-    name: 'description',
-    displayName: 'Description',
-    type: 'string',
-    isCheckbox: false,
-  }
 ];

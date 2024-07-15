@@ -104,7 +104,7 @@ const CreateSaleType: React.FC<salesProps> = ({
         </div>
         <div className="createUserContainer">
           <h3 className="createProfileText">
-            {editMode === false ? 'Create Sale Type' : 'Update Sale Type'}
+            {editMode === false ? 'Create Sales Type' : 'Update Sales Type'}
           </h3>
           <form onSubmit={(e) => submitSalesType(e)}>
             <div className="createProfileInputView">

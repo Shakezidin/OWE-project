@@ -246,11 +246,11 @@ const SaleType = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Sale Type"
+        linkparaSecond="Sales Type"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Sale Types"
+          title="Sales Type"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}

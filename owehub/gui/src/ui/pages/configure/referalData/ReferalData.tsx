@@ -244,11 +244,11 @@ const ReferalData: React.FC = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Referal Data"
+        linkparaSecond="Referral Data"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Referal Data"
+          title="Referral Data"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
@@ -299,7 +299,7 @@ const ReferalData: React.FC = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={commissionList}
+                    data={currentPageData}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -356,24 +356,7 @@ const ReferalData: React.FC = () => {
                     <td>{el.notes || 'N/A'}</td>
                     <td>{el.start_date || 'N/A'}</td>
                     <td>
-                      {selectedRows.size > 0 ? (
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'not-allowed' }}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            {/* <span className="tooltiptext">Archive</span> */}
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'not-allowed' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
-                          </div>
-                        </div>
-                      ) : (
+                      {selectedRows.size < 2 && !viewArchived && (
                         <div className="action-icon">
                           <div
                             className="action-archive"
