@@ -79,6 +79,16 @@ const PaymentSchedule = () => {
     setCurrentPage(currentPage - 1);
   };
 
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  const currentPageData = payScheduleList?.slice();
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === payScheduleList?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const endIndex = currentPage * itemsPerPage;
+
   const handleAddPaySchedule = () => {
     setEditMode(false);
     setEditedPaySchedule(null);
@@ -90,13 +100,7 @@ const PaymentSchedule = () => {
     setEditedPaySchedule(payEditedData);
     handleOpen();
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
-  const currentPageData = payScheduleList?.slice();
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === payScheduleList.length;
+ 
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -223,9 +227,6 @@ const PaymentSchedule = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
-  const capitalizeFirstLetter = (string: string): string => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-};
 
   return (
     <div className="comm">
@@ -340,7 +341,7 @@ const PaymentSchedule = () => {
                     <td>{el.rep_draw || 'N/A'}</td>
                     <td>{el.rep_draw_max || 'N/A'}</td>
                     <td>{el.rep_pay || 'N/A'}</td>
-                    <td>{el.commission_model ? capitalizeFirstLetter(el.commission_model) : 'N/A'}</td>
+                    <td>{el.commission_model || 'N/A'}</td>
 
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     <td>{dateFormat(el.end_date) || 'N/A'}</td>
@@ -378,24 +379,27 @@ const PaymentSchedule = () => {
             </tbody>
           </table>
         </div>
-        {payScheduleList?.length > 0 ? (
-          <div className="page-heading-container">
-            <p className="page-heading">
-              {currentPage} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
-              {totalCount} item
-            </p>
+        <div className="page-heading-container">
+          {payScheduleList?.length > 0 ? (
+            <>
+              <p className="page-heading">
+                Showing {startIndex} -{' '}
+                {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
+                item
+              </p>
 
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
-          </div>
-        ) : null}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </>
+          ) : null}
+        </div>
       </div>
     </div>
   );
