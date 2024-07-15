@@ -179,34 +179,34 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 	defer func() { log.ExitFn(0, "PrepareProjectAdminDlrFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := true
+	whereAdded := false
 
-	filtersBuilder.WriteString(" WHERE")
-	cnt := dataFilter.IntervalDays
+	// filtersBuilder.WriteString(" WHERE")
+	// cnt := dataFilter.IntervalDays
 
-	filtersBuilder.WriteString(fmt.Sprintf(" (contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR permit_approved_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+2))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+3))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR pto_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+4))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR site_survey_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+5))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date)", len(whereEleList)+6))
-	whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
+	// filtersBuilder.WriteString(fmt.Sprintf(" (contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR permit_approved_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+2))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+3))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR pto_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+4))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR site_survey_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+5))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date)", len(whereEleList)+6))
+	// whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
 	// Check if there are filters
-	if len(dataFilter.UniqueIds) > 0 {
+	// if len(dataFilter.UniqueIds) > 0 {
 
-		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" unique_id IN (")
+	// 	filtersBuilder.WriteString(" AND ")
+	// 	filtersBuilder.WriteString(" unique_id IN (")
 
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
+	// 	for i, filter := range dataFilter.UniqueIds {
+	// 		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+	// 		whereEleList = append(whereEleList, filter)
 
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
-	}
+	// 		if i < len(dataFilter.UniqueIds)-1 {
+	// 			filtersBuilder.WriteString(", ")
+	// 		}
+	// 	}
+	// 	filtersBuilder.WriteString(") ")
+	// }
 
 	if !adminCheck {
 		if !whereAdded {
@@ -235,32 +235,32 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 	defer func() { log.ExitFn(0, "PrepareProjectSaleRepFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := true
-	filtersBuilder.WriteString(" WHERE")
-	cnt := dataFilter.IntervalDays
+	whereAdded := false
+	// filtersBuilder.WriteString(" WHERE")
+	// cnt := dataFilter.IntervalDays
 
-	filtersBuilder.WriteString(fmt.Sprintf(" (contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR permit_approved_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+2))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+3))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR pto_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+4))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR site_survey_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+5))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date)", len(whereEleList)+6))
-	whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
+	// filtersBuilder.WriteString(fmt.Sprintf(" (contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR permit_approved_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+2))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+3))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR pto_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+4))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR site_survey_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+5))
+	// filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date)", len(whereEleList)+6))
+	// whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
 	// Check if there are filters
-	if len(dataFilter.UniqueIds) > 0 {
-		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" unique_id IN (")
+	// if len(dataFilter.UniqueIds) > 0 {
+	// 	filtersBuilder.WriteString(" AND ")
+	// 	filtersBuilder.WriteString(" unique_id IN (")
 
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
+	// 	for i, filter := range dataFilter.UniqueIds {
+	// 		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+	// 		whereEleList = append(whereEleList, filter)
 
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
-	}
+	// 		if i < len(dataFilter.UniqueIds)-1 {
+	// 			filtersBuilder.WriteString(", ")
+	// 		}
+	// 	}
+	// 	filtersBuilder.WriteString(") ")
+	// }
 
 	if whereAdded {
 		filtersBuilder.WriteString(" AND ")

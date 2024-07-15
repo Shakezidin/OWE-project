@@ -23,12 +23,39 @@ func SalesRepRetrieveQueryFunc() string {
 	return salerRepRetrieveQuery
 }
 
+// func SalesMetricsRetrieveQueryFunc() string {
+// 	SalesMetricsRetrieveQuery := `
+//         SELECT sm.home_owner, sm.unique_id, sm.contract_date, sm.permit_approved_date,
+//             sm.pv_install_completed_date, sm.pto_date, fs.site_survey_completed_date,
+//             fs.install_ready_date, sm.dealer, sm.primary_sales_rep
+//         FROM sales_metrics_schema sm
+//         JOIN field_ops_metrics_schema fs ON sm.unique_id = fs.unique_id
+//     `
+// 	return SalesMetricsRetrieveQuery
+// }
+
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT home_owner, unique_id, contract_date, permit_approved_date, 
-            pv_install_completed_date, pto_date, site_survey_completed_date, 
-            install_ready_date, dealer, primary_sales_rep
-        FROM consolidated_data_view
+        SELECT
+            intOpsMetSchema.home_owner,
+            intOpsMetSchema.unique_id,
+            salMetSchema.contract_date,
+            intOpsMetSchema.permit_approved_date,
+            intOpsMetSchema.pv_install_completed_date,
+            intOpsMetSchema.pto_date,
+            intOpsMetSchema.site_survey_completed_date,
+            fieldOpsSchema.install_ready_date,
+            salMetSchema.dealer,
+            salMetSchema.primary_sales_rep,
+            intOpsMetSchema.row_id
+        FROM
+            internal_ops_metrics_schema AS intOpsMetSchema
+        LEFT JOIN sales_metrics_schema AS salMetSchema 
+            ON intOpsMetSchema.unique_id = salMetSchema.unique_id
+        LEFT JOIN field_ops_metrics_schema AS fieldOpsSchema 
+            ON intOpsMetSchema.unique_id = fieldOpsSchema.unique_id
+        LEFT JOIN second_field_ops_metrics_schema AS secondFieldOpsSchema 
+            ON intOpsMetSchema.unique_id = secondFieldOpsSchema.unique_id
     `
 	return SalesMetricsRetrieveQuery
 }
@@ -36,7 +63,7 @@ func SalesMetricsRetrieveQueryFunc() string {
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT unique_id, home_owner
-        FROM consolidated_data_view
+        FROM internal_ops_metrics_schema
     `
 	return SalesMetricsRetrieveQuery
 }

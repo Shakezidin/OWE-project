@@ -7,19 +7,21 @@
 package models
 
 type GetPerfomanceReq struct {
-	Email        string   `json:"email"`
-	DealerName   interface{}
+	Email      string `json:"email"`
+	DealerName interface{}
+	StartDate  string `json:"start_data"`
+	EndDate    string `json:"end_date"`
 }
 
 type PerfomanceSales struct {
-	Type    string  `json:type`
+	Type    string  `json:"type"`
 	Sales   int64   `json:"sales"`
 	SalesKw float64 `json:"sales_kw"`
 }
 
 type PerfomanceCommission struct {
-	SalesPeriod        float64 `json:sales_period`
-	CancellationPeriod float64   `json:"cancellation_period"`
+	SalesPeriod        float64 `json:"sales_period"`
+	CancellationPeriod float64 `json:"cancellation_period"`
 	InstallationPeriod float64 `json:"installation_period"`
 }
 
