@@ -23,8 +23,8 @@ export const getRepPay = createAsyncThunk(
   async (params: any, { rejectWithValue }) => {
     try {
       const resp = await postCaller('get_rep_pay', params);
-      const count = resp.dbRecCount || 0;
-      const list = resp.data.dealer_pay_data_list || [];
+      const count = resp.record_count || 0;
+      const list = resp.data || [];
       return { count, list };
     } catch (error) {
       rejectWithValue((error as Error).message);

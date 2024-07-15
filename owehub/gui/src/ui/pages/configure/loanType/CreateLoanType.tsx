@@ -38,10 +38,10 @@ const CreateLoanType: React.FC<loanProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [createLoanTypeData, setCreateLoanTypeData] = useState<LoanTypeModel>({
     record_id: loanData ? loanData?.record_id : 0,
-    product_code: loanData ? loanData?.product_code : 'Prd2',
-    active: loanData ? loanData?.active : 1,
-    adder: loanData ? loanData?.adder : 2,
-    description: loanData ? loanData?.description : 'description',
+    product_code: loanData ? loanData?.product_code : '',
+    active: loanData ? loanData?.active : "",
+    adder: loanData ? loanData?.adder : "",
+    description: loanData ? loanData?.description : '',
   });
   const [isPending, setIsPending] = useState(false);
 

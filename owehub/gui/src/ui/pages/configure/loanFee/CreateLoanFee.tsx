@@ -37,7 +37,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   const [newFormData, setNewFormData] = useState({
     dealerName: '',
     installerName: '',
-    loanType: 'P123',
+    loanType: '',
     dlrMu: '',
     dlrCost: '',
     startDate: '',
@@ -167,6 +167,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
       }
     }
   };
+console.log(errors,"errors");
 
   return (
     <div className="transparent-model">
