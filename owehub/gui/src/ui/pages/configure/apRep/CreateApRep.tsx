@@ -16,14 +16,14 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import Select from 'react-select';
 import {
-  createApRep,
-  updateApRep,
+createApRep,
+updateApRep
 } from '../../../../redux/apiActions/config/apRepAction';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apRepSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
@@ -37,22 +37,20 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess, isFormSubmitting } = useAppSelector(
-    (state) => state.apRepSlice
-  );
+  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.apRepSlice);
 
   const [createArData, setCreateArData] = useState({
     // customer_name:editData?.customer_name || "",
-    unique_id: '',
-    rep: '',
-    dba: '',
-    type: '',
-    date: '',
-    amount: '',
-    method: '',
-    cbiz: '',
-    transaction: '',
-    notes: '',
+    unique_id: editData.unique_id || '',
+    rep: editData.rep || '',
+    dba:  editData.dba  || '',
+    final: editData.final || '',
+    date: editData.date || '',
+    amount:  editData.amount || '',
+    method: editData.method || '',
+    cbiz:editData.cbiz || '',
+    transaction: editData.transaction || '',
+    notes: editData.notes || '',
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -85,9 +83,13 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
           message: 'Unique Id is required',
         },
       ],
-      rep: [{ condition: (value: any) => !!value, message: 'Rep is required' }],
-      dba: [{ condition: (value: any) => !!value, message: 'DBA is required' }],
-      type: [
+      rep: [
+        { condition: (value: any) => !!value, message: 'Rep is required' },
+      ],
+      dba: [
+        { condition: (value: any) => !!value, message: 'DBA is required' },
+      ],
+      final: [
         {
           condition: (value: any) => !!value,
           message: 'Type is required',
@@ -96,63 +98,54 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
       date: [
         { condition: (value: any) => !!value, message: 'date is required' },
       ],
-      amount: [
-        { condition: (value: any) => !!value, message: 'amount is required' },
-      ],
-      method: [
-        { condition: (value: any) => !!value, message: 'method is required' },
-      ],
-      cbiz: [
-        { condition: (value: any) => !!value, message: 'cbiz is required' },
-      ],
-      transaction: [
-        {
-          condition: (value: any) => !!value,
-          message: 'Transaction is required',
-        },
-      ],
-      notes: [
-        { condition: (value: any) => !!value, message: 'Notes is required' },
-      ],
+      amount: [{ condition: (value: any) => !!value, message: 'amount is required' }],
+      method: [{ condition: (value: any) => !!value, message: 'method is required' }],
+      cbiz: [{ condition: (value: any) => !!value, message: 'cbiz is required' }],
+      transaction: [{ condition: (value: any) => !!value, message: 'Transaction is required' }],
+      notes: [{ condition: (value: any) => !!value, message: 'Notes is required' }],
     };
     const { isValid, errors } = validateConfigForm(
       createArData!,
       validationRules
-    );
+    ); 
     if (!isValid) {
       setErrors(errors);
       return;
     }
 
-    // dispatch(
-    //   createApRep({
-    //     unique_id: createArData.unique_id,
-    //     rep: createArData.rep,
-    //     dba: createArData.dba,
-    //     final: createArData.type,
-    //     date: createArData.date,
-    //     amount: parseInt(createArData.amount),
-    //     method:createArData.method,
-    //     cbiz:createArData.cbiz,
-    //     transaction:createArData.transaction,
-    //     notes:createArData.notes
-    //   })
-    // );
-    if (editMode) {
-      dispatch(
-        updateApRep({
-          ...createArData,
-          record_id: editData?.record_id!,
-          amount: parseInt(createArData.amount),
-        })
-      );
-    } else {
+     
+      // dispatch(
+      //   createApRep({
+      //     unique_id: createArData.unique_id,
+      //     rep: createArData.rep,
+      //     dba: createArData.dba,
+      //     final: createArData.type,
+      //     date: createArData.date,
+      //     amount: parseInt(createArData.amount),
+      //     method:createArData.method,
+      //     cbiz:createArData.cbiz,
+      //     transaction:createArData.transaction,
+      //     notes:createArData.notes
+      //   })
+      // );
+      if (editMode) {
+        dispatch(
+          updateApRep({
+            ...createArData,
+            record_id: editData?.record_id!,
+            amount: parseInt(createArData.amount),
+
+          })
+        );
+      }
+      else {
       const data = {
         ...createArData,
         amount: parseFloat(createArData.amount), // Convert to number
       };
       dispatch(createApRep(data));
     }
+    
   };
 
   useEffect(() => {
@@ -182,28 +175,28 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="UniqueId"
+                    label="Unique Id"
                     value={createArData.unique_id}
                     name="unique_id"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.unique_id && (
-                    <span className="error">{errors.unique_id}</span>
-                  )}
+                  {errors.unique_id && <span className="error">{errors.unique_id}</span>}
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Rep"
+                    label="REP"
                     value={createArData.rep}
                     name="rep"
                     placeholder={'Enter'}
-                    onChange={(e) => {
+                    onChange={(e) => {                       
                       handleInputChange(e);
                     }}
                   />
-                  {errors.rep && <span className="error">{errors.rep}</span>}
+                  {errors.rep && (
+                    <span className="error">{errors.rep}</span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -215,7 +208,9 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.dba && <span className="error">{errors.dba}</span>}
+                  {errors.dba && (
+                    <span className="error">{errors.dba}</span>
+                  )}
                 </div>
               </div>
 
@@ -224,12 +219,14 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                   <Input
                     type={'text'}
                     label="Type"
-                    value={createArData.type}
-                    name="type"
+                    value={createArData.final}
+                    name="final"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.type && <span className="error">{errors.type}</span>}
+                  {errors.type && (
+                    <span className="error">{errors.type}</span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -249,11 +246,16 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     value={createArData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
-                  {errors.amount && (
-                    <span className="error">{errors.amount}</span>
-                  )}
+                  {errors.amount&& <span className="error">{errors.amount}</span>}
                 </div>
               </div>
 
@@ -274,7 +276,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="cbiz"
+                    label="CBIZ"
                     value={createArData.cbiz}
                     name="cbiz"
                     placeholder={'Enter'}
@@ -291,9 +293,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.transaction && (
-                    <span className="error">{errors.transaction}</span>
-                  )}
+                  {errors.transaction&& <span className="error">{errors.transaction}</span>}
                 </div>
               </div>
               <div className="create-input-container">
@@ -310,6 +310,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     <span className="error">{errors.notes}</span>
                   )}
                 </div>
+                
               </div>
             </div>
           </div>
