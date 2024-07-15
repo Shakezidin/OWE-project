@@ -44,6 +44,7 @@ func (pReferral *RepCreditStruct) LoadRepCreditlCfg() (err error) {
 		return err
 	}
 
+	RepCreditCfg.RepCreditList = RepCreditCfg.RepCreditList[:0]
 	for _, item := range data {
 		// unique_id
 		UniqueID, ok := item["unique_id"].(string)

@@ -66,8 +66,8 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	query = `
 	 SELECT re.id as record_id, re.unique_id, re.customer, pt.partner_name AS partner_name, st.name as state_name, re.sys_size, re.status, re.start_date, re.end_date, re.amount, re.notes
 	 FROM reconcile re
-	 JOIN states st ON st.state_id = re.state_id
-	 JOIN partners pt ON pt.partner_id = re.partner_id`
+	 LEFT JOIN states st ON st.state_id = re.state_id
+	 LEFT JOIN partners pt ON pt.partner_id = re.partner_id`
 
 	filter, whereEleList = PrepareReconcileFilters(tableName, dataReq, false)
 	if filter != "" {

@@ -43,6 +43,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 		return err
 	}
 
+	RepPayCfg.RepPayList.RepPaySettingsList = RepPayCfg.RepPayList.RepPaySettingsList[:0]
 	for _, item := range data {
 		RecordId, Ok := item["record_id"].(int64)
 		if !Ok {

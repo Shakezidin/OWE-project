@@ -42,6 +42,7 @@ func (adderRespCfg *adderRespCfgStruct) LoadadderRespCfg() (err error) {
 		return err
 	}
 
+	adderRespCfg.adderRespList = adderRespCfg.adderRespList[:0]
 	for _, item := range data {
 
 		PayScale, ok := item["pay_scale"].(string)

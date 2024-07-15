@@ -8,8 +8,8 @@ CREATE OR REPLACE FUNCTION update_commission(
     p_rep_type VARCHAR,
     p_rl DOUBLE PRECISION,
     p_rate DOUBLE PRECISION,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_start_date date,
+    p_end_date date,
     OUT v_commissions_id INT
 )
 RETURNS INT 

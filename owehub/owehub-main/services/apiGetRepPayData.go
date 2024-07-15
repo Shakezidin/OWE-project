@@ -20,33 +20,34 @@ import (
 )
 
 type RepPay struct {
-	HomeOwner     string
-	CurrentStatus string
-	StatusDate    time.Time
-	UniqueId      string
-	OweContractor string
-	DBA           string
-	Type          string
-	Amount        float64
-	FinanceType   string
-	SysSize       float64
-	LoanFee       float64
-	EPC           float64
-	Adders        float64
-	RR            float64
-	CommRate      float64
-	NetEPC        float64
-	Credit        float64
-	Rep2          string
-	NetComm       float64
-	DrawAmt       float64
-	AmtPaid       float64
-	Balance       float64
-	DealerCode    string
-	Subtotal      float64
-	MaxPerRep     float64
-	TotalPerRep   float64
+	HomeOwner     string    `json:"home_owner"`
+	CurrentStatus string    `json:"current_status"`
+	StatusDate    time.Time `json:"status_date"`
+	UniqueId      string    `json:"unique_id"`
+	OweContractor string    `json:"owe_contractor"`
+	DBA           string    `json:"dba"`
+	Type          string    `json:"type"`
+	Amount        float64   `json:"amount"`
+	FinanceType   string    `json:"finance_type"`
+	SysSize       float64   `json:"sys_size"`
+	LoanFee       float64   `json:"loan_fee"`
+	EPC           float64   `json:"epc"`
+	Adders        float64   `json:"adders"`
+	RR            float64   `json:"r_r"`
+	CommRate      float64   `json:"comm_rate"`
+	NetEPC        float64   `json:"net_epc"`
+	Credit        float64   `json:"credit"`
+	Rep2          string    `json:"rep2"`
+	NetComm       float64   `json:"net_comm"`
+	DrawAmt       float64   `json:"draw_amt"`
+	AmtPaid       float64   `json:"amt_paid"`
+	Balance       float64   `json:"balance"`
+	DealerCode    string    `json:"dealer_code"`
+	Subtotal      float64   `json:"subtotal"`
+	MaxPerRep     float64   `json:"max_per_rep"`
+	TotalPerRep   float64   `json:"total_per_rep"`
 }
+
 
 /******************************************************************************
 / * FUNCTION:		GetRepPayFromView
@@ -484,13 +485,13 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "owe_contractor":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.owe_contractor) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "DBA":
+		case "dba":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.DBA) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
 		case "type":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.type) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "Amount":
+		case "amount":
 			filtersBuilder.WriteString(fmt.Sprintf(" rep.Amount %s $%d", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
 		case "finance_type":
@@ -520,7 +521,7 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "credit":
 			filtersBuilder.WriteString(fmt.Sprintf(" rep.credit %s $%d", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "rep_2":
+		case "rep2":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.rep_2) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
 		case "net_comm":
@@ -541,12 +542,12 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "subtotal":
 			filtersBuilder.WriteString(fmt.Sprintf(" rep.subtotal %s $%d", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "max_per_rep":
-			filtersBuilder.WriteString(fmt.Sprintf(" rep.max_per_rep %s $%d", operator, len(whereEleList)+1))
-			whereEleList = append(whereEleList, value)
-		case "total_per_rep":
-			filtersBuilder.WriteString(fmt.Sprintf(" rep.total_per_rep %s $%d", operator, len(whereEleList)+1))
-			whereEleList = append(whereEleList, value)
+		// case "max_per_rep":
+		// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.max_per_rep %s $%d", operator, len(whereEleList)+1))
+		// 	whereEleList = append(whereEleList, value)
+		// case "total_per_rep":
+		// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.total_per_rep %s $%d", operator, len(whereEleList)+1))
+		// 	whereEleList = append(whereEleList, value)
 		}
 	}
 

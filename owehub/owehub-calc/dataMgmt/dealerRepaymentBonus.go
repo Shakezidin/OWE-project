@@ -50,6 +50,7 @@ func (pDealer *DealerRepaymentStruct) LoadDealerRepaymentCfg() (err error) {
 		return err
 	}
 
+	pDealer.DealerRepaymentList = pDealer.DealerRepaymentList[:0]
 	for _, item := range data {
 
 		RecordId, ok := item["record_id"].(int64)

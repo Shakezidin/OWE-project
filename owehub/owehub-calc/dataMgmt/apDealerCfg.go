@@ -52,6 +52,7 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 		return err
 	}
 
+	pApDealerCfg.ApDealerList = pApDealerCfg.ApDealerList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

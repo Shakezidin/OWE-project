@@ -296,7 +296,11 @@ LEFT JOIN
 			Date = time.Time{}
 		}
 
+<<<<<<< HEAD
 		date := Date.Format("2006-01-02")
+=======
+		startdate := Date.Format("2006-01-02")
+>>>>>>> cal_dev_zidhin
 
 		RebateData := models.GetRebateData{
 			RecordId:           RecordId,
@@ -324,7 +328,11 @@ LEFT JOIN
 			R1RebateCreditPerc: R1_rebate_credit_perc,
 			R2RebateCredit:     R2_rebate_credit,
 			R2RebateCreditPerc: R2_rebate_credit_perc,
+<<<<<<< HEAD
 			Date:               date,
+=======
+			Date:               startdate,
+>>>>>>> cal_dev_zidhin
 		}
 
 		RebateDataList.RebateDataList = append(RebateDataList.RebateDataList, RebateData)

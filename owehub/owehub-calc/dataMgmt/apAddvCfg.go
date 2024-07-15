@@ -45,6 +45,7 @@ func (pApAdvData *ApAdvCfgStruct) LoadApAdvCfg() (err error) {
 		return err
 	}
 
+	pApAdvData.ApAdvList = pApAdvData.ApAdvList[:0]
 	for _, item := range data {
 
 		Payee, ok := item["payee"].(string)
