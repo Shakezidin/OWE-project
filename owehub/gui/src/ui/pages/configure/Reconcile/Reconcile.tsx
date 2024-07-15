@@ -307,11 +307,11 @@ const Reconcile = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.customer}</td>
-                    <td>{el.partner_name}</td>
-                    <td>{el.state_name}</td>
+                    <td>{el.customer || 'N/A'}</td>
+                    <td>{el.partner_name || 'N/A'}</td>
+                    <td>{el.state_name || 'N/A'}</td>
                     <td>{el.sys_size}</td>
-                    <td>{el.status}</td>
+                    <td>{el.status || 'N/A'}</td>
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>{el.amount}</td>
