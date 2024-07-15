@@ -50,7 +50,7 @@ export const RepPayDashboardPage: React.FC = () => {
   );
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption2, setSelectedOption2] = useState<string>(
-    comissionValueData[0].label
+    comissionValueData[0].value
   );
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -218,10 +218,7 @@ export const RepPayDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={comissionValueData}
-                    value={{
-                      value: filters.commission_model,
-                      label: filters.commission_model,
-                    }}
+                    value={comissionValueData.find(item=>item.value===filters.commission_model)}
                     onFocus={() => setIsOpen(false)}
                     onChange={(value) =>
                       handleChange('commission_model', value?.value!)
