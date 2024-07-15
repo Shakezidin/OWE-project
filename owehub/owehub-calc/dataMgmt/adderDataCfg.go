@@ -56,6 +56,7 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 		return err
 	}
 
+	AdderDataCfg.AdderDataList = AdderDataCfg.AdderDataList[:0]
 	for _, item := range data {
 
 		RecordId, ok := item["record_id"].(int64)

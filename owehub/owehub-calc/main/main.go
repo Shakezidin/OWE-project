@@ -24,9 +24,11 @@ import (
 	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
 	repPayCalc "OWEApp/owehub-calc/reppaycalc"
 
+	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 
 	"github.com/gorilla/mux"
+	"github.com/robfig/cron/v3"
 	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -43,10 +45,6 @@ func main() {
 	log.EnterFn(0, "main")
 	router := createApiRouter()
 	var err error
-	arCalcResult := make(chan string)
-	dlrPayResult := make(chan string)
-	repPayResult := make(chan string)
-
 	/* Start HTTP Server */
 	if types.CommGlbCfg.SvcSrvCfg.OpenStdHTTPPort {
 		startServiceServer("HTTP", true, router)
@@ -62,71 +60,33 @@ func main() {
 		}
 	}
 
-	// // create by zidhin ============
-	// arr := []string{}
-
-	// for _, data := range arr {
-	// 	GetUniqueIds(data)
-	// }
-	// GetUniqueIds("finish")
-	// return
-
-	// GetDefferenceFromCDVAndSchema()
-	// return
-	// create by zidhin ============
-
-	/* Load Raw data and Configurations */
-	err = datamgmt.LoadConfigurations()
+	// Perform Initial Load and Calculations at Startup
+	err = performInitialLoadAndCalculations()
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get config from DB err: %+v", err)
-		panic("Failed to load config from DB")
+		log.FuncErrorTrace(0, "error while loading performInitialLoadAndCalculations function")
+		return
 	}
 
-	err = datamgmt.SaleData.LoadSaleData("", "")
+	// 	* * * * * tine of crown job
+	// | | | | |
+	// | | | | +---- Day of the week (0 - 6) (Sunday=0)
+	// | | | +------ Month (1 - 12)
+	// | | +-------- Day of the month (1 - 31)
+	// | +---------- Hour (0 - 23)
+	// +------------ Minute (0 - 59)
+
+	// Schedule Daily Execution at Midnight
+	c := cron.New()
+	_, err = c.AddFunc("0 0 * * *", func() {
+		err := performInitialLoadAndCalculations()
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to perform daily load and calculations:", err)
+		}
+	})
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
-		panic("Failed to load sale data from DB")
+		log.FuncErrorTrace(0, "Failed to schedule daily job:", err)
 	}
-
-	/* Perform Initial AR Calcualtion*/
-	go arCalc.ExecArInitialCalculation(arCalcResult)
-
-	/* Perform Initial DLR PAY Calcualtion*/
-	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
-
-	/* Perform Initial REP PAY Calcualtion*/
-	go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
-
-	repPayRs := <-repPayResult
-	dlrPayRs := <-dlrPayResult
-	arRs := <-arCalcResult
-
-	if arRs != "SUCCESS" {
-		log.FuncErrorTrace(0, "Failed to perform initial calculations for AR")
-		panic("Failed to perform initial calculations for AR")
-	} else {
-		log.FuncDebugTrace(0, "AR Initial calculation completed sucessfully.")
-	}
-
-	if dlrPayRs != "SUCCESS" {
-		log.FuncErrorTrace(0, "Failed to perform initial calculations for DealerPay")
-		panic("Failed to perform initial calculations for DealerPay")
-	} else {
-		log.FuncDebugTrace(0, "DLR Pay Initial calculation completed sucessfully.")
-	}
-
-	if repPayRs != "SUCCESS" {
-		log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
-		panic("Failed to perform initial calculations for RepPay")
-	} else {
-		log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
-	}
-
-	/*Closing channels*/
-	close(arCalcResult)
-	close(repPayResult)
-	close(dlrPayResult)
-
+	c.Start()
 	/* Spawn signal handler routine*/
 	go signalHandler()
 	/*Execute app inifinetly until it gets exit indication*/
@@ -297,6 +257,89 @@ func signalHandler() {
 	signal.Notify(sigChan, os.Interrupt)
 	sig := <-sigChan
 	types.ExitChan <- fmt.Errorf("%+v signal", sig)
+}
+
+func performInitialLoadAndCalculations() error {
+	var err error
+	arCalcResult := make(chan string)
+	dlrPayResult := make(chan string)
+	repPayResult := make(chan string)
+
+	// Clear previous data
+	err = clearPreviousData()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to clear previous data err: %+v", err)
+		return fmt.Errorf("failed to clear previous data: %w", err)
+	}
+
+	// Load Configurations
+	err = datamgmt.LoadConfigurations()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get config from DB err: %+v", err)
+		return fmt.Errorf("failed to load config from DB: %w", err)
+	}
+
+	// Load Sale Data
+	err = datamgmt.SaleData.LoadSaleData("", "")
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
+		return fmt.Errorf("failed to load sale data from DB: %w", err)
+	}
+
+	// Perform Initial AR Calculation
+	go arCalc.ExecArInitialCalculation(arCalcResult)
+
+	// Perform Initial DLR PAY Calculation
+	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
+
+	// Perform Initial REP PAY Calculation
+	go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
+
+	repPayRs := <-repPayResult
+	dlrPayRs := <-dlrPayResult
+	arRs := <-arCalcResult
+
+	if arRs != "SUCCESS" {
+		log.FuncErrorTrace(0, "Failed to perform initial calculations for AR")
+		return fmt.Errorf("failed to perform initial calculations for AR")
+	} else {
+		log.FuncDebugTrace(0, "AR Initial calculation completed successfully.")
+	}
+
+	if dlrPayRs != "SUCCESS" {
+		log.FuncErrorTrace(0, "Failed to perform initial calculations for DealerPay")
+		return fmt.Errorf("failed to perform initial calculations for DealerPay")
+	} else {
+		log.FuncDebugTrace(0, "DLR Pay Initial calculation completed successfully.")
+	}
+
+	if repPayRs != "SUCCESS" {
+		log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
+		return fmt.Errorf("failed to perform initial calculations for RepPay")
+	} else {
+		log.FuncDebugTrace(0, "Rep Pay Initial calculation completed successfully.")
+	}
+
+	// Closing channels
+	close(arCalcResult)
+	close(repPayResult)
+	close(dlrPayResult)
+
+	return nil
+}
+
+func clearPreviousData() error {
+	queries := `
+		TRUNCATE TABLE sales_ar_calc;
+		TRUNCATE TABLE dealer_pay_calc_standard;
+		TRUNCATE TABLE rep_pay_cal_standard;
+		TRUNCATE TABLE rep_pay_cal_ovrrd_standard;`
+
+	err := db.ExecQueryDB(0, queries)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // func GetDefferenceFromCDVAndSchema() {

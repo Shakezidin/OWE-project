@@ -49,6 +49,7 @@ func (mktgFeeCfg *mktgFeeCfgStruct) LoadmktgFeeCfg() (err error) {
 		return err
 	}
 
+	mktgFeeCfg.mktgFeeList = mktgFeeCfg.mktgFeeList[:0]
 	for _, item := range data {
 
 		Source, ok := item["source"].(string)

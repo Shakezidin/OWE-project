@@ -43,6 +43,7 @@ func (AdjustmentsConfig *AdjustmentsCfgStruct) LoadAdjustmentsCfg() (err error) 
 		return err
 	}
 
+	AdjustmentsConfig.AdjustmentsConfigList.AdjustmentsList = AdjustmentsConfig.AdjustmentsConfigList.AdjustmentsList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

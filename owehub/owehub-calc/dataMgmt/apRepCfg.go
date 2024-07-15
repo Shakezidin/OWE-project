@@ -38,6 +38,7 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 		return err
 	}
 
+	pApRepCfg.ApRepList.ApRepList = pApRepCfg.ApRepList.ApRepList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

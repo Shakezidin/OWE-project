@@ -41,6 +41,7 @@ func (pLeaderOverride *LeaderOverrideCfgStruct) LoadLeaderOverrideCfg() (err err
 	}
 
 	// Assuming you have data as a slice of maps, as in your previous code
+	pLeaderOverride.LeaderOverrideList.LeaderOverrideList = pLeaderOverride.LeaderOverrideList.LeaderOverrideList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

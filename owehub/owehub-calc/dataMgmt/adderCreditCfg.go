@@ -38,6 +38,7 @@ func (pAdderCredit *AdderCreditCfgStruct) LoadAdderCreditCfg() (err error) {
 	}
 
 	// Assuming you have data as a slice of maps, as in your previous code
+	pAdderCredit.AdderCreditCfg.AdderCreditList = pAdderCredit.AdderCreditCfg.AdderCreditList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
