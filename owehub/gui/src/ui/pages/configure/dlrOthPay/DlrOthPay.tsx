@@ -90,7 +90,7 @@ const DlrOthPay: React.FC = () => {
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -332,6 +332,7 @@ const DlrOthPay: React.FC = () => {
               {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
               {dbCount} item
             </p>
+
 
             <Pagination
               currentPage={currentPage}

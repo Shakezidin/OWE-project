@@ -54,7 +54,7 @@ const dealerCredit = createSlice({
         state.isFormSubmitting = false;
         state.isSuccess = true;
         state.error = '';
-        toast.success('Form submission completed');
+        toast.success('Dealer Credit Created Successfully');
       })
       .addCase(createDealerCredit.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -68,7 +68,7 @@ const dealerCredit = createSlice({
       .addCase(updateDealerCredit.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Form submission completed');
+        toast.success('Dealer Credit Updated Successfully');
       })
       .addCase(updateDealerCredit.rejected, (state, action) => {
         state.isFormSubmitting = false;

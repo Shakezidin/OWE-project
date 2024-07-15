@@ -66,7 +66,7 @@ const rebateDataSlice = createSlice({
       .addCase(updateRebateData.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Rebate data updated');
+        toast.success('Rebate data updated Successfully');
       })
       .addCase(updateRebateData.rejected, (state, action) => {
         state.isFormSubmitting = false;
