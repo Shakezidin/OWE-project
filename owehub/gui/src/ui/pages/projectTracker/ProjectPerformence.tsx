@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { cardData, projectDashData } from './projectData';
 import { ICONS } from '../../icons/Icons';
 import '../projectTracker/projectTracker.css';
@@ -9,7 +9,9 @@ import {
   buildStyles,
 } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { projects } from './projectData';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRangePicker } from 'react-date-range';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
@@ -25,6 +27,30 @@ import { toast } from 'react-toastify';
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const [selectionRange, setSelectionRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: 'selection',
+  });
+  console.log(selectionRange, "performance page");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const handleSelect = (ranges: any) => {
+    setSelectionRange(ranges.selection);
+  };
+
+  const handleToggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+  };
+
+  const handleResetDates = () => {
+    setSelectionRange({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection',
+    });
+  };
+
   const perPage = 10;
   const getColorStyle = (date: string | null) => {
     if (!date) {
@@ -54,6 +80,22 @@ const ProjectPerformence = () => {
       if (expirationTime && currentTime < parseInt(expirationTime, 10)) {
         toast.dismiss();
       }
+    };
+  }, []);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setShowDatePicker(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -86,6 +128,7 @@ const ProjectPerformence = () => {
   };
   const startIndex = (page - 1) * perPage + 1;
   const endIndex = page * perPage;
+  console.log(selectionRange, "performance page");
   return (
     <div className="">
       <Breadcrumb
@@ -97,6 +140,72 @@ const ProjectPerformence = () => {
       <div className="project-container">
         <div className="project-heading">
           <h2>Daily Performance</h2>
+
+          <div className="per-head-input">
+            <div
+              className="rep-drop_label"
+              style={{ backgroundColor: '#C470C7' }}
+            >
+              <img src={ICONS.includes_icon} alt="" />
+            </div>
+            <div className="rep-up relative">
+              <label
+                className="inputLabel"
+                style={{
+                  color: '#344054',
+                  position: 'absolute',
+                  left: '12px',
+                  top: '-9px',
+                  whiteSpace: 'nowrap',
+                  zIndex: 99,
+                }}
+              >
+                Payroll Date
+              </label>
+
+              <div
+                style={{
+                  position: 'relative',
+                  top: '7px',
+                  backgroundColor: 'white',
+                  marginLeft: '6px',
+                }}
+                ref={datePickerRef}
+              >
+                <label
+                  className="date-button"
+                  onClick={handleToggleDatePicker}
+                  style={{ color: '#292929' }}
+                >
+                  {selectionRange.startDate.toLocaleDateString() !==
+                    selectionRange.endDate.toLocaleDateString()
+                    ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
+                    : 'Select Date'}
+                </label>
+                {showDatePicker && (
+                  <div className="per-calender-container">
+                    <DateRangePicker
+                      ranges={[selectionRange]}
+                      onChange={handleSelect}
+                    />
+                    <button
+                      className="reset-calender"
+                      onClick={handleResetDates}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      className="apply-calender"
+                      onClick={handleToggleDatePicker}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
         </div>
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
@@ -324,17 +433,17 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.contract_date
                                       ? format(
-                                          new Date(project.contract_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(project.contract_date),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.contract_date
                                       ? format(
-                                          new Date(project.contract_date),
-                                          'yyyy'
-                                        )
+                                        new Date(project.contract_date),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -365,22 +474,22 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.site_survey_complete_date
                                       ? format(
-                                          new Date(
-                                            project.site_survey_complete_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.site_survey_complete_date
+                                        ),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.site_survey_complete_date
                                       ? format(
-                                          new Date(
-                                            project.site_survey_complete_date
-                                          ),
-                                          'yyyy'
-                                        )
+                                        new Date(
+                                          project.site_survey_complete_date
+                                        ),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -412,22 +521,22 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.permit_approved_date
                                       ? format(
-                                          new Date(
-                                            project.permit_approved_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.permit_approved_date
+                                        ),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.permit_approved_date
                                       ? format(
-                                          new Date(
-                                            project.permit_approved_date
-                                          ),
-                                          'yyyy'
-                                        )
+                                        new Date(
+                                          project.permit_approved_date
+                                        ),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -458,18 +567,18 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.install_ready_date
                                       ? format(
-                                          new Date(project.install_ready_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(project.install_ready_date),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.install_ready_date
                                       ? format(
-                                          new Date(project.install_ready_date),
-                                          'yyyy'
-                                        )
+                                        new Date(project.install_ready_date),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -500,21 +609,21 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.install_completed_date
                                       ? format(
-                                          new Date(
-                                            project.install_completed_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.install_completed_date
+                                        ),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.install_completed_date
                                       ? format(
-                                          new Date(
-                                            project.install_completed_date
-                                          ),
-                                          'yyyy'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.install_completed_date
+                                        ),
+                                        'yyyy'
+                                      ).slice(0, 6)
                                       : ''}
                                   </p>
                                 </div>
@@ -543,17 +652,17 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.pto_date
                                       ? format(
-                                          new Date(project.pto_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(project.pto_date),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.pto_date
                                       ? format(
-                                          new Date(project.pto_date),
-                                          'yyyy'
-                                        ).slice(0, 6)
+                                        new Date(project.pto_date),
+                                        'yyyy'
+                                      ).slice(0, 6)
                                       : ''}
                                   </p>
                                 </div>
