@@ -70,7 +70,7 @@ const ApDed = () => {
   const totalPages = Math.ceil(totalcount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
