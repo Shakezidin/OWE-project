@@ -132,14 +132,16 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			EndDate = time.Time{}
 		}
 
+		startDate := StartDate.Format("2006-01-02")
+		endDate := EndDate.Format("2006-01-02")
 		dealerData := models.GetDealerData{
 			RecordId:  RecordId,
 			SubDealer: SubDealer,
 			Dealer:    Dealer,
 			State:     StateName,
 			PayRate:   PayRate,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			StartDate: startDate,
+			EndDate:   endDate,
 		}
 
 		dealersList.DealersList = append(dealersList.DealersList, dealerData)
@@ -200,20 +202,23 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, f
 
 			// Build the filter condition using correct db column name
 			switch column {
-			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "record_id":
+				filtersBuilder.WriteString(fmt.Sprintf("dor.id %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sub_dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.sub_dealer) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dor.sub_dealer) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "dealer":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
 				filtersBuilder.WriteString(fmt.Sprintf("dor.start_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "end_date":
 				filtersBuilder.WriteString(fmt.Sprintf("dor.end_date %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly

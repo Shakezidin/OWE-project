@@ -44,6 +44,7 @@ func (pRepName *RepNameStruct) LoadRRepNameCfg() (err error) {
 		return err
 	}
 
+	pRepName.RepNameList = pRepName.RepNameList[:0]
 	for _, item := range data {
 
 		RecordId, ok := item["record_id"].(int64)

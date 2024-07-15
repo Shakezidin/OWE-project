@@ -45,6 +45,7 @@ func (pApDedData *ApDedCfgStruct) LoadApDedCfg() (err error) {
 		return err
 	}
 
+	pApDedData.ApDedList = pApDedData.ApDedList[:0]
 	for _, item := range data {
 
 		Payee, ok := item["payee"].(string)

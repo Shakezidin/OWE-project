@@ -44,6 +44,7 @@ func (TeamDataCfg *TeamDataCfgStruct) LoadTeamDataCfg() (err error) {
 		return err
 	}
 
+	TeamDataCfg.TeamDataList = TeamDataCfg.TeamDataList[:0]
 	for _, item := range data {
 
 		Name, ok := item["name"].(string)

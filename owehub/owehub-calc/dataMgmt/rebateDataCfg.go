@@ -46,6 +46,8 @@ func (RebateCfg *RebateCfgStruct) LoadRebateCfg() (err error) {
 		log.FuncErrorTrace(0, "Failed to get rebate data from DB err: %v", err)
 		return
 	}
+
+	RebateCfg.RebateList = RebateCfg.RebateList[:0]
 	for _, item := range data {
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {

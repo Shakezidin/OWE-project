@@ -45,6 +45,7 @@ func (pApOthData *ApOthCfgStruct) LoadApOthCfg() (err error) {
 		return err
 	}
 
+	pApOthData.ApOthList = pApOthData.ApOthList[:0]
 	for _, item := range data {
 
 		Payee, ok := item["payee"].(string)

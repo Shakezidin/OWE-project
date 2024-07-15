@@ -41,6 +41,7 @@ func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) LoadRateAdjustmentsCfg() (er
 		return
 	}
 
+	RateAdjustmentsCfg.RateAdjustmentsList = RateAdjustmentsCfg.RateAdjustmentsList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

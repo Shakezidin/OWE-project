@@ -6,18 +6,14 @@
 
 package models
 
-import (
-	"time"
-)
-
 type GetDealerData struct {
-	RecordId  int64     `json:"record_id"`
-	SubDealer string    `json:"sub_dealer"`
-	Dealer    string    `json:"dealer"`
-	State     string    `json:"state"`
-	PayRate   string    `json:"pay_rate"`
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
+	RecordId  int64  `json:"record_id"`
+	SubDealer string `json:"sub_dealer"`
+	Dealer    string `json:"dealer"`
+	State     string `json:"state"`
+	PayRate   string `json:"pay_rate"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
 }
 
 type GetDealersList struct {

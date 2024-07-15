@@ -48,6 +48,7 @@ func (RepIncentCfg *repIncentCfgStruct) LoadRepIncentCfg() (err error) {
 		return err
 	}
 
+	RepIncentCfg.RepIncentList = RepIncentCfg.RepIncentList[:0]
 	for _, item := range data {
 
 		Name, ok := item["name"].(string)

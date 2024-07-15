@@ -44,6 +44,7 @@ func (pApPdaData *ApPdaCfgStruct) LoadApPdaCfg() (err error) {
 		return err
 	}
 
+	pApPdaData.ApPdaList = pApPdaData.ApPdaList[:0]
 	for _, item := range data {
 
 		Payee, ok := item["payee"].(string)
