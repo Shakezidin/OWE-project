@@ -106,8 +106,8 @@ const DbManagerDashboard = () => {
 
       <div className="Db-manager-container">
         <div className="runner-section">
-          <div className='dbm-top'>
-            <img src={ICONS.dbm} alt='' className='dbm-img' />
+          <div className="dbm-top">
+            <img src={ICONS.dbm} alt="" className="dbm-img" />
             <h3>DB Status</h3>
             <p>Application {!start_time && 'Not'} Running</p>
           </div>
@@ -134,15 +134,11 @@ const DbManagerDashboard = () => {
           </div>
         </div>
 
-
-
-
-
-
         <div className="DashBarchart-section">
           <DashBarLineChart />
           <div className="identity1">
-            <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>Historical Records</p>
+            <Boxes color="#63ACA3" borderColor="#D2FFF9" />{' '}
+            <p>Historical Records</p>
             <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>Total Records</p>
           </div>
         </div>
@@ -169,7 +165,7 @@ const DbManagerDashboard = () => {
                 cursor: 'pointer',
                 alignContent: 'center',
                 backgroundColor: '#ffffff',
-                boxShadow: 'none'
+                boxShadow: 'none',
               }),
               placeholder: (baseStyles) => ({
                 ...baseStyles,

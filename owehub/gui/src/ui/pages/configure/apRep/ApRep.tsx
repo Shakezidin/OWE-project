@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {  fetchApRep } from '../../../../redux/apiActions/config/apRepAction';
+import { fetchApRep } from '../../../../redux/apiActions/config/apRepAction';
 // import CreateTimeLine from "./CreateTimeLine";
 import CreatedApRep from './CreateApRep';
 import CheckBox from '../../../components/chekbox/CheckBox';
@@ -20,6 +20,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const ApRep = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -38,7 +39,9 @@ const ApRep = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const { data, count, isSuccess, isLoading } = useAppSelector((state) => state.ar);
+  const { data, count, isSuccess, isLoading } = useAppSelector(
+    (state) => state.ar
+  );
 
   // const filterState = useAppDispatch((state)=> state.)
 
@@ -279,13 +282,14 @@ const ApRep = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                
-                  <th>
-                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-           
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -326,9 +330,10 @@ const ApRep = () => {
                     <td>{dateFormat(el.ced) || 'N/A'}</td>
                     <td>{el.partner_name || 'N/A'}</td>
                     <td>{el.total_paid}</td>
-             
-                      <td>
-                        {(!viewArchived && selectedRows.size<2) &&<div className="action-icon">
+
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
+                        <div className="action-icon">
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
@@ -343,18 +348,15 @@ const ApRep = () => {
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
-                        </div>}
-                      </td>
-                 
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

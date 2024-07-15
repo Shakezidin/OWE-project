@@ -185,23 +185,23 @@ const TierLoanFee = () => {
       'No'
     );
     if (confirmed) {
-    const archived: number[] = [record_id];
-    let newValue = {
-      record_id: archived,
-      is_archived: true,
-    };
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-    };
-    const res = await postCaller(
-      EndPoints.update_tierloanfee_archive,
-      newValue
-    );
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchTearLoan(pageNumber));
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      const res = await postCaller(
+        EndPoints.update_tierloanfee_archive,
+        newValue
+      );
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchTearLoan(pageNumber));
+      }
     }
-  }
   };
 
   const handleViewArchiveToggle = () => {
@@ -282,13 +282,14 @@ const TierLoanFee = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-          
-                  <th>
-                   {(!viewArchived && selectedRows.size<2) && <div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-    
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -327,9 +328,10 @@ const TierLoanFee = () => {
                     <td>{el.dlr_cost}</td>
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
-                   
-                      <td>
-                  {(!viewArchived && selectedRows.size<2) &&      <div className="action-icon">
+
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
+                        <div className="action-icon">
                           <div
                             className="action-archive"
                             style={{ cursor: 'pointer' }}
@@ -346,18 +348,15 @@ const TierLoanFee = () => {
                             <img src={ICONS.editIcon} alt="" />
                             {/* <span className="tooltiptext">Edit</span> */}
                           </div>
-                        </div>}
-                      </td>
-          
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

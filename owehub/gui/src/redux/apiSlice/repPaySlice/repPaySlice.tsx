@@ -9,19 +9,19 @@ interface IState {
   isSuccess: number;
   count: number;
   filters: {
-  pay_roll_start_date?:string,
-  pay_roll_end_date?:string,
-  use_cutoff?:string;
-  report_type:string,
-  sort_by?:string
-  commission_model:string;
-  ap_oth: boolean,
-  ap_pda: boolean,
-  ap_ded: boolean,
-  ap_adv: boolean,
-  rep_comm: boolean,
-  rep_bonus: boolean,
-  leader_ovrd: boolean,
+    pay_roll_start_date?: string;
+    pay_roll_end_date?: string;
+    use_cutoff?: string;
+    report_type: string;
+    sort_by?: string;
+    commission_model: string;
+    ap_oth: boolean;
+    ap_pda: boolean;
+    ap_ded: boolean;
+    ap_adv: boolean;
+    rep_comm: boolean;
+    rep_bonus: boolean;
+    leader_ovrd: boolean;
   };
 }
 
@@ -33,15 +33,15 @@ const initialState: IState = {
   isSuccess: 0,
   count: 0,
   filters: {
-    pay_roll_start_date:"",
-    pay_roll_end_date:"",
-    use_cutoff:'YES',
+    pay_roll_start_date: '',
+    pay_roll_end_date: '',
+    use_cutoff: 'YES',
     report_type: 'All',
     sort_by: 'Partner',
-    commission_model:"standard",
-    ap_oth:true,
+    commission_model: 'standard',
+    ap_oth: true,
     ap_pda: false,
-    ap_ded:false,
+    ap_ded: false,
     ap_adv: false,
     rep_comm: false,
     rep_bonus: false,
@@ -73,8 +73,8 @@ const RepPayData = createSlice({
         ap_ded: true,
         ap_adv: true,
         rep_comm: true,
-        rep_bonus:true,
-       leader_ovrd:true,  
+        rep_bonus: true,
+        leader_ovrd: true,
       };
     },
 
@@ -86,8 +86,8 @@ const RepPayData = createSlice({
         ap_ded: false,
         ap_adv: false,
         rep_comm: false,
-        rep_bonus:false,
-       leader_ovrd:false,  
+        rep_bonus: false,
+        leader_ovrd: false,
       };
     },
   },

@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
-
 export const fetchApRep = createAsyncThunk(
   'aprep/fetchApRep',
   async (data: any) => {

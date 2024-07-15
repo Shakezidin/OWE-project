@@ -9,7 +9,7 @@ const RepPayDashboardTotal: React.FC = () => {
       img: ICONS.rep1,
       border: '1px solid #63BC51',
       boxBorder: '0.5px solid #63BC51',
-      background: ICONS.tot1
+      background: ICONS.tot1,
     },
     {
       doller: '$100,320',
@@ -17,7 +17,7 @@ const RepPayDashboardTotal: React.FC = () => {
       img: ICONS.rep2,
       border: '1px solid #D768A8',
       boxBorder: '0.5px solid #D768A8',
-      background: ICONS.tot2
+      background: ICONS.tot2,
     },
     {
       doller: '$100,320',
@@ -25,7 +25,7 @@ const RepPayDashboardTotal: React.FC = () => {
       img: ICONS.rep3,
       border: '1px solid #3993D0',
       boxBorder: '0.5px solid #3993D0',
-      background: ICONS.tot3
+      background: ICONS.tot3,
     },
   ];
 
@@ -44,7 +44,10 @@ const RepPayDashboardTotal: React.FC = () => {
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="rep-total-section"  style={{marginBottom: '8px'}}>
+                  <div
+                    className="rep-total-section"
+                    style={{ marginBottom: '8px' }}
+                  >
                     <p>{el.paid}</p>
                     <h4>{el.doller}</h4>
                   </div>

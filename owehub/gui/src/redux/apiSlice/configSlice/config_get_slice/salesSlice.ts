@@ -7,7 +7,7 @@ interface SalesTypeState {
   saletype_list: SalesTypeModel[];
   loading: boolean;
   error: string | null;
-  totalCount:number
+  totalCount: number;
 }
 const initialState: SalesTypeState = {
   saletype_list: [],
@@ -46,7 +46,7 @@ const salesSlice = createSlice({
         } else {
           state.saletype_list = [];
         }
-        state.totalCount = action.payload.dbRecCount || 0
+        state.totalCount = action.payload.dbRecCount || 0;
       })
       .addCase(fetchSalesType.rejected, (state, action) => {
         state.loading = false;

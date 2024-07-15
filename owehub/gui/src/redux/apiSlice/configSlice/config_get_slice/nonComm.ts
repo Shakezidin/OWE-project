@@ -59,7 +59,7 @@ const nonComm = createSlice({
       .addCase(createNonComm.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
-        toast.error(action.payload as string)
+        toast.error(action.payload as string);
       })
       .addCase(updateNoncom.pending, (state, action) => {
         state.isFormSubmitting = true;

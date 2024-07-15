@@ -7,7 +7,6 @@ interface Ipaginate {
 }
 
 export interface ILeader {
-  
   team_name: string;
   leader_name: string;
   type: string;

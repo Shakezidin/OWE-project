@@ -11,10 +11,10 @@ interface Ipaginate {
 interface IDLRCreateParams {
   unique_id: string;
   payee: string;
-  amount: number |string;
+  amount: number | string;
   description: string;
-  balance ?: number;
-  paid_amount ?: number;
+  balance?: number;
+  paid_amount?: number;
   date: string;
 }
 

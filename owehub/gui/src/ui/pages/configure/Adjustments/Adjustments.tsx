@@ -11,21 +11,15 @@ import {
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreatedAdjustments from './CreateAdjustments';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { AdjustmentsColumns } from '../../../../resources/static_data/configureHeaderData/AdjustmentsColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { Adjustment } from '../../../../core/models/api_models/ArAdjustMentsModel';
-import { format } from 'date-fns';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Loading from '../../../components/loader/Loading';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -262,7 +256,7 @@ const Adjustments = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
@@ -282,22 +276,19 @@ const Adjustments = () => {
                     <tr key={item.record_id}>
                       <td style={{ paddingRight: 0, textAlign: 'left' }}>
                         <div className="flex-check">
-                            <CheckBox
-                              checked={selectedRows.has(ind)}
-                              onChange={() =>
-                                toggleRowSelection(
-                                  ind,
-                                  selectedRows,
-                                  setSelectedRows,
-                                  setSelectAllChecked
-                                )
-                              }
-                            />
-                       
-                          <span>
+                          <CheckBox
+                            checked={selectedRows.has(ind)}
+                            onChange={() =>
+                              toggleRowSelection(
+                                ind,
+                                selectedRows,
+                                setSelectedRows,
+                                setSelectAllChecked
+                              )
+                            }
+                          />
 
-                          {item.unique_id}
-                          </span>
+                          <span>{item.unique_id}</span>
                         </div>
                       </td>
                       <td>{item.customer || 'N/A'}</td>
@@ -307,11 +298,7 @@ const Adjustments = () => {
                       <td> {item.sys_size} </td>
                       <td> {item.bl} </td>
                       <td> {item.epc} </td>
-                      <td>
-                        {' '}
-                        {item.date &&
-                          dateFormat(item.date)}{' '}
-                      </td>
+                      <td> {item.date && dateFormat(item.date)} </td>
                       <td>{item.amount}</td>
                       <td>
                         {item.notes.length > 40
@@ -347,10 +334,7 @@ const Adjustments = () => {
               ) : (
                 <tr>
                   <td colSpan={AdjustmentsColumns.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

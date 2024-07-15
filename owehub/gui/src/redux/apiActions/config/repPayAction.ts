@@ -18,7 +18,7 @@ interface RepayCreateParams {
   state: string;
   pay_scale: String;
   position: string;
-  b_e:boolean;
+  b_e: boolean;
   start_date: string;
   end_date: string;
 }
@@ -39,10 +39,10 @@ export const createRepaySettings = createAsyncThunk(
   async (params: RepayCreateParams, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller(EndPoints.create_repaysettings, params);
-      if (data.status> 201) {
+      if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -55,7 +55,7 @@ export const updateRepaySettings = createAsyncThunk(
   async (param: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_rep_pay_settings', param);
-      if (data.status> 201) {
+      if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
       return data.data;

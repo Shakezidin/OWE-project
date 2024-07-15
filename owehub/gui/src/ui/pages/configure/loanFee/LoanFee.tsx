@@ -18,7 +18,6 @@ import { LoanFeesColumn } from '../../../../resources/static_data/configureHeade
 import { ROUTES } from '../../../../routes/routes';
 import CreatedLoanFee from './CreateLoanFee';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -26,6 +25,7 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -257,9 +257,11 @@ const LoanFee = () => {
                   />
                 ))}
                 <th>
-                  {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
-                    <p>Action</p>
-                  </div>}
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  )}
                 </th>
               </tr>
             </thead>
@@ -303,7 +305,7 @@ const LoanFee = () => {
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>
-                      {(!viewArchived && selectedRows.size<2)  && (
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -327,10 +329,7 @@ const LoanFee = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h2>Data Not Found</h2>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

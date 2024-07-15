@@ -5,16 +5,9 @@ import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import CreateRebateData from './CreateRebateData';
 import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
@@ -23,19 +16,12 @@ import { RebeteDataColumn } from '../../../../resources/static_data/configureHea
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { fetchRebateData } from '../../../../redux/apiActions/config/rebateDataAction';
 import CreateRebate from './CreateRebateData';
 import { dateFormat } from '../../../../utiles/formatDate';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
-
 
 const RebeteData: React.FC = () => {
   const [editedAr, setEditedAr] = useState(null);
@@ -44,17 +30,12 @@ const RebeteData: React.FC = () => {
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const { loading, dbCount } = useAppSelector((state) => state.comm);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedCommission, setEditedCommission] =
-    useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -64,8 +45,7 @@ const RebeteData: React.FC = () => {
   const { data, count, isLoading, isSuccess } = useAppSelector(
     (state) => state.rebate
   );
-  
- 
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -87,7 +67,6 @@ const RebeteData: React.FC = () => {
       dispatch(fetchRebateData({ ...pageNumber }));
     }
   }, [isSuccess, currentPage, viewArchived, filters]);
-  
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -108,10 +87,6 @@ const RebeteData: React.FC = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
-
- 
-
-  
 
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -245,7 +220,6 @@ const RebeteData: React.FC = () => {
     );
   }
 
-
   return (
     <div className="comm">
       <Breadcrumb
@@ -260,11 +234,11 @@ const RebeteData: React.FC = () => {
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           checked={isAllRowsSelected}
           viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
-          onpressExport={() => { }}
+          onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
         {exportOPen && (
@@ -322,7 +296,11 @@ const RebeteData: React.FC = () => {
                 ))}
 
                 {viewArchived === true ? null : (
-                  <th className={!viewArchived && selectedRows.size < 2 ? '' : 'd-none'}>
+                  <th
+                    className={
+                      !viewArchived && selectedRows.size < 2 ? '' : 'd-none'
+                    }
+                  >
                     <div className="action-header">
                       {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                     </div>
@@ -331,7 +309,7 @@ const RebeteData: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-            {isLoading ? (
+              {isLoading ? (
                 <tr>
                   <td colSpan={10}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -339,7 +317,7 @@ const RebeteData: React.FC = () => {
                     </div>
                   </td>
                 </tr>
-              )  : currentPageData?.length > 0 ? (
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -383,7 +361,7 @@ const RebeteData: React.FC = () => {
                     <td>{el.r2_rebate_credit_perc || 'N/A'}</td>
                     <td>{el.rep2_def_resp || 'N/A'}</td>
                     <td>{el.r2_addr_resp || 'N/A'}</td>
-                    <td>{dateFormat(el.start_date)  || 'N/A'}</td>
+                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     {/* <td>{el.end_date || 'N/A'}</td> */}
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
@@ -410,10 +388,7 @@ const RebeteData: React.FC = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

@@ -24,7 +24,6 @@ const initialState: IState = {
   isSuccess: false,
 };
 
-
 const rebateDataSlice = createSlice({
   name: 'Rebate Data Slice',
   initialState,

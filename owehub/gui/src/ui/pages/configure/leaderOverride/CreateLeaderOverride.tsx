@@ -40,7 +40,6 @@ interface IErrors {
   payRate?: string;
   start?: string;
   end?: string;
-  
 }
 const CreateLeaderOverride: React.FC<payScheduleProps> = ({
   handleClose,
@@ -59,10 +58,9 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     qual: editData?.qual || '',
     salesQ: editData?.sales_q ? `${editData?.sales_q}` : '',
     teamKwQ: editData?.team_kw_q ? `${editData?.team_kw_q}` : '',
-    payRate:  editData?.pay_rate ? `${editData?.pay_rate}` : '',
+    payRate: editData?.pay_rate ? `${editData?.pay_rate}` : '',
     start: editData?.start_date || '',
     end: editData?.end_date || '',
-    
   });
   const [newFormData, setNewFormData] = useState<any>([]);
   const { isFormSubmitting, isSuccess } = useAppSelector(
@@ -106,7 +104,6 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     setViewArchived(false);
     if (handleValidation()) {
       const data = {
-         
         team_name: formData.teamName,
         leader_name: formData.leaderName,
         type: formData.type,
@@ -394,8 +391,6 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-
-                 
               </div>
             </div>
           </div>

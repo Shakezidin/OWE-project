@@ -6,7 +6,10 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/rebateDataSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
-import { createRebateData, updateRebateData } from '../../../../redux/apiActions/config/rebateDataAction';
+import {
+  createRebateData,
+  updateRebateData,
+} from '../../../../redux/apiActions/config/rebateDataAction';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
 import { dateFormat } from '../../../../utiles/formatDate';
@@ -22,22 +25,22 @@ const CreateRebate: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.rebate);
-console.log("revabte update", editData);
-const [createArData, setCreateArData] = useState({
-  unique_id: editData?.unique_id || '',
-  customer_verf: editData?.customer_verf || '',
-  type: editData?.type || '',
-  item: editData?.item || '',
-  amount: editData?.amount || '',
-  rep_doll_divby_per: editData?.rep_doll_divby_per || '',
-  notes: editData?.notes || '',
-  date: editData?.start_date || '',
-});
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.rebate
+  );
+  console.log('revabte update', editData);
+  const [createArData, setCreateArData] = useState({
+    unique_id: editData?.unique_id || '',
+    customer_verf: editData?.customer_verf || '',
+    type: editData?.type || '',
+    item: editData?.item || '',
+    amount: editData?.amount || '',
+    rep_doll_divby_per: editData?.rep_doll_divby_per || '',
+    notes: editData?.notes || '',
+    date: editData?.start_date || '',
+  });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -49,35 +52,46 @@ const [createArData, setCreateArData] = useState({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const validationRules: { [key: string]: any } = {
-
       unique_id: [
-        { condition: (value: any) => !!value, message: 'Unique Id is required' },
+        {
+          condition: (value: any) => !!value,
+          message: 'Unique Id is required',
+        },
       ],
-      customer_verf: [{ condition: (value: any) => !!value, message: 'Customer Ver is required' }],
+      customer_verf: [
+        {
+          condition: (value: any) => !!value,
+          message: 'Customer Ver is required',
+        },
+      ],
       type: [
         { condition: (value: any) => !!value, message: 'Type is required' },
       ],
-      item: [{ condition: (value: any) => !!value, message: 'Item is required' }],
+      item: [
+        { condition: (value: any) => !!value, message: 'Item is required' },
+      ],
 
       amount: [
         { condition: (value: any) => !!value, message: 'Amount is required' },
       ],
-      rep_doll_divby_per: [{ condition: (value: any) => !!value, message: 'Rep$/% is required' }],
-      
+      rep_doll_divby_per: [
+        { condition: (value: any) => !!value, message: 'Rep$/% is required' },
+      ],
+
       notes: [
         { condition: (value: any) => !!value, message: 'Notes is required' },
       ],
-      date: [{ condition: (value: any) => !!value, message: 'Date is required' }],
-
-    }
+      date: [
+        { condition: (value: any) => !!value, message: 'Date is required' },
+      ],
+    };
     if (editMode) {
-
       validationRules.record_id = [
         {
           condition: (value: any) => !!value,
           message: 'Unique Id is required',
         },
-      ]
+      ];
     }
     const { isValid, errors } = validateConfigForm(
       createArData!,
@@ -113,7 +127,7 @@ const [createArData, setCreateArData] = useState({
           rep_doll_divby_per: parseInt(createArData.rep_doll_divby_per),
           notes: createArData.notes,
           type: createArData.type,
-          date: (createArData.date),
+          date: createArData.date,
         })
       );
     }
@@ -127,9 +141,6 @@ const [createArData, setCreateArData] = useState({
       isSuccess && dispatch(resetSuccess());
     };
   }, [isSuccess]);
-
-
-
 
   return (
     <div className="transparent-model">
@@ -145,7 +156,6 @@ const [createArData, setCreateArData] = useState({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
@@ -156,7 +166,9 @@ const [createArData, setCreateArData] = useState({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.unique_id && <span className="error">{errors.unique_id}</span>}
+                  {errors.unique_id && (
+                    <span className="error">{errors.unique_id}</span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -168,7 +180,9 @@ const [createArData, setCreateArData] = useState({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.customer_verf && <span className="error">{errors.customer_verf}</span>}
+                  {errors.customer_verf && (
+                    <span className="error">{errors.customer_verf}</span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -182,12 +196,9 @@ const [createArData, setCreateArData] = useState({
                   />
                   {errors.item && <span className="error">{errors.item}</span>}
                 </div>
-
               </div>
 
               <div className="create-input-container">
-               
-
                 <div className="create-input-field">
                   <Input
                     type={'number'}
@@ -197,7 +208,9 @@ const [createArData, setCreateArData] = useState({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.amount && <span className="error">{errors.amount}</span>}
+                  {errors.amount && (
+                    <span className="error">{errors.amount}</span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -209,9 +222,11 @@ const [createArData, setCreateArData] = useState({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.rep_doll_divby_per && <span className="error">{errors.rep_doll_divby_per}</span>}
+                  {errors.rep_doll_divby_per && (
+                    <span className="error">{errors.rep_doll_divby_per}</span>
+                  )}
                 </div>
-                
+
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -221,13 +236,14 @@ const [createArData, setCreateArData] = useState({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.notes && <span className="error">{errors.notes}</span>}
+                  {errors.notes && (
+                    <span className="error">{errors.notes}</span>
+                  )}
                 </div>
               </div>
 
               <div className="create-input-container">
-               
-              <div className="create-input-field">
+                <div className="create-input-field">
                   <Input
                     type={'date'}
                     label="Date"
@@ -249,14 +265,7 @@ const [createArData, setCreateArData] = useState({
                   />
                   {errors.type && <span className="error">{errors.type}</span>}
                 </div>
-
-                
-
               </div>
-
-
-              
-            
             </div>
           </div>
         </div>
@@ -270,7 +279,7 @@ const [createArData, setCreateArData] = useState({
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             disabled={isFormSubmitting}
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

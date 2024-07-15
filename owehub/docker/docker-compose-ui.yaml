@@ -10,6 +10,9 @@ services:
        ipv4_address: 172.30.0.221
    ports:
      - "3000:3000"
+     - "80:80"
+   environment:
+     BACKEND_HOST: "155.138.163.236"
    volumes:
      - /var/log/owe-ui/:/var/log/owe-ui/
    privileged: true

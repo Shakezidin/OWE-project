@@ -87,7 +87,7 @@ interface IProject {
 
 export interface IProjects {
   unqiue_id: string;
-  customer:string
+  customer: string;
 }
 
 export const getProjects = createAsyncThunk(

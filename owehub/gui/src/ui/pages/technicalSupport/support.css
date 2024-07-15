@@ -47,7 +47,6 @@
   /* background-color: #0493CE; */
 }
 
-
 .vertical-support {
   border-left: 1px solid #dbdddf;
   height: 450px;
@@ -179,15 +178,13 @@
   border-radius: 0.5rem;
 }
 
-
-
-@media (max-width: 1024px){
+@media (max-width: 1024px) {
   .support-cont-section {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .vertical-support{
+  .vertical-support {
     display: none;
     margin-top: 0rem;
   }
@@ -236,4 +233,3 @@
     width: 100%;
   }
 }
-

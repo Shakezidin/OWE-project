@@ -1,23 +1,18 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import '../userManagement/user.css';
 import '../configure/configure.css';
-import { FaArrowDown } from 'react-icons/fa6';
 import CheckBox from '../../components/chekbox/CheckBox';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { useAppSelector } from '../../../redux/hooks';
 import HelpDashboard from './HelpDashboard';
 import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 import ProjectBreakdown from './ProjectBreakdown';
-import { BiSupport } from 'react-icons/bi';
 import Pagination from '../../components/pagination/Pagination';
-import { MdOutlineHelp } from 'react-icons/md';
 import { ICONS } from '../../icons/Icons';
 import MicroLoader from '../../components/loader/MicroLoader';
 import SortableHeader from '../../components/tableHeader/SortableHeader';
 import dealerPayColumn from '../../../resources/static_data/configureHeaderData/dealerPayColumn';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { toggleRowSelection } from '../../components/chekbox/checkHelper';
-
-// import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 const DashBoardTable = ({
   currentPage,
@@ -35,13 +30,10 @@ const DashBoardTable = ({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [editData, setEditData] = useState<any>({});
-  const handleOpen = () => setOpen(true);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
-  // const handleClose = () => setOpen(false);
-
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(count / itemsPerPage);
@@ -255,10 +247,7 @@ const DashBoardTable = ({
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={8}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

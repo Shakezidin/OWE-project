@@ -18,7 +18,7 @@ const initialState: PayScheduleModel = {
   rep_pay: '',
   start_date: '',
   end_date: '',
-commission_model:""
+  commission_model: '',
 };
 
 const createPayScheduleSlice = createSlice({

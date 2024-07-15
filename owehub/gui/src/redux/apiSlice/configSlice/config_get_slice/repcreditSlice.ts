@@ -8,7 +8,7 @@ import {
 } from '../../../apiActions/config/repCreditAction';
 
 interface IRepCredit {
-  record_id:string,
+  record_id: string;
   Unique_id: string;
   Customer: string;
   Rep1: string;

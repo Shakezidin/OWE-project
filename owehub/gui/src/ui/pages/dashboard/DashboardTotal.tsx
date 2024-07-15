@@ -3,19 +3,15 @@ import { ICONS } from '../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getDealerPayTileData } from '../../../redux/apiActions/dealerPayAction';
 
-
 const DashboardTotal: React.FC = () => {
- const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-  const { tileData } = useAppSelector(
-    (state) => state.dealerPaySlice
-  );
- 
+  const { tileData } = useAppSelector((state) => state.dealerPaySlice);
+
   useEffect(() => {
-    dispatch(getDealerPayTileData({ dealer: "dealer" }));
+    dispatch(getDealerPayTileData({ dealer: 'dealer' }));
   }, [dispatch]);
-  console.log(tileData, "tile data")
-
+  console.log(tileData, 'tile data');
 
   // const data1 = [
   //   {
@@ -43,7 +39,7 @@ const DashboardTotal: React.FC = () => {
   //     background: ICONS.tot3
   //   },
   // ];
- 
+
   const data1 = [
     {
       doller: '$' + tileData?.amount_prepaid?.toFixed(2),
@@ -51,7 +47,7 @@ const DashboardTotal: React.FC = () => {
       img: ICONS.rep1,
       border: '1px solid #63BC51',
       boxBorder: '0.5px solid #63BC51',
-      background: ICONS.tot1
+      background: ICONS.tot1,
     },
     {
       doller: '$' + tileData?.pipeline_remaining?.toFixed(2),
@@ -59,7 +55,7 @@ const DashboardTotal: React.FC = () => {
       img: ICONS.rep2,
       border: '1px solid #D768A8',
       boxBorder: '0.5px solid #D768A8',
-      background: ICONS.tot2
+      background: ICONS.tot2,
     },
     {
       doller: '$' + tileData?.current_due?.toFixed(2),
@@ -67,11 +63,10 @@ const DashboardTotal: React.FC = () => {
       img: ICONS.rep3,
       border: '1px solid #3993D0',
       boxBorder: '0.5px solid #3993D0',
-      background: ICONS.tot3
+      background: ICONS.tot3,
     },
   ];
- 
- 
+
   return (
     <>
       <div className="">
@@ -86,13 +81,14 @@ const DashboardTotal: React.FC = () => {
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="total-section" style={{marginBottom: '8px'}}>
+                  <div
+                    className="total-section"
+                    style={{ marginBottom: '8px' }}
+                  >
                     <p>{el.paid}</p>
                     <h4>{el.doller}</h4>
                   </div>
-                  <div
-                    className="teamImg"
-                  >
+                  <div className="teamImg">
                     <img src={el.img} alt="" />
                   </div>
                 </div>

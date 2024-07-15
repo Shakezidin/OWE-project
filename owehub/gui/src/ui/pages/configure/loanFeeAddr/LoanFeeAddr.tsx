@@ -1,38 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { CiEdit } from 'react-icons/ci';
 import '../configure.css';
-import { RiDeleteBin5Line } from 'react-icons/ri';
-// import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
-
-// import FilterCommission from "./FilterCommission";
-
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import CreateCommissionRate from '../commissionRate/CreateCommissionRate';
 import CreateLoanFeeAddr from './CreateLoanFeeAddr';
 import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import { LoanFeeAdderColumns } from '../../../../resources/static_data/configureHeaderData/LoanFeeAdderColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
 
 const LoanFeeAddr: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -41,7 +25,6 @@ const LoanFeeAddr: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleExportOpen = () => setExportOpen(!exportOPen);
-  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const loading = useAppSelector((state) => state.comm.loading);
@@ -290,10 +273,7 @@ const LoanFeeAddr: React.FC = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={14}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

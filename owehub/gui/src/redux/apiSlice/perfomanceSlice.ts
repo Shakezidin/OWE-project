@@ -115,12 +115,12 @@ const perfomanceSlice = createSlice({
         state.isLoading = false;
         state.perfomaceSale = action.payload.perfomaceSaleMetrics;
         state.commisionMetrics = action.payload.perfomaceCommisionMetrics;
-        console.log(isSessionTimeout(),"jbjhbghbghb");
+        console.log(isSessionTimeout(), 'jbjhbghbghb');
       })
       .addCase(getPerfomance.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        const session = isSessionTimeout();        
+        const session = isSessionTimeout();
         if (!session) {
           toast.error(action.payload as string);
         }

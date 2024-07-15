@@ -1,13 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import './barchart.css';
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  LabelList,
-  Tooltip,
-  Cell,
-} from 'recharts';
+import { ResponsiveContainer, PieChart, Pie, Tooltip, Cell } from 'recharts';
 import { OnboardingChartModel } from '../../../../core/models/api_models/UserManagementModel';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import perfomance_mask from '../lib/perfomance_mask.png';
@@ -19,20 +12,6 @@ interface UserPieChartProps {
   loading: boolean;
 }
 
-
-
-// const CustomTooltip = ({ active, payload, label }) => {
-//   if (active && payload && payload.length) {
-//     return (
-//       <div className="custom-tooltip">
-//         <p className="label">{`${label} : ${payload[0].value}`}</p>
-//         <p className="desc">Anything you want can be displayed here.</p>
-//       </div>
-//     );
-//   }
-
-//   return null;
-// };
 const UserPieChart: React.FC<UserPieChartProps> = ({
   onboardingList,
   userPerformanceList,
@@ -95,13 +74,11 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   alt=""
                   className="onboarding-mask-img"
                 />
-                {/* <ResponsiveContainer width={'100%'} height={300}>
-              </ResponsiveContainer> */}
               </div>
             ) : (
               <div className="data-not-found " style={{ width: '100%' }}>
-                <DataNotFound />
-                <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
+                <DataNotFound title={loading ? 'Searching..' : 'No SaleRep Found'} />
+             
               </div>
             )}
 
@@ -130,10 +107,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     >
                       <span style={{ fontWeight: 600 }}> {user.value} </span>
                       <span className="mx1"> - </span>
-                      <span style={{ fontWeight: 500 }} >
-                        {' '}
-                        {user.name}{' '}
-                      </span>
+                      <span style={{ fontWeight: 500 }}> {user.name} </span>
                     </div>
                   </div>
                 );
@@ -193,8 +167,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           </div>
         ) : (
           <div className="data-not-found">
-            <DataNotFound />
-            <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
+            <DataNotFound title={loading ? 'Searching..' : 'No SaleRep Found'} />
           </div>
         )}
 

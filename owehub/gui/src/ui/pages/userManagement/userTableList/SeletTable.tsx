@@ -72,7 +72,12 @@ const SelectTable: React.FC<ButtonProps> = ({
 
           <div
             className="TableContainer"
-            style={{ overflowX: 'auto', whiteSpace: 'nowrap',height:"auto",maxHeight:417 }}
+            style={{
+              overflowX: 'auto',
+              whiteSpace: 'nowrap',
+              height: 'auto',
+              maxHeight: 417,
+            }}
           >
             <table>
               <thead>
@@ -213,7 +218,7 @@ const SelectTable: React.FC<ButtonProps> = ({
             style={{
               display: 'flex',
               justifyContent: 'center',
-              paddingBlock:"1rem"
+              paddingBlock: '1rem',
             }}
           >
             <ActionButton

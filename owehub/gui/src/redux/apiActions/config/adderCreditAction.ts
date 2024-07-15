@@ -27,7 +27,7 @@ export const createAdderCredit = createAsyncThunk(
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      toast.success(data.message)
+      toast.success(data.message);
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -41,7 +41,6 @@ export const updateAdderCredit = createAsyncThunk(
     try {
       const data = await postCaller('update_adder_credit', params);
       return data.data;
-
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }

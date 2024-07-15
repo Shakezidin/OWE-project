@@ -154,13 +154,12 @@ const AdderCredit = () => {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
-        checkLastPage(currentPage,totalPages,setCurrentPage)
+        checkLastPage(currentPage, totalPages, setCurrentPage);
       } else {
         await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
-
 
   return (
     <div className="comm">
@@ -319,10 +318,7 @@ const AdderCredit = () => {
               ) : (
                 <tr>
                   <td colSpan={AdderCreditsColumn.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

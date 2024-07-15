@@ -93,21 +93,21 @@ const CreateRepIncent: React.FC<payScheduleProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
-        if(editMode){
-            dispatch(
-                updateRepIncent({
-                  ...createAppSettersData,
-                  doll_div_kw: parseInt(createAppSettersData.Kw_Deduction),
-                  record_id: editData?.record_id!,
-                })
-              );
-        } else {
-        const data = {
+      if (editMode) {
+        dispatch(
+          updateRepIncent({
             ...createAppSettersData,
-            doll_div_kw: parseInt(createAppSettersData.Kw_Deduction), // Convert to number
-          };
-          dispatch(createRepIncent(data));
-        }
+            doll_div_kw: parseInt(createAppSettersData.Kw_Deduction),
+            record_id: editData?.record_id!,
+          })
+        );
+      } else {
+        const data = {
+          ...createAppSettersData,
+          doll_div_kw: parseInt(createAppSettersData.Kw_Deduction), // Convert to number
+        };
+        dispatch(createRepIncent(data));
+      }
     }
   };
   useEffect(() => {

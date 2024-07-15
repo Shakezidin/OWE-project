@@ -170,15 +170,13 @@ const BatteryAmp = () => {
 
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
-    const ampValue   = batteries[index].category_ampere * 0.6
-    const remain =
-      avavilableAmpPercentage.remainingAmps -
-      ampValue;
+    const ampValue = batteries[index].category_ampere * 0.6;
+    const remain = avavilableAmpPercentage.remainingAmps - ampValue;
     if (remain >= 0 && !batteries[index].isOn) {
       batteries[index].isOn = true;
     } else if (batteries[index].isOn) {
       batteries[index].isOn = false;
-    }else{
+    } else {
       toast.error(`Cannot turn on this breaker needs ${ampValue} amp.`);
     }
     setBatteryPower([...batteries]);
@@ -286,7 +284,14 @@ const BatteryAmp = () => {
       className="scrollbar   relative"
       style={{ backgroundColor: '#F2F2F2', paddingBottom: 100 }}
     >
-      <div className="wrapper-header mt0 mx0" style={{backgroundColor:"#fff",borderBottomLeftRadius:12,borderBottomRightRadius:12}}>
+      <div
+        className="wrapper-header mt0 mx0"
+        style={{
+          backgroundColor: '#fff',
+          borderBottomLeftRadius: 12,
+          borderBottomRightRadius: 12,
+        }}
+      >
         <h4 className="h4" style={{ fontWeight: 500 }}>
           Electrical Panel
         </h4>

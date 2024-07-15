@@ -97,9 +97,7 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows}
                 sortKey={item.name}
-                sortDirection={
-                  sortKey === item.name ? sortDirection : 'asc'
-                }
+                sortDirection={sortKey === item.name ? sortDirection : 'asc'}
                 onClick={() => handleSort(item.name)}
               />
             ))}
@@ -169,10 +167,7 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
           ) : (
             <tr style={{ border: 0 }}>
               <td colSpan={10}>
-                <div className="data-not-found">
-                  <DataNotFound />
-                  <h3>Data Not Found</h3>
-                </div>
+                <DataNotFound />
               </td>
             </tr>
           )}

@@ -11,16 +11,13 @@ import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { DealerTableData } from '../../../../resources/static_data/configureHeaderData/DealerTableData';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -49,7 +46,7 @@ const DealerOverRides: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [dealer,setDealer] = useState<{[key:string]:any}>({})
+  const [dealer, setDealer] = useState<{ [key: string]: any }>({});
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -325,14 +322,14 @@ const DealerOverRides: React.FC = () => {
                             )
                           }
                         />
-                        {el.sub_dealer||"N/A"}
+                        {el.sub_dealer || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.dealer||"N/A"}</td>
-                    <td>{el.pay_rate||"N/A"}</td>
-                    <td>{el.state?.trim?.()||"N/A"}</td>
-                    <td>{dateFormat(el.start_date)||"N/A"}</td>
-                    <td>{dateFormat(el.end_date)||"N/A"}</td>
+                    <td>{el.dealer || 'N/A'}</td>
+                    <td>{el.pay_rate || 'N/A'}</td>
+                    <td>{el.state?.trim?.() || 'N/A'}</td>
+                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
+                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
                     {viewArchived === true ? null : (
                       <td>
                         {selectedRows.size === 1 ? (
@@ -381,10 +378,7 @@ const DealerOverRides: React.FC = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h2>Data Not Found</h2>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

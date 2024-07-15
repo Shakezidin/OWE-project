@@ -88,7 +88,7 @@
   max-height: 200px;
   overflow-y: auto;
 }
- 
+
 .country-list::-webkit-scrollbar {
   -ms-overflow-style: initial;
   scrollbar-width: thin;
@@ -104,18 +104,17 @@
 .country-list::-webkit-scrollbar-button {
   display: initial;
 }
- 
+
 .country-list::-webkit-scrollbar-corner {
   background-color: transparent;
 }
- 
 
 .phoneParentView {
   width: 30%;
 }
 
-.react-tel-input .form-control{
-  width: 100%  !important;
+.react-tel-input .form-control {
+  width: 100% !important;
 }
 .react-tel-input {
   font-family: 'Roboto', sans-serif;

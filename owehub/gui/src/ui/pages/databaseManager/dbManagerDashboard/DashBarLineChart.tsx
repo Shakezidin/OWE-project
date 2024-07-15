@@ -78,7 +78,7 @@ export default class BarChartComponent extends PureComponent {
               <Tooltip
                 contentStyle={{
                   fontSize: '13px',
-                  borderRadius: 'none'
+                  borderRadius: 'none',
                 }}
               />
               <XAxis

@@ -3,10 +3,8 @@ import { toast } from 'react-toastify';
 import {
   fetchApOth,
   createApOth,
-  updateApOth
+  updateApOth,
 } from '../../../apiActions/config/apOthAction';
-
- 
 
 interface IState {
   isLoading: boolean;
@@ -43,7 +41,6 @@ const apOthSlice = createSlice({
         state.isLoading = false;
         state.data = action.payload.list || [];
         state.totalcount = action.payload.count;
-        
       })
       .addCase(fetchApOth.rejected, (state, action) => {
         state.isLoading = false;
@@ -75,8 +72,7 @@ const apOthSlice = createSlice({
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
-      })
-     
+      });
   },
 });
 

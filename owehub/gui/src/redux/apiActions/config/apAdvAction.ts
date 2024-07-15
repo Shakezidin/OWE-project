@@ -16,7 +16,7 @@ export const fetchApAdv = createAsyncThunk(
   async (data: any) => {
     const response = await postCaller('get_apadv', data);
     return {
-      list: response.data.ap_adv_list,      
+      list: response.data.ap_adv_list,
       count: response.dbRecCount,
     };
   }
