@@ -10,25 +10,19 @@ import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import {
-  Column,
-  FilterModel,
-} from '../../../../core/models/data_models/FilterSelectModel';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { SalesTypeColumn } from '../../../../resources/static_data/configureHeaderData/SalesTypeColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import FilterModal from '../../../components/FilterModal/FilterModal';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
+
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -66,7 +60,6 @@ const SaleType = () => {
     };
     dispatch(fetchSalesType(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters, refetch]);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -307,19 +300,19 @@ const SaleType = () => {
                   />
                 ))}
 
-            
-                  <th>
-                 {(!viewArchived && selectedRows.size<2) &&   <div className="action-header">
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-            
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={SalesTypeColumn.length+1}>
+                  <td colSpan={SalesTypeColumn.length + 1}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -354,10 +347,10 @@ const SaleType = () => {
                       {el.description?.trim().length > 40 && (
                         <span
                           role="button"
-                          style={{ cursor: 'pointer', color:
-                          selected === i
-                            ? '#F82C2C'
-                            : '#3083e5', }}
+                          style={{
+                            cursor: 'pointer',
+                            color: selected === i ? '#F82C2C' : '#3083e5',
+                          }}
                           data-tooltip-id={`tooltip-${i}`}
                           data-tooltip-content={el.description}
                           data-tooltip-place="bottom"
@@ -400,10 +393,7 @@ const SaleType = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

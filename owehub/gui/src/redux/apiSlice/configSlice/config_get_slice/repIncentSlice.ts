@@ -3,10 +3,8 @@ import { toast } from 'react-toastify';
 import {
   fetchRepIncent,
   createRepIncent,
-  updateRepIncent
+  updateRepIncent,
 } from '../../../apiActions/config/repIncentAction';
-
- 
 
 interface IState {
   isLoading: boolean;
@@ -43,7 +41,6 @@ const repIncentSlice = createSlice({
         state.isLoading = false;
         state.data = action.payload.list || [];
         state.count = action.payload.count;
-        
       })
       .addCase(fetchRepIncent.rejected, (state, action) => {
         state.isLoading = false;
@@ -75,8 +72,7 @@ const repIncentSlice = createSlice({
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
-      })
-     
+      });
   },
 });
 

@@ -2,18 +2,13 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchTimeLineSla } from '../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice';
 import CreateRateAdjustments from './createRateAdjustments';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { RateAdjustmentsColumns } from '../../../../resources/static_data/configureHeaderData/RateAdjustmentsColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -22,7 +17,6 @@ import {
   showAlert,
   successSwal,
 } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
@@ -347,10 +341,7 @@ const RateAdjustments = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

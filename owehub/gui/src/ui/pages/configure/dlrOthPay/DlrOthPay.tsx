@@ -15,34 +15,21 @@ import FilterModal from '../../../components/FilterModal/FilterModal';
 // import FilterCommission from "./FilterCommission";
 
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreateDlrOth from './CreateDlrOth';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import { DlrOthPayColumn } from '../../../../resources/static_data/configureHeaderData/DlrOthPayColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { dateFormat } from '../../../../utiles/formatDate';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
 
 const DlrOthPay: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -102,9 +89,8 @@ const DlrOthPay: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -138,8 +124,8 @@ const DlrOthPay: React.FC = () => {
       const res = await postCaller('update_dlr_oth_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getDlrOth(pageNumber));
-        setSelectAllChecked(false)
-        setSelectedRows(new Set())
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -269,7 +255,7 @@ const DlrOthPay: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                   </div>
                 </th>
               </tr>
@@ -299,15 +285,15 @@ const DlrOthPay: React.FC = () => {
                             )
                           }
                         />
-                        {el.unique_id}
+                        {el.unique_id || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.payee}</td>
-                    <td>{el.amount}</td>
-                    <td>{el.description}</td>
-                    <td>{el.balance}</td>
-                    <td>{el.paid_amount}</td>
-                    <td>{dateFormat(el.date)}</td>
+                    <td>{el.payee || 'N/A'}</td>
+                    <td>{el.amount || 'N/A'}</td>
+                    <td>{el.description || 'N/A'}</td>
+                    <td>{el.balance || 'N/A'}</td>
+                    <td>{el.paid_amount || 'N/A'}</td>
+                    <td>{dateFormat(el.date) || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -333,10 +319,7 @@ const DlrOthPay: React.FC = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -349,6 +332,7 @@ const DlrOthPay: React.FC = () => {
               {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
               {dbCount} item
             </p>
+
 
             <Pagination
               currentPage={currentPage}

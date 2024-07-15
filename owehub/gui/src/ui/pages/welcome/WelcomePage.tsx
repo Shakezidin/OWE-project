@@ -95,13 +95,17 @@ export const WelcomePage = () => {
             <div className="welcome-main">
               <div className="welcome-left-view">
                 <h1 className="welcome-text-black mx-auto">
-                  Our 
-                  <span className="welcome-text-blue inline-block mx1">World</span>
-
-                            Revolves 
-                          <br />
-                            Around
-                  <span className="welcome-text-green inline-block mx1">Powering</span> Yours
+                  Our
+                  <span className="welcome-text-blue inline-block mx1">
+                    World
+                  </span>
+                  Revolves
+                  <br />
+                  Around
+                  <span className="welcome-text-green inline-block mx1">
+                    Powering
+                  </span>{' '}
+                  Yours
                   <span className="welcome-sub-text block">
                     Your Trusted Solar Expert
                   </span>

@@ -1,21 +1,21 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 interface Ipaginate {
-  page_number: number,
-  page_size: number,
-  pay_roll_start_date?:string,
-  pay_roll_end_date?:string,
-  use_cutoff?:string;
-  report_by:string,
-  sort_by?:string
-  commission_model:string;
-  ap_oth: boolean,
-  ap_pda: boolean,
-  ap_ded: boolean,
-  ap_adv: boolean,
-  rep_comm: boolean,
-  rep_bonus: boolean,
-  leader_ovrd: boolean,
+  page_number: number;
+  page_size: number;
+  pay_roll_start_date?: string;
+  pay_roll_end_date?: string;
+  use_cutoff?: string;
+  report_by: string;
+  sort_by?: string;
+  commission_model: string;
+  ap_oth: boolean;
+  ap_pda: boolean;
+  ap_ded: boolean;
+  ap_adv: boolean;
+  rep_comm: boolean;
+  rep_bonus: boolean;
+  leader_ovrd: boolean;
 }
 
 export const getRepPay = createAsyncThunk(
@@ -31,5 +31,3 @@ export const getRepPay = createAsyncThunk(
     }
   }
 );
-
- 

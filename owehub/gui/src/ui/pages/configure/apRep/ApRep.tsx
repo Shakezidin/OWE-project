@@ -38,7 +38,7 @@ const ApRep = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const { data, count, isSuccess, isLoading } = useAppSelector((state) => state.ar);
+  const { data, totalCount, isSuccess, isLoading } = useAppSelector((state) => state.apRepSlice);
 
   // const filterState = useAppDispatch((state)=> state.)
 
@@ -80,7 +80,7 @@ const ApRep = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(count / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
@@ -212,7 +212,7 @@ const ApRep = () => {
   //   }
 
   console.log(data, 'data');
-  console.log(count, totalPages, 'count');
+  console.log(totalCount, totalPages, 'count');
 
   return (
     <div className="comm">
@@ -362,9 +362,9 @@ const ApRep = () => {
           </table>
         </div>
         <div className="page-heading-container">
-          {!!count && (
+          {!!totalCount && (
             <p className="page-heading">
-              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
               item
             </p>
           )}

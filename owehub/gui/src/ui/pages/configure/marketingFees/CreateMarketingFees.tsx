@@ -47,7 +47,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     description: marketingData ? marketingData.description : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
-  const [isPending,setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const tableData = {
     tableNames: ['states', 'source', 'dba', 'chg_dlr'],
@@ -78,7 +78,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (name === 'chg_dlr' ||name === "pay_src") {
+    if (name === 'chg_dlr' || name === 'pay_src') {
       const sanitized = value.replace(/[^0-9]/g, '');
       const floated = parseFloat(sanitized);
       setCreateMarketing((prevErrors) => ({
@@ -97,9 +97,8 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     }
     setCreateMarketing((prevData) => ({
       ...prevData,
-      [name]:   value,
+      [name]: value,
     }));
-   
   };
 
   const submitMarketingFees = async (e: FormEvent) => {
@@ -146,7 +145,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
       return;
     }
     try {
-      setIsPending(true)
+      setIsPending(true);
       dispatch(updateMarketingForm(createMarketing));
       if (createMarketing.record_id) {
         const res = await postCaller(
@@ -156,10 +155,10 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
         if (res.status === 200) {
           toast.success(res.message);
           handleClose();
-          setIsPending(false)
+          setIsPending(false);
           dispatch(fetchmarketingFees(page));
         } else {
-          setIsPending(false)
+          setIsPending(false);
           toast.error(res.message);
         }
       } else {
@@ -171,11 +170,11 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
         if (res.status === 200) {
           toast.success(res.message);
           handleClose();
-          setIsPending(false)
+          setIsPending(false);
           dispatch(fetchmarketingFees(page));
         } else {
           toast.error(res.message);
-          setIsPending(false)
+          setIsPending(false);
         }
       }
     } catch (error) {
@@ -340,7 +339,6 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                   )}
                 </div>
               </div>
-
             </div>
           </div>
         </div>

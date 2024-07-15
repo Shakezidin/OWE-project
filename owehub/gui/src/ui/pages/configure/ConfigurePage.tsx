@@ -14,28 +14,26 @@ interface AccordionSection {
 const ConfigurePage: React.FC = () => {
   const cardColors = ['#FAD9CA', '#CDE8FB', '#EDD4EE', '#D0E6E3', '#DDD9F6'];
   const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
- 
 
-  const hoverSwithClass = (color:string) =>{
-    switch(color){
-      case"#FAD9CA":
-      return"bg-salmon"
-      case"#CDE8FB":
-      return "bg-light-blue"
-      case"#EDD4EE":
-      return "bg-purple"
+  const hoverSwithClass = (color: string) => {
+    switch (color) {
+      case '#FAD9CA':
+        return 'bg-salmon';
+      case '#CDE8FB':
+        return 'bg-light-blue';
+      case '#EDD4EE':
+        return 'bg-purple';
 
-      case"#D0E6E3":
-      return "bg-light-green"
+      case '#D0E6E3':
+        return 'bg-light-green';
 
-      case "#DDD9F6":
-      return "bg-dark-blue"
-     
+      case '#DDD9F6':
+        return 'bg-dark-blue';
+
       default:
-        return""
+        return '';
     }
-  }
-
+  };
 
   const accordionSections: AccordionSection[] = [
     {
@@ -63,8 +61,6 @@ const ConfigurePage: React.FC = () => {
         { title: 'Ap Adv', route: ROUTES.CONFIG_APADV },
         { title: 'Ap Ded', route: ROUTES.CONFIG_APDED },
         { title: 'Ap Oth', route: ROUTES.CONFIG_APOTH },
-
-
       ],
       state: useState<boolean>(true),
     },
@@ -136,7 +132,6 @@ const ConfigurePage: React.FC = () => {
                     className="configure-card-title"
                     onClick={toggleAccordion(setIsOpen)}
                   >
-                    
                     <p className="payer-type">{title}</p>
                     <div className="accordion-icon-container">
                       {isOpen ? (
@@ -146,7 +141,6 @@ const ConfigurePage: React.FC = () => {
                       )}
                     </div>
                   </div>
-
 
                   <div className={`configure-cards ${isOpen ? 'open' : ''}`}>
                     {data.map((item, index) => {
@@ -160,31 +154,26 @@ const ConfigurePage: React.FC = () => {
                             to={item.route}
                             className={`pay-card ${hoverSwithClass(randomCardColor)}`}
                             style={{
-                               backgroundColor: randomCardColor,
-                               outline: `1px dotted ${randomArrowColor}`,
-                               outlineOffset: '3px',
-                              }}
+                              backgroundColor: randomCardColor,
+                              outline: `1px dotted ${randomArrowColor}`,
+                              outlineOffset: '3px',
+                            }}
                           >
-
-                            <div className='con-fle'>
-                            <h1 className="card-heading">{item.title}</h1>
-                            <div
-                              className="arrow-wrapper"
-                              style={{ color: randomArrowColor }}
-                            >
-                              <span className="view-text">View</span>
-                              <RiArrowRightLine className="arrow-right" />
+                            <div className="con-fle">
+                              <h1 className="card-heading">{item.title}</h1>
+                              <div
+                                className="arrow-wrapper"
+                                style={{ color: randomArrowColor }}
+                              >
+                                <span className="view-text">View</span>
+                                <RiArrowRightLine className="arrow-right" />
+                              </div>
                             </div>
-
-                            </div>
-
                           </Link>
                         </div>
-                        
                       );
                     })}
                   </div>
-                  
                 </div>
               );
             })}

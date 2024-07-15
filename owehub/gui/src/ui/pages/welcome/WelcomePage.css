@@ -457,160 +457,154 @@
   background-color: grey;
 }
 
-
 /*Welcome Responsive*/
 @media screen and (max-width: 1024px) {
-  .welcome-main{
+  .welcome-main {
     flex-direction: column;
     gap: 20px;
     align-items: center;
   }
-  .welcome-text-black{
+  .welcome-text-black {
     text-align: center;
     margin-top: 2.2rem;
   }
-  .welcome-our-text{
+  .welcome-our-text {
     text-align: center;
   }
-  .welcomeBoxView{
+  .welcomeBoxView {
     gap: 30px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 70px;
   }
-  .boxContainer{
+  .boxContainer {
     margin-right: unset !important;
     width: unset !important;
     padding: 25px;
   }
-  .welcomeInnerApplicationView{
+  .welcomeInnerApplicationView {
     margin: unset;
   }
-  .welcomeAboutUsContainer{
+  .welcomeAboutUsContainer {
     margin-top: 5rem;
   }
-  .welcomeAboutUsView{
+  .welcomeAboutUsView {
     flex-direction: column-reverse;
     margin: 0 100px;
   }
-  .welcomeAboutUsView p{
+  .welcomeAboutUsView p {
     text-align: center;
   }
-  .welcomeAboutUsRightView{
+  .welcomeAboutUsRightView {
     align-items: center;
     margin-left: 0;
   }
-  .welcomeAboutUsLeftView{
+  .welcomeAboutUsLeftView {
     align-items: center;
   }
-  .welcomeAboutUsSmall{
+  .welcomeAboutUsSmall {
     left: 50%;
   }
-  .welcomeWorkEaseView{
+  .welcomeWorkEaseView {
     margin: 59px 53px;
     margin-top: 100px;
   }
-  #welcomeFooterLowerView{
+  #welcomeFooterLowerView {
     padding: 5px 30px;
   }
-  .welcomeOverProcess{
+  .welcomeOverProcess {
     padding-left: 100px;
   }
-  .landing-table{
+  .landing-table {
     overflow-x: scroll;
     width: 100vw;
     padding-right: 100px;
   }
-  .welcomeInnerBannerView{
+  .welcomeInnerBannerView {
     margin: 0 35px;
   }
-  .welcomeBannerView{
+  .welcomeBannerView {
     background-position: 94%;
   }
   .welcomeHeaderView object {
     width: 300px;
   }
-  .welcomeOverProcessContainer{
+  .welcomeOverProcessContainer {
     margin: 0;
     margin-bottom: 50px;
   }
 }
 
-
-@media (max-width:767px) {
-  .welcome-text-black{
+@media (max-width: 767px) {
+  .welcome-text-black {
     font-size: 1.5rem;
     line-height: 0;
     font-weight: 700;
   }
-  .welcome-text-blue{
+  .welcome-text-blue {
     font-size: 1.5rem;
     line-height: 1.1;
     font-weight: 700;
-    
   }
-  .welcome-text-green{
+  .welcome-text-green {
     font-weight: 700;
     line-height: 1.8;
-
   }
-.welcomeAboutUsBig{
-  width: calc(100% - 30px);
-}
-.welcomeOverProcess {
-margin-inline:0 ;
-}
-  .welcomeAboutUsSmall{
+  .welcomeAboutUsBig {
+    width: calc(100% - 30px);
+  }
+  .welcomeOverProcess {
+    margin-inline: 0;
+  }
+  .welcomeAboutUsSmall {
     width: 50%;
     right: 0;
     left: auto;
     top: auto;
     bottom: -20%;
   }
-  .welcomeHeaderView object{
+  .welcomeHeaderView object {
     width: 138px;
   }
-  .welcomeHeaderView{
+  .welcomeHeaderView {
     padding-inline: 1rem;
   }
-  .welcomeBoxView{
+  .welcomeBoxView {
     grid-template-columns: 1fr;
     padding-inline: 44px;
-    
   }
-  .grid-container{
-    grid-template-columns: repeat(2,1fr) !important;
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr) !important;
     grid-template-rows: repeat(3, 135px) !important;
     gap: 6px !important;
   }
-  .welcomeWorkEaseTitle{
+  .welcomeWorkEaseTitle {
     font-size: 1.5rem;
     line-height: 1.1;
   }
-  .grid-container > div:nth-child(2){
+  .grid-container > div:nth-child(2) {
     grid-column: 2/3 !important;
-   
   }
-  .grid-container > div:last-child{
+  .grid-container > div:last-child {
     grid-column: 2/3;
   }
-  .welcomeWorkEaseView{
+  .welcomeWorkEaseView {
     margin: 0;
     margin-top: 100px;
     padding-inline: 16px;
   }
-  .boxContainer{
+  .boxContainer {
     min-height: 200px;
     height: auto !important;
     padding: 1rem;
   }
- 
-  .welcomeAboutUsView{
+
+  .welcomeAboutUsView {
     height: auto;
     margin: 0;
     padding-inline: 12px;
   }
-  .welcome-phone-view{
+  .welcome-phone-view {
     width: 42px;
     height: 42px;
     display: flex;
@@ -619,42 +613,41 @@ margin-inline:0 ;
     padding: 0;
     border-radius: 50%;
   }
-  .welcome-phone-text{
+  .welcome-phone-text {
     display: none;
   }
-  .welcome-sub-text{
+  .welcome-sub-text {
     font-size: 20px;
   }
-  .welcome-left-view{
+  .welcome-left-view {
     justify-content: center;
   }
-  .welcome-text-blue{
-
+  .welcome-text-blue {
   }
-  .welcomeOverProcess{
+  .welcomeOverProcess {
     width: 100%;
     padding-left: 0;
     margin-top: 26px;
     padding-inline: 12px;
   }
-  .welcomeInnerBannerView{
+  .welcomeInnerBannerView {
     width: 100%;
   }
-  #welcomeContact{
+  #welcomeContact {
     justify-content: center;
     gap: 10px;
   }
-  .footer-logo{
+  .footer-logo {
     width: auto;
   }
-  .footer-text{
+  .footer-text {
     font-size: 10px;
   }
-  #welcomeFooterLowerView{
+  #welcomeFooterLowerView {
     padding: 5px 10px;
   }
   #welcomeContact span {
-  font-size: 11px;
-  margin-right: 0;
- }
+    font-size: 11px;
+    margin-right: 0;
+  }
 }

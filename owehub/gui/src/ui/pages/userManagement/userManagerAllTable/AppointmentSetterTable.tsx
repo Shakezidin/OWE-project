@@ -29,7 +29,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
 }) => {
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  let sortedData = [...data]
+  let sortedData = [...data];
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
 
@@ -163,10 +163,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
             ) : (
               <tr style={{ border: 0 }}>
                 <td colSpan={10}>
-                  <div className="data-not-found">
-                    <DataNotFound />
-                    <h3>Data Not Found</h3>
-                  </div>
+                  <DataNotFound />
                 </td>
               </tr>
             )}

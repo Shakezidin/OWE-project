@@ -23,7 +23,7 @@ import { Commissioncolumns } from './RepDashboardTable';
 export const RepPayDashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const [active, setActive] = React.useState<number>(0);
-  const [additionalFilter,setAdditionalFilter] = useState<FilterModel[]>([])
+  const [additionalFilter, setAdditionalFilter] = useState<FilterModel[]>([]);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectionRange, setSelectionRange] = useState({
@@ -582,9 +582,9 @@ export const RepPayDashboardPage: React.FC = () => {
           columns={Commissioncolumns}
           page_number={1}
           page_size={10}
-          fetchFunction={(req:{filters:FilterModel[]}) => {
-            setCurrentPage(1)
-            setAdditionalFilter(req.filters)
+          fetchFunction={(req: { filters: FilterModel[] }) => {
+            setCurrentPage(1);
+            setAdditionalFilter(req.filters);
           }}
         />
 

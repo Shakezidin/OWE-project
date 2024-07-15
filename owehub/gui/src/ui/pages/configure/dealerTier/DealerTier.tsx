@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
-import { RiDeleteBin5Line } from 'react-icons/ri';
-import { CiEdit } from 'react-icons/ci';
-import { IoAddSharp } from 'react-icons/io5';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { fetchDealerTier } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice';
@@ -12,18 +7,14 @@ import CreateDealerTier from './CreateDealerTier';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerTierModel } from '../../../../core/models/configuration/create/DealerTierModel';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import Pagination from '../../../components/pagination/Pagination';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { DealerTierColumn } from '../../../../resources/static_data/configureHeaderData/DealerTierColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import {
   errorSwal,
@@ -34,6 +25,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -289,13 +281,14 @@ const DealerTier = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-          
-                  <th>
-                {(!viewArchived && selectedRows.size<2) &&    <div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-           
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -330,8 +323,7 @@ const DealerTier = () => {
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>
-
-                    {!viewArchived && selectedRows.size < 2 && (
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className="action-archive"
@@ -351,18 +343,14 @@ const DealerTier = () => {
                             {/* <span className="tooltiptext">Edit</span> */}
                           </div>
                         </div>
-                      
-                    )}
+                      )}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h2>Data Not Found</h2>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

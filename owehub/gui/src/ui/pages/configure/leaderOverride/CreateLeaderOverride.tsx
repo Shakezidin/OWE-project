@@ -20,6 +20,7 @@ import {
 } from '../../../../redux/apiActions/config/leaderOverrideAction';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { firstCapitalize } from '../../../../utiles';
+import { toast } from 'react-toastify';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -39,7 +40,6 @@ interface IErrors {
   payRate?: string;
   start?: string;
   end?: string;
-  uniqueId?: string;
 }
 const CreateLeaderOverride: React.FC<payScheduleProps> = ({
   handleClose,
@@ -58,13 +58,14 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     qual: editData?.qual || '',
     salesQ: editData?.sales_q ? `${editData?.sales_q}` : '',
     teamKwQ: editData?.team_kw_q ? `${editData?.team_kw_q}` : '',
-    payRate: editData?.pay_rate || '',
+    payRate: editData?.pay_rate ? `${editData?.pay_rate}` : '',
     start: editData?.start_date || '',
     end: editData?.end_date || '',
-    uniqueId: editData?.unique_id || '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
-  const { isFormSubmitting } = useAppSelector((state) => state.leaderOverride);
+  const { isFormSubmitting, isSuccess } = useAppSelector(
+    (state) => state.leaderOverride
+  );
 
   const tableData = {
     tableNames: ['partners', 'states', 'installers', 'sale_type', 'teams'],
@@ -78,8 +79,9 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     const error: IErrors = {};
     for (const key in formData) {
       if (!formData[key as keyof typeof formData]) {
-        error[key as keyof typeof formData] =
-         firstCapitalize( `${key.replaceAll("_"," ")} is required`);
+        error[key as keyof typeof formData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -102,7 +104,6 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     setViewArchived(false);
     if (handleValidation()) {
       const data = {
-        unique_id: formData.uniqueId,
         team_name: formData.teamName,
         leader_name: formData.leaderName,
         type: formData.type,
@@ -110,7 +111,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
         qual: formData.qual,
         sales_q: parseFloat(formData.salesQ),
         team_kw_q: parseFloat(formData.teamKwQ),
-        pay_rate: formData.payRate,
+        pay_rate: parseFloat(formData.payRate),
         start_date: format(new Date(formData.start), 'yyyy-MM-dd'),
         end_date: format(new Date(formData.end), 'yyyy-MM-dd'),
       };
@@ -127,6 +128,12 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
   useEffect(() => {
     getNewFormData();
   }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('Form Submitted Successfully');
+    }
+  }, [isSuccess]);
 
   return (
     <div className="transparent-model">
@@ -163,10 +170,8 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.teamName}
                     </span>
@@ -185,10 +190,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.leaderName}
                     </span>
@@ -207,10 +210,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.type}
                     </span>
@@ -232,10 +233,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.type}
                     </span>
@@ -254,10 +253,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.qual}
                     </span>
@@ -283,10 +280,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.salesQ}
                     </span>
@@ -315,10 +310,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.teamKwQ}
                     </span>
@@ -340,10 +333,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.payRate}
                     </span>
@@ -368,10 +359,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.start.replace('start', 'start date')}
                     </span>
@@ -395,35 +384,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.end.replace('end', 'end date')}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Unique ID"
-                    value={formData.uniqueId}
-                    name="uniqueId"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
-                  />
-                  {errors?.uniqueId && (
-                    <span
-                      style={{
-                        display: 'block',
-                  
-                       
-                      }}
-className="error"
-                    >
-                      {errors.uniqueId}
                     </span>
                   )}
                 </div>

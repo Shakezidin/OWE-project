@@ -39,5 +39,4 @@ export const ApOthColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
- 
 ];

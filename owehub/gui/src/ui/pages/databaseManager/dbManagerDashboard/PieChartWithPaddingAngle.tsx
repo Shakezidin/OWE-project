@@ -16,7 +16,6 @@ interface PieChartProps {
 
 const COLORS = ['#63ACA3', '#EE824D'];
 
-
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value;
   return `${percentageCalculated}`;
@@ -25,9 +24,8 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
 function PieChartWithPaddingAngle({ data }: PieChartProps) {
   // Destructure data from props
   const navigate = useNavigate();
-  
-  const isTablet = useMatchMedia('(max-width: 1024px)');
 
+  const isTablet = useMatchMedia('(max-width: 1024px)');
 
   const handleClick = (entry: DataItem, index: number) => {
     navigate(`/dbManager/webhooks`);
@@ -43,7 +41,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
         justifyContent: 'center',
         outline: 'none',
       }}
-      className='dashbar-db'
+      className="dashbar-db"
     >
       <div
         style={{
@@ -85,7 +83,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
             data={data}
             cx={120}
             cy={200}
-            innerRadius={ isTablet ? 70 : 80}
+            innerRadius={isTablet ? 70 : 80}
             outerRadius={isTablet ? 105 : 125}
             fill="#8884d8"
             paddingAngle={0}

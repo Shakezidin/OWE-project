@@ -90,17 +90,13 @@ const Header: React.FC<Toggleprops> = ({
         <div
           className={`side-bar-logo ${toggleOpen ? 'side-bar-logo-active' : ''}`}
           style={{
-            width: !toggleOpen && !isTablet ? 240 :  50,
+            width: !toggleOpen && !isTablet ? 240 : 50,
             paddingLeft: toggleOpen || isTablet ? 0 : undefined,
           }}
-          onClick={() =>isTablet && setToggleOpen((prev) => !prev)}
+          onClick={() => isTablet && setToggleOpen((prev) => !prev)}
         >
           {isTablet ? (
-            <IoMenu
-              
-              size={22}
-              className="mx-auto"
-            />
+            <IoMenu size={22} className="mx-auto" />
           ) : (
             <img
               src={ICONS.sidebarLogo}
@@ -110,7 +106,9 @@ const Header: React.FC<Toggleprops> = ({
               }}
             />
           )}
-          {toggleOpen || isTablet ? null : <h3 style={{ color: 'black' }}>OWE HUB</h3>}
+          {toggleOpen || isTablet ? null : (
+            <h3 style={{ color: 'black' }}>OWE HUB</h3>
+          )}
 
           {!isTablet && (
             <div
@@ -137,7 +135,10 @@ const Header: React.FC<Toggleprops> = ({
             </div>
           )}
         </div>
-        <div className="header-logo flex items-center" style={{ marginLeft:isTablet? 0:25,height:"100%" }}>
+        <div
+          className="header-logo flex items-center"
+          style={{ marginLeft: isTablet ? 0 : 25, height: '100%' }}
+        >
           <object
             type="image/svg+xml"
             data={ICONS.LOGO}
@@ -146,8 +147,12 @@ const Header: React.FC<Toggleprops> = ({
         </div>
       </div>
       <div className="search-container">
-        <div className="user-container" ref={dropdownRef} onClick={() => setOPenIcon(!openIcon)}>
-          <div className="user-img-container"  >
+        <div
+          className="user-container"
+          ref={dropdownRef}
+          onClick={() => setOPenIcon(!openIcon)}
+        >
+          <div className="user-img-container">
             <div className="user-img">
               <span>{name}</span>
             </div>
@@ -158,9 +163,7 @@ const Header: React.FC<Toggleprops> = ({
               </div>
 
               <div className="">
-                <div
-                  className="down-circle"
-                >
+                <div className="down-circle">
                   {openIcon ? (
                     <img src={ICONS.upperIcon} alt="" />
                   ) : (
@@ -190,8 +193,7 @@ const Header: React.FC<Toggleprops> = ({
                         <div className="image-icon">
                           <IoMdLogOut />
                         </div>
-                        <div
-                        >
+                        <div>
                           <p style={{ fontSize: '12px', fontWeight: '500' }}>
                             Logout
                           </p>

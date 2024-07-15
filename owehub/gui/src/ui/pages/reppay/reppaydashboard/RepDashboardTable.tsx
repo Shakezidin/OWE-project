@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import '../../configure/configure.css';
 import HelpDashboard from '../../dashboard/HelpDashboard';
-import { BiSupport } from 'react-icons/bi';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
-import { MdOutlineHelp } from 'react-icons/md';
 import { ICONS } from '../../../icons/Icons';
 import { getRepPay } from '../../../../redux/apiActions/repPayAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -592,16 +588,11 @@ const RepDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
   const dispatch = useAppDispatch();
-  // const loading = useAppSelector((state) => state.comm.loading);
   const { data, count, filters } = useAppSelector((state) => state.repPaySlice);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState(false);
-  const [editedCommission, setEditedCommission] =
-    useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector(
@@ -610,6 +601,7 @@ const RepDashBoardTable = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage1, setCurrentPage1] = useState(1);
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -641,21 +633,7 @@ const RepDashBoardTable = () => {
     setCurrentPage1(page);
   };
 
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
-  const handleAddCommission = () => {
-    setEditMode(false);
-    setEditedCommission(null);
-    handleOpen();
-  };
-
-  const handleEditCommission = (commission: CommissionModel) => {
-    setEditMode(true);
-    setEditedCommission(commission);
-    handleOpen();
-  };
-
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
@@ -693,9 +671,6 @@ const RepDashBoardTable = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  // if (loading) {
-  //   return <div>Loading... {loading}</div>;
-  // }
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
@@ -767,34 +742,34 @@ const RepDashBoardTable = () => {
                         <span className="zoom-out-td">{el.unique_id}</span>
                       </div>
                     </td>
-                    <td>{el.home_owner || "N/A"}</td>
-                    <td>{el.current_status || "N/A"}</td>
-                    <td>{el.owe_contractor || "N/A"}</td>
-                    <td>{el.DBA || "N/A"}</td>
-                    <td>{el.type || "N/A"}</td>
-                    <td>{el.Today || "N/A"}</td>
-                    <td>{el.finance_type || "N/A"}</td>
-                    <td>{el.sys_size || "N/A"}</td>
-                    <td>{el.contract_total || "N/A"}</td>
-                    <td>{el.loan_fee || "N/A"}</td>
-                    <td>{el.epc || "N/A"}</td>
-                    <td>{el.adders || "N/A"}</td>
-                    <td>{el.r_r || "N/A"}</td>
-                    <td>{el.comm_rate || "N/A"}</td>
-                    <td>{el.net_epc || "N/A"}</td>
-                    <td>{el.credit || "N/A"}</td>
-                    <td>{el.rep_2 || "N/A"}</td>
-                    <td>{el.net_comm || "N/A"}</td>
-                    <td>{el.draw_amt || "N/A"}</td>
-                    <td>{el.amt_paid || "N/A"}</td>
-                    <td>{el.balance || "N/A"}</td>
-                    <td>{el.dealer_code || "N/A"}</td>
-                    <td>{el.sub_total || "N/A"}</td>
-                    <td>{el.max_per_rep || "N/A"}</td>
-                    <td>{el.total_per_rep || "N/A"}</td>
-                    <td>{el.commission_model || "N/A"}</td>
-                    <td>{el.rep_status|| "N/A"}</td>
-                    <td>{el.sheet_type || "N/A"}</td>
+                    <td>{el.home_owner || 'N/A'}</td>
+                    <td>{el.current_status || 'N/A'}</td>
+                    <td>{el.owe_contractor || 'N/A'}</td>
+                    <td>{el.DBA || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.Today || 'N/A'}</td>
+                    <td>{el.finance_type || 'N/A'}</td>
+                    <td>{el.sys_size || 'N/A'}</td>
+                    <td>{el.contract_total || 'N/A'}</td>
+                    <td>{el.loan_fee || 'N/A'}</td>
+                    <td>{el.epc || 'N/A'}</td>
+                    <td>{el.adders || 'N/A'}</td>
+                    <td>{el.r_r || 'N/A'}</td>
+                    <td>{el.comm_rate || 'N/A'}</td>
+                    <td>{el.net_epc || 'N/A'}</td>
+                    <td>{el.credit || 'N/A'}</td>
+                    <td>{el.rep_2 || 'N/A'}</td>
+                    <td>{el.net_comm || 'N/A'}</td>
+                    <td>{el.draw_amt || 'N/A'}</td>
+                    <td>{el.amt_paid || 'N/A'}</td>
+                    <td>{el.balance || 'N/A'}</td>
+                    <td>{el.dealer_code || 'N/A'}</td>
+                    <td>{el.sub_total || 'N/A'}</td>
+                    <td>{el.max_per_rep || 'N/A'}</td>
+                    <td>{el.total_per_rep || 'N/A'}</td>
+                    <td>{el.commission_model || 'N/A'}</td>
+                    <td>{el.rep_status || 'N/A'}</td>
+                    <td>{el.sheet_type || 'N/A'}</td>
                     <td className="zoom-out-help">
                       <img
                         src={ICONS.online}
@@ -812,10 +787,7 @@ const RepDashBoardTable = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={12}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

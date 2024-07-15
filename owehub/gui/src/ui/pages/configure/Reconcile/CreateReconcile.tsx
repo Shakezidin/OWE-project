@@ -108,8 +108,9 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
         continue;
       }
       if (!createReconcileData[key as keyof typeof createReconcileData]) {
-        error[key as keyof typeof createReconcileData] =
-         firstCapitalize( `${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof createReconcileData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -175,10 +176,8 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -197,10 +196,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.customer}
                     </span>
@@ -222,10 +219,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.partner_name}
                     </span>
@@ -250,10 +245,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.state}
                     </span>
@@ -272,10 +265,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.sys_size}
                     </span>
@@ -295,10 +286,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.status}
                     </span>
@@ -326,10 +315,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -356,10 +343,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.end_date}
                     </span>
@@ -379,10 +364,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.amount}
                     </span>
@@ -402,10 +385,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.notes}
                     </span>

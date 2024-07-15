@@ -16,7 +16,7 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createApAdv,
   updateApAdv,
-  fetchApAdv
+  fetchApAdv,
 } from '../../../../redux/apiActions/config/apAdvAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apAdvSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
@@ -45,7 +45,7 @@ const CreateApAdv: React.FC<payScheduleProps> = ({
     payee: editData?.payee || '',
     amount_ovrd: editData?.amount_ovrd || '',
     date: editData?.date || '',
-    approved_by: editData?.approved_by ||'',
+    approved_by: editData?.approved_by || '',
     notes: editData?.notes || '',
   });
   type TError = typeof createAppSettersData;
@@ -94,27 +94,24 @@ const CreateApAdv: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(handleValidation()){
+    if (handleValidation()) {
       if (editMode) {
         dispatch(
           updateApAdv({
             ...createAppSettersData,
             record_id: editData?.record_id!,
             amount_ovrd: parseInt(createAppSettersData.amount_ovrd),
-
           })
         );
+      } else {
+        const data = {
+          ...createAppSettersData,
+          amount_ovrd: parseInt(createAppSettersData.amount_ovrd), // Convert to number
+        };
+        dispatch(createApAdv(data));
       }
-      else {
-    const data = {
-      ...createAppSettersData,
-      amount_ovrd: parseInt(createAppSettersData.amount_ovrd), // Convert to number
-    };
-    dispatch(createApAdv(data));}
-  }
+    }
   };
-
-
 
   useEffect(() => {
     if (isSuccess) {

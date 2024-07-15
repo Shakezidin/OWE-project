@@ -19,7 +19,7 @@ interface INonCommCreateParams {
   balance?: number;
   paid_amount?: number;
   dba?: string;
-  date: string
+  date: string;
 }
 
 export interface INonCommRowDLR extends INonCommCreateParams {
@@ -48,7 +48,7 @@ export const createNonComm = createAsyncThunk(
       if (data instanceof Error || data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -64,7 +64,7 @@ export const updateNoncom = createAsyncThunk(
       if (data instanceof Error || data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-    
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

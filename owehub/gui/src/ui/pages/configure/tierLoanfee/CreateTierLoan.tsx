@@ -201,10 +201,8 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.dealer_tier}
                     </span>
@@ -223,10 +221,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.installer}
                     </span>
@@ -245,10 +241,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.state}
                     </span>
@@ -273,10 +267,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.loan_type}
                     </span>
@@ -303,10 +295,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.owe_cost}
                     </span>
@@ -332,10 +322,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.dlr_mu}
                     </span>
@@ -364,10 +352,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.dlr_cost}
                     </span>
@@ -389,10 +375,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -419,10 +403,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.end_date}
                     </span>

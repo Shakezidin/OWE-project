@@ -3,15 +3,12 @@ import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchRepCreditList } from '../../../../redux/apiActions/config/repCreditAction';
-// import CreateTimeLine from "./CreateTimeLine";
 import CreateAr from './createrepcredit';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import { ARColumns } from '../../../../resources/static_data/configureHeaderData/ARColumn';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -20,21 +17,15 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
-import { dateFormat } from '../../../../utiles/formatDate';
-import { DbaColumn } from '../../../../resources/static_data/configureHeaderData/DbaColumn';
 import { RepCreditcolumns } from '../../../../resources/static_data/configureHeaderData/RepCreditColumn';
+
 const RepCredit = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
-
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -211,8 +202,6 @@ const RepCredit = () => {
     }
   };
 
-
-
   return (
     <div className="comm">
       <Breadcrumb
@@ -279,7 +268,11 @@ const RepCredit = () => {
                   />
                 ))}
                 {viewArchived === true ? null : (
-                  <th className={!viewArchived && selectedRows.size < 2 ? '' : 'd-none'}>
+                  <th
+                    className={
+                      !viewArchived && selectedRows.size < 2 ? '' : 'd-none'
+                    }
+                  >
                     <div className="action-header">
                       {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                     </div>
@@ -312,10 +305,10 @@ const RepCredit = () => {
                             )
                           }
                         />
-                       <span>{el.unique_id || 'N/A'}</span>
+                        <span>{el.unique_id || 'N/A'}</span>
                       </div>
                     </td>
-                    
+
                     <td>{el.approved_by || 'N/A'}</td>
                     <td>{el.per_kw_amt || 'N/A'}</td>
                     <td>{el.exact_amt || 'N/A'}</td>
@@ -346,10 +339,7 @@ const RepCredit = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

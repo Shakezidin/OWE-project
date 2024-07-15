@@ -4,19 +4,14 @@ import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { LeaderOverrideColumns } from '../../../../resources/static_data/configureHeaderData/LeaderOverrideColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import CreateLeaderOverride from './CreateLeaderOverride';
-import Loading from '../../../components/loader/Loading';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import {
@@ -24,7 +19,6 @@ import {
   getleaderOverride,
 } from '../../../../redux/apiActions/config/leaderOverrideAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/leaderOverride';
-
 import CheckBox from '../../../components/chekbox/CheckBox';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
@@ -40,8 +34,6 @@ const LeaderOverride = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector((state) => state.leaderOverride.data);
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -83,7 +75,6 @@ const LeaderOverride = () => {
       };
       dispatch(getleaderOverride(pageNumber));
     }
-   
   }, [isSuccess, currentPage, viewArchived, filters]);
 
   const filter = () => {
@@ -264,9 +255,11 @@ const LeaderOverride = () => {
                   />
                 ))}
                 <th>
-                  {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
-                    <p>Action</p>
-                  </div>}
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  )}
                 </th>
               </tr>
             </thead>
@@ -295,19 +288,19 @@ const LeaderOverride = () => {
                             )
                           }
                         />
-                        {el.team_name  || 'N/A'}
+                        {el.team_name || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.unique_id  || 'N/A'}</td>
-                    <td>{el.leader_name  || 'N/A'}</td>
-                    <td>{el.type  || 'N/A'}</td>
-                    <td>{el.term  || 'N/A'}</td>
-                    <td>{el.qual  || 'N/A'}</td>
-                    <td>{el.sales_q  || 'N/A'}</td>
-                    <td>{el.team_kw_q  || 'N/A'}</td>
-                    <td>{el.pay_rate  || 'N/A'}</td>
-                    <td>{dateFormat(el.start_date)  || 'N/A'}</td>
-                    <td>{dateFormat(el.end_date)  || 'N/A'}</td>
+
+                    <td>{el.leader_name || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.term || 'N/A'}</td>
+                    <td>{el.qual || 'N/A'}</td>
+                    <td>{el.sales_q || 'N/A'}</td>
+                    <td>{el.team_kw_q || 'N/A'}</td>
+                    <td>{el.pay_rate || 'N/A'}</td>
+                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
+                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -333,10 +326,7 @@ const LeaderOverride = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={LeaderOverrideColumns.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h2>Data Not Found</h2>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

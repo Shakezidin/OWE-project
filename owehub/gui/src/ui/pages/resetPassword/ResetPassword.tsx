@@ -34,11 +34,11 @@ const ResetPassword = () => {
     const { name, value } = e.target;
     let trimmedValue = value;
     if (name === 'email_id') {
-        trimmedValue = value.replace(/\s/g, '');
+      trimmedValue = value.replace(/\s/g, '');
     }
     setCredentials((prevState) => ({
-        ...prevState,
-        [name]: trimmedValue,
+      ...prevState,
+      [name]: trimmedValue,
     }));
   };
   /** on submit  */

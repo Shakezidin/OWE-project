@@ -38,8 +38,8 @@ interface UserTableProos {
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   onClickMultiDelete: () => void;
   AddBtn?: React.ReactNode;
-  currentPage1:number,
-  setCurrentPage1:React.Dispatch<SetStateAction<number>>
+  currentPage1: number;
+  setCurrentPage1: React.Dispatch<SetStateAction<number>>;
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -55,7 +55,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   onClickMultiDelete,
   AddBtn,
   setCurrentPage1,
-  currentPage1
+  currentPage1,
 }) => {
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
@@ -290,13 +290,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               <SelectOption
                 options={userDropdownData}
                 value={selectedOption}
-                menuStyles={{ width: 'fit-content',left:-42 }}
+                menuStyles={{ width: 'fit-content', left: -42 }}
                 controlStyles={{
                   boxShadow: 'none',
                   border: 'none',
                   margin: '0',
                   width: 'fit-content',
-                  marginTop:"1px"
+                  marginTop: '1px',
                 }}
                 dropdownIndicatorStyles={{ color: '#292929', padding: 0 }}
                 singleValueStyles={{
@@ -323,7 +323,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             <button
               className="trash-btn rounded-8 border-none flex items-center justify-center"
               type="button"
-              style={{cursor:"pointer"}}
+              style={{ cursor: 'pointer' }}
             >
               <svg
                 width="24"

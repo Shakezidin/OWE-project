@@ -10,12 +10,12 @@ interface ButtonProps {
   data: {
     id?: string;
     name?: string;
-    home_owner?: string,
-    state?: string,
-    sys_size?: number,
-    contract_calc?: number,
-    current_due?: number,
-    balance?: number
+    home_owner?: string;
+    state?: string;
+    sys_size?: number;
+    contract_calc?: number;
+    current_due?: number;
+    balance?: number;
   };
 }
 const ArHelp: React.FC<ButtonProps> = ({ data, handleClose }) => {

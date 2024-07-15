@@ -53,7 +53,9 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
     approved: editData ? editData.approved_by : '',
     notes: editData ? editData.notes : '',
   });
-  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.dealerCredit);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.dealerCredit
+  );
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
@@ -85,29 +87,28 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
 
   const handleValidation = () => {
     const error: typeof dealerCredit = {} as typeof dealerCredit;
-  
+
     for (const key in dealerCredit) {
       if (!dealerCredit[key as keyof typeof dealerCredit]) {
         // Split the key into words based on underscores or spaces
         const words = key.split(/[_\s]+/);
-        
+
         // Capitalize the first letter of each word
-        const formattedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-        
+        const formattedWords = words.map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+        );
+
         // Join the formatted words with spaces
         const formattedKey = formattedWords.join(' ');
-        
+
         // Assign an error message with the formatted key
         error[key as keyof typeof dealerCredit] = `${formattedKey} is required`;
       }
     }
-  
+
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
   };
-
- 
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -116,8 +117,8 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
       name === 'permitMax' ||
       name === 'redline' ||
       name === 'ptoPay' ||
-      name === 'permitPay'||
-      name==="exact_amt"
+      name === 'permitPay' ||
+      name === 'exact_amt'
     ) {
       if (/^\d+(\.\d*)?$/.test(value) || value === '') {
         setDealerCredit((prev) => ({ ...prev, [name]: value }));
@@ -141,9 +142,8 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
           approved_by: dealerCredit.approved,
           notes: dealerCredit.notes,
           record_id: editData.record_id,
-
-        }
-        dispatch(updateDealerCredit(data))
+        };
+        dispatch(updateDealerCredit(data));
       } else {
         const data = {
           unique_id: dealerCredit.unique_id,
@@ -197,7 +197,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                         display: 'block',
                         color: '#FF204E',
                         fontSize: '12px',
-                        fontWeight: 400
+                        fontWeight: 400,
                       }}
                     >
                       {errors.unique_id}
@@ -219,7 +219,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                         display: 'block',
                         color: '#FF204E',
                         fontSize: '12px',
-                        fontWeight: 400
+                        fontWeight: 400,
                       }}
                     >
                       {errors.date}
@@ -242,7 +242,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                         display: 'block',
                         color: '#FF204E',
                         fontSize: '12px',
-                        fontWeight: 400
+                        fontWeight: 400,
                       }}
                     >
                       {errors.exact_amt}
@@ -266,7 +266,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                         display: 'block',
                         color: '#FF204E',
                         fontSize: '12px',
-                        fontWeight: 400
+                        fontWeight: 400,
                       }}
                     >
                       {errors.per_kw_amt}
@@ -288,7 +288,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                         display: 'block',
                         color: '#FF204E',
                         fontSize: '12px',
-                        fontWeight: 400
+                        fontWeight: 400,
                       }}
                     >
                       Approved By is required
@@ -310,7 +310,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                         display: 'block',
                         color: '#FF204E',
                         fontSize: '12px',
-                        fontWeight: 400
+                        fontWeight: 400,
                       }}
                     >
                       {errors.notes}
@@ -324,14 +324,14 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
         <div className="createUserActionButton">
           <ActionButton title={'Cancel'} type="button" onClick={handleClose} />
           <ActionButton
-          disabled={isFormSubmitting}
+            disabled={isFormSubmitting}
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
-      </form >
-    </div >
+      </form>
+    </div>
   );
 };
 

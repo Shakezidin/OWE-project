@@ -65,7 +65,9 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof typeof createCommission]) {
-        error[key as keyof IError] = firstCapitalize(`${key.replaceAll("_"," ")} is required`);
+        error[key as keyof IError] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -86,11 +88,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
       setCreateCommission((prev) => ({ ...prev, [name]: value }));
     }
 
-    if (
-      name === 'balance' ||
-      name === 'amount' ||
-      name === 'paid_amount'
-    ) {
+    if (name === 'balance' || name === 'amount' || name === 'paid_amount') {
       const sanitizedValue = value.replace(/[^0-9.]/g, '');
       if (sanitizedValue === '' || Number(sanitizedValue) >= 0) {
         setCreateCommission((prev) => ({ ...prev, [name]: sanitizedValue }));
@@ -159,10 +157,8 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.unique_id.replace('unique_id', 'unique id')}
                     </span>
@@ -181,10 +177,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.payee}
                     </span>
@@ -203,10 +197,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.amount}
                     </span>
@@ -228,10 +220,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.description}
                     </span>
@@ -250,10 +240,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.date}
                     </span>

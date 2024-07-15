@@ -30,7 +30,7 @@ const UserTable: React.FC<UserTableProps> = ({
   const isAllRowsSelected = selectedRows?.size === data?.length;
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
- const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const handleSort = (key: string) => {
     console.log(key);
     if (sortKey === key) {
@@ -94,9 +94,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows}
                 sortKey={item.name}
-                sortDirection={
-                  sortKey === item.name ? sortDirection : 'asc'
-                }
+                sortDirection={sortKey === item.name ? sortDirection : 'asc'}
                 onClick={() => handleSort(item.name)}
               />
             ))}
@@ -119,14 +117,13 @@ const UserTable: React.FC<UserTableProps> = ({
                       disabled={el.email_id === email}
                       onChange={() => {
                         // If there's only one row of data and the user clicks its checkbox, select all rows
-                       
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          );
-                        
+
+                        toggleRowSelection(
+                          i,
+                          selectedRows,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        );
                       }}
                     />
                     {el.user_code}
@@ -167,10 +164,7 @@ const UserTable: React.FC<UserTableProps> = ({
           ) : (
             <tr style={{ border: 0 }}>
               <td colSpan={10}>
-                <div className="data-not-found">
-                  <DataNotFound />
-                  <h3>Data Not Found</h3>
-                </div>
+                <DataNotFound />
               </td>
             </tr>
           )}
