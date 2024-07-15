@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
@@ -9,6 +9,9 @@ import PaginationComponent from '../../../components/pagination/PaginationCompon
 import { ICONS } from '../../../icons/Icons';
 import { getRepPay } from '../../../../redux/apiActions/repPayAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { dateFormat } from '../../../../utiles/formatDate';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import MicroLoader from '../../../components/loader/MicroLoader';
 export const commissionList = [
   {
     record_id: 1,
@@ -440,7 +443,6 @@ export const Commissioncolumns = [
     isCheckbox: false,
   },
   { name: 'type', displayName: 'Type', type: 'string', isCheckbox: false },
-  { name: 'Today', displayName: 'Today', type: 'date', isCheckbox: false },
 
   {
     name: 'finance_type',
@@ -564,44 +566,49 @@ export const Commissioncolumns = [
     isCheckbox: false,
   },
   {
-    name: 'commission_model',
-    displayName: 'Commission Model',
-    type: 'string',
-    isCheckbox: false,
-  },
-
-  {
-    name: 'rep_status',
-    displayName: 'Rep Status',
-    type: 'string',
-    isCheckbox: false,
-  },
-
-  {
-    name: 'sheet_type',
-    displayName: 'Sheet Type',
-    type: 'string',
+    name: 'status_date',
+    displayName: 'Status Date',
+    type: 'date',
     isCheckbox: false,
   },
 ];
-const RepDashBoardTable = () => {
+const RepDashBoardTable = ({
+  dropdownFilter,
+  addtionalFIlter,
+  setCurrentPage,
+  currentPage,
+}: {
+  dropdownFilter: Array<string>;
+  addtionalFIlter: FilterModel[];
+  currentPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+}) => {
   const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const { data, count, filters } = useAppSelector((state) => state.repPaySlice);
+  const { data, count, filters, isLoading } = useAppSelector(
+    (state) => state.repPaySlice
+  );
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [currentPage1, setCurrentPage1] = useState(1);
 
+  // [
+  //   { value: 'All', label: 'All', key: 'all' },
+  //   { value: 'AP-OTH', label: 'AP-OTH', key: 'ap_oth' },
+  //   { value: 'AP-PDA', label: 'AP-PDA', key: 'ap_pda' },
+  //   { value: 'AP-ADV', label: 'AP-ADV', key: 'ap_adv' },
+  //   { value: 'AP-DED', label: 'AP-DED', key: 'ap_ded' },
+  //   { value: 'REP-COMM', label: 'REP-COMM', key: 'rep_comm' },
+  //   { value: 'REP BONUS', label: 'REP BONUS', key: 'rep_bonus' },
+  //   { value: 'LEADER-OVERRIDE', label: 'LEADER-OVRD', key: 'leader_ovrd' },
+  // ]
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -612,32 +619,44 @@ const RepDashBoardTable = () => {
       use_cutoff: filters.use_cutoff,
       report_type: filters.report_type.toUpperCase(),
       sort_by: ['home_owner', 'unique_id'],
-      ap_oth: filters.ap_oth,
-      ap_pda: filters.ap_pda,
-      ap_ded: filters.ap_ded,
-      ap_adv: filters.ap_adv,
-      rep_comm: filters.rep_comm,
-      rep_bonus: filters.rep_bonus,
-      leader_ovrd: filters.leader_ovrd,
+      ap_oth: dropdownFilter.includes('AP-OTH'),
+      ap_pda: dropdownFilter.includes('AP-PDA'),
+      ap_ded: dropdownFilter.includes('AP-DED'),
+      ap_adv: dropdownFilter.includes('AP-ADV'),
+      rep_comm: dropdownFilter.includes('REP-COMM'),
+      rep_bonus: dropdownFilter.includes('REP BONUS'),
+      leader_ovrd: dropdownFilter.includes('LEADER-OVERRIDE'),
       commission_model: filters.commission_model,
+      filters: addtionalFIlter,
     };
     dispatch(getRepPay(pageNumber));
-  }, [dispatch, currentPage, pageSize1, viewArchived, filters]);
+  }, [
+    dispatch,
+    currentPage,
+    pageSize1,
+    viewArchived,
+    filters.commission_model,
+    filters.commission_model,
+    filters.use_cutoff,
+    dropdownFilter,
+    addtionalFIlter,
+  ]);
 
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
-    setCurrentPage1(1); // Reset to the first page when changing items per page
+    setCurrentPage(1); // Reset to the first page when changing items per page
   };
   const handlePageChange = (page: number) => {
-    setCurrentPage1(page);
+    setCurrentPage(page);
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows?.size > 0;
-  const isAllRowsSelected = selectedRows?.size === commissionList?.length;
-  const totalPages1 = Math.ceil(commissionList?.length / pageSize1);
+  const isAllRowsSelected = selectedRows?.size === currentPageData?.length;
+  const totalPages1 = Math.ceil(count / pageSize1);
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -691,7 +710,7 @@ const RepDashBoardTable = () => {
                       key={key}
                       isCheckbox={item.isCheckbox}
                       titleName={item.displayName}
-                      data={commissionList}
+                      data={currentPageData}
                       isAllRowsSelected={isAllRowsSelected}
                       isAnyRowSelected={isAnyRowSelected}
                       selectAllChecked={selectAllChecked}
@@ -717,7 +736,15 @@ const RepDashBoardTable = () => {
             )}
 
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={10}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500' }}>
@@ -739,7 +766,7 @@ const RepDashBoardTable = () => {
                             }
                           }}
                         />
-                        <span className="zoom-out-td">{el.unique_id}</span>
+                        <span className="zoom-out-td">{el.unique_id ||"N/A"}</span>
                       </div>
                     </td>
                     <td>{el.home_owner || 'N/A'}</td>
@@ -747,29 +774,28 @@ const RepDashBoardTable = () => {
                     <td>{el.owe_contractor || 'N/A'}</td>
                     <td>{el.DBA || 'N/A'}</td>
                     <td>{el.type || 'N/A'}</td>
-                    <td>{el.Today || 'N/A'}</td>
+                  
                     <td>{el.finance_type || 'N/A'}</td>
-                    <td>{el.sys_size || 'N/A'}</td>
-                    <td>{el.contract_total || 'N/A'}</td>
-                    <td>{el.loan_fee || 'N/A'}</td>
-                    <td>{el.epc || 'N/A'}</td>
-                    <td>{el.adders || 'N/A'}</td>
+                    <td>{el.sys_size ?? 'N/A'}</td>
+                    <td>{el.contract_total?? 'N/A'}</td>
+                    <td>{el.loan_fee ?? 'N/A'}</td>
+                    <td>{el.epc ?? 'N/A'}</td>
+                    <td>{el.adders ?? 'N/A'}</td>
                     <td>{el.r_r || 'N/A'}</td>
-                    <td>{el.comm_rate || 'N/A'}</td>
-                    <td>{el.net_epc || 'N/A'}</td>
-                    <td>{el.credit || 'N/A'}</td>
+                    <td>{el.comm_rate ?? 'N/A'}</td>
+                    <td>{el.net_epc ?? 'N/A'}</td>
+                    <td>{el.credit ?? 'N/A'}</td>
                     <td>{el.rep_2 || 'N/A'}</td>
-                    <td>{el.net_comm || 'N/A'}</td>
-                    <td>{el.draw_amt || 'N/A'}</td>
-                    <td>{el.amt_paid || 'N/A'}</td>
-                    <td>{el.balance || 'N/A'}</td>
+                    <td>{el.net_comm ?? 'N/A'}</td>
+                    <td>{el.draw_amt ?? 'N/A'}</td>
+                    <td>{el.amt_paid ?? 'N/A'}</td>
+                    <td>{el.balance ?? 'N/A'}</td>
                     <td>{el.dealer_code || 'N/A'}</td>
-                    <td>{el.sub_total || 'N/A'}</td>
-                    <td>{el.max_per_rep || 'N/A'}</td>
-                    <td>{el.total_per_rep || 'N/A'}</td>
-                    <td>{el.commission_model || 'N/A'}</td>
-                    <td>{el.rep_status || 'N/A'}</td>
-                    <td>{el.sheet_type || 'N/A'}</td>
+                    <td>{el.subtotal ?? 'N/A'}</td>
+                    <td>{el.max_per_rep ?? 'N/A'}</td>
+                    <td>{el.total_per_rep ?? 'N/A'}</td>
+                    <td>{el.status_date && dateFormat(el.status_date)}</td>
+
                     <td className="zoom-out-help">
                       <img
                         src={ICONS.online}
@@ -798,8 +824,8 @@ const RepDashBoardTable = () => {
         {!!currentPageData.length && (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {currentPageData?.length} of{' '}
-              {currentPageData?.length} item
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
             </p>
 
             <PaginationComponent

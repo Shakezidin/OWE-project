@@ -53,6 +53,7 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 		return err
 	}
 
+	pDealer.DealerOverrideList = pDealer.DealerOverrideList[:0]
 	for _, item := range data {
 
 		// RecordId, ok := item["record_id"].(int64)

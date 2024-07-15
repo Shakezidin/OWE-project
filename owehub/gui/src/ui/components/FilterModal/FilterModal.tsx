@@ -214,7 +214,7 @@ const FilterModal: React.FC<TableProps> = ({
         Data:
           filter.Data === 'yes' || filter.Data === 'no'
             ? filter.Data === 'yes'
-            : filter.Data,
+            : filter.Data.trim(),
       }));
       fetchFunction(req);
     }

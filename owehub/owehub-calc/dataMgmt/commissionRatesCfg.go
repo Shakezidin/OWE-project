@@ -57,6 +57,7 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) LoadcmmsnRatesCfg() (err error) {
 		return err
 	}
 
+	cmmsnRatesCfg.cmmsnRatesList = cmmsnRatesCfg.cmmsnRatesList[:0]
 	for _, item := range data {
 
 		RecordId, ok := item["record_id"].(int64)
@@ -160,7 +161,7 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(rep1, partner, installe
 
 		if len(state) > 6 {
 			state = state[6:]
-		}else {
+		} else {
 			return
 		}
 
@@ -194,7 +195,7 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 				var st string
 				if len(state) > 6 {
 					st = state[6:]
-				}else {
+				} else {
 					return
 				}
 
@@ -217,7 +218,7 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, deal
 				var st string
 				if len(state) > 6 {
 					st = state[6:]
-				}else {
+				} else {
 					return
 				}
 

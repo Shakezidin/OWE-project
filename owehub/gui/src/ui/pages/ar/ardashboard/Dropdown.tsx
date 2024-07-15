@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import './ArDropdownWithCheckboxes.css';
 import { useAppDispatch } from '../../../../redux/hooks';
@@ -17,6 +23,9 @@ interface Option {
 
 interface ArDropdownWithCheckboxesProps {
   options: Option[];
+  selectedOptions: string[];
+  setSelectedOptions: Dispatch<SetStateAction<string[]>>;
+  resetPagination: () => void;
 }
 
 const DropIcon = () => {
@@ -37,11 +46,11 @@ const DropIcon = () => {
 
 const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
   options,
+  setSelectedOptions,
+  selectedOptions,
+  resetPagination,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    options.map((o) => o.value)
-  );
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
@@ -67,17 +76,6 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
   };
 
   const handleOptionChange = (option: string, key: string) => {
-    console.log(key === 'all');
-
-    if (key !== 'all') {
-      dispatch(
-        filterChange({ name: key, value: !selectedOptions.includes(option) })
-      );
-    } else if (key === 'all' && !selectedOptions.includes('All')) {
-      dispatch(toggleAllDropdown());
-    } else {
-      dispatch(toggleOffDropdowns());
-    }
     setSelectedOptions((prevSelectedOptions) => {
       if (option === 'All') {
         if (prevSelectedOptions.length === options.length) {
@@ -94,10 +92,15 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
         if (updatedOptions.includes(option)) {
           return updatedOptions.filter((o) => o !== option);
         } else {
-          return [...updatedOptions, option];
+          let arr = [...updatedOptions, option];
+          if (arr.length + 1 === options.length && !arr.includes('All')) {
+            arr.push('All');
+          }
+          return arr;
         }
       }
     });
+    resetPagination();
   };
   console.log(selectedOptions, 'check');
   return (
@@ -116,7 +119,7 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
         <DropIcon />
       </div>
       {isOpen && (
-        <div className="ar-dropdown-menu">
+        <div className=" scrollbar ar-dropdown-menu">
           {options.map((option) => (
             <div key={option.value} className="ar-dropdown-item">
               <input

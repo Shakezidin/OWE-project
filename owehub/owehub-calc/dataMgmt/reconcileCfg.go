@@ -44,6 +44,7 @@ func (ReconcileCfgData *ReconcileCfgStruct) LoadReconcileCfg() (err error) {
 		return err
 	}
 
+	ReconcileCfgData.ReconcileList.ReconcileList = ReconcileCfgData.ReconcileList.ReconcileList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

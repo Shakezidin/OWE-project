@@ -45,6 +45,7 @@ func (pDealerOwner *DealerOwnersStruct) LoadRDealerOwnersCfg() (err error) {
 		return err
 	}
 
+	pDealerOwner.DealerOwnersList = pDealerOwner.DealerOwnersList[:0]
 	for _, item := range data {
 
 		RecordId, ok := item["record_id"].(int64)

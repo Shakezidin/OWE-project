@@ -38,6 +38,7 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) LoadTierLoanFeeCfg() error {
 
 	pTierLoanFee.TierLoanFeeList.TierLoanFeeList = make([]models.GetTierLoanFeeData, 0, len(data))
 
+	pTierLoanFee.TierLoanFeeList.TierLoanFeeList = pTierLoanFee.TierLoanFeeList.TierLoanFeeList[:0]
 	for _, item := range data {
 		tierLoanFeeData, err := parseTierLoanFeeData(item)
 		if err != nil {

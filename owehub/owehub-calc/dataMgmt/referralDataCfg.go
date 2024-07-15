@@ -59,6 +59,7 @@ func (pReferral *ReferralDataStruct) LoadReferralCfg() (err error) {
 		return err
 	}
 
+	pReferral.ReferralDataList = pReferral.ReferralDataList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {

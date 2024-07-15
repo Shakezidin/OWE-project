@@ -19,9 +19,6 @@ export const ARDashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const [additionalFilter, setAdditionalFilter] = useState<FilterModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const filterClose = () => {
-    setFilterModal(false);
-  };
   const options = [
     { value: 'All', label: 'All', key: 'all' },
     { value: 'Shaky', label: 'Shaky', key: 'shaky' },
@@ -31,6 +28,13 @@ export const ARDashboardPage: React.FC = () => {
     { value: 'PTO', label: 'PTO', key: 'pto' },
     { value: 'SOLD', label: 'SOLD', key: 'sold' },
   ];
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    options.map((o) => o.value)
+  );
+  const filterClose = () => {
+    setFilterModal(false);
+  };
+
 
   const options1 = [
     { value: 'ALL', label: 'All' },
@@ -42,7 +46,6 @@ export const ARDashboardPage: React.FC = () => {
     { value: 'N/A', label: 'N/A' },
   ];
   const options3 = [
-    { value: 'ALL', label: 'All' },
     { value: 'Partner', label: 'Partner' },
     { value: 'installer', label: 'Installer' },
     { value: 'type', label: 'Type' },
@@ -103,7 +106,11 @@ export const ARDashboardPage: React.FC = () => {
 
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
+    resetPagination()
   };
+  const resetPagination = () =>{
+    setCurrentPage(1);
+  }
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
     setAdditionalFilter(req.filters);
@@ -334,7 +341,7 @@ export const ARDashboardPage: React.FC = () => {
                   >
                     Includes
                   </label>
-                  <ArDropdownWithCheckboxes options={options} />
+                  <ArDropdownWithCheckboxes resetPagination={resetPagination} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} options={options} />
                 </div>
               </div>
 
@@ -515,6 +522,7 @@ export const ARDashboardPage: React.FC = () => {
           {active === 0 && (
             <ArDashBoardTable
               additionalFilter={additionalFilter}
+              includedFilter={selectedOptions}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />

@@ -58,6 +58,7 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 		return
 	}
 
+	pLoanFee.LoanFeeAdderList = pLoanFee.LoanFeeAdderList[:0]
 	for _, item := range data {
 		// unique_id
 		Unique_id, ok := item["unique_id"].(string)

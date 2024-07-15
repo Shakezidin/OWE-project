@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './dasboard.css';
 import Select from 'react-select';
 import DashboardTotal from './DashboardTotal';
@@ -17,6 +17,8 @@ import FilterHoc from '../../components/FilterModal/FilterHoc';
 import dealerPayColumn from '../../../resources/static_data/configureHeaderData/dealerPayColumn';
 import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
 import { useLocation } from 'react-router-dom';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState({
@@ -48,6 +50,11 @@ export const DashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [dealer, setDealer] = useState<{ label: string; value: string }>({
+    label: 'All',
+    value: 'ALL',
+  });
+  const [dealers, setDealers] = useState<string[]>([]);
   /* const [selectedOption, setSelectedOption] = useState<string>(
     payRollData[0].label
   );*/
@@ -65,6 +72,7 @@ export const DashboardPage: React.FC = () => {
     selectedOption2: { value: string; label: string } | null
   ) => {
     setSelectedOption2(selectedOption2 ? selectedOption2.value : '');
+    setCurrentPage(1);
   };
   const filterClose = () => {
     setFilterModal(false);
@@ -84,13 +92,23 @@ export const DashboardPage: React.FC = () => {
           'YYYY-MM-DD HH:mm:ss'
         ),
         use_cutoff: 'NO',
-        dealer_name: 'ALL',
+        dealer_name: dealer.value,
         sort_by: 'unique_id',
         commission_model: selectedOption2,
         filters,
       })
     );
-  }, [currentPage, selectedOption2, selectionRange, filters]);
+  }, [currentPage, selectedOption2, selectionRange, filters, dealer.value]);
+
+  useEffect(() => {
+    (async () => {
+      const tableData = {
+        tableNames: ['dealer'],
+      };
+      const res = await postCaller(EndPoints.get_newFormData, tableData);
+      setDealers([...res.data.dealer]);
+    })();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -112,6 +130,14 @@ export const DashboardPage: React.FC = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
+
+  const dealerOptions = useMemo(
+    () => [
+      { label: 'All', value: 'ALL' },
+      ...dealers.map((item) => ({ label: item, value: item })),
+    ],
+    [dealers]
+  );
 
   return (
     <>
@@ -198,6 +224,109 @@ export const DashboardPage: React.FC = () => {
                         ...baseStyles,
                         width: '131px',
                         left: -31,
+                      }),
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="dash-head-input" style={{ minWidth: '145px' }}>
+                <div
+                  className="rep-drop_label"
+                  style={{ backgroundColor: '#57B3F1' }}
+                >
+                  <img src={ICONS.lable_img} alt="" />
+                </div>
+                <div className="rep-up relative">
+                  <label
+                    className="inputLabel"
+                    style={{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '8px',
+                      top: '-6px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Select Dealer
+                  </label>
+                  <Select
+                    options={dealerOptions}
+                    value={dealer}
+                    onChange={(newValue) => {
+                      if (newValue) {
+                        setDealer(newValue);
+                        setCurrentPage(1);
+                      }
+                    }}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        borderRadius: '.40rem',
+                        border: 'none',
+                        outline: 'none',
+                        width: 'fit-content',
+                        minHeight: 'unset',
+                        height: '8px',
+                        alignContent: 'center',
+                        backgroundColor: '#ffffff',
+                        cursor: 'pointer',
+                        marginRight: '33px',
+                        marginBottom: '2px',
+                        boxShadow: 'none',
+                        marginTop: '18px',
+                      }),
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                        '&:hover': {
+                          color: '#292929',
+                        },
+                        marginLeft: '-18px',
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#0000000',
+                        backgroundColor: state.isSelected
+                          ? '#377CF6'
+                          : '#ffffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected
+                            ? '#377CF6'
+                            : '#DDEBFF',
+                        },
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+
+                        color: selectedOption2 ? '#292929' : '#8b8484',
+                        width: 'fit-content',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '140px',
+                        left: -31,
+                        zIndex: 50,
+                      }),
+                      menuList: (base) => ({
+                        ...base,
+                        '&::-webkit-scrollbar': {
+                          scrollbarWidth: 'thin',
+                          display: 'block',
+                          scrollbarColor: 'rgb(173, 173, 173) #fff',
+                          width: 8,
+                          height: 50,
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                          background: 'rgb(173, 173, 173)',
+                          borderRadius: '30px',
+                        },
                       }),
                     }}
                   />

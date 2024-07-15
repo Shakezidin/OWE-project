@@ -32,16 +32,14 @@
   gap: 28px;
   flex-wrap: wrap;
   padding: 16px 7px;
-  max-height: 1000px;
+ 
   overflow: hidden;
   transition:
     max-height 0s ease,
     visibility 0s linear 0s;
 }
 
-.team-cards.open {
-  max-height: 1000px;
-}
+ 
 .team-cards:not(.open) {
   max-height: 0;
   visibility: hidden;

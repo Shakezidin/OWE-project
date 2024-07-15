@@ -3,7 +3,7 @@ export default [
     name: 'unique_id',
     displayName: 'Project ID',
     type: 'string',
-    isCheckbox: false,
+    isCheckbox: true,
   },
   {
     name: 'dealer',

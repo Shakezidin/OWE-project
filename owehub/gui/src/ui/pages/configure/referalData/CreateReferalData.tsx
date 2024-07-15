@@ -191,7 +191,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? 'Create Referal Data' : 'Update Referal Data'}
+          {editMode === false ? 'Create Referral Data' : 'Update Referral Data'}
         </h3>
 
         <div className="modal-body">
@@ -311,10 +311,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Rep Doll DivBy Per"
+                    label="Rep $ / %"
                     value={createCommission.rep_doll_divby_per}
                     name="rep_doll_divby_per"
-                    placeholder={'Rep Doll / Per'}
+                    placeholder={'Rep $ / %'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.rep_doll_divby_per && (
@@ -324,7 +324,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       }}
                       className="error"
                     >
-                      {errors.rep_doll_divby_per}
+                      {errors.rep_doll_divby_per = "Rep $ / % is required"}
                     </span>
                   )}
                 </div>

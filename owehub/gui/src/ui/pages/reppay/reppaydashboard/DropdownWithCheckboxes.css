@@ -43,7 +43,7 @@
   margin-top: 7px;
   overflow-y: auto;
   width: 150px;
-  height: 285px;
+  height: 285px !important;
   box-sizing: border-box;
   color: #0493ce;
   box-shadow: 5px 5px 5px rgba(43, 42, 42, 0.3); /* Add this line */
@@ -96,6 +96,7 @@
   background-color: #377cf6;
   color: #ffffff;
   font-weight: 500;
+  flex-shrink: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -111,6 +112,7 @@
     color: #ffffff;
     font-weight: 500;
     border-radius: 50%;
+    flex-shrink: 0;
     width: 10px;
     height: 10px;
     display: flex;

@@ -42,6 +42,7 @@ func (DBACfg *DBACfgStruct) LoadDBACfg() (err error) {
 		return err
 	}
 
+	DBACfg.DBAList = DBACfg.DBAList[:0]
 	for _, item := range data {
 
 		preferredName, ok := item["preferred_name"].(string)

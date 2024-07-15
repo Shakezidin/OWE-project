@@ -49,19 +49,20 @@ func HandleGetSaleRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var data []map[string]interface{}
 	query = `
 		 WITH subrole_data AS (
-			 SELECT role_id
-			 FROM user_roles
-			 WHERE LOWER(role_name) LIKE LOWER($1)
-		 ),
-		 dealer_owner_data AS (
-			 SELECT user_id
-			 FROM user_details
-			 WHERE LOWER(name) LIKE LOWER($2)
-		 )
-		 SELECT ud.name, ud.email_id, ud.mobile_number, ud.user_code, ud.user_id
-		 FROM user_details ud
-		 WHERE ud.role_id IN (SELECT role_id FROM subrole_data)
-		 AND ud.dealer_owner IN (SELECT user_id FROM dealer_owner_data)`
+    SELECT role_id
+    FROM user_roles
+    WHERE LOWER(role_name) LIKE LOWER($1)
+		),
+		manager_data AS (
+				SELECT user_id
+				FROM user_details
+				WHERE LOWER(name) LIKE LOWER($2)
+		)
+		SELECT ud.name, ud.email_id, ud.mobile_number, ud.user_code, ud.user_id
+		FROM user_details ud
+		WHERE ud.role_id IN (SELECT role_id FROM subrole_data)
+		AND ud.reporting_manager IN (SELECT user_id FROM manager_data);
+		`
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{"%" + strings.ToLower(dataReq.SubRole) + "%", "%" + strings.ToLower(dataReq.Name) + "%"})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
