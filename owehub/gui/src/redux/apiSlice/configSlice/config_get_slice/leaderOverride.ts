@@ -70,7 +70,7 @@ const leaderOverride = createSlice({
         state.isFormSubmitting = true;
       })
       .addCase(updateleaderOverride.fulfilled, (state, action) => {
-        toast.success('Form submission completed');
+        // toast.success('Leader Override updated successfully');
         state.isFormSubmitting = false;
         state.isSuccess = true;
       })

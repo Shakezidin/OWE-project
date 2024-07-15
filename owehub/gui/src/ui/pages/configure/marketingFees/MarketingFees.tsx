@@ -25,6 +25,7 @@ import {
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -109,6 +110,8 @@ const MarketingFees: React.FC = () => {
         return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
+      } else if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+        return sortDirection === 'asc' ? (aValue ? -1 : 1) : bValue ? -1 : 1;
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
@@ -220,19 +223,30 @@ const MarketingFees: React.FC = () => {
           onPressArchive={() => handleArchiveAllClick()}
           viewArchive={viewArchived}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
-          onpressExport={() => {}}
+          onPressImport={() => { }}
+          onpressExport={() => { }}
           onpressAddNew={() => handleAddMarketing()}
         />
-        {filterOPen && (
+
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={MarketingFeesColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+        {/* {filterOPen && (
           <FilterModal
+
             handleClose={filterClose}
             columns={MarketingFeesColumn}
             page_number={currentPage}
             fetchFunction={fetchFunction}
             page_size={itemsPerPage}
           />
-        )}
+        )} */}
         {open && (
           <CreateMarketingFees
             marketingData={editedMarketing}
@@ -310,13 +324,8 @@ const MarketingFees: React.FC = () => {
                     <td>{el.dba?.trim?.() || 'N/A'}</td>
                     <td>{el.state || 'N/A'}</td>
                     <td>{el.fee_rate || 'N/A'}</td>
-                    <td>
-                      {el.chg_dlr?.trim?.() || 'N/A'}
-                      {/* <div className="">
-                      <img src={img} alt="" />
-                    </div> */}
-                    </td>
-                    <td>{el.pay_src?.trim?.() || 'N/A'}</td>
+                    <td>{el.chg_dlr === true ? 'Yes' : el.chg_dlr === false ? 'No' : 'N/A'}</td>
+                    <td>{el.pay_src === true ? 'Yes' : el.pay_src === false ? 'No' : 'N/A'}</td>
                     <td>{el.description?.trim?.() || 'N/A'}</td>
                     <td>{dateFormat(el.start_date.trim())}</td>
                     <td>{dateFormat(el.end_date.trim())} </td>

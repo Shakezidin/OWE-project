@@ -223,6 +223,9 @@ const PaymentSchedule = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
+  const capitalizeFirstLetter = (string: string): string => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
   return (
     <div className="comm">
@@ -337,7 +340,7 @@ const PaymentSchedule = () => {
                     <td>{el.rep_draw || 'N/A'}</td>
                     <td>{el.rep_draw_max || 'N/A'}</td>
                     <td>{el.rep_pay || 'N/A'}</td>
-                    <td>{el.commission_model || 'N/A'}</td>
+                    <td>{el.commission_model ? capitalizeFirstLetter(el.commission_model) : 'N/A'}</td>
 
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     <td>{dateFormat(el.end_date) || 'N/A'}</td>

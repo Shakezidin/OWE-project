@@ -37,14 +37,14 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
   const [createMarketing, setCreateMarketing] = useState<MarketingFeeModel>({
     record_id: marketingData ? marketingData.record_id : 0,
     source: marketingData ? marketingData.source : '',
-    dba: marketingData ? marketingData.dba : '',
+    dba: marketingData ? marketingData.dba?.trim() : '',
     state: marketingData ? marketingData.state : '',
     fee_rate: marketingData ? marketingData.fee_rate : '',
-    chg_dlr: marketingData ? marketingData.chg_dlr : 0,
-    pay_src: marketingData ? marketingData.pay_src : 0,
+    chg_dlr:  marketingData?.chg_dlr ? 'yes' : 'no',
+    pay_src: marketingData?.pay_src ? 'yes' : 'no',
     start_date: marketingData ? marketingData.start_date : '',
     end_date: marketingData ? marketingData.end_date : '',
-    description: marketingData ? marketingData.description : '',
+    description: marketingData ? marketingData.description?.trim() : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
   const [isPending, setIsPending] = useState(false);
@@ -78,15 +78,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (name === 'chg_dlr' || name === 'pay_src') {
-      const sanitized = value.replace(/[^0-9]/g, '');
-      const floated = parseFloat(sanitized);
-      setCreateMarketing((prevErrors) => ({
-        ...prevErrors,
-        [name]: floated || sanitized,
-      }));
-      return;
-    }
+    
     if (name === 'start_date') {
       setCreateMarketing((prevData) => ({
         ...prevData,
@@ -115,10 +107,10 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
         { condition: (value: any) => !!value, message: 'Fee Rate is required' },
       ],
       chg_dlr: [
-        { condition: (value: any) => !!value, message: 'CHG DLR is required' },
+        { condition: (value: any) => value !== undefined, message: 'CHG DLR is required' },
       ],
       pay_src: [
-        { condition: (value: any) => !!value, message: 'Pay Src is required' },
+        { condition: (value: any) => value !== undefined, message: 'Pay Src is required' },
       ],
       description: [
         {
@@ -146,11 +138,16 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     }
     try {
       setIsPending(true);
-      dispatch(updateMarketingForm(createMarketing));
-      if (createMarketing.record_id) {
+      const marketingData = {
+        ...createMarketing,
+        pay_src: createMarketing.pay_src === 'yes',
+        chg_dlr: createMarketing.chg_dlr === 'yes',
+      };
+      dispatch(updateMarketingForm(marketingData));
+      if (marketingData.record_id) {
         const res = await postCaller(
           EndPoints.update_marketingfee,
-          createMarketing
+          marketingData
         );
         if (res.status === 200) {
           toast.success(res.message);
@@ -162,7 +159,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
           toast.error(res.message);
         }
       } else {
-        const { record_id, ...cleanedFormData } = createMarketing;
+        const { record_id, ...cleanedFormData } = marketingData;
         const res = await postCaller(
           EndPoints.create_marketingfee,
           cleanedFormData
@@ -251,26 +248,51 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                  <Input
+                  {/* <Input
                     type={'text'}
                     label="Chg DLR"
                     value={createMarketing.chg_dlr || ''}
                     name="chg_dlr"
                     placeholder={'Enter'}
                     onChange={(e) => handlemarketingInputChange(e)}
+                  /> */}
+                   <label className="inputLabel-select">Chg DLR</label>
+                  <SelectOption
+                    options={[
+                      { value: 'yes', label: 'Yes' },
+                      { value: 'no', label: 'No' },
+                    ]}
+                    onChange={(newValue) => handleChange(newValue, 'chg_dlr')}
+                    value={{
+                      value: createMarketing.chg_dlr,
+                      label: createMarketing.chg_dlr === 'yes' ? 'Yes' : 'No',
+                    }}
                   />
                   {errors.chg_dlr && (
                     <span className="error">{errors.chg_dlr}</span>
                   )}
                 </div>
+
                 <div className="create-input-field">
-                  <Input
+                  {/* <Input
                     type={'text'}
                     label="Pay Src"
                     value={createMarketing.pay_src || ''}
                     name="pay_src"
                     placeholder={'Enter'}
                     onChange={(e) => handlemarketingInputChange(e)}
+                  /> */}
+                  <label className="inputLabel-select">Pay Src</label>
+                  <SelectOption
+                    options={[
+                      { value: 'yes', label: 'Yes' },
+                      { value: 'no', label: 'No' },
+                    ]}
+                    onChange={(newValue) => handleChange(newValue, 'pay_src')}
+                    value={{
+                      value: createMarketing.pay_src,
+                      label: createMarketing.pay_src === 'yes' ? 'Yes' : 'No',
+                    }}
                   />
                   {errors.pay_src && (
                     <span className="error">{errors.pay_src}</span>
@@ -351,7 +373,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>
