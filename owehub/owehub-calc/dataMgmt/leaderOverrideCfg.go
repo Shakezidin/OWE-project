@@ -10,7 +10,6 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
-	"strconv"
 	"time"
 )
 
@@ -103,26 +102,28 @@ func (pLeaderOverride *LeaderOverrideCfgStruct) LoadLeaderOverrideCfg() (err err
 		}
 
 		// PayRate
-		PayRate, payOk := item["pay_rate"].(string)
-		if !payOk || PayRate == "" {
+		PayRate, payOk := item["pay_rate"].(float64)
+		if !payOk {
 			log.FuncErrorTrace(0, "Failed to get pay rate for Unique ID %v. Item: %+v\n", UniqueID, item)
-			PayRate = ""
+			PayRate = 0.0
 		}
 
 		// StartDate
-		StartDate, startOk := item["start_date"].(string)
-		if !startOk || StartDate == "" {
+		StartDate, startOk := item["start_date"].(time.Time)
+		if !startOk {
 			log.FuncErrorTrace(0, "Failed to get start date for Unique ID %v. Item: %+v\n", UniqueID, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, endOk := item["end_date"].(string)
-		if !endOk || EndDate == "" {
+		EndDate, endOk := item["end_date"].(time.Time)
+		if !endOk {
 			log.FuncErrorTrace(0, "Failed to get end date for Unique ID %v. Item: %+v\n", UniqueID, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
 
+		StartDateStr := StartDate.Format("2006-01-02")
+		EndDateStr := EndDate.Format("2006-01-02")
 		// Create a new GetMarketingFeesData object
 		leaderOverrideData := models.GetLeaderOverride{
 			RecordId:   RecordId,
@@ -135,8 +136,8 @@ func (pLeaderOverride *LeaderOverrideCfgStruct) LoadLeaderOverrideCfg() (err err
 			SalesQ:     SalesQ,
 			TeamKwQ:    TeamKwQ,
 			PayRate:    PayRate,
-			StartDate:  StartDate,
-			EndDate:    EndDate,
+			StartDate:  StartDateStr,
+			EndDate:    EndDateStr,
 		}
 
 		// Append the new marketingFeesData to the marketingFeesList
@@ -177,8 +178,7 @@ func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateR2Name(teamCount float6
 				}
 				if data.TeamName == rep2Team && data.Type == types && startDate.Before(wc) && endDate.After(wc) {
 					r2Dmname = data.LeaderName
-					payRateInt, _ := strconv.Atoi(data.PayRate)
-					r2DmRate = float64(payRateInt)
+					r2DmRate = data.PayRate
 				}
 			}
 		}
@@ -215,8 +215,7 @@ func (pLeaderOverride *LeaderOverrideCfgStruct) CalculateR1Name(rep1Team, types 
 			}
 			if data.TeamName == rep1Team && data.Type == types && startDate.Before(wc) && endDate.After(wc) {
 				r1DmName = data.LeaderName
-				payRateInt, _ := strconv.Atoi(data.PayRate)
-				r1DmRate = float64(payRateInt)
+				r1DmRate = data.PayRate
 			}
 		}
 	}
