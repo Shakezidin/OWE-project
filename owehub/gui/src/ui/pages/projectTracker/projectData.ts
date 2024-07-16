@@ -93,7 +93,7 @@ export const projectStatusHeadData = [
     para: 'NA',
     viewButton: false,
     bgColor: '#6761DA',
-    key: 'SystemSize',
+    key: 'system_size',
   },
   {
     name: 'Contract Amount',
