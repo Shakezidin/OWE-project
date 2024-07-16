@@ -360,7 +360,7 @@ const DealerCredit: React.FC = () => {
                           </div>
                         
                       </td>
-                    )
+                    
                   </tr>
                 ))
               ) : (
