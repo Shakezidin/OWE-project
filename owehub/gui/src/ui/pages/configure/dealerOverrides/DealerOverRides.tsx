@@ -216,7 +216,7 @@ const DealerOverRides: React.FC = () => {
       </div>
     );
   }
-
+  const notAllowed = selectedRows.size>1
   return (
     <div className="comm">
       <Breadcrumb
@@ -332,45 +332,26 @@ const DealerOverRides: React.FC = () => {
                     <td>{dateFormat(el.end_date) || 'N/A'}</td>
 
                     <td>
-                      {selectedRows.size === 1 ? (
+                      
                         <div className="action-icon">
                           <div
                             className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
+                            onClick={() => !notAllowed && handleArchiveClick(el.record_id)}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                             {/* <span className="tooltiptext">Archive</span> */}
                           </div>
                           <div
                             className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditDealer(el)}
+                            style={{ cursor:notAllowed?"not-allowed" : 'pointer' }}
+                            onClick={() => !notAllowed && handleEditDealer(el)}
                           >
                             <img src={ICONS.editIcon} alt="" />
                             {/* <span className="tooltiptext">Edit</span> */}
                           </div>
                         </div>
-                      ) : (
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor: "not-allowed" }}
-                        
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            {/* <span className="tooltiptext">Archive</span> */}
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor: "not-allowed"}}
-                        
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
-                          </div>
-                        </div>
-                      )}
+                      
                     </td>
                   </tr>
                 ))
