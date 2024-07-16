@@ -141,7 +141,7 @@ const LoanType = () => {
           filters,
         };
 
-        const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+        const res = await postCaller("update_loantype_archive", newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchLoanType(pageNumber));
@@ -176,7 +176,7 @@ const LoanType = () => {
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+      const res = await postCaller("update_loantype_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchLoanType(pageNumber));
         setSelectAllChecked(false);
