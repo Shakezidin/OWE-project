@@ -141,6 +141,7 @@ const CreateSaleType: React.FC<salesProps> = ({
                     name="description"
                     id=""
                     rows={4}
+                    maxLength={200}
                     value={createSales.description}
                     onChange={(e) =>
                       !e.target.value.startsWith(' ') && handleSalesChange(e)
