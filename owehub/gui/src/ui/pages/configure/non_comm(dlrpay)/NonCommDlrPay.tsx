@@ -182,11 +182,7 @@ const NonCommDlrPay: React.FC = () => {
     }
   };
 
-  console.log(
-    endIndex,
-    dbCount,
-    '................................................'
-  );
+  const notAllowed = selectedRows.size > 1;
 
   return (
     <div className="comm">
@@ -283,7 +279,7 @@ const NonCommDlrPay: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                  <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -354,24 +350,30 @@ const NonCommDlrPay: React.FC = () => {
                     <td>{el.paid_amount}</td>
                     <td>{el.date}</td>
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick([el.record_id])}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditCommission(el)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick([el.record_id])
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      )}
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleEditCommission(el)
+                          }
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))

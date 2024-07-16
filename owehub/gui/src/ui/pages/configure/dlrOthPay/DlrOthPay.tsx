@@ -165,7 +165,7 @@ const DlrOthPay: React.FC = () => {
       }
     });
   }
-
+  const notAllowed = selectedRows.size > 1;
   return (
     <div className="comm">
       <Breadcrumb
@@ -255,7 +255,7 @@ const DlrOthPay: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -295,24 +295,30 @@ const DlrOthPay: React.FC = () => {
                     <td>{el.paid_amount || 'N/A'}</td>
                     <td>{dateFormat(el.date) || 'N/A'}</td>
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            onClick={() => handleArchiveClick([el.record_id])}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditCommission(el)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick([el.record_id])
+                          }
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      )}
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleEditCommission(el)
+                          }
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -332,7 +338,6 @@ const DlrOthPay: React.FC = () => {
               {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
               {dbCount} item
             </p>
-
 
             <Pagination
               currentPage={currentPage}

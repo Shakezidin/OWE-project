@@ -234,6 +234,7 @@ const ReferalData: React.FC = () => {
       </div>
     );
   }
+  const notAllowed = selectedRows.size > 1;
 
   return (
     <div className="comm">
@@ -312,7 +313,7 @@ const ReferalData: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -353,26 +354,32 @@ const ReferalData: React.FC = () => {
                     <td>{el.notes || 'N/A'}</td>
                     <td>{el.start_date || 'N/A'}</td>
                     <td>
-                      {selectedRows.size < 2 && !viewArchived && (
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            {/* <span className="tooltiptext">Archive</span> */}
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditCommission(el)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
+                          {/* <span className="tooltiptext">Archive</span> */}
                         </div>
-                      )}
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleEditCommission(el)
+                          }
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                          {/* <span className="tooltiptext">Edit</span> */}
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))
