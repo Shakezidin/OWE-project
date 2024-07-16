@@ -24,6 +24,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+import { checkLastPage } from '../../../../utiles';
 
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -147,12 +148,12 @@ const TimeLine = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchTimeLineSla(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(timelinesla_list[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
+          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+
+
           Swal.fire({
             title: 'Archived!',
             text: 'The data has been archived .',
@@ -198,6 +199,8 @@ const TimeLine = () => {
         await dispatch(fetchTimeLineSla(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
+        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -234,7 +237,7 @@ const TimeLine = () => {
       </div>
     );
   }
-
+const notAllowed = selectedRows.size>1
   return (
     <div className="comm">
       <Breadcrumb
@@ -345,24 +348,24 @@ const TimeLine = () => {
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
+                     
                         <div className="action-icon">
                           <div
                             className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
+                            style={{ cursor:notAllowed?"not-allowed": 'pointer' }}
+                            onClick={() =>!notAllowed && handleArchiveClick(el.record_id)}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div
                             className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditTimeLineSla(el)}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
+                            onClick={() =>!notAllowed && handleEditTimeLineSla(el)}
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      )}
+      
                     </td>
                   </tr>
                 ))

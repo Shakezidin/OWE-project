@@ -20,9 +20,11 @@ export const sendMail = ({
 export const checkLastPage = (
   current: number,
   total: number,
-  setCurrentPage: Dispatch<SetStateAction<number>>
+  setCurrentPage: Dispatch<SetStateAction<number>>,
+  rows:number,
+  totalPageData:number
 ) => {
-  if (current === total && current > 1) {
+  if (current === total && current > 1 && rows===totalPageData) {
     setCurrentPage((prev) => prev - 1);
   }
   return;

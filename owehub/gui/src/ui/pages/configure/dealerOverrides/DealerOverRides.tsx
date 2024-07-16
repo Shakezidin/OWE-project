@@ -159,7 +159,8 @@ const DealerOverRides: React.FC = () => {
           setSelectedRows(new Set());
 
           dispatch(fetchDealer(pageNumber));
-          checkLastPage(currentPage, totalPages, setCurrentPage);
+          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+
 
           await successSwal('Archived', 'The data has been archived ');
         } else {
@@ -190,7 +191,7 @@ const DealerOverRides: React.FC = () => {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
-        checkLastPage(currentPage, totalPages, setCurrentPage);
+        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');

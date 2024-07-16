@@ -22,6 +22,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { fetchRebateData } from '../../../../redux/apiActions/config/rebateDataAction';
 import CreateRebate from './CreateRebateData';
 import { dateFormat } from '../../../../utiles/formatDate';
+import { checkLastPage } from '../../../../utiles';
 
 const RebeteData: React.FC = () => {
   const [editedAr, setEditedAr] = useState(null);
@@ -171,7 +172,7 @@ const RebeteData: React.FC = () => {
           setSelectAllChecked(false);
           // If API call is successful, refetch commissions
           dispatch(fetchRebateData(pageNumber));
-
+          checkLastPage(currentPage,totalPages,setCurrentPage,selectedRows.size,currentPageData.length)
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -205,6 +206,8 @@ const RebeteData: React.FC = () => {
         setSelectAllChecked(false);
         setSelectedRows(new Set());
         dispatch(fetchRebateData(pageNumber));
+        checkLastPage(currentPage,totalPages,setCurrentPage,selectedRows.size,currentPageData.length)
+
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -219,7 +222,7 @@ const RebeteData: React.FC = () => {
       </div>
     );
   }
-
+  const notAllowed = selectedRows.size>1
   return (
     <div className="comm">
       <Breadcrumb
@@ -295,17 +298,15 @@ const RebeteData: React.FC = () => {
                   />
                 ))}
 
-                {viewArchived === true ? null : (
+         
                   <th
-                    className={
-                      !viewArchived && selectedRows.size < 2 ? '' : 'd-none'
-                    }
+                    
                   >
                     <div className="action-header">
-                      {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                     <p>Action</p>
                     </div>
                   </th>
-                )}
+              
               </tr>
             </thead>
             <tbody>
@@ -363,26 +364,26 @@ const RebeteData: React.FC = () => {
                     <td>{el.r2_addr_resp || 'N/A'}</td>
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     {/* <td>{el.end_date || 'N/A'}</td> */}
-                    {!viewArchived && selectedRows.size < 2 && (
+                 
                       <td>
                         <div className="action-icon">
                           <div
                             className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
+                            style={{ cursor:notAllowed ?"not-allowed" :'pointer' }}
+                            onClick={() =>!notAllowed && handleArchiveClick(el.record_id)}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div
                             className=""
-                            onClick={() => handleEdit(el)}
-                            style={{ cursor: 'pointer' }}
+                            onClick={() => !notAllowed && handleEdit(el)}
+                            style={{ cursor:notAllowed ?"not-allowed": 'pointer' }}
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
                       </td>
-                    )}
+              
                   </tr>
                 ))
               ) : (
