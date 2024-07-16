@@ -45,7 +45,7 @@ import upperIcon from '../../resources/assets/arrow-up-s-line.svg';
 import logoutIconLeft from '../../resources/assets/logout-circle-r-line.svg';
 import userPic from '../../resources/assets/userPic.svg';
 import settingIconAcc from '../../resources/assets/settings-line.svg';
-import supportImage from '../../resources/assets/support.svg';
+import supportImage from '../../resources/assets/support.png';
 import sales from '../../resources/assets/sales.svg';
 import ntp from '../../resources/assets/ntp.svg';
 import install from '../../resources/assets/install.svg';
