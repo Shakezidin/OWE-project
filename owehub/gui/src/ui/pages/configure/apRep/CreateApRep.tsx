@@ -23,7 +23,7 @@ import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apRepSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
@@ -41,16 +41,16 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
 
   const [createArData, setCreateArData] = useState({
     // customer_name:editData?.customer_name || "",
-    unique_id: '',
-    rep: '',
-    dba:  '',
-    type: '',
-    date: '',
-    amount:  '',
-    method:'',
-    cbiz:'',
-    transaction:'',
-    notes:'',
+    unique_id: editData?.unique_id || '',
+    rep: editData?.rep || '',
+    dba:  editData?.dba  || '',
+    final: editData?.final || '',
+    date: editData?.date || '',
+    amount:  editData?.amount || '',
+    method: editData?.method || '',
+    cbiz:editData?.cbiz || '',
+    transaction: editData?.transaction || '',
+    notes: editData?.notes || '',
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -89,7 +89,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
       dba: [
         { condition: (value: any) => !!value, message: 'DBA is required' },
       ],
-      type: [
+      final: [
         {
           condition: (value: any) => !!value,
           message: 'Type is required',
@@ -175,7 +175,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="UniqueId"
+                    label="Unique Id"
                     value={createArData.unique_id}
                     name="unique_id"
                     placeholder={'Enter'}
@@ -186,7 +186,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Rep"
+                    label="REP"
                     value={createArData.rep}
                     name="rep"
                     placeholder={'Enter'}
@@ -219,8 +219,8 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                   <Input
                     type={'text'}
                     label="Type"
-                    value={createArData.type}
-                    name="type"
+                    value={createArData.final}
+                    name="final"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
@@ -246,7 +246,14 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     value={createArData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
                   {errors.amount&& <span className="error">{errors.amount}</span>}
                 </div>
@@ -269,7 +276,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="cbiz"
+                    label="CBIZ"
                     value={createArData.cbiz}
                     name="cbiz"
                     placeholder={'Enter'}

@@ -30,13 +30,11 @@ const Createdba: React.FC<payScheduleProps> = ({
   const [createArData, setCreateArData] = useState({
     preferred_name: editData?.preferred_name || '',
     dba: editData?.dba || '',
-    record_id: editData?.record_id || ''
+    record_id: editData?.record_id || '',
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -47,21 +45,22 @@ const Createdba: React.FC<payScheduleProps> = ({
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const validationRules:{[key:string]:any} = {
-      
+    const validationRules: { [key: string]: any } = {
       preferred_name: [
-        { condition: (value: any) => !!value, message: 'Preferred Name is required' },
+        {
+          condition: (value: any) => !!value,
+          message: 'Preferred Name is required',
+        },
       ],
       dba: [{ condition: (value: any) => !!value, message: 'DBA is required' }],
-    }
+    };
     if (editMode) {
-      
-       validationRules.record_id = [
+      validationRules.record_id = [
         {
           condition: (value: any) => !!value,
           message: 'Unique Id is required',
         },
-      ]
+      ];
     }
     const { isValid, errors } = validateConfigForm(
       createArData!,
@@ -76,7 +75,7 @@ const Createdba: React.FC<payScheduleProps> = ({
       dispatch(
         updateDBA({
           ...createArData,
-          
+
           preferred_name: createArData.preferred_name,
           Dba: createArData.dba,
         })
@@ -100,9 +99,6 @@ const Createdba: React.FC<payScheduleProps> = ({
     };
   }, [isSuccess]);
 
-
-  
-
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>
@@ -117,7 +113,6 @@ const Createdba: React.FC<payScheduleProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
@@ -128,7 +123,9 @@ const Createdba: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.preferred_name && <span className="error">{errors.preferred_name}</span>}
+                  {errors.preferred_name && (
+                    <span className="error">{errors.preferred_name}</span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -142,9 +139,7 @@ const Createdba: React.FC<payScheduleProps> = ({
                   />
                   {errors.dba && <span className="error">{errors.dba}</span>}
                 </div>
-
               </div>
-
             </div>
           </div>
         </div>
@@ -158,7 +153,7 @@ const Createdba: React.FC<payScheduleProps> = ({
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             disabled={isFormSubmitting}
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

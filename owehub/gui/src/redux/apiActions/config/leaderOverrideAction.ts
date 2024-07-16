@@ -7,7 +7,6 @@ interface Ipaginate {
 }
 
 export interface ILeader {
-  unique_id: string;
   team_name: string;
   leader_name: string;
   type: string;
@@ -15,7 +14,7 @@ export interface ILeader {
   qual: string;
   sales_q: number;
   team_kw_q: number;
-  pay_rate: string;
+  pay_rate: number;
   start_date: string;
   end_date: string;
 }
@@ -29,7 +28,7 @@ export const getleaderOverride = createAsyncThunk(
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller('get_leaderoverride', param);
-      const list = data.data.leader_override_list || ([] as ILeaderRow[]);
+      const list = data?.data?.leader_override_list || ([] as ILeaderRow[]);
       return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -39,7 +38,7 @@ export const getleaderOverride = createAsyncThunk(
 
 export const createleaderOverride = createAsyncThunk(
   'create/leader-override',
-  async (params: ILeader, { rejectWithValue, dispatch }) => {
+  async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_leaderoverride', params);
       if (data.status === 500) {
@@ -58,7 +57,7 @@ export const createleaderOverride = createAsyncThunk(
 
 export const updateleaderOverride = createAsyncThunk(
   'update/leaderOverride',
-  async (params: ILeaderRow, { rejectWithValue, dispatch }) => {
+  async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_leaderoverride', params);
       console.log(data, 'rejectttt');

@@ -64,7 +64,7 @@ export interface IDetail {
   secondary_data: ISecondary;
   house_square: number;
   address: string;
-  SysSize:number
+  SysSize: number;
 }
 
 const Index = () => {
@@ -258,15 +258,15 @@ OWE Battery Calc
     >
       <div className=" battery-wrapper p3">
         <div className="wrapper-header">
-          <h4 className="h4" style={{ fontWeight: 500 }}>
+          <h4 className="h4" style={{ fontWeight: 500, color: '#fff' }}>
             Breakers Details Form
           </h4>
           <p
             className="mt1"
-            style={{ color: '#7F7F7F', fontSize: 12, fontWeight: 500 }}
+            style={{ color: '#fff', fontSize: 12, fontWeight: 500 }}
           >
             {' '}
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit.{' '}
+            Fill all required details to generate panel
           </p>
         </div>
 
@@ -285,7 +285,7 @@ OWE Battery Calc
           </button>
           {applianceOpen && (
             <AppliancePopup
-            systemSize={detail.SysSize}
+              systemSize={detail.SysSize}
               primaryDetail={detail.primary_data}
               secondaryDetail={detail.secondary_data}
               isOpen={applianceOpen}

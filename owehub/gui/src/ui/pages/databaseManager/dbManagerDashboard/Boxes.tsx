@@ -35,7 +35,13 @@ interface BoxesProps {
 const Boxes: React.FC<BoxesProps> = ({ color, borderColor }) => {
   return (
     <div>
-      <Box width={18} height={18} color={color} borderRadius={50} borderColor={borderColor} />
+      <Box
+        width={18}
+        height={18}
+        color={color}
+        borderRadius={50}
+        borderColor={borderColor}
+      />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -143,26 +144,28 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 		}
 
 		// PayRate
-		PayRate, payOk := item["pay_rate"].(string)
-		if !payOk || PayRate == "" {
+		PayRate, payOk := item["pay_rate"].(float64)
+		if !payOk || PayRate == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get pay rate for Unique ID %v. Item: %+v\n", UniqueID, item)
-			PayRate = ""
+			PayRate = 0.0
 		}
 
 		// StartDate
-		StartDate, startOk := item["start_date"].(string)
-		if !startOk || StartDate == "" {
+		StartDate, startOk := item["start_date"].(time.Time)
+		if !startOk {
 			log.FuncErrorTrace(0, "Failed to get start date for Unique ID %v. Item: %+v\n", UniqueID, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, endOk := item["end_date"].(string)
-		if !endOk || EndDate == "" {
+		EndDate, endOk := item["end_date"].(time.Time)
+		if !endOk {
 			log.FuncErrorTrace(0, "Failed to get end date for Unique ID %v. Item: %+v\n", UniqueID, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
 
+		StartDateStr := StartDate.Format("2006-01-02")
+		EndDateStr := EndDate.Format("2006-01-02")
 		// Create a new GetMarketingFeesData object
 		leaderOverrideData := models.GetLeaderOverride{
 			RecordId:   RecordId,
@@ -174,8 +177,8 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 			SalesQ:     SalesQ,
 			TeamKwQ:    TeamKwQ,
 			PayRate:    PayRate,
-			StartDate:  StartDate,
-			EndDate:    EndDate,
+			StartDate:  StartDateStr,
+			EndDate:    EndDateStr,
 		}
 
 		// Append the new marketingFeesData to the marketingFeesList

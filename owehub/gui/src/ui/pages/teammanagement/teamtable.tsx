@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../userManagement/user.css';
 import '../configure/configure.css';
 import { FaArrowDown } from 'react-icons/fa6';
@@ -11,6 +11,9 @@ import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { ROUTES } from '../../../routes/routes';
+import { BrowserRouter as Router, Route, useParams, useLocation } from 'react-router-dom';
+import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
+
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
@@ -19,8 +22,18 @@ const TeamTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState<boolean>(false);
   const [open1, setOpen1] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const { id } = useParams();
+  const location = useLocation();
 
-  
+  // Function to get query parameters
+  const getQueryParams = (search:any) => {
+    return new URLSearchParams(search);
+  };
+
+  // Extract team-name from the query parameters
+  const queryParams = getQueryParams(location.search);
+  const teamName = queryParams.get('team-name');
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -69,7 +82,7 @@ const TeamTable: React.FC = () => {
     },
   ];
   const count = dataUser.length;
-  const dispatch = useAppDispatch();
+
 
   const itemsPerPage = 10;
 
@@ -93,6 +106,18 @@ const TeamTable: React.FC = () => {
     console.log("")
     handleClose();
   }
+
+  console.log(id, "id")
+  useEffect(() => {
+  if(id){
+  const  data = {
+    team_name:teamName,
+    manager_id: 0,
+    team_id:parseInt(id),
+    }
+  dispatch( getTeam(data))
+  }
+  },[id])
   return (
     <>
     <div className="comm">

@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchRepStatusList, createRepStatus, updateRepStatus, archiveRepStatus } from '../../../apiActions/config/repstatusAction';
+import {
+  fetchRepStatusList,
+  createRepStatus,
+  updateRepStatus,
+  archiveRepStatus,
+} from '../../../apiActions/config/repstatusAction';
 import { toast } from 'react-toastify';
 
 interface RepStatusItem {
@@ -42,7 +47,7 @@ const repStatusSlice = createSlice({
         state.isLoading = false;
         state.rep_status_list = action.payload.list || [];
         state.count = action.payload.count;
-        console.log("Fetched Rep Status List:", action.payload);
+        console.log('Fetched Rep Status List:', action.payload);
       })
       .addCase(fetchRepStatusList.rejected, (state, action) => {
         state.isLoading = false;
@@ -56,7 +61,7 @@ const repStatusSlice = createSlice({
       .addCase(createRepStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        toast.success("Rep Status created successfully")
+        toast.success('Rep Status created successfully');
       })
       .addCase(createRepStatus.rejected, (state, action) => {
         state.isLoading = false;
@@ -70,7 +75,7 @@ const repStatusSlice = createSlice({
       .addCase(updateRepStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        toast.success("Rep Status updated successfully")
+        toast.success('Rep Status updated successfully');
       })
       .addCase(updateRepStatus.rejected, (state, action) => {
         state.isLoading = false;
@@ -83,11 +88,10 @@ const repStatusSlice = createSlice({
       })
       .addCase(archiveRepStatus.fulfilled, (state, action) => {
         state.isLoading = false;
-       
       })
       .addCase(archiveRepStatus.rejected, (state, action) => {
         state.isLoading = false;
-       
+
         state.error = action.payload as string;
       });
   },

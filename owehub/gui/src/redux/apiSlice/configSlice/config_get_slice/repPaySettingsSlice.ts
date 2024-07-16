@@ -84,6 +84,7 @@ const repaySettingSlice = createSlice({
       .addCase(updateRepaySettings.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

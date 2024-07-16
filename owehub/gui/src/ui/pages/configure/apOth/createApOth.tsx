@@ -41,15 +41,15 @@ const CreateApOth: React.FC<payScheduleProps> = ({
     (state) => state.apOthSlice
   );
 
-  console.log(editData, "fisklgh")
+  console.log(editData, 'fisklgh');
   const [createAppSettersData, setAppSettersData] = useState({
-    unique_id:  editData?.unique_id || '',
-    payee:  editData?.payee || '',
-    amount:   editData?.amount || '',
-    date:   editData?.date || '',
-    short_code:   editData?.short_code || '',
-    description:   editData?.description || '',
-    notes:   editData?.notes || '',
+    unique_id: editData?.unique_id || '',
+    payee: editData?.payee || '',
+    amount: editData?.amount || '',
+    date: editData?.date || '',
+    short_code: editData?.short_code || '',
+    description: editData?.description || '',
+    notes: editData?.notes || '',
   });
 
   type TError = typeof createAppSettersData;
@@ -98,24 +98,23 @@ const CreateApOth: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(handleValidation()){
+    if (handleValidation()) {
       if (editMode) {
         dispatch(
           updateApOth({
             ...createAppSettersData,
             record_id: editData?.record_id!,
             amount: parseInt(createAppSettersData.amount),
-
           })
         );
+      } else {
+        const data = {
+          ...createAppSettersData,
+          amount: parseInt(createAppSettersData.amount), // Convert to number
+        };
+        dispatch(createApOth(data));
       }
-      else {
-    const data = {
-      ...createAppSettersData,
-      amount: parseInt(createAppSettersData.amount), // Convert to number
-    };
-    dispatch(createApOth(data));}
-  }
+    }
   };
 
   useEffect(() => {
@@ -183,7 +182,7 @@ const CreateApOth: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-                 
+
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -254,7 +253,6 @@ const CreateApOth: React.FC<payScheduleProps> = ({
                   )}
                 </div>
 
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -296,7 +294,6 @@ const CreateApOth: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-                
               </div>
             </div>
           </div>

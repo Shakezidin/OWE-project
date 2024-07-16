@@ -74,7 +74,7 @@ const MainLayout = () => {
             dispatch(logout());
             navigate('/login');
             toast.error('User does not exist. Please register..');
-            cancelAllRequests()
+            cancelAllRequests();
           }
         })
         .catch((error: any) => {
@@ -104,7 +104,10 @@ const MainLayout = () => {
         />
         <div
           className="header-width"
-          style={{ marginLeft: !toggleOpen && !isTablet ? '240px' : isTablet ? 0 : '50px' }}
+          style={{
+            marginLeft:
+              !toggleOpen && !isTablet ? '240px' : isTablet ? 0 : '50px',
+          }}
         >
           <div className="children-container">
             <Outlet />

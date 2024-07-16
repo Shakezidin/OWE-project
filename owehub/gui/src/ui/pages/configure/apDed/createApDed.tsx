@@ -55,8 +55,9 @@ const CreateApDed: React.FC<payScheduleProps> = ({
     const error: TError = {} as TError;
     for (const key in createAppSettersData) {
       if (!createAppSettersData[key as keyof typeof createAppSettersData]) {
-        error[key as keyof typeof createAppSettersData] =
-          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof createAppSettersData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -135,7 +136,7 @@ const CreateApDed: React.FC<payScheduleProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-            <div className="create-input-container">
+              <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -247,7 +248,6 @@ const CreateApDed: React.FC<payScheduleProps> = ({
                   )}
                 </div>
 
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -268,10 +268,6 @@ const CreateApDed: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-
-                 
-
-              
               </div>
             </div>
           </div>

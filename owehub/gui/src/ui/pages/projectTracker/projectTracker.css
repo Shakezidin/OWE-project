@@ -61,25 +61,25 @@
   color: var(--page-heading-color);
 }
 
-.project-card-container-1{
+.project-card-container-1 {
   display: grid;
-  grid-template-columns: repeat(2,minmax(200px,1fr));
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
   gap: 20px;
   margin-top: 1rem;
 }
-.project-card-container-2{
+.project-card-container-2 {
   margin-top: 1rem;
   margin-left: 20px;
   display: grid;
-  grid-template-columns: repeat( auto-fit, minmax(200px, 1fr) );
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
 .project-card {
   padding: 1rem;
- display: flex;
- flex-direction: column;
- justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   border-radius: 8px;
 }
 
@@ -636,42 +636,61 @@
 .performance-milestone-table::-webkit-scrollbar-corner {
   background-color: transparent;
 }
-.rounded-8{
+.rounded-8 {
   border-radius: 8px;
 }
 
-.rounded-16{
+.rounded-16 {
   border-radius: 16px;
 }
 
-.project-card-wrapper{
+.project-card-wrapper {
   width: 70%;
 }
 
 /*Responsive*/
 @media (max-width: 1024px) {
-  .project-card-wrapper{
+  .project-card-wrapper {
     width: 50%;
   }
-.stats-card-wrapper{
-  flex-direction: column;
-}
-  .project-card-container-1{
-    grid-template-columns: repeat(4,1fr);
+  .stats-card-wrapper {
+    flex-direction: column;
   }
-  .project-card-container-2{
+  .project-card-container-1 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .project-card-container-2 {
     margin-left: 0;
   }
-  .performance-bars{
+  .performance-bars {
     width: 200px;
   }
 }
 
-@media (max-width: 890px){
-  .performance-bars{
+@media (max-width: 890px) {
+  .performance-bars {
     width: unset !important;
   }
-  .per-sales{
+  .per-sales {
     font-size: 11px !important;
   }
+}
+
+
+.per-head-input {
+  display: flex;
+  background-color: #ffffff;
+  padding: 0 3px 0 3px; /*here change for reduce left space ***************/
+  gap: 0px;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.per-calender-container {
+  position: absolute;
+  z-index: 999;
+  margin-left: -455px;
+  top: 154%;
+  background-color: #fff;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }

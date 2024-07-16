@@ -14,13 +14,15 @@ import {
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repcreditSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
-import { createRepCredit, updateRepCredit } from '../../../../redux/apiActions/config/repCreditAction';
+import {
+  createRepCredit,
+  updateRepCredit,
+} from '../../../../redux/apiActions/config/repCreditAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: any;
 }
-
 
 const CreateRepCredit: React.FC<payScheduleProps> = ({
   handleClose,
@@ -28,21 +30,21 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.repCredit);
-  
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.repCredit
+  );
+
   const [createArData, setCreateArData] = useState({
     unique_id: editData?.unique_id || '',
     Per_kw_amt: editData?.per_kw_amt || '',
     Notes: editData?.notes || '',
     Exact_amt: editData?.exact_amt || '',
     Date: editData?.date || '',
-    Approved_by: editData?.approved_by || ''
+    Approved_by: editData?.approved_by || '',
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -61,12 +63,29 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
         },
       ],
       Per_kw_amt: [
-        { condition: (value: any) => !!value, message: 'Per Kw AMT is required' },
+        {
+          condition: (value: any) => !!value,
+          message: 'Per Kw AMT is required',
+        },
       ],
-      Notes: [{ condition: (value: any) => !!value, message: 'Notes is required' }],
-      Date: [{ condition: (value: any) => !!value, message: 'Date is required' }],
-      Approved_by: [{ condition: (value: any) => !!value, message: 'Approved By is required' }],
-      Exact_amt: [{ condition: (value: any) => !!value, message: 'Exact Amt is required' }],
+      Notes: [
+        { condition: (value: any) => !!value, message: 'Notes is required' },
+      ],
+      Date: [
+        { condition: (value: any) => !!value, message: 'Date is required' },
+      ],
+      Approved_by: [
+        {
+          condition: (value: any) => !!value,
+          message: 'Approved By is required',
+        },
+      ],
+      Exact_amt: [
+        {
+          condition: (value: any) => !!value,
+          message: 'Exact Amt is required',
+        },
+      ],
     };
     const { isValid, errors } = validateConfigForm(
       createArData!,
@@ -87,7 +106,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
           Exact_amt: parseInt(createArData.Exact_amt),
           Approved_by: createArData.Approved_by,
           Notes: createArData.Notes,
-          record_id: editData.record_id
+          record_id: editData.record_id,
         })
       );
     } else {
@@ -111,7 +130,6 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
     }
   }, [isSuccess, dispatch]);
 
-
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>
@@ -126,7 +144,6 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
@@ -137,7 +154,9 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.unique_id && <span className="error">{errors.unique_id}</span>}
+                  {errors.unique_id && (
+                    <span className="error">{errors.unique_id}</span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -161,9 +180,10 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.Per_kw_amt && <span className="error">{errors.Per_kw_amt}</span>}
+                  {errors.Per_kw_amt && (
+                    <span className="error">{errors.Per_kw_amt}</span>
+                  )}
                 </div>
-
               </div>
               <div className="create-input-container">
                 <div className="create-input-field">
@@ -175,7 +195,9 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.Approved_by && <span className="error">{errors.Approved_by}</span>}
+                  {errors.Approved_by && (
+                    <span className="error">{errors.Approved_by}</span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -186,7 +208,9 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.Exact_amt && <span className="error">{errors.Exact_amt}</span>}
+                  {errors.Exact_amt && (
+                    <span className="error">{errors.Exact_amt}</span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -197,10 +221,11 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.Notes && <span className="error">{errors.Notes}</span>}
+                  {errors.Notes && (
+                    <span className="error">{errors.Notes}</span>
+                  )}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -214,7 +239,7 @@ const CreateRepCredit: React.FC<payScheduleProps> = ({
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             disabled={isFormSubmitting}
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

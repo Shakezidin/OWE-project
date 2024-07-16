@@ -32,7 +32,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-  let sortedData = [...data]
+  let sortedData = [...data];
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -146,10 +146,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
             ) : (
               <tr style={{ border: 0 }}>
                 <td colSpan={10}>
-                  <div className="data-not-found">
-                    <DataNotFound />
-                    <h3>Data Not Found</h3>
-                  </div>
+                  <DataNotFound />
                 </td>
               </tr>
             )}

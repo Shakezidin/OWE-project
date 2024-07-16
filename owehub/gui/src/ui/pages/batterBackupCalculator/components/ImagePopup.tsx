@@ -54,16 +54,22 @@ const ImagePopup = ({
               right: 20,
               background: 'rgba(0,0,0,.5)',
               borderRadius: '50%',
-             
             }}
             onClick={() => downloadFile(imgs[activeImg], 'my-file.png')}
           >
-              <FaDownload color="#fff" />
-            
+            <FaDownload color="#fff" />
           </div>
-          <img src={imgs?.[activeImg]} alt="" className='mt2' style={{ maxWidth: '100%' }} />
-          <div className="block  text-white text-center" style={{color:"#fff"}} >
-            {activeImg+1}/{imgs?.length}
+          <img
+            src={imgs?.[activeImg]}
+            alt=""
+            className="mt2"
+            style={{ maxWidth: '100%' }}
+          />
+          <div
+            className="block  text-white text-center"
+            style={{ color: '#fff' }}
+          >
+            {activeImg + 1}/{imgs?.length}
           </div>
         </div>
         <button

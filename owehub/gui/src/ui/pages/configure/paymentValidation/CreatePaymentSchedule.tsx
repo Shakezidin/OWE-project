@@ -86,8 +86,9 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
       }
       if (!createPayData[key as keyof PayScheduleModel]) {
         // @ts-ignore
-        error[key as keyof PayScheduleModel] =
-          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof PayScheduleModel] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -102,7 +103,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
   };
   const handlePayInputChange = (e: FormInput) => {
     let { name, value } = e.target;
-    if (name === 'start_Date') {
+    if (name === 'start_date') {
       setCreatePayData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -131,10 +132,10 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
       [name]: value,
     }));
   };
-const commisionOpt = [
-  { value: 'standard', label: 'Standard' },
-  { value: 'percentage', label: 'Percentage' },
-]
+  const commisionOpt = [
+    { value: 'standard', label: 'Standard' },
+    { value: 'percentage', label: 'Percentage' },
+  ];
   const submitPaySchedule = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -148,7 +149,7 @@ const commisionOpt = [
             draw_max: parseFloat(createPayData.draw_max as string),
             rep_draw: parseFloat(createPayData.rep_draw as string),
             rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
-            commission_model:createPayData.commission_model
+            commission_model: createPayData.commission_model,
           })
         );
         if (createPayData.record_id) {
@@ -159,7 +160,7 @@ const commisionOpt = [
             draw_max: parseFloat(createPayData.draw_max as string),
             rep_draw: parseFloat(createPayData.rep_draw as string),
             rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
-            commission_model:createPayData.commission_model
+            commission_model: createPayData.commission_model,
           });
           if ((await res?.status) === 200) {
             handleClose();
@@ -225,10 +226,8 @@ const commisionOpt = [
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.dealer}
                     </span>
@@ -249,10 +248,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.partner_name}
                     </span>
@@ -273,10 +270,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.installer_name}
                     </span>
@@ -301,10 +296,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.sale_type}
                     </span>
@@ -326,10 +319,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.state}
                     </span>
@@ -348,10 +339,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.rl}
                     </span>
@@ -372,10 +361,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.draw}
                     </span>
@@ -394,10 +381,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.draw_max}
                     </span>
@@ -416,10 +401,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.rep_draw}
                     </span>
@@ -440,10 +423,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.rep_draw_max}
                     </span>
@@ -463,10 +444,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.rep_pay}
                     </span>
@@ -479,17 +458,15 @@ className="error"
                     label="Start Date"
                     value={createPayData.start_date}
                     name="start_date"
-                    placeholder={'1/04/2004'}
+                    placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />
                   {errors?.start_date && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -511,17 +488,17 @@ className="error"
                         'yyyy-MM-dd'
                       )
                     }
-                    placeholder={'1/04/2004'}
+                    
+                    placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />
+
                   {errors?.end_date && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.end_date}
                     </span>
@@ -533,21 +510,20 @@ className="error"
                     Commission model
                   </label>
                   <SelectOption
-                    
                     options={commisionOpt}
                     onChange={(newValue) =>
                       handleChange(newValue, 'commission_model')
                     }
-                    value={commisionOpt.find((val)=>val.value===createPayData.commission_model) }
+                    value={commisionOpt.find(
+                      (val) => val.value === createPayData.commission_model
+                    )}
                   />
                   {errors?.commission_model && (
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.commission_model}
                     </span>

@@ -22,11 +22,11 @@ export const getUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   'fetch/updateUser',
-  async (params: any, { rejectWithValue,dispatch }) => {
+  async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const response = await postCaller('update_profile', params); // Assuming this is a GET request
       const tableName = response.data; // Extract the data from the response
-      await dispatch(getUser({page_number:1,page_size:10}))
+      await dispatch(getUser({ page_number: 1, page_size: 10 }));
       return tableName;
     } catch (error) {
       return rejectWithValue((error as Error).message);

@@ -35,7 +35,7 @@ const AdderResponsibility = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, isLoading } = useAppSelector(
+  const { data, isLoading , totalCount} = useAppSelector(
     (state) => state.adderresponsbility
   );
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
@@ -77,14 +77,14 @@ const AdderResponsibility = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(data?.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const endIndex = currentPage * itemsPerPage;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -279,13 +279,14 @@ const AdderResponsibility = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-             
-                  <th>
-                   {(!viewArchived && selectedRows.size<2) && <div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-              
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -313,10 +314,9 @@ const AdderResponsibility = () => {
                             )
                           }
                         />
-                        {el.unique_id}
+                        {el.pay_scale}
                       </div>
                     </td>
-                    <td> {el.pay_scale}</td>
                     <td>{el.percentage}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
@@ -343,10 +343,7 @@ const AdderResponsibility = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={AdderResponsibilityColumns.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -357,7 +354,9 @@ const AdderResponsibility = () => {
           {data?.length > 0 ? (
             <>
               <p className="page-heading">
-                {startIndex} - {endIndex} of {currentPageData?.length} item
+                Showing {startIndex} -{' '}
+                {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
+                item
               </p>
 
               <Pagination

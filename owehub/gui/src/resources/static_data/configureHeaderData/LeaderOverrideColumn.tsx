@@ -6,12 +6,7 @@ export const LeaderOverrideColumns: Column[] = [
     type: 'string',
     isCheckbox: true,
   },
-  {
-    name: 'unique_id',
-    displayName: 'Unique Id',
-    type: 'string',
-    isCheckbox: false,
-  },
+
   {
     name: 'leader_name',
     displayName: 'Leader Name',
@@ -42,13 +37,13 @@ export const LeaderOverrideColumns: Column[] = [
   {
     name: 'start_date',
     displayName: 'Start Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'end_date',
     displayName: 'End Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
 ];

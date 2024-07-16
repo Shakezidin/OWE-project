@@ -5,25 +5,20 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApDedColumn } from '../../../../resources/static_data/configureHeaderData/apDedColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { fetchApDed } from '../../../../redux/apiActions/config/apDedAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import CreateApOth from './createApDed';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
-import { dateFormat } from '../../../../utiles/formatDate';
+
 const ApDed = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -36,7 +31,6 @@ const ApDed = () => {
   const { data, isLoading, totalcount } = useAppSelector(
     (state) => state.apDedSlice
   );
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -76,7 +70,7 @@ const ApDed = () => {
   const totalPages = Math.ceil(totalcount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -201,7 +195,6 @@ const ApDed = () => {
       }
     }
   };
- 
 
   return (
     <div className="comm">
@@ -269,13 +262,14 @@ const ApDed = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-              
-                  <th>
-                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-              
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -306,12 +300,12 @@ const ApDed = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.payee ||"N/A"}</td>
-                    <td>{el.amount ||"N/A"}</td>
-                    <td>{el.date ||"N/A"}</td>
-                    <td>{el.short_code ||"N/A"}</td>
-                    <td>{el.description ||"N/A"}</td>
-                    <td>{el.dealer ||"N/A"}</td>
+                    <td>{el.payee || 'N/A'}</td>
+                    <td>{el.amount || 'N/A'}</td>
+                    <td>{el.date || 'N/A'}</td>
+                    <td>{el.short_code || 'N/A'}</td>
+                    <td>{el.description || 'N/A'}</td>
+                    <td>{el.dealer || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -337,10 +331,7 @@ const ApDed = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={ApDedColumn.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

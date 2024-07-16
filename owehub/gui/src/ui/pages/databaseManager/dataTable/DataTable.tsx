@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../../configure/configure.css';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import DataTableHeaderr from '../../../components/tableHeader/DataTableHeaderr';
 import Pagination from '../../../components/pagination/Pagination';
 import { getAnyTableData } from '../../../../redux/apiActions/dataTableAction';
@@ -49,7 +48,7 @@ const DataTablle: React.FC = () => {
     return str.trim().split(/\s+/).length;
   };
 
-  const [currentPage,setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 30;
   const start = (currentPage - 1) * itemsPerPage + 1;
   const end = currentPage * itemsPerPage;
@@ -81,18 +80,18 @@ const DataTablle: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    setCurrentPage(currentPage - 1)
+    setCurrentPage(currentPage - 1);
   };
 
-  const filter = () => { };
+  const filter = () => {};
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -122,13 +121,13 @@ const DataTablle: React.FC = () => {
     return `${day}.${month}.${year} ${hours}:${minutes}:${seconds} ${milliseconds}`;
   };
 
-  console.log(data, "show data")
+  console.log(data, 'show data');
   return (
-    <div className="commissionContainer" style={{overflow:"visible"}}>
+    <div className="commissionContainer" style={{ overflow: 'visible' }}>
       <DataTableHeaderr
         title={selectedTable.value?.replaceAll('_', ' ')}
-        onPressFilter={() => { }}
-        onPressImport={() => { }}
+        onPressFilter={() => {}}
+        onPressImport={() => {}}
         showImportIcon={false}
         showSelectIcon={true}
         showFilterIcon={false}
@@ -166,7 +165,13 @@ const DataTablle: React.FC = () => {
                     <td>{startIndex + rowIndex + 1}</td>
                     {orderedColumns.map((columnName, colIndex) => (
                       <td key={colIndex}>
-                        {['fin_pv_redlined_date', 'contract_date', 'install_eta', 'mpu_reschedule_count', 'site_survey_scheduled_date'].includes(columnName) ? (
+                        {[
+                          'fin_pv_redlined_date',
+                          'contract_date',
+                          'install_eta',
+                          'mpu_reschedule_count',
+                          'site_survey_scheduled_date',
+                        ].includes(columnName) ? (
                           formatDate(item[columnName] as string | undefined)
                         ) : columnName === 'status' ? (
                           item[columnName] === 'Active' ? (
@@ -205,25 +210,38 @@ const DataTablle: React.FC = () => {
                                 <>
                                   {item.details.length > 5 ? (
                                     <>
-                                      {item.details.replace(/<\/?p>/g, '').slice(0, 5)}...
+                                      {item.details
+                                        .replace(/<\/?p>/g, '')
+                                        .slice(0, 5)}
+                                      ...
                                       <button
                                         onClick={() =>
                                           setOpenTooltipIndex(
-                                            openTooltipIndex === rowIndex ? null : rowIndex
+                                            openTooltipIndex === rowIndex
+                                              ? null
+                                              : rowIndex
                                           )
                                         }
                                         data-tooltip-id={`tooltip-${rowIndex}`}
-                                        data-tooltip-content={item.details.replace(/<\/?p>/g, '')}
+                                        data-tooltip-content={item.details.replace(
+                                          /<\/?p>/g,
+                                          ''
+                                        )}
                                         data-tooltip-place="bottom"
                                         style={{
                                           marginLeft: '5px',
                                           border: 'none',
                                           background: 'none',
-                                          color: openTooltipIndex === rowIndex ? '#F82C2C' : '#3083e5',
+                                          color:
+                                            openTooltipIndex === rowIndex
+                                              ? '#F82C2C'
+                                              : '#3083e5',
                                           cursor: 'pointer',
                                         }}
                                       >
-                                        {openTooltipIndex === rowIndex ? 'Show less' : 'Show more'}
+                                        {openTooltipIndex === rowIndex
+                                          ? 'Show less'
+                                          : 'Show more'}
                                       </button>
                                       <ReactTooltip
                                         id={`tooltip-${rowIndex}`}
@@ -268,9 +286,8 @@ const DataTablle: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="data-not-found">
-          <DataNotFound />
-          <h3>You don't have any table permissions.</h3>
+        <div>
+          <DataNotFound title="You don't have any table permissions." />
           <br />
         </div>
       )}

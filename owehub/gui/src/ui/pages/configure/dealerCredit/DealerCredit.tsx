@@ -1,28 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { CiEdit } from 'react-icons/ci';
 import '../configure.css';
-import { RiDeleteBin5Line } from 'react-icons/ri';
-// import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { getDealerCredit } from '../../../../redux/apiActions/config/dealerCreditAction';
-import FilterModal from '../../../components/FilterModal/FilterModal';
-// import FilterCommission from "./FilterCommission";
-
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreateDealerCredit from './CreateDealerCredit';
-import Loading from '../../../components/loader/Loading';
 import { ROUTES } from '../../../../routes/routes';
 import { DealerCreditColumn } from '../../../../resources/static_data/configureHeaderData/dealerCreditColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
@@ -34,11 +21,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { dateFormat } from '../../../../utiles/formatDate';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 
 const DealerCredit: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -49,17 +32,18 @@ const DealerCredit: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, dbCount,isLoading } = useAppSelector((state) => state.dealerCredit);
-  const {isSuccess} = useAppSelector(state=>state.dealerCredit)
+  const { data, dbCount, isLoading } = useAppSelector(
+    (state) => state.dealerCredit
+  );
+  const { isSuccess } = useAppSelector((state) => state.dealerCredit);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editData, setEditData] =
-    useState<CommissionModel | null>(null);
+  const [editData, setEditData] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [refresh,setRefresh] = useState(1);
+  const [refresh, setRefresh] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -72,7 +56,7 @@ const DealerCredit: React.FC = () => {
       filters,
     };
     dispatch(getDealerCredit(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,isSuccess,refresh]);
+  }, [dispatch, currentPage, viewArchived, filters, isSuccess, refresh]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -105,8 +89,6 @@ const DealerCredit: React.FC = () => {
     setEditData(dealerData);
     handleOpen();
   };
-
-
 
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -172,7 +154,7 @@ const DealerCredit: React.FC = () => {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
           // If API call is successful, refetch commissions
-          setRefresh(prev=>prev+1)
+          setRefresh((prev) => prev + 1);
 
           setSelectAllChecked(false);
           setSelectedRows(new Set());
@@ -205,7 +187,7 @@ const DealerCredit: React.FC = () => {
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
-        setRefresh(prev=>prev+1)
+        setRefresh((prev) => prev + 1);
 
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -220,7 +202,7 @@ const DealerCredit: React.FC = () => {
     setSelectedRows(new Set());
     setSelectAllChecked(false);
   };
-  console.log(data, "data")
+  const notAllowed = selectedRows.size>1
   return (
     <div className="comm">
       <Breadcrumb
@@ -242,7 +224,7 @@ const DealerCredit: React.FC = () => {
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
@@ -313,23 +295,21 @@ const DealerCredit: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {
-                isLoading?
+              {isLoading ? (
                 <tr>
-                <td colSpan={DealerCreditColumn.length}>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <MicroLoader />
-                  </div>
-                </td>
-              </tr>
-              
-              :currentPageData?.length > 0 ? (
+                  <td colSpan={DealerCreditColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -349,51 +329,46 @@ const DealerCredit: React.FC = () => {
                       </div>
                     </td>
 
-                    <td>{dateFormat(el.date)}</td>
-                    <td>{el.exact_amount}</td>
-                    <td>{el.per_kw_amount}</td>
-                    <td>{el.approved_by}</td>
-                    <td>{el.notes}</td>
-                    <td>{el.total_amount}</td>
-                    <td>{el.sys_size}</td>
+                    <td>{dateFormat(el.date) || 'N/A'}</td>
+                    <td>{el.exact_amount || 'N/A'}</td>
+                    <td>{el.per_kw_amount || 'N/A'}</td>
+                    <td>{el.approved_by || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
+                    <td>{el.total_amount || 'N/A'}</td>
+                    <td>{el.sys_size || 'N/A'}</td>
 
-
-                    {viewArchived === true ? null : (
+                
                       <td>
-                        {selectedRows.size >= 2 ? null : (
+                       
                           <div className="action-icon">
                             <div
                               className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
+                              style={{ cursor:notAllowed?"not-allowed" : 'pointer' }}
+                              onClick={() => !notAllowed && handleArchiveClick(el.record_id)}
                             >
                               <img src={ICONS.ARCHIVE} alt="" />
                               {/* <span className="tooltiptext">Archive</span> */}
                             </div>
                             <div
                               className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleEditDealer(el)}
+                              style={{ cursor:notAllowed?"not-allowed" : 'pointer' }}
+                              onClick={() =>  !notAllowed && handleEditDealer(el)}
                             >
                               <img src={ICONS.editIcon} alt="" />
                               {/* <span className="tooltiptext">Edit</span> */}
                             </div>
                           </div>
-                        )}
+                        
                       </td>
-                    )}
+                    )
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
-
               )}
             </tbody>
           </table>
@@ -401,9 +376,8 @@ const DealerCredit: React.FC = () => {
         {currentPageData?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              Showing {startIndex} -{' '}
-              {endIndex > dbCount ? dbCount : endIndex} of {dbCount}{' '}
-              item
+              Showing {startIndex} - {endIndex > dbCount ? dbCount : endIndex}{' '}
+              of {dbCount} item
             </p>
 
             <Pagination

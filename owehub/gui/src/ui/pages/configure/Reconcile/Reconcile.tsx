@@ -2,24 +2,18 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchTimeLineSla } from '../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreateReconcile from './CreateReconcile';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ReconcileColumns } from '../../../../resources/static_data/configureHeaderData/ReconcileColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { fetchReconcile } from '../../../../redux/apiActions/config/reconcileAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
-import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
@@ -39,7 +33,6 @@ const Reconcile = () => {
     (state) => state.reconcile
   );
 
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -68,7 +61,6 @@ const Reconcile = () => {
     setCurrentPage(pageNumber);
   };
 
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const goToNextPage = () => {
     setCurrentPage(currentPage + 1);
   };
@@ -281,7 +273,7 @@ const Reconcile = () => {
                 {viewArchived === true ? null : (
                   <th>
                     <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
+                      {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                     </div>
                   </th>
                 )}
@@ -315,11 +307,11 @@ const Reconcile = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.customer}</td>
-                    <td>{el.partner_name}</td>
-                    <td>{el.state_name}</td>
+                    <td>{el.customer || 'N/A'}</td>
+                    <td>{el.partner_name || 'N/A'}</td>
+                    <td>{el.state_name || 'N/A'}</td>
                     <td>{el.sys_size}</td>
-                    <td>{el.status}</td>
+                    <td>{el.status || 'N/A'}</td>
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>{el.amount}</td>
@@ -353,10 +345,7 @@ const Reconcile = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

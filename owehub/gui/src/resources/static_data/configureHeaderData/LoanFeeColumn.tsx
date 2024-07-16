@@ -34,5 +34,10 @@ export const LoanFeesColumn: Column[] = [
     type: 'date',
     isCheckbox: false,
   },
-  { name: 'end_date', displayName: 'End Date', type: 'date', isCheckbox: false },
+  {
+    name: 'end_date',
+    displayName: 'End Date',
+    type: 'date',
+    isCheckbox: false,
+  },
 ];

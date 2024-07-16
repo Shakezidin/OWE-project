@@ -126,8 +126,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
           // localStorage.setItem('is_password_change_required', 'false');
           dispatch(logout());
           navigate('/login');
-          console.log("working");
-          
+          console.log('working');
         } else {
           showToast(result.message, 'error');
         }
@@ -206,9 +205,9 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
               }}
               maxLength={50}
             />
-             {error.newPassword && (
-                    <span className="error">{error.newPassword}</span>
-                  )}
+            {error.newPassword && (
+              <span className="error">{error.newPassword}</span>
+            )}
           </div>
           <div className="changepass-form-group">
             <Input
@@ -220,7 +219,10 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
                 if (!/\s/.test(inputValue)) {
                   setConfirmPassword(inputValue);
                   setError({
-                    confirmPassword: inputValue !== newPassword ? 'Confirm password does not match with New password' : '',
+                    confirmPassword:
+                      inputValue !== newPassword
+                        ? 'Confirm password does not match with New password'
+                        : '',
                   });
                 }
               }}
@@ -238,8 +240,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
               maxLength={50}
             />
             {error.confirmPassword && (
-                    <span className="error">{error.confirmPassword}</span>
-                  )}
+              <span className="error">{error.confirmPassword}</span>
+            )}
           </div>
           <button
             className="changepass-button"

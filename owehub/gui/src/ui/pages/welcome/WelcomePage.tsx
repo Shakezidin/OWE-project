@@ -17,15 +17,15 @@ import OweIcon from '../../../resources/assets/OWE.svg';
 import ContractorIcon from '../../../resources/assets/contractor.svg';
 import logo from '../../../resources/assets/logo.svg';
 import pandoIcon from '../../../resources/assets/pando.svg';
-import AboutUsBig from '../../../resources/assets/AboutUsBig.svg';
-import AboutUsSmall from '../../../resources/assets/AboutUsSmall.svg';
+import AboutUsBig from '../../../resources/assets/aboutUsBig.png';
+import AboutUsSmall from '../../../resources/assets/aboutUsSmall.png';
 import { useNavigate } from 'react-router-dom';
 import ImageLayout from '../../components/imageLayout/ImageLayout';
-import Grid_1 from '../../../resources/assets/grid_1.svg';
-import Grid_2 from '../../../resources/assets/grid_2.svg';
-import Grid_3 from '../../../resources/assets/grid_3.svg';
-import Grid_4 from '../../../resources/assets/grid_4.svg';
-import Grid_5 from '../../../resources/assets/grid_5.svg';
+import Grid_1 from '../../../resources/assets/grid_1.png';
+import Grid_2 from '../../../resources/assets/grid_2.png';
+import Grid_3 from '../../../resources/assets/grid_3.png';
+import Grid_4 from '../../../resources/assets/grid_4.png';
+import Grid_5 from '../../../resources/assets/grid_5.png';
 import TabBar from '../../components/tabBar/TabBar';
 import WhiteLogo from '../../../resources/assets/white-image-logo.svg';
 import { ReactComponent as Facebook } from '../../../resources/assets/facebook.svg';
@@ -95,13 +95,17 @@ export const WelcomePage = () => {
             <div className="welcome-main">
               <div className="welcome-left-view">
                 <h1 className="welcome-text-black mx-auto">
-                  Our 
-                  <span className="welcome-text-blue inline-block mx1">World</span>
-
-                            Revolves 
-                          <br />
-                            Around
-                  <span className="welcome-text-green inline-block mx1">Powering</span> Yours
+                  Our
+                  <span className="welcome-text-blue inline-block mx1">
+                    World
+                  </span>
+                  Revolves
+                  <br />
+                  Around
+                  <span className="welcome-text-green inline-block mx1">
+                    Powering
+                  </span>{' '}
+                  Yours
                   <span className="welcome-sub-text block">
                     Your Trusted Solar Expert
                   </span>

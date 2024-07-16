@@ -20,33 +20,33 @@ import (
 )
 
 type RepPay struct {
-	HomeOwner     string
-	CurrentStatus string
-	StatusDate    time.Time
-	UniqueId      string
-	OweContractor string
-	DBA           string
-	Type          string
-	Amount        float64
-	FinanceType   string
-	SysSize       float64
-	ContractTotal float64
-	LoanFee       float64
-	EPC           float64
-	Adders        float64
-	RR            float64
-	CommRate      float64
-	NetEPC        float64
-	Credit        float64
-	Rep2          string
-	NetComm       float64
-	DrawAmt       float64
-	AmtPaid       float64
-	Balance       float64
-	DealerCode    string
-	Subtotal      float64
-	MaxPerRep     float64
-	TotalPerRep   float64
+	HomeOwner     string    `json:"home_owner"`
+	CurrentStatus string    `json:"current_status"`
+	StatusDate    time.Time `json:"status_date"`
+	UniqueId      string    `json:"unique_id"`
+	OweContractor string    `json:"owe_contractor"`
+	DBA           string    `json:"dba"`
+	Type          string    `json:"type"`
+	Amount        float64   `json:"amount"`
+	FinanceType   string    `json:"finance_type"`
+	SysSize       float64   `json:"sys_size"`
+	ContractTotal float64   `json:"contract_total"`
+	LoanFee       float64   `json:"loan_fee"`
+	EPC           float64   `json:"epc"`
+	Adders        float64   `json:"adders"`
+	RR            float64   `json:"r_r"`
+	CommRate      float64   `json:"comm_rate"`
+	NetEPC        float64   `json:"net_epc"`
+	Credit        float64   `json:"credit"`
+	Rep2          string    `json:"rep2"`
+	NetComm       float64   `json:"net_comm"`
+	DrawAmt       float64   `json:"draw_amt"`
+	AmtPaid       float64   `json:"amt_paid"`
+	Balance       float64   `json:"balance"`
+	DealerCode    string    `json:"dealer_code"`
+	Subtotal      float64   `json:"subtotal"`
+	MaxPerRep     float64   `json:"max_per_rep"`
+	TotalPerRep   float64   `json:"total_per_rep"`
 }
 
 /******************************************************************************
@@ -130,11 +130,13 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	maxPerRepQuery := `SELECT 
 		owe_contractor, MAX(Amount) AS total_amount
 		FROM ` + db.ViewName_REP_PAY + `
+		WHERE Amount != 'NaN' 
 		GROUP BY owe_contractor;
 	`
 	totalPerRepQuery := `SELECT 
 		owe_contractor, SUM(Amount) AS total_amount
 		FROM ` + db.ViewName_REP_PAY + `
+		WHERE Amount != 'NaN' 
 		GROUP BY owe_contractor;
 	`
 
@@ -178,78 +180,190 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range Finaldata {
 		var repPay RepPay
 		skip := false
-
 		for column, value := range item {
 			switch column {
 			case "home_owner":
-				repPay.HomeOwner = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.HomeOwner = v
+				} else {
+					repPay.HomeOwner = ""
+				}
 			case "current_status":
-				repPay.CurrentStatus = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.CurrentStatus = v
+				} else {
+					repPay.CurrentStatus = ""
+				}
 			case "status_date":
-				repPay.StatusDate = value.(time.Time)
+				if v, ok := value.(time.Time); ok {
+					repPay.StatusDate = v
+				} else {
+					repPay.StatusDate = time.Time{}
+				}
 			case "unique_id":
-				repPay.UniqueId = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.UniqueId = v
+				} else {
+					repPay.UniqueId = ""
+				}
 			case "owe_contractor":
-				repPay.OweContractor = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.OweContractor = v
+				} else {
+					repPay.OweContractor = ""
+				}
 			case "DBA":
-				repPay.DBA = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.DBA = v
+				} else {
+					repPay.DBA = ""
+				}
 			case "type":
-				repPay.Type = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.Type = v
+				} else {
+					repPay.Type = ""
+				}
 			case "Amount":
-				repPay.Amount = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.Amount = v
+				} else {
+					repPay.Amount = 0
+				}
 			case "finance_type":
-				repPay.FinanceType = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.FinanceType = v
+				} else {
+					repPay.FinanceType = ""
+				}
 			case "sys_size":
-				repPay.SysSize = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.SysSize = v
+				} else {
+					repPay.SysSize = 0
+				}
 			case "contract_total":
 				repPay.ContractTotal = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.ContractTotal = v
+				} else {
+					repPay.ContractTotal = 0
+				}
 			case "loan_fee":
-				repPay.LoanFee = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.LoanFee = v
+				} else {
+					repPay.LoanFee = 0
+				}
 			case "epc":
-				repPay.EPC = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.EPC = v
+				} else {
+					repPay.EPC = 0
+				}
 			case "adders":
-				repPay.Adders = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.Adders = v
+				} else {
+					repPay.Adders = 0
+				}
 			case "r_r":
-				repPay.RR = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.RR = v
+				} else {
+					repPay.RR = 0
+				}
 			case "comm_rate":
-				repPay.CommRate = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.CommRate = v
+				} else {
+					repPay.CommRate = 0
+				}
 			case "net_epc":
-				repPay.NetEPC = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.NetEPC = v
+				} else {
+					repPay.NetEPC = 0
+				}
 			case "credit":
-				repPay.Credit = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.Credit = v
+				} else {
+					repPay.Credit = 0
+				}
 			case "rep_2":
-				repPay.Rep2 = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.Rep2 = v
+				} else {
+					repPay.Rep2 = ""
+				}
 			case "net_comm":
-				repPay.NetComm = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.NetComm = v
+				} else {
+					repPay.NetComm = 0
+				}
 			case "draw_amt":
-				repPay.DrawAmt = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.DrawAmt = v
+				} else {
+					repPay.DrawAmt = 0
+				}
 			case "amt_paid":
-				repPay.AmtPaid = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.AmtPaid = v
+				} else {
+					repPay.AmtPaid = 0
+				}
 			case "balance":
-				repPay.Balance = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.Balance = v
+				} else {
+					repPay.Balance = 0
+				}
 			case "dealer_code":
-				repPay.DealerCode = value.(string)
+				if v, ok := value.(string); ok {
+					repPay.DealerCode = v
+				} else {
+					repPay.DealerCode = ""
+				}
 			case "subtotal":
-				repPay.Subtotal = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.Subtotal = v
+				} else {
+					repPay.Subtotal = 0
+				}
 			case "max_per_rep":
 				if totalAmount, ok := oweContractorMap[repPay.OweContractor]; ok && dataReq.ReportType == "ACTIVE+" {
 					if totalAmount > 0.01 {
-						repPay.MaxPerRep = value.(float64)
+						if v, ok := value.(float64); ok {
+							repPay.MaxPerRep = v
+						} else {
+							skip = true
+						}
 					} else {
 						skip = true
 					}
 				} else {
-					repPay.MaxPerRep = value.(float64)
+					if v, ok := value.(float64); ok {
+						repPay.MaxPerRep = v
+					}
 				}
 			case "total_per_rep":
 				if totalAmount, ok := oweContractorMap[repPay.OweContractor]; ok && dataReq.ReportType == "STANDARD" {
 					if totalAmount > 0.01 {
-						repPay.TotalPerRep = value.(float64)
+						if v, ok := value.(float64); ok {
+							repPay.TotalPerRep = v
+						} else {
+							skip = true
+						}
 					} else {
 						skip = true
 					}
 				} else {
-					repPay.TotalPerRep = value.(float64)
+					if v, ok := value.(float64); ok {
+						repPay.TotalPerRep = v
+					}
 				}
 			}
 		}
@@ -260,7 +374,6 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	paginatedList := paginate(repPayList, dataReq.PageNumber, dataReq.PageSize)
-
 	RecordCount = int64(len(repPayList))
 	response := Response{
 		Message:     "Rep Pay Data",
@@ -296,23 +409,23 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	filtersBuilder.WriteString(" WHERE")
+	filtersBuilder.WriteString(" WHERE net_comm != 'NaN' AND balance != 'NaN' AND")
 	if reportFilter {
 		switch dataFilter.ReportType {
 		case "ALL":
-			filtersBuilder.WriteString(" rep.unique_id IS NOT NULL")
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.unique_id IS NOT NULL")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "STANDARD":
-			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "ACTIVE+":
-			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "ACTIVE":
-			filtersBuilder.WriteString(" rep.rep_status = 'Active'")
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status = 'Active'")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		case "INACTIVE":
-			filtersBuilder.WriteString(" rep.rep_status != 'Active'")
+			filtersBuilder.WriteString(" rep.status_date IS NOT NULL AND rep.rep_status != 'Active'")
 			// whereEleList = append(whereEleList, dataFilter.PayRollDate)
 		}
 	}
@@ -379,13 +492,13 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "owe_contractor":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.owe_contractor) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "DBA":
+		case "dba":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.DBA) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
 		case "type":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.type) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "Amount":
+		case "amount":
 			filtersBuilder.WriteString(fmt.Sprintf(" rep.Amount %s $%d", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
 		case "finance_type":
@@ -415,7 +528,7 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "credit":
 			filtersBuilder.WriteString(fmt.Sprintf(" rep.credit %s $%d", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "rep_2":
+		case "rep2":
 			filtersBuilder.WriteString(fmt.Sprintf(" LOWER(rep.rep_2) %s LOWER($%d)", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
 		case "net_comm":
@@ -436,12 +549,12 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "subtotal":
 			filtersBuilder.WriteString(fmt.Sprintf(" rep.subtotal %s $%d", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		case "max_per_rep":
-			filtersBuilder.WriteString(fmt.Sprintf(" rep.max_per_rep %s $%d", operator, len(whereEleList)+1))
-			whereEleList = append(whereEleList, value)
-		case "total_per_rep":
-			filtersBuilder.WriteString(fmt.Sprintf(" rep.total_per_rep %s $%d", operator, len(whereEleList)+1))
-			whereEleList = append(whereEleList, value)
+			// case "max_per_rep":
+			// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.max_per_rep %s $%d", operator, len(whereEleList)+1))
+			// 	whereEleList = append(whereEleList, value)
+			// case "total_per_rep":
+			// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.total_per_rep %s $%d", operator, len(whereEleList)+1))
+			// 	whereEleList = append(whereEleList, value)
 		}
 	}
 

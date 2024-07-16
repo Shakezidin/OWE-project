@@ -178,10 +178,8 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.partner}
                     </span>
@@ -207,12 +205,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {"Sale Type is required"}
+                      {'Sale Type is required'}
                     </span>
                   )}
                 </div>
@@ -230,12 +226,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {"PTO Pay is required"}
+                      {'PTO Pay is required'}
                     </span>
                   )}
                 </div>
@@ -255,12 +249,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {"Red Line is required"}
+                      {'Red Line is required'}
                     </span>
                   )}
                 </div>
@@ -278,12 +270,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {"Permit Max is required"}
+                      {'Permit Max is required'}
                     </span>
                   )}
                 </div>
@@ -310,10 +300,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.state}
                     </span>
@@ -336,12 +324,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {"Permit Pay is required"}
+                      {'Permit Pay is required'}
                     </span>
                   )}
                 </div>
@@ -360,12 +346,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {"Install Pay is required"}
+                      {'Install Pay is required'}
                     </span>
                   )}
                 </div>
@@ -391,10 +375,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.installer}
                     </span>
@@ -417,12 +399,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
-                      {"Calc Date is required"}
+                      {'Calc Date is required'}
                     </span>
                   )}
                 </div>
@@ -443,10 +423,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.start.replace('Start', 'Start Date')}
                     </span>
@@ -471,10 +449,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.end.replace('End', 'End Date')}
                     </span>

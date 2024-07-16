@@ -1,13 +1,28 @@
-FROM node:14-alpine
+FROM node:16.3.0-alpine AS prod
 
-RUN mkdir -p /root/gui
+WORKDIR /app
 
-ADD gui /root/gui
-RUN ls -lA /root/gui
+COPY package.json /app
 
-WORKDIR /root/gui
-EXPOSE 3000
-RUN chown -R root /root/gui
-RUN npm i
+RUN npm install
 
-CMD ["npm", "start"]
+COPY . /app
+
+RUN node --max-old-space-size=8192 /usr/local/bin/npm run build
+
+
+FROM nginx:alpine
+
+WORKDIR /usr/local/bin
+
+COPY --from=prod /app/build /usr/share/nginx/html
+
+COPY generate-config.sh .
+
+COPY custom-nginx.template /etc/nginx/conf.d/
+
+RUN chmod +x generate-config.sh
+
+EXPOSE 80
+
+ENTRYPOINT [ "/bin/sh", "generate-config.sh"]

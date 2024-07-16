@@ -8,18 +8,14 @@ import CreateMarketingFees from './CreateMarketingFees';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { MarketingFeeModel } from '../../../../core/models/configuration/create/MarketingFeeModel';
-
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
 import { MarketingFeesColumn } from '../../../../resources/static_data/configureHeaderData/MarketingFeeColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import FilterModal from '../../../components/FilterModal/FilterModal';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import {
   errorSwal,
@@ -29,10 +25,10 @@ import {
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
@@ -114,6 +110,8 @@ const MarketingFees: React.FC = () => {
         return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
+      } else if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+        return sortDirection === 'asc' ? (aValue ? -1 : 1) : bValue ? -1 : 1;
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
@@ -150,7 +148,7 @@ const MarketingFees: React.FC = () => {
           archived: viewArchived,
         };
 
-        const res = await postCaller("update_marketingfee_archive", newValue);
+        const res = await postCaller('update_marketingfee_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchmarketingFees(pageNumber));
@@ -181,13 +179,12 @@ const MarketingFees: React.FC = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         filters,
-        archived: viewArchived 
-
+        archived: viewArchived,
       };
-      const res = await postCaller("update_marketingfee_archive", newValue);
+      const res = await postCaller('update_marketingfee_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchmarketingFees(pageNumber));
-        setSelectedRows(new Set())
+        setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -205,8 +202,8 @@ const MarketingFees: React.FC = () => {
   };
 
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   return (
@@ -226,19 +223,30 @@ const MarketingFees: React.FC = () => {
           onPressArchive={() => handleArchiveAllClick()}
           viewArchive={viewArchived}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
-          onpressExport={() => {}}
+          onPressImport={() => { }}
+          onpressExport={() => { }}
           onpressAddNew={() => handleAddMarketing()}
         />
-        {filterOPen && (
+
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={MarketingFeesColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+        {/* {filterOPen && (
           <FilterModal
+
             handleClose={filterClose}
             columns={MarketingFeesColumn}
             page_number={currentPage}
             fetchFunction={fetchFunction}
             page_size={itemsPerPage}
           />
-        )}
+        )} */}
         {open && (
           <CreateMarketingFees
             marketingData={editedMarketing}
@@ -274,13 +282,14 @@ const MarketingFees: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                
-                  <th>
-                 {(!viewArchived && selectedRows.size<2) &&   <div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-               
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
 
@@ -295,7 +304,7 @@ const MarketingFees: React.FC = () => {
                 </tr>
               ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
-                  <tr key={i} className={ selectedRows.has(i)? `selected`:""}>
+                  <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
@@ -312,22 +321,16 @@ const MarketingFees: React.FC = () => {
                         {el.source}
                       </div>
                     </td>
-                    <td>{el.dba?.trim?.()||"N/A"}</td>
-                    <td>{el.state ||"N/A"}</td>
-                    <td>{el.fee_rate ||"N/A"}</td>
+                    <td>{el.dba?.trim?.() || 'N/A'}</td>
+                    <td>{el.state || 'N/A'}</td>
+                    <td>{el.fee_rate || 'N/A'}</td>
+                    <td>{el.chg_dlr === true ? 'Yes' : el.chg_dlr === false ? 'No' : 'N/A'}</td>
+                    <td>{el.pay_src === true ? 'Yes' : el.pay_src === false ? 'No' : 'N/A'}</td>
+                    <td>{el.description?.trim?.() || 'N/A'}</td>
+                    <td>{dateFormat(el.start_date.trim())}</td>
+                    <td>{dateFormat(el.end_date.trim())} </td>
                     <td>
-                      {el.chg_dlr?.trim?.() ||"N/A"}
-                      {/* <div className="">
-                      <img src={img} alt="" />
-                    </div> */}
-                    </td>
-                    <td>{el.pay_src?.trim?.() ||"N/A"}</td>
-                    <td>{el.description?.trim?.() ||"N/A"}</td>
-                    <td>{dateFormat(el.start_date)}</td>
-                    <td>{dateFormat(el.end_date)} </td>
-                    <td>
-                      
-                    {!viewArchived && selectedRows.size<2 && (
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className="action-archive"
@@ -346,18 +349,14 @@ const MarketingFees: React.FC = () => {
                             {/* <span className="tooltiptext">Edit</span> */}
                           </div>
                         </div>
-                      
-                    )}
-                      </td>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -373,7 +372,7 @@ const MarketingFees: React.FC = () => {
 
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} 
+              totalPages={totalPages}
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}

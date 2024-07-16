@@ -46,7 +46,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
   });
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isPending,setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false);
   const tableData = {
     tableNames: ['partners', 'states', 'installers', 'rep_type', 'sale_type'],
   };
@@ -154,7 +154,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
       return;
     }
     try {
-      setIsPending(true)
+      setIsPending(true);
       dispatch(updateForm(createCommission));
       if (createCommission.record_id) {
         const res = await postCaller(
@@ -164,11 +164,11 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
         if (res.status === HTTP_STATUS.OK) {
           toast.success(res.message);
           handleClose();
-          setIsPending(false)
+          setIsPending(false);
           dispatch(fetchCommissions(page));
         } else {
           toast.error(res.message);
-          setIsPending(false)
+          setIsPending(false);
         }
       } else {
         const { record_id, ...cleanedFormData } = createCommission;
@@ -179,11 +179,11 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
         if (res.status === HTTP_STATUS.OK) {
           toast.success(res.message);
           handleClose();
-          setIsPending(false)
+          setIsPending(false);
           dispatch(fetchCommissions(page));
         } else {
           toast.error(res.message);
-          setIsPending(false)
+          setIsPending(false);
         }
       }
       // dispatch(resetForm());

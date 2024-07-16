@@ -38,6 +38,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   setRefetch,
 }) => {
   const dispatch = useDispatch();
+  console.log(timeLineSlaData, 'f g data');
   const [createTimeLine, setCreateTimeLine] = useState<TimeLineSlaModel>({
     record_id: timeLineSlaData ? timeLineSlaData?.record_id : 0,
     type_m2m: timeLineSlaData ? timeLineSlaData?.type_m2m : '',
@@ -67,7 +68,9 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
         continue;
       }
       if (!createTimeLine[key as keyof IError]) {
-        error[key as keyof IError] = firstCapitalize(`${key.replaceAll("_"," ")} is required`);
+        error[key as keyof IError] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -185,10 +188,8 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.type_m2m}
                     </span>
@@ -207,10 +208,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.state}
                     </span>
@@ -229,10 +228,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.days}
                     </span>
@@ -254,10 +251,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.start_date.replace('start_date', 'start date')}
                     </span>
@@ -284,10 +279,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>

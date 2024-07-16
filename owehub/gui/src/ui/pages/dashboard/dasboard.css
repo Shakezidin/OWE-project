@@ -108,7 +108,7 @@
   flex-direction: column;
   justify-content: center;
   border-radius: 12px;
-  background: rgba(255, 255, 255, .3);
+  background: rgba(255, 255, 255, 0.3);
 }
 .dashboard-payroll {
   display: flex;
@@ -138,7 +138,7 @@
   display: flex;
   height: 47px;
   background-color: #ffffff;
-  padding: 0 3px 0 3px;   /*here change for reduce left space ***************/
+  padding: 0 3px 0 3px; /*here change for reduce left space ***************/
   gap: 0px;
   align-items: center;
   border-radius: 8px;
@@ -199,7 +199,7 @@
   justify-content: center;
 }
 .active-filter-line {
-  background-color: #377CF6;
+  background-color: #377cf6;
 }
 .active-filter-line img {
   fill: white;
@@ -536,7 +536,7 @@
   font-weight: 900;
 }
 
-.white-back{
+.white-back {
   background-color: white;
   padding-left: 13px;
   padding-right: 13px;
@@ -545,89 +545,85 @@
   border-radius: 18px;
 }
 
-
-
 @media (max-width: 1024px) {
-  .total-commisstion{
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   border-radius: 16px;
-   padding: 1.2rem;
-   width: 32.2%;
-   height: 132px;
-   margin-top: 5px;
-   margin-bottom: 5px;
-   transition: box-shadow 0.3s ease;
+  .total-commisstion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 16px;
+    padding: 1.2rem;
+    width: 32.2%;
+    height: 132px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    transition: box-shadow 0.3s ease;
   }
   .total-section h4 {
-   font-size: 24px;
-   font-weight: 500;
-   line-height: 28px;
-   text-align: left;
-   color: #FFFFFF;
-   margin-right: 7px;
- }
- .total-section p {
-   font-size: 12px;
-   font-weight: 400;
-   line-height: 28px;
-   text-align: left;
-   color: #FFFFFF;
-   margin-right: 7px;
- }
- .teamImg{
-   width: 54px;
-   height: 54px;
-   display: flex;
-   align-items: center;
-   flex-direction: column;
-   justify-content: center;
-   border-radius: 12px;
-   background: rgba(255, 255, 255, .3);
- }
- .calender-container {
-  position: absolute;
-  z-index: 999;
-  margin-left: -73px;
-  top: 130%;
-  background-color: #fff;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 28px;
+    text-align: left;
+    color: #ffffff;
+    margin-right: 7px;
+  }
+  .total-section p {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 28px;
+    text-align: left;
+    color: #ffffff;
+    margin-right: 7px;
+  }
+  .teamImg {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .calender-container {
+    position: absolute;
+    z-index: 999;
+    margin-left: -73px;
+    top: 130%;
+    background-color: #fff;
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-down-break {
+    background-color: #fefefe;
+    border-radius: 16px;
+    width: 40%;
+    max-width: 900px;
+    height: 427px;
+    overflow: hidden;
+  }
+  .help-modal {
+    position: fixed;
+    background-color: #fefefe;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 750px;
+    height: 412px;
+  }
+  .help-section-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1rem 0 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: #0493ce;
+    overflow-x: hidden;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+  }
 }
 
-.modal-down-break {
-  background-color: #fefefe;
-  border-radius: 16px;
-  width: 40%;
-  max-width: 900px;
-  height: 427px;
-  overflow: hidden;
-}
-.help-modal {
-  position: fixed;
-  background-color: #fefefe;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 750px;
-  height: 412px;
-}
-.help-section-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 1rem 0 1rem;
-  border-bottom: 1px solid var(--border-color);
-  background-color: #0493ce;
-  overflow-x: hidden;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-}
- 
- }
-
-
- /*Responsive*/
- @media screen and (max-width: 1024px) {
-  .children-container{
+/*Responsive*/
+@media screen and (max-width: 1024px) {
+  .children-container {
     padding: 0.5rem 1rem;
   }
- }
+}

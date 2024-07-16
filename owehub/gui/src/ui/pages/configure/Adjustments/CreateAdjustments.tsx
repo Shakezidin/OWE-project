@@ -55,8 +55,9 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
     const error: typeof newFormData = {} as typeof newFormData;
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] =
-          firstCapitalize(`${key.replaceAll("_"," ")} is required`);
+        error[key as keyof typeof newFormData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -148,12 +149,10 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
-                      {"Unique Id is required"}
+                      {'Unique Id is required'}
                     </span>
                   )}
                 </div>
@@ -170,10 +169,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.date}
                     </span>
@@ -199,10 +196,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.amount}
                     </span>
@@ -224,10 +219,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.notes}
                     </span>

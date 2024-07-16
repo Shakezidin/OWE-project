@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './ardashboard.css';
 import { ICONS } from '../../../icons/Icons';
-import {
-  comissionValueData,
-  payRollData,
-} from '../../../../resources/static_data/StaticData';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import ArDashBoardTable, { Commissioncolumns } from './artable';
 import ArDropdownWithCheckboxes from './Dropdown';
 import 'react-date-range/dist/styles.css'; // main style file
@@ -24,9 +19,6 @@ export const ARDashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const [additionalFilter, setAdditionalFilter] = useState<FilterModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const filterClose = () => {
-    setFilterModal(false);
-  };
   const options = [
     { value: 'All', label: 'All', key: 'all' },
     { value: 'Shaky', label: 'Shaky', key: 'shaky' },
@@ -36,6 +28,13 @@ export const ARDashboardPage: React.FC = () => {
     { value: 'PTO', label: 'PTO', key: 'pto' },
     { value: 'SOLD', label: 'SOLD', key: 'sold' },
   ];
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    options.map((o) => o.value)
+  );
+  const filterClose = () => {
+    setFilterModal(false);
+  };
+
 
   const options1 = [
     { value: 'ALL', label: 'All' },
@@ -44,30 +43,28 @@ export const ARDashboardPage: React.FC = () => {
   ];
   const options2 = [
     { value: 'ALL', label: 'All' },
-    { value: 'N/A', label: 'N/A' },
+
   ];
   const options3 = [
-    { value: 'ALL', label: 'All' },
     { value: 'Partner', label: 'Partner' },
-    { value: 'Installer', label: 'Installer' },
-    { value: 'Type', label: 'Type' },
-    { value: 'Service', label: 'Service' },
-    { value: 'Home Owner', label: 'Home Owner' },
-    { value: 'Street Address', label: 'Street Address' },
-    { value: 'City', label: 'City' },
-    { value: 'ST', label: 'State' },
-    { value: 'Zip', label: 'Zip' },
-    { value: 'KW', label: 'KW' },
-    { value: 'Contract Date', label: 'Contract Date' },
-    { value: 'Install date', label: 'Install date' },
-    { value: 'Current Status', label: 'Current Status' },
-    { value: 'Status date', label: 'Status date' },
-    { value: 'Contract', label: 'Contract' },
-    { value: 'AR Total', label: 'AR Total' },
-    { value: 'Amt paid', label: 'Amt paid' },
-    { value: 'Current Due', label: 'Current Due' },
-    { value: 'Est Pipeline', label: 'Est Pipeline' },
-    { value: 'Subtotal', label: 'Subtotal' },
+    { value: 'installer', label: 'Installer' },
+    { value: 'type', label: 'Type' },
+    { value: 'unique_id', label: 'Service' },
+    { value: 'home_owner', label: 'Home Owner' },
+    { value: 'address', label: 'Street Address' },
+    { value: 'city', label: 'City' },
+    { value: 'state', label: 'State' },
+    { value: 'zip', label: 'Zip' },
+    { value: 'system_size', label: 'KW' },
+    { value: 'contract_date', label: 'Contract Date' },
+    { value: 'install_date', label: 'Install date' },
+    { value: 'current_status', label: 'Current Status' },
+    { value: 'status_date', label: 'Status date' },
+    { value: 'contract_calc', label: 'Contract' },
+    { value: 'owe_ar', label: 'AR Total' },
+    { value: 'amount_paid', label: 'Amt paid' },
+    { value: 'current_due', label: 'Current Due' },
+    { value: 'balance', label: 'Est Pipeline' },
   ];
 
   // used for close date click outside anywhere
@@ -109,7 +106,11 @@ export const ARDashboardPage: React.FC = () => {
 
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
+    resetPagination()
   };
+  const resetPagination = () =>{
+    setCurrentPage(1);
+  }
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
     setAdditionalFilter(req.filters);
@@ -124,7 +125,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '128px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#63ACA3',flexShrink:0 }}
+                  style={{ backgroundColor: '#63ACA3', flexShrink: 0 }}
                 >
                   <img src={ICONS.report1} alt="" />
                 </div>
@@ -144,7 +145,9 @@ export const ARDashboardPage: React.FC = () => {
 
                   <Select
                     options={options1}
-                    value={options1.find((opt)=>opt.value===filters.report_type)}
+                    value={options1.find(
+                      (opt) => opt.value === filters.report_type
+                    )}
                     onChange={(value) =>
                       handleChange('report_type', value?.value!)
                     }
@@ -224,7 +227,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '134px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#C470C7',flexShrink:0 }}
+                  style={{ backgroundColor: '#C470C7', flexShrink: 0 }}
                 >
                   <img src={ICONS.user} alt="" />
                 </div>
@@ -243,7 +246,9 @@ export const ARDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={options2}
-                    value={options1.find((opt)=>opt.value===filters.sale_partner)}
+                    value={options1.find(
+                      (opt) => opt.value === filters.sale_partner
+                    )}
                     onChange={(value) =>
                       handleChange('sale_partner', value?.value!)
                     }
@@ -325,7 +330,7 @@ export const ARDashboardPage: React.FC = () => {
               <div className="ar-dash-head-input" style={{ width: '115px' }}>
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#8E81E0',flexShrink:0 }}
+                  style={{ backgroundColor: '#8E81E0', flexShrink: 0 }}
                 >
                   <img src={ICONS.vector} alt="" />
                 </div>
@@ -336,14 +341,14 @@ export const ARDashboardPage: React.FC = () => {
                   >
                     Includes
                   </label>
-                  <ArDropdownWithCheckboxes options={options} />
+                  <ArDropdownWithCheckboxes resetPagination={resetPagination} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} options={options} />
                 </div>
               </div>
 
               <div className="ar-dash-head-input">
                 <div
                   className="rep-drop_label"
-                  style={{ backgroundColor: '#EE824D',flexShrink:0, }}
+                  style={{ backgroundColor: '#EE824D', flexShrink: 0 }}
                 >
                   <img src={ICONS.element} alt="" />
                 </div>
@@ -358,11 +363,13 @@ export const ARDashboardPage: React.FC = () => {
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    Elements
+                    Sort By
                   </label>
                   <Select
                     options={options3}
-                    value={options3.find((opt)=>opt.value===filters.sort_by)}
+                    value={options3.find(
+                      (opt) => opt.value === filters.sort_by
+                    )}
                     onChange={(value) => handleChange('sort_by', value?.value!)}
                     styles={{
                       control: (baseStyles, state) => ({
@@ -515,6 +522,7 @@ export const ARDashboardPage: React.FC = () => {
           {active === 0 && (
             <ArDashBoardTable
               additionalFilter={additionalFilter}
+              includedFilter={selectedOptions}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />

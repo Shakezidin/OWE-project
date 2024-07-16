@@ -37,19 +37,19 @@ export const PayScheduleColumns: Column[] = [
   },
   {
     name: 'rep_draw',
-    displayName: 'rep_draw',
+    displayName: 'Rep Draw',
     type: 'number',
     isCheckbox: false,
   },
   {
     name: 'rep_draw_max',
-    displayName: 'rep_draw_max',
+    displayName: 'Rep Draw Max',
     type: 'number',
     isCheckbox: false,
   },
   {
     name: 'rep_pay',
-    displayName: 'rep_pay',
+    displayName: 'Rep Pay',
     type: 'string',
     isCheckbox: false,
   },
@@ -72,6 +72,4 @@ export const PayScheduleColumns: Column[] = [
     type: 'date',
     isCheckbox: false,
   },
-
-
 ];

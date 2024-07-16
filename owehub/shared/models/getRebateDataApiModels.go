@@ -12,7 +12,7 @@ type GetRebateData struct {
 	CustomerVerf       string  `json:"customer_verf"`
 	TypeRdMktg         string  `json:"type_rd_mktg"`
 	Item               string  `json:"item"`
-	Amount             string  `json:"amount"`
+	Amount             float64 `json:"amount"`
 	RepDollDivbyPer    float64 `json:"rep_doll_divby_per"`
 	Notes              string  `json:"notes"`
 	Type               string  `json:"type"`

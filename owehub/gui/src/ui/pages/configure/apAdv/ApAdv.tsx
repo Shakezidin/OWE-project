@@ -5,19 +5,14 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApPdaColumn } from '../../../../resources/static_data/configureHeaderData/apPdaColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { fetchApAdv } from '../../../../redux/apiActions/config/apAdvAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import CreateApAdv from './createApAdv';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -36,7 +31,6 @@ const ApAdv = () => {
   const { data, isLoading, totalcount } = useAppSelector(
     (state) => state.apAdvSlice
   );
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -73,7 +67,7 @@ const ApAdv = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-   
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -206,7 +200,7 @@ const ApAdv = () => {
   //   return <div>Loading...</div>;
   // }
 
-  console.log(data, "data");
+  console.log(data, 'data');
 
   return (
     <div className="comm">
@@ -274,13 +268,14 @@ const ApAdv = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-              
-                  <th>
-                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-              
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -311,14 +306,14 @@ const ApAdv = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    
-                    <td>{el.payee ||"N/A"}</td>
-                    <td>{el.amount_ovrd ||"N/A"}</td>
-                    <td>{el.approved_by  ||"N/A"}</td>
-                    <td>{dateFormat(el.date) ||"N/A"}</td>
-                    <td>{el.customer  ||"N/A"}</td>
-                    <td>{el.dealer  ||"N/A"}</td>
-                    <td>{el.notes  ||"N/A"}</td>
+
+                    <td>{el.payee || 'N/A'}</td>
+                    <td>{el.amount_ovrd || 'N/A'}</td>
+                    <td>{el.approved_by || 'N/A'}</td>
+                    <td>{dateFormat(el.date) || 'N/A'}</td>
+                    <td>{el.customer || 'N/A'}</td>
+                    <td>{el.dealer || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -344,10 +339,7 @@ const ApAdv = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={ApPdaColumn.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -357,11 +349,11 @@ const ApAdv = () => {
         <div className="page-heading-container">
           {data?.length > 0 ? (
             <>
-                 <p className="page-heading">
-              Showing {startIndex} -{' '}
-              {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
-              item
-            </p>
+              <p className="page-heading">
+                Showing {startIndex} -{' '}
+                {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
+                item
+              </p>
 
               <Pagination
                 currentPage={currentPage}

@@ -32,7 +32,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
     (state) => state.addercredit
   );
   const [createAdderCreditData, setAdderCreditData] = useState({
-    unique_id: editData?.unique_id || '',
     pay_scale: editData?.pay_scale || '',
     type: editData?.type || '',
     min_rate: editData?.min_rate || '',
@@ -45,8 +44,9 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
     const error: TError = {} as TError;
     for (const key in createAdderCreditData) {
       if (!createAdderCreditData[key as keyof typeof createAdderCreditData]) {
-        error[key as keyof typeof createAdderCreditData] =
-          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof createAdderCreditData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -59,7 +59,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
       if (editMode) {
         dispatch(
           updateAdderCredit({
-            unique_id: createAdderCreditData.unique_id,
             pay_scale: createAdderCreditData.pay_scale,
             type: createAdderCreditData.type,
             max_rate: parseFloat(createAdderCreditData.max_rate), // Parsing string to integer
@@ -70,7 +69,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
       } else {
         dispatch(
           createAdderCredit({
-            unique_id: createAdderCreditData.unique_id,
             pay_scale: createAdderCreditData.pay_scale,
             type: createAdderCreditData.type,
             max_rate: parseFloat(createAdderCreditData.max_rate), // Parsing string to integer
@@ -127,29 +125,6 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Unique Id"
-                    value={createAdderCreditData.unique_id}
-                    name="unique_id"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-
-                  {errors?.unique_id && (
-                    <span
-                      style={{
-                        display: 'block',
-                  
-                       
-                      }}
-className="error"
-                    >
-                      {errors.unique_id}
-                    </span>
-                  )}
-                </div>
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
                     label="Pay Scale"
                     value={createAdderCreditData.pay_scale}
                     name="pay_scale"
@@ -161,10 +136,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.pay_scale}
                     </span>
@@ -184,10 +157,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.type}
                     </span>
@@ -207,10 +178,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.max_rate}
                     </span>
@@ -230,10 +199,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.min_rate}
                     </span>

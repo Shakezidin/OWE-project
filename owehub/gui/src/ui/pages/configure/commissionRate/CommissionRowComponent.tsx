@@ -68,13 +68,14 @@ const CommissionRowComponent: React.FC<rowProps> = ({
                 onClick={() => handleSort(item.name)}
               />
             ))}
-    
-              <th>
-              {(!viewArchived && selectedRows.size<2) &&  <div className="action-header">
+
+            <th>
+              {!viewArchived && selectedRows.size < 2 && (
+                <div className="action-header">
                   <p>Action</p>
-                </div>}
-              </th>
-        
+                </div>
+              )}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -150,10 +151,7 @@ const CommissionRowComponent: React.FC<rowProps> = ({
           ) : (
             <tr style={{ border: 0 }}>
               <td colSpan={10}>
-                <div className="data-not-found">
-                  <DataNotFound />
-                  <h3>Data Not Found</h3>
-                </div>
+                <DataNotFound />
               </td>
             </tr>
           )}

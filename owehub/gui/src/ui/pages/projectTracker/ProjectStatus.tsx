@@ -122,9 +122,7 @@ const ProjectStatus = () => {
           name: '10 Apr',
           process: 'Scheduled',
 
-          data: projectDetail.site_survey_scheduled
-            ? ''
-            : 'Data not available',
+          data: projectDetail.site_survey_scheduled ? '' : 'Data not available',
           borderColor: projectDetail.site_survey_scheduled
             ? 'white'
             : '#A5AAB2',
@@ -150,9 +148,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Completed',
-          data: projectDetail.site_survey_completed
-            ? ''
-            : 'Data not available',
+          data: projectDetail.site_survey_completed ? '' : 'Data not available',
           borderColor: projectDetail.site_survey_completed
             ? 'white'
             : '#A5AAB2',
@@ -218,9 +214,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Scheduled',
-          data: projectDetail.electrical_scheduled
-            ? ''
-            : 'Data not available',
+          data: projectDetail.electrical_scheduled ? '' : 'Data not available',
           borderColor: projectDetail.electrical_scheduled ? 'white' : '#A5AAB2',
           key: 'electrical_scheduled',
           bgColor: projectDetail.electrical_scheduled ? '#63ACA3' : '#EBEBEB',
@@ -229,9 +223,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Completed',
-          data: projectDetail.electrical_completed
-            ? ''
-            : 'Data not available',
+          data: projectDetail.electrical_completed ? '' : 'Data not available',
           borderColor: projectDetail.electrical_completed ? 'white' : '#A5AAB2',
           key: 'electrical_completed',
           bgColor: projectDetail.electrical_completed ? '#63ACA3' : '#EBEBEB',
@@ -259,9 +251,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Submitted',
-          data: projectDetail.pv_permit_scehduled
-            ? ''
-            : 'Data not available',
+          data: projectDetail.pv_permit_scehduled ? '' : 'Data not available',
           borderColor: projectDetail.pv_permit_scehduled ? 'white' : '#A5AAB2',
           key: 'pv_permit_scehduled',
           bgColor: projectDetail.pv_permit_scehduled ? '#63ACA3' : '#EBEBEB',
@@ -270,9 +260,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Approved',
-          data: projectDetail.pv_permit_completed
-            ? ''
-            : 'Data not available',
+          data: projectDetail.pv_permit_completed ? '' : 'Data not available',
           borderColor: projectDetail.pv_permit_completed ? 'white' : '#A5AAB2',
           key: 'pv_permit_completed',
           bgColor: projectDetail.pv_permit_completed ? '#63ACA3' : '#EBEBEB',
@@ -300,9 +288,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Submitted',
-          data: projectDetail.ic_permit_scheduled
-            ? ''
-            : 'Data not available',
+          data: projectDetail.ic_permit_scheduled ? '' : 'Data not available',
           borderColor: projectDetail.ic_permit_scheduled ? 'white' : '#A5AAB2',
           key: 'ic_permit_scheduled',
           bgColor: projectDetail.ic_permit_scheduled ? '#63ACA3' : '#EBEBEB',
@@ -311,9 +297,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Approved',
-          data: projectDetail.ic_permit_completed
-            ? ''
-            : 'Data not available',
+          data: projectDetail.ic_permit_completed ? '' : 'Data not available',
           borderColor: projectDetail.ic_permit_completed ? 'white' : '#A5AAB2',
           key: 'ic_permit_completed',
           bgColor: projectDetail.ic_permit_completed ? '#63ACA3' : '#EBEBEB',
@@ -471,16 +455,14 @@ const ProjectStatus = () => {
   useEffect(() => {
     dispatch(getProjects());
 
-    return (()=>toast.dismiss())
+    return () => toast.dismiss();
   }, []);
   const projectOption: Option[] = projects?.map?.(
     (item: (typeof projects)[0]) => ({
-      label: `${item.unqiue_id }-${item.customer}`,
+      label: `${item.unqiue_id}-${item.customer}`,
       value: item.unqiue_id,
     })
   );
-
-  
 
   useEffect(() => {
     if (activePopups) {
@@ -491,11 +473,6 @@ const ProjectStatus = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [activePopups]);
-   
-
-
-
-
 
   useEffect(() => {
     if (projectId) {
@@ -506,7 +483,7 @@ const ProjectStatus = () => {
         label: projectOption[0].label || '',
         value: projectOption[0].value || '',
       };
-      console.log("val", val)
+      console.log('val', val);
       setSelectedProject(val);
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
@@ -518,7 +495,7 @@ const ProjectStatus = () => {
     }
   }, [selectedProject.value]);
 
-  console.log("options", projectOption, selectedProject)
+  console.log('options', projectOption, selectedProject);
 
   return (
     <div className="">
@@ -536,7 +513,7 @@ const ProjectStatus = () => {
           >
             <div className="project-heading mb3">
               <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
-              <div className="" style={{minWidth:200}}>
+              <div className="" style={{ minWidth: 200 }}>
                 <div className="">
                   <SelectOption
                     options={projectOption}
@@ -692,7 +669,6 @@ const ProjectStatus = () => {
                           >
                             <DataNotFound />
                           </div>
-                          <span>No Data Found</span>
                         </td>
                       ) : (
                         newStatusData.map((item: any, i: any) => (

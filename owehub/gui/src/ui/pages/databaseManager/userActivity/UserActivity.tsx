@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import '../../configure/configure.css';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import { FaArrowDown } from 'react-icons/fa6';
@@ -16,7 +15,7 @@ import { FaArrowUp } from 'react-icons/fa';
 
 const UserActivity: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { loading, error, userActivityList, totalCount } = useAppSelector(
+  const { loading, userActivityList, totalCount } = useAppSelector(
     (state) => state.dbManager
   );
   const [currentPage, setCurrentPage] = useState(1);
@@ -79,15 +78,20 @@ const UserActivity: React.FC = () => {
   const countWords = (str: string): number => {
     return str.trim().split(/\s+/).length;
   };
-console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.query_details.trim())),"sorted")
+  console.log(
+    [...slicedData].sort((a, b) =>
+      a.query_details.trim().localeCompare(b.query_details.trim())
+    ),
+    'sorted'
+  );
 
   const sortRows = (key: string) => {
     setSortKey((prev) => (prev === key ? '' : key));
     const sorted = [...slicedData]?.sort((a, b) => {
       if (sortOrder === 'asc') {
         setSortOrder('desc');
-        if (key==="query_details") {
-          return a.query_details.trim().localeCompare(b.query_details.trim())
+        if (key === 'query_details') {
+          return a.query_details.trim().localeCompare(b.query_details.trim());
         }
         return b[key as keyof DBManagerUserActivityModel] <
           a[key as keyof DBManagerUserActivityModel]
@@ -95,8 +99,8 @@ console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.q
           : 1;
       } else {
         setSortOrder('asc');
-        if (key==="query_details") {
-          return b.query_details.trim().localeCompare(a.query_details.trim())
+        if (key === 'query_details') {
+          return b.query_details.trim().localeCompare(a.query_details.trim());
         }
         return a[key as keyof DBManagerUserActivityModel] >
           b[key as keyof DBManagerUserActivityModel]
@@ -120,7 +124,7 @@ console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.q
         linkparaSecond="User Activity"
       />
       <div className="commissionContainer">
-        <div className="commissionSection" style={{marginLeft: "15px"}}>
+        <div className="commissionSection" style={{ marginLeft: '15px' }}>
           <h3>Activity List</h3>
         </div>
         <div
@@ -274,10 +278,7 @@ console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.q
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

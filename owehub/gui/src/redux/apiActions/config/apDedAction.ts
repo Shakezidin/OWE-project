@@ -11,16 +11,13 @@ export interface ReconcileEditParams {
   record_id: string;
 }
 
-export const fetchApDed = createAsyncThunk(
-  'get/ap-ded',
-  async (data: any) => {
-    const response = await postCaller('get_apded', data);
-    return {
-      list: response.data.ap_ded_list,
-      count: response.dbRecCount,
-    };
-  }
-);
+export const fetchApDed = createAsyncThunk('get/ap-ded', async (data: any) => {
+  const response = await postCaller('get_apded', data);
+  return {
+    list: response.data.ap_ded_list,
+    count: response.dbRecCount,
+  };
+});
 
 export const createApDed = createAsyncThunk(
   'create/ap-ded',

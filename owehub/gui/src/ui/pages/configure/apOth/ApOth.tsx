@@ -5,25 +5,20 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApOthColumn } from '../../../../resources/static_data/configureHeaderData/apOthColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { fetchApOth } from '../../../../redux/apiActions/config/apOthAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import CreateApOth from './createApOth';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
-import { dateFormat } from '../../../../utiles/formatDate';
+
 const ApOth = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -81,7 +76,7 @@ const ApOth = () => {
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
 
   const endIndex = currentPage * itemsPerPage;
-  
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -274,13 +269,14 @@ const ApOth = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-              
-                  <th>
-                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-              
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -311,13 +307,13 @@ const ApOth = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.payee ||"N/A"}</td>
-                    <td>{el.amount ||"N/A"}</td>
-                    <td>{el.date ||"N/A"}</td>
-                     
-                    <td>{el.short_code ||"N/A"}</td>
-                    <td>{el.description ||"N/A"}</td>
-                    <td>{el.notes ||"N/A"}</td>
+                    <td>{el.payee || 'N/A'}</td>
+                    <td>{el.amount || 'N/A'}</td>
+                    <td>{el.date || 'N/A'}</td>
+
+                    <td>{el.short_code || 'N/A'}</td>
+                    <td>{el.description || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -343,10 +339,7 @@ const ApOth = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={ApOthColumn.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -356,11 +349,11 @@ const ApOth = () => {
         <div className="page-heading-container">
           {data?.length > 0 ? (
             <>
-                 <p className="page-heading">
-              Showing {startIndex} -{' '}
-              {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
-              item
-            </p>
+              <p className="page-heading">
+                Showing {startIndex} -{' '}
+                {endIndex > totalcount ? totalcount : endIndex} of {totalcount}{' '}
+                item
+              </p>
 
               <Pagination
                 currentPage={currentPage}
