@@ -23,6 +23,7 @@ import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
+import { checkLastPage } from '../../../../utiles';
 
 const ReferalData: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -156,6 +157,13 @@ const ReferalData: React.FC = () => {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -198,6 +206,14 @@ const ReferalData: React.FC = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(false);
           setSelectedRows(new Set());
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
+
           await successSwal('Archived', 'The data has been archived ');
         } else {
           await successSwal('Archived', 'The data has been archived ');
