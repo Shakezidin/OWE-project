@@ -62,12 +62,7 @@ func HandleUpdateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
-	if updateLoanTypeReq.Active <= 0 {
-		err = fmt.Errorf("Invalid active Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Active Not Allowed, Update failed", http.StatusBadRequest, nil)
-		return
-	}
+
 	if updateLoanTypeReq.Adder <= 0 {
 		err = fmt.Errorf("Invalid adder Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)

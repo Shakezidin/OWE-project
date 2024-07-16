@@ -62,12 +62,7 @@ func HandleCreateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createLoanTypeReq.Active <= 0 {
-		err = fmt.Errorf("Invalid active Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
+
 	if createLoanTypeReq.Adder <= 0 {
 		err = fmt.Errorf("Invalid Pay Source Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)

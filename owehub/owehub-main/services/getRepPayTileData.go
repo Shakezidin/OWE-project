@@ -84,7 +84,7 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	currentDue, _ := data[0]["current_due"].(float64)
 
 	// Prepare response data structure
-	dealerPayTileData := models.GetDealerPayTileData{
+	dealerPayTileData := models.GetRepPayTileData{
 		AmountPrepaid:     amountPrepaid,
 		PipelineRemaining: pipelineRemaining - amountPrepaid,
 		CurrentDue:        currentDue,
