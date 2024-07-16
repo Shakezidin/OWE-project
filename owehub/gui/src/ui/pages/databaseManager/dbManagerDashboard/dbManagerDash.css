@@ -48,7 +48,6 @@
   gap: 0px;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
-  opacity: 0px;
   background: rgb(184, 228, 223);
   display: inline-block;
 }
@@ -147,7 +146,6 @@
   width: 32.23%;
   height: 394px;
   border-radius: 16px;
-  opacity: 0px;
   align-items: center;
 }
 
