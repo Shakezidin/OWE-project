@@ -131,7 +131,12 @@ const DashBoardTable = ({
               ) : currentPageData.length > 0 ? (
                 currentPageData.map((el: any, index: any) => (
                   <tr key={index}>
-                    <td style={{ fontWeight: '500' }}>
+                    <td 
+                    style={{ fontWeight: '500' }}
+                    onClick={() => {
+                      setOpen(true);
+                    }}
+                     >
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(index)}
