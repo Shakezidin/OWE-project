@@ -54,7 +54,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
     state: editData?.state || '',
     pay_scale: editData?.pay_scale || '',
     position: editData?.position || '',
-    b_e: editData?.b_e ? 'yes' : 'no',
+    b_e: editData?.b_e === undefined ? undefined : editData?.b_e ? 'yes' : 'no',
     start_date: editData?.start_date || '',
     end_date: editData?.end_date || '',
   });
@@ -319,7 +319,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                   <label className="inputLabel-select">BE</label>
                   <SelectOption
                     options={[
-                      { value: '', label: 'Select' },
+
                       { value: 'yes', label: 'Yes' },
                       { value: 'no', label: 'No' },
                     ]}
