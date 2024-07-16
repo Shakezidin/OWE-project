@@ -19,6 +19,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { dateFormat } from '../../../../utiles/formatDate';
+import { checkLastPage } from '../../../../utiles';
 
 const ApPda = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -156,7 +157,7 @@ const ApPda = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchApPda(pageNumber));
-
+          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -188,6 +189,7 @@ const ApPda = () => {
       const res = await postCaller('update_appda_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchApPda(pageNumber));
+        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
@@ -199,6 +201,8 @@ const ApPda = () => {
   // if (isLoading) {
   //   return <div>Loading...</div>;
   // }
+  const notAllowed = selectedRows.size>1
+
 
   console.log(data);
 
@@ -270,11 +274,11 @@ const ApPda = () => {
                 ))}
 
                 <th>
-                  {!viewArchived && selectedRows.size < 2 && (
+                 
                     <div className="action-header">
                       <p>Action</p>
                     </div>
-                  )}
+                  
                 </th>
               </tr>
             </thead>
@@ -316,24 +320,24 @@ const ApPda = () => {
                     <td>{el.notes || 'N/A'}</td>
                     <td>{el.description || 'N/A'}</td>
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
+                     
                         <div className="action-icon">
                           <div
                             className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
+                            onClick={() => !notAllowed &&   handleArchiveClick(el.record_id)}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div
                             className=""
-                            onClick={() => handleEdit(el)}
-                            style={{ cursor: 'pointer' }}
+                            onClick={() => !notAllowed &&   handleEdit(el)}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      )}
+                  
                     </td>
                   </tr>
                 ))

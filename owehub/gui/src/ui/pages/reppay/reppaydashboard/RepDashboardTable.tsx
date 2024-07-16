@@ -12,6 +12,8 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import { dateFormat } from '../../../../utiles/formatDate';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import ProjectBreakdown from '../../dashboard/ProjectBreakdown';
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 export const commissionList = [
   {
     record_id: 1,
@@ -651,12 +653,14 @@ const RepDashBoardTable = ({
     setCurrentPage(page);
   };
 
+  const [editMode, setEditMode] = useState(false);
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === currentPageData?.length;
   const totalPages1 = Math.ceil(count / pageSize1);
+  const [editedCommission] = useState<CommissionModel | null>(null);
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -747,7 +751,11 @@ const RepDashBoardTable = ({
               ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                    <td style={{ fontWeight: '500' }}>
+                    <td style={{ fontWeight: '500' }}
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                    >
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(i)}
@@ -766,7 +774,7 @@ const RepDashBoardTable = ({
                             }
                           }}
                         />
-                        <span className="zoom-out-td">{el.unique_id ||"N/A"}</span>
+                        <span className="zoom-out-td">{el.unique_id || "N/A"}</span>
                       </div>
                     </td>
                     <td>{el.home_owner || 'N/A'}</td>
@@ -774,10 +782,10 @@ const RepDashBoardTable = ({
                     <td>{el.owe_contractor || 'N/A'}</td>
                     <td>{el.DBA || 'N/A'}</td>
                     <td>{el.type || 'N/A'}</td>
-                  
+
                     <td>{el.finance_type || 'N/A'}</td>
                     <td>{el.sys_size ?? 'N/A'}</td>
-                    <td>{el.contract_total?? 'N/A'}</td>
+                    <td>{el.contract_total ?? 'N/A'}</td>
                     <td>{el.loan_fee ?? 'N/A'}</td>
                     <td>{el.epc ?? 'N/A'}</td>
                     <td>{el.adders ?? 'N/A'}</td>
@@ -835,6 +843,16 @@ const RepDashBoardTable = ({
               onPageChange={handlePageChange}
               handleItemsPerPageChange={handleItemsPerPageChange}
             />
+
+            {open && (
+              <ProjectBreakdown
+                commission={editedCommission}
+                editMode={editMode}
+                handleClose={() => {
+                  setOpen(false);
+                }}
+              />
+            )}
 
             {openIcon && (
               <HelpDashboard data={{}} handleClose={handleIconClose} />
