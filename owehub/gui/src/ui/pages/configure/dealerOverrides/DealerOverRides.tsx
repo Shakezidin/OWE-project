@@ -24,6 +24,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+import { checkLastPage } from '../../../../utiles';
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -156,13 +157,10 @@ const DealerOverRides: React.FC = () => {
           // If API call is successful, refetch commissions
           setSelectAllChecked(false);
           setSelectedRows(new Set());
+
           dispatch(fetchDealer(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(dealerList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
-          setSelectedRows(new Set());
+          checkLastPage(currentPage, totalPages, setCurrentPage);
+
           await successSwal('Archived', 'The data has been archived ');
         } else {
           await successSwal('Archived', 'The data has been archived ');
@@ -192,6 +190,7 @@ const DealerOverRides: React.FC = () => {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
+        checkLastPage(currentPage, totalPages, setCurrentPage);
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -292,7 +291,7 @@ const DealerOverRides: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -330,49 +329,48 @@ const DealerOverRides: React.FC = () => {
                     <td>{el.state?.trim?.() || 'N/A'}</td>
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     <td>{dateFormat(el.end_date) || 'N/A'}</td>
-                    {viewArchived === true ? null : (
-                      <td>
-                        {selectedRows.size === 1 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleEditDealer(el)}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
+
+                    <td>
+                      {selectedRows.size === 1 ? (
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                            {/* <span className="tooltiptext">Archive</span> */}
                           </div>
-                        ) : selectedRows.size === 0 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleEditDealer(el)}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleEditDealer(el)}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                            {/* <span className="tooltiptext">Edit</span> */}
                           </div>
-                        ) : null}
-                      </td>
-                    )}
+                        </div>
+                      ) : (
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor: "not-allowed" }}
+                        
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                            {/* <span className="tooltiptext">Archive</span> */}
+                          </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor: "not-allowed"}}
+                        
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                            {/* <span className="tooltiptext">Edit</span> */}
+                          </div>
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
