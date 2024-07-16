@@ -30,6 +30,7 @@ type RepPay struct {
 	Amount        float64
 	FinanceType   string
 	SysSize       float64
+	ContractTotal float64
 	LoanFee       float64
 	EPC           float64
 	Adders        float64
@@ -200,6 +201,8 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 				repPay.FinanceType = value.(string)
 			case "sys_size":
 				repPay.SysSize = value.(float64)
+			case "contract_total":
+				repPay.ContractTotal = value.(float64)
 			case "loan_fee":
 				repPay.LoanFee = value.(float64)
 			case "epc":

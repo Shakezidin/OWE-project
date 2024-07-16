@@ -101,6 +101,8 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			query = "SELECT product_code as data FROM " + db.TableName_loan_type
 		case "dealer":
 			query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer
+		case "rep_type":
+			query = "SELECT rep_type as data FROM " + db.TableName_rep_type
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil
