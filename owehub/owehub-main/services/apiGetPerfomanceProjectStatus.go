@@ -394,21 +394,39 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	whereAdded := true
 	filtersBuilder.WriteString(" WHERE")
 
-	cnt := dataFilter.IntervalDays
+	startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+	endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
 
-	filtersBuilder.WriteString(fmt.Sprintf(" (sm.contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR sm.permit_approved_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+2))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR sm.pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+3))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR sm.pto_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+4))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR fs.site_survey_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+5))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR fs.install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date)", len(whereEleList)+6))
-	whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
+	endDate = endDate.Add(24*time.Hour - time.Second)
+
+	whereEleList = append(whereEleList,
+		startDate.Format("02-01-2006 00:00:00"),
+		endDate.Format("02-01-2006 15:04:05"),
+		startDate.Format("02-01-2006 00:00:00"),
+		endDate.Format("02-01-2006 15:04:05"),
+		startDate.Format("02-01-2006 00:00:00"),
+		endDate.Format("02-01-2006 15:04:05"),
+		startDate.Format("02-01-2006 00:00:00"),
+		endDate.Format("02-01-2006 15:04:05"),
+		startDate.Format("02-01-2006 00:00:00"),
+		endDate.Format("02-01-2006 15:04:05"),
+		startDate.Format("02-01-2006 00:00:00"),
+		endDate.Format("02-01-2006 15:04:05"),
+	)
+
+	filtersBuilder.WriteString(fmt.Sprintf(" (salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-11, len(whereEleList)-10))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR intOpsMetSchema.permit_approved_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-9, len(whereEleList)-8))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR intOpsMetSchema.pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-7, len(whereEleList)-6))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR intOpsMetSchema.pto_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-5, len(whereEleList)-4))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR intOpsMetSchema.site_survey_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-3, len(whereEleList)-2))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR fieldOpsSchema.install_ready_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS'))", len(whereEleList)-1, len(whereEleList)))
+
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
 		// whereAdded = true
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" sm.unique_id IN (")
+		filtersBuilder.WriteString(" intOpsMetSchema.unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -427,7 +445,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		filtersBuilder.WriteString(" WHERE ")
 	}
 
-	filtersBuilder.WriteString(" sm.primary_sales_rep IN (")
+	filtersBuilder.WriteString(" salMetSchema.primary_sales_rep IN (")
 	for i, sale := range saleRepList {
 		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, sale)
@@ -437,7 +455,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND sm.dealer = $%d AND sm.unique_id != '' ", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(") AND salMetSchema.dealer = $%d AND intOpsMetSchema.unique_id != '' ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	filters = filtersBuilder.String()

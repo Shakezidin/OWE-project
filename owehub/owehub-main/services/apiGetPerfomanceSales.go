@@ -158,9 +158,6 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
 	endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
 
-	log.FuncInfoTrace(0, "+++++++ %v %+v", dataReq.StartDate, startDate)
-	log.FuncInfoTrace(0, "+++++++ %v %+v", dataReq.EndDate, endDate)
-
 	endDate = endDate.Add(24*time.Hour - time.Second)
 
 	whereEleList = append(whereEleList,
