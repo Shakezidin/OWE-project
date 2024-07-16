@@ -316,16 +316,16 @@ const ApRep = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.customer_name || 'N/A'}</td>
-                    <td>{el.state_name || 'N/A'}</td>
+                    <td>{el.rep || 'N/A'}</td>
+                    <td>{el.dba || 'N/A'}</td>
 
-                    <td>{dateFormat(el.date) || 'N/A'}</td>
+                    <td>{el.final || 'N/A'}</td>
+                    <td>{el.date || 'N/A'}</td>
                     <td>{el.amount || 'N/A'}</td>
-                    <td>{el.payment_type || 'N/A'}</td>
-                    <td>{el.bank || 'N/A'}</td>
-                    <td>{dateFormat(el.ced) || 'N/A'}</td>
-                    <td>{el.partner_name || 'N/A'}</td>
-                    <td>{el.total_paid}</td>
+                    <td>{el.method|| 'N/A'}</td>
+                    <td>{el.cbiz || 'N/A'}</td>
+                    <td>{el.transaction || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
              
                       <td>
                         {(!viewArchived && selectedRows.size<2) &&<div className="action-icon">
