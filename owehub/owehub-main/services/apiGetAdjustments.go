@@ -297,7 +297,7 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+			filtersBuilder.WriteString(fmt.Sprintf(" ORDER BY id OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 		}
 	}
 
@@ -306,5 +306,3 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }
-
-
