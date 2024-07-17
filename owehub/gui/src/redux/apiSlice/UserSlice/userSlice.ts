@@ -50,7 +50,7 @@ const userData = createSlice({
       .addCase(updateUser.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
-      })
+      });
   },
 });
 

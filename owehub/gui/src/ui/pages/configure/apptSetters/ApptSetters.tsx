@@ -5,25 +5,21 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApptSettersColumn } from '../../../../resources/static_data/configureHeaderData/ApptSettersColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { fetchApptSetters } from '../../../../redux/apiActions/config/apptSetterAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import CreateAppSetters from './CreateAppSetters';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const ApptSetters = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -36,7 +32,6 @@ const ApptSetters = () => {
   const { data, isLoading, totalCount } = useAppSelector(
     (state) => state.apptsetters
   );
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -75,12 +70,14 @@ const ApptSetters = () => {
   };
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
-
   const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const endIndex = currentPage * itemsPerPage;
+
+  console.log(endIndex, "endddddd");
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -204,7 +201,7 @@ const ApptSetters = () => {
   //   return <div>Loading...</div>;
   // }
 
-  console.log(data);
+ console.log("okkkcehck")
 
   return (
     <div className="comm">
@@ -272,13 +269,14 @@ const ApptSetters = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-              
-                  <th>
-                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-              
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -306,12 +304,12 @@ const ApptSetters = () => {
                             )
                           }
                         />
-                        {el.unique_id ||"N/A"}
+                        {el.unique_id || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.name ||"N/A"}</td>
-                    <td>{el.team_name ||"N/A"}</td>
-                    <td>{el.pay_rate ||"N/A"}</td>
+                    <td>{el.name || 'N/A'}</td>
+                    <td>{el.team_name || 'N/A'}</td>
+                    <td>{el.pay_rate || 'N/A'}</td>
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>
@@ -339,10 +337,7 @@ const ApptSetters = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={ApptSettersColumn.length}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -353,8 +348,9 @@ const ApptSetters = () => {
           {data?.length > 0 ? (
             <>
               <p className="page-heading">
-                {startIndex} - {endIndex > totalCount ? totalCount : endIndex}{' '}
-                of {totalCount} item
+                Showing {startIndex} -{' '}
+                {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
+                item
               </p>
 
               <Pagination

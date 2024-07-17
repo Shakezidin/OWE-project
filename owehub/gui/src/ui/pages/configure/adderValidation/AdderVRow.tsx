@@ -124,10 +124,7 @@ const AdderVRow: React.FC<rowProps> = ({
           ) : (
             <tr style={{ border: 0 }}>
               <td colSpan={10}>
-                <div className="data-not-found">
-                  <DataNotFound />
-                  <h3>Data Not Found</h3>
-                </div>
+                <DataNotFound />
               </td>
             </tr>
           )}

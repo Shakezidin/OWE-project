@@ -53,7 +53,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     id?: number
   ) => {
     const elm = e.target as HTMLAnchorElement;
-    console.log('working', id,"didiididid");
+    console.log('working', id, 'didiididid');
 
     if (timeOut.current) {
       clearTimeout(timeOut.current);
@@ -81,7 +81,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       setProject(false);
     }
   }, [toggleOpen]);
-console.log(cords,"cordssssss");
+  console.log(cords, 'cordssssss');
 
   return (
     <div
@@ -106,7 +106,7 @@ console.log(cords,"cordssssss");
                     toggleOpen &&
                     handleMouseover(e, oth.sidebarProps.displayText, [], 1)
                   }
-                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
@@ -161,7 +161,7 @@ console.log(cords,"cordssssss");
                     </Link>
                   )}
 
-<div
+                  <div
                     className="tip"
                     style={{
                       backgroundColor: '#fff',
@@ -193,8 +193,7 @@ console.log(cords,"cordssssss");
                         fontSize: '13px',
                         // borderRight: "3px solid #377CF6",
                         cursor: 'default',
-                         pointerEvents: 'none',
-                    
+                        pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -216,7 +215,7 @@ console.log(cords,"cordssssss");
                     !isTablet &&
                     handleMouseover(e, oth.sidebarProps.displayText, [], 2)
                   }
-                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
@@ -303,7 +302,7 @@ console.log(cords,"cordssssss");
                         fontSize: '13px',
                         // borderRight: "3px solid #377CF6",
                         cursor: 'default',
-                         pointerEvents: 'none',
+                        pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -324,7 +323,7 @@ console.log(cords,"cordssssss");
                     toggleOpen &&
                     handleMouseover(e, oth.sidebarProps.displayText, [], 2)
                   }
-                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
@@ -409,7 +408,7 @@ console.log(cords,"cordssssss");
                         fontSize: '13px',
                         // borderRight: "3px solid #377CF6",
                         cursor: 'default',
-                         pointerEvents: 'none',
+                        pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -426,7 +425,7 @@ console.log(cords,"cordssssss");
                   key={index}
                   style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                   to={oth.path}
-                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
                   onMouseEnter={(e) =>
                     toggleOpen &&
                     !isTablet &&
@@ -513,7 +512,7 @@ console.log(cords,"cordssssss");
                         fontSize: '13px',
                         // borderRight: "3px solid #377CF6",
                         cursor: 'default',
-                         pointerEvents: 'none',
+                        pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -623,7 +622,6 @@ console.log(cords,"cordssssss");
                             // borderRight: "3px solid #377CF6",
                             cursor: 'default',
                           }}
-                          
                         >
                           {' '}
                           {cords.text}
@@ -634,7 +632,9 @@ console.log(cords,"cordssssss");
                             <Link
                               to={ch.path}
                               key={ind}
-                              onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                              onClick={() =>
+                                isTablet && setToggleOpen((prev) => !prev)
+                              }
                               style={{
                                 display: 'block',
                                 marginBlock: '6px',
@@ -675,7 +675,9 @@ console.log(cords,"cordssssss");
                           <Link
                             key={ele}
                             to={accr?.path}
-                            onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                            onClick={() =>
+                              isTablet && setToggleOpen((prev) => !prev)
+                            }
                             style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                             className={`side-icon-container ${
                               location.pathname === accr.path
@@ -741,7 +743,7 @@ console.log(cords,"cordssssss");
                       setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
                     }, 500);
                   }}
-                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
                   className={`side-icon-container ${
                     location.pathname === oth.path
                       ? 'active-link-bg'
@@ -817,7 +819,7 @@ console.log(cords,"cordssssss");
                         fontSize: '13px',
                         // borderRight: "3px solid #377CF6",
                         cursor: 'default',
-                         pointerEvents: 'none',
+                        pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -1085,7 +1087,7 @@ console.log(cords,"cordssssss");
                   key={index}
                   style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                   to={oth.path}
-                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
                   onMouseEnter={(e) =>
                     toggleOpen &&
                     !isTablet &&
@@ -1177,7 +1179,7 @@ console.log(cords,"cordssssss");
                         fontSize: '13px',
                         // borderRight: "3px solid #377CF6",
                         cursor: 'default',
-                         pointerEvents: 'none',
+                        pointerEvents: 'none',
                       }}
                     >
                       {' '}
@@ -1193,7 +1195,7 @@ console.log(cords,"cordssssss");
                   key={index}
                   style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
                   to={oth.path}
-                  onClick={()=>isTablet && setToggleOpen(prev=>!prev)}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
                   onMouseEnter={(e) =>
                     toggleOpen &&
                     !isTablet &&
@@ -1285,7 +1287,7 @@ console.log(cords,"cordssssss");
                         fontSize: '13px',
                         // borderRight: "3px solid #377CF6",
                         cursor: 'default',
-                         pointerEvents: 'none',
+                        pointerEvents: 'none',
                       }}
                     >
                       {' '}

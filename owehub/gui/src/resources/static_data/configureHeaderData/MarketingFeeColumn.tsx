@@ -14,13 +14,13 @@ export const MarketingFeesColumn: Column[] = [
   {
     name: 'chg_dlr',
     displayName: 'Chg Dlr',
-    type: 'number',
+    type: 'boolean',
     isCheckbox: false,
   },
   {
     name: 'pay_src',
     displayName: 'Pay Src',
-    type: 'number',
+    type: 'boolean',
     isCheckbox: false,
   },
   {

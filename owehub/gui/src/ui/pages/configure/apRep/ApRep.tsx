@@ -38,7 +38,7 @@ const ApRep = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const { data, count, isSuccess, isLoading } = useAppSelector((state) => state.ar);
+  const { data, totalCount, isSuccess, isLoading } = useAppSelector((state) => state.apRepSlice);
 
   // const filterState = useAppDispatch((state)=> state.)
 
@@ -80,7 +80,7 @@ const ApRep = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(count / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
@@ -212,7 +212,7 @@ const ApRep = () => {
   //   }
 
   console.log(data, 'data');
-  console.log(count, totalPages, 'count');
+  console.log(totalCount, totalPages, 'count');
 
   return (
     <div className="comm">
@@ -316,16 +316,16 @@ const ApRep = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.customer_name || 'N/A'}</td>
-                    <td>{el.state_name || 'N/A'}</td>
+                    <td>{el.rep || 'N/A'}</td>
+                    <td>{el.dba || 'N/A'}</td>
 
-                    <td>{dateFormat(el.date) || 'N/A'}</td>
+                    <td>{el.final || 'N/A'}</td>
+                    <td>{el.date && dateFormat(el.date) || 'N/A'}</td>
                     <td>{el.amount || 'N/A'}</td>
-                    <td>{el.payment_type || 'N/A'}</td>
-                    <td>{el.bank || 'N/A'}</td>
-                    <td>{dateFormat(el.ced) || 'N/A'}</td>
-                    <td>{el.partner_name || 'N/A'}</td>
-                    <td>{el.total_paid}</td>
+                    <td>{el.method|| 'N/A'}</td>
+                    <td>{el.cbiz || 'N/A'}</td>
+                    <td>{el.transaction || 'N/A'}</td>
+                    <td>{el.notes?.trim?.() || 'N/A'}</td>
              
                       <td>
                         {(!viewArchived && selectedRows.size<2) &&<div className="action-icon">
@@ -362,9 +362,9 @@ const ApRep = () => {
           </table>
         </div>
         <div className="page-heading-container">
-          {!!count && (
+          {!!totalCount && (
             <p className="page-heading">
-              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
               item
             </p>
           )}

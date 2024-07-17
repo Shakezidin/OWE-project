@@ -6,8 +6,8 @@ import emailjs from '@emailjs/browser';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
 import { FormInput } from '../../../core/models/data_models/typesModel';
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import MicroLoader from '../../components/loader/MicroLoader';
 import axios from 'axios';
 
@@ -25,25 +25,22 @@ const TechnicalSupport: React.FC = () => {
   const [selectedFileName, setSelectedFileName] = useState('');
   const [fileSizeError, setFileSizeError] = useState('');
 
-
-
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const uploadFile = async (file: File): Promise<string> => {
     if (!file) return '';
-  
+
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', 'xdfcmcf4');
       formData.append('cloud_name', 'duscqq0ii');
-  
+
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/duscqq0ii/auto/upload`,
         formData
       );
-  
+
       console.log('File uploaded successfully:', response.data.secure_url);
       return response.data.secure_url;
     } catch (error) {
@@ -51,27 +48,31 @@ const TechnicalSupport: React.FC = () => {
       throw error;
     }
   };
-  
+
   // Modify your handleFileInputChange function to use the uploadFile function
-  const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
-  
+
     if (file) {
       const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
-      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-  
+      const fileExtension = file.name
+        .toLowerCase()
+        .substring(file.name.lastIndexOf('.'));
+
       if (!allowedExtensions.includes(fileExtension)) {
         setSelectedFileName('');
         setFileSizeError('Only PNG, JPG, and PDF files are allowed');
         return;
       }
-  
+
       if (file.size <= maxSize) {
         setSelectedFileName(file.name);
         setFileSizeError('');
         setSelectedFile(file);
-  
+
         try {
           const uploadedFileUrl = await uploadFile(file);
           console.log('Uploaded file URL:', uploadedFileUrl);
@@ -90,12 +91,6 @@ const TechnicalSupport: React.FC = () => {
       setSelectedFile(null);
     }
   };
- 
-
-
-
-
-
 
   const [errors, setErrors] = useState({
     firstName: '',
@@ -105,24 +100,22 @@ const TechnicalSupport: React.FC = () => {
     message: '',
   });
 
-
   const emailRegex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-
-  const [prevCont, setPrevCont] = useState('us')
-
-
+  const [prevCont, setPrevCont] = useState('us');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(selectedFile, "isuuee")
+    console.log(selectedFile, 'isuuee');
     // Validation logic
     const newErrors = {
       firstName: firstName ? '' : 'First name is required',
       lastName: lastName ? '' : 'Last name is required',
       email: emailRegex.test(email) ? '' : 'Email address is required',
-      phoneNumber: phoneNumber.slice(prevCont.length).trim() ? '' : 'Phone number is required',
+      phoneNumber: phoneNumber.slice(prevCont.length).trim()
+        ? ''
+        : 'Phone number is required',
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
@@ -160,9 +153,6 @@ const TechnicalSupport: React.FC = () => {
         );
     }
   };
-
-
-
 
   const handleStateChange = (selectedOption: any) => {
     setSelectedIssue(selectedOption.value);
@@ -215,7 +205,10 @@ const TechnicalSupport: React.FC = () => {
         setEmail(trimmedValue); // Update the email state with the trimmed value
 
         if (!emailRegex.test(trimmedValue)) {
-          setErrors({ ...errors, email: 'Please enter a valid email address.' });
+          setErrors({
+            ...errors,
+            email: 'Please enter a valid email address.',
+          });
         } else {
           setErrors({ ...errors, email: '' });
         }
@@ -226,8 +219,6 @@ const TechnicalSupport: React.FC = () => {
     }
   };
 
-
-
   return (
     <>
       <form ref={form} onSubmit={handleSubmit}>
@@ -237,11 +228,11 @@ const TechnicalSupport: React.FC = () => {
               <h3>Support</h3>
             </div>
             <div className="supportImage">
-              <object
-                type="image/svg+xml"
-                data={ICONS.supportImage}
+              <img
+              style={{maxWidth:"100%"}}
+                src={ICONS.supportImage}
                 aria-label="support-icon"
-              ></object>
+              ></img>
             </div>
           </div>
 
@@ -267,7 +258,10 @@ const TechnicalSupport: React.FC = () => {
                       setFirstName(inputValue);
                       setErrors({ ...errors, firstName: '' });
                     } else {
-                      setErrors({ ...errors, firstName: 'Only letters are allowed' });
+                      setErrors({
+                        ...errors,
+                        firstName: 'Only letters are allowed',
+                      });
                     }
                   }}
                 />
@@ -319,34 +313,38 @@ const TechnicalSupport: React.FC = () => {
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
 
-              <div className="create-input-field-support" style={{ marginTop: '-10px' }}>
+              <div
+                className="create-input-field-support"
+                style={{ marginTop: '-10px' }}
+              >
                 <label className="inputLabel">Phone Number</label>
                 <PhoneInput
                   countryCodeEditable={false}
                   disableCountryGuess={true}
                   enableSearch
-                  country={"us"}
+                  country={'us'}
                   value={phoneNumber}
                   onChange={(value, prevCont) => {
                     setPhoneNumber(value || '');
                     //@ts-ignore
-                    setPrevCont(prevCont.dialCode as string)
+                    setPrevCont(prevCont.dialCode as string);
                     setErrors({ ...errors, phoneNumber: '' });
                   }}
                   placeholder="Enter phone number"
                 />
-                <input
-                  type="hidden"
-                  name="phoneNumber"
-                  value={phoneNumber}
-                />
-                {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
+                <input type="hidden" name="phoneNumber" value={phoneNumber} />
+                {errors.phoneNumber && (
+                  <span className="error">{errors.phoneNumber}</span>
+                )}
               </div>
             </div>
 
-            <div className="create-input-container-support" >
+            <div className="create-input-container-support">
               <div className="create-input-field-support">
-                <label className="inputLabel-select select-type-label" style={{ marginTop: "1px" }}>
+                <label
+                  className="inputLabel-select select-type-label"
+                  style={{ marginTop: '1px' }}
+                >
                   Issue
                 </label>
                 <SelectOption
@@ -374,23 +372,30 @@ const TechnicalSupport: React.FC = () => {
                     ref={fileInputRef}
                     className="file-input"
                     onChange={handleFileInputChange}
-                  //  name="attachment"
-                    />
+                    //  name="attachment"
+                  />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
                       {selectedFileName || '.jpg .jpeg .png .pdf'}
                     </span>
-                    <button className="custom-button" onClick={handleButtonClick}>
+                    <button
+                      className="custom-button"
+                      onClick={handleButtonClick}
+                    >
                       Browse
                     </button>
                   </div>
                 </div>
-                {fileSizeError && <span className="error">{fileSizeError}</span>}
+                {fileSizeError && (
+                  <span className="error">{fileSizeError}</span>
+                )}
               </div>
             </div>
 
             <div className="create-input-field-note-support">
-              <label htmlFor="" className="inputLabel-support" >Message</label>
+              <label htmlFor="" className="inputLabel-support">
+                Message
+              </label>
               <br />
               <textarea
                 name="message"
@@ -408,15 +413,21 @@ const TechnicalSupport: React.FC = () => {
                 }}
               ></textarea>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: message.length === 300 ? 'red' : 'inherit' }}>
+                <span
+                  style={{ color: message.length === 300 ? 'red' : 'inherit' }}
+                >
                   {message.length}/300 characters
                 </span>
-                {errors.message && <span className="error">{errors.message}</span>}
+                {errors.message && (
+                  <span className="error">{errors.message}</span>
+                )}
               </div>
             </div>
 
             <div className="reset-Update-support">
-              <button type="submit" disabled={isSubmitting}>Submit</button>
+              <button type="submit" disabled={isSubmitting}>
+                Submit
+              </button>
               {/* <ActionButton title={"Submit"} type="submit" onClick={() => {handleSubmit}} /> */}
             </div>
           </div>

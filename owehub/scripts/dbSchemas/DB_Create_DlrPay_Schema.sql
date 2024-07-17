@@ -5,7 +5,7 @@ CREATE TABLE dealer_pay_calc_standard (
     instl TEXT,
     source TEXT,
     loan_type TEXT,
-    unique_id TEXT PRIMARY KEY,
+    unique_id TEXT,
     home_owner TEXT,
     street_address TEXT,
     st TEXT,

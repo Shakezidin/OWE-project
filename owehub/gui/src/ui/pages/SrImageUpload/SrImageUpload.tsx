@@ -236,9 +236,9 @@ OWE Battery Calc
   return (
     <div>
       <div className="sr-image-container">
-        <div className="bg-white sr-form-header">
-          <h3>Prospect panel form</h3>
-          <p style={{ fontSize: 12, color: '#7F7F7F' }}>
+        <div className=" sr-form-header" style={{ backgroundColor: '#313752' }}>
+          <h3 style={{ color: '#fff' }}>Prospect panel form</h3>
+          <p style={{ fontSize: 12, color: '#fff' }}>
             Fill all required prospect panel details
           </p>
         </div>
@@ -286,7 +286,9 @@ OWE Battery Calc
               onChange={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9.]/g, '');
                 setSystemSize((prev) =>
-                  parseFloat(e.target.value) <= 100 || e.target.value==="" ? e.target.value : prev
+                  parseFloat(e.target.value) <= 100 || e.target.value === ''
+                    ? e.target.value
+                    : prev
                 );
               }}
               required

@@ -1,15 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import '../../configure/configure.css';
 import { BiSupport } from 'react-icons/bi';
-import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import { getAR } from '../../../../redux/apiActions/config/arAction';
 import ArHelp from './ArHelp';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -116,26 +112,19 @@ const ArDashBoardTable = ({
   setCurrentPage,
   currentPage,
   additionalFilter,
+  includedFilter,
 }: {
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
   additionalFilter: FilterModel[];
+  includedFilter: string[];
 }) => {
   const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  const [exportOPen, setExportOpen] = React.useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleExportOpen = () => setExportOpen(!exportOPen);
-  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const { data, count, filters, isLoading } = useAppSelector(
     (state) => state.ardata
   );
-  // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -147,7 +136,11 @@ const ArDashBoardTable = ({
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
+  // const options = [
+  //   { value: 'All', label: 'All', key: 'all' },
+  //   { value: 'QC/Permit/NTP', label: 'QC/Permit/NTP', key: 'permits' },
+  //   { value: 'SOLD', label: 'SOLD', key: 'sold' },
+  // ];
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -156,13 +149,13 @@ const ArDashBoardTable = ({
       report_type: filters.report_type,
       sale_partner: filters.sale_partner,
       sort_by: filters.sort_by,
-      shaky: filters.shaky,
-      cancel: filters.cancel,
-      sold: filters.sold,
-      permits: filters.permits,
-      ntp: filters.ntp,
-      install: filters.install,
-      pto: filters.pto,
+      shaky: includedFilter.includes('Shaky'),
+      cancel: includedFilter.includes('Cancel'),
+      sold: includedFilter.includes("SOLD"),
+      permits: includedFilter.includes("QC/Permit/NTP"),
+      ntp: includedFilter.includes("QC/Permit/NTP"),
+      install: includedFilter.includes("Install"),
+      pto: includedFilter.includes('PTO'),
       filters: additionalFilter,
     };
     dispatch(getAR(pageNumber));
@@ -173,15 +166,9 @@ const ArDashBoardTable = ({
     viewArchived,
     filters,
     additionalFilter,
+    includedFilter
   ]);
-  const handleItemsPerPageChange = (e: any) => {
-    const newItemsPerPage = parseInt(e.target.value, 10);
-    setPageSize1(newItemsPerPage);
-    setCurrentPage(1); // Reset to the first page when changing items per page
-  };
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+
   const goToNextPage = () => {
     setCurrentPage(currentPage + 1);
   };
@@ -361,10 +348,7 @@ const ArDashBoardTable = ({
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={12}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

@@ -64,12 +64,12 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 		query = `SELECT
 		(SELECT SUM(amt_paid)
 		 FROM rep_pay_pr_data
-		 WHERE current_status = 'ACTIVE'
+		 WHERE current_status = 'ACTIVE' AND current_status != 'NaN'
 		   AND current_status != 'PTO') AS amount_paid,
-	    (SELECT SUM(amt_paid) FROM rep_pay_pr_data) AS amt_paid
+	    (SELECT SUM(amt_paid) FROM rep_pay_pr_data) AS amt_paid,
 		(SELECT SUM(balance)
 		 FROM rep_pay_pr_data
-		 WHERE current_status IN ('NTP', 'Install', 'PTO')) AS current_due`
+		 WHERE current_status IN ('NTP', 'Install', 'PTO') AND balance != 'NaN') AS current_due`
 	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -84,7 +84,7 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	currentDue, _ := data[0]["current_due"].(float64)
 
 	// Prepare response data structure
-	dealerPayTileData := models.GetDealerPayTileData{
+	dealerPayTileData := models.GetRepPayTileData{
 		AmountPrepaid:     amountPrepaid,
 		PipelineRemaining: pipelineRemaining - amountPrepaid,
 		CurrentDue:        currentDue,

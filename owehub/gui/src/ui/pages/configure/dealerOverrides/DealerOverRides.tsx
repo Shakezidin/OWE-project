@@ -11,22 +11,20 @@ import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { DealerTableData } from '../../../../resources/static_data/configureHeaderData/DealerTableData';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Loading from '../../../components/loader/Loading';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { dateFormat } from '../../../../utiles/formatDate';
+import { checkLastPage } from '../../../../utiles';
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -49,7 +47,7 @@ const DealerOverRides: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [dealer,setDealer] = useState<{[key:string]:any}>({})
+  const [dealer, setDealer] = useState<{ [key: string]: any }>({});
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -159,13 +157,11 @@ const DealerOverRides: React.FC = () => {
           // If API call is successful, refetch commissions
           setSelectAllChecked(false);
           setSelectedRows(new Set());
+
           dispatch(fetchDealer(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(dealerList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
-          setSelectedRows(new Set());
+          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+
+
           await successSwal('Archived', 'The data has been archived ');
         } else {
           await successSwal('Archived', 'The data has been archived ');
@@ -195,6 +191,7 @@ const DealerOverRides: React.FC = () => {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
+        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -219,7 +216,7 @@ const DealerOverRides: React.FC = () => {
       </div>
     );
   }
-
+  const notAllowed = selectedRows.size>1
   return (
     <div className="comm">
       <Breadcrumb
@@ -295,7 +292,7 @@ const DealerOverRides: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -311,7 +308,7 @@ const DealerOverRides: React.FC = () => {
                 </tr>
               ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
-                  <tr key={i}>
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
@@ -325,66 +322,43 @@ const DealerOverRides: React.FC = () => {
                             )
                           }
                         />
-                        {el.sub_dealer||"N/A"}
+                        {el.sub_dealer || 'N/A'}
                       </div>
                     </td>
-                    <td>{el.dealer||"N/A"}</td>
-                    <td>{el.pay_rate||"N/A"}</td>
-                    <td>{el.state?.trim?.()||"N/A"}</td>
-                    <td>{dateFormat(el.start_date)||"N/A"}</td>
-                    <td>{dateFormat(el.end_date)||"N/A"}</td>
-                    {viewArchived === true ? null : (
-                      <td>
-                        {selectedRows.size === 1 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleEditDealer(el)}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
+                    <td>{el.dealer || 'N/A'}</td>
+                    <td>{el.pay_rate || 'N/A'}</td>
+                    <td>{el.state?.trim?.() || 'N/A'}</td>
+                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
+                    <td>{dateFormat(el.end_date) || 'N/A'}</td>
+
+                    <td>
+                      
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
+                            onClick={() => !notAllowed && handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                            {/* <span className="tooltiptext">Archive</span> */}
                           </div>
-                        ) : selectedRows.size === 0 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleEditDealer(el)}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor:notAllowed?"not-allowed" : 'pointer' }}
+                            onClick={() => !notAllowed && handleEditDealer(el)}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                            {/* <span className="tooltiptext">Edit</span> */}
                           </div>
-                        ) : null}
-                      </td>
-                    )}
+                        </div>
+                      
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h2>Data Not Found</h2>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

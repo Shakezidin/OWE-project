@@ -2,22 +2,15 @@ import React, { useEffect, useState } from 'react';
 import '../configure.css';
 import CreateCommissionRate from './CreateCommissionRate';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { CSVLink } from 'react-csv';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { Commissioncolumns } from '../../../../resources/static_data/configureHeaderData/CommissionColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import Loading from '../../../components/loader/Loading';
-import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import {
@@ -148,7 +141,7 @@ const CommissionRate: React.FC = () => {
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This action will archive selected data?',
+      'This action will archive selected data',
       'Yes',
       'No'
     );

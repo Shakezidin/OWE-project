@@ -14,28 +14,26 @@ interface AccordionSection {
 const ConfigurePage: React.FC = () => {
   const cardColors = ['#FAD9CA', '#CDE8FB', '#EDD4EE', '#D0E6E3', '#DDD9F6'];
   const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
- 
 
-  const hoverSwithClass = (color:string) =>{
-    switch(color){
-      case"#FAD9CA":
-      return"bg-salmon"
-      case"#CDE8FB":
-      return "bg-light-blue"
-      case"#EDD4EE":
-      return "bg-purple"
+  const hoverSwithClass = (color: string) => {
+    switch (color) {
+      case '#FAD9CA':
+        return 'bg-salmon';
+      case '#CDE8FB':
+        return 'bg-light-blue';
+      case '#EDD4EE':
+        return 'bg-purple';
 
-      case"#D0E6E3":
-      return "bg-light-green"
+      case '#D0E6E3':
+        return 'bg-light-green';
 
-      case "#DDD9F6":
-      return "bg-dark-blue"
-     
+      case '#DDD9F6':
+        return 'bg-dark-blue';
+
       default:
-        return""
+        return '';
     }
-  }
-
+  };
 
   const accordionSections: AccordionSection[] = [
     {
@@ -46,7 +44,7 @@ const ConfigurePage: React.FC = () => {
         { title: 'Time Line SLA', route: ROUTES.CONFIG_TIMELINE },
         // { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE },
         { title: 'Rebate Data', route: ROUTES.CONFIG_REBET_DATA },
-        { title: 'Referal Data', route: ROUTES.CONFIG_REFERAL_DATA },
+        { title: 'Referral Data', route: ROUTES.CONFIG_REFERAL_DATA },
         { title: 'Dealer Credit', route: ROUTES.CONFIG_DEALER_CREDIT },
         { title: 'NON-Comm', route: ROUTES.CONFIG_NON_COMM_DLR_PAY },
         { title: 'DLR-OTH', route: ROUTES.CONFIG_DLE_OTH_PAY },
@@ -63,8 +61,6 @@ const ConfigurePage: React.FC = () => {
         { title: 'Ap Adv', route: ROUTES.CONFIG_APADV },
         { title: 'Ap Ded', route: ROUTES.CONFIG_APDED },
         { title: 'Ap Oth', route: ROUTES.CONFIG_APOTH },
-
-
       ],
       state: useState<boolean>(true),
     },
@@ -100,8 +96,8 @@ const ConfigurePage: React.FC = () => {
         { title: 'Dealer Tier', route: ROUTES.CONFIG_DEALER_TIER },
         { title: 'Adder Data', route: ROUTES.CONFIG_ADDERDATA },
         // { title: "Auto Adder", route: ROUTES.CONFIG_AUTO_ADDER },
-        { title: 'Commission Rates', route: ROUTES.CONFIG_COMMISSION_RATE },
-        { title: 'Sales Types', route: ROUTES.CONFIG_SALE },
+        { title: 'Commission Rate', route: ROUTES.CONFIG_COMMISSION_RATE },
+        { title: 'Sales Type', route: ROUTES.CONFIG_SALE },
         { title: 'Loan Type', route: ROUTES.CONFIG_LOAN },
         { title: 'DBA', route: ROUTES.CONFIG_DBA },
         { title: 'Rep Credit', route: ROUTES.CONFIG_REPCREDIT },
@@ -136,7 +132,6 @@ const ConfigurePage: React.FC = () => {
                     className="configure-card-title"
                     onClick={toggleAccordion(setIsOpen)}
                   >
-                    
                     <p className="payer-type">{title}</p>
                     <div className="accordion-icon-container">
                       {isOpen ? (
@@ -146,7 +141,6 @@ const ConfigurePage: React.FC = () => {
                       )}
                     </div>
                   </div>
-
 
                   <div className={`configure-cards ${isOpen ? 'open' : ''}`}>
                     {data.map((item, index) => {
@@ -160,31 +154,26 @@ const ConfigurePage: React.FC = () => {
                             to={item.route}
                             className={`pay-card ${hoverSwithClass(randomCardColor)}`}
                             style={{
-                               backgroundColor: randomCardColor,
-                               outline: `1px dotted ${randomArrowColor}`,
-                               outlineOffset: '3px',
-                              }}
+                              backgroundColor: randomCardColor,
+                              outline: `1px dotted ${randomArrowColor}`,
+                              outlineOffset: '3px',
+                            }}
                           >
-
-                            <div className='con-fle'>
-                            <h1 className="card-heading">{item.title}</h1>
-                            <div
-                              className="arrow-wrapper"
-                              style={{ color: randomArrowColor }}
-                            >
-                              <span className="view-text">View</span>
-                              <RiArrowRightLine className="arrow-right" />
+                            <div className="con-fle">
+                              <h1 className="card-heading">{item.title}</h1>
+                              <div
+                                className="arrow-wrapper"
+                                style={{ color: randomArrowColor }}
+                              >
+                                <span className="view-text">View</span>
+                                <RiArrowRightLine className="arrow-right" />
+                              </div>
                             </div>
-
-                            </div>
-
                           </Link>
                         </div>
-                        
                       );
                     })}
                   </div>
-                  
                 </div>
               );
             })}

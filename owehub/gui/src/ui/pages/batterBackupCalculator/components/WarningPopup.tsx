@@ -34,7 +34,7 @@ const WarningPopup = ({
     <div className="transparent-model px2 scrollbar">
       <div
         style={{ border: '2px solid #D3D3D3' }}
-        className=" modal py3 px2 relative"
+        className="scrollbar modal py3 px2 relative "
       >
         <div
           className="absolute pointer"

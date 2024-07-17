@@ -33,18 +33,17 @@
   margin: 0 70px 0 0; /* Adjust this value to set the desired gap */
 }
 
-
 .tab-view {
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 }
-.tab-buttons{
+.tab-buttons {
   display: flex;
 }
 
-.tab-buttons>div{
+.tab-buttons > div {
   flex-basis: 33.33%;
 }
 @media screen and (max-width: 1024px) {
@@ -82,23 +81,23 @@
     display: inline-block; /* Set display to inline-block */
     margin: 0 70px 0 0; /* Adjust this value to set the desired gap */
   }
-
 }
 
 @media (max-width: 767px) {
-
-  .welcomeOverProcessTitle{
+  .welcomeOverProcessTitle {
     font-size: 1.5rem;
   }
-  .inactive,.active{
+  .inactive,
+  .active {
     margin: 0;
     font-size: 12px;
     padding: 0 0 10px 5px;
   }
-  .landing-table > div,.landing-table > div .table-box{
+  .landing-table > div,
+  .landing-table > div .table-box {
     width: 100%;
   }
-  .landing-table{
+  .landing-table {
     width: 100%;
     overflow-x: auto;
     flex-direction: column;

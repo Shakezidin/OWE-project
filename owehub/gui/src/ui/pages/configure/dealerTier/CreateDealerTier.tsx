@@ -23,6 +23,7 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { toast } from 'react-toastify';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -131,7 +132,8 @@ const CreateDealerTier: React.FC<dealerProps> = ({
           createDealerTierData
         );
         if ((await res?.status) === 200) {
-          await successSwal('', res.message);
+          // await successSwal('', res.message);
+          toast.success("Dealer Tier Updated Successfully");
           handleClose();
           dispatch(fetchDealerTier(page));
           setIsPending(false);
@@ -146,7 +148,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
           cleanedFormData
         );
         if (res?.status === 200) {
-          await successSwal('', res.message);
+         toast.success("Dealer Tier Created Successfully");
           handleClose();
           dispatch(fetchDealerTier(page));
           setIsPending(false);
@@ -160,7 +162,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
     }
   };
 
-  console.log(createDealerTierData, 'ffjk');
+ 
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => submitTierLoan(e)} className="modal">
@@ -183,10 +185,14 @@ const CreateDealerTier: React.FC<dealerProps> = ({
                     onChange={(newValue) =>
                       handleChange(newValue, 'dealer_name')
                     }
-                    value={!createDealerTierData.dealer_name ? undefined: dealerOption(newFormData)?.find(
-                      (option) =>
-                        option.value === createDealerTierData.dealer_name
-                    )}
+                    value={
+                      !createDealerTierData.dealer_name
+                        ? undefined
+                        : dealerOption(newFormData)?.find(
+                            (option) =>
+                              option.value === createDealerTierData.dealer_name
+                          )
+                    }
                   />
                   {errors.dealer_name && (
                     <span className="error">{errors.dealer_name}</span>

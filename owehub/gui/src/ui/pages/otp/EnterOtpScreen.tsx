@@ -179,7 +179,7 @@ const EnterOtpScreen = () => {
                 placeholder={'Enter OTP'}
                 onChange={(e) => {
                   const { name, value } = e.target;
-                  const validValue = value.replace(/[^a-zA-Z0-9]/g, ''); 
+                  const validValue = value.replace(/[^a-zA-Z0-9]/g, '');
                   setOtpCred((prevState) => ({
                     ...prevState,
                     [name]: validValue,
@@ -233,7 +233,10 @@ const EnterOtpScreen = () => {
                   }));
                   setError((prevState) => ({
                     ...prevState,
-                    [name]: trimmedValue !== otpCred.new_password ? 'Confirm password does not match with New password' : '',
+                    [name]:
+                      trimmedValue !== otpCred.new_password
+                        ? 'Confirm password does not match with New password'
+                        : '',
                   }));
                 }}
               />

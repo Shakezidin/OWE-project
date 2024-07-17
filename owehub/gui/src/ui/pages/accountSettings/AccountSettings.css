@@ -126,10 +126,10 @@
   border: 1px solid #d5d5d5;
   cursor: pointer;
 }
-.edit-section:hover{
+.edit-section:hover {
   border: 1px solid #3083e5;
 }
-.active-edit-section{
+.active-edit-section {
   border: none;
   background: #ddebff;
 }
@@ -141,7 +141,6 @@
 .Personal-container {
   margin-top: 2rem;
   height: 250px;
-  opacity: 0px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
 }
@@ -295,7 +294,7 @@
     color 0.5s ease;
 }
 .reset-Update-support :hover {
-  background-color: #1d66e8
+  background-color: #1d66e8;
 }
 
 .user-create-profile-section {
@@ -360,36 +359,37 @@
   padding: 1rem;
 }
 
-@media screen and (max-width: 1024px){
-  .profile-section{
+@media screen and (max-width: 1024px) {
+  .profile-section {
     gap: 0.5rem;
   }
-  .tab-links{
+  .tab-links {
     width: 0;
     min-width: fit-content;
   }
-  .reset-pass-fields{
+  .reset-pass-fields {
     flex-wrap: wrap;
   }
-  .create-input-field-address, .create-input-field-profile-password{
+  .create-input-field-address,
+  .create-input-field-profile-password {
     width: 47%;
   }
-  .reset-pass-fields{
+  .reset-pass-fields {
     justify-content: unset;
     gap: 15px;
   }
-  .reset-Update{
+  .reset-Update {
     justify-content: unset;
     padding: 0;
     padding-top: 1rem;
   }
-  .reset-Update button{
+  .reset-Update button {
     width: 47%;
   }
-  .Personal-container{
+  .Personal-container {
     height: 300px;
-  } 
-  .active-profile{
+  }
+  .active-profile {
     padding: 0.5rem 1rem;
   }
 }

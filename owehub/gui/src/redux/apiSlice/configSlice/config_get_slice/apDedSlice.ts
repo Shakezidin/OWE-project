@@ -3,10 +3,8 @@ import { toast } from 'react-toastify';
 import {
   fetchApDed,
   updateApDed,
-  createApDed
+  createApDed,
 } from '../../../apiActions/config/apDedAction';
-
- 
 
 interface IState {
   isLoading: boolean;
@@ -43,7 +41,6 @@ const apDedSlice = createSlice({
         state.isLoading = false;
         state.data = action.payload.list || [];
         state.totalcount = action.payload.count || [];
-        
       })
       .addCase(fetchApDed.rejected, (state, action) => {
         state.isLoading = false;
@@ -75,8 +72,7 @@ const apDedSlice = createSlice({
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
-      })
-     
+      });
   },
 });
 

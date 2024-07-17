@@ -21,7 +21,7 @@ export const fetchRepStatusList = createAsyncThunk(
   async (param: IPaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller('get_rep_status', param);
-      console.log("rep status action", data);
+      console.log('rep status action', data);
       const list = data?.data?.rep_incent_list;
       return { list, count: data.dbRecCount };
     } catch (error) {
@@ -58,7 +58,10 @@ export const archiveRepStatus = createAsyncThunk(
   '/archive_rep_status',
   async (param: number[], { rejectWithValue }) => {
     try {
-      const data = await postCaller('update_rep_status_archive', { record_id: param , is_archived: true});
+      const data = await postCaller('update_rep_status_archive', {
+        record_id: param,
+        is_archived: true,
+      });
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

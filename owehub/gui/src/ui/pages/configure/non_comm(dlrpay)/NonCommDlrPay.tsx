@@ -8,12 +8,8 @@ import {
   getNonComm,
   INonCommRowDLR,
 } from '../../../../redux/apiActions/config/nocCommAction';
-
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -28,11 +24,6 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
 
 const NonCommDlrPay: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -191,7 +182,7 @@ const NonCommDlrPay: React.FC = () => {
     }
   };
 
-  console.log(endIndex, dbCount, "................................................")
+  const notAllowed = selectedRows.size > 1;
 
   return (
     <div className="comm">
@@ -219,7 +210,7 @@ const NonCommDlrPay: React.FC = () => {
           }
           viewArchive={viewArchived}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => handleExportOpen()}
@@ -288,7 +279,7 @@ const NonCommDlrPay: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
+                  <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -321,9 +312,9 @@ const NonCommDlrPay: React.FC = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.customer || "N/A"}</td>
-                    <td>{el.dealer_name || "N/A"}</td>
-                    <td>{el.dealer_dba || "N/A"}</td>
+                    <td>{el.customer || 'N/A'}</td>
+                    <td>{el.dealer_name || 'N/A'}</td>
+                    <td>{el.dealer_dba || 'N/A'}</td>
                     <td>{el.exact_amount}</td>
                     <td>{el.balance}</td>
                     <td>{el.approved_by}</td>
@@ -359,34 +350,37 @@ const NonCommDlrPay: React.FC = () => {
                     <td>{el.paid_amount}</td>
                     <td>{el.date}</td>
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick([el.record_id])}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditCommission(el)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick([el.record_id])
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      )}
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleEditCommission(el)
+                          }
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

@@ -40,7 +40,7 @@ const dlrOth = createSlice({
       .addCase(getDlrOth.fulfilled, (state, action) => {
         state.isLoading = false;
         state.data = action.payload.list;
-        state.dbCount = action.payload.count
+        state.dbCount = action.payload.count;
       })
       .addCase(getDlrOth.rejected, (state, action) => {
         state.isLoading = false;
@@ -53,7 +53,7 @@ const dlrOth = createSlice({
       .addCase(createDlrOth.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Form submission completed');
+        toast.success('Dealer OTH Created Successfully');
       })
       .addCase(createDlrOth.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -65,7 +65,7 @@ const dlrOth = createSlice({
       .addCase(updateDlrOth.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Details updated successfully');
+        toast.success('Dealer OTH updated successfully');
       })
       .addCase(updateDlrOth.rejected, (state, action) => {
         state.isFormSubmitting = false;

@@ -39,18 +39,16 @@ export const ROUTES = {
   CONFIG_RECONCILE: '/config/reconcile',
   CONFIG_APPSETTERS: '/config/app-setter',
   CONFIG_ADDERDATA: '/config/adder-data',
-  CONFIG_APREP: "/config/ap-rep",
-  CONFIG_DBA: "/config/dba",
-  CONFIG_REPCREDIT: "/config/repcredit",
-  CONFIG_REPSTATUS: "/config/repstatus",
-  CONFIG_REPINCENT: "/config/rep-incent",
-  CONFIG_APADV:"/config/ap-adv",
-  CONFIG_APDED:"/config/ap-ded",
-  CONFIG_APOTH:"/config/ap-oth",
-  CONFIG_APPDA:"/config/ap-pda",
-  TEAM_MANAGEMENT_TABLE:"/team-management/table",
-
-
+  CONFIG_APREP: '/config/ap-rep',
+  CONFIG_DBA: '/config/dba',
+  CONFIG_REPCREDIT: '/config/repcredit',
+  CONFIG_REPSTATUS: '/config/repstatus',
+  CONFIG_REPINCENT: '/config/rep-incent',
+  CONFIG_APADV: '/config/ap-adv',
+  CONFIG_APDED: '/config/ap-ded',
+  CONFIG_APOTH: '/config/ap-oth',
+  CONFIG_APPDA: '/config/ap-pda',
+  TEAM_MANAGEMENT_TABLE:"/team-management/:id",
 
   // other routes
   REPORT: '/report',
@@ -65,8 +63,9 @@ export const ROUTES = {
   DB_MANAGER_DATA_TABLE: '/dbManager/dataTable',
   DB_MANAGER_USER_ACTIVITY: '/dbManager/userActivity',
   DB_MANAGER_WEB_HOOKS: '/dbManager/webhooks',
-  BATTERY_BACK_UP:"/battery-backup-calulator/:id",
-  BATTERY_UI_GENRATOR:"/battery-ui-generator/:id",
-   SR_IMAGE_UPLOAD:"/sr-image-upload",
-   NOT_FOUND:"*"
+  BATTERY_BACK_UP: '/battery-backup-calulator/:id',
+  BATTERY_UI_GENRATOR: '/battery-ui-generator/:id',
+  SR_IMAGE_UPLOAD: '/sr-image-upload',
+  LEADERBOARD: '/leaderboard',
+  NOT_FOUND: '*',
 };

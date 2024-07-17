@@ -2,18 +2,13 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchTimeLineSla } from '../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice';
 import CreateRateAdjustments from './createRateAdjustments';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { RateAdjustmentsColumns } from '../../../../resources/static_data/configureHeaderData/RateAdjustmentsColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -22,13 +17,13 @@ import {
   showAlert,
   successSwal,
 } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice';
+import { checkLastPage } from '../../../../utiles';
 const RateAdjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -177,6 +172,7 @@ const RateAdjustments = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRateAdjustments(pageNumber));
+          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -209,6 +205,7 @@ const RateAdjustments = () => {
       const res = await postCaller('update_rateadjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRateAdjustments(pageNumber));
+        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
         setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -216,6 +213,8 @@ const RateAdjustments = () => {
       }
     }
   };
+  const notAllowed = selectedRows.size>1
+
 
   return (
     <div className="comm">
@@ -285,7 +284,7 @@ const RateAdjustments = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                   <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -323,34 +322,32 @@ const RateAdjustments = () => {
                     <td>{el.min_rate}</td>
                     <td>{el.max_rate}</td>
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
+                     
+                     
                         <div className="action-icon">
                           <div
                             className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick([el.record_id])}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
+                            onClick={() => !notAllowed &&  handleArchiveClick([el.record_id])}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div
                             className=""
-                            onClick={() => handleEdit(el)}
-                            style={{ cursor: 'pointer' }}
+                            onClick={() => !notAllowed &&  handleEdit(el)}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      )}
+                      
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

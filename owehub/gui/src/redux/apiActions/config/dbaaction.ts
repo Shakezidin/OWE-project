@@ -22,7 +22,7 @@ export const fetchDBAList = createAsyncThunk(
   async (param: IPaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller('get_dba', param);
-      console.log("dba action", data);
+      console.log('dba action', data);
       const list = data?.data?.dba_list;
       return { list, count: data.dbRecCount };
     } catch (error) {
@@ -36,7 +36,7 @@ export const createDBA = createAsyncThunk(
   async (param: ICreateDBA, { rejectWithValue }) => {
     try {
       const data = await postCaller('create_dba', param);
-      toast.success(data?.message)
+      toast.success(data?.message);
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

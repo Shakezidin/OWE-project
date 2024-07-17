@@ -34,5 +34,4 @@ export const DlrOthPayColumn: Column[] = [
     type: 'date',
     isCheckbox: false,
   },
-  
 ];

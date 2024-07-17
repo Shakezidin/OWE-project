@@ -29,24 +29,23 @@ const refralDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getrefralData.pending,(state,action)=>{
-      state.isLoading = true
-    })
-    .addCase(getrefralData.fulfilled,(state,action)=>{
-      state.isLoading = false;
-      state.data = action.payload.list;
-      state.count = action.payload.count;
-      console.log("ref slice")
-    })
-    .addCase(getrefralData.rejected,(state,action)=>{
-      state.isLoading = false;
-      state.error = action.payload as string;
-      toast.error(action.payload as string);
-    })
-
+    builder
+      .addCase(getrefralData.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getrefralData.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data = action.payload.list;
+        state.count = action.payload.count;
+        console.log('ref slice');
+      })
+      .addCase(getrefralData.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      });
   },
 });
-
 
 export const { resetSuccess } = refralDataSlice.actions;
 

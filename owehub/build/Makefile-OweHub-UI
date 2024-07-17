@@ -1,11 +1,11 @@
 CPATH=${PWD}
 
-SERVICE_PATH=${PWD}/../
+SERVICE_PATH=${PWD}/../gui
 
 docker: ## Create Docker Image
 	@echo "Building GUI Frontend Docker Image"
 		cd $(SERVICE_PATH)/ || exit 1 ; \
-		docker build -f docker/Dockerfile-owe-ui -t owehub-ui:v1 .;
+		docker build -f ../docker/Dockerfile-owe-ui -t owehub-ui:v1 .;
 
 dockerpush: ## Create Docker Image
 	@echo "Build and push GUI Frontend Docker Image"

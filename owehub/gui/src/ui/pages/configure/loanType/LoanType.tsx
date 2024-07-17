@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { RiDeleteBin5Line } from 'react-icons/ri';
 import '../configure.css';
-import { CiEdit } from 'react-icons/ci';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
@@ -12,16 +10,12 @@ import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { LoanTypeModel } from '../../../../core/models/configuration/create/LoanTypeModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { LoanTypeColumns } from '../../../../resources/static_data/configureHeaderData/LoanTypeColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -42,7 +36,6 @@ const LoanType = () => {
     (state) => state?.loanType
   );
   const loading = useAppSelector((state) => state.loanType.loading);
-  const error = useAppSelector((state) => state.loanType.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -148,7 +141,7 @@ const LoanType = () => {
           filters,
         };
 
-        const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+        const res = await postCaller("update_loantype_archive", newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchLoanType(pageNumber));
@@ -183,7 +176,7 @@ const LoanType = () => {
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+      const res = await postCaller("update_loantype_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchLoanType(pageNumber));
         setSelectAllChecked(false);
@@ -356,10 +349,7 @@ const LoanType = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}

@@ -9,8 +9,8 @@ const initialState: MarketingFeeModel = {
   dba: '',
   state: '',
   fee_rate: '',
-  chg_dlr: 0,
-  pay_src: 0,
+  chg_dlr: 'no',
+  pay_src: 'no',
   description: '',
   start_date: '',
   end_date: '',
@@ -22,7 +22,7 @@ const createMarketingSlice = createSlice({
   reducers: {
     updateMarketingForm(
       state,
-      action: PayloadAction<Partial<MarketingFeeModel>>
+      action
     ) {
       return { ...state, ...action.payload };
     },

@@ -55,8 +55,9 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
     const error: TError = {} as TError;
     for (const key in createAppSettersData) {
       if (!createAppSettersData[key as keyof typeof createAppSettersData]) {
-        error[key as keyof typeof createAppSettersData] =
-          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof createAppSettersData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -144,10 +145,8 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -166,10 +165,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.name}
                     </span>
@@ -194,10 +191,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.team_name}
                     </span>
@@ -216,10 +211,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.pay_rate}
                     </span>
@@ -239,10 +232,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -269,10 +260,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.end_date}
                     </span>

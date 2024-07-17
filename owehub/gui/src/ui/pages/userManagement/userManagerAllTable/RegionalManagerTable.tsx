@@ -31,7 +31,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-  let sortedData = [...data]
+  let sortedData = [...data];
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -107,14 +107,13 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                         checked={selectedRows.has(i)}
                         onChange={() => {
                           // If there's only one row of data and the user clicks its checkbox, select all rows
-                         
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            );
-                          
+
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          );
                         }}
                       />
                       {el.user_code}
@@ -150,10 +149,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
             ) : (
               <tr style={{ border: 0 }}>
                 <td colSpan={10}>
-                  <div className="data-not-found">
-                    <DataNotFound />
-                    <h3>Data Not Found</h3>
-                  </div>
+                  <DataNotFound />
                 </td>
               </tr>
             )}

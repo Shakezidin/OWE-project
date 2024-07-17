@@ -12,18 +12,20 @@ import { stateOption } from '../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { toast } from 'react-toastify';
- 
+
 const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const { userDetail, userUpdate,isFormSubmitting } = useAppSelector((state) => state.userSlice);
+  const { userDetail, userUpdate, isFormSubmitting } = useAppSelector(
+    (state) => state.userSlice
+  );
   const [name, setName] = useState<String>(userDetail?.name);
   const userRole = userDetail?.role_name;
   const userName = userDetail?.name;
   const [isEditMode, setIsEditMode] = useState(true);
   const [newFormData, setNewFormData] = useState<any>([]);
- 
+
   const tableData = {
     tableNames: [
       'partners',
@@ -34,7 +36,7 @@ const MyProfile = () => {
       'tier',
     ],
   };
- 
+
   useEffect(() => {
     dispatch(getUser({ page_number: 1, page_size: 10 }));
     fetchStateOptions()
@@ -45,7 +47,7 @@ const MyProfile = () => {
         console.error('Error fetching state options:', error);
       });
   }, []);
- 
+
   useEffect(() => {
     if (userDetail) {
       setStreet(userDetail?.street_address || '');
@@ -55,14 +57,14 @@ const MyProfile = () => {
       setCountry(userDetail?.country || '');
     }
   }, [userDetail]);
- 
+
   useEffect(() => {
     if (userName) {
       const firstLetter = userName.charAt(0).toUpperCase();
       setName(firstLetter);
     }
   }, [userName]);
- 
+
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setNewFormData(res.data);
@@ -70,7 +72,7 @@ const MyProfile = () => {
   useEffect(() => {
     getNewFormData();
   }, []);
- 
+
   const updateSubmit = () => {
     const data = {
       user_code: userDetail.user_code,
@@ -86,7 +88,7 @@ const MyProfile = () => {
       setIsEditMode(!isEditMode);
     });
   };
- 
+
   const handleReset = () => {
     setCity(userDetail.city);
     setStreet(userDetail.street_address);
@@ -95,18 +97,18 @@ const MyProfile = () => {
     setState(userDetail.state);
   };
 
-  const handleStreetChange = (e:any) => {
+  const handleStreetChange = (e: any) => {
     const value = e.target.value;
-    const streetRegex = /^[a-zA-Z0-9\s,.'-]{0,100}$/
-    if(streetRegex.test(value)){
+    const streetRegex = /^[a-zA-Z0-9\s,.'-]{0,100}$/;
+    if (streetRegex.test(value)) {
       setStreet(value);
-      setErrors({...errors, street: ''})
-    }else{
-      setErrors({...errors, street: "Enter valid street"})
+      setErrors({ ...errors, street: '' });
+    } else {
+      setErrors({ ...errors, street: 'Enter valid street' });
     }
-  }
+  };
 
-  const handleCityChange = (e:any) => {
+  const handleCityChange = (e: any) => {
     const value = e.target.value;
     const cityRegex = /^[a-zA-Z\u0080-\u024F\s'-]{0,100}$/;
 
@@ -118,7 +120,7 @@ const MyProfile = () => {
     }
   };
 
-  const handleCountryChange = (e:any) => {
+  const handleCountryChange = (e: any) => {
     const value = e.target.value;
     const countryRegex = /^[a-zA-Z\u0080-\u024F\s'-]{0,100}$/;
 
@@ -129,30 +131,30 @@ const MyProfile = () => {
       setErrors({ ...errors, country: 'Enter valid country' });
     }
   };
- 
+
   const fetchStateOptions = async () => {
     const response = await fetch('https://api.example.com/states');
     const data = await response.json();
     return data.map((state: string) => ({ value: state, label: state }));
   };
- 
+
   const handleStateChange = (selectedOption: any) => {
     setSelectedState(selectedOption.value);
   };
- 
+
   const [city, setCity] = useState(userDetail?.city || '');
   const [street, setStreet] = useState(userDetail?.street_address || '');
   // const [zipCode, setZipCode] = useState(userDetail?.zipcode || '');
   const [country, setCountry] = useState(userDetail?.country || '');
   const [state, setState] = useState(userDetail?.state || '');
- 
+
   const [errors, setErrors] = useState({
     street: '',
     country: '',
     city: '',
     state: '',
   });
- 
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isEditMode) {
@@ -164,11 +166,9 @@ const MyProfile = () => {
       };
       setErrors(newErrors);
       // @ts-ignore
-      if(Object.keys(newErrors).every(it=>!newErrors[it])){
-        updateSubmit()
+      if (Object.keys(newErrors).every((it) => !newErrors[it])) {
+        updateSubmit();
       }
-       // @ts-ignore
-      console.log(Object.keys(newErrors).every(it=>!newErrors[it]),"errr")
     }
   };
   return (
@@ -180,7 +180,7 @@ const MyProfile = () => {
           </div>
           <div className="admin-section">
             <div className="profile-img">{name}</div>
- 
+
             <div className="caleb-container">
               <div className="caleb-section">
                 <h3>{userName}</h3>
@@ -188,7 +188,7 @@ const MyProfile = () => {
               </div>
             </div>
           </div>
- 
+
           <div className="Personal-container">
             <div className="personal-section">
               <div className="">
@@ -199,7 +199,7 @@ const MyProfile = () => {
                 <p>Edit</p>
               </div> */}
             </div>
- 
+
             <div
               className="create-input-container"
               style={{ padding: '0.5rem', marginLeft: '1rem' }}
@@ -262,7 +262,7 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: '0.5rem', marginLeft: '1rem'}}
+              style={{ padding: '0.5rem', marginLeft: '1rem' }}
             >
               <div className="create-input-field-address">
                 <Input
@@ -285,18 +285,16 @@ const MyProfile = () => {
                 <SelectOption
                   options={stateOption(newFormData)}
                   onChange={(newValue) => {
-                    setState(newValue?.value)
-                    setErrors(prev=>({...prev,state:""}))
+                    setState(newValue?.value);
+                    setErrors((prev) => ({ ...prev, state: '' }));
                   }}
                   value={stateOption(newFormData)?.find(
                     (option) => option.value === state
                   )}
-                  singleValueStyles={{fontWeight:400}}
+                  singleValueStyles={{ fontWeight: 400 }}
                   disabled={isEditMode}
                 />
-                {errors.state && (
-                  <span className="error">{errors.state}</span>
-                )}
+                {errors.state && <span className="error">{errors.state}</span>}
               </div>
               <div className="create-input-field-address">
                 <Input
@@ -310,7 +308,7 @@ const MyProfile = () => {
                 />
                 {errors.city && <span className="error">{errors.city}</span>}
               </div>
-              <div className="create-input-field-address" >
+              <div className="create-input-field-address">
                 <Input
                   type={'text'}
                   label="Country"
@@ -339,8 +337,7 @@ const MyProfile = () => {
                 title={'Update'}
                 type="submit"
                 disabled={isFormSubmitting}
-                onClick={() => {
-                }}
+                onClick={() => {}}
               />
             </div>
           </div>
@@ -349,5 +346,5 @@ const MyProfile = () => {
     </>
   );
 };
- 
+
 export default MyProfile;

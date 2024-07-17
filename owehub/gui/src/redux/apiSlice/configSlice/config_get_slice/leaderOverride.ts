@@ -56,10 +56,11 @@ const leaderOverride = createSlice({
       .addCase(createleaderOverride.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Form submission completed');
+        // toast.success('Form submission completed');
       })
       .addCase(createleaderOverride.rejected, (state, action) => {
         state.isFormSubmitting = false;
+        state.isSuccess = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
         console.log('error block');
@@ -69,7 +70,7 @@ const leaderOverride = createSlice({
         state.isFormSubmitting = true;
       })
       .addCase(updateleaderOverride.fulfilled, (state, action) => {
-        toast.success('Form submission completed');
+        // toast.success('Leader Override updated successfully');
         state.isFormSubmitting = false;
         state.isSuccess = true;
       })

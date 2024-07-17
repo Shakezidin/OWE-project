@@ -66,7 +66,7 @@ import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
 import AdderData from './ui/pages/configure/adderData/AdderData';
 import ApRep from './ui/pages/configure/apRep/ApRep';
-import BatteryBackup from "./ui/pages/batterBackupCalculator"
+import BatteryBackup from './ui/pages/batterBackupCalculator';
 import BatteryAmp from './ui/pages/batterBackupCalculator/components/BatteryAmp';
 import SrImageUpload from './ui/pages/SrImageUpload/SrImageUpload';
 import Dba from './ui/pages/configure/dba/dba';
@@ -80,6 +80,7 @@ import ApOth from './ui/pages/configure/apOth/ApOth';
 import ApPda from './ui/pages/configure/apPda/ApPda';
 import TeamManagement from './ui/pages/teammanagement/dashboard';
 import TeamTable from './ui/pages/teammanagement/teamtable';
+import Leaderboard from './ui/pages/leaderboard';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -150,16 +151,15 @@ function App() {
         <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData />} />
 
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
-        <Route path = {ROUTES.CONFIG_APREP} element={<ApRep/>}/>
-        <Route path={ROUTES.CONFIG_DBA} element={<Dba/>}/>
-        <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit/>}/>
-        <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus/>}/>
-        <Route path = {ROUTES.CONFIG_REPINCENT} element={<RepIncent/>}/>
-        <Route path = {ROUTES.CONFIG_APADV} element={<ApAdv/>}/>
-        <Route path = {ROUTES.CONFIG_APDED} element={<ApDed/>}/>
-        <Route path = {ROUTES.CONFIG_APOTH} element={<ApOth/>}/>
-        <Route path = {ROUTES.CONFIG_APPDA} element={<ApPda/>}/>
-      
+        <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
+        <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
+        <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit />} />
+        <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus />} />
+        <Route path={ROUTES.CONFIG_REPINCENT} element={<RepIncent />} />
+        <Route path={ROUTES.CONFIG_APADV} element={<ApAdv />} />
+        <Route path={ROUTES.CONFIG_APDED} element={<ApDed />} />
+        <Route path={ROUTES.CONFIG_APOTH} element={<ApOth />} />
+        <Route path={ROUTES.CONFIG_APPDA} element={<ApPda />} />
       </Route>
     );
   };
@@ -244,7 +244,6 @@ function App() {
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
-
           {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
@@ -282,17 +281,17 @@ function App() {
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
-          <Route path={ROUTES.TEAM_MANAGEMENT_DASHBOARD} element={<TeamManagement/>}/>
-          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable/>}/>
-           
+          <Route
+            path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
+            element={<TeamManagement />}
+          />
+          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} />
+          <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
         </Route>
-        <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
-        <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp/>}/>
-        <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload/>}/>
-        <Route path={ROUTES.NOT_FOUND} element={
-          <NotFound/>
-        } />
-        
+        <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
+        <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
+        <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
+        <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

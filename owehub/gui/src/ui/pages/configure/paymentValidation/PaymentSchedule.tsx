@@ -10,11 +10,8 @@ import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { PayScheduleColumns } from '../../../../resources/static_data/configureHeaderData/PayScheduleColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import FilterModal from '../../../components/FilterModal/FilterModal';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
@@ -25,7 +22,11 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { dateFormat } from '../../../../utiles/formatDate';
-import { errorSwal, showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -78,6 +79,16 @@ const PaymentSchedule = () => {
     setCurrentPage(currentPage - 1);
   };
 
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  const currentPageData = payScheduleList?.slice();
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === payScheduleList?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+
+  const endIndex = currentPage * itemsPerPage;
+
   const handleAddPaySchedule = () => {
     setEditMode(false);
     setEditedPaySchedule(null);
@@ -89,13 +100,7 @@ const PaymentSchedule = () => {
     setEditedPaySchedule(payEditedData);
     handleOpen();
   };
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * itemsPerPage;
-  const currentPageData = payScheduleList?.slice();
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === payScheduleList.length;
+ 
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -178,39 +183,37 @@ const PaymentSchedule = () => {
     }
   };
   const handleArchiveClick = async (record_id: any) => {
-
     const confirmed = await showAlert(
       'Are Your Sure',
       'This Action will archive your data',
       'Yes',
       'No'
     );
-    if(confirmed){
+    if (confirmed) {
       const archived: number[] = [record_id];
       let newValue = {
         record_id: archived,
         is_archived: true,
       };
-    
-    
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-      filters,
-    };
-    const res = await postCaller(
-      EndPoints.update_paymentschedule_archive,
-      newValue
-    );
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchPaySchedule(pageNumber));
-      setSelectedRows(new Set());
-      setSelectAllChecked(false);
-      await successSwal('Archived', 'The data has been archived ');
-    } else {
-      await errorSwal('Failed', 'Something went wrong');
+
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        filters,
+      };
+      const res = await postCaller(
+        EndPoints.update_paymentschedule_archive,
+        newValue
+      );
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchPaySchedule(pageNumber));
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
+        await successSwal('Archived', 'The data has been archived ');
+      } else {
+        await errorSwal('Failed', 'Something went wrong');
+      }
     }
-  }
   };
 
   const handleViewArchiveToggle = () => {
@@ -291,7 +294,7 @@ const PaymentSchedule = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {(!viewArchived && selectedRows.size<2) && (
+                {!viewArchived && selectedRows.size < 2 && (
                   <th>
                     <div className="action-header">
                       <p>Action</p>
@@ -369,34 +372,34 @@ const PaymentSchedule = () => {
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-        {payScheduleList?.length > 0 ? (
-          <div className="page-heading-container">
-            <p className="page-heading">
-              {currentPage} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
-              {totalCount} item
-            </p>
+        <div className="page-heading-container">
+          {payScheduleList?.length > 0 ? (
+            <>
+              <p className="page-heading">
+                Showing {startIndex} -{' '}
+                {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
+                item
+              </p>
 
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
-          </div>
-        ) : null}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </>
+          ) : null}
+        </div>
       </div>
     </div>
   );

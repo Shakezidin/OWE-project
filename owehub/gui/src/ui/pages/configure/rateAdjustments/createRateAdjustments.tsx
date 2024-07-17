@@ -43,7 +43,6 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
   const { isFormSubmitting } = useAppSelector((state) => state.rateAdjustment);
   const [createRateAdjustmentData, setCreateRateAdjustmentPayData] =
     useState<rateAdjustmentModel>({
-
       pay_scale: editData?.pay_scale || '',
       position: editData?.position || '',
       adjustment: editData?.adjustment || '',
@@ -61,8 +60,9 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
       if (
         !createRateAdjustmentData[key as keyof typeof createRateAdjustmentData]
       ) {
-        error[key as keyof typeof createRateAdjustmentData] =
-          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof createRateAdjustmentData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -125,8 +125,6 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-               
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -140,10 +138,8 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.position}
                     </span>
@@ -162,10 +158,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.adjustment}
                     </span>
@@ -184,10 +178,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.pay_scale}
                     </span>
@@ -196,7 +188,6 @@ className="error"
               </div>
 
               <div className="create-input-container">
-                
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -210,10 +201,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.min_rate}
                     </span>
@@ -232,10 +221,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.max_rate}
                     </span>

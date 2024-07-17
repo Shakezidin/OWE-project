@@ -250,7 +250,7 @@
 }
 
 @media (max-width: 1024px) {
-  .side-bar-active{
+  .side-bar-active {
     width: auto;
   }
   .side-bar-container {
@@ -265,10 +265,10 @@
     padding-inline: 1rem;
     border-right: 1px solid #f0f0f0;
   }
-  .hidden{
+  .hidden {
     transform: translateX(-100%);
   }
-  .show{
+  .show {
     transform: translateX(-4%);
   }
 }

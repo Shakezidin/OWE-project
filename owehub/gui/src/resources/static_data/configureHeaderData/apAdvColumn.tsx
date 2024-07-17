@@ -34,6 +34,4 @@ export const ApAdvColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  
- 
 ];

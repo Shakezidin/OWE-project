@@ -37,7 +37,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   const [newFormData, setNewFormData] = useState({
     dealerName: '',
     installerName: '',
-    loanType: 'P123',
+    loanType: '',
     dlrMu: '',
     dlrCost: '',
     startDate: '',
@@ -74,15 +74,17 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         continue;
       }
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] = firstCapitalize(`${key} is required`);
+        error[key as keyof typeof newFormData] = firstCapitalize(
+          `${key} is required`
+        );
       }
     }
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
   };
   React.useEffect(() => {
-    if(editMode){
-      console.log("jhgfgj", editData?.dealer);
+    if (editMode) {
+      console.log('jhgfgj', editData?.dealer);
       setNewFormData({
         dealerName: editData?.dealer || '',
         installerName: editData?.installer || '',
@@ -95,7 +97,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         oweCost: editData?.owe_cost ? `${editData?.owe_cost}` : '',
       });
     }
-    
+
     getNewFormData();
   }, [editMode, editData]);
   console.log(newFormData, 'formdddd');
@@ -165,6 +167,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
       }
     }
   };
+console.log(errors,"errors");
 
   return (
     <div className="transparent-model">
@@ -194,12 +197,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"DLR MU is required"}
+                      {'DLR MU is required'}
                     </span>
                   )}
                 </div>
@@ -214,20 +215,22 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                         dealerName: newValue?.value!,
                       }));
                     }}
-                    value={!newFormData.dealerName ? undefined: dealerOption(newFormData)?.find(
-                      (option) => option.value === newFormData.dealerName
-                    )}
+                    value={
+                      !newFormData.dealerName
+                        ? undefined
+                        : dealerOption(newFormData)?.find(
+                            (option) => option.value === newFormData.dealerName
+                          )
+                    }
                   />
                   {errors?.dealerName && (
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"Dealer Name is required"}
+                      {'Dealer Name is required'}
                     </span>
                   )}
                 </div>
@@ -250,12 +253,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"State is required"}
+                      {'State is required'}
                     </span>
                   )}
                 </div>
@@ -280,12 +281,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"Loan Type is required"}
+                      {'Loan Type is required'}
                     </span>
                   )}
                 </div>
@@ -311,12 +310,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"Installer is required"}
+                      {'Installer is required'}
                     </span>
                   )}
                 </div>
@@ -341,12 +338,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"DLR Cost is required"}
+                      {'DLR Cost is required'}
                     </span>
                   )}
                 </div>
@@ -373,12 +368,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"Owe Cost is required"}
+                      {'Owe Cost is required'}
                     </span>
                   )}
                 </div>
@@ -402,12 +395,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"Start Date is required"}
+                      {'Start Date is required'}
                     </span>
                   )}
                 </div>
@@ -433,12 +424,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-
-
                       }}
                       className="error"
                     >
-                      {"End Date is required"}
+                      {'End Date is required'}
                     </span>
                   )}
                 </div>
@@ -456,7 +445,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             disabled={isFormSubmitting}
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

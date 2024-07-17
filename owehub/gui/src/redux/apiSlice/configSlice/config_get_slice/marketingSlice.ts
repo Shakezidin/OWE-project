@@ -7,13 +7,13 @@ interface MarketingState {
   marketing_fees_list: MarketingFeeModel[];
   loading: boolean;
   error: string | null;
-  totalCount:number
+  totalCount: number;
 }
 const initialState: MarketingState = {
   marketing_fees_list: [],
   loading: false,
   error: null,
-  totalCount:0
+  totalCount: 0,
 };
 
 export const fetchmarketingFees = createAsyncThunk(
@@ -47,7 +47,7 @@ const marketingSlice = createSlice({
         } else {
           state.marketing_fees_list = [];
         }
-        state.totalCount = action.payload.dbRecCount
+        state.totalCount = action.payload.dbRecCount;
       })
       .addCase(fetchmarketingFees.rejected, (state, action) => {
         state.loading = false;

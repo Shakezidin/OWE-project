@@ -50,9 +50,9 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
     const error: typeof newFormData = {} as typeof newFormData;
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] =
-          firstCapitalize
-          (`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof typeof newFormData] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -68,8 +68,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
       name === 'adder_cal'
     ) {
       const sanitized = value.replace(/[^0-9.]/g, '');
-        setNewFormData((prev) => ({ ...prev, [name]: sanitized }));
-      
+      setNewFormData((prev) => ({ ...prev, [name]: sanitized }));
     } else {
       setNewFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -140,10 +139,8 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -162,10 +159,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.type}
                     </span>
@@ -184,10 +179,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.date}
                     </span>
@@ -203,23 +196,14 @@ className="error"
                     value={newFormData.gc}
                     name="gc"
                     placeholder={'Enter'}
-                    onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(
-                        /[^0-9.]/g,
-                        ''
-                      );
-                      e.target.value = sanitizedValue;
-                      handleChange(e);
-                    }}
+                    onChange={handleChange}
                   />
                   {errors?.gc && (
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.gc}
                     </span>
@@ -245,10 +229,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.exact_amount}
                     </span>
@@ -274,10 +256,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.per_kw_amt}
                     </span>
@@ -307,10 +287,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.rep_percent}
                     </span>
@@ -330,10 +308,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.description}
                     </span>
@@ -353,10 +329,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                 
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.notes}
                     </span>

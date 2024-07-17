@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { CiEdit } from 'react-icons/ci';
 import '../configure.css';
-import { RiDeleteBin5Line } from 'react-icons/ri';
-// import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { getrefralData } from '../../../../redux/apiActions/config/refralDataAction';
-
-// import FilterCommission from "./FilterCommission";
-
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreateReferalData from './CreateReferalData';
 import Loading from '../../../components/loader/Loading';
@@ -32,14 +20,10 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
+import { checkLastPage } from '../../../../utiles';
 
 const ReferalData: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -51,7 +35,9 @@ const ReferalData: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const { data, count, isLoading } = useAppSelector((state) => state.refralDataSlice);
+  const { data, count, isLoading } = useAppSelector(
+    (state) => state.refralDataSlice
+  );
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -64,7 +50,7 @@ const ReferalData: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [refresh, setRefresh] = useState(1)
+  const [refresh, setRefresh] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -108,7 +94,7 @@ const ReferalData: React.FC = () => {
   };
 
   const currentPageData = data?.slice();
-  console.log("refer", data)
+  console.log('refer', data);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data.length;
   const handleSort = (key: any) => {
@@ -141,6 +127,14 @@ const ReferalData: React.FC = () => {
     });
   }
 
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setCurrentPage(1);
+    setSelectAllChecked(false);
+  };
+
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
@@ -158,17 +152,72 @@ const ReferalData: React.FC = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller(
-        "update_referraldata_archive",
-        newValue
-      );
+      const res = await postCaller('update_referraldata_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
+      }
+    }
+  };
+
+  const handleArchiveAllClick = async () => {
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive all selected rows',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
+      const archivedRows = Array.from(selectedRows).map(
+        //@ts-ignore
+        (index) => data[index].record_id
+      );
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true,
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          filters,
+        };
+
+        const res = await postCaller('update_reconcile_archive', newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchDealer(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(
+            //@ts-ignore
+            (index) => !archivedRows.includes(data[index].RecordId)
+          );
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(false);
+          setSelectedRows(new Set());
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
+
+          await successSwal('Archived', 'The data has been archived ');
+        } else {
+          await successSwal('Archived', 'The data has been archived ');
+        }
       }
     }
   };
@@ -185,6 +234,7 @@ const ReferalData: React.FC = () => {
       </div>
     );
   }
+  const notAllowed = selectedRows.size > 1;
 
   return (
     <div className="comm">
@@ -192,18 +242,18 @@ const ReferalData: React.FC = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Referal Data"
+        linkparaSecond="Referral Data"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Referal Data"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          title="Referral Data"
+          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           checked={isAllRowsSelected}
-          isAnyRowSelected={isAnyRowSelected}
           viewArchive={viewArchived}
+          isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
@@ -247,7 +297,7 @@ const ReferalData: React.FC = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={commissionList}
+                    data={currentPageData}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -263,7 +313,7 @@ const ReferalData: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -293,84 +343,50 @@ const ReferalData: React.FC = () => {
                             )
                           }
                         />
-                        {el.new_customer || 'N/A'}
+                        {el.unique_id || 'N/A'}
                       </div>
                     </td>
-
+                    <td>{el.new_customer || 'N/A'}</td>
                     <td>{el.referrer_serial || 'N/A'}</td>
                     <td>{el.referrer_name || 'N/A'}</td>
                     <td>{el.amount || 'N/A'}</td>
                     <td>{el.rep_doll_divby_per || 'N/A'}</td>
                     <td>{el.notes || 'N/A'}</td>
-                    <td>{el.type || 'N/A'}</td>
-                    <td>{el.rep_1_name || 'N/A'}</td>
-                    <td>{el.rep_2_name || 'N/A'}</td>
-                    <td>{el.sys_size || 'N/A'}</td>
-                    <td>{el.state || 'N/A'}</td>
-                    <td>{el.rep_count || 'N/A'}</td>
-                    <td>{el.per_rep_addr_share || 'N/A'}</td>
-                    <td>{el.per_rep_ovrd_share || 'N/A'}</td>
-                    <td>{el.per_rep_ovrd_share || 'N/A'}</td>
-                    <td>{el.per_rep_addr_share || 'N/A'}</td>
-                    <td>{el.r1_pay_scale || 'N/A'}</td>
-                    <td>{el.r1_referral_credit_$ || 'N/A'}</td>
-                    <td>{el.r1_referral_credit_perc || 'N/A'}</td>
-                    <td>{el.r1_addr_resp || 'N/A'}</td>
-                    <td>{el.r2_pay_scale || 'N/A'}</td>
-                    <td>{el.r2_referral_credit_$ || 'N/A'}</td>
-                    <td>{el.r2_referral_credit_perc || 'N/A'}</td>
-                    <td>{el.r2_addr_resp || 'N/A'}</td>
-                    <td>{el.r2_addr_resp || 'N/A'}</td>
                     <td>{el.start_date || 'N/A'}</td>
-                    <td>{el.end_date || 'N/A'}</td>
                     <td>
-                      {selectedRows.size > 0 ? (
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'not-allowed' }}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            {/* <span className="tooltiptext">Archive</span> */}
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'not-allowed' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
+                          {/* <span className="tooltiptext">Archive</span> */}
                         </div>
-                      ) : (
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            {/* <span className="tooltiptext">Archive</span> */}
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleEditCommission(el)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
-                          </div>
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleEditCommission(el)
+                          }
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                          {/* <span className="tooltiptext">Edit</span> */}
                         </div>
-                      )}
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
+                    <DataNotFound />
                   </td>
                 </tr>
               )}
@@ -380,8 +396,8 @@ const ReferalData: React.FC = () => {
         {data?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex > count ? count : endIndex} of{' '}
-              {count} item
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
             </p>
 
             <Pagination

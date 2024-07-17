@@ -52,7 +52,9 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
       }
       if (!createAdderResponsbilityData[key as keyof TError]) {
         // @ts-ignore
-        error[key as keyof TError] = firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
+        error[key as keyof TError] = firstCapitalize(
+          `${key.replaceAll('_', ' ')} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -129,10 +131,8 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.pay_scale}
                     </span>
@@ -152,10 +152,8 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                       
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.percentage}
                     </span>

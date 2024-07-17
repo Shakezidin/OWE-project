@@ -201,10 +201,10 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.state_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rt.rep_type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "position":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.position) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -219,14 +219,7 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 				filtersBuilder.WriteString(fmt.Sprintf("rs.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				// For other columns, handle them accordingly
-				filtersBuilder.WriteString("LOWER(")
-				filtersBuilder.WriteString(column)
-				filtersBuilder.WriteString(") ")
-				filtersBuilder.WriteString(operator)
-				filtersBuilder.WriteString(" LOWER($")
-				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
-				filtersBuilder.WriteString(")")
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

@@ -30,6 +30,7 @@ type RepPay struct {
 	Amount        float64   `json:"amount"`
 	FinanceType   string    `json:"finance_type"`
 	SysSize       float64   `json:"sys_size"`
+	ContractTotal float64   `json:"contract_total"`
 	LoanFee       float64   `json:"loan_fee"`
 	EPC           float64   `json:"epc"`
 	Adders        float64   `json:"adders"`
@@ -47,7 +48,6 @@ type RepPay struct {
 	MaxPerRep     float64   `json:"max_per_rep"`
 	TotalPerRep   float64   `json:"total_per_rep"`
 }
-
 
 /******************************************************************************
 / * FUNCTION:		GetRepPayFromView
@@ -241,6 +241,13 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 					repPay.SysSize = v
 				} else {
 					repPay.SysSize = 0
+				}
+			case "contract_total":
+				repPay.ContractTotal = value.(float64)
+				if v, ok := value.(float64); ok {
+					repPay.ContractTotal = v
+				} else {
+					repPay.ContractTotal = 0
 				}
 			case "loan_fee":
 				if v, ok := value.(float64); ok {
@@ -542,12 +549,12 @@ func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, for
 		case "subtotal":
 			filtersBuilder.WriteString(fmt.Sprintf(" rep.subtotal %s $%d", operator, len(whereEleList)+1))
 			whereEleList = append(whereEleList, value)
-		// case "max_per_rep":
-		// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.max_per_rep %s $%d", operator, len(whereEleList)+1))
-		// 	whereEleList = append(whereEleList, value)
-		// case "total_per_rep":
-		// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.total_per_rep %s $%d", operator, len(whereEleList)+1))
-		// 	whereEleList = append(whereEleList, value)
+			// case "max_per_rep":
+			// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.max_per_rep %s $%d", operator, len(whereEleList)+1))
+			// 	whereEleList = append(whereEleList, value)
+			// case "total_per_rep":
+			// 	filtersBuilder.WriteString(fmt.Sprintf(" rep.total_per_rep %s $%d", operator, len(whereEleList)+1))
+			// 	whereEleList = append(whereEleList, value)
 		}
 	}
 
