@@ -13,6 +13,7 @@ import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { ROUTES } from '../../../routes/routes';
 import { BrowserRouter as Router, Route, useParams, useLocation } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
+import DataNotFound from '../../components/loader/DataNotFound';
 
 interface User {
   name: string;
@@ -195,7 +196,11 @@ const TeamTable: React.FC = () => {
                         </td>
                       </tr>
                     ))
-                  : null}
+                  : <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <DataNotFound />
+                  </td>
+                </tr>}
               </tbody>
             </table>
           </div>
