@@ -56,7 +56,7 @@ const adderResponsibility = createSlice({
       .addCase(createAdderResponsibility.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success(`Form submitted successfully`);
+        toast.success(`Adder Responsibility created successfully`);
       })
       .addCase(createAdderResponsibility.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -69,7 +69,7 @@ const adderResponsibility = createSlice({
       .addCase(updateAdderResponsibility.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success(`Form submitted successfully`);
+        toast.success(`Adder Responsibility updated successfully`);
       })
       .addCase(updateAdderResponsibility.rejected, (state, action) => {
         state.isFormSubmitting = false;

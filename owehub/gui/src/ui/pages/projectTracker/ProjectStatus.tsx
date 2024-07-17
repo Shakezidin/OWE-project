@@ -20,6 +20,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { toast } from 'react-toastify';
+import Proj_pie_chart from './lib/proj_pie_chart';
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -586,18 +587,20 @@ const ProjectStatus = () => {
             </div>
           </div>
           <div className="pl2 flex-auto">
+
             <div
               className="bg-white rounded-16 flex items-center justify-center"
-              style={{ height: '100%' }}
+              style={{ display:"flex", flexDirection: "column", height: '100%', alignItems: 'center' }}
             >
-              <img
+              {/* <img
                 className=" mx-auto"
                 style={{ objectFit: 'contain' }}
                 width={300}
                 height={231}
                 src={project_management_chart}
                 alt=""
-              />
+              /> */}
+              <Proj_pie_chart />
             </div>
           </div>
         </div>
@@ -727,19 +730,19 @@ const ProjectStatus = () => {
                                       {!(
                                         el.key &&
                                         projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                        el.key as keyof typeof projectDetail
                                         ]
                                       ) && (
-                                        <span
-                                          className="date-para"
-                                          style={{
-                                            color: el.color,
-                                            fontSize: '9px',
-                                          }}
-                                        >
-                                          ETA
-                                        </span>
-                                      )}
+                                          <span
+                                            className="date-para"
+                                            style={{
+                                              color: el.color,
+                                              fontSize: '9px',
+                                            }}
+                                          >
+                                            ETA
+                                          </span>
+                                        )}
                                       <p
                                         style={{
                                           color: el.color,
@@ -747,22 +750,22 @@ const ProjectStatus = () => {
                                         }}
                                       >
                                         {el.key &&
-                                        projectDetail[
+                                          projectDetail[
                                           el.key as keyof typeof projectDetail
-                                        ]
+                                          ]
                                           ? format(
-                                              new Date(
-                                                projectDetail[
-                                                  el.key as keyof typeof projectDetail
-                                                ]
-                                              ),
-                                              'dd MMMM'
-                                            ).slice(0, 6)
+                                            new Date(
+                                              projectDetail[
+                                              el.key as keyof typeof projectDetail
+                                              ]
+                                            ),
+                                            'dd MMMM'
+                                          ).slice(0, 6)
                                           : 'N/A'}
                                       </p>
                                       {el.key &&
                                         projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                        el.key as keyof typeof projectDetail
                                         ] && (
                                           <p
                                             className="stage-1-para"
@@ -775,7 +778,7 @@ const ProjectStatus = () => {
                                             {format(
                                               new Date(
                                                 projectDetail[
-                                                  el.key as keyof typeof projectDetail
+                                                el.key as keyof typeof projectDetail
                                                 ]
                                               ),
                                               'yyyy'

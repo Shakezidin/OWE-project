@@ -56,7 +56,7 @@ const apRepSlice = createSlice({
       .addCase(createApRep.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Form submitted successfully');
+        toast.success('Ap-Rep created successfully');
       })
       .addCase(createApRep.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -69,7 +69,7 @@ const apRepSlice = createSlice({
       .addCase(updateApRep.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Details updated successfully');
+        toast.success('Ap-Rep updated successfully');
       })
       .addCase(updateApRep.rejected, (state, action) => {
         state.isFormSubmitting = false;

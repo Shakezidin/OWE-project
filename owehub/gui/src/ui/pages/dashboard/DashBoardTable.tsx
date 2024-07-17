@@ -213,14 +213,14 @@ const DashBoardTable = ({
                           </span>
                         )}
                       </td> */}
-                    <td>{el.epc}</td>
-                    <td>{el.net_epc}</td>
-                    <td>{el.net_rev}</td>
-                    <td>{el.current_status}</td>
-                    <td>{el.state}</td>
+                    <td>{el.epc || 'N/A'}</td>
+                    <td>{el.net_epc || 'N/A'}</td>
+                    <td>{el.net_rev || 'N/A'}</td>
+                    <td>{el.current_status || 'N/A'}</td>
+                    <td>{el.state || 'N/A'}</td>
                     <td>{el.dba || 'N/A'}</td>
-                    <td>{el.status_date}</td>
-                    <td>{el.sys_size}</td>
+                    <td>{el.status_date || 'N/A'}</td>
+                    <td>{el.sys_size || 'N/A'}</td>
                     <td>{el.loan_fee || 'N/A'}</td>
                     <td>{el.draw_amt || 'N/A'}</td>
                     <td>{el.rl || 'N/A'}</td>
