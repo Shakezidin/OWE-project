@@ -16,9 +16,13 @@ type PerfomanceStatusReq struct {
 	ProjectLimit int
 	DealerName   interface{}
 	IntervalDays string
+	ItemLastSeen int64  `json:"item_last_seen"`
+	StartDate    string `json:"start_date"`
+	EndDate      string `json:"end_date"`
 }
 
 type PerfomanceResponse struct {
+	ItemId                 int64  `json:"item_id"`
 	UniqueId               string `json:"unqiue_id"`
 	Customer               string `json:"customer"`
 	ContractDate           string `json:"contract_date"`
@@ -106,7 +110,7 @@ type ProjectResponse struct {
 	SystemSize               float64 `json:"system_size"`
 	Adder                    string  `json:"adder"`
 	AHJ                      string  `json:"ajh"`
-	Epc                      float64  `json:"epc"`
+	Epc                      float64 `json:"epc"`
 	State                    string  `json:"state"`
 	ContractAmount           float64 `json:"contract_amount"`
 	FinancePartner           string  `json:"finance_partner"`
