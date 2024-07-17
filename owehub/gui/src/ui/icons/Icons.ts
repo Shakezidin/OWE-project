@@ -107,6 +107,9 @@ import teamgroup from '../../resources/assets/teamgroup.svg';
 import addicon from '../../resources/assets/addnew.svg';
 import TeamEdit from '../../resources/assets/TeamEdit.svg';
 import cutOff from '../../resources/assets/cutoff_icon.svg';
+import BannerLogo from '../../resources/assets/banner-logo.svg';
+import OWEBannerLogo from '../../resources/assets/owe-banner-logo.svg';
+import BannerTrophy from '../../resources/assets/banner-trophy.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -231,4 +234,7 @@ export const ICONS = {
   fil_white: fil_white,
   dbm: dbm,
   TeamEdit: TeamEdit,
+  BannerLogo: BannerLogo,
+  OWEBannerLogo: OWEBannerLogo,
+  BannerTrophy: BannerTrophy
 };
