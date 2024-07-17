@@ -1,0 +1,155 @@
+.leaderboard-category-container {
+  background-color: #f6f6f8;
+  border-radius: 4px;
+  overflow: hidden !important;
+}
+.leaderboard-category {
+  padding: 7px 18px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 500ms;
+}
+
+.leaderboard-category.category-active {
+  background-color: #ee824d;
+  color: #fff;
+  transition: all 500ms;
+}
+
+.leaderboard-table thead tr {
+  background-color: #f5f9ff;
+}
+.leaderboard-table thead tr th {
+  font-size: 14px;
+  font-weight: 600;
+  padding-block: 0;
+  padding-left: 3rem;
+}
+.leaderboard-table tbody tr td {
+  padding-left: 3rem;
+}
+.leaderboard-table-container {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.leaderboard-table tbody tr {
+  padding-block: 2rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #d8e7ff;
+}
+.leaderboard-table {
+  overflow-x: auto;
+}
+
+.leaderboard-table tbody tr:last-child {
+  border: none;
+}
+
+.leaderboard-table-container {
+  z-index: 10;
+}
+.leaderboard-table-container::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #d8e7ff;
+  border-top: none;
+  top: 46px;
+  pointer-events: none;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  z-index: 1;
+}
+
+.leaderboard-table tbody tr td {
+  font-size: 12px;
+  font-weight: 500;
+}
+.leaderbord-tab-container {
+  margin-block: 4px;
+}
+.leaderbord-tab-container .tab {
+  padding-block: 8px;
+  padding-inline: 24px;
+  margin: 0;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #000;
+  transition: all 500ms;
+}
+
+.leaderbord-tab-container .tab.activehead {
+  background-color: #ee824d;
+  color: #fff;
+  transition: all 500ms;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.user-profile-sidebar-fixed {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(42, 42, 42, 77);
+  z-index: 100;
+  overflow-y: auto;
+}
+.back-icon{
+  top: 80px;
+}
+
+.user-profile-sidebar-fixed .user-sidebar {
+  width: 408px;
+  min-height: 100vh;
+  overflow-y: auto;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 148, 205, 1) 30%,
+    rgba(255, 255, 255, 100%)
+  );
+  padding-inline: 22px;
+  padding-top: 128px;
+}
+
+.user-profile {
+  background-color: #fff;
+  padding-top: 30px;
+  border-radius: 12px;
+  padding-bottom: 26px;
+  padding-inline: 32px;
+
+}
+.user-card {
+  padding-left: 5px;
+  padding-right: 17px;
+  padding-top: 15px;
+  border: 1px solid #ffbc0f;
+  padding-bottom: 27px;
+  border-radius: 12px;
+}
+.user-name-wrapper {
+  border-bottom: 1px dashed #adadad;
+  padding-bottom: 16px;
+}
+
+.user-card  .card-label{
+color: #A3A3A3;
+font-size: 10px;
+}
+
+.user-card  .card-value{
+font-size: #434343;
+font-weight: 500;
+font-size: 14px;
+}
+.user-profile .stats-labels{
+    font-size: 11px;
+    color: #6D6D6D;
+    display: block;
+}
