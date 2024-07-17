@@ -21,7 +21,7 @@ type GetTeam struct {
 	TeamName     string `json:"team_name"`
 	TeamStrength int64  `json:"team_strength"`
 	Name         string `json:"name"`
-	ManagerId int64 `json:"manager_id"`
+	ManagerId    int64  `json:"manager_id"`
 }
 
 type GetTeams struct {
@@ -31,12 +31,15 @@ type GetTeams struct {
 //* induvidual team
 
 type GetTeamRequest struct {
-	TeamName  string `json:"team_name"`
-	ManagerId int64  `json:"manager_id"`
-	TeamId    int64  `json:"team_id"`
+	PageNumber int64  `json:"page_number"`
+	PageSize   int64  `jsob:"page_size"`
+	TeamName   string `json:"team_name"`
+	ManagerId  int64  `json:"manager_id"`
+	TeamId     int64  `json:"team_id"`
 }
 
 type GetRepResponse struct {
+	Id          int64  `json:"rep_id"`
 	SaleRepName string `json:"sale_rep_name"`
 	EmailId     string `json:"email_id"`
 	PhoneNumber string `json:"phone_number"`

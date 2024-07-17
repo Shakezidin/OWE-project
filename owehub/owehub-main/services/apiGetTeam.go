@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -73,12 +74,15 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		SELECT
 			name,
 			email_id,
-			mobile_number AS phone_number
+			mobile_number AS phone_number,
+			user_id
 			FROM
 					user_details
 			WHERE
-					team_id = $1;
+					team_id = $1 
 	`
+	filer, _ := PrepareTeamsFilters("", dataReq, true)
+	query = query + filer
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TeamId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
@@ -103,8 +107,14 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to get TeamId for Item: %+v\n", item)
 			continue
 		}
+		Id, ok := item["user_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Id for Item: %+v\n", item)
+			continue
+		}
 
 		usersData := models.GetRepResponse{
+			Id:          Id,
 			SaleRepName: name,
 			EmailId:     Email,
 			PhoneNumber: Phone,
@@ -122,4 +132,26 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(TeamResp.SaleRep), usersNameList)
 	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, TeamResp)
+}
+
+/******************************************************************************
+ * FUNCTION:		PrepareStateFilters
+ * DESCRIPTION:     handler for create select query
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func PrepareTeamsFilters(tableName string, dataFilter models.GetTeamRequest, forDataCount bool) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareFilters")
+	defer func() { log.ExitFn(0, "PrepareFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
+
+	filters = filtersBuilder.String()
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filtersBuilder.String())
+	return filters, whereEleList
 }
