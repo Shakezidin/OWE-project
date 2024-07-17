@@ -80,7 +80,7 @@ import ApOth from './ui/pages/configure/apOth/ApOth';
 import ApPda from './ui/pages/configure/apPda/ApPda';
 import TeamManagement from './ui/pages/teammanagement/dashboard';
 import TeamTable from './ui/pages/teammanagement/teamtable';
-
+import Leaderboard from "./ui/pages/leaderboard"
 
 function App() {
   const dispatch = useAppDispatch();
@@ -291,6 +291,7 @@ function App() {
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
+        <Route path={ROUTES.LEADERBOARD} element={<Leaderboard/>}/>
       </Routes>
     </BrowserRouter>
   );
