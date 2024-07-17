@@ -36,7 +36,7 @@ func (pRepName *RepNameStruct) LoadRRepNameCfg() (err error) {
 
 	query = `
 	SELECT dor.id as record_id, dor.rep_name, dor.status
-	FROM rep_name dor`
+	FROM rep_status dor`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -54,7 +54,7 @@ func (pRepName *RepNameStruct) LoadRRepNameCfg() (err error) {
 		}
 
 		// RepName
-		RepName, ok := item["rep_name"].(string)
+		RepName, ok := item["name"].(string)
 		if !ok || RepName == "" {
 			// log.FuncErrorTrace(0, "Failed to get sub dealer for Record ID %v. Item: %+v\n", RecordId, item)
 			RepName = ""
