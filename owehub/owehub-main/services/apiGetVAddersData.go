@@ -255,7 +255,7 @@ func PrepareVAdderFilters(tableName string, dataFilter models.DataRequestBody, f
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-			filtersBuilder.WriteString(fmt.Sprintf(" ORDER BY vadd.id OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 		}
 	}
 
