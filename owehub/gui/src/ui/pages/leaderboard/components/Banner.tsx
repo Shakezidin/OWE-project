@@ -29,7 +29,7 @@ const Banner = () => {
       </div>
       <div className="straight-line"></div>
       {/* right side  */}
-      <div className="flex items-center">
+      <div className="flex items-center banner-right">
         <div className="banner-names flex flex-column">
           <div>
             <p className="owner-heading">Owner Name</p>

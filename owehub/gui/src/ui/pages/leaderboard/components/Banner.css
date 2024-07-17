@@ -2,10 +2,10 @@
     height: 20vh;
     width: 100%;
     /* background-color: #44ADF9; */
-    /* background: linear-gradient(0deg, #215F9A 0%, #44ADF9 100%); */
     background: linear-gradient(0deg, #215F9A 0%, #44ADF9 100%);
     border-radius: 10px;
     margin-top: 30px;
+    position: relative;
 }
 .solar-heading{
     text-transform: uppercase;
@@ -14,10 +14,11 @@
 }
 .banner-left{
     gap: 1.5rem;
+    width: 60vw;
 }
 .left-ban-des{
     font-size: 0.8rem;
-    line-height: 14px;
+    line-height: 16px;
     margin-left: 5px;
     color: #fff;
     font-weight: 300;
@@ -31,8 +32,10 @@
         height: 120px; 
         background-color: #D9EDFA; 
         opacity: 0.2;
-        margin-left: 20rem;
-        margin-right: 5rem;
+        margin-right: 1.5rem;
+}
+.banner-right{
+    width: 40vw;
 }
 .banner-names{
     line-height: 16px;
@@ -48,4 +51,7 @@
 }
 .banner-trophy{
     align-self: flex-end;
+    position: absolute;
+    right: 0;
+    top: -30px;
 }
