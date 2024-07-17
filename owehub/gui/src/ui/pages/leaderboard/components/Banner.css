@@ -1,0 +1,51 @@
+.banner-main{
+    height: 20vh;
+    width: 100%;
+    /* background-color: #44ADF9; */
+    /* background: linear-gradient(0deg, #215F9A 0%, #44ADF9 100%); */
+    background: linear-gradient(0deg, #215F9A 0%, #44ADF9 100%);
+    border-radius: 10px;
+    margin-top: 30px;
+}
+.solar-heading{
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 500;
+}
+.banner-left{
+    gap: 1.5rem;
+}
+.left-ban-des{
+    font-size: 0.8rem;
+    line-height: 14px;
+    margin-left: 5px;
+    color: #fff;
+    font-weight: 300;
+}
+.left-ban-des span{
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.straight-line{
+        width: 1.5px;
+        height: 120px; 
+        background-color: #D9EDFA; 
+        opacity: 0.2;
+        margin-left: 20rem;
+        margin-right: 5rem;
+}
+.banner-names{
+    line-height: 16px;
+    gap: 0.7rem;
+}
+.owner-heading{
+    color: #DEDEDE;
+    font-size: 0.7rem;
+}
+.owner-names{
+    color: #fff;
+    font-size: 0.9rem;
+}
+.banner-trophy{
+    align-self: flex-end;
+}

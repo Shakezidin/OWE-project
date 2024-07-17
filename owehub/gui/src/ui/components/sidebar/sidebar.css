@@ -9,11 +9,39 @@
   position: fixed;
   margin-top: 82px;
   top: 0;
-  height: 100vh;
   flex-direction: column;
-  overflow-y: scroll !important;
   scroll-behavior: unset;
   scrollbar-width: 0;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  height: 80vh;
+}
+
+.side-bar-container::-webkit-scrollbar {
+  width: 7px;
+  height: 10px;
+}
+.side-bar-container::-webkit-scrollbar {
+  display: initial;
+}
+
+.side-bar-container::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.side-bar-container::-webkit-scrollbar-button {
+  display: initial;
+}
+.side-bar-container::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.side-bar-container::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+.side-bar-container-active {
+  transition: 0.4s all linear;
 }
 
 .side-bar-active {
@@ -102,9 +130,6 @@
   flex-direction: column;
 }
 
-.side-bar-content-active {
-  transition: 0.4s all linear;
-}
 .heading-container {
   display: flex;
   align-items: center;
