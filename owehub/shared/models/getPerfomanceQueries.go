@@ -62,8 +62,12 @@ func SalesMetricsRetrieveQueryFunc() string {
 
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT unique_id, home_owner
-        FROM internal_ops_metrics_schema
+        SELECT intOpsMetSchema.unique_id, intOpsMetSchema.home_owner
+        FROM internal_ops_metrics_schema intOpsMetSchema
+        WHERE intOpsMetSchema.unique_id IS NOT NULL
+            AND intOpsMetSchema.unique_id <> ''
+            AND intOpsMetSchema.system_size IS NOT NULL
+            AND intOpsMetSchema.system_size > 0 
     `
 	return SalesMetricsRetrieveQuery
 }

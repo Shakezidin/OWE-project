@@ -45,6 +45,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
+		filterCount        string
+		whereEleListCount  []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -83,7 +85,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 	// this sets the data interval bracket for querying
-	dataReq.IntervalDays = "90"
+	// dataReq.IntervalDays = "90"
 	// Check whether the user is Admin, Dealer, Sales Rep
 
 	whereEleList = append(whereEleList, dataReq.Email)
@@ -99,17 +101,18 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		switch role {
 		case "Admin":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
-			// filterCount, whereEleListCount = PrepareAdminDlrFilters(tableName, dataReq, true, false, true)
+			filterCount, whereEleListCount = PrepareAdminDlrFilters(tableName, dataReq, true, false, true)
 			break
 		case "Dealer Owner":
 			dataReq.DealerName = name
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
-			// filterCount, whereEleListCount = PrepareAdminDlrFilters(tableName, dataReq, true, false, true)
+			filterCount, whereEleListCount = PrepareAdminDlrFilters(tableName, dataReq, true, false, true)
 			break
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
 			dataReq.DealerName = dealerName
-			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
+			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, false)
+			filterCount, whereEleListCount = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, true)
 			break
 		// this is for the roles regional manager and sales manager
 		default:
@@ -146,8 +149,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		dealerName := data[0]["dealer_name"]
 		dataReq.DealerName = dealerName
-		filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
-		// filterCount, whereEleListCount = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
+		filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, false)
+		filterCount, whereEleListCount = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, true)
 	}
 
 	if filter != "" {
@@ -250,7 +253,28 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
 
-	RecordCount = int64(len(data))
+	countQuery := `
+	SELECT COUNT(*) AS total_count
+	FROM internal_ops_metrics_schema AS intOpsMetSchema 
+	LEFT JOIN sales_metrics_schema AS salMetSchema 
+  ON intOpsMetSchema.unique_id = salMetSchema.unique_id
+	LEFT JOIN field_ops_metrics_schema AS fieldOpsSchema 
+  ON intOpsMetSchema.unique_id = fieldOpsSchema.unique_id
+	LEFT JOIN second_field_ops_metrics_schema AS secondFieldOpsSchema 
+  ON intOpsMetSchema.unique_id = secondFieldOpsSchema.unique_id `
+
+	start := time.Now()
+	countQuery = countQuery + filterCount
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, countQuery, whereEleListCount)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		return
+	}
+	duration := time.Since(start).Seconds()
+	log.FuncInfoTrace(0, "DURATION++ %v", duration)
+
+	RecordCount = data[0]["total_count"].(int64)
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
@@ -351,7 +375,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
 			AND intOpsMetSchema.system_size > 0 `)
-	} else {
+	} else if whereAdded && !dataCount {
 		filtersBuilder.WriteString(fmt.Sprintf(` AND intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
@@ -361,15 +385,11 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 
 	if dataCount {
 		filtersBuilder.WriteString(` 
-				GROUP BY salMetSchema.contract_date,
-				intOpsMetSchema.permit_approved_date,
-				intOpsMetSchema.pv_install_completed_date,
-				intOpsMetSchema.pto_date,
-				intOpsMetSchema.site_survey_completed_date,
-				fieldOpsSchema.install_ready_date,
-				salMetSchema.dealer,
-				salMetSchema.primary_sales_rep,
-				intOpsMetSchema.row_id ORDER BY intOpsMetSchema.row_id`)
+			AND intOpsMetSchema.unique_id IS NOT NULL
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0
+		`)
 	} else {
 		filtersBuilder.WriteString(` ORDER BY intOpsMetSchema.row_id LIMIT 10`)
 	}
@@ -386,7 +406,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
+func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}, dataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
 
@@ -421,7 +441,6 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	filtersBuilder.WriteString(fmt.Sprintf(" OR intOpsMetSchema.site_survey_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-3, len(whereEleList)-2))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR fieldOpsSchema.install_ready_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS'))", len(whereEleList)-1, len(whereEleList)))
 
-
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
 		// whereAdded = true
@@ -455,8 +474,19 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND salMetSchema.dealer = $%d AND intOpsMetSchema.unique_id != '' ", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(") AND salMetSchema.dealer = $%d ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
+
+	if dataCount {
+		filtersBuilder.WriteString(` 
+			AND intOpsMetSchema.unique_id IS NOT NULL
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0
+		`)
+	} else {
+		filtersBuilder.WriteString(` ORDER BY intOpsMetSchema.row_id LIMIT 10`)
+	}
 
 	filters = filtersBuilder.String()
 

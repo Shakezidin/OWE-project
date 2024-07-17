@@ -10,7 +10,9 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"compress/gzip"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -139,13 +141,17 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
+	startTime := time.Now()
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagement data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagement data from DB", http.StatusBadRequest, nil)
 		return
 	}
+	duration := time.Since(startTime).Seconds()
+	log.FuncInfoTrace(0, "++TIME : %v ", duration)
 
+	startTime = time.Now()
 	projectList := []models.ProjectLstResponse{}
 	for _, item := range data {
 		UniqueId, ok := item["unique_id"].(string)
@@ -161,11 +167,51 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 			Customer: Customer,
 		})
 	}
+	duration = time.Since(startTime).Seconds()
+	log.FuncInfoTrace(0, "++TIME 2 : %v ", duration)
 
+	type Response struct {
+		Message     string      `json:"message"`
+		RecordCount int64       `json:"record_count"`
+		Data        interface{} `json:"data"`
+	}
 	// Send the response
 	recordLen := len(data)
-	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList), recordLen)
-	FormAndSendHttpResp(resp, "ProjectManagementStatus Data", http.StatusOK, projectList, int64(recordLen))
+	response := Response{
+		Message:     "Table Data",
+		RecordCount: int64(recordLen),
+		Data:        projectList,
+	}
+
+	if strings.Contains(resp.Header().Get("Accept-Encoding"), "gzip") {
+		resp.Header().Set("Content-Encoding", "gzip")
+		resp.Header().Set("Content-Type", "application/json")
+
+		gz := gzip.NewWriter(resp)
+		defer gz.Close()
+
+		if err := json.NewEncoder(gz).Encode(response); err != nil {
+			http.Error(resp, fmt.Sprintf("Failed to encode data as JSON: %v", err), http.StatusInternalServerError)
+			return
+		}
+	} else {
+		resp.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(resp).Encode(response); err != nil {
+			http.Error(resp, fmt.Sprintf("Failed to encode data as JSON: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// log.FuncInfoTrace(0, "Number of %v List fetched : %v", "data", (data))
+
+	// Respond with the retrieved data as JSON
+	// resp.Header().Set("Content-Type", "application/json")
+	// if err := json.NewEncoder(resp).Encode(response); err != nil {
+	// 	http.Error(resp, fmt.Sprintf("Failed to encode data as JSON: %v", err), http.StatusInternalServerError)
+	// 	return
+	// }
+	// log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList), recordLen)
+	// FormAndSendHttpResp(resp, "ProjectManagementStatus Data", http.StatusOK, projectList, int64(recordLen))
 }
 
 /******************************************************************************
