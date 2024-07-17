@@ -1,8 +1,11 @@
 import React from 'react'
-
+import Table from './components/Table'
+import "./index.css"
 const Index = () => {
   return (
-    <div>Index</div>
+    <div className='px1'>
+      <Table/>
+    </div>
   )
 }
 
