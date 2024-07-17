@@ -35,7 +35,7 @@ func (pRepName *RepNameStruct) LoadRRepNameCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadRRepNameCfg", err) }()
 
 	query = `
-	SELECT dor.id as record_id, dor.rep_name, dor.status
+	SELECT dor.id as record_id, dor.name, dor.status
 	FROM rep_status dor`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
