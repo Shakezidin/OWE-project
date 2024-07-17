@@ -60,11 +60,13 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2 }) => {
         }))
     ];
 
-    const members: Option[] = [
-        { value: 'option1', label: 'Select Sales Rep' },
-        { value: 'Raju Raman', label: 'Raju Raman' },
-        { value: 'Ankit Gupta', label: 'Ankit Gupta' },
-    ];
+    const members: Option[]  = sale_rep_list.map((rep:any) => ({
+        value: rep.rep_id,
+        label: rep.name
+    }));
+    
+    // Adding the initial option
+    members.unshift({ value: 'option1', label: 'Select Sales Rep' });
 
     const handleSelectChange2 = (selectedOption: Option | null) => {
         setSelectedOption2(selectedOption ? selectedOption.value : '');
@@ -93,6 +95,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2 }) => {
     const handleClose = () => {
 
     }
+
+    console.log(sale_rep_list, "oihd")
     return (
         <div className="transparent-model">
             {loading && <Loading />}

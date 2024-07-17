@@ -17,9 +17,9 @@ interface IState {
   isFormSubmitting: boolean;
   error: string;
   teams: [];
-  team:{};
+  team:any;
   sales_manager_list:[];
-  sale_rep_list:{};
+  sale_rep_list:[];
   isSuccess: boolean;
   totalcount: number;
 }
@@ -31,7 +31,7 @@ const initialState: IState = {
   teams: [],
   team:{},
   sales_manager_list:[],
-  sale_rep_list:{},
+  sale_rep_list:[],
   isSuccess: false,
   totalcount: 0,
 };
@@ -65,7 +65,7 @@ const teamManagementSlice = createSlice({
       })
       .addCase(getTeam.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.team = action.payload.list;     
+        state.team = action.payload.data;     
       })
       .addCase(getTeam.rejected, (state, action) => {
         state.isLoading = false;
@@ -108,6 +108,21 @@ const teamManagementSlice = createSlice({
         toast.success('Team Created Successfully');
       })
       .addCase(createTeam.rejected, (state, action) => {
+        state.isFormSubmitting = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+
+      .addCase(manageTeam.pending, (state, action) => {
+        state.isFormSubmitting = true;
+      })
+      .addCase(manageTeam.fulfilled, (state, action) => {
+        state.isFormSubmitting = false;
+        state.isSuccess = true;
+        state.error = '';
+        toast.success('Moved Successfully');
+      })
+      .addCase(manageTeam.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);

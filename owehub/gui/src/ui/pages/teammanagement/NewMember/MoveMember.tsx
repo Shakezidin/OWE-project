@@ -12,15 +12,24 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import Select from 'react-select';
+import { getTeams ,manageTeam } from '../../../../redux/apiActions/teamManagement/teamManagement';
 
 interface createUserProps {
   handleClose1: () => void;
   onSubmitCreateUser: (e: any) => void;
+  team:any,
 }
+
+interface Option {
+  value: string;
+  label: string;
+}
+
 
 const MoveMember: React.FC<createUserProps> = ({
   handleClose1,
   onSubmitCreateUser,
+  team,
 }) => {
   const dispatch = useAppDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState('');
@@ -41,14 +50,25 @@ const MoveMember: React.FC<createUserProps> = ({
     }
   };
 
-  const comissionValueData = [
-    { value: 'option1', label: 'Option 1' },
-    { value: 'option2', label: 'Option 2' },
-    { value: 'option3', label: 'Option 3' },
-  ];
+  useEffect(() => {
+    // const pageNumber = {
+    //   page_number: currentPage,
+    //   page_size: itemsPerPage,
+    //   archived: viewArchived ? true : undefined,
+    //   filters,
+    // };
+    dispatch(getTeams());
+  }, []);
+  const { isSuccess, isFormSubmitting,teams } = useAppSelector(
+    (state) => state.teamManagmentSlice
+  );
 
+  const comissionValueData:Option[]  = teams?.map((rep:any) => ({
+    value: rep?.team_id,
+    label: rep?.team_name
+}));
   const [selectedOption2, setSelectedOption2] = useState<string>(
-    comissionValueData[0].label
+    comissionValueData[0]?.label
   );
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
@@ -58,6 +78,16 @@ const MoveMember: React.FC<createUserProps> = ({
 
   /** render ui */
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = {
+        team_id:selectedOption2,
+        rep_ids:[]
+    };
+    dispatch(manageTeam(data));
+};
+
+
   return (
     <div className="transparent-model">
       {loading && (
@@ -66,9 +96,7 @@ const MoveMember: React.FC<createUserProps> = ({
         </div>
       )}
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
+         onSubmit={handleSubmit}
         className="tm-modal"
       >
         <div className="createUserCrossButton" onClick={handleClose1}>
@@ -84,9 +112,10 @@ const MoveMember: React.FC<createUserProps> = ({
                     <Input
                       type={'text'}
                       label="Current Team"
-                      value={formData.first_name}
+                      value={team?.team_name}
                       placeholder={'United Wholesales'}
                       onChange={(e) => handleInputChange(e)}
+                      disabled
                       name={'first_name'}
                       maxLength={100}
                     />
@@ -107,7 +136,7 @@ const MoveMember: React.FC<createUserProps> = ({
                     />
                   </div>
                 </div>
-                <div className="create-input-container">
+                {/* <div className="create-input-container">
                   <div className="tm-create-input-field">
                     <Input
                       type={'text'}
@@ -144,7 +173,7 @@ const MoveMember: React.FC<createUserProps> = ({
                       gap: '0.5rem',
                     }}
                   ></div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

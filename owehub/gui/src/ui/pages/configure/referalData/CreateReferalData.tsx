@@ -96,7 +96,19 @@ const CreateReferalData: React.FC<ButtonProps> = ({
 
   useEffect(() => {
     if (commission) {
-      setCreateCommission(commission);
+      setCreateCommission({
+        ...createCommission,
+        unique_id:commission.unique_id,
+        new_customer:commission.new_customer,
+        referrer_serial:commission.referrer_serial,
+        referrer_name:commission.referrer_name,
+        amount:commission.amount,
+        notes:commission.notes,
+        rep_doll_divby_per:commission.rep_doll_divby_per,
+        start_date:commission.start_date,
+
+
+      })
     }
   }, [commission]);
 
@@ -139,7 +151,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
       try {
         if (createCommission.record_id) {
           const res = await postCaller('update_referraldata', {
-            record_id: createCommission.record_id,
+            record_id: commission.record_id,
             unique_id: createCommission.unique_id,
             new_customer: createCommission.new_customer,
             referrer_serial: createCommission.referrer_serial,
