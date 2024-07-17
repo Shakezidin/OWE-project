@@ -320,12 +320,12 @@ const ApRep = () => {
                     <td>{el.dba || 'N/A'}</td>
 
                     <td>{el.final || 'N/A'}</td>
-                    <td>{el.date || 'N/A'}</td>
+                    <td>{el.date && dateFormat(el.date) || 'N/A'}</td>
                     <td>{el.amount || 'N/A'}</td>
                     <td>{el.method|| 'N/A'}</td>
                     <td>{el.cbiz || 'N/A'}</td>
                     <td>{el.transaction || 'N/A'}</td>
-                    <td>{el.notes || 'N/A'}</td>
+                    <td>{el.notes?.trim?.() || 'N/A'}</td>
              
                       <td>
                         {(!viewArchived && selectedRows.size<2) &&<div className="action-icon">

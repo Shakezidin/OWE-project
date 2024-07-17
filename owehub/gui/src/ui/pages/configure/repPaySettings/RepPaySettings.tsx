@@ -23,6 +23,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { dateFormat } from '../../../../utiles/formatDate';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { IPayScale } from './types';
+import { checkLastPage } from '../../../../utiles';
 
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -178,6 +179,7 @@ const RepPaySettings = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRepaySettings(pageNumber));
+          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -208,6 +210,7 @@ const RepPaySettings = () => {
       const res = await postCaller('update_rep_pay_settings_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepaySettings(pageNumber));
+        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
@@ -216,6 +219,8 @@ const RepPaySettings = () => {
       }
     }
   };
+
+  const notAllowed = selectedRows.size>1
 
   return (
     <div className="comm">
@@ -286,7 +291,7 @@ const RepPaySettings = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
+                   <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -328,24 +333,24 @@ const RepPaySettings = () => {
                     <td>{dateFormat(el?.start_date)}</td>
                     <td>{dateFormat(el?.end_date)}</td>
                     <td>
-                      {!viewArchived && selectedRows.size < 2 && (
+                     
                         <div className="action-icon">
                           <div
                             className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.RecordId)}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
+                            onClick={() => !notAllowed && handleArchiveClick(el.RecordId)}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div
                             className=""
-                            onClick={() => handleEdit(el)}
-                            style={{ cursor: 'pointer' }}
+                            onClick={() => !notAllowed && handleEdit(el)}
+                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      )}
+                    
                     </td>
                   </tr>
                 ))
