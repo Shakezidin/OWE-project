@@ -85,7 +85,7 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy ap_ded(unique_id,payee,amount,date) FROM '/docker-entrypoint-initdb.d/ap_ded.csv' DELIMITER ',' CSV;
 \copy ap_adv(unique_id,payee,amount_ovrd,date) FROM '/docker-entrypoint-initdb.d/ap_adv.csv' DELIMITER ',' CSV;
 \copy dealer_owners(dealer_owner,role,blank) FROM '/docker-entrypoint-initdb.d/dealer_owners.csv' DELIMITER ',' CSV;
-\copy rep_name(rep_name,status) FROM '/docker-entrypoint-initdb.d/rep_name.csv' DELIMITER ',' CSV;
+\copy rep_status(name,status) FROM '/docker-entrypoint-initdb.d/rep_status.csv' DELIMITER ',' CSV;
 \copy marketing_fees(source_id,dba,state_id,fee_rate,chg_dlr,pay_src,description,start_date,end_date) FROM '/docker-entrypoint-initdb.d/marketing_fees.csv' DELIMITER ',' CSV;
 \copy adder_responsibility(pay_scale,percentage) FROM '/docker-entrypoint-initdb.d/adder_responsibility.csv' DELIMITER ',' CSV;
 \copy noncomm_dlrpay(unique_id,date,exact_amount,approved_by,notes) FROM '/docker-entrypoint-initdb.d/non_comm.csv' DELIMITER ',' CSV;

@@ -1125,15 +1125,6 @@ CREATE TABLE dealer_owners (
     updated_at timestamp without time zone
 );
 
-CREATE TABLE rep_name (
-    id serial NOT NULL,
-    rep_name varchar,
-    status varchar,
-    is_archived BOOLEAN DEFAULT FALSE,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
-);
-
 /*
 CREATE TABLE AR_Schedule (
     Partner text,
