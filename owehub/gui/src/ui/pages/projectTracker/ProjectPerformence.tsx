@@ -24,6 +24,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { setDate } from 'date-fns';
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
@@ -33,15 +34,43 @@ const ProjectPerformence = () => {
     endDate: new Date(),
     key: 'selection',
   });
-  console.log(selectionRange, "performance page");
+
+  const [resDatePicker, setResDatePicker] = useState(
+    {
+      startdate: '',
+      enddate: ''
+    }
+  );
+  
   const [showDatePicker, setShowDatePicker] = useState(false);
   const handleSelect = (ranges: any) => {
     setSelectionRange(ranges.selection);
   };
 
   const handleToggleDatePicker = () => {
+    const formattedStartDate = selectionRange.startDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).split('/').join('-');
+  
+    const formattedEndDate = selectionRange.endDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).split('/').join('-');
     setShowDatePicker(!showDatePicker);
+    setResDatePicker({
+      startdate: formattedStartDate,
+      enddate: formattedEndDate
+    })
   };
+
+  
+
+  
+
+
 
   const handleResetDates = () => {
     setSelectionRange({
@@ -49,6 +78,11 @@ const ProjectPerformence = () => {
       endDate: new Date(),
       key: 'selection',
     });
+    setResDatePicker({
+      startdate: '',
+      enddate: ''
+    })
+    setShowDatePicker(!showDatePicker);
   };
 
   const perPage = 10;
@@ -73,7 +107,7 @@ const ProjectPerformence = () => {
 
   useEffect(() => {
     const current = format(new Date(), 'yyyy-MM-dd');
-    dispatch(getPerfomance());
+    dispatch(getPerfomance({startdate:resDatePicker.startdate, enddate: resDatePicker.enddate }));
     return () => {
       const expirationTime = localStorage.getItem('expirationTime');
       const currentTime = Date.now();
@@ -81,7 +115,8 @@ const ProjectPerformence = () => {
         toast.dismiss();
       }
     };
-  }, []);
+  }, [resDatePicker.startdate, resDatePicker.enddate]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -100,8 +135,8 @@ const ProjectPerformence = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getPerfomanceStatus({ page, perPage }));
-  }, [page]);
+    dispatch(getPerfomanceStatus({ page, perPage, startDate:resDatePicker.startdate, endDate: resDatePicker.enddate }));
+  }, [page, resDatePicker.startdate, resDatePicker.enddate]);
 
   const calculateCompletionPercentage = (
     project: (typeof projectStatus)[0]
@@ -128,7 +163,10 @@ const ProjectPerformence = () => {
   };
   const startIndex = (page - 1) * perPage + 1;
   const endIndex = page * perPage;
-  console.log(selectionRange, "performance page");
+  
+  
+
+  
   return (
     <div className="">
       <Breadcrumb
@@ -139,7 +177,7 @@ const ProjectPerformence = () => {
       />
       <div className="project-container">
         <div className="project-heading">
-          <h2>Daily Performance</h2>
+          <h2>Performance</h2>
 
           <div className="per-head-input">
             <div
@@ -160,7 +198,7 @@ const ProjectPerformence = () => {
                   zIndex: 99,
                 }}
               >
-                Payroll Date
+                Date Range
               </label>
 
               <div
@@ -174,7 +212,7 @@ const ProjectPerformence = () => {
               >
                 <label
                   className="date-button"
-                  onClick={handleToggleDatePicker}
+                  onClick={() => setShowDatePicker(!showDatePicker) }
                   style={{ color: '#292929' }}
                 >
                   {selectionRange.startDate.toLocaleDateString() !==
@@ -187,6 +225,8 @@ const ProjectPerformence = () => {
                     <DateRangePicker
                       ranges={[selectionRange]}
                       onChange={handleSelect}
+                      minDate={new Date(new Date().setMonth(new Date().getMonth() - 3))}
+                      maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
                     />
                     <button
                       className="reset-calender"

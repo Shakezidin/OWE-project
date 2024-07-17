@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ICONS } from '../../../icons/Icons';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 
 const RepPayDashboardTotal: React.FC = () => {
+  const [repPayData, setRepPayData] = useState({
+    amount_prepaid: 0,
+    pipeline_remaining: 0,
+    current_due: 0,
+  });
+
+  useEffect(() => {
+    (async () => {
+      const data = await postCaller('get_reppay_tiledata', { dealer: 'ALL' });
+      if (data.status > 201) {
+        toast.error(data?.message);
+      } else {
+        setRepPayData(data.data);
+      }
+      console.log(data, 'dataaaa');
+    })();
+  }, []);
+
   const data = [
     {
-      doller: '$120,450',
+      doller: `$${repPayData.amount_prepaid.toLocaleString()}`,
       paid: 'Amount Prepaid',
       img: ICONS.rep1,
       border: '1px solid #63BC51',
@@ -12,7 +32,7 @@ const RepPayDashboardTotal: React.FC = () => {
       background: ICONS.tot1,
     },
     {
-      doller: '$100,320',
+      doller: `$${repPayData.pipeline_remaining.toLocaleString()}`,
       paid: 'Pipeline Remaining',
       img: ICONS.rep2,
       border: '1px solid #D768A8',
@@ -20,7 +40,7 @@ const RepPayDashboardTotal: React.FC = () => {
       background: ICONS.tot2,
     },
     {
-      doller: '$100,320',
+      doller: `$${repPayData.current_due.toLocaleString()}`,
       paid: 'Current Due',
       img: ICONS.rep3,
       border: '1px solid #3993D0',

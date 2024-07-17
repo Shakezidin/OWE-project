@@ -37,9 +37,9 @@ const isSessionTimeout = () => {
 
 export const getPerfomance = createAsyncThunk(
   'get/perfomance',
-  async (_, { rejectWithValue }) => {
+  async (params: any, { rejectWithValue }) => {
     try {
-      const data = await postCaller('get_perfomancemetrics', {});
+      const data = await postCaller('get_perfomancemetrics', {start_data: params.startdate, end_date: params.enddate});
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
@@ -54,29 +54,46 @@ export const getPerfomance = createAsyncThunk(
   }
 );
 
+
+
 export const getPerfomanceStatus = createAsyncThunk(
   'get/perfomancestatus',
   async (
-    { page, perPage }: { page: number; perPage: number },
+    { 
+      page, 
+      perPage, 
+      startDate, 
+      endDate 
+    }: { 
+      page: number; 
+      perPage: number; 
+      startDate: string; 
+      endDate: string 
+    },
     { rejectWithValue }
   ) => {
     try {
-      // get_perfomanceprojectstatus
       const data = await postCaller('get_perfomanceprojectstatus', {
         page_size: perPage,
         page_number: page,
+        start_date: startDate,
+        end_date: endDate,
       });
+
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
+
       const list = (data.data.perfomance_response_list ||
         []) as IProjectStatus[];
+
       return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
   }
 );
+
 
 interface IState {
   perfomaceSale: IPerfomanceSale[];
