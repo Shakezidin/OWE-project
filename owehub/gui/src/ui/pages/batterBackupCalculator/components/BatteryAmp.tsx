@@ -39,6 +39,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { toCanvas } from 'html-to-image';
+import { IoMdCloseCircleOutline } from "react-icons/io";
 const appliance = [
   {
     name: 'Air Conditioner',
@@ -92,20 +93,7 @@ const appliance = [
     isOn: false,
   },
 ];
-const months = [
-  { label: 'January', value: 'January' },
-  { label: 'February', value: 'February' },
-  { label: 'March', value: 'March' },
-  { label: 'April', value: 'April' },
-  { label: 'May', value: 'May' },
-  { label: 'June', value: 'June' },
-  { label: 'July', value: 'July' },
-  { label: 'August', value: 'August' },
-  { label: 'September', value: 'September' },
-  { label: 'October', value: 'October' },
-  { label: 'November', value: 'November' },
-  { label: 'December', value: 'December' },
-];
+
 export interface Ibattery {
   amp: number;
   note: string;
@@ -330,13 +318,6 @@ const BatteryAmp = () => {
                     if (requiredBattery > 1) {
                       if (required && requiredBattery <= required) {
                         setIsOpen(true);
-                        setMssg(
-                          `You are attempting to reduce the total number of batteries below our recommended minimum for a Full Home Back-Up.We cannot gaurentee the effectiveness in which this battery configuration can support your home. Would you like to remain at the recommended battery quantity for a Full Home Back-Up or reduce the number of batteries in this system and switch to a Partial Home Back-up`
-                        );
-                        setBtnText({
-                          primaryText: `I would like to remain with the recommended configuration.`,
-                          secondaryText: `I would like to switch to a partial home back-up.`,
-                        });
                       } else {
                         setRequiredBattery((prev) =>
                           prev > 1 ? prev - 1 : prev
@@ -377,21 +358,7 @@ const BatteryAmp = () => {
                     }}
                   ></div>
                 </div>
-                <div className="flex mt1 items-center justify-between">
-                  <p
-                    style={{ fontWeight: 500, color: '#1660F0', fontSize: 12 }}
-                  >
-                    {' '}
-                    {avavilableAmpPercentage.remainingAmps} Amp Remaining
-                  </p>
-
-                  <p
-                    style={{ fontWeight: 500, color: '#919191', fontSize: 12 }}
-                  >
-                    {' '}
-                    {totalAmp} Total Amp{' '}
-                  </p>
-                </div>
+                
               </>
             )}
           </div>
@@ -517,16 +484,18 @@ const BatteryAmp = () => {
                       </svg>
                     </div>
                     <div className="battery-amp flex-grow-1 flex items-center">
-                      <GoCheckCircleFill
+                     {mainOn? <GoCheckCircleFill
                         className="mr1"
                         color="#129537"
                         size={21}
-                      />
-                      <span>Full Home Backup</span>
+                      />:<IoMdCloseCircleOutline className="mr1"
+                      color="#F44336"
+                      size={21}/>}
+                      <span>{mainOn?"Full":"Partial"} Home Backup</span>
                     </div>
                   </div>
                   <div className="batter-amp-switch pointer flex items-center justify-center">
-                    <img src={mainOn ? on : off} alt="" className="pointer" />
+                    <img  src={mainOn ? on : off} alt="" className="pointer" />
                   </div>
                 </div>
                 {!mainOn && (
@@ -577,7 +546,7 @@ const BatteryAmp = () => {
                               className="block"
                               style={{ fontSize: 10, lineHeight: 1.2 }}
                             >
-                              {item.category_name} ({item.category_ampere})
+                              {item.category_name} 
                             </span>
                           </div>
                         </div>
@@ -617,14 +586,7 @@ const BatteryAmp = () => {
             >
               Submit
             </button>
-            {/* <button
-                  onClick={() => null}
-                  className="calc-btn flex items-center justify-center calc-grey-btn pointer"
-                >
-                  <IoIosArrowRoundBack size={24} className="mr1 " />
- 
-                  <span>Go Back</span>
-                </button> */}
+            
           </div>
         </div>
       </div>

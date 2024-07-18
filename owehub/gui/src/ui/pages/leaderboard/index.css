@@ -17,7 +17,19 @@
 }
 
 .leaderboard-table thead tr {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.leaderboard-table thead tr th {
   background-color: #f5f9ff;
+}
+.leaderboard-table thead tr th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.leaderboard-table thead tr th:last-child {
+  border-top-right-radius: 12px;
 }
 .leaderboard-table thead tr th {
   font-size: 14px;
@@ -29,8 +41,8 @@
   padding-left: 3rem;
 }
 .leaderboard-table-container {
-  border-radius: 12px;
-  overflow: hidden;
+  /* border-radius: 12px; */
+  /* overflow: hidden; */
   position: relative;
 }
 
@@ -40,7 +52,10 @@
   border-bottom: 1px solid #d8e7ff;
 }
 .leaderboard-table {
-  overflow-x: auto;
+  overflow: auto;
+}
+.table-wrapper {
+  height: 500px !important;
 }
 
 .leaderboard-table tbody tr:last-child {
@@ -96,11 +111,11 @@
   top: 0;
   bottom: 0;
   width: 100%;
-  background-color: rgba(42, 42, 42, 77);
+  background-color: rgba(42, 42, 42, 0.7);
   z-index: 100;
   overflow-y: auto;
 }
-.back-icon{
+.back-icon {
   top: 80px;
 }
 
@@ -123,7 +138,6 @@
   border-radius: 12px;
   padding-bottom: 26px;
   padding-inline: 32px;
-
 }
 .user-card {
   padding-left: 5px;
@@ -138,18 +152,57 @@
   padding-bottom: 16px;
 }
 
-.user-card  .card-label{
-color: #A3A3A3;
-font-size: 10px;
+.user-card .card-label {
+  color: #a3a3a3;
+  font-size: 10px;
 }
 
-.user-card  .card-value{
-font-size: #434343;
-font-weight: 500;
-font-size: 14px;
+.user-card .card-value {
+  font-size: #434343;
+  font-weight: 500;
+  font-size: 14px;
 }
-.user-profile .stats-labels{
-    font-size: 11px;
-    color: #6D6D6D;
-    display: block;
+.user-profile .stats-labels {
+  font-size: 11px;
+  color: #6d6d6d;
+  display: block;
+}
+
+.grey-weekly-stats {
+  border-radius: 8px;
+  padding: 10px 13px;
+  background-color: #f1f1f1;
+  margin-top: 30px;
+}
+
+.grey-weekly-stats span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.grey-weekly-stats .leader-board-stats-wrapper {
+  padding-inline: 21px;
+  border-radius: 8px;
+}
+
+.leader-stats-share-btn {
+  border: none;
+  background-color: #9ccb3b;
+  color: #fff;
+  padding-block: 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 36px;
+  width: 100%;
+}
+
+.leaderborad-export-btn {
+  border: 1px solid #ee824d;
+  background-color: #fff;
+  padding: 6px 11px;
+  font-size: 12px;
+  border-radius: 4px;
+  color: #ee824d;
 }
