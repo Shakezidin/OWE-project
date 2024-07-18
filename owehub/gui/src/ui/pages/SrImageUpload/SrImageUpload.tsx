@@ -178,6 +178,9 @@ OWE Battery Calc
               setEmail('');
               setUploadedImages([]);
               setIsUploading(false);
+              setAddress("")
+              setSystemSize("")
+              setSquareFeet("")
             },
             (error) => {
               toast.error(error.text as string);
