@@ -110,6 +110,11 @@ import cutOff from '../../resources/assets/cutoff_icon.svg';
 import BannerLogo from '../../resources/assets/banner-logo.svg';
 import OWEBannerLogo from '../../resources/assets/owe-banner-logo.svg';
 import BannerTrophy from '../../resources/assets/banner-trophy.svg';
+import Performars from '../../resources/assets/performars.svg';
+import PerformanceBackground from '../../resources/assets/performars-background.svg';
+import GreyTwo from '../../resources/assets/greyTwo.svg';
+import GoldOne from '../../resources/assets/goldOne.svg';
+import BrownThree from '../../resources/assets/brownThree.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -236,5 +241,10 @@ export const ICONS = {
   TeamEdit: TeamEdit,
   BannerLogo: BannerLogo,
   OWEBannerLogo: OWEBannerLogo,
-  BannerTrophy: BannerTrophy
+  BannerTrophy: BannerTrophy,
+  Performars: Performars,
+  PerformanceBackground: PerformanceBackground,
+  GreyTwo: GreyTwo,
+  GoldOne: GoldOne,
+  BrownThree: BrownThree
 };
