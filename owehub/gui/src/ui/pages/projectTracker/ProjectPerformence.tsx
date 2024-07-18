@@ -18,30 +18,34 @@ import {
   getPerfomance,
   getPerfomanceStatus,
 } from '../../../redux/apiSlice/perfomanceSlice';
-import { format } from 'date-fns';
+import { format, subMonths, subDays } from 'date-fns';
 import Pagination from '../../components/pagination/Pagination';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { setDate } from 'date-fns';
+
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const datePickerRef = useRef<HTMLDivElement>(null);
+
   const [selectionRange, setSelectionRange] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: subMonths(new Date(), 3),
+    endDate: subDays(new Date(), 1),
     key: 'selection',
   });
 
+
+
   const [resDatePicker, setResDatePicker] = useState(
     {
-      startdate: '',
-      enddate: ''
+      startdate: format(subMonths(new Date(), 3), 'dd-MM-yyyy'),
+      enddate: format(subDays(new Date(), 1), 'dd-MM-yyyy'),
+
     }
   );
-  
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const handleSelect = (ranges: any) => {
     setSelectionRange(ranges.selection);
@@ -53,7 +57,7 @@ const ProjectPerformence = () => {
       month: '2-digit',
       year: 'numeric'
     }).split('/').join('-');
-  
+
     const formattedEndDate = selectionRange.endDate.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -66,9 +70,9 @@ const ProjectPerformence = () => {
     })
   };
 
-  
 
-  
+
+
 
 
 
@@ -79,8 +83,8 @@ const ProjectPerformence = () => {
       key: 'selection',
     });
     setResDatePicker({
-      startdate: '',
-      enddate: ''
+      startdate: format(subMonths(new Date(), 3), 'dd-MM-yyyy'),
+      enddate: format(subDays(new Date(), 1), 'dd-MM-yyyy'),
     })
     setShowDatePicker(!showDatePicker);
   };
@@ -107,7 +111,7 @@ const ProjectPerformence = () => {
 
   useEffect(() => {
     const current = format(new Date(), 'yyyy-MM-dd');
-    dispatch(getPerfomance({startdate:resDatePicker.startdate, enddate: resDatePicker.enddate }));
+    dispatch(getPerfomance({ startdate: resDatePicker.startdate, enddate: resDatePicker.enddate }));
     return () => {
       const expirationTime = localStorage.getItem('expirationTime');
       const currentTime = Date.now();
@@ -134,8 +138,10 @@ const ProjectPerformence = () => {
     };
   }, []);
 
+
+
   useEffect(() => {
-    dispatch(getPerfomanceStatus({ page, perPage, startDate:resDatePicker.startdate, endDate: resDatePicker.enddate }));
+    dispatch(getPerfomanceStatus({ page, perPage, startDate: resDatePicker.startdate, endDate: resDatePicker.enddate }));
   }, [page, resDatePicker.startdate, resDatePicker.enddate]);
 
   const calculateCompletionPercentage = (
@@ -163,10 +169,10 @@ const ProjectPerformence = () => {
   };
   const startIndex = (page - 1) * perPage + 1;
   const endIndex = page * perPage;
-  
-  
 
-  
+
+
+
   return (
     <div className="">
       <Breadcrumb
@@ -212,7 +218,7 @@ const ProjectPerformence = () => {
               >
                 <label
                   className="date-button"
-                  onClick={() => setShowDatePicker(!showDatePicker) }
+                  onClick={() => setShowDatePicker(!showDatePicker)}
                   style={{ color: '#292929' }}
                 >
                   {selectionRange.startDate.toLocaleDateString() !==
