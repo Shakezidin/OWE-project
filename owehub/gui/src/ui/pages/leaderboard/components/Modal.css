@@ -1,0 +1,45 @@
+.edit-modal{
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 33%;
+    top: 20%;
+    z-index: 9999;
+}
+.leader-modal{
+    height: 50vh;
+    width: 50vw;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+.leader-modal h2{
+    font-weight: 600;
+}
+.modal-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+}
+.upload{
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+.leader-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+.leader-buttons button{
+    padding: 0.8rem 4rem;
+    border-radius: 0.8rem;
+    border: none;
+    cursor: pointer;
+}

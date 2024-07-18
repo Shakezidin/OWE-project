@@ -1,69 +1,89 @@
-.banner-main{
-    height: 25vh;
-    width: 100%;
-    /* background-color: #44ADF9; */
-    background: linear-gradient(0deg, #215F9A 0%, #44ADF9 100%);
-    /* background: conic-gradient(red, green, blue, yellow, transparent, red);
+.banner-main {
+  height: 25vh;
+  width: 100%;
+  /* background-color: #44ADF9; */
+  background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
+  /* background: conic-gradient(red, green, blue, yellow, transparent, red);
     animation: rotate 4s linear infinite;
     animation-delay: 1s; */
-    overflow: hidden;
-    border-radius: 10px;
-    margin-top: 30px;
-    position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-top: 30px;
+  position: relative;
 }
-@keyframes rotate{
-    0%{
-        transform: rotateZ(0deg);
-    }
-    100%{
-        transform: rotateZ(360deg);
-    }
+@keyframes rotate {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
 }
-.solar-heading{
-    text-transform: uppercase;
-    color: #fff;
-    font-weight: 500;
+.solar-heading {
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 500;
 }
-.banner-left{
-    gap: 1.5rem;
-    width: 60vw;
+.banner-left {
+  gap: 1.5rem;
+  width: 60vw;
 }
-.left-ban-des{
-    font-size: 0.8rem;
-    line-height: 16px;
-    margin-left: 5px;
-    color: #fff;
-    font-weight: 300;
+.left-ban-des {
+  font-size: 0.8rem;
+  line-height: 16px;
+  margin-left: 5px;
+  color: #fff;
+  font-weight: 300;
 }
-.left-ban-des span{
-    font-weight: 500;
-    text-transform: uppercase;
+.left-ban-des span {
+  font-weight: 500;
+  text-transform: uppercase;
 }
-.straight-line{
-        width: 1.5px;
-        height: 130px; 
-        background-color: #D9EDFA; 
-        opacity: 0.3;
-        margin-right: 1.5rem;
+.straight-line {
+  width: 1.5px;
+  height: 130px;
+  background-color: #d9edfa;
+  opacity: 0.3;
+  margin-right: 1.5rem;
 }
-.banner-right{
-    width: 40vw;
+.banner-right {
+  width: 40vw;
 }
-.banner-names{
-    line-height: 18px;
-    gap: 0.7rem;
+.banner-names {
+  line-height: 18px;
+  gap: 0.7rem;
 }
-.owner-heading{
-    color: #DEDEDE;
-    font-size: 0.7rem;
+.owner-heading {
+  color: #dedede;
+  font-size: 0.7rem;
 }
-.owner-names{
-    color: #fff;
-    font-size: 0.9rem;
+.owner-names {
+  color: #fff;
+  font-size: 0.9rem;
 }
-.banner-trophy{
-    align-self: flex-end;
-    position: absolute;
-    right: 0;
-    top: -20px;
+.banner-trophy {
+  align-self: flex-end;
+  position: absolute;
+  right: 0;
+  top: -20px;
+}
+.edit-button {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 1.5rem;
+  outline: none;
+  border: none;
+  border-radius: 1.5rem;
+  background: var(--row-bg-color);
+  color: #3b3b3b;
+  cursor: pointer;
+}
+.edit-svg {
+  font-size: 1rem;
+  height: 16px;
+  width: 16px;
 }
