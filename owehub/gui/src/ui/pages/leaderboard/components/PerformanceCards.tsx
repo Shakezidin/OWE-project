@@ -4,18 +4,15 @@ import { MdOutlineIosShare } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
 
 interface performance {
-   details:any
+  details: any;
 }
 
+const PerformanceCards: React.FC<performance> = ({ details }) => {
+  console.log(details, 'details');
+  const rank1 = details.find((item: any) => item?.rank === 1);
+  const rank2 = details.find((item: any) => item?.rank === 2);
+  const rank3 = details.find((item: any) => item?.rank === 3);
 
-const PerformanceCards : React.FC<performance>= ({details}) => {
-
-  console.log(details, "details")
-  const rank1 = details.find((item:any) => item?.rank===1)
-  const rank2 = details.find((item:any) => item?.rank===2)
-  const rank3 = details.find((item:any) => item?.rank===3)
-
-  
   return (
     <div>
       <div className="performance-cards">
@@ -33,7 +30,7 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
           ></object>
           <p>Based on most sales in the last 1 month.</p>
         </div>
-        <div className="cards flex justify-between">
+        <div className="cards flex justify-between" style={{ gap: 60 }}>
           <div className="card-one">
             <div className="upper-section">
               <object
@@ -59,15 +56,11 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>{rank2?.kw} KW</p>
+                <p>{rank2?.kw?.toFixed?.(2)} KW</p>
                 <p>For this month</p>
               </div>
-              <div className="below-des">
+              <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
                 <p>54 Installs</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des">
-                <p>$2564.23</p>
                 <p>For this month</p>
               </div>
             </div>
@@ -97,15 +90,11 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>{rank1?.kw} KW</p>
+                <p>{rank1?.kw?.toFixed?.(2)} KW</p>
                 <p>For this month</p>
               </div>
-              <div className="below-des">
+              <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
                 <p>54 Installs</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des">
-                <p>$2564.23</p>
                 <p>For this month</p>
               </div>
             </div>
@@ -135,15 +124,11 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>{rank3?.kw} KW</p>
+                <p>{rank3?.kw?.toFixed?.(2)} KW</p>
                 <p>For this month</p>
               </div>
-              <div className="below-des">
+              <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
                 <p>54 Installs</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des">
-                <p>$2564.23</p>
                 <p>For this month</p>
               </div>
             </div>
