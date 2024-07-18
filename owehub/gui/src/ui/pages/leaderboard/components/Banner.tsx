@@ -1,4 +1,3 @@
-import React from 'react';
 import './Banner.css';
 import { ICONS } from '../../../icons/Icons';
 
@@ -10,8 +9,8 @@ const Banner = () => {
         <object
           type="image/svg+xml"
           data={ICONS.BannerLogo}
-          width={100}
-          aria-label="login-icon"
+          width={120}
+          aria-label="solar-name-icon"
         ></object>
         <div className="">
           <h1 className="solar-heading">United Solar</h1>
@@ -48,7 +47,7 @@ const Banner = () => {
           <object
             type="image/svg+xml"
             data={ICONS.BannerTrophy}
-            width={200}
+            width={220}
             aria-label="login-icon"
           ></object>
         </div>

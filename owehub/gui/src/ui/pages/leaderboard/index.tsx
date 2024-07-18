@@ -3,6 +3,7 @@ import Table from './components/Table';
 import './index.css';
 import Sidebar from './components/Sidebar';
 import Banner from './components/Banner';
+import PerformanceCards from './components/PerformanceCards';
 const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
 
@@ -21,6 +22,7 @@ const Index = () => {
   return (
     <div className="px1">
       <Banner />
+      <PerformanceCards/>
       <Table setIsOpen={setIsOpen} setDealer={setDealer} />
       <Sidebar dealer={dealer} setIsOpen={setIsOpen} isOpen={isOpen} />
     </div>
