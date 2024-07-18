@@ -24,6 +24,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import { checkLastPage } from '../../../../utiles';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 const ReferalData: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -352,7 +353,7 @@ const ReferalData: React.FC = () => {
                     <td>{el.amount || 'N/A'}</td>
                     <td>{el.rep_doll_divby_per || 'N/A'}</td>
                     <td>{el.notes || 'N/A'}</td>
-                    <td>{el.start_date || 'N/A'}</td>
+                    <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     <td>
                       <div className="action-icon">
                         <div

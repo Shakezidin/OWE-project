@@ -16,6 +16,7 @@ import {
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { toast } from 'react-toastify';
 
 interface loanProps {
   handleClose: () => void;
@@ -109,7 +110,7 @@ const CreateLoanType: React.FC<loanProps> = ({
           {...createLoanTypeData,active:createLoanTypeData.active?1:0}
         );
         if ((await res.status) === 200) {
-          await successSwal('', res.message);
+          toast.success("Loan Type Updated successfully");
           handleClose();
           dispatch(fetchLoanType(page));
           setIsPending(false);
@@ -124,7 +125,7 @@ const CreateLoanType: React.FC<loanProps> = ({
           {...cleanedFormData,active:cleanedFormData.active?1:0}
         );
         if ((await res.status) === 200) {
-          await successSwal('', res.message);
+          toast.success("Loan Type Created successfully");
           handleClose();
           dispatch(fetchLoanType(page));
           setIsPending(false);

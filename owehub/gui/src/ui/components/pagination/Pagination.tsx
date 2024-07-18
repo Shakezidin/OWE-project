@@ -31,17 +31,18 @@ const Pagination: React.FC<PaginationProps> = ({
         breakLabel="..."
         nextLabel={
           <button
-            disabled={totalPages <= currentPage}
-            className={'current-btn'}
+            disabled={currentPage === totalPages}
+            className={currentPage === totalPages ? 'disabled' : 'current-btn'}
           >
             <MdArrowForwardIos
-              style={{ color: '#667085', fontSize: '.9rem' }}
+              style={{
+                color: currentPage === totalPages ? '#d9d9d9' : '#667085',
+                fontSize: '.9rem',
+              }}
             />
           </button>
         }
-        onPageChange={({ selected }: { selected: number }) =>
-          paginate(selected + 1)
-        }
+        onPageChange={({ selected }: { selected: number }) => paginate(selected + 1)}
         containerClassName="pagination"
         pageRangeDisplayed={3}
         marginPagesDisplayed={2}
