@@ -78,7 +78,7 @@ const Proj_pie_chart: React.FC = () => {
                                 />
 
                                 <span className="bold" style={{ color: '#263747' }}>
-                                    {tileData?.amount_prepaid}
+                                {Number(tileData?.amount_prepaid).toFixed(2)}
                                 </span>
                             </div>
                             <span className="">-</span>
@@ -103,7 +103,7 @@ const Proj_pie_chart: React.FC = () => {
                                 />
 
                                 <span className="bold" style={{ color: '#263747' }}>
-                                    {tileData?.pipeline_remaining}
+                                {Number(tileData?.pipeline_remaining).toFixed(2)}
                                 </span>
                             </div>
                             <span className="mxhalf">-</span>
