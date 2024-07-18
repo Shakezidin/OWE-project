@@ -34,6 +34,7 @@ type GetPerformerAllData struct {
 }
 
 type GetPerformerProfileDataReq struct {
+	Email      string
 	Dealer     string `json:"dealer"`
 	RepName    string `json:"rep_name"`
 	StartDate  string `json:"start_date"`

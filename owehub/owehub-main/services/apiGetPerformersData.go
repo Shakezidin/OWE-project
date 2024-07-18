@@ -51,12 +51,16 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Adder data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to unmarshal perfomer data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal get Adder data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	role := req.Context().Value("rolename").(string)
+	if role == "" {
+		FormAndSendHttpResp(resp, "error while getting role", http.StatusBadRequest, nil)
+		return
+	}
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
@@ -69,8 +73,9 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if role == "DealerOwner" {
 		query = `SELECT ud.user_id AS record_id, ud.name AS dealer_name FROM user_details ud WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT ud1.name AS dealer_name FROM user_details ud WHERE ud.email_id = $1
-				  LEFT JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id `
+		query = `SELECT ud1.name AS dealer_name FROM user_details ud 
+				  LEFT JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id 
+				  WHERE ud.email_id = $1`
 	}
 
 	whereEleList = append(whereEleList, dataReq.Email)
@@ -85,9 +90,10 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	performerData.OwnerName, _ = data[0]["dealer_name"].(string)
 
-	query = `SELECT DISTINCT(COUNT(team_id)) AS team_count, COUNT(team_id) AS total_team_strength FROM user_details ud 
-			   LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
-			   WHERE dealer_owner = $1`
+	query = `SELECT COUNT(DISTINCT ud.team_id) AS team_count, COUNT(ud.team_id) AS total_team_strength
+	FROM user_details ud 
+	LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
+	WHERE ud2.name = $1`
 
 	whereEleList = append(whereEleList, performerData.OwnerName)
 
