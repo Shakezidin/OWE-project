@@ -3,7 +3,19 @@ import { ICONS } from '../../../icons/Icons';
 import { MdOutlineIosShare } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
 
-const PerformanceCards = () => {
+interface performance {
+   details:any
+}
+
+
+const PerformanceCards : React.FC<performance>= ({details}) => {
+
+  console.log(details, "details")
+  const rank1 = details.find((item:any) => item.rank===1)
+  const rank2 = details.find((item:any) => item.rank===2)
+  const rank3 = details.find((item:any) => item.rank===3)
+
+  
   return (
     <div>
       <div className="performance-cards">
@@ -31,7 +43,7 @@ const PerformanceCards = () => {
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
-                <h2>Simon</h2>
+                <h2>{rank2.rep_name}</h2>
                 <p>
                   OUR31245
                   <span>
@@ -43,11 +55,11 @@ const PerformanceCards = () => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>120 sales</p>
+                <p>{rank2.count} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>1265.65 KW</p>
+                <p>{rank2.kw} KW</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
@@ -69,7 +81,7 @@ const PerformanceCards = () => {
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
-                <h2>Royal Ankir</h2>
+                <h2>{rank1.rep_name}</h2>
                 <p>
                   OUR31245
                   <span>
@@ -81,11 +93,11 @@ const PerformanceCards = () => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>120 sales</p>
+                <p>{rank1.count} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>1265.65 KW</p>
+                <p>{rank1.kw} KW</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
@@ -107,7 +119,7 @@ const PerformanceCards = () => {
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
-                <h2>Washi Bin</h2>
+                <h2>{rank3.rep_name}</h2>
                 <p>
                   OUR31245
                   <span>
@@ -119,11 +131,11 @@ const PerformanceCards = () => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>120 sales</p>
+                <p>{rank3.sale} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>1265.65 KW</p>
+                <p>{rank3.kw} KW</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">

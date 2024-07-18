@@ -37,6 +37,7 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
   const [active, setActive] = useState(categories[0].key);
   const [activeHead, setActiveHead] = useState('kw');
+  const [details, setDetails] = useState([])
   const [dealer, setDealer] = useState<{
     dealer?: string;
     rep_name?: string;
@@ -67,13 +68,18 @@ const Index = () => {
           page_size: 3,
           page_number: 1,
         });
+        
         if (data.status > 201) {
           // setIsLoading(false);
+        
           toast.error(data.message);
           return;
         }
         // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
         // setTotalCount(data?.dbRecCount);
+        setDetails(data.data?.
+          ap_ded_list
+          )
       } catch (error) {
         console.error(error);
       } finally {
@@ -85,10 +91,12 @@ const Index = () => {
   activeHead,
   selectedRangeDate
   ]);
+
+ 
   return (
     <div className="px1">
       <Banner />
-      <PerformanceCards/>
+      <PerformanceCards details={details}/>
       <Table setIsOpen={setIsOpen} selectedRangeDate={selectedRangeDate} setSelectedRangeDate={setSelectedRangeDate} activeHead={activeHead} setActiveHead={setActiveHead} active={active}setActive={setActive} setDealer={setDealer} />
       <Sidebar dealer={dealer}  setIsOpen={setIsOpen} isOpen={isOpen} />
     </div>
