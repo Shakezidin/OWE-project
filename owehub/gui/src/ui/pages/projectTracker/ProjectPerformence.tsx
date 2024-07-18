@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { cardData, projectDashData } from './projectData';
+import { cardData} from './projectData';
 import { ICONS } from '../../icons/Icons';
 import '../projectTracker/projectTracker.css';
 import { IoMdInformationCircleOutline } from 'react-icons/io';
@@ -24,6 +24,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +37,7 @@ const ProjectPerformence = () => {
     key: 'selection',
   });
 
+  const [tileData, setTileData] = useState<any>({})
 
 
   const [resDatePicker, setResDatePicker] = useState(
@@ -170,9 +172,57 @@ const ProjectPerformence = () => {
   const startIndex = (page - 1) * perPage + 1;
   const endIndex = page * perPage;
 
+   const projectDashData = [
+    {
+      ruppes: tileData.all_sales,
+      para: 'All Sales',
+      percentColor: '#8E81E0',
+      key: 'SalesPeriod',
+      percent: 80,
+    },
+    {
+      ruppes: tileData.
+      total_cancellation,
+      para: 'Total Cancellation',
+      iconBgColor: '#FFE6E6',
+      percentColor: '#C470C7',
+      key: 'cancellation_period',
+      percent: 30,
+    },
+    {
+      ruppes: tileData.total_installation,
+      para: 'Total Installation',
+      percentColor: '#63ACA3',
+      key: 'installation_period',
+      percent: 50,
+    },
+  ];
 
+  useEffect(() => {
+    (async () => {
+      try {
+       
+        const data = await postCaller('get_performance_tiledata', {
+        
+          start_date: resDatePicker.startdate,
+          end_date: resDatePicker.enddate 
+         
+        });
+     
+        setTileData(data.data)
+        if (data.status > 201) {
+        
+          toast.error(data.message);
+          return;
+        }
+       
+      } catch (error) {
+        console.error(error);
+      }  
+    })();
+  }, []);
 
-
+console.log(tileData, "title")
   return (
     <div className="">
       <Breadcrumb
