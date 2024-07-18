@@ -1500,6 +1500,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_perfomance_leaderboard",
+		apiHandler.HandleGetLeaderBoardRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 	// {
 	// 	strings.ToUpper("POST"),
 	// 	"/owe-commisions-service/v1/get_perfomance_pie",
@@ -1507,6 +1514,20 @@ var apiRoutes = ApiRoutes{
 	// 	true,
 	// 	[]types.UserGroup{types.GroupAdmin},
 	// },
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_leaderboarddatarequest",
+		apiHandler.HandlePerformerDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_leaderboardprofiledatarequest",
+		apiHandler.GetperformerProfileDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
