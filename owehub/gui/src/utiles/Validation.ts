@@ -63,9 +63,10 @@ export const validateForm = (
       errors.DealerOwner = true;
     } else if (formData.report_to.length === 0) {
       errors.ReportTo = true;
-    } else if (formData.team_name.length === 0) {
-      errors.Team_name = true;
     }
+    //  else if (formData.team_name.length === 0) {
+    //   errors.Team_name = true;
+    // }
   }
   if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     if (formData.assigned_dealer_name.length === 0) {

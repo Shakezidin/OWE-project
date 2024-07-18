@@ -365,12 +365,15 @@ const RepPaySettings = () => {
           </table>
         </div>
         <div className="page-heading-container">
+        {currentPageData?.length > 0 ? (
+          <>
           <p className="page-heading">
             {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
             {dbCount} item
           </p>
 
-          {currentPageData?.length > 0 ? (
+
+         
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
@@ -380,6 +383,7 @@ const RepPaySettings = () => {
               goToPrevPage={goToPrevPage}
               perPage={itemsPerPage}
             />
+            </>
           ) : null}
         </div>
       </div>

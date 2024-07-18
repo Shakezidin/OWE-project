@@ -55,27 +55,30 @@ const RepPayDashboardTotal: React.FC = () => {
         <div className="commission-section-dash">
           {data.length > 0
             ? data.map((el, i) => (
+              <div
+                key={i}
+                className="total-rep"
+                style={{
+                  backgroundImage: `url(${el.background})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              >
                 <div
-                  key={i}
-                  className="total-rep"
-                  style={{
-                    backgroundImage: `url(${el.background})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
+                  className="rep-total-section"
+                  style={{ marginBottom: '8px' }}
                 >
-                  <div
-                    className="rep-total-section"
-                    style={{ marginBottom: '8px' }}
-                  >
-                    <p>{el.paid}</p>
-                    <h4>{el.doller}</h4>
-                  </div>
-                  <div className="rep-teamImg">
-                    <img src={el.img} alt="" />
-                  </div>
+                  <p>{el.paid}</p>
+                  {/* <h4 style={{ wordBreak: 'break-all' }}>{el.doller}</h4> */}
+                  <h4 style={{ wordBreak: el.doller.length > 5 ? 'break-all' : 'normal' }}>
+                    {el.doller}
+                  </h4>
                 </div>
-              ))
+                <div className="rep-teamImg">
+                  <img src={el.img} alt="" />
+                </div>
+              </div>
+            ))
             : null}
         </div>
       </div>
