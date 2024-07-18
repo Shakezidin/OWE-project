@@ -86,7 +86,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	if len(UpdateNonCommDlrPay.UniqueID) > 0 {
 		query = `SELECT home_owner as customer, dealer as dealer_name FROM consolidated_data_view WHERE unique_id = $1`
 		whereEleList = append(whereEleList, UpdateNonCommDlrPay.UniqueID)
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
