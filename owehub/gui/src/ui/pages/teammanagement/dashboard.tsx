@@ -18,6 +18,7 @@ interface AccordionSection {
 const TeamManagement: React.FC = () => {
   const cardColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
+  const [refetch, setRefetch] = useState(1);
 
   const dispatch = useAppDispatch();
 
@@ -29,7 +30,7 @@ const TeamManagement: React.FC = () => {
     //   filters,
     // };
     dispatch(getTeams());
-  }, []);
+  }, [refetch]);
 
 
   const { isSuccess, isFormSubmitting,teams } = useAppSelector(
@@ -80,6 +81,7 @@ const TeamManagement: React.FC = () => {
     {open2 && (
         <NewTeam
           handleClose2={handleClose2}
+          setRefetch={setRefetch}
           // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}

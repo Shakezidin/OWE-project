@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -8,9 +8,13 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { getSalesManagerList, getsaleRepList, createTeam } from '../../../../redux/apiActions/teamManagement/teamManagement';
 import { ICONS } from '../../../icons/Icons';
+import { resetSuccess } from '../../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
+
+
 
 interface CreateUserProps {
     handleClose2: () => void;
+    setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 interface Option {
@@ -20,10 +24,10 @@ interface Option {
 
 interface FormInput extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
-const NewTeam: React.FC<CreateUserProps> = ({ handleClose2 }) => {
+const NewTeam: React.FC<CreateUserProps> = ({ handleClose2,   setRefetch }) => {
     const dispatch = useAppDispatch();
     const { loading } = useAppSelector((state) => state.createOnboardUser);
-    const { sales_manager_list, sale_rep_list } = useAppSelector((state) => state.teamManagmentSlice);
+    const { sales_manager_list, sale_rep_list, isSuccess } = useAppSelector((state) => state.teamManagmentSlice);
 
     const [formData, setFormData] = useState({
         description: "",
@@ -91,6 +95,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2 }) => {
         };
         dispatch(createTeam(data));
     };
+
+    useEffect(() => {
+        if (isSuccess) {
+          handleClose2();
+          setRefetch((prev) => prev + 1);
+        }
+        return () => {
+          isSuccess && dispatch(resetSuccess());
+        };
+      }, [isSuccess]);
  
     const handleClose = () => {
 

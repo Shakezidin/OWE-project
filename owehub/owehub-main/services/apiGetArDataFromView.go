@@ -367,7 +367,7 @@ func PrepareardataFilters(dataFilter models.GetArDataReq, check, whereAdded bool
 			filters = filtersBuilder.String()
 			return filters
 		}
-		
+
 		if !whereAdded {
 			filtersBuilder.WriteString(" WHERE ")
 		} else {

@@ -21,6 +21,7 @@ interface IState {
   sales_manager_list:[];
   sale_rep_list:[];
   isSuccess: boolean;
+  isMove:boolean;
   totalcount: number;
 }
 
@@ -33,6 +34,7 @@ const initialState: IState = {
   sales_manager_list:[],
   sale_rep_list:[],
   isSuccess: false,
+  isMove:false,
   totalcount: 0,
 };
 
@@ -42,6 +44,7 @@ const teamManagementSlice = createSlice({
   reducers: {
     resetSuccess: (state) => {
       state.isSuccess = false;
+      state.isMove= false;
     },
   },
   extraReducers: (builder) => {
@@ -118,7 +121,7 @@ const teamManagementSlice = createSlice({
       })
       .addCase(manageTeam.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
-        state.isSuccess = true;
+        state.isMove = true;
         state.error = '';
         toast.success('Moved Successfully');
       })

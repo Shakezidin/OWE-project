@@ -26,6 +26,8 @@ const TeamTable: React.FC = () => {
   const [editedCommission] = useState<CommissionModel | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState<boolean>(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [refetch, setRefetch] = useState(1);
   const [open1, setOpen1] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
@@ -70,10 +72,11 @@ const TeamTable: React.FC = () => {
       };
       dispatch(getTeam(data));
     }
-  }, [id, teamName, managerName, dispatch]);
+  }, [id, teamName, managerName, dispatch, refetch]);
 
-  const handleMoveMemberClick = () => {
-   
+  const handleMoveMemberClick = (el:any) => {
+   console.log(el, "el")
+   setSelectedMember(el); 
     setOpen1(true);
   };
 
@@ -96,7 +99,9 @@ const TeamTable: React.FC = () => {
           <MoveMember
             handleClose1={handleClose1}
             onSubmitCreateUser={onSubmitCreateUser}
+            member={selectedMember} // Add this line
             team={team}
+            setRefetch={setRefetch}
           />
         )}
         <div className="dashBoard-container">
@@ -180,7 +185,7 @@ const TeamTable: React.FC = () => {
                               stroke: '0.2',
                             }}
                             alt=""
-                            onClick={() => handleMoveMemberClick()}
+                            onClick={() => handleMoveMemberClick(el)}
                           />
                         </td>
                         <td className="zoom-out-help" style={{ paddingLeft: '30px' }}>

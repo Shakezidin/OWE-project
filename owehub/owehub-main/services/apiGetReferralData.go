@@ -367,7 +367,7 @@ func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestB
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.referrer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_doll_divby_per":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_doll_divby_per %s $%d", operator, len(whereEleList)+1))
@@ -459,7 +459,7 @@ func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestB
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+			filtersBuilder.WriteString(fmt.Sprintf(" ORDER BY ad.id OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 		}
 	}
 

@@ -248,7 +248,7 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+			filtersBuilder.WriteString(fmt.Sprintf(" ORDER BY rs.id OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 		}
 	}
 
