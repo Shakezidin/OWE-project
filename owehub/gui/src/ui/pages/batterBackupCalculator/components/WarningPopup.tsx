@@ -55,7 +55,12 @@ const WarningPopup = ({
             className="text-dark mt1"
             style={{ fontWeight: 500, fontSize: 14 }}
           >
-            {popUpMsg}
+            You are attempting to reduce the total number of batteries below our
+            recommended minimum for a Full Home Back-Up.We cannot gaurentee the
+            effectiveness in which this battery configuration can support your
+            home. Would you like to remain at the recommended battery quantity
+            for a Full Home Back-Up or reduce the number of batteries in this
+            system and switch to a Partial Home Back-up
           </p>
         </div>
         <div className="mt4">
@@ -73,7 +78,7 @@ const WarningPopup = ({
             }}
             className="calc-grey-btn warning-popup-btn pointer"
           >
-            {btnText.secondaryText}
+           I would like to switch to a partial home back-up.
           </button>
           <button
             onClick={() => {
@@ -87,7 +92,7 @@ const WarningPopup = ({
             }}
             className="calc-green-btn pointer warning-popup-btn"
           >
-            {btnText.primaryText}
+           I would like to remain with the recommended configuration.
           </button>
         </div>
       </div>

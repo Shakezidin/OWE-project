@@ -59,20 +59,20 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	dataReq.Email = req.Context().Value("emailid").(string)
-	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
-		return
-	}
+	// dataReq.Email = req.Context().Value("emailid").(string)
+	// if dataReq.Email == "" {
+	// 	FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+	// 	return
+	// }
 	performerProfileData := models.GetPerformerProfileData{}
 
 	query = `SELECT ud1.name as dealer, tm.team_name as team, ud.mobile_number as contact_number, ud.email_id as email, ud.name as primary_sales_rep
 			FROM user_details ud
 			LEFT JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id
 			LEFT JOIN teams tm ON ud.team_id = tm.team_id
-			WHERE ud.email_id = $1`
+			WHERE ud1.name = $1 AND ud.name = $2`
 
-	whereEleList = append(whereEleList, dataReq.Email)
+	whereEleList = append(whereEleList, dataReq.Dealer, dataReq.RepName)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
@@ -84,9 +84,9 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	performerProfileData.TeamName, _ = data[0]["team"].(string)
 	performerProfileData.ContactNumber, _ = data[0]["contact_number"].(string)
 	performerProfileData.Email, _ = data[0]["email"].(string)
-	PrimarysalesRep, _ := data[0]["primary_sales_rep"].(string)
+	// PrimarysalesRep, _ := data[0]["primary_sales_rep"].(string)
 
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ntp_date IS NOT NULL AND project_status = 'INSTALL' AND ", performerProfileData.Dealer, PrimarysalesRep)
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ntp_date IS NOT NULL AND project_status = 'INSTALL' ", dataReq.Dealer, dataReq.RepName)
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
