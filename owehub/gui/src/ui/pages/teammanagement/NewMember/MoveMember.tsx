@@ -13,11 +13,14 @@ import 'react-phone-input-2/lib/style.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import Select from 'react-select';
 import { getTeams ,manageTeam } from '../../../../redux/apiActions/teamManagement/teamManagement';
+import { resetSuccess } from '../../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 
 interface createUserProps {
   handleClose1: () => void;
   onSubmitCreateUser: (e: any) => void;
   team:any,
+  member: any;
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 interface Option {
@@ -30,6 +33,8 @@ const MoveMember: React.FC<createUserProps> = ({
   handleClose1,
   onSubmitCreateUser,
   team,
+  member,
+  setRefetch
 }) => {
   const dispatch = useAppDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState('');
@@ -59,7 +64,7 @@ const MoveMember: React.FC<createUserProps> = ({
     // };
     dispatch(getTeams());
   }, []);
-  const { isSuccess, isFormSubmitting,teams } = useAppSelector(
+  const { isMove, isFormSubmitting,teams } = useAppSelector(
     (state) => state.teamManagmentSlice
   );
 
@@ -80,13 +85,26 @@ const MoveMember: React.FC<createUserProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
     const data = {
         team_id:selectedOption2,
-        rep_ids:[]
+        rep_ids:[member?.rep_id],
+        delete_check:false
     };
     dispatch(manageTeam(data));
 };
 
+
+useEffect(() => {
+  if (isMove) {
+    handleClose1();
+    setRefetch((prev) => prev + 1); 
+  }
+  return () => {
+    isMove && dispatch(resetSuccess());
+  };
+}, [isMove]);
+console.log(member, "member")
 
   return (
     <div className="transparent-model">
