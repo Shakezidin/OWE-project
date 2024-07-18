@@ -43,12 +43,12 @@ type GetPerformerProfileDataReq struct {
 }
 
 type GetPerformerProfileData struct {
-	Dealer         string  `json:"dealer"`
-	TeamName       string  `json:"team_name"`
-	ContactNumber  string  `json:"contact_number"`
-	Email          string  `json:"email"`
-	TotalSales     float64 `json:"total_sales"`
-	Total_NTP      float64 `json:"total_ntp"`
-	Total_Installs float64 `json:"total_installs"`
-	Rank           float64 `json:"rank"`
+	Dealer         string `json:"dealer"`
+	TeamName       string `json:"team_name"`
+	ContactNumber  string `json:"contact_number"`
+	Email          string `json:"email"`
+	TotalSales     int64  `json:"total_sales"`
+	Total_NTP      int64  `json:"total_ntp"`
+	Total_Installs int64  `json:"total_installs"`
+	WeeklySale     int64  `json:"weekly_sale"`
 }

@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import Pagination from '../../../components/pagination/Pagination';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { Tcategory } from '..';
 interface ILeaderBordUser {
   rank: number;
   dealer: string;
@@ -31,13 +32,13 @@ interface IDealer {
   start_date?: string;
   end_date?: string;
   leader_type: string;
-  name:string;
-  rank:number
+  name: string;
+  rank: number;
 }
+
 const categories = [
   { name: 'Sale', key: 'sale' },
   { name: 'NTP', key: 'ntp' },
-  { name: 'Active', key: 'active' },
   { name: 'Install', key: 'install' },
   { name: 'Cancel', key: 'cancel' },
 ];
@@ -79,12 +80,24 @@ export const switchIcons = (rank: number) => {
 const Table = ({
   setIsOpen,
   setDealer,
+  active,
+  setActive,
+  activeHead,
+  setActiveHead,
+  setSelectedRangeDate,
+  selectedRangeDate,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
+  active: string;
+  setActive: Dispatch<SetStateAction<string>>;
+  activeHead: string;
+  setActiveHead: Dispatch<SetStateAction<string>>;
+  setSelectedRangeDate: Dispatch<
+    SetStateAction<{ label: string; value: string }>
+  >;
+  selectedRangeDate: { label: string; value: string };
 }) => {
-  const [active, setActive] = useState(categories[0].key);
-  const [activeHead, setActiveHead] = useState('kw');
   const [selection, setSelection] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -93,10 +106,7 @@ const Table = ({
   const [showCalendar, setShwoCalendar] = useState(false);
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
-  const [selectedRangeDate, setSelectedRangeDate] = useState({
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  });
+
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 10;
@@ -149,8 +159,6 @@ const Table = ({
   const goToPrevPage = () => {
     setPage(page - 1);
   };
-
-  
 
   return (
     <div className="bg-white mt4 px3 pt3" style={{ borderRadius: 12 }}>
@@ -377,6 +385,7 @@ const Table = ({
                 <th>Name</th>
 
                 <th>Dealer</th>
+                <th>Sales</th>
                 <th>
                   <div className="leaderbord-tab-container flex items-center">
                     <div
@@ -398,7 +407,7 @@ const Table = ({
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={4}>
+                  <td colSpan={5}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -428,7 +437,7 @@ const Table = ({
                               end_date: selectedRangeDate.value?.split(
                                 ','
                               )[1] as string,
-                              name:item.rep_name,
+                              name: item.rep_name,
                               rank: item.rank,
                             }));
                           }}
@@ -438,12 +447,8 @@ const Table = ({
                       </td>
 
                       <td> {item.dealer} </td>
-                      <td>
-                        {' '}
-                        {activeHead === 'kw'
-                          ? item.kw.toFixed(2)
-                          : item.count}{' '}
-                      </td>
+                      <td> {item.count} </td>
+                      <td> {item.kw.toFixed(2)} </td>
                     </tr>
                   );
                 })
