@@ -59,14 +59,9 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	// dataReq.Email = req.Context().Value("emailid").(string)
-	// if dataReq.Email == "" {
-	// 	FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
-	// 	return
-	// }
 	performerProfileData := models.GetPerformerProfileData{}
 
-	query = `SELECT ud1.name as dealer, tm.team_name as team, ud.mobile_number as contact_number, ud.email_id as email, ud.name as primary_sales_rep
+	query = `SELECT ud1.name as dealer, tm.team_name as team, ud.mobile_number as contact_number, ud.email_id as email
 			FROM user_details ud
 			LEFT JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id
 			LEFT JOIN teams tm ON ud.team_id = tm.team_id
@@ -80,13 +75,29 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	performerProfileData.Dealer, _ = data[0]["dealer"].(string)
-	performerProfileData.TeamName, _ = data[0]["team"].(string)
-	performerProfileData.ContactNumber, _ = data[0]["contact_number"].(string)
-	performerProfileData.Email, _ = data[0]["email"].(string)
-	// PrimarysalesRep, _ := data[0]["primary_sales_rep"].(string)
+	if len(data) > 0 {
+		performerProfileData.Dealer, _ = data[0]["dealer"].(string)
+		performerProfileData.TeamName, _ = data[0]["team"].(string)
+		performerProfileData.ContactNumber, _ = data[0]["contact_number"].(string)
+		performerProfileData.Email, _ = data[0]["email"].(string)
+	}
 
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ntp_date IS NOT NULL AND project_status = 'INSTALL' ", dataReq.Dealer, dataReq.RepName)
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ntp_date IS NOT NULL AND project_status = 'ACTIVE' ", dataReq.Dealer, dataReq.RepName)
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if len(data) > 0 {
+		performerProfileData.TotalSales, _ = data[0]["total_sales"].(float64)
+		performerProfileData.Total_NTP, _ = data[0]["total_ntp"].(float64)
+		performerProfileData.Total_Installs, _ = data[0]["install"].(float64)
+	}
+	whereEleList = nil
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ntp_date IS NOT NULL AND project_status = 'ACTIVE' AND ", dataReq.Dealer, dataReq.RepName)
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
@@ -99,10 +110,9 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
 		return
 	}
-
-	performerProfileData.TotalSales, _ = data[0]["total_sales"].(float64)
-	performerProfileData.Total_NTP, _ = data[0]["total_ntp"].(float64)
-	performerProfileData.Total_Installs, _ = data[0]["install"].(float64)
+	if len(data) > 0 {
+		performerProfileData.WeeklySale, _ = data[0]["weekly_sale"].(float64)
+	}
 	// Send the response
 	log.FuncInfoTrace(0, "performer profile data fetched : %v ", performerProfileData)
 	FormAndSendHttpResp(resp, "Adder Data", http.StatusOK, performerProfileData)
