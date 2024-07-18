@@ -75,7 +75,7 @@ type ProspectInfoId struct {
 }
 
 type BreakerInfo struct {
-	Ampere   float64  `json:"ampere"`
+	Ampere   string  `json:"ampere"`
 	Category Category `json:"category"`
 	Note     string   `json:"note"`
 }
@@ -86,7 +86,7 @@ type Category struct {
 }
 
 type GetBreakerInfo struct {
-	Ampere         float64 `json:"ampere"`
+	Ampere         string `json:"ampere"`
 	Note           string  `json:"note"`
 	CategoryName   string  `json:"category_name"`
 	CategoryAmpere float64 `json:"category_ampere"`

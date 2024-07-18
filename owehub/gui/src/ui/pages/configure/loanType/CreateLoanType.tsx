@@ -106,7 +106,7 @@ const CreateLoanType: React.FC<loanProps> = ({
       if (createLoanTypeData.record_id) {
         const res = await postCaller(
           EndPoints.update_loantype,
-          createLoanTypeData
+          {...createLoanTypeData,active:createLoanTypeData.active?1:0}
         );
         if ((await res.status) === 200) {
           await successSwal('', res.message);
@@ -121,7 +121,7 @@ const CreateLoanType: React.FC<loanProps> = ({
         const { record_id, ...cleanedFormData } = createLoanTypeData;
         const res = await postCaller(
           EndPoints.create_loantype,
-          cleanedFormData
+          {...cleanedFormData,active:cleanedFormData.active?1:0}
         );
         if ((await res.status) === 200) {
           await successSwal('', res.message);
