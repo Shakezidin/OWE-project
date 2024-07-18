@@ -82,7 +82,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		performerProfileData.Email, _ = data[0]["email"].(string)
 	}
 
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ntp_date IS NOT NULL AND project_status = 'ACTIVE' ", dataReq.Dealer, dataReq.RepName)
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND project_status != 'CANCEL' ", dataReq.Dealer, dataReq.RepName)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil {
@@ -97,7 +97,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		performerProfileData.Total_Installs, _ = data[0]["install"].(float64)
 	}
 	whereEleList = nil
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ntp_date IS NOT NULL AND project_status = 'ACTIVE' AND ", dataReq.Dealer, dataReq.RepName)
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ", dataReq.Dealer, dataReq.RepName)
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
