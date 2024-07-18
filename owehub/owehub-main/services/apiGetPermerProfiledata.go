@@ -76,7 +76,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if len(data) > 0 {
-		performerProfileData.Dealer, _ = data[0]["dealer"].(string)
+		performerProfileData.Dealer = dataReq.Dealer
 		performerProfileData.TeamName, _ = data[0]["team"].(string)
 		performerProfileData.ContactNumber, _ = data[0]["contact_number"].(string)
 		performerProfileData.Email, _ = data[0]["email"].(string)
@@ -92,9 +92,9 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if len(data) > 0 {
-		performerProfileData.TotalSales, _ = data[0]["total_sales"].(float64)
-		performerProfileData.Total_NTP, _ = data[0]["total_ntp"].(float64)
-		performerProfileData.Total_Installs, _ = data[0]["install"].(float64)
+		performerProfileData.TotalSales, _ = data[0]["total_sales"].(int64)
+		performerProfileData.Total_NTP, _ = data[0]["total_ntp"].(int64)
+		performerProfileData.Total_Installs, _ = data[0]["install"].(int64)
 	}
 	whereEleList = nil
 	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ", dataReq.Dealer, dataReq.RepName)
@@ -111,7 +111,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 	if len(data) > 0 {
-		performerProfileData.WeeklySale, _ = data[0]["weekly_sale"].(float64)
+		performerProfileData.WeeklySale, _ = data[0]["weekly_sale"].(int64)
 	}
 	// Send the response
 	log.FuncInfoTrace(0, "performer profile data fetched : %v ", performerProfileData)
