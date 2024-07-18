@@ -70,7 +70,7 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	performerData := models.GetPerformarData{}
 
 	// tableName := db.ViewName_ConsolidatedDataView
-	if role == "DealerOwner" {
+	if role == "Dealer Owner" {
 		query = `SELECT ud.user_id AS record_id, ud.name AS dealer_name FROM user_details ud WHERE ud.email_id = $1`
 	} else {
 		query = `SELECT ud1.name AS dealer_name FROM user_details ud 

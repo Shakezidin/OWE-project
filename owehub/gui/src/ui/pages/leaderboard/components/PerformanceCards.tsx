@@ -11,9 +11,9 @@ interface performance {
 const PerformanceCards : React.FC<performance>= ({details}) => {
 
   console.log(details, "details")
-  const rank1 = details.find((item:any) => item.rank===1)
-  const rank2 = details.find((item:any) => item.rank===2)
-  const rank3 = details.find((item:any) => item.rank===3)
+  const rank1 = details.find((item:any) => item?.rank===1)
+  const rank2 = details.find((item:any) => item?.rank===2)
+  const rank3 = details.find((item:any) => item?.rank===3)
 
   
   return (
@@ -43,7 +43,7 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
-                <h2>{rank2.rep_name}</h2>
+                <h2>{rank2?.rep_name}</h2>
                 <p>
                   OUR31245
                   <span>
@@ -55,11 +55,11 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>{rank2.count} sales</p>
+                <p>{rank2?.count} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>{rank2.kw} KW</p>
+                <p>{rank2?.kw} KW</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
@@ -81,7 +81,7 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
-                <h2>{rank1.rep_name}</h2>
+                <h2>{rank1?.rep_name}</h2>
                 <p>
                   OUR31245
                   <span>
@@ -93,11 +93,11 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>{rank1.count} sales</p>
+                <p>{rank1?.count} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>{rank1.kw} KW</p>
+                <p>{rank1?.kw} KW</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
@@ -119,7 +119,7 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
-                <h2>{rank3.rep_name}</h2>
+                <h2>{rank3?.rep_name}</h2>
                 <p>
                   OUR31245
                   <span>
@@ -131,11 +131,11 @@ const PerformanceCards : React.FC<performance>= ({details}) => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>{rank3.sale} sales</p>
+                <p>{rank3?.sale} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
-                <p>{rank3.kw} KW</p>
+                <p>{rank3?.kw} KW</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
