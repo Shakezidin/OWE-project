@@ -1,96 +1,98 @@
-.performance-cards{
-    background-color: #fff;
-    background-image: url('../../../../resources/assets/performars-background.svg');
-    background-size: cover; /* Ensure the image covers the entire div */
-    background-position: center; /* Center the background image */
-    border-radius: 10px;
-    margin-top: 2rem;
+.performance-cards {
+  background-color: #fff;
+  background-image: url('../../../../resources/assets/performars-background.svg');
+  background-size: cover; /* Ensure the image covers the entire div */
+  background-position: center; /* Center the background image */
+  border-radius: 10px;
+  margin-top: 2rem;
 }
-.right-button{
-    display: flex;
-    justify-content: flex-end;
-    padding: 1.5rem 1.5rem 0 0;
+.right-button {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.5rem 1.5rem 0 0;
 }
-.share-button{
-    padding: 0.4rem 1.5rem;
-    outline: none;
-    border: none;
-    border-radius: 1.5rem;
-    background: var(--row-bg-color);
-    color: #3B3B3B;
-    display: flex;
-    align-items: center;
-    gap: .3rem;
-    cursor: pointer;
+.share-button {
+  padding: 0.4rem 1.5rem;
+  outline: none;
+  border: none;
+  border-radius: 1.5rem;
+  background: var(--row-bg-color);
+  color: #3b3b3b;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
 }
-.share-button p{
-    font-size: 1rem;
+.share-button p {
+  font-size: 1rem;
 }
-.share-svg{
-    font-size: 1rem;
-    height: 16px;
-    width: 16px;
+.share-svg {
+  font-size: 1rem;
+  height: 16px;
+  width: 16px;
 }
-.banner-heading{
-    text-align: center;
-    line-height: 16px;
+.banner-heading {
+  text-align: center;
+  line-height: 16px;
 }
-.cards{
-    padding: 5rem;
+.cards {
+  padding: 5rem;
 }
-.card-one, .card-two, .card-three{
-    border: 2px solid #EAEAEA;
-    border-radius: 10px;
-    padding: 0 0.8rem;
-    background-color: #fff;
+.card-one,
+.card-two,
+.card-three {
+  border: 2px solid #eaeaea;
+  border-radius: 10px;
+  padding: 0 0.8rem;
+  background-color: #fff;
 }
-.card-three{
-    border: 2px solid #EAEAEA;
+.card-three {
+  border: 2px solid #eaeaea;
 }
-.upper-section{
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1rem;
+.upper-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
 }
-.dashed-border{
-    border: 1px dashed #EAEAEA;
+.dashed-border {
+  border: 1px dashed #eaeaea;
 }
-.card-title{
-    justify-content: center;
+.card-title {
+  justify-content: center;
 }
-.card-title span{
-    margin-left: 7px;
-    cursor: pointer;
+.card-title span {
+  margin-left: 7px;
+  cursor: pointer;
 }
-.card-title h2{
-    font-weight: 600;
-    color: #3B3B3B;
+.card-title h2 {
+  font-weight: 600;
+  color: #3b3b3b;
 }
-.card-title p{
-    font-size: 0.8rem;
-    color: #3B3B3B;
+.card-title p {
+  font-size: 0.8rem;
+  color: #3b3b3b;
 }
-.below-section{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 1rem;
-    row-gap: 0.8rem;
-    column-gap: 2.5rem;
+.below-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1rem;
+  row-gap: 0.8rem;
+  column-gap: 2.5rem;
 }
-.below-des p:first-of-type{
-    color: #3B3B3B;
-    font-weight: 500;
+.below-des p:first-of-type {
+  color: #3b3b3b;
+  font-weight: 500;
 }
-.below-des p:nth-of-type(2){
-    color: #AFAFAF;
-    font-size: 0.8rem;
+.below-des p:nth-of-type(2) {
+  color: #afafaf;
+  font-size: 0.8rem;
 }
-.card-two{
-    border: none;
-    transform: scale(1.3);
-    position: relative;
-    overflow: hidden;
+.card-two {
+  border: 2px solid #F99602;
+  transform: scale(1.3);
+  position: relative;
+  overflow: hidden;
 }
 /* .card-two::before{
     content: "";
@@ -126,6 +128,6 @@
         transform: rotate(360deg);
     }
 } */
- .card-three{
-    border: 2px solid #F9E09F;
- }
+.card-three {
+  border: 2px solid #f9e09f;
+}

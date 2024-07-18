@@ -1,5 +1,7 @@
 import './Banner.css';
 import { ICONS } from '../../../icons/Icons';
+import { LiaEdit } from "react-icons/lia";
+// import EditModal from './EditModal';
 
 const Banner = () => {
   return (
@@ -51,7 +53,12 @@ const Banner = () => {
             aria-label="login-icon"
           ></object>
         </div>
+        <button className="edit-button">
+            <LiaEdit className="edit-svg" />
+            <p>Edit</p>
+          </button>
       </div>
+      {/* <EditModal /> */}
     </div>
   );
 };
