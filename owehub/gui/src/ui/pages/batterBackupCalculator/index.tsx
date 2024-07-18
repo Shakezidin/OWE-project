@@ -199,9 +199,7 @@ OWE Battery Calc
 
         breakers: batter.map((battery) => ({
           ...battery,
-          ampere: battery.amp.includes('70')
-            ? battery.amp.split('+')
-            : parseFloat(battery.amp.split(' ')[0]),
+          ampere: battery.amp,
         })),
       });
       await shareImage();

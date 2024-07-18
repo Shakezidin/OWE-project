@@ -39,7 +39,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { toCanvas } from 'html-to-image';
-import { IoMdCloseCircleOutline } from "react-icons/io";
+import { IoMdCloseCircleOutline } from 'react-icons/io';
 const appliance = [
   {
     name: 'Air Conditioner',
@@ -358,7 +358,6 @@ const BatteryAmp = () => {
                     }}
                   ></div>
                 </div>
-                
               </>
             )}
           </div>
@@ -484,18 +483,35 @@ const BatteryAmp = () => {
                       </svg>
                     </div>
                     <div className="battery-amp flex-grow-1 flex items-center">
-                     {mainOn? <GoCheckCircleFill
-                        className="mr1"
-                        color="#129537"
-                        size={21}
-                      />:<IoMdCloseCircleOutline className="mr1"
-                      color="#F44336"
-                      size={21}/>}
-                      <span>{mainOn?"Full":"Partial"} Home Backup</span>
+                      {mainOn ? (
+                        <GoCheckCircleFill
+                          className="mr1"
+                          color="#129537"
+                          size={21}
+                        />
+                      ) : (
+                        <IoMdCloseCircleOutline
+                          className="mr1"
+                          color="#F44336"
+                          size={21}
+                        />
+                      )}
+                      <span>{mainOn ? 'Full' : 'Partial'} Home Backup</span>
                     </div>
                   </div>
                   <div className="batter-amp-switch pointer flex items-center justify-center">
-                    <img  src={mainOn ? on : off} alt="" className="pointer" />
+                    <img
+                      onClick={() => {
+                        if (!mainOn) {
+                          setRequiredBattery(required);
+                        } else {
+                          setIsOpen(true);
+                        }
+                      }}
+                      src={mainOn ? on : off}
+                      alt=""
+                      className="pointer"
+                    />
                   </div>
                 </div>
                 {!mainOn && (
@@ -536,7 +552,7 @@ const BatteryAmp = () => {
                             }}
                           >
                             {' '}
-                            {`${item.amp}${item.amp === 70 ? '+' : ''} AMP`}{' '}
+                            {`${item.amp}${item.amp === 70 ? '+' : ''}`}{' '}
                           </span>
                           <div
                             className="breaker-category text-center flex items-center justify-center py-1"
@@ -546,7 +562,7 @@ const BatteryAmp = () => {
                               className="block"
                               style={{ fontSize: 10, lineHeight: 1.2 }}
                             >
-                              {item.category_name} 
+                              {item.category_name}
                             </span>
                           </div>
                         </div>
@@ -586,7 +602,6 @@ const BatteryAmp = () => {
             >
               Submit
             </button>
-            
           </div>
         </div>
       </div>
