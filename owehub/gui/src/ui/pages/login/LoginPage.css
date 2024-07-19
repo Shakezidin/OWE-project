@@ -300,16 +300,33 @@ p.loginResendOtp {
 }
 
 /*Login Responsive*/
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 900px) {
   .container {
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     gap: 30px;
+    overflow: auto;
+    padding-top: 40px;
   }
   .loginBox {
     flex: 0 0;
   }
   .mainContainer {
     background-position: 25%;
+  }
+}
+
+/*Login Responsive*/
+@media screen and (max-width: 500px) {
+  .loginTextView {
+    width: 100%;
+    padding: 20px;
+  }
+  #loginNormalText {
+    font-size: 30px;
+  }
+
+  #loginNormalText1 {
+    font-size: 14px;
   }
 }
