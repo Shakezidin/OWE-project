@@ -125,6 +125,13 @@ export const createUserObject = (
       reporting_manager: formData.report_to,
     };
   }
+  if (formData.role_name === TYPE_OF_USER.DEALER_OWNER) {
+    createObject = {
+      ...createObject,
+      dealer_logo: formData?.dealer_logo,
+      dealer: formData.dealer
+    };
+  }
 
   return createObject;
 };

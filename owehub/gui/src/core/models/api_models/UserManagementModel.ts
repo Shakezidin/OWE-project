@@ -62,6 +62,8 @@ export interface CreateUserModel {
   report_to: string;
   user_status?: string;
   tablePermission?: any;
+  dealer_logo:string
+  dealer:string
 }
 
 export interface CreateUserParamModel {
@@ -77,6 +79,8 @@ export interface CreateUserParamModel {
   region?: string;
   user_status?: string;
   tables_permissions?: any;
+  dealer_logo?:string
+  dealer?:string
 }
 
 export interface DeleteUserModel {

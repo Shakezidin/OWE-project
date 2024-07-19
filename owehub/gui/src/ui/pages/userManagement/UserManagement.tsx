@@ -43,6 +43,7 @@ const UserManagement: React.FC = () => {
   const dispatch = useAppDispatch();
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
+  const [logoUrl, setLogoUrl] = useState('');
   const {
     loading,
     userOnboardingList,
@@ -164,6 +165,7 @@ const UserManagement: React.FC = () => {
         ...data,
         tables_permissions: tablePermissions,
         description: formData.description.trim(),
+        dealer_logo: logoUrl
       })
     );
     const result = unwrapResult(actionResult);
@@ -234,6 +236,7 @@ const UserManagement: React.FC = () => {
           onChangeRole={(role, value) => {
             onChangeRole(role, value);
           }}
+          setLogoUrl= {setLogoUrl}
         />
       )}
       <div className="barchart-section">
