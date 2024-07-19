@@ -2,7 +2,8 @@ import './Modal.css';
 import { ICONS } from '../../../icons/Icons';
 import { GoUpload } from 'react-icons/go';
 
-const EditModal = () => {
+//@ts-ignore
+const EditModal = ({onClose}) => {
   return (
     <div className="edit-modal">
       <div className="leader-modal">
@@ -20,8 +21,8 @@ const EditModal = () => {
           </div>
         </div>
         <div className='leader-buttons'>
-                <button>Cancel</button>
-                <button>Update</button>
+                <button className='cancel-button' onClick={onClose}>Cancel</button>
+                <button className='update-button'>Update</button>
         </div>
       </div>
     </div>

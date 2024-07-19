@@ -1,5 +1,5 @@
 .banner-main {
-  height: 25vh;
+  padding: 1rem 0;
   width: 100%;
   /* background-color: #44ADF9; */
   background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
