@@ -256,3 +256,13 @@
   font-weight: 600;
   line-height: 30px;
 }
+
+
+@media screen and (max-width: 1024px) {
+
+
+  .team-cards {
+    gap: 16px;
+  }
+
+}

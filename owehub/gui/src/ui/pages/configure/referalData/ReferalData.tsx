@@ -155,7 +155,7 @@ const ReferalData: React.FC = () => {
       };
       const res = await postCaller('update_referraldata_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        dispatch(fetchDealer(pageNumber));
+        dispatch(getrefralData(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
         checkLastPage(
@@ -199,7 +199,7 @@ const ReferalData: React.FC = () => {
         const res = await postCaller('update_reconcile_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
-          dispatch(fetchDealer(pageNumber));
+          dispatch(getrefralData(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
             //@ts-ignore
             (index) => !archivedRows.includes(data[index].RecordId)

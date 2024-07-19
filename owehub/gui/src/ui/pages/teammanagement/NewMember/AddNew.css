@@ -7,6 +7,7 @@
   overflow: hidden;
 }
 
+
 .error-message {
   color: red;
   font-size: 12px;
@@ -199,4 +200,16 @@
 .remove-icon {
   width: 11px;
   height: 11px;
+}
+
+
+@media screen and (max-width: 1024px) {
+
+
+  .new-tm-modal {
+    width: 100%;
+    max-width: 654px;
+    height: 432px;
+  }
+
 }

@@ -30,6 +30,7 @@ interface createUserProps {
   selectedOption: { label?: string; value?: string };
   tablePermissions: {};
   setTablePermissions: Dispatch<SetStateAction<{}>>;
+  setLogoUrl: any
 }
 
 const UserOnboardingCreation: React.FC<createUserProps> = ({
@@ -41,8 +42,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   selectedOption,
   tablePermissions,
   setTablePermissions,
+  setLogoUrl
 }) => {
   const dispatch = useAppDispatch();
+ 
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [dbAccess, setDbAcess] = useState(false);
   const { loading, formData } = useAppSelector(
@@ -59,6 +62,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     dispatch(updateUserForm({ field: 'add_region', value: '' }));
     dispatch(updateUserForm({ field: 'team_name', value: '' }));
     dispatch(updateUserForm({ field: 'report_to', value: '' }));
+    dispatch(updateUserForm({ field: 'dealer', value: '' }));
     const { value } = newValue;
     onChangeRole('Role', value);
     setTablePermissions({});
@@ -250,10 +254,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   </div>
 
                   {formData.role_name === 'Admin' ||
-                  formData.role_name === 'SubDealer Owner' ||
-                  formData.role_name === 'DB User' ||
-                  formData.role_name === 'Dealer Owner' ||
-                  formData.role_name === 'Finance Admin' ? null : (
+                    formData.role_name === 'SubDealer Owner' ||
+                    formData.role_name === 'DB User' ||
+                    formData.role_name === 'Dealer Owner' ||
+                    formData.role_name === 'Finance Admin' ? null : (
                     <div className="create-input-field">
                       <label className="inputLabel-select selected-fields-onboard">
                         Dealer Owner
@@ -273,15 +277,18 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       />
                     </div>
                   )}
+
+                  <UserBasedInput
+                    formData={formData}
+                    onChange={(e: any) => handleInputChange(e)}
+                    regionList={regionList}
+                    handleChangeForRegion={(value: any, name: string) => {
+                      handleChangeForRegion(value, name);
+                    }}
+                    setLogoUrl={setLogoUrl}
+                  />
                 </div>
-                <UserBasedInput
-                  formData={formData}
-                  onChange={(e: any) => handleInputChange(e)}
-                  regionList={regionList}
-                  handleChangeForRegion={(value: any, name: string) => {
-                    handleChangeForRegion(value, name);
-                  }}
-                />
+
                 <div style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <div
                     style={{
@@ -374,11 +381,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     placeholder="Type"
                   ></textarea>
                   <p
-                    className={`character-count ${
-                      formData.description.trim().length >= 500
+                    className={`character-count ${formData.description.trim().length >= 500
                         ? 'exceeded'
                         : ''
-                    }`}
+                      }`}
                   >
                     {formData.description.trim().length}/500 characters
                   </p>
@@ -393,7 +399,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={'button'}
           />
-          <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
+          <ActionButton title={'Create'} onClick={() => { }} type={'submit'} />
         </div>
       </form>
     </div>

@@ -4,7 +4,7 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 interface Ipaginate {
   page_number: number;
   page_size: number;
-  archived: boolean;
+  archived?: boolean;
 }
 export const getrefralData = createAsyncThunk(
   'fetch/refralData',
@@ -22,3 +22,4 @@ export const getrefralData = createAsyncThunk(
     }
   }
 );
+
