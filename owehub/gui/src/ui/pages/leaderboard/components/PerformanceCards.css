@@ -38,6 +38,11 @@
 }
 .cards {
   padding: 5rem;
+  column-gap: 60px;
+  row-gap: 60px;
+}
+.cards object {
+  width: 70px;
 }
 .card-one,
 .card-two,
@@ -96,6 +101,19 @@
   position: relative;
   overflow: hidden;
 }
+
+/* ----TEXT-TRUNCATE---- */
+.card-title, .below-des {
+  overflow: hidden;
+}
+.card-title h2, .below-section p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;  
+}
+/* ------------------- */
+
+
 /* .card-two::before{
     content: "";
     background-image: conic-gradient(#F99602 20deg, transparent 120deg);
@@ -132,4 +150,41 @@
 } */
 .card-three {
   border: 2px solid #f9e09f;
+}
+
+@media screen and (max-width:1400px) {
+  .performance-cards .cards {
+    padding: 5rem 1.5rem;
+    column-gap: 3rem;
+  }
+
+  .performance-cards .upper-section,
+  .performance-cards .below-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .performance-cards .upper-section {
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .performance-cards .below-des p {
+    font-size: 0.75rem;
+  }
+
+  .performance-cards .card-one,
+  .performance-cards .card-three {
+    width: 25%;
+  }
+
+  .performance-cards .card-one object,
+  .performance-cards .card-three object {
+    width: 40px;
+  }
+
+  .performance-cards .card-one h2,
+  .performance-cards .card-three h2 {
+    font-size: 0.875rem;
+  }
 }
