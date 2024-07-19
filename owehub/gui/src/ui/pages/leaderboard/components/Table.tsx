@@ -161,7 +161,7 @@ const Table = ({
   };
 
   return (
-    <div className="bg-white mt4 px3 pt3" style={{ borderRadius: 12 }}>
+    <div className="bg-white mt3 px3 pt3" style={{ borderRadius: 12 }}>
       <div className=" mt1 flex items-center">
         <img src={award} alt="" width={19} height={19} />
         <h2 className="h3 ml2" style={{ fontWeight: 600 }}>
