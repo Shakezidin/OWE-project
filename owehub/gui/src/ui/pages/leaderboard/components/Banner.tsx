@@ -50,11 +50,11 @@ const Banner = () => {
           aria-label="solar-name-icon"
         ></object>
         <div className="">
-          <h1 className="solar-heading">{details.dealer_name || "N/A"}</h1>
+          <h1 className="solar-heading">{details?.dealer_name || "N/A"}</h1>
           <div className="flex items-center ">
             <object
               type="image/svg+xml"
-              data={ICONS.OWEBannerLogo}
+              data={details?.dealer_logo || ICONS.OWEBannerLogo}
               aria-label="login-icon"
             ></object>
             <p className="left-ban-des">
@@ -69,7 +69,7 @@ const Banner = () => {
         <div className="banner-names flex flex-column">
           <div>
             <p className="owner-heading">Owner Name</p>
-            <p className="owner-names">{details.owner_name || "N/A"}</p>
+            <p className="owner-names">{details?.owner_name || "N/A"}</p>
           </div>
           <div>
             <p className="owner-heading">Total Teams</p>
