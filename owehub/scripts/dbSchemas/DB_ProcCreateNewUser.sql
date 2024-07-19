@@ -19,6 +19,7 @@ CREATE OR REPLACE FUNCTION create_new_user(
     p_country VARCHAR(255),
     p_team_name VARCHAR(255),
     p_dealer_name VARCHAR(255),
+    p_dealer_logo VARCHAR(255),
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
@@ -164,6 +165,8 @@ BEGIN
         zipcode,
         country,
         team_id,
+        dealer_name,
+        dealer_logo,
         tables_permissions
     )
     VALUES (
@@ -187,6 +190,8 @@ BEGIN
         v_zipcode_id,
         p_country,
         v_team_id,
+        v_dealer_id,
+        p_dealer_logo,
         p_tables_permissions
     )
     RETURNING user_id INTO v_user_id;

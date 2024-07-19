@@ -31,6 +31,7 @@ type GetUsersData struct {
 	Zipcode           string               `json:"zipcode"`
 	Country           string               `json:"country"`
 	Dealer            string               `json:"dealer"`
+	DealerLogo        string               `json:"dealer_logo"`
 	TablePermission   []GetTablePermission `json:"table_permission"`
 }
 
