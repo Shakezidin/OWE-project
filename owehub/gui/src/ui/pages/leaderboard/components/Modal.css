@@ -1,52 +1,82 @@
-.edit-modal{
+.edit-modal {
     position: fixed;
-    border-radius: 10px;
-    left: 37%;
-    top: 20%;
+    inset: 0;
+    display: grid;
+    place-content: center;
     z-index: 9999;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #2A2A2AC4;
 }
-.leader-modal{
+
+.leader-modal {
     width: 600px;
     background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 1.5rem;
     border-radius: 1rem;
 }
-.leader-modal h2{
+
+.leader-modal input[type="file"] {
+    display: none;
+}
+
+.leader-modal h2 {
     font-weight: 600;
 }
-.modal-center{
+
+.modal-center {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 1rem 0;
 }
-.upload{
+
+.leader-modal-upload {
     display: flex;
     align-items: center;
     gap: 0.3rem;
     margin-top: 1rem;
     cursor: pointer;
+    font-size: 0.875rem;
+    border: none;
+    background: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
 }
-.leader-buttons{
+
+.leader-modal-upload:hover {
+    background-color: var(--children-bg-color);
+}
+
+.leader-modal img {
+    width: 150px;
+    height: 150px;
+    border-radius: 1rem;
+    object-fit: cover;
+}
+
+
+.leader-buttons {
     display: flex;
     justify-content: center;
     gap: 2rem;
     margin: 2rem 0 1rem 0;
 }
-.leader-buttons button{
+
+.leader-buttons button {
     padding: 0.8rem 4rem;
     border-radius: 0.8rem;
     cursor: pointer;
 }
-.cancel-button{
+
+.cancel-button {
     color: #EE824D;
     background: white;
     border: 1px solid #EE824D;
     font-weight: 500;
 }
-.update-button{
+
+.update-button {
     background-color: #EE824D;
     color: #fff;
     border: none;

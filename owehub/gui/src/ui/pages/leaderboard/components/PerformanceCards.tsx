@@ -30,13 +30,12 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
           ></object>
           <p>Based on most sales in the last 1 month.</p>
         </div>
-        <div className="cards flex justify-between" style={{ gap: 60 }}>
+        <div className="cards flex justify-between">
           <div className="card-one">
             <div className="upper-section">
               <object
                 type="image/svg+xml"
                 data={ICONS.GreyTwo}
-                width={70}
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
@@ -52,7 +51,7 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>{rank2?.count} sales</p>
+                <p>{rank2?.count ?? 0} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
@@ -70,7 +69,6 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
               <object
                 type="image/svg+xml"
                 data={ICONS.GoldOne}
-                width={70}
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
@@ -86,7 +84,7 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>{rank1?.count} sales</p>
+                <p>{rank1?.count ?? 0} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">
@@ -104,7 +102,6 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
               <object
                 type="image/svg+xml"
                 data={ICONS.BrownThree}
-                width={70}
                 aria-label="grey-icon"
               ></object>
               <div className="flex flex-column card-title">
@@ -120,7 +117,7 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
             <div className="dashed-border"></div>
             <div className="below-section">
               <div className="below-des">
-                <p>{rank3?.sale} sales</p>
+                <p>{rank3?.sale ?? 0} sales</p>
                 <p>For this month</p>
               </div>
               <div className="below-des">

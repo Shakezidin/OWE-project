@@ -221,6 +221,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.Zipcode)
 	queryParameters = append(queryParameters, createUserReq.Country)
 	queryParameters = append(queryParameters, createUserReq.TeamName)
+	queryParameters = append(queryParameters, createUserReq.Dealer)
+	queryParameters = append(queryParameters, createUserReq.DealerLogo)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the stored procedure or function to create the user

@@ -22,7 +22,8 @@ type DataRequestBody struct {
 }
 
 type MailRequestBody struct {
-	Message string `json:"message"`
-	Subject   string `json:"subject"`
-	ToMail   string `json:"to_mail"`
+	HtmlContent string `json:"html_content"`
+	Message     string `json:"message"`
+	Subject     string `json:"subject"`
+	ToMail      string `json:"to_mail"`
 }

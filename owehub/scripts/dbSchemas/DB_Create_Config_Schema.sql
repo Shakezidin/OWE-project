@@ -52,6 +52,18 @@ CREATE TABLE IF NOT EXISTS user_roles (
     PRIMARY KEY (role_id)
 );
 
+CREATE TABLE v_dealer (
+    id serial NOT NULL,
+    dealer_code character varying,
+    dealer_name character varying,
+    description character varying,
+    is_archived BOOLEAN DEFAULT FALSE, 
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE IF NOT EXISTS user_details(
     user_id SERIAL,
     name VARCHAR(255) NOT NULL,
@@ -75,6 +87,8 @@ CREATE TABLE IF NOT EXISTS user_details(
     country VARCHAR(50),
     team_id INT,
     tables_permissions jsonb,
+    dealer_id INT,
+    dealer_logo VARCHAR(255),
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id) ON DELETE SET NULL,
@@ -83,6 +97,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
     FOREIGN KEY (team_id) REFERENCES teams(team_id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     PRIMARY KEY (user_id)
 );
 
@@ -144,17 +159,6 @@ CREATE TABLE commission_rates (
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
     FOREIGN KEY (rep_type) REFERENCES rep_type(id),
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE v_dealer (
-    id serial NOT NULL,
-    dealer_code character varying,
-    dealer_name character varying,
-    description character varying,
-    is_archived BOOLEAN DEFAULT FALSE, 
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 

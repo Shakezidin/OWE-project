@@ -18,6 +18,8 @@ CREATE OR REPLACE FUNCTION create_new_user(
     p_zipcode VARCHAR(255),
     p_country VARCHAR(255),
     p_team_name VARCHAR(255),
+    p_dealer_name VARCHAR(255),
+    p_dealer_logo VARCHAR(255),
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
@@ -32,6 +34,7 @@ DECLARE
     v_zipcode_id INT;
     v_team_id INT;
     v_max_user_code INT;
+    v_dealer_id INT;
     v_new_user_code VARCHAR(255);
 BEGIN
     -- Get the role_id based on the provided role_name
@@ -123,6 +126,19 @@ BEGIN
         v_team_id := NULL;
     END IF;
 
+     -- Get the dealer owner's user_id
+    IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
+        SELECT id INTO v_dealer_id
+        FROM v_dealer
+        WHERE dealer_name = p_dealer_name;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
+        END IF;
+    ELSE
+        v_dealer_id := NULL;
+    END IF;
+
     -- Fetch the maximum user code and increment it
     SELECT MAX(CAST(SUBSTRING(user_code FROM 4) AS INT)) INTO v_max_user_code FROM user_details;
     v_new_user_code := 'OWE' || LPAD(COALESCE(v_max_user_code + 1, 1)::TEXT, 5, '0');
@@ -149,6 +165,8 @@ BEGIN
         zipcode,
         country,
         team_id,
+        dealer_id,
+        dealer_logo,
         tables_permissions
     )
     VALUES (
@@ -172,6 +190,8 @@ BEGIN
         v_zipcode_id,
         p_country,
         v_team_id,
+        v_dealer_id,
+        p_dealer_logo,
         p_tables_permissions
     )
     RETURNING user_id INTO v_user_id;

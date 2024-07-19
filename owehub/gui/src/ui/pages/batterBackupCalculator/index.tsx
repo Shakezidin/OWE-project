@@ -17,19 +17,6 @@ import { LuChevronRight } from 'react-icons/lu';
 import AppliancePopup from './components/AppliancePopup';
 import { sendMail } from '../../../utiles';
 import ImagePopup from './components/ImagePopup';
-const apms = [
-  '15 AMP',
-  '20 AMP',
-  '25 AMP',
-  '30 AMP',
-  '35 AMP',
-  '40 AMP',
-  '45 AMP',
-  '50 AMP',
-  '60 AMP',
-  '70+ AMP',
-  "Single Pull Breakers"
-];
 
 const responsive = {
   desktop: {
@@ -67,7 +54,19 @@ export interface IDetail {
   address: string;
   system_size: number;
 }
-
+const apms = [
+  '15 AMP',
+  '20 AMP',
+  '25 AMP',
+  '30 AMP',
+  '35 AMP',
+  '40 AMP',
+  '45 AMP',
+  '50 AMP',
+  `Single Pull Breaker`,
+  '60 AMP',
+  '70+ AMP',
+];
 const Index = () => {
   const { id } = useParams();
   console.log(id, 'params');
@@ -115,6 +114,7 @@ const Index = () => {
       window.removeEventListener('click', handler);
     };
   }, []);
+
   const handleValidation = () => {
     const error: TError = {} as TError;
     for (const key in inputDetails) {
@@ -159,19 +159,28 @@ const Index = () => {
   const shareImage = () => {
     return sendMail({
       toMail: detail.sr_email_id,
-      message: `Hi Sales Rep Team,
- 
-You have recieved a request from Electrical Team to fill the information in battery calculation form.
- 
-Please visit the below URL to complete the form.
- 
-${window.location.protocol}//${window.location.host}/battery-ui-generator/${id}
-
-Thank you
-OWE Battery Calc
+      message: `
     
       `,
       subject: 'Battery Calc Notification',
+      html_content: `
+<p>
+      Hi Sales Rep Team,
+ <br>
+You have recieved a request from Electrical Team to fill the information in battery calculation form.
+ <br>
+
+Please visit the below URL to complete the form.</p>
+      <a  clicktracking="off" href="${`${window.location.protocol}//${window.location.host}/battery-ui-generator/${id}`}" >${`${window.location.protocol}//${window.location.host}/battery-ui-generator/${id}`}</a>
+<strong style="display:block;">
+Thank you
+</strong>
+<strong style="display:block;">
+OWE Battery Calc
+</strong>
+      
+      
+      `,
     }).then(
       (response) => {
         console.log('Email sent successfully:', response);
@@ -189,6 +198,7 @@ OWE Battery Calc
       }
     );
   };
+
   const handleSubmit = async () => {
     try {
       setIsPending(true);
@@ -199,7 +209,11 @@ OWE Battery Calc
 
         breakers: batter.map((battery) => ({
           ...battery,
-          ampere: battery.amp,
+          ampere: battery.amp.includes('70')
+            ? parseFloat(battery.amp.split('+')[0])
+            : battery.amp.includes('Single Pull Breaker')
+              ? 0
+              : parseFloat(battery.amp.split(' ')[0]),
         })),
       });
       await shareImage();
@@ -208,6 +222,10 @@ OWE Battery Calc
       toast.error((error as Error).message!);
     }
   };
+
+  const lightHouseAmpSize = Math.ceil(
+    ((detail.house_square * 1.5) / 120) * 0.6
+  );
 
   const ButtonGroup = ({
     next,
@@ -515,6 +533,7 @@ OWE Battery Calc
         isSelected={isSelected}
         isOpen={isCategoryOpen}
         setIsOpen={setIsCategoryOpen}
+        lightHouseAmpSize={lightHouseAmpSize}
       />
       {imgPopup && (
         <ImagePopup

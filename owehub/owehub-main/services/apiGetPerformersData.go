@@ -71,10 +71,12 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// tableName := db.ViewName_ConsolidatedDataView
 	if role == "Dealer Owner" {
-		query = `SELECT ud.user_id AS record_id, ud.name AS dealer_name FROM user_details ud WHERE ud.email_id = $1`
+		query = `SELECT ud.user_id AS record_id, ud.name as dealer_name, ud.name as owner_name, ud.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud 
+				LEFT JOIN v_dealer vd ON ud.name = vd.dealer_name
+				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT ud1.name AS dealer_name FROM user_details ud 
-				  LEFT JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id 
+		query = `SELECT ud.user_id AS record_id, ud.name as owner_name, vd.dealer_name as dealer_name, ud.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud
+				  LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id  
 				  WHERE ud.email_id = $1`
 	}
 
@@ -88,14 +90,23 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	whereEleList = nil
 
-	performerData.OwnerName, _ = data[0]["dealer_name"].(string)
+	performerData.DealerId, _ = data[0]["dealer_id"].(int64)
+	performerData.OwnerName, _ = data[0]["owner_name"].(string)
+	performerData.DealerName, _ = data[0]["dealer_name"].(string)
+	performerData.DealerLogo, _ = data[0]["dealer_logo"].(string)
 
-	query = `SELECT COUNT(DISTINCT ud.team_id) AS team_count, COUNT(ud.team_id) AS total_team_strength
-	FROM user_details ud 
-	LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
-	WHERE ud2.name = $1`
+	query = `SELECT
+    (SELECT COUNT(DISTINCT ud.team_id)
+     FROM user_details ud
+     LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
+     WHERE ud2.name = $1) AS team_count,
 
-	whereEleList = append(whereEleList, performerData.OwnerName)
+    (SELECT COUNT(ud.team_id)
+     FROM user_details ud
+     LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+     WHERE vd.dealer_name = $2) AS total_team_strength`
+
+	whereEleList = append(whereEleList, performerData.OwnerName, performerData.DealerName)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {

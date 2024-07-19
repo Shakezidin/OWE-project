@@ -89,22 +89,22 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// dealerCode
-		dealerCode, dealerNameOk := item["dealer_code"].(string)
-		if !dealerNameOk || dealerCode == "" {
+		dealerCode, dealercodeOk := item["dealer_code"].(string)
+		if !dealercodeOk || dealerCode == "" {
 			log.FuncErrorTrace(0, "Failed to get dealer code for Record ID %v. Item: %+v\n", RecordId, item)
 			dealerCode = ""
 		}
 
 		// DealerName
-		DealerName, dealerTypeOk := item["dealer_name"].(string)
-		if !dealerTypeOk || DealerName == "" {
+		DealerName, dealerNameOk := item["dealer_name"].(string)
+		if !dealerNameOk || DealerName == "" {
 			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
 			DealerName = ""
 		}
 
 		// Description
-		Description, priceTypeOk := item["description"].(string)
-		if !priceTypeOk || Description == "" {
+		Description, discriptioneOk := item["description"].(string)
+		if !discriptioneOk || Description == "" {
 			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
