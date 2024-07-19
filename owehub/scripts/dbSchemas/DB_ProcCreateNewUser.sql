@@ -165,7 +165,7 @@ BEGIN
         zipcode,
         country,
         team_id,
-        dealer_name,
+        dealer_id,
         dealer_logo,
         tables_permissions
     )
