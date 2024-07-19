@@ -216,7 +216,7 @@ const CreateRebate: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'number'}
-                    label="Rep$/%"
+                    label="Rep $/%"
                     value={createArData.rep_doll_divby_per}
                     name="rep_doll_divby_per"
                     placeholder={'Enter'}

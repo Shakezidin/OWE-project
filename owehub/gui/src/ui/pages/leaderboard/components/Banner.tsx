@@ -1,8 +1,12 @@
-import React from 'react';
 import './Banner.css';
 import { ICONS } from '../../../icons/Icons';
+import { LiaEdit } from "react-icons/lia";
+import EditModal from './EditModal';
+import { useState } from 'react';
+
 
 const Banner = () => {
+  const [showModal, setShowModal] = useState(false)
   return (
     <div className="banner-main flex items-center">
       {/* left side  */}
@@ -10,8 +14,8 @@ const Banner = () => {
         <object
           type="image/svg+xml"
           data={ICONS.BannerLogo}
-          width={100}
-          aria-label="login-icon"
+          width={120}
+          aria-label="solar-name-icon"
         ></object>
         <div className="">
           <h1 className="solar-heading">United Solar</h1>
@@ -48,11 +52,16 @@ const Banner = () => {
           <object
             type="image/svg+xml"
             data={ICONS.BannerTrophy}
-            width={200}
+            width={220}
             aria-label="login-icon"
           ></object>
         </div>
+        <button className="edit-button" onClick={() => setShowModal(true)}>
+            <LiaEdit className="edit-svg" />
+            <p>Edit</p>
+          </button>
       </div>
+      {showModal && <EditModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };

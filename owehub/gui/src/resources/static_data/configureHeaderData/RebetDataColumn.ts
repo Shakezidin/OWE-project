@@ -140,15 +140,15 @@ export const RebeteDataColumn: Column[] = [
   { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
   {
     name: 'rep_doll_divby_per',
-    displayName: 'Rep $ / %',
+    displayName: 'Rep $/%',
     type: 'number',
     isCheckbox: false,
   },
   { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
-  { name: 'rep1_name', displayName: 'Rep1', type: 'string', isCheckbox: false },
+  { name: 'rep1_name', displayName: 'Rep 1', type: 'string', isCheckbox: false },
   {
     name: 'rep2_name',
-    displayName: 'rep_2',
+    displayName: 'Rep 2',
     type: 'string',
     isCheckbox: false,
   },
@@ -243,5 +243,5 @@ export const RebeteDataColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'date', displayName: 'Date', type: 'date', isCheckbox: false },
+  { name: 'start_date', displayName: 'Date', type: 'date', isCheckbox: false },
 ];

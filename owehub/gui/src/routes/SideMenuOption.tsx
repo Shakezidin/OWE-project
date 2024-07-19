@@ -16,6 +16,7 @@ import {
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { AiOutlineDatabase } from 'react-icons/ai';
 import { AiOutlineUserSwitch } from 'react-icons/ai';
+import { ImStatsBars2 } from "react-icons/im";
 
 const performance = {
   performance: [
@@ -192,6 +193,13 @@ const other = {
       sidebarProps: {
         displayText: 'Configure',
         icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.LEADERBOARD,
+      sidebarProps: {
+        displayText: 'Leaderboard',
+        icon: <ImStatsBars2 size={18} style={{ flexShrink: '0' }} />,
       },
     },
   ],

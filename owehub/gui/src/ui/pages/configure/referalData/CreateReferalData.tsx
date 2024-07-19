@@ -23,6 +23,7 @@ import {
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { firstCapitalize } from '../../../../utiles';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 interface IError {
   // partner?: string;
@@ -105,7 +106,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
         amount:commission.amount,
         notes:commission.notes,
         rep_doll_divby_per:commission.rep_doll_divby_per,
-        start_date:commission.start_date,
+        start_date:dateFormat(commission.start_date),
 
 
       })

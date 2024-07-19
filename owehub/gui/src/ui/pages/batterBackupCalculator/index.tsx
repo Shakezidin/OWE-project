@@ -28,6 +28,7 @@ const apms = [
   '50 AMP',
   '60 AMP',
   '70+ AMP',
+  "Single Pull Breakers"
 ];
 
 const responsive = {
@@ -64,7 +65,7 @@ export interface IDetail {
   secondary_data: ISecondary;
   house_square: number;
   address: string;
-  SysSize: number;
+  system_size: number;
 }
 
 const Index = () => {
@@ -198,9 +199,7 @@ OWE Battery Calc
 
         breakers: batter.map((battery) => ({
           ...battery,
-          ampere: battery.amp.includes('70')
-            ? battery.amp.split('+')
-            : parseFloat(battery.amp.split(' ')[0]),
+          ampere: battery.amp,
         })),
       });
       await shareImage();
@@ -285,7 +284,7 @@ OWE Battery Calc
           </button>
           {applianceOpen && (
             <AppliancePopup
-              systemSize={detail.SysSize}
+              systemSize={detail.system_size}
               primaryDetail={detail.primary_data}
               secondaryDetail={detail.secondary_data}
               isOpen={applianceOpen}

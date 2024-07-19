@@ -1,0 +1,54 @@
+.edit-modal{
+    position: fixed;
+    border-radius: 10px;
+    left: 37%;
+    top: 20%;
+    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.leader-modal{
+    width: 600px;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+.leader-modal h2{
+    font-weight: 600;
+}
+.modal-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+}
+.upload{
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+.leader-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0 1rem 0;
+}
+.leader-buttons button{
+    padding: 0.8rem 4rem;
+    border-radius: 0.8rem;
+    cursor: pointer;
+}
+.cancel-button{
+    color: #EE824D;
+    background: white;
+    border: 1px solid #EE824D;
+    font-weight: 500;
+}
+.update-button{
+    background-color: #EE824D;
+    color: #fff;
+    border: none;
+    font-weight: 500;
+}
