@@ -213,16 +213,19 @@ func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody, f
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.payee) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("dh.amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "description":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.description) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "balance":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.balance) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("dh.balance %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "paid_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.paid_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("dh.paid_amount %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "date":
+				filtersBuilder.WriteString(fmt.Sprintf("dh.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
