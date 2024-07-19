@@ -17,19 +17,6 @@ import { LuChevronRight } from 'react-icons/lu';
 import AppliancePopup from './components/AppliancePopup';
 import { sendMail } from '../../../utiles';
 import ImagePopup from './components/ImagePopup';
-const apms = [
-  '15 AMP',
-  '20 AMP',
-  '25 AMP',
-  '30 AMP',
-  '35 AMP',
-  '40 AMP',
-  '45 AMP',
-  '50 AMP',
-  '60 AMP',
-  '70+ AMP',
-  "Single Pull Breakers"
-];
 
 const responsive = {
   desktop: {
@@ -67,7 +54,19 @@ export interface IDetail {
   address: string;
   system_size: number;
 }
-
+const apms = [
+  '15 AMP',
+  '20 AMP',
+  '25 AMP',
+  '30 AMP',
+  '35 AMP',
+  '40 AMP',
+  '45 AMP',
+  '50 AMP',
+  `Single Pull Breaker`,
+  '60 AMP',
+  '70+ AMP',
+];
 const Index = () => {
   const { id } = useParams();
   console.log(id, 'params');
@@ -115,6 +114,8 @@ const Index = () => {
       window.removeEventListener('click', handler);
     };
   }, []);
+
+
   const handleValidation = () => {
     const error: TError = {} as TError;
     for (const key in inputDetails) {
@@ -189,6 +190,7 @@ OWE Battery Calc
       }
     );
   };
+  
   const handleSubmit = async () => {
     try {
       setIsPending(true);
@@ -199,7 +201,11 @@ OWE Battery Calc
 
         breakers: batter.map((battery) => ({
           ...battery,
-          ampere: battery.amp,
+          ampere: battery.amp.includes('70')
+            ? parseFloat(battery.amp.split('+')[0])
+            : battery.amp.includes('Single Pull Breaker')
+              ? 0
+              : parseFloat(battery.amp.split(' ')[0]),
         })),
       });
       await shareImage();
@@ -209,6 +215,10 @@ OWE Battery Calc
     }
   };
 
+ 
+  const lightHouseAmpSize = ((detail.house_square * 1.5) / 120) * 0.6;
+ 
+  
   const ButtonGroup = ({
     next,
     previous,
@@ -515,6 +525,7 @@ OWE Battery Calc
         isSelected={isSelected}
         isOpen={isCategoryOpen}
         setIsOpen={setIsCategoryOpen}
+        lightHouseAmpSize={lightHouseAmpSize}
       />
       {imgPopup && (
         <ImagePopup
