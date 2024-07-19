@@ -20,7 +20,10 @@ type IncludeDataReq struct {
 }
 
 type GetPerformarData struct {
+	DealerName   string  `json:"daeler_name"`
 	OwnerName    string  `json:"owner_name"`
+	DealerLogo   string  `json:"dealer_logo"`
+	DealerId     int64   `json:"dealer_id"`
 	TotalTeams   float64 `json:"total_teams"`
 	TeamStrength float64 `json:"total_strength"`
 }
@@ -51,4 +54,5 @@ type GetPerformerProfileData struct {
 	Total_NTP      int64  `json:"total_ntp"`
 	Total_Installs int64  `json:"total_installs"`
 	WeeklySale     int64  `json:"weekly_sale"`
+	User_code      string `json:"user_code"`
 }

@@ -24,6 +24,7 @@ type UpdateUserReq struct {
 	Zipcode           string            `json:"zipcode"`
 	Country           string            `json:"country"`
 	UserCode          string            `json:"user_code"`
+	Dealer            string            `json:"dealer"`
 	TablesPermissions []TablePermission `json:"tables_permissions"`
 }
 

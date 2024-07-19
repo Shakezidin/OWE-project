@@ -61,11 +61,11 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 
 	performerProfileData := models.GetPerformerProfileData{}
 
-	query = `SELECT ud1.name as dealer, tm.team_name as team, ud.mobile_number as contact_number, ud.email_id as email
+	query = `SELECT tm.team_name as team, ud.mobile_number as contact_number, ud.email_id as email, ud.user_code as user_code
 			FROM user_details ud
-			LEFT JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id
+			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
 			LEFT JOIN teams tm ON ud.team_id = tm.team_id
-			WHERE ud1.name = $1 AND ud.name = $2`
+			WHERE vd.dealer_name = $1 AND ud.name = $2`
 
 	whereEleList = append(whereEleList, dataReq.Dealer, dataReq.RepName)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -80,9 +80,10 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		performerProfileData.TeamName, _ = data[0]["team"].(string)
 		performerProfileData.ContactNumber, _ = data[0]["contact_number"].(string)
 		performerProfileData.Email, _ = data[0]["email"].(string)
+		performerProfileData.User_code, _ = data[0]["user_code"].(string)
 	}
 
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND project_status != 'CANCEL' ", dataReq.Dealer, dataReq.RepName)
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v' AND project_status != 'CANCEL' ", dataReq.Dealer, dataReq.RepName, dataReq.RepName)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil {
@@ -97,7 +98,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		performerProfileData.Total_Installs, _ = data[0]["install"].(int64)
 	}
 	whereEleList = nil
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' AND ", dataReq.Dealer, dataReq.RepName)
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v' AND ", dataReq.Dealer, dataReq.RepName, dataReq.RepName)
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
