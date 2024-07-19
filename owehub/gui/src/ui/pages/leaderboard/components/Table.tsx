@@ -1,23 +1,22 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { format, subDays } from 'date-fns';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { DateRange } from 'react-date-range';
+import { FaUpload } from 'react-icons/fa';
+import Select from 'react-select';
+import { toast } from 'react-toastify';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import award from '../../../../resources/assets/award_icon.png';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import Pagination from '../../../components/pagination/Pagination';
 import {
   Calendar,
-  Dollar,
   FirstAwardIcon,
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
-import { BsFillTriangleFill } from 'react-icons/bs';
-import Select from 'react-select';
-import { FaUpload } from 'react-icons/fa';
-import { DateRange } from 'react-date-range';
-import { format, subDays } from 'date-fns';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { toast } from 'react-toastify';
-import Pagination from '../../../components/pagination/Pagination';
-import MicroLoader from '../../../components/loader/MicroLoader';
-import DataNotFound from '../../../components/loader/DataNotFound';
-import { Tcategory } from '..';
+import { BiChevronDown } from 'react-icons/bi';
+
 interface ILeaderBordUser {
   rank: number;
   dealer: string;
@@ -62,19 +61,225 @@ const rangeOptData = [
   },
 ];
 
-export const switchIcons = (rank: number) => {
-  switch (rank) {
-    case 1:
-      return <FirstAwardIcon />;
+export const RankColumn = ({ rank }: { rank: number }) => {
+  if (rank === 1) return <FirstAwardIcon />;
+  if (rank === 2) return <SecondAwardIcon />;
+  if (rank === 3) return <ThirdAwardIcon />;
+  return <span className="ml1">{rank}</span>;
+};
 
-    case 2:
-      return <SecondAwardIcon />;
-    case 3:
-      return <ThirdAwardIcon />;
+//
+// PERIOD FILTER
+//
+const periodFilterOptions = [
+  'This Week',
+  'This Month',
+  'Last Month',
+  'This Year',
+] as const;
 
-    default:
-      return <span className="ml1">{rank}</span>;
-  }
+type PeriodFilterOption = (typeof periodFilterOptions)[number];
+
+const PeriodFilter = ({
+  period,
+  setPeriod,
+}: {
+  period: PeriodFilterOption;
+  setPeriod: (newVal: PeriodFilterOption) => void;
+}) => {
+  return (
+    <ul className="leaderboard-data__period-group">
+      {periodFilterOptions.map((item) => (
+        <li key={item}>
+          <button
+            onClick={() => setPeriod(item)}
+            className={
+              'leaderboard-data__period-button' +
+              (period === item
+                ? ' leaderboard-data__period-button--active'
+                : '')
+            }
+          >
+            {item}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+//
+// GROUP FILTER
+//
+
+const GroupFilter = () => {
+  // const [isShown, setIsShown] = useState(false);
+  // const wrapperRef = useRef<HTMLDivElement | null>(null);
+  // useEffect(() => {
+  //   const wrapper = wrapperRef.current;
+  //   if (!wrapper || !isShown) return;
+  //   const onOutsideClick = (ev: Event) => {
+  //     if (!ev.composedPath().includes(wrapper)) setIsShown(false);
+  //   };
+  //   window.addEventListener('click', onOutsideClick);
+  //   return () => window.removeEventListener('click', onOutsideClick);
+  // }, [isShown]);
+  // return (
+  //   <div className="leaderboard-data__group" ref={wrapperRef}>
+  //     <button onClick={() => setIsShown(!isShown)}>
+  //       <span>Group</span>
+  //       <BiChevronDown size={16} />
+  //     </button>
+  //     {isShown && (
+  //       <ul>
+  //         <li>Team</li>
+  //         <li>Region</li>
+  //         <li>State</li>
+  //       </ul>
+  //     )}
+  //   </div>
+  // );
+
+  return (
+    <Select
+      options={[
+        { label: 'Weekly', value: 'weekly' },
+        { label: 'Monthly', value: 'month' },
+      ]}
+      value={undefined}
+      placeholder="Group"
+      isSearchable={false}
+      styles={{
+        control: (baseStyles) => ({
+          ...baseStyles,
+          fontSize: '12px',
+          borderRadius: '4px',
+          outline: 'none',
+          width: 'fit-content',
+          minWidth: '92px',
+          height: '32px',
+          alignContent: 'center',
+          cursor: 'pointer',
+          boxShadow: 'none',
+          minHeight: 30,
+          border: 'none',
+          background: '#EE824D',
+          '&:focus': {
+            outline: 'none',
+          },
+        }),
+        placeholder: (baseStyles) => ({
+          ...baseStyles,
+          color: '#fff',
+        }),
+        indicatorSeparator: () => ({
+          display: 'none',
+        }),
+        dropdownIndicator: (baseStyles, state) => ({
+          ...baseStyles,
+          svg: {
+            fill: '#fff',
+          },
+          marginLeft: '-18px',
+        }),
+
+        option: (baseStyles, state) => ({
+          ...baseStyles,
+          fontSize: '12px',
+          color: state.isSelected ? '#fff' : '#EE824D',
+          backgroundColor: state.isSelected ? '#EE824D' : '#fff',
+          ':hover': {
+            backgroundColor: state.isSelected ? '#EE824D' : '#ffebe2',
+            color: state.isSelected ? '#fff' : '#EE824D',
+          },
+        }),
+
+        singleValue: (baseStyles) => ({
+          ...baseStyles,
+          color: '#fff',
+          fontSize: 12,
+        }),
+        menu: (baseStyles) => ({
+          ...baseStyles,
+          width: '92px',
+          zIndex: 10,
+          color: '#FFFFFF',
+        }),
+        input: (base) => ({ ...base, margin: 0 }),
+      }}
+    />
+  );
+};
+
+//
+// RANK BY
+//
+const RankBy = ({
+  selected,
+  setSelected,
+}: {
+  selected: string;
+  setSelected: (newVal: string) => void;
+}) => {
+  const options = categories.map(({ key, name }) => ({
+    value: key,
+    label: name,
+  }));
+
+  return (
+    <div className="leaderboard-data__rankby">
+      <label>Rank By:</label>
+      <Select
+        options={options}
+        value={options.find((option) => option.value === selected)}
+        onChange={(newVal) => setSelected(newVal?.value ?? '')}
+        isSearchable={false}
+        styles={{
+          control: (baseStyles) => ({
+            ...baseStyles,
+            fontSize: '12px',
+            fontWeight: '500',
+            border: 'none',
+            outline: 'none',
+            width: '84px',
+            alignContent: 'center',
+            backgroundColor: '#ffffff',
+            cursor: 'pointer',
+            boxShadow: 'none',
+          }),
+          indicatorSeparator: () => ({
+            display: 'none',
+          }),
+          dropdownIndicator: (baseStyles) => ({
+            ...baseStyles,
+            color: '#ee824d',
+            marginLeft: '-8px',
+          }),
+          option: (baseStyles, state) => ({
+            ...baseStyles,
+            fontSize: '12px',
+            backgroundColor: state.isSelected ? '#ee824d' : '#fff',
+            '&:hover': {
+              backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
+            color: state.isSelected ? '#fff' : '#ee824d',
+            },
+          }),
+          singleValue: (baseStyles) => ({
+            ...baseStyles,
+            fontSize: '14px',
+            color: selected ? '#ee824d' : '#222',
+            width: 'fit-content',
+          }),
+          menu: (baseStyles) => ({
+            ...baseStyles,
+            marginTop: '-4px',
+            width: '84px',
+            zIndex: 10,
+          }),
+        }}
+      />
+    </div>
+  );
 };
 
 const Table = ({
@@ -160,114 +365,28 @@ const Table = ({
     setPage(page - 1);
   };
 
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilterOption>(
+    periodFilterOptions[0]
+  );
+
   return (
-    <div className="bg-white mt3 px3 pt3" style={{ borderRadius: 12 }}>
-      <div className=" mt1 flex items-center">
-        <img src={award} alt="" width={19} height={19} />
-        <h2 className="h3 ml2" style={{ fontWeight: 600 }}>
-          Leaderboard
-        </h2>
-      </div>
-      <div className="flex mt2 mb3 items-center justify-between">
-        <div className="flex  items-center">
-          <div className="leaderboard-category-container flex items-center">
-            {categories.map((category) => {
-              return (
-                <div
-                  key={category.name}
-                  onClick={() => setActive(category.key)}
-                  className={`leaderboard-category ${active === category.key ? 'category-active' : ''}`}
-                >
-                  {category.name}
-                </div>
-              );
-            })}
-          </div>
+    <div className="leaderboard-data" style={{ borderRadius: 12 }}>
+      <div className="leaderboard-data__head">
+        <button className="leaderboard-data__export">
+          <span>Export</span>
+          <FaUpload size={12} />
+        </button>
+        <div className="leaderboard-data__title">
+          <img src={award} alt="" />
+          <h2 className="h3" style={{ fontWeight: 600 }}>
+            Leaderboard
+          </h2>
+          <RankBy selected={active} setSelected={setActive} />
         </div>
 
-        <div className="flex items-center" style={{ gap: 14 }}>
-          <div className="slect-wrapper">
-            <Select
-              options={[
-                { label: 'Weekly', value: 'weekly' },
-                { label: 'Monthly', value: 'month' },
-              ]}
-              value={undefined}
-              placeholder="Group"
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: '11px',
-                  fontWeight: '500',
-                  borderRadius: '4px',
-                  outline: 'none',
-                  width: 'fit-content',
-                  minWidth: '92px',
-                  height: '28px',
-                  alignContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: 'none',
-                  border: '1px solid #EE824D',
-                  minHeight: 30,
-                  background: '#EE824D',
-                  '&:focus': {
-                    outline: 'none',
-                  },
-                }),
-                valueContainer: (provided, state) => ({
-                  ...provided,
-                  height: '30px',
-                  padding: '0 6px',
-                }),
-                placeholder: (baseStyles) => ({
-                  ...baseStyles,
-                  color: '#fff',
-                }),
-                indicatorSeparator: () => ({
-                  display: 'none',
-                }),
-                dropdownIndicator: (baseStyles, state) => ({
-                  ...baseStyles,
-                  svg: {
-                    fill: '#fff',
-                  },
-                  marginLeft: '-18px',
-                }),
-
-                option: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: '12px',
-                  color: '#fff',
-                  transition: 'all 500ms',
-                  '&:hover': {
-                    transform: 'scale(1.1)',
-                    background: 'none',
-                    transition: 'all 500ms',
-                  },
-                  background: '#EE824D',
-                  transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
-                }),
-
-                singleValue: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: '#EE824D',
-                  fontSize: 11,
-                  padding: '0 8px',
-                }),
-                menu: (baseStyles) => ({
-                  ...baseStyles,
-                  width: '92px',
-                  zIndex: 999,
-                  color: '#FFFFFF',
-                }),
-                menuList: (base) => ({
-                  ...base,
-                  background: '#EE824D',
-                }),
-                input: (base) => ({ ...base, margin: 0 }),
-              }}
-            />
-          </div>
+        <div className="leaderboard-data__filters">
+          <GroupFilter />
+          <PeriodFilter period={periodFilter} setPeriod={setPeriodFilter} />
           <div className="relative" style={{ lineHeight: 0 }}>
             <span
               role="button"
@@ -293,91 +412,11 @@ const Table = ({
               </div>
             )}
           </div>
-          <div className="slect-wrapper">
-            <Select
-              options={rangeOptData}
-              value={selectedRangeDate}
-              onChange={(value) => setSelectedRangeDate(value!)}
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: '11px',
-                  fontWeight: '500',
-                  borderRadius: '4px',
-                  outline: 'none',
-                  width: 'fit-content',
-                  minWidth: '92px',
-                  height: '28px',
-                  alignContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: 'none',
-                  border: '1px solid #EE824D',
-                  minHeight: 30,
-                }),
-                valueContainer: (provided, state) => ({
-                  ...provided,
-                  height: '30px',
-                  padding: '0 6px',
-                }),
-                placeholder: (baseStyles) => ({
-                  ...baseStyles,
-                  color: '#EE824D',
-                }),
-                indicatorSeparator: () => ({
-                  display: 'none',
-                }),
-                dropdownIndicator: (baseStyles, state) => ({
-                  ...baseStyles,
-                  svg: {
-                    fill: '#EE824D',
-                  },
-                  marginLeft: '-18px',
-                }),
-
-                option: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: '12px',
-                  color: '#fff',
-                  transition: 'all 500ms',
-                  '&:hover': {
-                    transform: 'scale(1.1)',
-                    background: 'none',
-                    transition: 'all 500ms',
-                  },
-                  background: '#EE824D',
-                  transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
-                }),
-
-                singleValue: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: '#EE824D',
-                  fontSize: 11,
-                  padding: '0 8px',
-                }),
-                menu: (baseStyles) => ({
-                  ...baseStyles,
-                  width: '92px',
-                  zIndex: 999,
-                  color: '#FFFFFF',
-                }),
-                menuList: (base) => ({
-                  ...base,
-                  background: '#EE824D',
-                }),
-                input: (base) => ({ ...base, margin: 0 }),
-              }}
-            />
-          </div>
-
-          <button className="leaderborad-export-btn flex items-center">
-            <span>Export</span>
-            <FaUpload color="#EE824D" style={{ marginLeft: 12 }} size={12} />
-          </button>
         </div>
       </div>
       <div className="">
         <div className="leaderboard-table-container">
-          <table className="leaderboard-table ">
+          <table className="leaderboard-table">
             <thead>
               <tr>
                 <th>Rank</th>
@@ -419,7 +458,7 @@ const Table = ({
                     <tr key={item.rank}>
                       <td>
                         <div className="flex items-center">
-                          {switchIcons(item.rank)}
+                          <RankColumn rank={item.rank} />
                         </div>
                       </td>
                       <td>
