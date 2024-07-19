@@ -53,13 +53,15 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 			 st.name AS state_name,
 			 ur.role_name,
 			 zc.zipcode,
+			 vd.dealer_name as dealer,
 			 ud.tables_permissions
 			 FROM user_details ud
 			 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
 			 LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
 			 LEFT JOIN states st ON ud.state = st.state_id
 			 LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			 LEFT JOIN zipcodes zc ON ud.zipcode = zc.id WHERE ud.email_id = $1`
+			 LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
+			 LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = $1`
 
 	emailId := req.Context().Value("emailid").(string)
 
@@ -189,6 +191,12 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 		Country = ""
 	}
 
+	// Dealer
+	Dealer, dealerOk := data[0]["dealer"].(string)
+	if !dealerOk || Dealer == "" {
+		Dealer = ""
+	}
+
 	// tablesPermissions
 	tablesPermissionsJSON, Ok := data[0]["tables_permissions"].([]byte)
 	if !Ok || tablesPermissionsJSON == nil {
@@ -221,6 +229,7 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 		Zipcode:           Zipcode,
 		Country:           Country,
 		TablePermission:   tablePermissions,
+		Dealer:            Dealer,
 	}
 
 	// Send the response
