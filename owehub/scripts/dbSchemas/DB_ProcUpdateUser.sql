@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION update_user(
     p_country VARCHAR(255),
     p_user_code VARCHAR(255),
     p_dealer_name VARCHAR(255),
+    p_dealer_logo VARCHAR(255),
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
@@ -39,6 +40,7 @@ BEGIN
         zipcode = CASE WHEN p_zipcode IS NOT NULL AND p_zipcode != '' THEN (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1) ELSE NULL END,
         country = COALESCE(NULLIF(p_country, ''), NULL),
         CASE WHEN p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN (SELECT id FROM v_dealer WHERE LOWER(name) = LOWER(p_dealer_name) LIMIT 1) ELSE NULL END,
+        dealer_logo = p_dealer_logo,
         tables_permissions = p_tables_permissions,
         updated_at = CURRENT_TIMESTAMP
     WHERE user_code = p_user_code
