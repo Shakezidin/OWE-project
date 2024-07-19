@@ -115,6 +115,7 @@ import PerformanceBackground from '../../resources/assets/performars-background.
 import GreyTwo from '../../resources/assets/greyTwo.svg';
 import GoldOne from '../../resources/assets/goldOne.svg';
 import BrownThree from '../../resources/assets/brownThree.svg';
+import BannerStar from '../../resources/assets/banner-star.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -246,5 +247,6 @@ export const ICONS = {
   PerformanceBackground: PerformanceBackground,
   GreyTwo: GreyTwo,
   GoldOne: GoldOne,
-  BrownThree: BrownThree
+  BrownThree: BrownThree,
+  BannerStar: BannerStar
 };

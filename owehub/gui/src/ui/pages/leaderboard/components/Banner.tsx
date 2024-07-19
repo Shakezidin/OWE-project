@@ -1,14 +1,14 @@
 import './Banner.css';
 import { ICONS } from '../../../icons/Icons';
-import { LiaEdit } from "react-icons/lia";
+import { LiaEdit } from 'react-icons/lia';
 import EditModal from './EditModal';
 import { useState } from 'react';
 
-
 const Banner = () => {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   return (
     <div className="banner-main flex items-center">
+      <div className="radiant-anime"></div>
       {/* left side  */}
       <div className="flex items-center pl4 banner-left">
         <object
@@ -54,10 +54,33 @@ const Banner = () => {
             aria-label="login-icon"
           ></object>
         </div>
+        <div className='banner-stars'>
+          <object
+            type="image/svg+xml"
+            data={ICONS.BannerStar}
+            width={30}
+            className='banner-star-1'
+            aria-label="login-icon"
+          ></object>
+          <object
+            type="image/svg+xml"
+            data={ICONS.BannerStar}
+            width={30}
+            className='banner-star-2'
+            aria-label="login-icon"
+          ></object>
+          <object
+            type="image/svg+xml"
+            data={ICONS.BannerStar}
+            width={20}
+            className='banner-star-3'
+            aria-label="login-icon"
+          ></object>
+        </div>
         <button className="edit-button" onClick={() => setShowModal(true)}>
-            <LiaEdit className="edit-svg" />
-            <p>Edit</p>
-          </button>
+          <LiaEdit className="edit-svg" />
+          <p>Edit</p>
+        </button>
       </div>
       {showModal && <EditModal onClose={() => setShowModal(false)} />}
     </div>
