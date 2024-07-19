@@ -86,7 +86,7 @@ func SendMailToUserFromUI(resp http.ResponseWriter, req *http.Request) {
 	to := mail.NewEmail("", dataReq.ToMail)
 
 	plainTextContent := dataReq.Message
-	htmlContent := ""
+	htmlContent := dataReq.HtmlContent
 	subject := dataReq.Subject
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)

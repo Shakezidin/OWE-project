@@ -31,5 +31,7 @@ type CreateUserReq struct {
 	Zipcode           string            `json:"zipcode"`
 	Country           string            `json:"country"`
 	TeamName          string            `json:"team_name"`
+	Dealer            string            `json:"dealer"`
+	DealerLogo        string            `json:"dealer_logo"`
 	TablesPermissions []TablePermission `json:"tables_permissions"`
 }

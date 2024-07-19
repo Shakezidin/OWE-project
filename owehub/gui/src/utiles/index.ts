@@ -9,12 +9,14 @@ export const sendMail = ({
   toMail,
   message,
   subject,
+  html_content
 }: {
   toMail: string;
   message: string;
   subject: string;
+  html_content:string
 }) => {
-  return postCaller('sendmail', { subject, message, to_mail: toMail });
+  return postCaller('sendmail', { subject, message, to_mail: toMail,html_content });
 };
 
 export const checkLastPage = (

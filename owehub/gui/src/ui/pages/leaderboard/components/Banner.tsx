@@ -14,7 +14,6 @@ const Banner = () => {
         <object
           type="image/svg+xml"
           data={ICONS.BannerLogo}
-          width={120}
           aria-label="solar-name-icon"
         ></object>
         <div className="">
@@ -52,7 +51,6 @@ const Banner = () => {
           <object
             type="image/svg+xml"
             data={ICONS.BannerTrophy}
-            width={220}
             aria-label="login-icon"
           ></object>
         </div>

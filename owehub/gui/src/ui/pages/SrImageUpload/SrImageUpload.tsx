@@ -146,18 +146,28 @@ const FormComponent: React.FC = () => {
         } else {
           sendMail({
             toMail: 'batterycalc@ourworldenergy.com',
-            message: `Hi Electrical Team,
- 
-You have recieved a request from Sales Rep Team to fill the information in battery calculation form.
- 
-Please visit the below URL to complete the form.
-
-${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}
-
-Thank you
-OWE Battery Calc
-            `,
+            message: ``,
             subject: 'Battery Calc Notification',
+            html_content: `
+<p>  
+Hi Electrical Team,
+ <br>
+
+You have recieved a request from Sales Rep Team to fill the information in battery calculation form.
+ <br>
+
+Please visit the below URL to complete the form 
+</p>
+           
+<a clicktracking="off"  href="${`${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`}" >${`${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`}</a>
+
+<strong style="display:block;">
+Thank you
+</strong>
+<strong style="display:block;">
+OWE Battery Calc
+</strong>
+            `,
           }).then(
             (response) => {
               console.log('Email sent successfully:', response);
@@ -178,9 +188,9 @@ OWE Battery Calc
               setEmail('');
               setUploadedImages([]);
               setIsUploading(false);
-              setAddress("")
-              setSystemSize("")
-              setSquareFeet("")
+              setAddress('');
+              setSystemSize('');
+              setSquareFeet('');
             },
             (error) => {
               toast.error(error.text as string);
@@ -236,6 +246,7 @@ OWE Battery Calc
     checkFormValidity();
   }, [prospectName, email, uploadedImages]);
 
+  const lightHouseAmpSize = Math.ceil(((parseFloat(squareFeet) * 1.5) / 120) * 0.6);
   return (
     <div>
       <div className="sr-image-container">
@@ -301,7 +312,7 @@ OWE Battery Calc
             )}
           </div>
 
-          <div className="prospect-input-field mt2">
+          <div className="prospect-input-field mt2 relative">
             <input
               type="text"
               placeholder="Enter House's Square Foot"
@@ -312,6 +323,14 @@ OWE Battery Calc
               }}
               required
             />
+            {!!lightHouseAmpSize && (
+              <span
+                style={{ position: 'absolute', top: '30%', right: 20 }}
+                className="block text-dark"
+              >
+                {lightHouseAmpSize} Amps
+              </span>
+            )}
             {error.squareFeet && (
               <div className="error">{error.squareFeet}</div>
             )}
