@@ -1,9 +1,12 @@
 import './Banner.css';
 import { ICONS } from '../../../icons/Icons';
 import { LiaEdit } from "react-icons/lia";
-// import EditModal from './EditModal';
+import EditModal from './EditModal';
+import { useState } from 'react';
+
 
 const Banner = () => {
+  const [showModal, setShowModal] = useState(false)
   return (
     <div className="banner-main flex items-center">
       {/* left side  */}
@@ -53,12 +56,12 @@ const Banner = () => {
             aria-label="login-icon"
           ></object>
         </div>
-        <button className="edit-button">
+        <button className="edit-button" onClick={() => setShowModal(true)}>
             <LiaEdit className="edit-svg" />
             <p>Edit</p>
           </button>
       </div>
-      {/* <EditModal /> */}
+      {showModal && <EditModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };
