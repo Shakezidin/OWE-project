@@ -107,20 +107,20 @@
   position: relative;
   overflow: hidden;
 }
-.card-two::before {
-  /* ----TEXT-TRUNCATE---- */
-  .card-title,
-  .below-des {
-    overflow: hidden;
-  }
-  .card-title h2,
-  .below-section p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  /* ------------------- */
 
+ /* ----TEXT-TRUNCATE---- */
+ .card-title,
+ .below-des {
+   overflow: hidden;
+ }
+ .card-title h2,
+ .below-section p {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+ /* ------------------- */
+ 
   .card-two::before {
     content: '';
     background-image: conic-gradient(#f99602 20deg, transparent 120deg);
@@ -153,6 +153,7 @@
       transform: rotate(360deg);
     }
   }
+
   .card-three {
     border: 2px solid #f9e09f;
   }
@@ -193,4 +194,3 @@
       font-size: 0.875rem;
     }
   }
-}
