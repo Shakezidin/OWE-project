@@ -71,11 +71,11 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// tableName := db.ViewName_ConsolidatedDataView
 	if role == "Dealer Owner" {
-		query = `SELECT ud.user_id AS record_id, ud.name AS owner_name, vd.dealer_name as dealer, vd.dealer_logo as dealer_logo FROM user_details ud 
+		query = `SELECT ud.user_id AS record_id, ud.name AS owner_name, vd.dealer_name as dealer, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud 
 				LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id 
 				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT ud.user_id AS record_id, ud1.name as owner_name, vd.dealer_name as dealer, vd.dealer_logo as dealer_logo FROM user_details ud
+		query = `SELECT ud.user_id AS record_id, ud1.name as owner_name, vd.dealer_name as dealer, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud
 				  LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id 
 				  LEFT JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id 
 				  WHERE ud.email_id = $1`
@@ -91,6 +91,7 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	whereEleList = nil
 
+	performerData.DealerId, _ = data[0]["dealer_id"].(int64)
 	performerData.OwnerName, _ = data[0]["owner_name"].(string)
 	performerData.DealerName, _ = data[0]["dealer_name"].(string)
 	performerData.DealerLogo, _ = data[0]["dealer_logo"].(string)
