@@ -63,7 +63,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_dealer
 	query = `
-	 SELECT vd.id as record_id, vd.dealer_code, vd.dealer_name, vd.description
+	 SELECT vd.id as record_id, vd.dealer_code, vd.dealer_name, vd.description, vd.dealer_logo
 	 FROM v_dealer vd`
 
 	filter, whereEleList = PrepareVdealerFilters(tableName, dataReq, false)
@@ -89,22 +89,29 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// dealerCode
-		dealerCode, dealerNameOk := item["dealer_code"].(string)
-		if !dealerNameOk || dealerCode == "" {
+		dealerCode, dealercodeOk := item["dealer_code"].(string)
+		if !dealercodeOk || dealerCode == "" {
 			log.FuncErrorTrace(0, "Failed to get dealer code for Record ID %v. Item: %+v\n", RecordId, item)
 			dealerCode = ""
 		}
 
 		// DealerName
-		DealerName, dealerTypeOk := item["dealer_name"].(string)
-		if !dealerTypeOk || DealerName == "" {
+		DealerName, dealerNameOk := item["dealer_name"].(string)
+		if !dealerNameOk || DealerName == "" {
 			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
 			DealerName = ""
 		}
 
 		// Description
-		Description, priceTypeOk := item["description"].(string)
-		if !priceTypeOk || Description == "" {
+		Description, discriptioneOk := item["description"].(string)
+		if !discriptioneOk || Description == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
+			Description = ""
+		}
+
+		// DealerLogo
+		DealerLogo, DealerLogoOk := item["dealer_logo"].(string)
+		if !DealerLogoOk || DealerLogo == "" {
 			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
@@ -115,6 +122,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 			DealerCode:  dealerCode,
 			DealerName:  DealerName,
 			Description: Description,
+			DealerLogo:  DealerLogo,
 		}
 
 		// Append the new vDealerData to the vDealerList
@@ -184,6 +192,9 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 				whereEleList = append(whereEleList, value)
 			case "description":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.description) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "dealer_logo":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_logo) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly

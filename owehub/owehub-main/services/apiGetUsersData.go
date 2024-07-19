@@ -87,13 +87,15 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			st.name AS state_name,
 			ur.role_name,
 			zc.zipcode,
+			vd.dealer_name as dealer,
 			ud.tables_permissions
 			FROM user_details ud
 			LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
 			LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
 			LEFT JOIN states st ON ud.state = st.state_id
 			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			LEFT JOIN zipcodes zc ON ud.zipcode = zc.id`
+			LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
+			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id`
 
 	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -228,6 +230,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Country = ""
 		}
 
+		// Dealer
+		Dealer, dealerOk := item["dealer"].(string)
+		if !dealerOk || Dealer == "" {
+			Dealer = ""
+		}
+
 		// tablesPermissions
 		tablesPermissionsJSON, Ok := item["tables_permissions"].([]byte)
 		if !Ok || tablesPermissionsJSON == nil {
@@ -259,6 +267,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			City:              City,
 			Zipcode:           Zipcode,
 			Country:           Country,
+			Dealer:            Dealer,
 			TablePermission:   tablePermissions,
 		}
 
@@ -343,6 +352,9 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				whereEleList = append(whereEleList, value)
 			case "country":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.country) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "dealer":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

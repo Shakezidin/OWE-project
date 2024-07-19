@@ -217,6 +217,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateUserReq.Zipcode)
 	queryParameters = append(queryParameters, updateUserReq.Country)
 	queryParameters = append(queryParameters, updateUserReq.UserCode)
+	queryParameters = append(queryParameters, updateUserReq.Dealer)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the database function
