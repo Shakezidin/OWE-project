@@ -33,7 +33,7 @@ BEGIN
         )
         INSERT INTO breaker_info (ampere, category_name, category_ampere, note)
         VALUES (
-            (breaker_record->>'ampere'),
+            (breaker_record->>'ampere')::NUMERIC,
             (SELECT category_json->>'name' FROM category_data),
             (SELECT (category_json->>'ampere')::NUMERIC FROM category_data),
             breaker_record->>'note'
