@@ -222,7 +222,7 @@ const BatteryAmp = () => {
         } else {
           const batt = data.data.breakers.map((item: any) => ({
             ...item,
-            amp: item.ampere,
+            amp: item.ampere===0?"Single Pull Breaker":item.ampere,
             isOn: true,
           })) as Ibattery[];
           setBatteryPower([...batt]);

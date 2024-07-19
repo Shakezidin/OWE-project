@@ -20,6 +20,7 @@ interface IPopPupProps {
     amp: string;
     note: string;
   }[];
+  lightHouseAmpSize: number;
 }
 const CategoryPopup = ({
   isOpen,
@@ -27,8 +28,9 @@ const CategoryPopup = ({
   isSelected,
   setBattery,
   battery,
+  lightHouseAmpSize,
 }: IPopPupProps) => {
-  const [categories, setCategories] = useState([
+  const categories = [
     { name: 'Microwave', ampere: 6 },
     { name: 'Dishwasher', ampere: 4 },
     { name: 'Garbage Disposal', ampere: 3 },
@@ -53,9 +55,9 @@ const CategoryPopup = ({
     },
     {
       name: 'Lights and Outlets',
-      ampere: 0,
+      ampere: lightHouseAmpSize,
     },
-  ]);
+  ];
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
