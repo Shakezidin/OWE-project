@@ -297,3 +297,9 @@
     transform: translateX(-4%);
   }
 }
+
+@media screen and (max-width:768px){
+  .children-container::-webkit-scrollbar{
+    display: none;
+  }
+}
