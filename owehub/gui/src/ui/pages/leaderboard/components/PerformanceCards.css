@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  cursor: no-drop;
+  cursor: pointer;
   opacity: 0.5;
 }
 .share-button p {
