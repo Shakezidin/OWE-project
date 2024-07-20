@@ -1,21 +1,92 @@
 import './Modal.css';
 import { ICONS } from '../../../icons/Icons';
 import { GoUpload } from 'react-icons/go';
+
+import { ChangeEventHandler, useRef, useState } from 'react';
+import { ColorpickerIcon } from './Icons';
+import { MdCheck } from 'react-icons/md';
 import { useRef, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
  // Adjust the path accordingly
 
+
 interface EditModalProps {
   onClose: () => void;
 }
 
-const EditModal = ({ onClose }: EditModalProps) => {
+//
+// COLOR PICKER
+//
+const ColorPicker = ({
+  color,
+  setColor,
+}: {
+  color: string;
+  setColor: (newVal: string) => void;
+}) => {
+  const presetColors = [
+    '#40A2EC',
+    '#B474F5',
+    '#8CC152',
+    '#4A89DC',
+    '#DA4453',
+    '#3ACBC2',
+    '#FC6E51',
+  ];
+
+  const setPresetColor = (presetColor: string) => () => {
+    if (colorInputRef.current) {
+      colorInputRef.current.value = presetColor;
+      setColor(presetColor);
+    }
+  };
+
+  const colorInputRef = useRef<HTMLInputElement | null>(null);
+  const onColorInputChange: ChangeEventHandler<HTMLInputElement> = (ev) => {
+    setColor(ev.currentTarget.value);
+  };
+
+  return (
+    <div className="leader-modal-colorpicker">
+      <p>Change background color</p>
+      {presetColors.map((presetItem) => (
+        <button
+          key={presetItem}
+          style={{
+            backgroundColor: presetItem,
+            outlineColor: presetItem === color ? color : 'transparent',
+          }}
+          onClick={setPresetColor(presetItem)}
+        >
+          {color === presetItem && <MdCheck size={16} fill="#fff" />}
+        </button>
+      ))}
+      <input type="color" ref={colorInputRef} onChange={onColorInputChange} />
+      <button
+        onClick={() => colorInputRef.current?.click()}
+        style={{
+          outlineColor: presetColors.includes(color) ? 'transparent' : color,
+        }}
+      >
+        <ColorpickerIcon />
+      </button>
+    </div>
+  );
+};
+
+//
+// LOGO PICKER
+//
+
+const LogoPicker = ({
+  setLogo,
+}: {
+  setLogo: (newVal: File | null) => void;
+}) => {
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [uploadedImage, setUploadedImage] = useState<{
-    src: string;
-    file: File;
-  } | null>(null);
 
   const handleFileInputChange = () => {
     const file = fileInputRef.current?.files?.[0];
@@ -23,18 +94,69 @@ const EditModal = ({ onClose }: EditModalProps) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      if (typeof reader.result === 'string')
-        setUploadedImage({ src: reader.result, file });
+      if (typeof reader.result === 'string') {
+        setPreviewSrc(reader.result);
+        setLogo(file);
+      }
     };
   };
 
-  const uploadImage = async (imageSrc: string): Promise<string> => {
-    if (!imageSrc) throw new Error('No image source provided');
+  return (
+    <>
+      {previewSrc ? (
+        <img alt="Preview" src={previewSrc} />
+      ) : (
+        <object
+          type="image/svg+xml"
+          data={ICONS.BannerLogo}
+          width={150}
+          aria-label="banner-logo"
+        ></object>
+      )}
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        onChange={handleFileInputChange}
+      />
+      <button
+        className="leader-modal-upload"
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <GoUpload size={16} />
+        <span>Upload</span>
+      </button>
+    </>
+  );
+};
+
+const EditModal = ({ onClose }: EditModalProps) => {
+  const [color, setColor] = useState('#40A2EC');
+  const [logo, setLogo] = useState<File | null>(null);
+
+  // upload "logo"
+  console.log(logo);
+  
+  
+  const handleUpdate = async () => {
+    if (!logo) return;
+    try {
+      const imageUrl = await uploadImage(logo);
+      console.log('Uploaded image URL:', imageUrl);
+      // Handle the URL (e.g., save it to your backend or update the state)
+      onClose();
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+
+    const uploadImage = async (image: Logo): Promise<string> => {
+    if (!image) throw new Error('No image provided');
   
     try {
-      const blob = await fetch(imageSrc).then((r) => r.blob());
       const formData = new FormData();
-      formData.append('file', blob);
+      formData.append('file', image);
       formData.append('upload_preset', 'xdfcmcf4');
       formData.append('cloud_name', 'duscqq0ii');
   
@@ -52,49 +174,14 @@ const EditModal = ({ onClose }: EditModalProps) => {
     }
   };
   
- 
-
-  const handleUpdate = async () => {
-    if (!uploadedImage?.src) return;
-    try {
-      const imageUrl = await uploadImage(uploadedImage.src);
-      console.log('Uploaded image URL:', imageUrl);
-      // Handle the URL (e.g., save it to your backend or update the state)
-      onClose();
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
-  };
-
+  
   return (
     <div className="edit-modal">
       <div className="leader-modal">
         <h2>Change Picture</h2>
         <div className="modal-center">
-          {uploadedImage ? (
-            <img alt="Preview" src={uploadedImage.src} />
-          ) : (
-            <object
-              type="image/svg+xml"
-              data={ICONS.BannerLogo}
-              width={150}
-              aria-label="banner-logo"
-            ></object>
-          )}
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/*"
-            onChange={handleFileInputChange}
-          />
-          <button
-            className="leader-modal-upload"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <GoUpload size={16} />
-            <span>Upload</span>
-          </button>
+          <LogoPicker setLogo={setLogo} />
+          <ColorPicker color={color} setColor={setColor} />
         </div>
         <div className="leader-buttons">
           <button className="cancel-button" onClick={onClose}>
