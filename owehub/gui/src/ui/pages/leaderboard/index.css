@@ -28,6 +28,31 @@
   background-color: var(--white-color);
 }
 
+.leaderboard-data__datepicker-wrapper {
+  position: relative;
+}
+
+.leaderboard-data__datepicker-content {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  background-color: var(--white-color);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.leaderboard-data__datepicker-btns {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem;
+}
+.leaderboard-data__datepicker-btns button {
+  position: static;
+}
+.leaderboard-data__datepicker-btns button:first-child {
+  margin-right: 0.5rem;
+}
+
 .leaderboard-data__head {
   display: grid;
   grid-template: 20px auto / 20px auto;
@@ -198,6 +223,7 @@
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
+
 .leaderbord-tab-container .tab:last-child {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -231,11 +257,9 @@
   width: 408px;
   min-height: 100vh;
   overflow-y: auto;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 148, 205, 1) 30%,
-    rgba(255, 255, 255, 100%)
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 148, 205, 1) 30%,
+      rgba(255, 255, 255, 100%));
   padding-inline: 22px;
   padding-top: 128px;
 }
@@ -327,7 +351,7 @@
   gap: 8px;
 }
 
-.sidebar-social-share{
+.sidebar-social-share {
   top: -162px;
-    right: 0;
+  right: 0;
 }

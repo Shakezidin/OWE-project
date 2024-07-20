@@ -124,12 +124,12 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			Name, _ := item["name"].(string)
 
 			// Helper function to convert interface{} to int64
-			toInt64 := func(v interface{}) int64 {
+			toInt64 := func(v interface{}) float64 {
 				switch value := v.(type) {
-				case int64:
-					return value
 				case float64:
-					return int64(value)
+					return value
+				case int64:
+					return float64(value)
 				default:
 					return 0
 				}

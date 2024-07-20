@@ -1,6 +1,7 @@
-import { format, subDays } from 'date-fns';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { format, parse, subDays } from 'date-fns';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { DateRange } from 'react-date-range';
+import { DateRangeWithLabel } from '../index';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -48,26 +49,6 @@ const groupByOptions = [
   { label: 'Cancel', value: 'cancel' },
 ];
 
-const today = new Date();
-const rangeOptData = [
-  {
-    label: 'Today',
-    value: `${format(today, 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Monthly',
-    value: `${format(subDays(today, 30), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Yearly',
-    value: `${format(subDays(today, 365), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-];
-
 export const RankColumn = ({ rank }: { rank: number }) => {
   if (rank === 1) return <FirstAwardIcon />;
   if (rank === 2) return <SecondAwardIcon />;
@@ -78,36 +59,51 @@ export const RankColumn = ({ rank }: { rank: number }) => {
 //
 // PERIOD FILTER
 //
-const periodFilterOptions = [
-  'This Week',
-  'This Month',
-  'Last Month',
-  'This Year',
-] as const;
-
-type PeriodFilterOption = (typeof periodFilterOptions)[number];
+const today = new Date();
+const periodFilterOptions: DateRangeWithLabel[] = [
+  {
+    label: 'This Week',
+    start: format(subDays(today, 7), 'dd-MM-yyyy'),
+    end: format(today, 'dd-MM-yyyy'),
+  },
+  {
+    label: 'This Month',
+    start: format(subDays(today, 30), 'dd-MM-yyyy'),
+    end: format(today, 'dd-MM-yyyy'),
+  },
+  {
+    label: 'Last Month',
+    start: format(subDays(today, 60), 'dd-MM-yyyy'),
+    end: format(subDays(today, 30), 'dd-MM-yyyy'),
+  },
+  {
+    label: 'This Year',
+    start: format(subDays(today, 365), 'dd-MM-yyyy'),
+    end: format(today, 'dd-MM-yyyy'),
+  },
+];
 
 const PeriodFilter = ({
   period,
   setPeriod,
 }: {
-  period: PeriodFilterOption;
-  setPeriod: (newVal: PeriodFilterOption) => void;
+  period: DateRangeWithLabel | null;
+  setPeriod: (newVal: DateRangeWithLabel) => void;
 }) => {
   return (
     <ul className="leaderboard-data__period-group">
       {periodFilterOptions.map((item) => (
-        <li key={item}>
+        <li key={item.label}>
           <button
             onClick={() => setPeriod(item)}
             className={
               'leaderboard-data__period-button' +
-              (period === item
+              (period?.label === item.label
                 ? ' leaderboard-data__period-button--active'
                 : '')
             }
           >
-            {item}
+            {item.label}
           </button>
         </li>
       ))}
@@ -185,6 +181,104 @@ const SelectableFilter = ({
   );
 };
 
+//
+// DATE FILTER
+//
+const DateFilter = ({
+  selected,
+  setSelected,
+}: {
+  selected: DateRangeWithLabel;
+  setSelected: (newVal: DateRangeWithLabel) => void;
+}) => {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedRanges, setSelectedRanges] = useState(
+    selected
+      ? [
+          {
+            startDate: parse(selected.start, 'dd-MM-yyyy', new Date()),
+            endDate: parse(selected.end, 'dd-MM-yyyy', new Date()),
+            key: 'selection',
+          },
+        ]
+      : []
+  );
+
+  const onApply = () => {
+    const range = selectedRanges[0];
+    if (!range) return;
+    setSelected({
+      start: format(range.startDate, 'dd-MM-yyyy'),
+      end: format(range.endDate, 'dd-MM-yyyy'),
+    });
+    setShowCalendar(false);
+  };
+
+  const onReset = () => {
+    const defaultOption = periodFilterOptions[0];
+    setSelected(periodFilterOptions[0]);
+    setSelectedRanges([
+      {
+        startDate: parse(defaultOption.start, 'dd-MM-yyyy', new Date()),
+        endDate: parse(defaultOption.end, 'dd-MM-yyyy', new Date()),
+        key: 'selection',
+      },
+    ]);
+    setShowCalendar(false);
+  };
+
+  // close on click outside anywhere
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !event.composedPath().includes(wrapperRef.current)
+      )
+        setShowCalendar(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper">
+      <span
+        role="button"
+        onClick={() => setShowCalendar((prev) => !prev)}
+        style={{ lineHeight: 0 }}
+      >
+        <Calendar />
+      </span>
+      {showCalendar && (
+        <div className="leaderboard-data__datepicker-content">
+          <DateRange
+            editableDateInputs={true}
+            onChange={(item) => {
+              const startDate = item.selection?.startDate;
+              const endDate = item.selection?.endDate;
+              if (startDate && endDate) {
+                setSelectedRanges([{ startDate, endDate, key: 'selection' }]);
+              }
+            }}
+            moveRangeOnFirstSelection={false}
+            ranges={selectedRanges}
+          />
+          <div className="leaderboard-data__datepicker-btns">
+            <button className="reset-calender" onClick={onReset}>
+              Reset
+            </button>
+            <button className="apply-calender" onClick={onApply}>
+              Apply
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Table = ({
   setIsOpen,
   setDealer,
@@ -201,17 +295,9 @@ const Table = ({
   setActive: Dispatch<SetStateAction<string>>;
   activeHead: string;
   setActiveHead: Dispatch<SetStateAction<string>>;
-  setSelectedRangeDate: Dispatch<
-    SetStateAction<{ label: string; value: string }>
-  >;
-  selectedRangeDate: { label: string; value: string };
+  setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
+  selectedRangeDate: DateRangeWithLabel;
 }) => {
-  const [selection, setSelection] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
-    key: 'selection',
-  });
-  const [showCalendar, setShwoCalendar] = useState(false);
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
 
@@ -224,34 +310,28 @@ const Table = ({
         setIsLoading(true);
         const data = await postCaller('get_perfomance_leaderboard', {
           leader_type: active,
-          start_date: selectedRangeDate.value?.split(',')[0],
-          end_date: selectedRangeDate.value?.split(',')[1],
           sort_by: activeHead,
           page_size: itemsPerPage,
           page_number: page,
+          start_date: selectedRangeDate.start,
+          end_date: selectedRangeDate.end,
         });
         if (data.status > 201) {
           setIsLoading(false);
           toast.error(data.message);
           return;
         }
-        setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-        setTotalCount(data?.dbRecCount);
+        if (data.data?.ap_ded_list) {
+          setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+          setTotalCount(data?.dbRecCount);
+        }
       } catch (error) {
         console.error(error);
       } finally {
         setIsLoading(false);
       }
     })();
-  }, [
-    selection.startDate,
-    selection.endDate,
-    activeHead,
-    active,
-    selectedRangeDate,
-    itemsPerPage,
-    page,
-  ]);
+  }, [activeHead, active, selectedRangeDate, itemsPerPage, page]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -267,10 +347,6 @@ const Table = ({
   const goToPrevPage = () => {
     setPage(page - 1);
   };
-
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilterOption>(
-    periodFilterOptions[0]
-  );
 
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
@@ -312,32 +388,14 @@ const Table = ({
               Count
             </div>
           </div>
-          <PeriodFilter period={periodFilter} setPeriod={setPeriodFilter} />
-          <div className="relative" style={{ lineHeight: 0 }}>
-            <span
-              role="button"
-              onClick={() => setShwoCalendar((prev) => !prev)}
-              style={{ lineHeight: 0 }}
-            >
-              <Calendar />
-            </span>
-            {showCalendar && (
-              <div
-                className="absolute bg-white "
-                style={{ top: 40, right: 0, zIndex: 50 }}
-              >
-                <DateRange
-                  editableDateInputs={true}
-                  onChange={(item) => {
-                    // @ts-ignore
-                    setSelection({ ...item.selection });
-                  }}
-                  moveRangeOnFirstSelection={false}
-                  ranges={[selection]}
-                />
-              </div>
-            )}
-          </div>
+          <PeriodFilter
+            period={selectedRangeDate}
+            setPeriod={setSelectedRangeDate}
+          />
+          <DateFilter
+            selected={selectedRangeDate}
+            setSelected={setSelectedRangeDate}
+          />
         </div>
       </div>
       <div className="">
@@ -381,14 +439,10 @@ const Table = ({
                               ...prev,
                               dealer: item.dealer,
                               rep_name: item.rep_name,
-                              start_date: selectedRangeDate.value?.split(
-                                ','
-                              )[0] as string,
-                              end_date: selectedRangeDate.value?.split(
-                                ','
-                              )[1] as string,
                               name: item.rep_name,
                               rank: item.rank,
+                              start_date: selectedRangeDate?.start,
+                              end_date: selectedRangeDate?.end,
                             }));
                           }}
                         >
