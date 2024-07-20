@@ -192,6 +192,9 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 
 			// Build the filter condition using correct db column name
 			switch column {
+			case "id":
+				filtersBuilder.WriteString(fmt.Sprintf("vd.id %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "dealer_code":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_code) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
