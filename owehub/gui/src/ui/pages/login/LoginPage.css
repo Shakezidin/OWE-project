@@ -153,7 +153,7 @@ input:checked + .slider:before {
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
-  line-height: 11.962px; /* 49.844% */
+  line-height: 24px; /* 49.844% */
   margin-top: 2rem;
 }
 

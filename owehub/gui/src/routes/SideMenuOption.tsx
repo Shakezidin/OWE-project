@@ -170,6 +170,27 @@ const project = {
   ],
 };
 
+const mob = {
+  mob: [
+    {
+      path: ROUTES.LEADERBOARD,
+      sidebarProps: {
+        displayText: 'Leaderboard',
+        icon: <ImStatsBars2 size={18} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+
+      sidebarProps: {
+        displayText: 'Team Management',
+        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+   
+  ],
+};
+
 const other = {
   other: [
     {
@@ -230,6 +251,7 @@ export const createSideMenuList = (): any[] => {
     sideMenu.push(project);
     sideMenu.push(other);
     sideMenu.push(support);
+    sideMenu.push(mob);
   } else {
     if (
       role === TYPE_OF_USER.DEALER_OWNER ||
