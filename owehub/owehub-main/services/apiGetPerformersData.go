@@ -71,11 +71,11 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// tableName := db.ViewName_ConsolidatedDataView
 	if role == "Dealer Owner" {
-		query = `SELECT ud.user_id AS record_id, ud.name as dealer_name, ud.name as owner_name, ud.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud 
-				LEFT JOIN v_dealer vd ON ud.name = vd.dealer_name
+		query = `SELECT vd.dealer_name as dealer_name, ud.name as owner_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud 
+				LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
 				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT ud.user_id AS record_id, ud.name as owner_name, vd.dealer_name as dealer_name, ud.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud
+		query = `SELECT ud.name as owner_name, vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud
 				  LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id  
 				  WHERE ud.email_id = $1`
 	}

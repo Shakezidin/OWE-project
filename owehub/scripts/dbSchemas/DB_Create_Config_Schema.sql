@@ -53,10 +53,12 @@ CREATE TABLE IF NOT EXISTS user_roles (
 );
 
 CREATE TABLE v_dealer (
-    id serial NOT NULL,
+    id SERIAL NOT NULL,
     dealer_code character varying,
     dealer_name character varying,
     description character varying,
+    dealer_logo character varying,
+    bg_colour character varying,
     is_archived BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -88,7 +90,6 @@ CREATE TABLE IF NOT EXISTS user_details(
     team_id INT,
     tables_permissions jsonb,
     dealer_id INT,
-    dealer_logo VARCHAR(255),
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id) ON DELETE SET NULL,

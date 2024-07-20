@@ -37,12 +37,11 @@ type GetPerformerAllData struct {
 }
 
 type GetPerformerProfileDataReq struct {
-	Email      string
-	Dealer     string `json:"dealer"`
-	RepName    string `json:"rep_name"`
-	StartDate  string `json:"start_date"`
-	EndDate    string `json:"end_date"`
-	LeaderType string `json:"leader_type"`
+	Email     string
+	Dealer    string `json:"dealer"`
+	RepName   string `json:"rep_name"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
 }
 
 type GetPerformerProfileData struct {

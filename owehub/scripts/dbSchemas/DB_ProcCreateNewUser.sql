@@ -166,7 +166,6 @@ BEGIN
         country,
         team_id,
         dealer_id,
-        dealer_logo,
         tables_permissions
     )
     VALUES (
@@ -191,11 +190,16 @@ BEGIN
         p_country,
         v_team_id,
         v_dealer_id,
-        p_dealer_logo,
         p_tables_permissions
     )
     RETURNING user_id INTO v_user_id;
 
+    IF p_role_name = 'Dealer Owner' THEN
+        UPDATE v_dealer
+        SET dealer_logo = p_dealer_logo
+        WHERE id = v_dealer_id;
+    END IF;
+    
 EXCEPTION
     WHEN unique_violation THEN
         RAISE EXCEPTION 'User with email % or mobile_number % already exists', p_email_id, p_mobile_number;
