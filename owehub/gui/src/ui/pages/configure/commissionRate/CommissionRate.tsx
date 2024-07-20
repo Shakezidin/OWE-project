@@ -21,6 +21,7 @@ import {
 import CommissionRowComponent from './CommissionRowComponent';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import Pagination from '../../../components/pagination/Pagination';
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -63,8 +64,11 @@ const CommissionRate: React.FC = () => {
   }, [dispatch, currentPage1, pageSize1, viewArchived, filters]);
 
   // pagination funtion
-  const handlePageChange = (page: number) => {
-    setCurrentPage1(page);
+  const goToNextPage = () => {
+    setCurrentPage1(currentPage1 + 1);
+  };
+  const goToPrevPage = () => {
+    setCurrentPage1(currentPage1 - 1);
   };
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
@@ -72,9 +76,10 @@ const CommissionRate: React.FC = () => {
     setCurrentPage1(1); // Reset to the first page when changing items per page
   };
 
+  
   const totalPages1 = Math.ceil(dbCount / pageSize1);
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
-  const endIndex = startIndex * pageSize1;
+  const endIndex = currentPage1 * pageSize1;
 
   // toggle modal
   const filter = () => {
@@ -90,6 +95,9 @@ const CommissionRate: React.FC = () => {
     setEditMode(true);
     setEditedCommission(commission);
     handleOpen();
+  };
+  const paginate = (pageNumber: number) => {
+    setCurrentPage1(pageNumber);
   };
 
   //  pagination slice
@@ -278,15 +286,18 @@ const CommissionRate: React.FC = () => {
               {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
               {dbCount} item
             </p>
-            <PaginationComponent
+            <Pagination
               currentPage={currentPage1}
-              itemsPerPage={pageSize1}
-              totalPages={totalPages1}
-              onPageChange={handlePageChange}
-              handleItemsPerPageChange={handleItemsPerPageChange}
+              totalPages={totalPages1} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
             />
           </div>
         ) : null}
+
       </div>
     </div>
   );

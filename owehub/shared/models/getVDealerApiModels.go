@@ -11,7 +11,6 @@ type GetVDealerData struct {
 	DealerCode  string `json:"dealer_code"`
 	DealerName  string `json:"dealer_name"`
 	Description string `json:"Description"`
-	DealerLogo  string `json:"dealer_logo"`
 }
 
 type GetVDealersList struct {

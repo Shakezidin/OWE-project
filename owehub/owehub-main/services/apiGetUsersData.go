@@ -88,6 +88,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ur.role_name,
 			zc.zipcode,
 			vd.dealer_name as dealer,
+			ud.dealer_logo,
 			ud.tables_permissions
 			FROM user_details ud
 			LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
@@ -236,6 +237,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Dealer = ""
 		}
 
+		// Dealer
+		DealerLogo, dealerlogoOk := item["dealer_logo"].(string)
+		if !dealerlogoOk || DealerLogo == "" {
+			DealerLogo = ""
+		}
+
 		// tablesPermissions
 		tablesPermissionsJSON, Ok := item["tables_permissions"].([]byte)
 		if !Ok || tablesPermissionsJSON == nil {
@@ -268,6 +275,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Zipcode:           Zipcode,
 			Country:           Country,
 			Dealer:            Dealer,
+			DealerLogo:        DealerLogo,
 			TablePermission:   tablePermissions,
 		}
 

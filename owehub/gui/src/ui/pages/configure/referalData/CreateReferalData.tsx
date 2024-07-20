@@ -367,7 +367,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                   <Input
                     type={'date'}
                     label="Start Date"
-                    value={createCommission.start_date}
+                    value={dateFormat(createCommission.start_date)}
                     name="start_date"
                     placeholder={'Start Date'}
                     onChange={(e) => handleInputChange(e)}

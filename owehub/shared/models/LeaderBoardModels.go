@@ -27,11 +27,14 @@ type LeaderFilter struct {
 }
 
 type GetLeaderBoard struct {
-	Rank   int     `json:"rank"`
-	Dealer string  `json:"dealer"`
-	Name   string  `json:"rep_name"`
-	Count  int64   `json:"count"`
-	Kw     float64 `json:"kw"`
+	Rank         int     `json:"rank"`
+	Dealer       string  `json:"dealer"`
+	Name         string  `json:"rep_name"`
+	SaleCount    int64   `json:"count"`
+	Kw           float64 `json:"kw"`
+	NtpCount     int64   `json:"ntp_count"`
+	CancelCount  int64   `json:"cancel_count"`
+	InstallCount int64   `json:"install_count"`
 }
 
 type GetLeaderBoardList struct {

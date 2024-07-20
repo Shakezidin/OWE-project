@@ -59,7 +59,9 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
                 <p>For this month</p>
               </div>
               <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
-                <p>54 Installs</p>
+                <p>{rank2?.
+install_count
+}</p>
                 <p>For this month</p>
               </div>
             </div>
@@ -92,7 +94,9 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
                 <p>For this month</p>
               </div>
               <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
-                <p>54 Installs</p>
+                <p>                <p>{rank1?.
+install_count
+}</p></p>
                 <p>For this month</p>
               </div>
             </div>
@@ -125,7 +129,9 @@ const PerformanceCards: React.FC<performance> = ({ details }) => {
                 <p>For this month</p>
               </div>
               <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
-                <p>54 Installs</p>
+                <p>                <p>{rank3?.
+install_count
+}</p></p>
                 <p>For this month</p>
               </div>
             </div>

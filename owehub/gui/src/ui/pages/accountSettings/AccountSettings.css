@@ -393,3 +393,47 @@
     padding: 0.5rem 1rem;
   }
 }
+
+@media screen and (max-width: 600px) {
+  .profile-section {
+    gap: 0.5rem;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .tab-content {
+    width: 100%;
+  }
+  .tab-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .account-section-main .loginButton {
+    width: 98%;
+  }
+  .account-section-main .cancel {
+    width: 98%;
+  }
+  .profile-reset {
+    flex-direction: column;
+  }
+  .vertical {
+    border-bottom: 1px solid #dbdddf;
+    margin-top: 0;
+    /* border: 1px 0px 0px 0px; */
+    /* margin-left: 2rem; */
+  }
+  .create-input-field-profile,
+  .create-input-field-address,
+  .create-input-field-profile-password {
+    width: 95%;
+  }
+  .reset-pass-fields {
+    flex-direction: column;
+  }
+  .error {
+    font-size: 10px;
+  }
+  .Personal-container {
+    height: auto;
+  }
+}
