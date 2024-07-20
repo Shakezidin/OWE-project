@@ -15,7 +15,6 @@ CREATE OR REPLACE FUNCTION update_user(
     p_country VARCHAR(255),
     p_user_code VARCHAR(255),
     p_dealer_name VARCHAR(255),
-    p_dealer_logo VARCHAR(255),
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
@@ -36,6 +35,20 @@ BEGIN
         END IF;
     ELSE
         v_dealer_id := NULL;
+    END IF;
+
+    IF p_role_name = 'Regional Manager' AND p_reporting_manager = '' AND p_dealer_owner != '' THEN
+    p_reporting_manager = p_dealer_owner
+    END IF;
+
+    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative') AND p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN
+    SELECT dealer_id INTO v_dealer_id
+        FROM user_details
+        WHERE name = p_reporting_manager;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'reporting manager with name % not found', p_reporting_manager;
+        END IF;
     END IF;
     -- Update user details
     UPDATE user_details
@@ -62,12 +75,6 @@ BEGIN
     
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Record with ID % not found in user_details table', p_record_id;
-    END IF;
-
-    IF p_role_name = 'Dealer Owner' AND p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        UPDATE v_dealer
-        SET dealer_logo = p_dealer_logo
-        WHERE id = v_dealer_id;
     END IF;
 
 EXCEPTION
