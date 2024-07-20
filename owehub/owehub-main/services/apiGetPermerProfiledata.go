@@ -83,8 +83,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		performerProfileData.User_code, _ = data[0]["user_code"].(string)
 	}
 
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS total_sales, COUNT(ntp_date) AS total_ntp, COUNT(project_status) as install FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v' AND project_status != 'CANCEL' ", dataReq.Dealer, dataReq.RepName, dataReq.RepName)
-
+	query = GetQueryForTotalCount(dataReq)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
@@ -95,10 +94,11 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	if len(data) > 0 {
 		performerProfileData.TotalSales, _ = data[0]["total_sales"].(int64)
 		performerProfileData.Total_NTP, _ = data[0]["total_ntp"].(int64)
-		performerProfileData.Total_Installs, _ = data[0]["install"].(int64)
+		performerProfileData.Total_Installs, _ = data[0]["total_installs"].(int64)
 	}
 	whereEleList = nil
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v' AND ", dataReq.Dealer, dataReq.RepName, dataReq.RepName)
+
+	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v') AND ", dataReq.Dealer, dataReq.RepName, dataReq.RepName)
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
@@ -140,20 +140,31 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 		endDate.Format("02-01-2006 15:04:05"),
 	)
 
-	switch dataReq.LeaderType {
-	case "sale":
-		filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", len(whereEleList)-1, len(whereEleList)))
-	case "ntp":
-		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", len(whereEleList)-1, len(whereEleList)))
-	case "install":
-		filtersBuilder.WriteString(fmt.Sprintf(" pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", len(whereEleList)-1, len(whereEleList)))
-	case "cancel":
-		filtersBuilder.WriteString(fmt.Sprintf(" cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", len(whereEleList)-1, len(whereEleList)))
-	}
+	filtersBuilder.WriteString(fmt.Sprintf("contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", len(whereEleList)-1, len(whereEleList)))
 
 	filters = filtersBuilder.String()
-
 	log.FuncDebugTrace(0, "filters : %s", filters)
 	return filters, whereEleList
+
+}
+
+func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters string) {
+	log.EnterFn(0, "GetQueryForTotalCount")
+	defer func() { log.ExitFn(0, "GetQueryForTotalCount", nil) }()
+
+	var filtersBuilder strings.Builder
+
+	filtersBuilder.WriteString("SELECT COUNT(CASE WHEN contract_date IS NOT NULL THEN system_size END) AS total_sales,")
+	filtersBuilder.WriteString(" COUNT(CASE WHEN ntp_date IS NOT NULL THEN system_size END) AS total_ntp,")
+	filtersBuilder.WriteString(" COUNT(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size END) AS total_installs")
+
+	filtersBuilder.WriteString(" FROM consolidated_data_view ")
+	filtersBuilder.WriteString(" WHERE ")
+
+	filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.RepName, dataReq.RepName))
+
+	filters = filtersBuilder.String()
+	log.FuncDebugTrace(0, "filters : %s", filters)
+	return filters
 
 }

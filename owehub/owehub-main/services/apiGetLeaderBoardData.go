@@ -78,43 +78,36 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	log.FuncInfoTrace(0, "CHECKPOINT 3")
 
 	log.FuncInfoTrace(0, "USER ROLE -> %v USER EMAIL -> %v", dataReq.Role, dataReq.Email)
-	if dataReq.Role != "Dealer Owner" {
+	if dataReq.Role != "Admin" {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT ud2.name AS dealer_owner FROM user_details ud1
-			LEFT JOIN user_details ud2 ON ud1.dealer_owner = ud2.user_id
-			where ud1.email_id = %v;
-		`, dataReq.Email)
-	} else {
-		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT vd.dealer_name AS dealer_owner FROM user_details ud
+			SELECT vd.dealer_name AS dealer_name FROM user_details ud
 			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
 			where email_id = %v;
 		`, dataReq.Email)
-	}
 
-	if dataReq.Role == "Admin" {
-		adminCheck = true
-	} else {
-		adminCheck = false
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get user details from DB for %v err: %v", data, err)
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
 			FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
 			return
 		}
 		if len(data) == 0 {
-			log.FuncErrorTrace(0, "Failed to get user details from DB for %v err: %v", data, err)
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
 			FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
 			return
 		}
 
-		dataReq.DealerName, _ = data[0]["dealer_owner"].(string)
-		log.FuncInfoTrace(0, "DEALER NAME -> %v", dataReq.DealerName)
+		dataReq.DealerName, _ = data[0]["dealer_name"].(string)
 	}
 
-	leaderBoardQuery = `
-	SELECT dealer, primary_sales_rep,
-	`
+	if dataReq.Role == "Admin" && dataReq.DealerName == "" {
+		log.FuncErrorTrace(0, "Failed to get dealer name from user for admin")
+		FormAndSendHttpResp(resp, "Failed to get dealer name, please enter a valid dealer name", http.StatusBadRequest, data)
+		return
+	}
+
+	leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
+
 	filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck)
 	leaderBoardQuery = leaderBoardQuery + filter
 
@@ -128,22 +121,32 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList := models.GetLeaderBoardList{}
 	if len(data) > 0 {
 		for _, item := range data {
-			Dealer, _ := item["dealer"].(string)
-			Name, _ := item["primary_sales_rep"].(string)
-			SaleCount, _ := item["sale_count"].(int64)
-			Kw, _ := item["kw"].(float64)
-			NtpCount, _ := item["ntp_count"].(int64)
-			CancelCount, _ := item["cancel_count"].(int64)
-			InstallCount, _ := item["install_count"].(int64)
+			Name, _ := item["name"].(string)
+
+			// Helper function to convert interface{} to int64
+			toInt64 := func(v interface{}) int64 {
+				switch value := v.(type) {
+				case int64:
+					return value
+				case float64:
+					return int64(value)
+				default:
+					return 0
+				}
+			}
+
+			Sale := toInt64(item["sale"])
+			Ntp := toInt64(item["ntp"])
+			Cancel := toInt64(item["cancel"])
+			Install := toInt64(item["install"])
 
 			LeaderBoard := models.GetLeaderBoard{
-				Dealer:       Dealer,
-				Name:         Name,
-				SaleCount:    SaleCount,
-				Kw:           Kw,
-				NtpCount:     NtpCount,
-				CancelCount:  CancelCount,
-				InstallCount: InstallCount,
+				Dealer:  dataReq.DealerName,
+				Name:    Name,
+				Sale:    Sale,
+				Ntp:     Ntp,
+				Cancel:  Cancel,
+				Install: Install,
 			}
 
 			LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, LeaderBoard)
@@ -152,16 +155,14 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	sort.Slice(LeaderBoardList.LeaderBoardList, func(i, j int) bool {
 		switch dataReq.SortBy {
-		case "kw":
-			return LeaderBoardList.LeaderBoardList[i].Kw > LeaderBoardList.LeaderBoardList[j].Kw
 		case "ntp":
-			return LeaderBoardList.LeaderBoardList[i].NtpCount > LeaderBoardList.LeaderBoardList[j].NtpCount
+			return LeaderBoardList.LeaderBoardList[i].Ntp > LeaderBoardList.LeaderBoardList[j].Ntp
 		case "cancel":
-			return LeaderBoardList.LeaderBoardList[i].CancelCount > LeaderBoardList.LeaderBoardList[j].CancelCount
+			return LeaderBoardList.LeaderBoardList[i].Cancel > LeaderBoardList.LeaderBoardList[j].Cancel
 		case "install":
-			return LeaderBoardList.LeaderBoardList[i].InstallCount > LeaderBoardList.LeaderBoardList[j].InstallCount
+			return LeaderBoardList.LeaderBoardList[i].Install > LeaderBoardList.LeaderBoardList[j].Install
 		default:
-			return LeaderBoardList.LeaderBoardList[i].SaleCount > LeaderBoardList.LeaderBoardList[j].SaleCount
+			return LeaderBoardList.LeaderBoardList[i].Sale > LeaderBoardList.LeaderBoardList[j].Sale
 		}
 	})
 
@@ -219,21 +220,23 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		endDate.Format("02-01-2006 15:04:05"),
 	)
 
-	filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS sale_count, ", len(whereEleList)-1, len(whereEleList)))
-	filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size ELSE 0 END) AS kw, ", len(whereEleList)-1, len(whereEleList)))
-	filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN ntp_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS ntp_count, ", len(whereEleList)-1, len(whereEleList)))
-	filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS cancel_count, ", len(whereEleList)-1, len(whereEleList)))
-	filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS install_count ", len(whereEleList)-1, len(whereEleList)))
-
+	switch dataReq.Type {
+	case "count":
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS sale, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN ntp_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS ntp, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" COUNT(CASE WHEN pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size END) AS install", len(whereEleList)-1, len(whereEleList)))
+	case "kw":
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size ELSE 0 END) AS sale, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN ntp_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size ELSE 0 END) AS ntp, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size ELSE 0 END) AS install", len(whereEleList)-1, len(whereEleList)))
+	}
 	filtersBuilder.WriteString(" FROM consolidated_data_view ")
 	filtersBuilder.WriteString(" WHERE ")
 
-	if !adminCheck {
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = $%d AND ", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataReq.DealerName)
-	}
-	filtersBuilder.WriteString(" primary_sales_rep != '' AND dealer != ''")
-	filtersBuilder.WriteString(" GROUP BY dealer, primary_sales_rep ")
+	filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' ", dataReq.DealerName))
+	filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v ", dataReq.GroupBy))
 
 	filters = filtersBuilder.String()
 	return filters, whereEleList

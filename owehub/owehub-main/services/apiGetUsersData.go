@@ -88,7 +88,8 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ur.role_name,
 			zc.zipcode,
 			vd.dealer_name as dealer,
-			ud.dealer_logo,
+			vd.dealer_logo,
+			vd.bg_colour,
 			ud.tables_permissions
 			FROM user_details ud
 			LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
@@ -243,6 +244,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			DealerLogo = ""
 		}
 
+		// Dealer
+		BgColour, bgcolouroOk := item["bg_colour"].(string)
+		if !bgcolouroOk || BgColour == "" {
+			BgColour = ""
+		}
+
 		// tablesPermissions
 		tablesPermissionsJSON, Ok := item["tables_permissions"].([]byte)
 		if !Ok || tablesPermissionsJSON == nil {
@@ -276,6 +283,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Country:           Country,
 			Dealer:            Dealer,
 			DealerLogo:        DealerLogo,
+			BgColour:          BgColour,
 			TablePermission:   tablePermissions,
 		}
 
@@ -372,7 +380,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode")
+		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_name, vd.dealer_logo, vd.bg_colour")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

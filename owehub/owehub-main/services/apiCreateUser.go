@@ -228,7 +228,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the stored procedure or function to create the user
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
-		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s;", username))
+		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM '%s';", username))
 		dropErr = db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
 		if dropErr != nil {
 			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)

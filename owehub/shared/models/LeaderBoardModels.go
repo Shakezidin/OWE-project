@@ -10,31 +10,24 @@ package models
 type GetLeaderBoardRequest struct {
 	Role       string
 	Email      string
-	DealerName string
-	LeaderType string         `json:"leader_type"`
-	StartDate  string         `json:"start_date"`
-	EndDate    string         `json:"end_date"`
-	Filters    []LeaderFilter `json:"filters"`
-	SortBy     string         `json:"sort_by"`
-	Toppers    bool           `json:"toppers"`
-	PageNumber int64          `json:"page_number"`
-	PageSize   int64          `json:"page_size"`
-}
-
-type LeaderFilter struct {
-	FilterColumn string `json:"filter_column"`
-	FilterValue  string `json:"filter_value"`
+	DealerName string `json:"dealer"`
+	Type       string `json:"type"`
+	StartDate  string `json:"start_date"`
+	EndDate    string `json:"end_date"`
+	GroupBy    string `json:"group_by"`
+	SortBy     string `json:"sort_by"`
+	PageNumber int64  `json:"page_number"`
+	PageSize   int64  `json:"page_size"`
 }
 
 type GetLeaderBoard struct {
-	Rank         int     `json:"rank"`
-	Dealer       string  `json:"dealer"`
-	Name         string  `json:"rep_name"`
-	SaleCount    int64   `json:"count"`
-	Kw           float64 `json:"kw"`
-	NtpCount     int64   `json:"ntp_count"`
-	CancelCount  int64   `json:"cancel_count"`
-	InstallCount int64   `json:"install_count"`
+	Rank    int    `json:"rank"`
+	Dealer  string `json:"dealer"`
+	Name    string `json:"rep_name"`
+	Sale    int64  `json:"count"`
+	Ntp     int64  `json:"ntp_count"`
+	Cancel  int64  `json:"cancel_count"`
+	Install int64  `json:"install_count"`
 }
 
 type GetLeaderBoardList struct {
