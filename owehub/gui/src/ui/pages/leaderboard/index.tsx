@@ -9,6 +9,13 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format, subDays } from 'date-fns';
 import axios from 'axios';
 import { toCanvas } from 'html-to-image';
+
+export type DateRangeWithLabel = {
+  label?: string;
+  start: string;
+  end: string;
+};
+
 const categories = [
   { name: 'Sale', key: 'sale' },
   { name: 'NTP', key: 'ntp' },
@@ -16,24 +23,7 @@ const categories = [
   { name: 'Cancel', key: 'cancel' },
 ];
 const today = new Date();
-const rangeOptData = [
-  {
-    label: 'Today',
-    value: `${format(today, 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Monthly',
-    value: `${format(subDays(today, 30), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Yearly',
-    value: `${format(subDays(today, 365), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-];
+
 export type Tcategory = (typeof categories)[0];
 const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
@@ -56,21 +46,28 @@ const Index = () => {
   const topCards = useRef<HTMLDivElement | null>(null);
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);
-  const [selectedRangeDate, setSelectedRangeDate] = useState({
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  });
+  const [selectedRangeDate, setSelectedRangeDate] =
+    useState<DateRangeWithLabel>({
+      label: 'This Week',
+      start: format(subDays(today, 7), 'dd-MM-yyyy'),
+      end: format(today, 'dd-MM-yyyy'),
+    });
 
   useEffect(() => {
     (async () => {
       try {
+        const dateFilter = selectedRangeDate
+          ? {
+              start_date: selectedRangeDate.start,
+              end_date: selectedRangeDate.end,
+            }
+          : {};
         const data = await postCaller('get_perfomance_leaderboard', {
           leader_type: active,
-          start_date: selectedRangeDate.value?.split(',')[0],
-          end_date: selectedRangeDate.value?.split(',')[1],
           sort_by: activeHead,
           page_size: 3,
           page_number: 1,
+          ...dateFilter,
         });
 
         if (data.status > 201) {
