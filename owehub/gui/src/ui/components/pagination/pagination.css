@@ -96,3 +96,13 @@
   align-items: center;
   justify-content: center;
 }
+
+
+@media (max-width: 576px) {
+ 
+  .pagination {
+   
+    gap: 0.3rem;
+    
+  }
+}
