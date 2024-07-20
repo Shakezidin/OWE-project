@@ -56,18 +56,13 @@ const Index = () => {
   useEffect(() => {
     (async () => {
       try {
-        const dateFilter = selectedRangeDate
-          ? {
-              start_date: selectedRangeDate.start,
-              end_date: selectedRangeDate.end,
-            }
-          : {};
         const data = await postCaller('get_perfomance_leaderboard', {
           leader_type: active,
           sort_by: activeHead,
           page_size: 3,
           page_number: 1,
-          ...dateFilter,
+          start_date: selectedRangeDate.start,
+          end_date: selectedRangeDate.end,
         });
 
         if (data.status > 201) {
