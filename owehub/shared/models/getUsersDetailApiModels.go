@@ -32,6 +32,7 @@ type GetUsersData struct {
 	Country           string               `json:"country"`
 	Dealer            string               `json:"dealer"`
 	DealerLogo        string               `json:"dealer_logo"`
+	BgColour          string               `json:"bg_colour"`
 	TablePermission   []GetTablePermission `json:"table_permission"`
 }
 

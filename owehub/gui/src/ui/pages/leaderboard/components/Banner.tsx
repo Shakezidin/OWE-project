@@ -5,10 +5,36 @@ import EditModal from './EditModal';
 import { useState, useEffect } from 'react';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
+import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
+import SelectOption from '../../../components/selectOption/SelectOption';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 
 const Banner = () => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
+
+interface BannerProps {
+  selectDealer: string;
+  setSelectDealer: React.Dispatch<React.SetStateAction<string>>;
+  bannerDetails:any
+}
+
+const Banner: React.FC<BannerProps> = ({ selectDealer, setSelectDealer , bannerDetails}) => {
+  const [showModal, setShowModal] = useState(false);
+  const [details, setDetails] = useState<any>("")
+  const [newFormData, setNewFormData] = useState<any>([]);
+
+  const tableData = {
+    tableNames: ['dealer'],
+  };
+  const getNewFormData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData(res.data);
+  };
+  useEffect(() => {
+    getNewFormData();
+  }, []);
+
 
   useEffect(() => {
     (async () => {
@@ -95,9 +121,72 @@ const Banner = () => {
           </button>
         </div>
       </div>
+      <div className="straight-line"></div>
+      {/* right side  */}
+      <div className="flex items-center banner-right">
+        <div className="banner-names flex flex-column">
+          <div>
+            <p className="owner-heading">Owner Name</p>
+            <p className="owner-names">{details?.owner_name || "N/A"}</p>
+          </div>
+          <div>
+            <p className="owner-heading">Total Teams</p>
+            <p className="owner-names">{details?.total_teams }</p>
+          </div>
+          <div>
+            <p className="owner-heading">Team Strength</p>
+            <p className="owner-names">{details?.total_strength}</p>
+          </div>
+        </div>
+        <div className="banner-trophy">
+          <img
+            src={ICONS.BannerTrophy}
+            alt="login-icon"
+          />
+        </div>
+        <div className='banner-stars'>
+          <img
+            src={ICONS.BannerStar}
+            width={30}
+            alt=""
+            className='banner-star-1'
+          />
+          <img
+            src={ICONS.BannerStar}
+            width={30}
+            className='banner-star-2'
+            alt=''
+          />
+          <img
+            src={ICONS.BannerStar}
+            width={20}
+            className='banner-star-3'
+            alt=''
+          />
+        </div>
+        <button className="edit-button" onClick={() => setShowModal(true)}>
+          <LiaEdit className="edit-svg" />
+          <p>Edit</p>
+        </button>
+        <div className="create-input-field">
+          <SelectOption
+            menuListStyles={{ height: '230px' }}
+            options={dealerOption(newFormData)}
+            onChange={(newValue) => setSelectDealer(newValue?.value!)}
+            value={
+              !selectDealer
+                ? undefined
+                : dealerOption(newFormData)?.find(
+                    (option) => option.value === selectDealer
+                  )
+            }
+          />
+        </div>
+      </div>
       {showModal && <EditModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };
+}
 
 export default Banner;

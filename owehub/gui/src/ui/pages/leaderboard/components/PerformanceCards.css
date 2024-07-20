@@ -1,16 +1,18 @@
 .performance-cards {
   background-color: #fff;
   background-image: url('../../../../resources/assets/performars-background.svg');
-  background-size: cover; 
-  background-position: center; 
+  background-size: cover;
+  background-position: center;
   border-radius: 10px;
   margin-top: 2rem;
 }
+
 .right-button {
   display: flex;
   justify-content: flex-end;
   padding: 1.5rem 1.5rem 0 0;
 }
+
 .share-button {
   padding: 0.4rem 1.5rem;
   outline: none;
@@ -23,26 +25,32 @@
   gap: 0.3rem;
   cursor: pointer;
 }
+
 .share-button p {
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
+
 .share-svg {
   font-size: 1rem;
   height: 16px;
   width: 16px;
 }
+
 .banner-heading {
   text-align: center;
   line-height: 16px;
 }
+
 .cards {
   padding: 5rem;
   column-gap: 60px;
   row-gap: 60px;
 }
+
 .cards object {
   width: 70px;
 }
+
 .card-one,
 .card-two,
 .card-three {
@@ -51,9 +59,11 @@
   padding: 0 0.8rem;
   background-color: #fff;
 }
+
 .card-three {
   border: 2px solid #eaeaea;
 }
+
 .upper-section {
   display: flex;
   align-items: center;
@@ -62,27 +72,33 @@
   position: relative;
   z-index: 99;
 }
+
 .dashed-border {
   border: 1px dashed #eaeaea;
   position: relative;
   z-index: 99;
 }
+
 .card-title {
   justify-content: center;
 }
+
 .card-title span {
   margin-left: 7px;
   cursor: pointer;
 }
+
 .card-title h2 {
   font-weight: 600;
   color: #3b3b3b;
   font-size: 1.2rem;
 }
+
 .card-title p {
   font-size: 0.8rem;
   color: #3b3b3b;
 }
+
 .below-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -92,14 +108,17 @@
   position: relative;
   z-index: 99;
 }
+
 .below-des p:first-of-type {
   color: #3b3b3b;
   font-weight: 500;
 }
+
 .below-des p:nth-of-type(2) {
   color: #afafaf;
   font-size: 0.8rem;
 }
+
 .card-two {
   border: none;
   transform: scale(1.3);
@@ -140,56 +159,119 @@
     border-radius: 10px;
     top: 1.1%;
     left: .9%;
+  }
+/* ----TEXT-TRUNCATE---- */
+.card-title,
+.below-des {
+  overflow: hidden;
+}
+
+.card-title h2,
+.below-section p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------- */
+
+.card-two::before {
+  content: '';
+  background-image: conic-gradient(#f99602 20deg, transparent 120deg);
+  height: 200%;
+  width: 200%;
+  position: absolute;
+  left: -50%;
+  top: -50%;
+  animation: rotate 3s linear infinite;
+}
+
+.card-two::after {
+  content: '';
+  width: 97%;
+  height: 97%;
+  border-radius: 10px;
+  position: absolute;
+  background-color: #fff;
+  border-radius: 10px;
+  top: 1.5%;
+  left: 1.5%;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.card-three {
+  border: 2px solid #f9e09f;
+}
+
+@media screen and (max-width: 1400px) and (min-width: 768px) {
+  .performance-cards .cards {
+    padding: 5rem 1.5rem;
+    column-gap: 3rem;
+  }
+
+  .performance-cards .upper-section,
+  .performance-cards .below-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .performance-cards .upper-section {
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .performance-cards .below-des p {
+    font-size: 0.75rem;
+  }
+
+  .performance-cards .card-one,
+  .performance-cards .card-three {
+    width: 25%;
+  }
+
+  .performance-cards .card-one object,
+  .performance-cards .card-three object {
+    width: 40px;
+  }
+
+  .performance-cards .card-one h2,
+  .performance-cards .card-three h2 {
+    font-size: 0.875rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .performance-cards .share-button {
+    margin-bottom: 1.5rem;
+  }
+
+  .performance-cards .cards {
     display: grid;
-    place-items: center;
-    font-size: 20px;
-  }
-  @keyframes rotate {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+    grid-template-columns: 100%;
+    padding: 2rem 1rem;
+    column-gap: 0;
+    row-gap: 1.5rem;
   }
 
-  .card-three {
-    border: 2px solid #f9e09f;
+  .performance-cards .card-one,
+  .performance-cards .card-three {
+    width: 100%;
   }
 
-  @media screen and (max-width: 1400px) {
-    .performance-cards .cards {
-      padding: 5rem 1.5rem;
-      column-gap: 3rem;
-    }
-
-    .performance-cards .upper-section,
-    .performance-cards .below-section {
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    .performance-cards .upper-section {
-      gap: 0.75rem;
-      justify-content: center;
-    }
-
-    .performance-cards .below-des p {
-      font-size: 0.75rem;
-    }
-
-    .performance-cards .card-one,
-    .performance-cards .card-three {
-      width: 25%;
-    }
-
-    .performance-cards .card-one object,
-    .performance-cards .card-three object {
-      width: 40px;
-    }
-
-    .performance-cards .card-one h2,
-    .performance-cards .card-three h2 {
-      font-size: 0.875rem;
-    }
+  .performance-cards .card-two {
+    transform: scale(1);
+    grid-row-start: 1;
   }
+}

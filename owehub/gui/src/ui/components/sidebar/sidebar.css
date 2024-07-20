@@ -303,3 +303,19 @@
     display: none;
   }
 }
+
+@media screen and (max-width: 767px) {
+  .side-bar-container {
+    position: fixed;
+    background: #fff;
+    bottom: 0;
+    width: auto;
+    top: -28px;
+    padding-top: 30px;
+    transition: all 500ms;
+    padding-inline: 1rem;
+    border-right: 1px solid #f0f0f0;
+    z-index: 100 !important;
+  }
+}
+

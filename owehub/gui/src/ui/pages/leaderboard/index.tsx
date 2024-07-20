@@ -9,31 +9,30 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format, subDays } from 'date-fns';
 import axios from 'axios';
 import { toCanvas } from 'html-to-image';
+import { group } from 'console';
+
+export type DateRangeWithLabel = {
+  label?: string;
+  start: string;
+  end: string;
+};
+
 const categories = [
   { name: 'Sale', key: 'sale' },
   { name: 'NTP', key: 'ntp' },
   { name: 'Install', key: 'install' },
   { name: 'Cancel', key: 'cancel' },
 ];
+interface Details {
+  dealer_name?: string;
+  dealer_logo?: string;
+  owner_name?: string;
+  total_teams?: number;
+  total_strength?: number;
+}
+
 const today = new Date();
-const rangeOptData = [
-  {
-    label: 'Today',
-    value: `${format(today, 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Monthly',
-    value: `${format(subDays(today, 30), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Yearly',
-    value: `${format(subDays(today, 365), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-];
+
 export type Tcategory = (typeof categories)[0];
 const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
@@ -41,6 +40,8 @@ const Index = () => {
   const [activeHead, setActiveHead] = useState('kw');
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
+  const [bannerDetails, setBannerDetails] = useState<Details>({});
+  const [selectDealer, setSelectDealer] = useState<string>("UNTD")
   const [dealer, setDealer] = useState<{
     dealer?: string;
     rep_name?: string;
@@ -56,21 +57,25 @@ const Index = () => {
   const topCards = useRef<HTMLDivElement | null>(null);
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);
-  const [selectedRangeDate, setSelectedRangeDate] = useState({
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  });
+  const [selectedRangeDate, setSelectedRangeDate] =
+    useState<DateRangeWithLabel>({
+      label: 'This Week',
+      start: format(subDays(today, 7), 'dd-MM-yyyy'),
+      end: format(today, 'dd-MM-yyyy'),
+    });
 
   useEffect(() => {
     (async () => {
       try {
         const data = await postCaller('get_perfomance_leaderboard', {
-          leader_type: active,
-          start_date: selectedRangeDate.value?.split(',')[0],
-          end_date: selectedRangeDate.value?.split(',')[1],
-          sort_by: activeHead,
+          type: activeHead,
+          sort_by: active,
           page_size: 3,
           page_number: 1,
+          start_date: selectedRangeDate.start,
+          end_date: selectedRangeDate.end,
+          dealer:selectDealer,
+          group_by:"primary_sales_rep",
         });
 
         if (data.status > 201) {
@@ -83,7 +88,7 @@ const Index = () => {
       } finally {
       }
     })();
-  }, [active, activeHead, selectedRangeDate]);
+  }, [active, activeHead, selectedRangeDate,selectDealer]);
   const shareImage = () => {
     if (topCards.current) {
       setGenerating(true);
@@ -114,7 +119,7 @@ const Index = () => {
   return (
     <div className="px1">
       <div ref={topCards}>
-        <Banner />
+      <Banner selectDealer={selectDealer} setSelectDealer={setSelectDealer} bannerDetails={bannerDetails}/>
         <PerformanceCards
           isGenerating={isGenerating}
           shareImage={shareImage}
@@ -133,6 +138,7 @@ const Index = () => {
         active={active}
         setActive={setActive}
         setDealer={setDealer}
+        selectDealer={selectDealer}
       />
       <Sidebar dealer={dealer} setIsOpen={setIsOpen} isOpen={isOpen} />
     </div>

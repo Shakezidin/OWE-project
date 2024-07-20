@@ -28,6 +28,9 @@ const PerformanceCards: React.FC<performance> = ({
   const rank2 = details.find((item: any) => item?.rank === 2);
   const rank3 = details.find((item: any) => item?.rank === 3);
 
+
+  console.log(rank1, rank2, rank3, "hyrydfhgdf")
+
   return (
     <div>
       <div className="performance-cards">
@@ -44,98 +47,115 @@ const PerformanceCards: React.FC<performance> = ({
         </div>
         <div className="banner-heading">
           <img src={ICONS.Performars} aria-label="login-icon"></img>
-          <p>Based on most sales in the last 1 month.</p>
+          <p>
+            Adjust criteria below to see who leads in different categories..
+          </p>
         </div>
         <div className="cards flex justify-between">
-          <div className="card-one">
-            <div className="upper-section">
-              <img src={ICONS.GreyTwo} aria-label="grey-icon"></img>
-              <div className="flex flex-column card-title">
-                <h2>{rank2?.rep_name}</h2>
-                <p>
-                  OUR31245
-                  <span>
-                    <MdContentCopy />
-                  </span>
-                </p>
+          {rank2 ? (
+            <div className="card-one">
+              <div className="upper-section">
+                <img src={ICONS.GreyTwo} aria-label="grey-icon"></img>
+                <div className="flex flex-column card-title">
+                  <h2>{rank2?.rep_name}</h2>
+                  <p>
+                    OUR31245
+                    <span>
+                      <MdContentCopy />
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="dashed-border"></div>
+              <div className="below-section">
+                <div className="below-des">
+                  <p>{rank2?.sale.toFixed(2) ?? 0} sales</p>
+                  <p>For this month</p>
+                </div>
+                <div className="below-des">
+                  <p>{rank2?.ntp?.toFixed(2) ?? 0} Ntp</p>
+                  <p>For this month</p>
+                </div>
+                <div
+                  className="below-des mx-auto"
+                  style={{ gridColumn: '1/3' }}
+                >
+                  <p className="text-center"> {rank2?.install.toFixed(2)} Installs</p>
+                  <p>For this month</p>
+                </div>
               </div>
             </div>
-            <div className="dashed-border"></div>
-            <div className="below-section">
-              <div className="below-des">
-                <p>{rank2?.count ?? 0} sales</p>
-                <p>For this month</p>
+          ) : null}
+          {rank1 ? (
+            <div className="card-two">
+              <div className="upper-section">
+                <img src={ICONS.GoldOne} aria-label="grey-icon"></img>
+                <div className="flex flex-column card-title">
+                  <h2>{rank1?.rep_name}</h2>
+                  <p>
+                    OUR31245
+                    <span>
+                      <MdContentCopy />
+                    </span>
+                  </p>
+                </div>
               </div>
-              <div className="below-des">
-                <p>{rank2?.kw?.toFixed?.(2)} KW</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
-                <p className="text-center"> {rank2?.install_count}</p>
-                <p>For this month</p>
-              </div>
-            </div>
-          </div>
-          <div className="card-two">
-            <div className="upper-section">
-              <img src={ICONS.GoldOne} aria-label="grey-icon"></img>
-              <div className="flex flex-column card-title">
-                <h2>{rank1?.rep_name}</h2>
-                <p>
-                  OUR31245
-                  <span>
-                    <MdContentCopy />
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div className="dashed-border"></div>
-            <div className="below-section">
-              <div className="below-des">
-                <p>{rank1?.count ?? 0} sales</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des">
-                <p>{rank1?.kw?.toFixed?.(2)} KW</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
-                <p className="text-center">{rank1?.install_count}</p>
+              <div className="dashed-border"></div>
+              <div className="below-section">
+                <div className="below-des">
+                  <p>{rank1?.sale.toFixed(2) ?? 0} sales</p>
+                  <p>For this month</p>
+                </div>
+                <div className="below-des">
+                  <p>{rank1?.ntp.toFixed(2)} ntp</p>
+                  <p>For this month</p>
+                </div>
+                <div
+                  className="below-des mx-auto"
+                  style={{ gridColumn: '1/3' }}
+                >
+                  <p className="text-center">{rank1?.install.toFixed(2)} installs</p>
 
-                <p>For this month</p>
+                  <p>For this month</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="card-three">
-            <div className="upper-section">
-              <img src={ICONS.BrownThree} aria-label="grey-icon"></img>
-              <div className="flex flex-column card-title">
-                <h2>{rank3?.rep_name}</h2>
-                <p>
-                  OUR31245
-                  <span>
-                    <MdContentCopy />
-                  </span>
-                </p>
+          ) : null}
+          {rank3 ? (
+            <div className="card-three">
+              <div className="upper-section">
+                <img src={ICONS.BrownThree} aria-label="grey-icon"></img>
+                <div className="flex flex-column card-title">
+                  <h2>{rank3?.rep_name}</h2>
+                  <p>
+                    OUR31245
+                    <span>
+                      <MdContentCopy />
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="dashed-border"></div>
-            <div className="below-section">
-              <div className="below-des">
-                <p>{rank3?.sale ?? 0} sales</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des">
-                <p>{rank3?.kw?.toFixed?.(2)} KW</p>
-                <p>For this month</p>
-              </div>
-              <div className="below-des mx-auto" style={{ gridColumn: '1/3' }}>
-                <p className="text-center">{rank3?.install_count}</p>
+              <div className="dashed-border"></div>
+              <div className="below-section">
+                <div className="below-des">
+                  <p>{rank3?.sale.toFixed(2) ?? 0} sales</p>
+                  <p>For this month</p>
+                </div>
+                <div className="below-des">
+                  <p>{rank3?.ntp.toFixed(2) ?? 0} ntp</p>
+                  <p>For this month</p>
+                </div>
+                <div
+                  className="below-des mx-auto"
+                  style={{ gridColumn: '1/3' }}
+                >
+                  <p className="text-center">{rank3?.install.toFixed(2)} installs</p>
 
-                <p>For this month</p>
+                  <p>For this month</p>
+                </div>
               </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </div>

@@ -28,6 +28,32 @@
   background-color: var(--white-color);
 }
 
+.leaderboard-data__datepicker-wrapper {
+  position: relative;
+  line-height: 0;
+}
+
+.leaderboard-data__datepicker-content {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  background-color: var(--white-color);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.leaderboard-data__datepicker-btns {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem;
+}
+.leaderboard-data__datepicker-btns button {
+  position: static;
+}
+.leaderboard-data__datepicker-btns button:first-child {
+  margin-right: 0.5rem;
+}
+
 .leaderboard-data__head {
   display: grid;
   grid-template: 20px auto / 20px auto;
@@ -139,8 +165,6 @@
   border-top-right-radius: 12px;
 }
 
-
-
 .leaderboard-table tbody tr td {
   padding-left: 3rem;
 }
@@ -198,6 +222,7 @@
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
+
 .leaderbord-tab-container .tab:last-child {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -295,6 +320,9 @@
   padding-inline: 21px;
   border-radius: 8px;
 }
+.leaderborder_filter-slect-wrapper {
+  display: none;
+}
 
 .leader-stats-share-btn {
   border: none;
@@ -327,7 +355,50 @@
   gap: 8px;
 }
 
-.sidebar-social-share{
+.sidebar-social-share {
   top: -162px;
-    right: 0;
+  right: 0;
+}
+
+@media (max-width: 1024px) {
+  .leaderboard-data__period-group {
+    display: none;
+  }
+
+  .leaderborder_filter-slect-wrapper {
+    display: inline-flex;
+  }
+  .leaderboard-data__filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+  }
+  .leaderboard-data__select-filter {
+    max-width: 160px;
+  }
+
+  .leaderbord-tab-container {
+    margin-left: auto;
+  }
+
+  .leaderboard-data__filters {
+    grid-column: 1/3;
+  }
+
+  .leaderboard-data__select-filter:nth-child(2) {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+  }
+  .leaderboard-data__select-filter label {
+    white-space: nowrap;
+  }
+  .leaderbord-tab-container .tab{
+    padding:.5rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .children-container {
+    padding-inline: 0;
+  }
 }

@@ -15,13 +15,44 @@ CREATE OR REPLACE FUNCTION update_user(
     p_country VARCHAR(255),
     p_user_code VARCHAR(255),
     p_dealer_name VARCHAR(255),
-    p_dealer_logo VARCHAR(255),
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
 RETURNS INT 
 AS $$
+DECLARE
+    v_dealer_id INT;
+    v_reporting_manager VARCHAR(255);
 BEGIN
+
+ -- Get the dealer owner's user_id
+    IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
+        SELECT id INTO v_dealer_id
+        FROM v_dealer
+        WHERE dealer_name = p_dealer_name;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
+        END IF;
+    ELSE
+        v_dealer_id := NULL;
+    END IF;
+
+    IF p_role_name = 'Regional Manager' AND (p_reporting_manager IS NULL OR p_reporting_manager = '') THEN
+        v_reporting_manager := p_dealer_owner;
+    ELSE
+        v_reporting_manager := p_reporting_manager;
+    END IF;
+
+    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
+    SELECT dealer_id INTO v_dealer_id
+        FROM user_details
+        WHERE name = v_reporting_manager;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'reporting manager with name % not found', p_reporting_manager;
+        END IF;
+    END IF;
     -- Update user details
     UPDATE user_details
     SET 
@@ -39,8 +70,7 @@ BEGIN
         city = COALESCE(NULLIF(p_city, ''), NULL),
         zipcode = CASE WHEN p_zipcode IS NOT NULL AND p_zipcode != '' THEN (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1) ELSE NULL END,
         country = COALESCE(NULLIF(p_country, ''), NULL),
-        dealer_id = CASE WHEN p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN (SELECT id FROM v_dealer WHERE LOWER(name) = LOWER(p_dealer_name) LIMIT 1) ELSE NULL END,
-        dealer_logo = p_dealer_logo,
+        dealer_id = v_dealer_id,
         tables_permissions = p_tables_permissions,
         updated_at = CURRENT_TIMESTAMP
     WHERE user_code = p_user_code
