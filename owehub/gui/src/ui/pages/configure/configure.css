@@ -391,3 +391,12 @@ table tbody tr:has(td[colspan='10'] .data-not-found):hover {
     font-size: 14px;
   }
 }
+
+@media screen and (max-width: 768px){
+  .page-heading-container{
+    flex-direction: column;
+    justify-content: unset;
+    gap: 1rem;
+    padding: 20px 0;
+  }
+}

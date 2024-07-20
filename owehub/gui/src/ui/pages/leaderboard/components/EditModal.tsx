@@ -64,7 +64,7 @@ const ColorPicker = ({
       <button
         onClick={() => colorInputRef.current?.click()}
         style={{
-          outlineColor: presetColors.includes(color) ? 'transparent' : color,
+          outlineColor: presetColors.includes(color) ? 'transparent' : color
         }}
       >
         <ColorpickerIcon />
