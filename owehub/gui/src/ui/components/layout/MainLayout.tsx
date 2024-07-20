@@ -16,7 +16,27 @@ import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassw
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
+import { ROUTES } from '../../../routes/routes';
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return width;
+}
+
+
+
+
 const MainLayout = () => {
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(
@@ -86,6 +106,12 @@ const MainLayout = () => {
   useEffect(() => {
     setToggleOpen(isTablet);
   }, [isTablet]);
+
+  useEffect(() => {
+    if (isMobile) {
+      navigate(ROUTES.LEADERBOARD);
+    }
+  }, [isMobile]);
 
   return isAuthenticated ? (
     <div className="main-container">

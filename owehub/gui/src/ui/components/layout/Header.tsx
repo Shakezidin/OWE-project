@@ -16,11 +16,25 @@ import { FaUserCircle } from 'react-icons/fa';
 import { IoMdLogOut } from 'react-icons/io';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoMenu } from 'react-icons/io5';
+import { RxCross2 } from 'react-icons/rx';
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
   sidebarChange: number;
+}
+
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return width;
 }
 
 const Header: React.FC<Toggleprops> = ({
@@ -84,6 +98,9 @@ const Header: React.FC<Toggleprops> = ({
     };
   }, []);
 
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
   return (
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
       <div className="header-icon">
@@ -96,7 +113,12 @@ const Header: React.FC<Toggleprops> = ({
           onClick={() => isTablet && setToggleOpen((prev) => !prev)}
         >
           {isTablet ? (
-            <IoMenu size={22} className="mx-auto" />
+            toggleOpen ? (
+              <IoMenu size={22} className="mx-auto" />
+            ) : (
+              <RxCross2 size={20} className="mx-auto" />
+            )
+            
           ) : (
             <img
               src={ICONS.sidebarLogo}
@@ -137,7 +159,7 @@ const Header: React.FC<Toggleprops> = ({
         </div>
         <div
           className="header-logo flex items-center"
-          style={{ marginLeft: isTablet ? 0 : 25, height: '100%' }}
+          style={{ marginLeft: isTablet ? 0 : 25, height: '100%',  }}
         >
           <object
             type="image/svg+xml"
@@ -146,67 +168,132 @@ const Header: React.FC<Toggleprops> = ({
           ></object>
         </div>
       </div>
-      <div className="search-container">
-        <div
-          className="user-container"
-          ref={dropdownRef}
-          onClick={() => setOPenIcon(!openIcon)}
-        >
-          <div className="user-img-container">
-            <div className="user-img">
-              <span>{name}</span>
-            </div>
-            <div className="user-name">
-              <div className="down-arrow">
-                <h4>Hello,&nbsp;{userName}</h4>
-                <p className="admin-p">{userRole}</p>
+      {!isMobile && (
+        <div className="search-container">
+          <div
+            className="user-container"
+            ref={dropdownRef}
+            onClick={() => setOPenIcon(!openIcon)}
+          >
+            <div className="user-img-container">
+              <div className="user-img">
+                <span>{name}</span>
               </div>
+              <div className="user-name">
+                <div className="down-arrow">
+                  <h4>Hello,&nbsp;{userName}</h4>
+                  <p className="admin-p">{userRole}</p>
+                </div>
 
-              <div className="">
-                <div className="down-circle">
-                  {openIcon ? (
-                    <img src={ICONS.upperIcon} alt="" />
-                  ) : (
-                    <MdKeyboardArrowDown style={{ fontSize: '1.5rem' }} />
-                  )}
-                  {openIcon && (
-                    <div className="header-modal-1">
-                      <div
-                        className="image-box-container"
-                        onClick={() => navigate(ROUTES.ACCOUNT_SETTING)}
-                      >
-                        <div className="image-icon">
-                          <FaUserCircle />
-                        </div>
-                        <p
-                          className=""
-                          style={{ fontSize: '12px', fontWeight: '500' }}
+                <div className="">
+                  <div className="down-circle">
+                    {openIcon ? (
+                      <img src={ICONS.upperIcon} alt="" />
+                    ) : (
+                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem' }} />
+                    )}
+                    {openIcon && (
+                      <div className="header-modal-1">
+                        <div
+                          className="image-box-container"
+                          onClick={() => navigate(ROUTES.ACCOUNT_SETTING)}
                         >
-                          My Account
-                        </p>
-                      </div>
-
-                      <div
-                        className="image-box-container "
-                        onClick={handleLogout}
-                      >
-                        <div className="image-icon">
-                          <IoMdLogOut />
-                        </div>
-                        <div>
-                          <p style={{ fontSize: '12px', fontWeight: '500' }}>
-                            Logout
+                          <div className="image-icon">
+                            <FaUserCircle />
+                          </div>
+                          <p
+                            className=""
+                            style={{ fontSize: '12px', fontWeight: '500' }}
+                          >
+                            My Account
                           </p>
                         </div>
+
+                        <div
+                          className="image-box-container "
+                          onClick={handleLogout}
+                        >
+                          <div className="image-icon">
+                            <IoMdLogOut />
+                          </div>
+                          <div>
+                            <p style={{ fontSize: '12px', fontWeight: '500' }}>
+                              Logout
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+
+      {isMobile && (
+
+        <div className="search-container">
+          <div
+            className="user-container"
+            ref={dropdownRef}
+            onClick={() => setOPenIcon(!openIcon)}
+          >
+            <div className="user-img-container">
+              <div className="user-img">
+                <span>{name}</span>
+              </div>
+              <div className="user-name">
+                <div className="">
+                  <div className="down-circle">
+                    {openIcon ? (
+                      <img src={ICONS.upperIcon} alt="" />
+                    ) : (
+                      <MdKeyboardArrowDown style={{ fontSize: '1.5rem' }} />
+                    )}
+                    {openIcon && (
+                      <div className="header-modal-mob">
+                        <div
+                          className="image-box-container"
+                          onClick={() => navigate(ROUTES.ACCOUNT_SETTING)}
+                        >
+                          <div className="image-icon">
+                            <FaUserCircle />
+                          </div>
+                          <p
+                            className=""
+                            style={{ fontSize: '12px', fontWeight: '500' }}
+                          >
+                            My Account
+                          </p>
+                        </div>
+
+                        <div
+                          className="image-box-container "
+                          onClick={handleLogout}
+                        >
+                          <div className="image-icon">
+                            <IoMdLogOut />
+                          </div>
+                          <div>
+                            <p style={{ fontSize: '12px', fontWeight: '500' }}>
+                              Logout
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      )}
+
     </div>
   );
 };

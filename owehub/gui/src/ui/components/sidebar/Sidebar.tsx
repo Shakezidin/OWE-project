@@ -29,6 +29,21 @@ interface Toggleprops {
   setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
   sidebarChange: number;
 }
+
+
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return width;
+}
+
 const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const [repay, setRepay] = useState<boolean>(false);
   const [db, setDb] = useState<boolean>(false);
@@ -83,6 +98,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   }, [toggleOpen]);
   console.log(cords, 'cordssssss');
 
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
+
   return (
     <div
       style={{ zIndex: '30' }}
@@ -96,6 +115,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       >
         {createSideMenuList().map((el, i) => (
           <div className="" key={i}>
+            {!isMobile && (
+              <>
             <div className="" style={{ marginTop: toggleOpen ? 0 : '.4rem' }}>
               {el.performance?.map((oth: any, index: number) => (
                 <Link
@@ -203,6 +224,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 </Link>
               ))}
             </div>
+           
 
             <div className="" style={{ marginTop: toggleOpen ? 0 : '.4rem' }}>
               {el.commission?.map((oth: any, index: number) => (
@@ -830,257 +852,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               ))}
             </div>
 
-            {/* {el.project?.map((item: any, index: number) => (
-              <div key={index}>
-                {item.child ? (
-                  <>
-                    <Link
-                      to={item.path}
-                      style={{
-                        paddingLeft: toggleOpen ? ".8rem" : "",
-                        cursor: "pointer",
-                      }}
-                      className={`side-accordian`}
-                      onClick={() => {
-                        if (!toggleOpen) {
-                          setProject(!project);
-                        }
-                      }}
-                      onMouseEnter={(e) =>
-                        toggleOpen &&
-                        handleMouseover(
-                          e,
-                          item.sidebarProps.displayText,
-                          item.child,
-                          5
-                        )
-                      }
-                      onMouseLeave={() => {
-                        timeOut.current = setTimeout(() => {
-                          setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
-                        }, 500);
-                      }}
-                    >
-                      <div
-                        className="tip"
-                        style={{
-                          backgroundColor: "#fff",
-                          position: "fixed",
-                          top: cords.top,
-                          left: cords.left,
-                          display:
-                            cords.opacity && cords.id === 5 ? "block" : "none",
-
-                          maxHeight: "300px",
-                          minWidth: "150px",
-                          overflowY: "scroll",
-                          borderTopLeftRadius: "4px",
-                          borderTopRightRadius: "4px",
-                          borderLeft: "1px solid #D9D9D9",
-
-                          color: "black",
-                        }}
-                      >
-                        <Link
-                          to="#"
-                          className=""
-                          style={{
-                            display: "block",
-                            background: "#E1F5EA",
-                            padding: "13.5px 12px",
-                            color: "#23B364",
-                            width: "100%",
-                            fontWeight: "500",
-                            borderBottom: "1px solid #E8E8E8",
-                            fontSize: "13px",
-                            borderRight: "3px solid #23B364",
-                            cursor: "default",
-                          }}
-                        >
-                          {" "}
-                          {cords.text}
-                        </Link>
-
-                        {cords.child.map((ch, ind) => {
-                          return (
-                            <Link
-                              to={ch.path}
-                              key={ind}
-                              style={{
-                                display: "block",
-                                marginBlock: "6px",
-                                color: "black",
-                                padding: "6px 12px",
-                                width: "100%",
-                                fontSize: "13px",
-                                marginLeft: "10px",
-                              }}
-                              className="hover-children"
-                            >
-                              {" "}
-                              {ch.sidebarProps.displayText}{" "}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                      <div className={`side-icon-container-1`}>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                            width: 24,
-                            height: 24,
-                            borderRadius: 4,
-                            background:
-                              toggleOpen && location.pathname === item.path
-                                ? "rgb(235 255 244)"
-                                : toggleOpen
-                                ? "#E9EEF2"
-                                : "transparent",
-                          }}
-                        >
-                          {" "}
-                          {item.sidebarProps.icon && item.sidebarProps.icon}
-                        </div>
-                        {toggleOpen ? null : (
-                          <p
-                            className={
-                              location.pathname === item.path
-                                ? "tablink"
-                                : "tablinkk"
-                            }
-                            style={{ color: project ? "#0069A3" : "#101828" }}
-                          >
-                            {item.sidebarProps.displayText}
-                          </p>
-                        )}
-                      </div>
-                      {project ? (
-                        <MdKeyboardArrowUp
-                          style={{
-                            fontSize: "1.5rem",
-                            color: "black",
-                          }}
-                        />
-                      ) : (
-                        <MdKeyboardArrowDown
-                          style={{ fontSize: "1.5rem", color: "black" }}
-                        />
-                      )}
-                    </Link>
-                    {project && (
-                      <div className={`side-accordian-item`}>
-                        {item?.child?.map((accr: any, ele: number) => (
-                          <Link
-                            key={ele}
-                            to={accr?.path}
-                            style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
-                            className={`side-icon-container ${
-                              location.pathname === accr.path
-                                ? "active-link-bg"
-                                : ""
-                            }`}
-                          >
-                            <div className={`side-icon-container-1`}>
-                              <div
-                                className={
-                                  location.pathname === accr.path
-                                    ? "ellipseee"
-                                    : "ellipsee"
-                                }
-                              >
-                                {" "}
-                                {accr.sidebarProps.icon &&
-                                  accr.sidebarProps.icon}
-                              </div>
-                              {toggleOpen ? null : (
-                                <p
-                                  className={
-                                    location.pathname === accr.path
-                                      ? "tablink"
-                                      : "tablinkk"
-                                  }
-                                  style={{
-                                    color: project ? "#0069A3" : "#101828",
-                                  }}
-                                >
-                                  {accr.sidebarProps.displayText}
-                                </p>
-                              )}
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div
-                    className="tip"
-                    style={{
-                      backgroundColor: "#fff",
-                      position: "fixed",
-                      top: cords.top,
-                      left: cords.left,
-                      display:
-                        cords.opacity && cords.id === 5 ? "block" : "none",
-
-                      maxHeight: "300px",
-                      minWidth: "150px",
-                      overflowY: "scroll",
-                      borderTopLeftRadius: "4px",
-                      borderTopRightRadius: "4px",
-                      borderLeft: "1px solid #D9D9D9",
-
-                      color: "black",
-                    }}
-                  >
-                    <Link
-                      to="#"
-                      className=""
-                      style={{
-                        display: "block",
-                        background: "#E1F5EA",
-                        padding: "11px 12px",
-                        color: "#23B364",
-                        width: "100%",
-                        fontWeight: "500",
-                        borderBottom: "1px solid #E8E8E8",
-                        fontSize: "13px",
-                        borderRight: "4px solid #23B364",
-                      }}
-                    >
-                      {" "}
-                      {cords.text}
-                    </Link>
-
-                    {cords.child.map((ch, ind) => {
-                      return (
-                        <Link
-                          key={ind}
-                          style={{
-                            display: "block",
-                            marginBlock: "6px",
-                            color: "black",
-                            padding: "6px 12px",
-                            width: "100%",
-                            fontSize: "12px",
-                            marginLeft: "10px",
-                          }}
-                          to={ch.path}
-                          className="hover-children"
-                        >
-                          {" "}
-                          {ch.sidebarProps.displayText}{" "}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            ))} */}
-
+            
             <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
               {el.other?.map((oth: any, index: number) => (
                 <Link
@@ -1189,6 +961,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 </Link>
               ))}
             </div>
+
+            
             <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
               {el.support?.map((oth: any, index: number) => (
                 <Link
@@ -1297,6 +1071,119 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 </Link>
               ))}
             </div>
+            </>
+            )}
+
+           {isMobile && (
+            <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
+              {el.mob?.map((oth: any, index: number) => (
+                <Link
+                  key={index}
+                  style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
+                  to={oth.path}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
+                  onMouseEnter={(e) =>
+                    toggleOpen &&
+                    !isTablet &&
+                    handleMouseover(
+                      e,
+                      oth.sidebarProps.displayText,
+                      [],
+                      index + 8
+                    )
+                  }
+                  onMouseLeave={() => {
+                    timeOut.current = setTimeout(() => {
+                      setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
+                    }, 500);
+                  }}
+                  className={`side-icon-container ${
+                    location.pathname === oth.path
+                      ? 'active-link-bg'
+                      : 'not-active-link'
+                  }`}
+                >
+                  <div
+                    className={
+                      location.pathname === oth.path
+                        ? 'sidebaricon'
+                        : 'sidebariconn'
+                    }
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      width: 24,
+                      height: 24,
+                      borderRadius: 4,
+                      marginLeft: !toggleOpen ? '' : '-1px',
+                      background:
+                        toggleOpen && location.pathname === oth.path
+                          ? ''
+                          : toggleOpen
+                            ? 'transparent'
+                            : 'transparent',
+                    }}
+                  >
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}
+                  </div>
+
+                  {toggleOpen && !isTablet ? null : (
+                    <p
+                      className={
+                        location.pathname === oth.path ? 'tablink' : 'tablinkk'
+                      }
+                    >
+                      {oth.sidebarProps.displayText}
+                    </p>
+                  )}
+                  <div
+                    className="tip"
+                    style={{
+                      backgroundColor: '#fff',
+                      position: 'fixed',
+                      top: cords.top,
+                      left: cords.left,
+                      display:
+                        cords.opacity && cords.id === index + 8
+                          ? 'block'
+                          : 'none',
+
+                      maxHeight: '300px',
+                      minWidth: '150px',
+                      overflowY: 'scroll',
+                      borderBottomRightRadius: '4px',
+                      borderTopRightRadius: '4px',
+                      borderLeft: '1px solid #D9D9D9',
+                      color: 'black',
+                    }}
+                  >
+                    <Link
+                      to="#"
+                      className=""
+                      style={{
+                        display: 'block',
+                        background: '#377CF6',
+                        padding: '11px 12px',
+                        color: 'white',
+                        width: '100%',
+                        fontWeight: '500',
+                        borderBottom: '1px solid #E8E8E8',
+                        fontSize: '13px',
+                        // borderRight: "3px solid #377CF6",
+                        cursor: 'default',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      {' '}
+                      {cords.text}
+                    </Link>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            )}
           </div>
         ))}
       </div>
