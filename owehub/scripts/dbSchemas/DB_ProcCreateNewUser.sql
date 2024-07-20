@@ -36,6 +36,7 @@ DECLARE
     v_max_user_code INT;
     v_dealer_id INT;
     v_new_user_code VARCHAR(255);
+    v_reporting_manager VARCHAR(255);
 BEGIN
     -- Get the role_id based on the provided role_name
     IF p_role_name IS NOT NULL THEN
@@ -139,14 +140,16 @@ BEGIN
         v_dealer_id := NULL;
     END IF;
 
-    IF p_role_name = 'Regional Manager' AND p_reporting_manager = '' AND p_dealer_owner != '' THEN
-    p_reporting_manager = p_dealer_owner
+    IF p_role_name = 'Regional Manager' AND (p_reporting_manager IS NULL OR p_reporting_manager = '') THEN
+        v_reporting_manager := p_dealer_owner;
+    ELSE
+        v_reporting_manager := p_reporting_manager;
     END IF;
 
-    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative') AND p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN
+    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
     SELECT dealer_id INTO v_dealer_id
         FROM user_details
-        WHERE name = p_reporting_manager;
+        WHERE name = v_reporting_manager;
 
         IF NOT FOUND THEN
             RAISE EXCEPTION 'reporting manager with name % not found', p_reporting_manager;
