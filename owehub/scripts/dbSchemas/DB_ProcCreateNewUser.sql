@@ -139,7 +139,7 @@ BEGIN
         v_dealer_id := NULL;
     END IF;
 
-    IF p_role_name = 'Regional Manager' AND p_reporting_manager = '' AND p_dealer_owner THEN
+    IF p_role_name = 'Regional Manager' AND p_reporting_manager = '' AND p_dealer_owner != '' THEN
     p_reporting_manager = p_dealer_owner
     END IF;
 
