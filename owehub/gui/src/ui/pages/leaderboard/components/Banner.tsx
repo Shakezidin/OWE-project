@@ -44,19 +44,17 @@ const Banner = () => {
       <div className="radiant-anime"></div>
       {/* left side  */}
       <div className="flex items-center pl4 banner-left">
-        <object
-          type="image/svg+xml"
-          data={ICONS.BannerLogo}
-          aria-label="solar-name-icon"
-        ></object>
+        <img
+          src={ICONS.BannerLogo}
+          alt="solar-name-icon"
+        />
         <div className="">
           <h1 className="solar-heading">{details?.dealer_name || "N/A"}</h1>
           <div className="flex items-center ">
-            <object
-              type="image/svg+xml"
-              data={details?.dealer_logo || ICONS.OWEBannerLogo}
-              aria-label="login-icon"
-            ></object>
+            <img
+              src={details?.dealer_logo || ICONS.OWEBannerLogo}
+              alt=""
+            />
             <p className="left-ban-des">
               Powered by <br /> <span>Our World Energy</span>
             </p>
@@ -81,34 +79,30 @@ const Banner = () => {
           </div>
         </div>
         <div className="banner-trophy">
-          <object
-            type="image/svg+xml"
-            data={ICONS.BannerTrophy}
-            aria-label="login-icon"
-          ></object>
+          <img
+            src={ICONS.BannerTrophy}
+            alt="login-icon"
+          />
         </div>
         <div className='banner-stars'>
-          <object
-            type="image/svg+xml"
-            data={ICONS.BannerStar}
+          <img
+            src={ICONS.BannerStar}
             width={30}
+            alt=""
             className='banner-star-1'
-            aria-label="login-icon"
-          ></object>
-          <object
-            type="image/svg+xml"
-            data={ICONS.BannerStar}
+          />
+          <img
+            src={ICONS.BannerStar}
             width={30}
             className='banner-star-2'
-            aria-label="login-icon"
-          ></object>
-          <object
-            type="image/svg+xml"
-            data={ICONS.BannerStar}
+            alt=''
+          />
+          <img
+            src={ICONS.BannerStar}
             width={20}
             className='banner-star-3'
-            aria-label="login-icon"
-          ></object>
+            alt=''
+          />
         </div>
         <button className="edit-button" onClick={() => setShowModal(true)}>
           <LiaEdit className="edit-svg" />

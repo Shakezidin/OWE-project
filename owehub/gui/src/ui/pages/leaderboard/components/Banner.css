@@ -1,11 +1,8 @@
 .banner-main {
+  /* height: 165px; */
   padding: 1rem 0;
   width: 100%;
-  /* background-color: #44ADF9; */
   background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
-  /* background: conic-gradient(red, green, blue, yellow, transparent, red);
-    animation: rotate 4s linear infinite;
-    animation-delay: 1s; */
   overflow: hidden;
   border-radius: 10px;
   margin-top: 30px;
@@ -118,10 +115,9 @@
 }
 .radiant-anime {
   position: absolute;
-  /* background: radial-gradient(farthest-corner at 50% 100px, transparent 50%, #811EFF 10%, #F21680 30%, #22FEF1 90%); */
   background-image: radial-gradient(
     farthest-corner at 40px 40px,
-    #f35 0%,
+    #f35 10%,
     transparent 50%,
     #43e 100%
   );
@@ -141,15 +137,6 @@
   }
 }
 @keyframes spin {
-  /* 0% {
-    transform: scale(0.5) rotate(0deg);
-  }
-  50% {
-    transform: scale(1) rotate(360deg);
-  }
-  100% {
-    transform: scale(0) rotate(0deg);
-  } */
   0% {
     transform: scale(0.5) rotate(0deg);
   }
@@ -157,12 +144,12 @@
     transform: scale(1) rotate(360deg);
   }
   40% {
-    transform: scale(0.5) rotate(360deg);
+    transform: scale(0.7) rotate(360deg);
   }
   60% {
     transform: scale(1) rotate(0deg);
   }
-  60% {
+  70% {
     transform: scale(1) rotate(0deg);
   }
   80%,
