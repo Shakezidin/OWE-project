@@ -399,9 +399,12 @@
   }
 }
 
-@media (max-width: 420px) {
+@media screen and (max-width: 767px) {
   .children-container {
     padding-inline: 0;
+  }
+  .leaderboard-data{
+    padding: 1rem;    
   }
 }
 
