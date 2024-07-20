@@ -21,8 +21,10 @@ interface ILeaderBordUser {
   rank: number;
   dealer: string;
   rep_name: string;
-  count: number;
-  kw: number;
+  sale: number;
+  install:number;
+  ntp:number;
+  cancel:number;
 }
 
 interface IDealer {
@@ -365,6 +367,7 @@ const Table = ({
   setActiveHead,
   setSelectedRangeDate,
   selectedRangeDate,
+  selectDealer
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -374,6 +377,7 @@ const Table = ({
   setActiveHead: Dispatch<SetStateAction<string>>;
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
+  selectDealer:string,
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -386,12 +390,15 @@ const Table = ({
       try {
         setIsLoading(true);
         const data = await postCaller('get_perfomance_leaderboard', {
-          leader_type: active,
-          sort_by: activeHead,
+          type: activeHead,
+          dealer:selectDealer,
           page_size: itemsPerPage,
           page_number: page,
           start_date: selectedRangeDate.start,
           end_date: selectedRangeDate.end,
+          sort_by: active,
+          group_by:"primary_sales_rep",
+          
         });
         if (data.status > 201) {
           setIsLoading(false);
@@ -408,7 +415,7 @@ const Table = ({
         setIsLoading(false);
       }
     })();
-  }, [activeHead, active, selectedRangeDate, itemsPerPage, page]);
+  }, [activeHead, active, selectedRangeDate, itemsPerPage, page, selectDealer]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -486,6 +493,9 @@ const Table = ({
 
                 <th>Dealer</th>
                 <th>Sales</th>
+                <th>Install</th>
+                <th>NTP</th>
+                <th>Cancel</th>
                 <th></th>
               </tr>
             </thead>
@@ -528,8 +538,12 @@ const Table = ({
                       </td>
 
                       <td> {item.dealer} </td>
-                      <td> {item.count} </td>
-                      <td> {item.kw.toFixed(2)} </td>
+                     
+                      <td>{item?.sale?.toFixed(2)} </td>
+                      <td>{item?.install?.toFixed(2)}</td>
+                      <td>{item?.ntp?.toFixed(2)}</td>
+                      <td>{item?.cancel?.toFixed(2)}</td>
+
                     </tr>
                   );
                 })
