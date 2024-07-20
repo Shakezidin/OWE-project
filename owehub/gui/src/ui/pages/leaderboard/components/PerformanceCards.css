@@ -24,7 +24,6 @@
   align-items: center;
   gap: 0.3rem;
   cursor: pointer;
-  opacity: 0.5;
 }
 
 .share-button p {
@@ -128,6 +127,40 @@
   overflow: hidden;
 }
 
+ /* ----TEXT-TRUNCATE---- */
+ .card-title,
+ .below-des {
+   overflow: hidden;
+ }
+ .card-title h2,
+ .below-section p {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+ /* ------------------- */
+ 
+  .card-two::before {
+    content: '';
+    background-image: conic-gradient(#f99602 20deg, transparent 120deg);
+    height: 200%;
+    width: 200%;
+    position: absolute;
+    left: -50%;
+    top: -50%;
+    animation: rotate 2s linear infinite;
+  }
+  .card-two::after {
+    content: '';
+    width: 98.2%;
+    height: 97.8%;
+    border-radius: 10px;
+    position: absolute;
+    background-color: #fff;
+    border-radius: 10px;
+    top: 1.1%;
+    left: .9%;
+  }
 /* ----TEXT-TRUNCATE---- */
 .card-title,
 .below-des {

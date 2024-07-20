@@ -298,6 +298,11 @@
   }
 }
 
+@media screen and (max-width:768px){
+  .children-container::-webkit-scrollbar{
+    display: none;
+  }
+}
 
 @media screen and (max-width: 767px) {
   .side-bar-container {
