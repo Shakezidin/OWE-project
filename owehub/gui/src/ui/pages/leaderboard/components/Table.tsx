@@ -45,7 +45,7 @@ const rankByOptions = [
 ];
 
 const groupByOptions = [
-  { label: 'Select', value: 'primary_sales_rep' },
+  { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
   { label: 'Region', value: 'region' },
