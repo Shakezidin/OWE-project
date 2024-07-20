@@ -104,12 +104,11 @@ const LogoPicker = ({
       {previewSrc ? (
         <img alt="Preview" src={previewSrc} />
       ) : (
-        <object
-          type="image/svg+xml"
-          data={ICONS.BannerLogo}
+        <img
+          src={ICONS.BannerLogo}
           width={150}
-          aria-label="banner-logo"
-        ></object>
+          alt="banner-logo"
+        />
       )}
 
       <input
