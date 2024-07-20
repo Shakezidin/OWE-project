@@ -1,21 +1,19 @@
 import './Modal.css';
 import { ICONS } from '../../../icons/Icons';
 import { GoUpload } from 'react-icons/go';
-
-import { ChangeEventHandler, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState ,ChangeEventHandler} from 'react';
 import { ColorpickerIcon } from './Icons';
 import { MdCheck } from 'react-icons/md';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-// Adjust the path accordingly
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 
 interface EditModalProps {
   onClose: () => void;
+  vdealer: any;
+  setRefetch: Dispatch<SetStateAction<boolean>>;
 }
 
-//
-// COLOR PICKER
-//
 const ColorPicker = ({
   color,
   setColor,
@@ -64,7 +62,7 @@ const ColorPicker = ({
       <button
         onClick={() => colorInputRef.current?.click()}
         style={{
-          outlineColor: presetColors.includes(color) ? 'transparent' : color
+          outlineColor: presetColors.includes(color) ? 'transparent' : color,
         }}
       >
         <ColorpickerIcon />
@@ -72,10 +70,6 @@ const ColorPicker = ({
     </div>
   );
 };
-
-//
-// LOGO PICKER
-//
 
 const LogoPicker = ({
   setLogo,
@@ -104,11 +98,7 @@ const LogoPicker = ({
       {previewSrc ? (
         <img alt="Preview" src={previewSrc} />
       ) : (
-        <img
-          src={ICONS.BannerLogo}
-          width={150}
-          alt="banner-logo"
-        />
+        <img src={ICONS.BannerLogo} width={150} alt="banner-logo" />
       )}
 
       <input
@@ -128,22 +118,42 @@ const LogoPicker = ({
   );
 };
 
-const EditModal = ({ onClose }: EditModalProps) => {
+const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
   const [color, setColor] = useState('#40A2EC');
   const [logo, setLogo] = useState<File | null>(null);
-
-  // upload "logo"
-  console.log(logo);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleUpdate = async () => {
     if (!logo) return;
+    setIsLoading(true);
     try {
       const imageUrl = await uploadImage(logo);
-      console.log('Uploaded image URL:', imageUrl);
-      // Handle the URL (e.g., save it to your backend or update the state)
-      onClose();
+      if (imageUrl && vdealer) {
+        const response = await postCaller('update_vdealer', {
+          record_id: vdealer?.record_id,
+          dealer_code: vdealer?.dealer_code,
+          dealer_name: vdealer?.dealer_name,
+          Description: vdealer?.Description,
+          dealer_logo: imageUrl || vdealer.dealer_logo,
+          bg_color: color,
+        });
+        if (response.status > 201) {
+          toast.error(response.message);
+          setIsLoading(false);
+          return;
+        } else {
+          toast.success('Logo Update Successfully');
+          setRefetch(true)
+          onClose();
+        }
+      } else {
+        toast.error("Something is Wrong")
+      }
+   
     } catch (error) {
       console.error('Error uploading image:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -161,8 +171,6 @@ const EditModal = ({ onClose }: EditModalProps) => {
         formData
       );
       const imageUrl = response.data.secure_url;
-
-      toast.success('Logo uploaded successfully:', imageUrl);
       return imageUrl;
     } catch (error) {
       console.error('Error uploading image to Cloudinary:', error);
@@ -182,8 +190,12 @@ const EditModal = ({ onClose }: EditModalProps) => {
           <button className="cancel-button" onClick={onClose}>
             Cancel
           </button>
-          <button className="update-button" onClick={handleUpdate}>
-            Update
+          <button className="update-button" onClick={handleUpdate} disabled={isLoading}>
+            {isLoading ? (
+              <span className="blinking">Uploading...</span>
+            ) : (
+              'Update'
+            )}
           </button>
         </div>
       </div>

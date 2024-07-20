@@ -23,6 +23,12 @@ const categories = [
   { name: 'Install', key: 'install' },
   { name: 'Cancel', key: 'cancel' },
 ];
+
+const groupby = [
+ 
+  { label: 'Select', value: 'primary_sales_rep' },
+  
+];
 interface Details {
   dealer_name?: string;
   dealer_logo?: string;
@@ -37,6 +43,7 @@ export type Tcategory = (typeof categories)[0];
 const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
   const [active, setActive] = useState(categories[0].key);
+  const [groupBy, setGroupBy] = useState(groupby[0].value)
   const [activeHead, setActiveHead] = useState('kw');
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
@@ -75,7 +82,7 @@ const Index = () => {
           start_date: selectedRangeDate.start,
           end_date: selectedRangeDate.end,
           dealer:selectDealer,
-          group_by:"primary_sales_rep",
+          group_by:groupBy,
         });
 
         if (data.status > 201) {
@@ -88,7 +95,7 @@ const Index = () => {
       } finally {
       }
     })();
-  }, [active, activeHead, selectedRangeDate,selectDealer]);
+  }, [active, activeHead, selectedRangeDate,selectDealer, groupBy]);
   const shareImage = () => {
     if (topCards.current) {
       setGenerating(true);
@@ -137,6 +144,8 @@ const Index = () => {
         setActiveHead={setActiveHead}
         active={active}
         setActive={setActive}
+        setGroupBy={setGroupBy}
+        groupBy= {groupBy}
         setDealer={setDealer}
         selectDealer={selectDealer}
       />

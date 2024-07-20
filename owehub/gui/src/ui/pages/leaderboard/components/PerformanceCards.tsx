@@ -57,13 +57,13 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="upper-section">
                 <img src={ICONS.GreyTwo} aria-label="grey-icon"></img>
                 <div className="flex flex-column card-title">
-                  <h2>{rank2?.rep_name}</h2>
-                  <p>
+                  <h2>{rank2?.rep_name || "N/A"}</h2>
+                  {/* <p>
                     OUR31245
                     <span>
                       <MdContentCopy />
                     </span>
-                  </p>
+                  </p> */}
                 </div>
               </div>
               <div className="dashed-border"></div>
@@ -91,13 +91,13 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="upper-section">
                 <img src={ICONS.GoldOne} aria-label="grey-icon"></img>
                 <div className="flex flex-column card-title">
-                  <h2>{rank1?.rep_name}</h2>
-                  <p>
+                  <h2>{rank1?.rep_name || "N/A"}</h2>
+                  {/* <p>
                     OUR31245
                     <span>
                       <MdContentCopy />
                     </span>
-                  </p>
+                  </p> */}
                 </div>
               </div>
               <div className="dashed-border"></div>
@@ -126,13 +126,13 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="upper-section">
                 <img src={ICONS.BrownThree} aria-label="grey-icon"></img>
                 <div className="flex flex-column card-title">
-                  <h2>{rank3?.rep_name}</h2>
-                  <p>
+                  <h2>{rank3?.rep_name || "N/A"}</h2>
+                  {/* <p>
                     OUR31245
                     <span>
                       <MdContentCopy />
                     </span>
-                  </p>
+                  </p> */}
                 </div>
               </div>
               <div className="dashed-border"></div>

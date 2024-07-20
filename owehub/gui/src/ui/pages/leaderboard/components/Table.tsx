@@ -45,10 +45,10 @@ const rankByOptions = [
 ];
 
 const groupByOptions = [
-  { label: 'Sale', value: 'sale' },
-  { label: 'NTP', value: 'ntp' },
-  { label: 'Install', value: 'install' },
-  { label: 'Cancel', value: 'cancel' },
+  { label: 'Select', value: 'primary_sales_rep' },
+  { label: 'Team', value: 'team' },
+  { label: 'State', value: 'state' },
+  { label: 'Region', value: 'region' },
 ];
 
 export const RankColumn = ({ rank }: { rank: number }) => {
@@ -363,6 +363,8 @@ const Table = ({
   setDealer,
   active,
   setActive,
+  setGroupBy,
+  groupBy,
   activeHead,
   setActiveHead,
   setSelectedRangeDate,
@@ -372,7 +374,9 @@ const Table = ({
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
   active: string;
+  groupBy:string
   setActive: Dispatch<SetStateAction<string>>;
+  setGroupBy: Dispatch<SetStateAction<string>>;
   activeHead: string;
   setActiveHead: Dispatch<SetStateAction<string>>;
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
@@ -397,7 +401,7 @@ const Table = ({
           start_date: selectedRangeDate.start,
           end_date: selectedRangeDate.end,
           sort_by: active,
-          group_by:"primary_sales_rep",
+          group_by:groupBy,
           
         });
         if (data.status > 201) {
@@ -415,7 +419,7 @@ const Table = ({
         setIsLoading(false);
       }
     })();
-  }, [activeHead, active, selectedRangeDate, itemsPerPage, page, selectDealer]);
+  }, [activeHead, active, selectedRangeDate, itemsPerPage, page, selectDealer, groupBy]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -454,8 +458,8 @@ const Table = ({
           <SelectableFilter
             label="Group by:"
             options={groupByOptions}
-            selected={active}
-            setSelected={setActive}
+            selected={groupBy}
+            setSelected={setGroupBy}
           />
 
           <div className="leaderbord-tab-container">
@@ -533,7 +537,7 @@ const Table = ({
                             }));
                           }}
                         >
-                          {item.rep_name}
+                          {item.rep_name || "N/A"}
                         </span>
                       </td>
 

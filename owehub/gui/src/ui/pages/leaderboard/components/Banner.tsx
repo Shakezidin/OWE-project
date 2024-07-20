@@ -23,7 +23,10 @@ const Banner: React.FC<BannerProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
+  const [dealerId,setDealerId] = useState("")
   const [newFormData, setNewFormData] = useState<any>([]);
+  const [vdealer,setVdealer] = useState("")
+  const [refetch,setRefetch] = useState(false)
 
   const tableData = {
     tableNames: ['dealer'],
@@ -44,19 +47,20 @@ const Banner: React.FC<BannerProps> = ({
         if (data.status > 201) {
           // setIsLoading(false);
 
-          toast.error(data.message);
+          toast.error(data?.message);
           return;
         }
         // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
         // setTotalCount(data?.dbRecCount);
-        setDetails(data.data);
+        setDetails(data?.data);
+        setDealerId(data?.data?.dealer_id)
       } catch (error) {
         console.error(error);
       } finally {
         // setIsLoading(false);
       }
     })();
-  }, []);
+  }, [dealerId, refetch]);
 
   useEffect(() => {
     (async () => {
@@ -68,7 +72,7 @@ const Banner: React.FC<BannerProps> = ({
             {
               Column: 'id',
               Operation: '=',
-              Data: details.dealer_id || 1,
+              Data: details?.dealer_id || 1,
             },
           ],
         });
@@ -81,7 +85,8 @@ const Banner: React.FC<BannerProps> = ({
         }
         // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
         // setTotalCount(data?.dbRecCount);
-        setDetails(data.data);
+        setVdealer(data?.data?.vdealers_list[0]
+        );
       } catch (error) {
         console.error(error);
       } finally {
@@ -89,6 +94,8 @@ const Banner: React.FC<BannerProps> = ({
       }
     })();
   }, []);
+
+  console.log(dealerId, "delaerID")
 
   return (
     <div className="banner-main flex items-center">
@@ -167,7 +174,7 @@ const Banner: React.FC<BannerProps> = ({
           </div> */}
         </div>
       </div>
-      {showModal && <EditModal onClose={() => setShowModal(false)} />}
+      {showModal && <EditModal onClose={() => setShowModal(false)} vdealer={vdealer} setRefetch={setRefetch} />}
     </div>
   );
 };
