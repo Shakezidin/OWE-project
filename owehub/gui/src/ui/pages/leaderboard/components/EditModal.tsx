@@ -5,11 +5,9 @@ import { GoUpload } from 'react-icons/go';
 import { ChangeEventHandler, useRef, useState } from 'react';
 import { ColorpickerIcon } from './Icons';
 import { MdCheck } from 'react-icons/md';
-import { useRef, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
- // Adjust the path accordingly
-
+// Adjust the path accordingly
 
 interface EditModalProps {
   onClose: () => void;
@@ -137,8 +135,7 @@ const EditModal = ({ onClose }: EditModalProps) => {
 
   // upload "logo"
   console.log(logo);
-  
-  
+
   const handleUpdate = async () => {
     if (!logo) return;
     try {
@@ -151,21 +148,21 @@ const EditModal = ({ onClose }: EditModalProps) => {
     }
   };
 
-    const uploadImage = async (image: Logo): Promise<string> => {
+  const uploadImage = async (image: File): Promise<string> => {
     if (!image) throw new Error('No image provided');
-  
+
     try {
       const formData = new FormData();
       formData.append('file', image);
       formData.append('upload_preset', 'xdfcmcf4');
       formData.append('cloud_name', 'duscqq0ii');
-  
+
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/duscqq0ii/image/upload`,
         formData
       );
       const imageUrl = response.data.secure_url;
-  
+
       toast.success('Logo uploaded successfully:', imageUrl);
       return imageUrl;
     } catch (error) {
@@ -173,8 +170,7 @@ const EditModal = ({ onClose }: EditModalProps) => {
       throw error;
     }
   };
-  
-  
+
   return (
     <div className="edit-modal">
       <div className="leader-modal">
