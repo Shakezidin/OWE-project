@@ -1,10 +1,18 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { ArrowForward, Growth, ServiceIcon, SuccessIcon } from './Icons';
 import { FaShareSquare } from 'react-icons/fa';
 import Select from 'react-select';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
+import axios from 'axios';
+import { toCanvas } from 'html-to-image';
 import {
   Calendar,
   Dollar,
@@ -12,6 +20,7 @@ import {
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
+import SocialShare from '../../batterBackupCalculator/components/SocialShare';
 interface IDealer {
   dealer?: string;
   rep_name?: string;
@@ -81,6 +90,10 @@ const Sidebar = ({
     label: 'Weekly',
     value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
   });
+  const [isGenerating, setGenerating] = useState(false);
+  const [socialUrl, setSocialUrl] = useState('');
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const topCards = useRef<HTMLDivElement | null>(null);
   const getLeaderDetail = async () => {
     try {
       const data = await postCaller('get_leaderboardprofiledatarequest', {
@@ -98,16 +111,49 @@ const Sidebar = ({
     }
   };
 
+  const shareImage = () => {
+    if (topCards.current) {
+      setGenerating(true);
+      const element = topCards.current;
+      const scrollHeight = element.scrollHeight;
+      toCanvas(element, {
+        height: scrollHeight,
+      }).then((canvas) => {
+        canvas.toBlob(async (blob) => {
+          const formData = new FormData();
+          if (blob) {
+            formData.append('file', blob);
+            formData.append('upload_preset', 'xdfcmcf4');
+            formData.append('cloud_name', 'duscqq0ii');
+            const response = await axios.post(
+              `https://api.cloudinary.com/v1_1/duscqq0ii/image/upload`,
+              formData
+            );
+            setSocialUrl(response.data.secure_url);
+            setIsShareOpen(true);
+            setGenerating(false);
+          }
+        });
+
+  
+
+
+
+      });
+    }
+  };
+
   useEffect(() => {
     getLeaderDetail();
   }, [dealer, selectedRangeDate.value]);
 
   return (
     <div
-      className="user-profile-sidebar-fixed scrollbar"
+   
+      className="user-profile-sidebar-fixed scrollbar flex items-center justify-end"
       style={{ right: isOpen > 0 ? '0' : '-100%', transition: 'all 500ms' }}
     >
-      <div className="user-sidebar ml-auto relative">
+      <div ref={topCards}  className="user-sidebar  relative">
         <span
           onClick={() => setIsOpen(-1)}
           className="absolute back-icon block"
@@ -301,11 +347,19 @@ const Sidebar = ({
                     </span>
                   </div>
                 </div>
-
-                <button className="leader-stats-share-btn">
-                  <FaShareSquare size={17} color="#fff" className="mr1" />
-                  <span>Share</span>
-                </button>
+                <div className="relative">
+                  <button onClick={shareImage} className="leader-stats-share-btn">
+                    <FaShareSquare size={17} color="#fff" className="mr1" />
+                    <span> {isGenerating ? 'Generating link' : 'Share'} </span>
+                  </button>
+                  {isShareOpen && (
+                    <SocialShare
+                      setIsOpen={setIsShareOpen}
+                      socialUrl={socialUrl}
+                      className='sidebar-social-share'
+                    />
+                  )}
+                </div>
 
                 <div className="mt1 text-center">
                   <span className="text-center block" style={{ fontSize: 12 }}>
