@@ -21,13 +21,13 @@ type GetLeaderBoardRequest struct {
 }
 
 type GetLeaderBoard struct {
-	Rank    int    `json:"rank"`
-	Dealer  string `json:"dealer"`
-	Name    string `json:"rep_name"`
-	Sale    int64  `json:"count"`
-	Ntp     int64  `json:"ntp_count"`
-	Cancel  int64  `json:"cancel_count"`
-	Install int64  `json:"install_count"`
+	Rank    int     `json:"rank"`
+	Dealer  string  `json:"dealer"`
+	Name    string  `json:"rep_name"`
+	Sale    float64 `json:"sale"`
+	Ntp     float64 `json:"ntp"`
+	Cancel  float64 `json:"cancel"`
+	Install float64 `json:"install"`
 }
 
 type GetLeaderBoardList struct {
