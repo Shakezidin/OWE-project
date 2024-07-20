@@ -243,38 +243,115 @@ const DateFilter = ({
   }, []);
 
   return (
-    <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper">
-      <span
-        role="button"
-        onClick={() => setShowCalendar((prev) => !prev)}
-        style={{ lineHeight: 0 }}
-      >
-        <Calendar />
-      </span>
-      {showCalendar && (
-        <div className="leaderboard-data__datepicker-content">
-          <DateRange
-            editableDateInputs={true}
-            onChange={(item) => {
-              const startDate = item.selection?.startDate;
-              const endDate = item.selection?.endDate;
-              if (startDate && endDate) {
-                setSelectedRanges([{ startDate, endDate, key: 'selection' }]);
-              }
-            }}
-            moveRangeOnFirstSelection={false}
-            ranges={selectedRanges}
-          />
-          <div className="leaderboard-data__datepicker-btns">
-            <button className="reset-calender" onClick={onReset}>
-              Reset
-            </button>
-            <button className="apply-calender" onClick={onApply}>
-              Apply
-            </button>
+    <div className="flex items-center justify-end">
+      <div className="leaderborder_filter-slect-wrapper mr1">
+        <Select
+          options={[]}
+          value={undefined}
+          // onChange={(value) => setSelectedRangeDate(value!)}
+          styles={{
+            control: (baseStyles, state) => ({
+              ...baseStyles,
+              fontSize: '11px',
+              fontWeight: '500',
+              borderRadius: '4px',
+              outline: 'none',
+              width: 'fit-content',
+              minWidth: '92px',
+              height: '28px',
+              alignContent: 'center',
+              cursor: 'pointer',
+              boxShadow: 'none',
+              border: '1px solid #EE824D',
+              minHeight: 30,
+            }),
+            valueContainer: (provided, state) => ({
+              ...provided,
+              height: '30px',
+              padding: '0 6px',
+            }),
+            placeholder: (baseStyles) => ({
+              ...baseStyles,
+              color: '#EE824D',
+            }),
+            indicatorSeparator: () => ({
+              display: 'none',
+            }),
+            dropdownIndicator: (baseStyles, state) => ({
+              ...baseStyles,
+              svg: {
+                fill: '#EE824D',
+              },
+              marginLeft: '-18px',
+            }),
+
+            option: (baseStyles, state) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              color: '#fff',
+              transition: 'all 500ms',
+              '&:hover': {
+                transform: 'scale(1.1)',
+                background: 'none',
+                transition: 'all 500ms',
+              },
+              background: '#EE824D',
+              transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
+            }),
+
+            singleValue: (baseStyles, state) => ({
+              ...baseStyles,
+              color: '#EE824D',
+              fontSize: 11,
+              padding: '0 8px',
+            }),
+            menu: (baseStyles) => ({
+              ...baseStyles,
+              width: '92px',
+              zIndex: 999,
+              color: '#FFFFFF',
+            }),
+            menuList: (base) => ({
+              ...base,
+              background: '#EE824D',
+            }),
+            input: (base) => ({ ...base, margin: 0 }),
+          }}
+        />
+      </div>
+      <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper">
+        <span
+          role="button"
+          onClick={() => setShowCalendar((prev) => !prev)}
+          style={{ lineHeight: 0 }}
+        >
+          <Calendar />
+        </span>
+        {showCalendar && (
+          <div className="leaderboard-data__datepicker-content">
+            <DateRange
+              editableDateInputs={true}
+              onChange={(item) => {
+                const startDate = item.selection?.startDate;
+                const endDate = item.selection?.endDate;
+                if (startDate && endDate) {
+                  setSelectedRanges([{ startDate, endDate, key: 'selection' }]);
+                }
+              }}
+              moveRangeOnFirstSelection={false}
+              ranges={selectedRanges}
+            />
+            <div className="leaderboard-data__datepicker-btns">
+              <button className="reset-calender" onClick={onReset}>
+                Reset
+              </button>
+              <button className="apply-calender" onClick={onApply}>
+                Apply
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
