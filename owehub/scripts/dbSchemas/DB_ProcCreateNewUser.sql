@@ -139,6 +139,17 @@ BEGIN
         v_dealer_id := NULL;
     END IF;
 
+    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative') AND p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN
+    SELECT dealer_id INTO v_dealer_id
+        FROM user_details
+        WHERE name = p_reporting_manager;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'reporting manager with name % not found', p_reporting_manager;
+        END IF;
+    END IF;
+
+
     -- Fetch the maximum user code and increment it
     SELECT MAX(CAST(SUBSTRING(user_code FROM 4) AS INT)) INTO v_max_user_code FROM user_details;
     v_new_user_code := 'OWE' || LPAD(COALESCE(v_max_user_code + 1, 1)::TEXT, 5, '0');
@@ -166,7 +177,6 @@ BEGIN
         country,
         team_id,
         dealer_id,
-        dealer_logo,
         tables_permissions
     )
     VALUES (
@@ -191,10 +201,15 @@ BEGIN
         p_country,
         v_team_id,
         v_dealer_id,
-        p_dealer_logo,
         p_tables_permissions
     )
     RETURNING user_id INTO v_user_id;
+
+    IF p_role_name = 'Dealer Owner' AND p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
+        UPDATE v_dealer
+        SET dealer_logo = p_dealer_logo
+        WHERE id = v_dealer_id;
+    END IF;
 
 EXCEPTION
     WHEN unique_violation THEN

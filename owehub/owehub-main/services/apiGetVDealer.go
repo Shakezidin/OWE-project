@@ -63,7 +63,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_dealer
 	query = `
-	 SELECT vd.id as record_id, vd.dealer_code, vd.dealer_name, vd.description
+	 SELECT vd.id as record_id, vd.dealer_code, vd.dealer_name, vd.description, vd.dealer_logo, vd.bg_colour
 	 FROM v_dealer vd`
 
 	filter, whereEleList = PrepareVdealerFilters(tableName, dataReq, false)
@@ -109,12 +109,28 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
+		// DealerName
+		DealerLogo, dealerLogoOk := item["dealer_logo"].(string)
+		if !dealerLogoOk || DealerLogo == "" {
+			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
+			DealerLogo = ""
+		}
+
+		// Description
+		bgColour, bgColourOk := item["bg_colour"].(string)
+		if !bgColourOk || bgColour == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
+			bgColour = ""
+		}
+
 		// Create a new GetVdealerData object
 		vDealerData := models.GetVDealerData{
 			RecordId:    RecordId,
 			DealerCode:  dealerCode,
 			DealerName:  DealerName,
 			Description: Description,
+			DealerLogo:  DealerLogo,
+			BgColour:    bgColour,
 		}
 
 		// Append the new vDealerData to the vDealerList

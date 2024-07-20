@@ -3,6 +3,8 @@ CREATE OR REPLACE FUNCTION update_v_dealer(
     p_dealer_code VARCHAR,
     p_dealer_name VARCHAR,
     p_description VARCHAR,
+    p_dealer_logo VARCHAR,
+    p_bg_colour VARCHAR,
     OUT v_dealer_id INT
 )
 RETURNS INT 
@@ -13,6 +15,8 @@ BEGIN
         dealer_code = p_dealer_code,
         dealer_name = p_dealer_name,
         description = p_description,
+        dealer_logo = p_dealer_logo,
+        bg_colour = p_bg_colour,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
     RETURNING id INTO v_dealer_id;
