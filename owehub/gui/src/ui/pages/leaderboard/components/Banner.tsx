@@ -6,10 +6,32 @@ import { useState , useEffect} from 'react';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 
+import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
+import SelectOption from '../../../components/selectOption/SelectOption';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 
-const Banner = () => {
+
+interface BannerProps {
+  selectDealer: string;
+  setSelectDealer: React.Dispatch<React.SetStateAction<string>>;
+  bannerDetails:any
+}
+
+const Banner: React.FC<BannerProps> = ({ selectDealer, setSelectDealer , bannerDetails}) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>("")
+  const [newFormData, setNewFormData] = useState<any>([]);
+
+  const tableData = {
+    tableNames: ['dealer'],
+  };
+  const getNewFormData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData(res.data);
+  };
+  useEffect(() => {
+    getNewFormData();
+  }, []);
 
 
   useEffect(() => {
@@ -108,6 +130,20 @@ const Banner = () => {
           <LiaEdit className="edit-svg" />
           <p>Edit</p>
         </button>
+        <div className="create-input-field">
+          <SelectOption
+            menuListStyles={{ height: '230px' }}
+            options={dealerOption(newFormData)}
+            onChange={(newValue) => setSelectDealer(newValue?.value!)}
+            value={
+              !selectDealer
+                ? undefined
+                : dealerOption(newFormData)?.find(
+                    (option) => option.value === selectDealer
+                  )
+            }
+          />
+        </div>
       </div>
       {showModal && <EditModal onClose={() => setShowModal(false)} />}
     </div>

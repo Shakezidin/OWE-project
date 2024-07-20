@@ -9,6 +9,7 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format, subDays } from 'date-fns';
 import axios from 'axios';
 import { toCanvas } from 'html-to-image';
+import { group } from 'console';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -22,6 +23,14 @@ const categories = [
   { name: 'Install', key: 'install' },
   { name: 'Cancel', key: 'cancel' },
 ];
+interface Details {
+  dealer_name?: string;
+  dealer_logo?: string;
+  owner_name?: string;
+  total_teams?: number;
+  total_strength?: number;
+}
+
 const today = new Date();
 
 export type Tcategory = (typeof categories)[0];
@@ -31,6 +40,8 @@ const Index = () => {
   const [activeHead, setActiveHead] = useState('kw');
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
+  const [bannerDetails, setBannerDetails] = useState<Details>({});
+  const [selectDealer, setSelectDealer] = useState<string>("UNTD")
   const [dealer, setDealer] = useState<{
     dealer?: string;
     rep_name?: string;
@@ -57,12 +68,14 @@ const Index = () => {
     (async () => {
       try {
         const data = await postCaller('get_perfomance_leaderboard', {
-          leader_type: active,
-          sort_by: activeHead,
+          type: activeHead,
+          sort_by: active,
           page_size: 3,
           page_number: 1,
           start_date: selectedRangeDate.start,
           end_date: selectedRangeDate.end,
+          dealer:selectDealer,
+          group_by:"primary_sales_rep",
         });
 
         if (data.status > 201) {
@@ -75,7 +88,7 @@ const Index = () => {
       } finally {
       }
     })();
-  }, [active, activeHead, selectedRangeDate]);
+  }, [active, activeHead, selectedRangeDate,selectDealer]);
   const shareImage = () => {
     if (topCards.current) {
       setGenerating(true);
@@ -106,7 +119,7 @@ const Index = () => {
   return (
     <div className="px1">
       <div ref={topCards}>
-        <Banner />
+      <Banner selectDealer={selectDealer} setSelectDealer={setSelectDealer} bannerDetails={bannerDetails}/>
         <PerformanceCards
           isGenerating={isGenerating}
           shareImage={shareImage}
@@ -125,6 +138,7 @@ const Index = () => {
         active={active}
         setActive={setActive}
         setDealer={setDealer}
+        selectDealer={selectDealer}
       />
       <Sidebar dealer={dealer} setIsOpen={setIsOpen} isOpen={isOpen} />
     </div>
