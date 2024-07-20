@@ -178,6 +178,8 @@
   border-radius: 12px;
 }
 
+
+
 .leaderboard-table tbody tr {
   padding-block: 2rem;
   vertical-align: middle;
@@ -401,4 +403,37 @@
   .children-container {
     padding-inline: 0;
   }
+}
+
+
+
+@media (max-width: 576px) {
+  .leaderboard-table-container {
+    overflow-x: auto;
+  scroll-behavior: smooth;
+}
+  
+.leaderboard-table-container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.leaderboard-table-container::-webkit-scrollbar {
+  display: initial;
+}
+
+.leaderboard-table-container::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.leaderboard-table-container::-webkit-scrollbar-button {
+  display: initial;
+}
+.leaderboard-table-container::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.leaderboard-table-container::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+  
 }
