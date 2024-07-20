@@ -194,12 +194,12 @@ BEGIN
     )
     RETURNING user_id INTO v_user_id;
 
-    IF p_role_name = 'Dealer Owner' THEN
+    IF p_role_name = 'Dealer Owner' AND p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
         UPDATE v_dealer
         SET dealer_logo = p_dealer_logo
         WHERE id = v_dealer_id;
     END IF;
-    
+
 EXCEPTION
     WHEN unique_violation THEN
         RAISE EXCEPTION 'User with email % or mobile_number % already exists', p_email_id, p_mobile_number;
