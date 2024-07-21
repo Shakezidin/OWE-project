@@ -79,6 +79,7 @@
     flex-direction: column;
   }
 }
+
 @media (max-width: 1024px) {
   .pie-chart-container {
     height: 200px !important;
@@ -111,5 +112,17 @@
   }
   .mask-chart-img {
     width: 124px;
+  }
+}
+
+@media screen and (max-width: 786px) {
+  .chart-view {
+    flex-direction: column;
+  }
+  .pie-section-1 {
+    width: 100%;
+  }
+  .pie-section-2 {
+    width: 100%;
   }
 }

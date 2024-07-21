@@ -297,6 +297,13 @@ input[type='password']::-ms-clear {
   position: relative;
   width: 30%;
 }
+
+@media (max-width: 600px) {
+  .create-input-field {
+    width: 100%;
+  }
+}
+
 .radio-container {
   display: flex;
   align-items: center;
@@ -440,7 +447,7 @@ br {
   }
 }
 @media (max-width: 767px) {
-  .scrollbar::-webkit-scrollbar{
+  .scrollbar::-webkit-scrollbar {
     display: none !important;
   }
 }

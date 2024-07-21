@@ -533,9 +533,6 @@
   .form-calc-details .calc-input .input-inner-view .input {
     background: transparent !important;
   }
-  .trash-btn {
-    display: none !important;
-  }
   .calc-row {
     grid-template-columns: 1fr;
     margin-block: 24px;

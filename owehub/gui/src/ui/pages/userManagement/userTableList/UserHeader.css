@@ -1,7 +1,6 @@
 .delete-icon-container {
-  width: 50%;
   display: flex;
-  align-self: flex-end;
+  gap: 1rem;
 }
 
 .user-page-heading-container {
@@ -15,4 +14,15 @@ button.trash-btn {
   background-color: #377cf6;
   width: 32px;
   height: 32px;
+}
+
+.user_user-type {
+  display: flex;
+  gap: 1rem;
+}
+
+@media screen and (max-width: 400px) {
+  .user_user-type {
+    flex-direction: column;
+  }
 }

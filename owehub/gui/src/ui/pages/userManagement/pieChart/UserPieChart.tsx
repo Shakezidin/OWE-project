@@ -33,86 +33,92 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         <div className="pieChart-section">
           <h2>Onboarding Detail</h2>
         </div>
-        <div className="mt2">
-          <div className="flex items-start">
-            {!!onboardingList.length ? (
-              <div style={{ width: 'fit-content' }} className="relative">
-                <PieChart
-                  width={isTablet ? 210 : 360}
-                  height={isTablet ? 200 : 300}
+        <div
+          className="flex items-start mt2"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {!!onboardingList.length ? (
+            <div style={{ width: 'fit-content' }} className="relative">
+              <PieChart
+                width={isTablet ? 210 : 360}
+                height={isTablet ? 200 : 300}
+              >
+                <Pie
+                  data={onboardingList}
+                  cx="40%"
+                  cy="50%"
+                  className="onboarding-pie"
+                  innerRadius={isTablet ? 60 : 90} // Adjust the inner radius for the doughnut thickness
+                  outerRadius={isTablet ? 85 : 130}
+                  fill="#8884d8"
+                  paddingAngle={0.1}
+                  dataKey="value"
+                  strokeWidth={3}
                 >
-                  <Pie
-                    data={onboardingList}
-                    cx="40%"
-                    cy="50%"
-                    className="onboarding-pie"
-                    innerRadius={isTablet ? 60 : 90} // Adjust the inner radius for the doughnut thickness
-                    outerRadius={isTablet ? 85 : 130}
-                    fill="#8884d8"
-                    paddingAngle={0.1}
-                    dataKey="value"
-                    strokeWidth={3}
-                  >
-                    {onboardingList.map((entry, index) => (
-                      <Cell
-                        id={`${index}`}
-                        key={`cell-${index}`}
-                        fill={entry.fill}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    cursor={false}
-                    content={(va) => {
-                      return va.payload?.[0]?.value;
-                    }}
-                    wrapperClassName="pie-tooltip"
-                  />
-                </PieChart>
-                <img
-                  src={onboarding_mask}
-                  alt=""
-                  className="onboarding-mask-img"
-                />
-              </div>
-            ) : (
-              <div className="data-not-found " style={{ width: '100%' }}>
-                <DataNotFound title={loading ? 'Searching..' : 'No SaleRep Found'} />
-             
-              </div>
-            )}
-
-            <div className="flex-auto">
-              {!!onboardingList.length && (
-                <h4
-                  className={`${isTablet ? '' : 'h4'} mb2 text-dark`}
-                  style={{
-                    fontWeight: '600',
-                    fontSize: isTablet ? 14 : undefined,
-                  }}
-                >
-                  Number of users
-                </h4>
-              )}
-              {onboardingList.map((user) => {
-                return (
-                  <div key={user.fill} className="flex mb1 items-center">
-                    <div
-                      className="pie-circle-denote  mr1"
-                      style={{ backgroundColor: user.fill }}
+                  {onboardingList.map((entry, index) => (
+                    <Cell
+                      id={`${index}`}
+                      key={`cell-${index}`}
+                      fill={entry.fill}
                     />
-                    <div
-                      style={{ fontSize: isTablet ? 12 : undefined }}
-                      className={`flex  text-dark items-center  ${isTablet ? '' : 'h5'}`}
-                    >
-                      <span style={{ fontWeight: 600 }}> {user.value} </span>
-                      <span className="mx1"> - </span>
-                      <span style={{ fontWeight: 500 }}> {user.name} </span>
-                    </div>
-                  </div>
-                );
-              })}
+                  ))}
+                </Pie>
+                <Tooltip
+                  cursor={false}
+                  content={(va) => {
+                    return va.payload?.[0]?.value;
+                  }}
+                  wrapperClassName="pie-tooltip"
+                />
+              </PieChart>
+              <img
+                src={onboarding_mask}
+                alt=""
+                className="onboarding-mask-img"
+              />
             </div>
+          ) : (
+            <div className="data-not-found " style={{ width: '100%' }}>
+              <DataNotFound
+                title={loading ? 'Searching..' : 'No SaleRep Found'}
+              />
+            </div>
+          )}
+
+          <div>
+            {!!onboardingList.length && (
+              <h4
+                className={`${isTablet ? '' : 'h4'} mb2 text-dark`}
+                style={{
+                  fontWeight: '600',
+                  fontSize: isTablet ? 14 : undefined,
+                }}
+              >
+                Number of users
+              </h4>
+            )}
+            {onboardingList.map((user) => {
+              return (
+                <div key={user.fill} className="flex mb1 items-center">
+                  <div
+                    className="pie-circle-denote  mr1"
+                    style={{ backgroundColor: user.fill }}
+                  />
+                  <div
+                    style={{ fontSize: isTablet ? 12 : undefined }}
+                    className={`flex  text-dark items-center  ${isTablet ? '' : 'h5'}`}
+                  >
+                    <span style={{ fontWeight: 600 }}> {user.value} </span>
+                    <span className="mx1"> - </span>
+                    <span style={{ fontWeight: 500 }}> {user.name} </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -167,7 +173,9 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           </div>
         ) : (
           <div className="data-not-found">
-            <DataNotFound title={loading ? 'Searching..' : 'No SaleRep Found'} />
+            <DataNotFound
+              title={loading ? 'Searching..' : 'No SaleRep Found'}
+            />
           </div>
         )}
 
