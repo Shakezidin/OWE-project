@@ -113,7 +113,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		if i > 0 {
 			dealerIn += ","
 		}
-		dealerIn += fmt.Sprintf("'%s'", data)
+		escapedDealerName := strings.ReplaceAll(data, "'", "''")
+		dealerIn += fmt.Sprintf("'%s'", escapedDealerName)
 	}
 	dealerIn += ")"
 
