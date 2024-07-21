@@ -24,11 +24,7 @@ const categories = [
   { name: 'Cancel', key: 'cancel' },
 ];
 
-const groupby = [
- 
-  { label: 'Select', value: 'primary_sales_rep' },
-  
-];
+const groupby = [{ label: 'Select', value: 'primary_sales_rep' }];
 interface Details {
   dealer_name?: string;
   dealer_logo?: string;
@@ -43,12 +39,12 @@ export type Tcategory = (typeof categories)[0];
 const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
   const [active, setActive] = useState(categories[0].key);
-  const [groupBy, setGroupBy] = useState(groupby[0].value)
+  const [groupBy, setGroupBy] = useState(groupby[0].value);
   const [activeHead, setActiveHead] = useState('kw');
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
   const [bannerDetails, setBannerDetails] = useState<Details>({});
-  const [selectDealer, setSelectDealer] = useState<string>("UNTD")
+  const [selectDealer, setSelectDealer] = useState<string>('UNTD');
   const [dealer, setDealer] = useState<{
     dealer?: string;
     rep_name?: string;
@@ -81,8 +77,8 @@ const Index = () => {
           page_number: 1,
           start_date: selectedRangeDate.start,
           end_date: selectedRangeDate.end,
-          dealer:selectDealer,
-          group_by:groupBy,
+          dealer: selectDealer,
+          group_by: groupBy,
         });
 
         if (data.status > 201) {
@@ -95,38 +91,31 @@ const Index = () => {
       } finally {
       }
     })();
-  }, [active, activeHead, selectedRangeDate,selectDealer, groupBy]);
+  }, [active, activeHead, selectedRangeDate, selectDealer, groupBy]);
   const shareImage = () => {
     if (topCards.current) {
-      setGenerating(true);
       const element = topCards.current;
       const scrollHeight = element.scrollHeight;
       toCanvas(element, {
         height: scrollHeight,
       }).then((canvas) => {
-        canvas.toBlob(async (blob) => {
-          const formData = new FormData();
-          if (blob) {
-            formData.append('file', blob);
-            formData.append('upload_preset', 'xdfcmcf4');
-            formData.append('cloud_name', 'duscqq0ii');
-            const response = await axios.post(
-              `https://api.cloudinary.com/v1_1/duscqq0ii/image/upload`,
-              formData
-            );
-            setSocialUrl(response.data.secure_url);
-            setIsOpenShare(true);
-            setGenerating(false);
-          }
-        });
+        const img = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = img;
+        link.download = 'Performance_Leaderboard.png';
+        link.click();
       });
     }
   };
 
   return (
     <div className="px1">
-      <div ref={topCards}>
-      <Banner selectDealer={selectDealer} setSelectDealer={setSelectDealer} bannerDetails={bannerDetails}/>
+      <div ref={topCards} style={{background:"#f3f3f3"}}>
+        <Banner
+          selectDealer={selectDealer}
+          setSelectDealer={setSelectDealer}
+          bannerDetails={bannerDetails}
+        />
         <PerformanceCards
           isGenerating={isGenerating}
           shareImage={shareImage}
@@ -145,7 +134,7 @@ const Index = () => {
         active={active}
         setActive={setActive}
         setGroupBy={setGroupBy}
-        groupBy= {groupBy}
+        groupBy={groupBy}
         setDealer={setDealer}
         selectDealer={selectDealer}
       />

@@ -113,32 +113,16 @@ const Sidebar = ({
 
   const shareImage = () => {
     if (topCards.current) {
-      setGenerating(true);
       const element = topCards.current;
       const scrollHeight = element.scrollHeight;
       toCanvas(element, {
         height: scrollHeight,
       }).then((canvas) => {
-        canvas.toBlob(async (blob) => {
-          const formData = new FormData();
-          if (blob) {
-            formData.append('file', blob);
-            formData.append('upload_preset', 'xdfcmcf4');
-            formData.append('cloud_name', 'duscqq0ii');
-            const response = await axios.post(
-              `https://api.cloudinary.com/v1_1/duscqq0ii/image/upload`,
-              formData
-            );
-            setSocialUrl(response.data.secure_url);
-            setIsShareOpen(true);
-            setGenerating(false);
-          }
-        });
-
-  
-
-
-
+        const img = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = img;
+        link.download = 'Performance_Leaderboard.png';
+        link.click();
       });
     }
   };
@@ -149,11 +133,10 @@ const Sidebar = ({
 
   return (
     <div
-   
       className="user-profile-sidebar-fixed scrollbar flex items-center justify-end"
       style={{ right: isOpen > 0 ? '0' : '-100%', transition: 'all 500ms' }}
     >
-      <div ref={topCards}  className="user-sidebar  relative">
+      <div ref={topCards} className="user-sidebar  relative">
         <span
           onClick={() => setIsOpen(-1)}
           className="absolute back-icon-sidebar back-icon block"
@@ -348,7 +331,10 @@ const Sidebar = ({
                   </div>
                 </div>
                 <div className="relative">
-                  <button onClick={shareImage} className="leader-stats-share-btn">
+                  <button
+                    onClick={shareImage}
+                    className="leader-stats-share-btn"
+                  >
                     <FaShareSquare size={17} color="#fff" className="mr1" />
                     <span> {isGenerating ? 'Generating link' : 'Share'} </span>
                   </button>
@@ -356,7 +342,7 @@ const Sidebar = ({
                     <SocialShare
                       setIsOpen={setIsShareOpen}
                       socialUrl={socialUrl}
-                      className='sidebar-social-share'
+                      className="sidebar-social-share"
                     />
                   )}
                 </div>
