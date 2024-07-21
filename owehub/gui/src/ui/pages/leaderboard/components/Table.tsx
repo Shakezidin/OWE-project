@@ -561,7 +561,7 @@ const Table = ({
                 <th>Name</th>
 
                 <th>Dealer</th>
-                <th>Sales</th>
+                <th>Sale</th>
                 <th>Install</th>
                 <th>NTP</th>
                 <th>Cancel</th>
