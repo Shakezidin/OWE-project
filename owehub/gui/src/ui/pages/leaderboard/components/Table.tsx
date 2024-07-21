@@ -174,7 +174,11 @@ const SelectableFilter = ({
         <Select
           options={options}
           value={options.find((option) => option.value === selected)}
-          onChange={(newVal) => setSelected(newVal?.value ?? '')}
+          onChange={(newVal) =>{ 
+            setSelected(newVal?.value ?? '')
+            resetPage()
+
+          }}
           isSearchable={false}
           styles={{
             control: (baseStyles) => ({
@@ -504,7 +508,6 @@ const Table = ({
     setPage(page - 1);
   };
 
-  console.log(role, 'role');
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       <button className="leaderboard-data__export" disabled>
