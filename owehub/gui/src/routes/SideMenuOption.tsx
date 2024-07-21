@@ -267,6 +267,7 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(DB);
       sideMenu.push(project);
       sideMenu.push(support);
+      sideMenu.push(mob);
     } else if (
       role === TYPE_OF_USER.REGIONAL_MANGER ||
       role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
@@ -276,6 +277,7 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(repayMenu);
       sideMenu.push(project);
       sideMenu.push(support);
+      sideMenu.push(mob);
     } else if (role === TYPE_OF_USER.DB_USER) {
       sideMenu.push(DB);
       sideMenu.push(support);
