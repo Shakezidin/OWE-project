@@ -1,7 +1,6 @@
-import { format, parse, subDays } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { DateRange } from 'react-date-range';
-import { DateRangeWithLabel } from '../index';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -10,6 +9,7 @@ import award from '../../../../resources/assets/award_icon.png';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import Pagination from '../../../components/pagination/Pagination';
+import { DateRangeWithLabel } from '../index';
 import {
   Calendar,
   FirstAwardIcon,
@@ -46,7 +46,6 @@ const rankByOptions = [
 
 const role = localStorage.getItem('role');
 
-
 const groupByOptionss = [
   { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
@@ -55,7 +54,7 @@ const groupByOptionss = [
 ];
 
 const groupByOptions = [
-  {label:'Dealer' , value: 'dealer'},
+  { label: 'Dealer', value: 'dealer' },
   { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
@@ -76,42 +75,43 @@ const today = new Date();
 const periodFilterOptions: DateRangeWithLabel[] = [
   {
     label: 'This Week',
-    start: format(subDays(today, 7), 'dd-MM-yyyy'),
-    end: format(today, 'dd-MM-yyyy'),
+    start: subDays(today, 7),
+    end: today,
   },
   {
     label: 'This Month',
-    start: format(subDays(today, 30), 'dd-MM-yyyy'),
-    end: format(today, 'dd-MM-yyyy'),
+    start: subDays(today, 30),
+    end: today,
   },
   {
     label: 'Last Month',
-    start: format(subDays(today, 60), 'dd-MM-yyyy'),
-    end: format(subDays(today, 30), 'dd-MM-yyyy'),
+    start: subDays(today, 60),
+    end: subDays(today, 30),
   },
   {
     label: 'This Year',
-    start: format(subDays(today, 365), 'dd-MM-yyyy'),
-    end: format(today, 'dd-MM-yyyy'),
+    start: subDays(today, 365),
+    end: today,
   },
 ];
 
 const PeriodFilter = ({
   period,
   setPeriod,
-  resetPage
+  resetPage,
 }: {
   period: DateRangeWithLabel | null;
   setPeriod: (newVal: DateRangeWithLabel) => void;
-  resetPage:()=>void
+  resetPage: () => void;
 }) => {
   return (
     <ul className="leaderboard-data__btn-group">
       {periodFilterOptions.map((item) => (
         <li key={item.label}>
           <button
-            onClick={() =>{ setPeriod(item)
-              resetPage()
+            onClick={() => {
+              setPeriod(item);
+              resetPage();
             }}
             className={
               'leaderboard-data__btn' +
@@ -136,13 +136,13 @@ const SelectableFilter = ({
   options,
   selected,
   setSelected,
-  resetPage
+  resetPage,
 }: {
   label: string;
   options: { value: string; label: string }[];
   selected: string;
   setSelected: (newVal: string) => void;
-  resetPage:()=>void
+  resetPage: () => void;
 }) => {
   return (
     <>
@@ -152,8 +152,9 @@ const SelectableFilter = ({
           {options.map((item) => (
             <li key={item.label}>
               <button
-                onClick={() =>{ setSelected(item.value)
-                  resetPage()
+                onClick={() => {
+                  setSelected(item.value);
+                  resetPage();
                 }}
                 className={
                   'leaderboard-data__btn' +
@@ -230,19 +231,19 @@ const SelectableFilter = ({
 const DateFilter = ({
   selected,
   setSelected,
-  resetPage
+  resetPage,
 }: {
   selected: DateRangeWithLabel;
   setSelected: (newVal: DateRangeWithLabel) => void;
-  resetPage:()=>void
+  resetPage: () => void;
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
           {
-            startDate: parse(selected.start, 'dd-MM-yyyy', new Date()),
-            endDate: parse(selected.end, 'dd-MM-yyyy', new Date()),
+            startDate: selected.start,
+            endDate: selected.end,
             key: 'selection',
           },
         ]
@@ -253,11 +254,11 @@ const DateFilter = ({
     const range = selectedRanges[0];
     if (!range) return;
     setSelected({
-      start: format(range.startDate, 'dd-MM-yyyy'),
-      end: format(range.endDate, 'dd-MM-yyyy'),
+      start: range.startDate,
+      end: range.endDate,
     });
     setShowCalendar(false);
-    resetPage()
+    resetPage();
   };
 
   const onReset = () => {
@@ -265,14 +266,25 @@ const DateFilter = ({
     setSelected(periodFilterOptions[0]);
     setSelectedRanges([
       {
-        startDate: parse(defaultOption.start, 'dd-MM-yyyy', new Date()),
-        endDate: parse(defaultOption.end, 'dd-MM-yyyy', new Date()),
+        startDate: defaultOption.start,
+        endDate: defaultOption.end,
         key: 'selection',
       },
     ]);
     setShowCalendar(false);
-    resetPage()
+    resetPage();
   };
+
+  // update datepicker if "selected" updated externally
+  useEffect(() => {
+    setSelectedRanges([
+      {
+        startDate: selected.start,
+        endDate: selected.end,
+        key: 'selection',
+      },
+    ]);
+  }, [selected]);
 
   // close on click outside anywhere
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -440,11 +452,11 @@ const Table = ({
         setIsLoading(true);
         const data = await postCaller('get_perfomance_leaderboard', {
           type: activeHead,
-          dealer: selectDealer.map((item)=>item.value),
+          dealer: selectDealer.map((item) => item.value),
           page_size: itemsPerPage,
           page_number: page,
-          start_date: selectedRangeDate.start,
-          end_date: selectedRangeDate.end,
+          start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+          end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
           sort_by: active,
           group_by: groupBy,
         });
@@ -480,9 +492,9 @@ const Table = ({
     setPage(pageNumber);
   };
 
-  const resetPage = () =>{
+  const resetPage = () => {
     setPage(1);
-  }
+  };
 
   const goToNextPage = () => {
     setPage(page + 1);
@@ -492,7 +504,7 @@ const Table = ({
     setPage(page - 1);
   };
 
-  console.log(role, "role")
+  console.log(role, 'role');
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       <button className="leaderboard-data__export" disabled>
@@ -514,6 +526,34 @@ const Table = ({
             selected={active}
             setSelected={setActive}
           />
+          <div>
+            <div className="leaderboard-data__selected-dates">
+              {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
+              {format(selectedRangeDate.end, 'dd MMM yyyy')}
+            </div>
+            <div className="flex items-center">
+              <PeriodFilter
+                resetPage={resetPage}
+                period={selectedRangeDate}
+                setPeriod={setSelectedRangeDate}
+              />
+              <DateFilter
+                selected={selectedRangeDate}
+                resetPage={resetPage}
+                setSelected={setSelectedRangeDate}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="leaderboard-data__filter-row">
+          <SelectableFilter
+            label="Group by:"
+            options={role === 'Admin' ? groupByOptions : groupByOptionss}
+            selected={groupBy}
+            resetPage={resetPage}
+            setSelected={setGroupBy}
+          />
+
           <div className="leaderbord-tab-container">
             <div
               onClick={() => setActiveHead('kw')}
@@ -527,27 +567,6 @@ const Table = ({
             >
               Count
             </div>
-          </div>
-        </div>
-        <div className="leaderboard-data__filter-row">
-          <SelectableFilter
-            label="Group by:"
-            options={role === "Admin" ? groupByOptions : groupByOptionss}
-            selected={groupBy}
-            resetPage={resetPage}
-            setSelected={setGroupBy}
-          />
-          <div className="flex items-center">
-            <PeriodFilter
-            resetPage={resetPage}
-              period={selectedRangeDate}
-              setPeriod={setSelectedRangeDate}
-            />
-            <DateFilter
-              selected={selectedRangeDate}
-              resetPage={resetPage}
-              setSelected={setSelectedRangeDate}
-            />
           </div>
         </div>
       </div>
@@ -585,30 +604,31 @@ const Table = ({
               ) : leaderTable.length ? (
                 leaderTable.map((item) => {
                   return (
-                    <tr  className="pointer" key={item.rank} onClick={() => {
-                      setIsOpen(item.rank);
-                      setDealer((prev) => ({
-                        ...prev,
-                        data_type:groupBy === "primary_sales_rep" ? "sale_rep" : groupBy,
-                        dealer: groupBy === "primary_sales_rep" ? item.dealer : "",        
-                        name: item.rep_name,
-                        rank: item.rank,
-                        
-                        
-                      }));
-                    }}>
+                    <tr
+                      className="pointer"
+                      key={item.rank}
+                      onClick={() => {
+                        setIsOpen(item.rank);
+                        setDealer((prev) => ({
+                          ...prev,
+                          data_type:
+                            groupBy === 'primary_sales_rep'
+                              ? 'sale_rep'
+                              : groupBy,
+                          dealer:
+                            groupBy === 'primary_sales_rep' ? item.dealer : '',
+                          name: item.rep_name,
+                          rank: item.rank,
+                        }));
+                      }}
+                    >
                       <td>
                         <div className="flex items-center">
                           <RankColumn rank={item.rank} />
                         </div>
                       </td>
                       <td>
-                        <span
-                         
-                          
-                        >
-                          {item.rep_name || 'N/A'}
-                        </span>
+                        <span>{item.rep_name || 'N/A'}</span>
                       </td>
 
                       <td> {item.dealer} </td>

@@ -93,6 +93,14 @@
   font-size: 0.75rem;
 }
 
+
+.leaderboard-data__selected-dates{
+  text-align: right;
+  font-size: 0.875rem;
+  color: var(--orange-color);
+  margin-bottom: 0.5rem;
+}
+
 .leaderboard-data__btn-group {
   list-style-type: none;
   display: flex;
