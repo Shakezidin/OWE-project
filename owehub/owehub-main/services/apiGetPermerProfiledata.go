@@ -11,7 +11,6 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
-	"time"
 
 	"encoding/json"
 	"fmt"
@@ -67,20 +66,22 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 			LEFT JOIN teams tm ON ud.team_id = tm.team_id
 			WHERE vd.dealer_name = $1 AND ud.name = $2`
 
-	whereEleList = append(whereEleList, dataReq.Dealer, dataReq.RepName)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
-		return
-	}
-
-	if len(data) > 0 {
-		performerProfileData.Dealer = dataReq.Dealer
-		performerProfileData.TeamName, _ = data[0]["team"].(string)
-		performerProfileData.ContactNumber, _ = data[0]["contact_number"].(string)
-		performerProfileData.Email, _ = data[0]["email"].(string)
-		performerProfileData.User_code, _ = data[0]["user_code"].(string)
+	//* adding personal details for only sale rep
+	if dataReq.DataType == "sale_rep" {
+		whereEleList = append(whereEleList, dataReq.Dealer, dataReq.Name)
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		if len(data) > 0 {
+			performerProfileData.Dealer = dataReq.Dealer
+			performerProfileData.TeamName, _ = data[0]["team"].(string)
+			performerProfileData.ContactNumber, _ = data[0]["contact_number"].(string)
+			performerProfileData.Email, _ = data[0]["email"].(string)
+			performerProfileData.User_code, _ = data[0]["user_code"].(string)
+		}
 	}
 
 	query = GetQueryForTotalCount(dataReq)
@@ -98,7 +99,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	}
 	whereEleList = nil
 
-	query = fmt.Sprintf("SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v') AND ", dataReq.Dealer, dataReq.RepName, dataReq.RepName)
+	query = "SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE "
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
@@ -114,7 +115,8 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	if len(data) > 0 {
 		performerProfileData.WeeklySale, _ = data[0]["weekly_sale"].(int64)
 	}
-	// Send the response
+
+	performerProfileData.Rank = dataReq.Rank
 	log.FuncInfoTrace(0, "performer profile data fetched : %v ", performerProfileData)
 	FormAndSendHttpResp(resp, "Adder Data", http.StatusOK, performerProfileData)
 }
@@ -122,30 +124,27 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "FilterPerformerProfileData")
 	defer func() { log.ExitFn(0, "FilterPerformerProfileData", nil) }()
-
 	var filtersBuilder strings.Builder
-	startDate, err := time.Parse("2006-01-02", dataReq.StartDate) // Correct date format for parsing
-	if err != nil {
-		log.FuncErrorTrace(0, "error while formatting date")
+
+	switch dataReq.DataType {
+	case "sale_rep":
+		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name, dataReq.Name))
+	case "team":
+		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v'", dataReq.Name))
+	case "state":
+		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v'", dataReq.Name))
+	case "dealer":
+		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
+	case "region":
+		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v'", dataReq.Name))
 	}
-	endDate, err := time.Parse("2006-01-02", dataReq.EndDate) // Correct date format for parsing
-	if err != nil {
-		log.FuncErrorTrace(0, "error while formatting date")
-	}
 
-	endDate = endDate.Add(24*time.Hour - time.Second)
-
-	whereEleList = append(whereEleList,
-		startDate.Format("02-01-2006 00:00:00"),
-		endDate.Format("02-01-2006 15:04:05"),
-	)
-
-	filtersBuilder.WriteString(fmt.Sprintf("contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", len(whereEleList)-1, len(whereEleList)))
+	filtersBuilder.WriteString(fmt.Sprintf(" AND contract_date BETWEEN current_date - interval '7 day' * $%d AND current_date ", len(whereEleList)+1))
+	whereEleList = append(whereEleList, "7")
 
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters : %s", filters)
 	return filters, whereEleList
-
 }
 
 func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters string) {
@@ -161,10 +160,19 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	filtersBuilder.WriteString(" FROM consolidated_data_view ")
 	filtersBuilder.WriteString(" WHERE ")
 
-	filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.RepName, dataReq.RepName))
-
+	switch dataReq.DataType {
+	case "sale_rep":
+		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name, dataReq.Name))
+	case "team":
+		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v'", dataReq.Name))
+	case "state":
+		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v'", dataReq.Name))
+	case "dealer":
+		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
+	case "region":
+		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v'", dataReq.Name))
+	}
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters : %s", filters)
 	return filters
-
 }

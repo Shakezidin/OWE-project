@@ -14,6 +14,11 @@ type GetPerformarDataReq struct {
 	Includes  *IncludeDataReq `json:"includes"`
 }
 
+type GetLeaderTopDataReq struct {
+	Email       string
+	DealerNames []string `json:"dealer_names"`
+}
+
 type IncludeDataReq struct {
 	Column string `json:"column"`
 	Data   string `json:"data"`
@@ -37,11 +42,11 @@ type GetPerformerAllData struct {
 }
 
 type GetPerformerProfileDataReq struct {
-	Email     string
-	Dealer    string `json:"dealer"`
-	RepName   string `json:"rep_name"`
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
+	Email    string
+	DataType string `json:"data_type"`
+	Dealer   string `json:"dealer"`
+	Name     string `json:"name"`
+	Rank     int64    `json:"rank"`
 }
 
 type GetPerformerProfileData struct {
@@ -54,4 +59,5 @@ type GetPerformerProfileData struct {
 	Total_Installs int64  `json:"total_installs"`
 	WeeklySale     int64  `json:"weekly_sale"`
 	User_code      string `json:"user_code"`
+	Rank int64 `json:"rank"`
 }
