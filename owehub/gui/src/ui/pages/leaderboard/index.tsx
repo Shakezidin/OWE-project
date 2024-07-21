@@ -79,7 +79,7 @@ const Index = () => {
           page_number: 1,
           start_date: selectedRangeDate.start,
           end_date: selectedRangeDate.end,
-          dealer: selectDealer,
+          dealer: selectDealer.map((item)=>item.value),
           group_by: groupBy,
         });
 

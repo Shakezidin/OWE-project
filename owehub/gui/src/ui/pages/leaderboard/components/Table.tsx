@@ -417,7 +417,7 @@ const Table = ({
         setIsLoading(true);
         const data = await postCaller('get_perfomance_leaderboard', {
           type: activeHead,
-          dealer: selectDealer,
+          dealer: selectDealer.map((item)=>item.value),
           page_size: itemsPerPage,
           page_number: page,
           start_date: selectedRangeDate.start,
