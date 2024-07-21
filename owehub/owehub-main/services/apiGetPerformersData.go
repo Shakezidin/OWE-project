@@ -26,7 +26,7 @@ import (
 func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
-		dataReq      models.GetPerformarDataReq
+		dataReq      models.GetLeaderTopDataReq
 		data         []map[string]interface{}
 		whereEleList []interface{}
 		query        string
@@ -69,14 +69,16 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	performerData := models.GetPerformarData{}
 
-	// tableName := db.ViewName_ConsolidatedDataView
-	if role == "Dealer Owner" {
+	if role == "Admin" {
+
+	} else if role == "Dealer Owner" {
 		query = `SELECT vd.dealer_name as dealer_name, ud.name as owner_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud 
-				LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+				JOIN v_dealer vd ON ud.dealer_id = vd.id
 				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT ud.name as owner_name, vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud
-				  LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id  
+		query = `SELECT ud1.name as owner_name, vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud
+				  JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id
+					JOIN v_dealer vd ON ud.dealer_id = vd.id
 				  WHERE ud.email_id = $1`
 	}
 
