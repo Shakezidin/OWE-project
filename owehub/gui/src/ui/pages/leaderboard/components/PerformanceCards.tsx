@@ -30,8 +30,6 @@ const PerformanceCards: React.FC<performance> = ({
   const rank2 = details.find((item: any) => item?.rank === 2);
   const rank3 = details.find((item: any) => item?.rank === 3);
 
-  rank2.rep_name = 'mohan das';
-
   const getCardHeadingStyle = (item: (typeof details)[number]) => {
     if (!item) return { fontSize: '1.2rem' };
 
