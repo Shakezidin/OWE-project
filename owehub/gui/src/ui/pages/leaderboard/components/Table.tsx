@@ -22,9 +22,9 @@ interface ILeaderBordUser {
   dealer: string;
   rep_name: string;
   sale: number;
-  install:number;
-  ntp:number;
-  cancel:number;
+  install: number;
+  ntp: number;
+  cancel: number;
 }
 
 interface IDealer {
@@ -93,15 +93,15 @@ const PeriodFilter = ({
   setPeriod: (newVal: DateRangeWithLabel) => void;
 }) => {
   return (
-    <ul className="leaderboard-data__period-group">
+    <ul className="leaderboard-data__btn-group">
       {periodFilterOptions.map((item) => (
         <li key={item.label}>
           <button
             onClick={() => setPeriod(item)}
             className={
-              'leaderboard-data__period-button' +
+              'leaderboard-data__btn' +
               (period?.label === item.label
-                ? ' leaderboard-data__period-button--active'
+                ? ' leaderboard-data__btn--active'
                 : '')
             }
           >
@@ -128,58 +128,80 @@ const SelectableFilter = ({
   setSelected: (newVal: string) => void;
 }) => {
   return (
-    <div className="leaderboard-data__select-filter">
-      <label>{label}</label>
-      <Select
-        options={options}
-        value={options.find((option) => option.value === selected)}
-        onChange={(newVal) => setSelected(newVal?.value ?? '')}
-        isSearchable={false}
-        styles={{
-          control: (baseStyles) => ({
-            ...baseStyles,
-            fontSize: '12px',
-            fontWeight: '500',
-            border: 'none',
-            outline: 'none',
-            width: '84px',
-            alignContent: 'center',
-            backgroundColor: 'transparent',
-            cursor: 'pointer',
-            boxShadow: 'none',
-          }),
-          indicatorSeparator: () => ({
-            display: 'none',
-          }),
-          dropdownIndicator: (baseStyles) => ({
-            ...baseStyles,
-            color: '#ee824d',
-            marginLeft: '-8px',
-          }),
-          option: (baseStyles, state) => ({
-            ...baseStyles,
-            fontSize: '12px',
-            backgroundColor: state.isSelected ? '#ee824d' : '#fff',
-            '&:hover': {
-              backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
-              color: state.isSelected ? '#fff' : '#ee824d',
-            },
-          }),
-          singleValue: (baseStyles) => ({
-            ...baseStyles,
-            fontSize: '12px',
-            color: selected ? '#ee824d' : '#222',
-            width: 'fit-content',
-          }),
-          menu: (baseStyles) => ({
-            ...baseStyles,
-            marginTop: '-4px',
-            width: '84px',
-            zIndex: 10,
-          }),
-        }}
-      />
-    </div>
+    <>
+      <div className="leaderboard-data__select-filter">
+        <label>{label}</label>
+        <ul className="leaderboard-data__btn-group">
+          {options.map((item) => (
+            <li key={item.label}>
+              <button
+                onClick={() => setSelected(item.value)}
+                className={
+                  'leaderboard-data__btn' +
+                  (item.value === selected
+                    ? ' leaderboard-data__btn--active'
+                    : '')
+                }
+              >
+                {item.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="leaderboard-data__select-filter--mobile">
+        <label>{label}</label>
+        <Select
+          options={options}
+          value={options.find((option) => option.value === selected)}
+          onChange={(newVal) => setSelected(newVal?.value ?? '')}
+          isSearchable={false}
+          styles={{
+            control: (baseStyles) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              fontWeight: '500',
+              border: 'none',
+              outline: 'none',
+              width: '92px',
+              alignContent: 'center',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              boxShadow: 'none',
+            }),
+            indicatorSeparator: () => ({
+              display: 'none',
+            }),
+            dropdownIndicator: (baseStyles) => ({
+              ...baseStyles,
+              color: '#ee824d',
+              marginLeft: '-8px',
+            }),
+            option: (baseStyles, state) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              backgroundColor: state.isSelected ? '#ee824d' : '#fff',
+              '&:hover': {
+                backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
+                color: state.isSelected ? '#fff' : '#ee824d',
+              },
+            }),
+            singleValue: (baseStyles) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              color: selected ? '#ee824d' : '#222',
+              width: 'fit-content',
+            }),
+            menu: (baseStyles) => ({
+              ...baseStyles,
+              marginTop: '-4px',
+              width: '92px',
+              zIndex: 10,
+            }),
+          }}
+        />
+      </div>
+    </>
   );
 };
 
@@ -369,19 +391,19 @@ const Table = ({
   setActiveHead,
   setSelectedRangeDate,
   selectedRangeDate,
-  selectDealer
+  selectDealer,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
   active: string;
-  groupBy:string
+  groupBy: string;
   setActive: Dispatch<SetStateAction<string>>;
   setGroupBy: Dispatch<SetStateAction<string>>;
   activeHead: string;
   setActiveHead: Dispatch<SetStateAction<string>>;
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
-  selectDealer:string,
+  selectDealer: string;
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -395,14 +417,13 @@ const Table = ({
         setIsLoading(true);
         const data = await postCaller('get_perfomance_leaderboard', {
           type: activeHead,
-          dealer:selectDealer,
+          dealer: selectDealer,
           page_size: itemsPerPage,
           page_number: page,
           start_date: selectedRangeDate.start,
           end_date: selectedRangeDate.end,
           sort_by: active,
-          group_by:groupBy,
-          
+          group_by: groupBy,
         });
         if (data.status > 201) {
           setIsLoading(false);
@@ -419,7 +440,15 @@ const Table = ({
         setIsLoading(false);
       }
     })();
-  }, [activeHead, active, selectedRangeDate, itemsPerPage, page, selectDealer, groupBy]);
+  }, [
+    activeHead,
+    active,
+    selectedRangeDate,
+    itemsPerPage,
+    page,
+    selectDealer,
+    groupBy,
+  ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -442,26 +471,20 @@ const Table = ({
         <span>Export</span>
         <FaUpload size={12} />
       </button>
-      <div className="leaderboard-data__head">
-        <img src={award} alt="" />
-        <h2 className="h3" style={{ fontWeight: 600 }}>
-          Leaderboard
-        </h2>
-
-        <div className="leaderboard-data__filters">
+      <div>
+        <div className="leaderboard-data__title">
+          <img src={award} alt="" />
+          <h2 className="h3" style={{ fontWeight: 600 }}>
+            Leaderboard
+          </h2>
+        </div>
+        <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Rank by:"
             options={rankByOptions}
             selected={active}
             setSelected={setActive}
           />
-          <SelectableFilter
-            label="Group by:"
-            options={groupByOptions}
-            selected={groupBy}
-            setSelected={setGroupBy}
-          />
-
           <div className="leaderbord-tab-container">
             <div
               onClick={() => setActiveHead('kw')}
@@ -476,17 +499,27 @@ const Table = ({
               Count
             </div>
           </div>
-          <PeriodFilter
-            period={selectedRangeDate}
-            setPeriod={setSelectedRangeDate}
+        </div>
+        <div className="leaderboard-data__filter-row">
+          <SelectableFilter
+            label="Group by:"
+            options={groupByOptions}
+            selected={groupBy}
+            setSelected={setGroupBy}
           />
-          <DateFilter
-            selected={selectedRangeDate}
-            setSelected={setSelectedRangeDate}
-          />
+          <div className="flex items-center">
+            <PeriodFilter
+              period={selectedRangeDate}
+              setPeriod={setSelectedRangeDate}
+            />
+            <DateFilter
+              selected={selectedRangeDate}
+              setSelected={setSelectedRangeDate}
+            />
+          </div>
         </div>
       </div>
-      <div className="">
+      <div>
         <div className="leaderboard-table-container">
           <table className="leaderboard-table">
             <thead>
@@ -500,7 +533,6 @@ const Table = ({
                 <th>Install</th>
                 <th>NTP</th>
                 <th>Cancel</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -537,17 +569,16 @@ const Table = ({
                             }));
                           }}
                         >
-                          {item.rep_name || "N/A"}
+                          {item.rep_name || 'N/A'}
                         </span>
                       </td>
 
                       <td> {item.dealer} </td>
-                     
+
                       <td>{item?.sale?.toFixed(2)} </td>
                       <td>{item?.install?.toFixed(2)}</td>
                       <td>{item?.ntp?.toFixed(2)}</td>
                       <td>{item?.cancel?.toFixed(2)}</td>
-
                     </tr>
                   );
                 })
