@@ -26,6 +26,18 @@ import Loading from '../../components/loader/Loading';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { FormEvent } from '../../../core/models/data_models/typesModel';
 
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return width;
+}
+
 export const LoginPage = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<Credentials>({
@@ -124,6 +136,9 @@ export const LoginPage = () => {
     }
   };
 
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
   return (
     <div className="mainContainer">
       <div className={'overlay'} />
@@ -187,6 +202,11 @@ export const LoginPage = () => {
                     }
                   }}
                   isTypePassword={true}
+                  onClickEyeIcon={() => {
+                    if (isMobile) {
+                      setShowPassword(!showPassword);
+                    }
+                  }}
                   onMouseDown={() => {
                     setShowPassword(true);
                   }}
@@ -197,6 +217,7 @@ export const LoginPage = () => {
                     setShowPassword(false);
                   }}
                   maxLength={50}
+                  isMobile={isMobile} 
                 />
               </div>
 

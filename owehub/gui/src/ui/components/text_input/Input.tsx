@@ -28,6 +28,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onMouseDown?: () => void;
   onMouseUp?: () => void;
   onMouseLeave?: () => void;
+  isMobile?: boolean;
 }
 
 const Input: FC<InputProps> = ({
@@ -46,6 +47,7 @@ const Input: FC<InputProps> = ({
   onMouseDown,
   onMouseUp,
   onMouseLeave,
+  isMobile,
   ...rest
 }) => {
   const validationRules = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,9 +105,26 @@ const Input: FC<InputProps> = ({
           <EYE_OFF_ICON
             className="eyeIcon"
             style={{ marginRight: '0.5rem' }}
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-            onMouseLeave={onMouseLeave}
+            onClick={() => {
+              if (isMobile) {
+                onClickEyeIcon?.();
+              }
+            }}
+            onMouseDown={() => {
+              if (!isMobile) {
+                onMouseDown?.();
+              }
+            }}
+            onMouseUp={() => {
+              if (!isMobile) {
+                onMouseUp?.();
+              }
+            }}
+            onMouseLeave={() => {
+              if (!isMobile) {
+                onMouseLeave?.();
+              }
+            }}
           />
         ) : null}
         {isTypeSearch ? (
