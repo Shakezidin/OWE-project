@@ -538,8 +538,8 @@ const Table = ({
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <td colSpan={7}>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '8rem 0' }}>
                       <MicroLoader />
                     </div>
                   </td>
