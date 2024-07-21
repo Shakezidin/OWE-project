@@ -227,7 +227,8 @@ function App() {
                 }
               />
             ) : (
-              <WelcomePage />
+              // <WelcomePage />
+              <Navigate to="/login" />
             )
           }
         />

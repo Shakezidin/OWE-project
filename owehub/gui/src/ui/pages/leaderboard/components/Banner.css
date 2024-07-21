@@ -12,6 +12,19 @@
   display: flex;
   align-items: center;
 }
+
+.dealer-dropdown-filter .dealer-toggler {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 24px;
+  color: #000;
+  font-size: 12px;
+}
+.dealer-dropdown-filter {
+  position: absolute;
+  bottom: 10px;
+  right: 35px;
+}
 @keyframes rotate {
   0% {
     transform: rotateZ(0deg);
@@ -118,7 +131,7 @@
   height: 16px;
   width: 16px;
 }
-.admin-edit-button{
+.admin-edit-button {
   display: flex;
   align-items: center;
 }

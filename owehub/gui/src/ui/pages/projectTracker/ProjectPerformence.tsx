@@ -174,14 +174,14 @@ const ProjectPerformence = () => {
 
    const projectDashData = [
     {
-      ruppes: tileData.all_sales,
+      ruppes: tileData?.all_sales,
       para: 'All Sales',
       percentColor: '#8E81E0',
       key: 'SalesPeriod',
       percent: 80,
     },
     {
-      ruppes: tileData.
+      ruppes: tileData?.
       total_cancellation,
       para: 'Total Cancellation',
       iconBgColor: '#FFE6E6',
@@ -190,7 +190,7 @@ const ProjectPerformence = () => {
       percent: 30,
     },
     {
-      ruppes: tileData.total_installation,
+      ruppes: tileData?.total_installation,
       para: 'Total Installation',
       percentColor: '#63ACA3',
       key: 'installation_period',
