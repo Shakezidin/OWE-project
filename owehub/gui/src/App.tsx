@@ -7,11 +7,8 @@
  */
 
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-
-import WelcomePage from './ui/pages/welcome/WelcomePage';
 import ResetPassword from './ui/pages/resetPassword/ResetPassword';
 import { LoginPage } from './ui/pages/login/LoginPage';
-
 import MainLayout from './ui/components/layout/MainLayout';
 import EnterOtpScreen from './ui/pages/otp/EnterOtpScreen';
 import { useEffect } from 'react';
@@ -192,6 +189,7 @@ function App() {
           element={<ProjectPerformence />}
         />
         <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
+        <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
       </Route>
     );
   };
@@ -287,7 +285,6 @@ function App() {
             element={<TeamManagement />}
           />
           <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} />
-          <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
