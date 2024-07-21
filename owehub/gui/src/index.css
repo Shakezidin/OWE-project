@@ -439,6 +439,11 @@ br {
     margin-left: 0.5rem !important;
   }
 }
+@media (max-width: 767px) {
+  .scrollbar::-webkit-scrollbar{
+    display: none !important;
+  }
+}
 
 .main-container {
   max-width: 1900px;

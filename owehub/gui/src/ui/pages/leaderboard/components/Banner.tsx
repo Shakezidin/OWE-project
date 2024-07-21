@@ -23,10 +23,10 @@ const Banner: React.FC<BannerProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
-  const [dealerId,setDealerId] = useState("")
+  const [dealerId, setDealerId] = useState('');
   const [newFormData, setNewFormData] = useState<any>([]);
-  const [vdealer,setVdealer] = useState("")
-  const [refetch,setRefetch] = useState(false)
+  const [vdealer, setVdealer] = useState('');
+  const [refetch, setRefetch] = useState(false);
 
   const tableData = {
     tableNames: ['dealer'],
@@ -53,7 +53,7 @@ const Banner: React.FC<BannerProps> = ({
         // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
         // setTotalCount(data?.dbRecCount);
         setDetails(data?.data);
-        setDealerId(data?.data?.dealer_id)
+        setDealerId(data?.data?.dealer_id);
       } catch (error) {
         console.error(error);
       } finally {
@@ -85,8 +85,7 @@ const Banner: React.FC<BannerProps> = ({
         }
         // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
         // setTotalCount(data?.dbRecCount);
-        setVdealer(data?.data?.vdealers_list[0]
-        );
+        setVdealer(data?.data?.vdealers_list[0]);
       } catch (error) {
         console.error(error);
       } finally {
@@ -95,7 +94,7 @@ const Banner: React.FC<BannerProps> = ({
     })();
   }, []);
 
-  console.log(dealerId, "delaerID")
+  console.log(dealerId, 'delaerID');
 
   return (
     <div className="banner-main flex items-center">
@@ -158,23 +157,34 @@ const Banner: React.FC<BannerProps> = ({
             <LiaEdit className="edit-svg" />
             <p>Edit</p>
           </button>
-          {/* <div className="create-input-field">
-            <SelectOption
-              menuListStyles={{ height: '230px' }}
-              options={dealerOption(newFormData)}
-              onChange={(newValue) => setSelectDealer(newValue?.value!)}
-              value={
-                !selectDealer
-                  ? undefined
-                  : dealerOption(newFormData)?.find(
-                      (option) => option.value === selectDealer
-                    )
-              }
-            />
-          </div> */}
+          <div className="admin-edit-button">
+            <div className="admin-edit-img">
+              <LiaEdit className="edit-svg" />
+            </div>
+            {/* <div className="create-input-field">
+              <SelectOption
+                menuListStyles={{ height: '230px' }}
+                options={dealerOption(newFormData)}
+                onChange={(newValue) => setSelectDealer(newValue?.value!)}
+                value={
+                  !selectDealer
+                    ? undefined
+                    : dealerOption(newFormData)?.find(
+                        (option) => option.value === selectDealer
+                      )
+                }
+              />
+            </div> */}
+          </div>
         </div>
       </div>
-      {showModal && <EditModal onClose={() => setShowModal(false)} vdealer={vdealer} setRefetch={setRefetch} />}
+      {showModal && (
+        <EditModal
+          onClose={() => setShowModal(false)}
+          vdealer={vdealer}
+          setRefetch={setRefetch}
+        />
+      )}
     </div>
   );
 };
