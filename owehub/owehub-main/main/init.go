@@ -1214,7 +1214,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_dealerpay",
 		apiHandler.HandleGetDealerPayDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
@@ -1443,7 +1443,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_rep_pay",
 		apiHandler.GetRepPayDataFromView,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
@@ -1477,7 +1477,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_dlrpay_tiledata",
 		apiHandler.HandleManageDlrPayTileDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
