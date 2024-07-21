@@ -403,7 +403,7 @@ const Table = ({
   setActiveHead: Dispatch<SetStateAction<string>>;
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
-  selectDealer: string;
+  selectDealer: { label: string; value: string }[];
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -539,7 +539,13 @@ const Table = ({
               {isLoading ? (
                 <tr>
                   <td colSpan={7}>
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '8rem 0' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        padding: '8rem 0',
+                      }}
+                    >
                       <MicroLoader />
                     </div>
                   </td>

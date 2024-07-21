@@ -44,7 +44,9 @@ const Index = () => {
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
   const [bannerDetails, setBannerDetails] = useState<Details>({});
-  const [selectDealer, setSelectDealer] = useState<string>('UNTD');
+  const [selectDealer, setSelectDealer] = useState<
+    { label: string; value: string }[]
+  >([{ label: 'UNTD', value: 'UNTD' }]);
   const [dealer, setDealer] = useState<{
     dealer?: string;
     rep_name?: string;
@@ -110,7 +112,7 @@ const Index = () => {
 
   return (
     <div className="px1">
-      <div ref={topCards} style={{background:"#f3f3f3"}}>
+      <div ref={topCards} style={{ background: '#f3f3f3' }}>
         <Banner
           selectDealer={selectDealer}
           setSelectDealer={setSelectDealer}
