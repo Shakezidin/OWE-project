@@ -38,6 +38,7 @@ const Banner: React.FC<BannerProps> = ({
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setNewFormData(res.data);
+    setSelectDealer(dealerOption(res.data))
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
@@ -128,6 +129,7 @@ const Banner: React.FC<BannerProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  const opts = dealerOption(newFormData)
 
   return (
     <div className="relative">
@@ -227,7 +229,23 @@ const Banner: React.FC<BannerProps> = ({
           </div>
           {isOpen && (
             <div className=" scrollbar dropdown-menu ">
-              {dealerOption(newFormData)?.map?.((option, ind) => (
+              <div className="dropdown-item" >
+              <input
+                    type="checkbox"
+                    style={{ flexShrink: 0 }}
+                    checked={opts.length===selectDealer.length}
+                    onChange={() =>{
+                      if(opts.length===selectDealer.length){
+                        setSelectDealer([])
+                      }else{
+                        setSelectDealer([...opts])
+                      }
+                    } }
+                  />
+                  
+                All
+              </div>
+              {opts?.map?.((option, ind) => (
                 <div key={option.value} className="dropdown-item">
                   <input
                     type="checkbox"
