@@ -1,20 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Table from './components/Table';
-import './index.css';
-import Sidebar from './components/Sidebar';
-import Banner from './components/Banner';
-import PerformanceCards from './components/PerformanceCards';
+import { format, subDays } from 'date-fns';
+import { toCanvas } from 'html-to-image';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { format, subDays } from 'date-fns';
-import axios from 'axios';
-import { toCanvas } from 'html-to-image';
-import { group } from 'console';
+import Banner from './components/Banner';
+import PerformanceCards from './components/PerformanceCards';
+import Sidebar from './components/Sidebar';
+import Table from './components/Table';
+import './index.css';
 
 export type DateRangeWithLabel = {
   label?: string;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
 };
 
 const categories = [
@@ -27,8 +25,8 @@ const categories = [
 const role = localStorage.getItem('role');
 
 const groupby = [{ label: 'Dealer', value: 'dealer' }];
-if(role !== "Admin"){
- groupby[0] = { label: 'Sale Rep', value: 'primary_sales_rep' }
+if (role !== 'Admin') {
+  groupby[0] = { label: 'Sale Rep', value: 'primary_sales_rep' };
 }
 interface Details {
   dealer_name?: string;
@@ -59,8 +57,8 @@ const Index = () => {
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
       label: 'This Week',
-      start: format(subDays(today, 7), 'dd-MM-yyyy'),
-      end: format(today, 'dd-MM-yyyy'),
+      start: subDays(today, 7),
+      end: today,
     });
 
   useEffect(() => {
@@ -71,9 +69,9 @@ const Index = () => {
           sort_by: active,
           page_size: 3,
           page_number: 1,
-          start_date: selectedRangeDate.start,
-          end_date: selectedRangeDate.end,
-          dealer: selectDealer.map((item)=>item.value),
+          start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+          end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+          dealer: selectDealer.map((item) => item.value),
           group_by: groupBy,
         });
 
