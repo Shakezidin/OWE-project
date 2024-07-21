@@ -259,13 +259,11 @@ const Banner: React.FC<BannerProps> = ({
                   style={{ width: '100%' }}
                   onChange={(e) => {
                     if (e.target.value.trim()) {
-                      setOpts((prev) =>
-                        prev.filter((item) =>
-                          item.value
-                            .toLowerCase()
-                            .includes(e.target.value.trim())
-                        )
+                      const filtered = dealerOption(newFormData).filter(
+                        (item) =>
+                          item.value.toLocaleLowerCase().includes(e.target.value.toLowerCase().trim())
                       );
+                      setOpts([...filtered]);
                     } else {
                       setOpts(dealerOption(newFormData));
                     }
@@ -290,7 +288,7 @@ const Banner: React.FC<BannerProps> = ({
                 All
               </div>
               {opts?.map?.((option, ind) => (
-                <div key={option.value} className="dropdown-item">
+                <div key={ind} className="dropdown-item">
                   <input
                     type="checkbox"
                     style={{ flexShrink: 0 }}
