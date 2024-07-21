@@ -24,7 +24,12 @@ const categories = [
   { name: 'Cancel', key: 'cancel' },
 ];
 
+const role = localStorage.getItem('role');
+
 const groupby = [{ label: 'Dealer', value: 'dealer' }];
+if(role !== "Admin"){
+ groupby[0] = { label: 'Sale Rep', value: 'primary_sales_rep' }
+}
 interface Details {
   dealer_name?: string;
   dealer_logo?: string;
