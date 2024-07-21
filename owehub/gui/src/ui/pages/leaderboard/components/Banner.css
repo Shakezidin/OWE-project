@@ -2,11 +2,16 @@
   /* height: 165px; */
   padding: 1.5rem 0;
   width: 100%;
-  background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
   overflow: hidden;
   border-radius: 10px;
   margin-top: 30px;
   position: relative;
+}
+.bg-blue{
+  background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
+}
+.bg-green-radiant{
+  background: linear-gradient(0deg, #89C115 100%, #8EC126 100%);
 }
 .banner-wrap {
   display: flex;
@@ -22,8 +27,8 @@
 }
 .dealer-dropdown-filter {
   position: absolute;
-  bottom: 10px;
-  right: 35px;
+  bottom: 15px;
+  right: 15px;
 }
 @keyframes rotate {
   0% {
@@ -37,6 +42,11 @@
   text-transform: uppercase;
   color: #fff;
   font-weight: 500;
+}
+.green-banner-heading{
+  line-height: 47px;
+  font-weight: 600;
+  font-size: 3rem;
 }
 .banner-left {
   gap: 1.5rem;
@@ -88,6 +98,12 @@
   position: absolute;
   right: 0;
   top: -35px;
+}
+.user-trophy{
+  align-self: flex-end;
+  position: absolute;
+  right: 0;
+  top: -30px;
 }
 .banner-star-1 {
   position: absolute;
@@ -160,6 +176,31 @@
   animation: color 4s linear infinite;
 }
 @keyframes color {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.radiant-anime-2 {
+  position: absolute;
+  background-image: radial-gradient(
+    farthest-corner at 40px 40px,
+    #FDD68A 5%,
+    transparent 50%,
+    #11FF1B 100%,
+    #FFC805 100%,
+    #CEFFF0 100%
+  );
+  opacity: 0.7;
+  filter: blur(40px);
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  animation: color2 4s linear infinite;
+}
+@keyframes color2 {
   0% {
     transform: rotate(0deg);
   }
@@ -244,5 +285,13 @@
   }
   .banner-star-3 {
     top: 278px;
+  }
+  .green-banner-heading{
+    font-size: 2rem;
+    width: 250px;
+    line-height: 37px;
+  }
+  .banner-left img{
+    width: 110px;
   }
 }
