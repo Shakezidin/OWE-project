@@ -99,16 +99,20 @@ const periodFilterOptions: DateRangeWithLabel[] = [
 const PeriodFilter = ({
   period,
   setPeriod,
+  resetPage
 }: {
   period: DateRangeWithLabel | null;
   setPeriod: (newVal: DateRangeWithLabel) => void;
+  resetPage:()=>void
 }) => {
   return (
     <ul className="leaderboard-data__btn-group">
       {periodFilterOptions.map((item) => (
         <li key={item.label}>
           <button
-            onClick={() => setPeriod(item)}
+            onClick={() =>{ setPeriod(item)
+              resetPage()
+            }}
             className={
               'leaderboard-data__btn' +
               (period?.label === item.label
@@ -132,11 +136,13 @@ const SelectableFilter = ({
   options,
   selected,
   setSelected,
+  resetPage
 }: {
   label: string;
   options: { value: string; label: string }[];
   selected: string;
   setSelected: (newVal: string) => void;
+  resetPage:()=>void
 }) => {
   return (
     <>
@@ -146,7 +152,9 @@ const SelectableFilter = ({
           {options.map((item) => (
             <li key={item.label}>
               <button
-                onClick={() => setSelected(item.value)}
+                onClick={() =>{ setSelected(item.value)
+                  resetPage()
+                }}
                 className={
                   'leaderboard-data__btn' +
                   (item.value === selected
@@ -222,9 +230,11 @@ const SelectableFilter = ({
 const DateFilter = ({
   selected,
   setSelected,
+  resetPage
 }: {
   selected: DateRangeWithLabel;
   setSelected: (newVal: DateRangeWithLabel) => void;
+  resetPage:()=>void
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState(
@@ -247,6 +257,7 @@ const DateFilter = ({
       end: format(range.endDate, 'dd-MM-yyyy'),
     });
     setShowCalendar(false);
+    resetPage()
   };
 
   const onReset = () => {
@@ -260,6 +271,7 @@ const DateFilter = ({
       },
     ]);
     setShowCalendar(false);
+    resetPage()
   };
 
   // close on click outside anywhere
@@ -468,6 +480,10 @@ const Table = ({
     setPage(pageNumber);
   };
 
+  const resetPage = () =>{
+    setPage(1);
+  }
+
   const goToNextPage = () => {
     setPage(page + 1);
   };
@@ -494,6 +510,7 @@ const Table = ({
           <SelectableFilter
             label="Rank by:"
             options={rankByOptions}
+            resetPage={resetPage}
             selected={active}
             setSelected={setActive}
           />
@@ -517,15 +534,18 @@ const Table = ({
             label="Group by:"
             options={role === "Admin" ? groupByOptions : groupByOptionss}
             selected={groupBy}
+            resetPage={resetPage}
             setSelected={setGroupBy}
           />
           <div className="flex items-center">
             <PeriodFilter
+            resetPage={resetPage}
               period={selectedRangeDate}
               setPeriod={setSelectedRangeDate}
             />
             <DateFilter
               selected={selectedRangeDate}
+              resetPage={resetPage}
               setSelected={setSelectedRangeDate}
             />
           </div>

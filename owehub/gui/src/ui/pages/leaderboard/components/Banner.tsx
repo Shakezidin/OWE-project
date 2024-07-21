@@ -5,7 +5,7 @@ import EditModal from './EditModal';
 import { useState, useEffect, useRef } from 'react';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
-import Select from 'react-select';
+import Select, { Options } from 'react-select';
 import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
@@ -31,6 +31,8 @@ const Banner: React.FC<BannerProps> = ({
   const [vdealer, setVdealer] = useState('');
   const [refetch, setRefetch] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
 
   const tableData = {
     tableNames: ['dealer'],
@@ -38,7 +40,8 @@ const Banner: React.FC<BannerProps> = ({
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setNewFormData(res.data);
-    setSelectDealer(dealerOption(res.data))
+    setSelectDealer(dealerOption(res.data));
+    setOpts(dealerOption(res.data));
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
@@ -46,29 +49,29 @@ const Banner: React.FC<BannerProps> = ({
   }, []);
 
   useEffect(() => {
-  if(role !== "Admin"){
-    (async () => {
-      try {
-        const data = await postCaller('get_leaderboarddatarequest', {});
+    if (role !== 'Admin') {
+      (async () => {
+        try {
+          const data = await postCaller('get_leaderboarddatarequest', {});
 
-        if (data.status > 201) {
+          if (data.status > 201) {
+            // setIsLoading(false);
+
+            toast.error(data?.message);
+            return;
+          }
+          // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+          // setTotalCount(data?.dbRecCount);
+          setDetails(data?.data);
+          setDealerId(data?.data?.dealer_id);
+        } catch (error) {
+          console.error(error);
+        } finally {
           // setIsLoading(false);
-
-          toast.error(data?.message);
-          return;
         }
-        // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-        // setTotalCount(data?.dbRecCount);
-        setDetails(data?.data);
-        setDealerId(data?.data?.dealer_id);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        // setIsLoading(false);
-      }
-    })();
-  }
-  }, [dealerId, role,refetch]);
+      })();
+    }
+  }, [dealerId, role, refetch]);
 
   useEffect(() => {
     (async () => {
@@ -102,7 +105,6 @@ const Banner: React.FC<BannerProps> = ({
     })();
   }, []);
 
-
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const handleChange = (opt: { label: string; value: string }) => {
     const isExist = selectDealer.some((item) => item.value === opt.value);
@@ -129,44 +131,65 @@ const Banner: React.FC<BannerProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  const opts = dealerOption(newFormData)
 
   return (
     <div className="relative">
-      <div className={`${role !== "Admin" ? "bg-blue ": "bg-green-radiant" }  banner-main flex items-center`}>
-        <div className={role !== "Admin" ? "radiant-anime" : "radiant-anime-2"}></div>
+      <div
+        className={`${role !== 'Admin' ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
+      >
+        <div
+          className={role !== 'Admin' ? 'radiant-anime' : 'radiant-anime-2'}
+        ></div>
         <div className="banner-wrap">
           {/* left side  */}
           <div className="flex items-center pl4 banner-left">
-            <img src={role !== "Admin" ? ICONS.BannerLogo : ICONS.OWEBanner} alt="solar-name-icon" />
+            <img
+              src={role !== 'Admin' ? ICONS.BannerLogo : ICONS.OWEBanner}
+              alt="solar-name-icon"
+            />
             <div className="">
-              {role !== "Admin" ? <h1 className="solar-heading">{details?.dealer_name || 'N/A'}</h1> : <h1 className="solar-heading green-banner-heading">OUR WORLD ENERGY</h1>}
-              {role !== "Admin" ? (<div className="flex items-center ">
-                <img src={details?.dealer_logo || ICONS.OWEBannerLogo} alt="" />
-                <p className="left-ban-des">
-                  Powered by <br /> <span>Our World Energy</span>
-                </p>
-              </div>) : null}
+              {role !== 'Admin' ? (
+                <h1 className="solar-heading">
+                  {details?.dealer_name || 'N/A'}
+                </h1>
+              ) : (
+                <h1 className="solar-heading green-banner-heading">
+                  OUR WORLD ENERGY
+                </h1>
+              )}
+              {role !== 'Admin' ? (
+                <div className="flex items-center ">
+                  <img
+                    src={details?.dealer_logo || ICONS.OWEBannerLogo}
+                    alt=""
+                  />
+                  <p className="left-ban-des">
+                    Powered by <br /> <span>Our World Energy</span>
+                  </p>
+                </div>
+              ) : null}
             </div>
           </div>
-          {role !== "Admin" ? <div className="straight-line"></div> : null}
+          {role !== 'Admin' ? <div className="straight-line"></div> : null}
           {/* right side  */}
           <div className="flex items-center banner-right">
-            {role !== "Admin" ? (<div className="banner-names flex flex-column">
-              <div>
-                <p className="owner-heading">Owner Name</p>
-                <p className="owner-names">{details?.owner_name || 'N/A'}</p>
+            {role !== 'Admin' ? (
+              <div className="banner-names flex flex-column">
+                <div>
+                  <p className="owner-heading">Owner Name</p>
+                  <p className="owner-names">{details?.owner_name || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="owner-heading">Total Teams</p>
+                  <p className="owner-names">{details?.total_teams}</p>
+                </div>
+                <div>
+                  <p className="owner-heading">Team Strength</p>
+                  <p className="owner-names">{details?.total_strength}</p>
+                </div>
               </div>
-              <div>
-                <p className="owner-heading">Total Teams</p>
-                <p className="owner-names">{details?.total_teams}</p>
-              </div>
-              <div>
-                <p className="owner-heading">Team Strength</p>
-                <p className="owner-names">{details?.total_strength}</p>
-              </div>
-            </div>) : null}
-            <div className={role !== "Admin" ? "banner-trophy" : "user-trophy"}>
+            ) : null}
+            <div className={role !== 'Admin' ? 'banner-trophy' : 'user-trophy'}>
               <img src={ICONS.BannerTrophy} alt="login-icon" />
             </div>
             <div className="banner-stars">
@@ -218,31 +241,52 @@ const Banner: React.FC<BannerProps> = ({
         >
           <div
             onClick={() => setIsOpen(!isOpen)}
-         
             className="dealer-toggler pointer flex items-center"
           >
-            <span>
-
-            {selectDealer.length} Teams
-            </span>
-            <FaChevronDown className='ml1'/>
+            <span>{selectDealer.length} Teams</span>
+            <FaChevronDown className="ml1" />
           </div>
           {isOpen && (
-            <div className=" scrollbar dropdown-menu ">
-              <div className="dropdown-item" >
-              <input
-                    type="checkbox"
-                    style={{ flexShrink: 0 }}
-                    checked={opts.length===selectDealer.length}
-                    onChange={() =>{
-                      if(opts.length===selectDealer.length){
-                        setSelectDealer([])
-                      }else{
-                        setSelectDealer([...opts])
-                      }
-                    } }
-                  />
-                  
+            <div
+              className=" scrollbar dropdown-menu "
+              style={{ overflowX: 'clip' }}
+            >
+              <div className="searchBox">
+                <input
+                  type="text"
+                  className="input"
+                  placeholder="Search Dealers"
+                  style={{ width: '100%' }}
+                  onChange={(e) => {
+                    if (e.target.value.trim()) {
+                      setOpts((prev) =>
+                        prev.filter((item) =>
+                          item.value
+                            .toLowerCase()
+                            .includes(e.target.value.trim())
+                        )
+                      );
+                    } else {
+                      setOpts(dealerOption(newFormData));
+                    }
+                  }}
+                />
+              </div>
+              <div className="dropdown-item">
+                <input
+                  type="checkbox"
+                  style={{ flexShrink: 0 }}
+                  checked={
+                    dealerOption(newFormData).length === selectDealer.length
+                  }
+                  onChange={() => {
+                    if (opts.length === selectDealer.length) {
+                      setSelectDealer([]);
+                    } else {
+                      setSelectDealer([...opts]);
+                    }
+                  }}
+                />
                 All
               </div>
               {opts?.map?.((option, ind) => (
