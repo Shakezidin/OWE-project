@@ -90,11 +90,11 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
 			return
 		}
-		// if len(data) == 0 {
-		// 	log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
-		// 	FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
-		// 	return
-		// }
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+			FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+			return
+		}
 
 		dealerName, ok := data[0]["dealer_name"].(string)
 		if !ok {
