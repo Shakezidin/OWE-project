@@ -30,10 +30,12 @@ const PerformanceCards: React.FC<performance> = ({
   const rank2 = details.find((item: any) => item?.rank === 2);
   const rank3 = details.find((item: any) => item?.rank === 3);
 
+  rank2.rep_name = 'mohan das';
+
   const getCardHeadingStyle = (item: (typeof details)[number]) => {
     if (!item) return { fontSize: '1.2rem' };
 
-    const fontSizeRaw = (24 - item?.rep_name.length) * 0.15;
+    const fontSizeRaw = (18 - item?.rep_name.length) * 0.15;
     const fontSizeClamped = Math.min(Math.max(fontSizeRaw, 0.75), 2); // clamp b/w 0.75 and 2rem
     return { fontSize: `${fontSizeClamped}rem` };
   };
