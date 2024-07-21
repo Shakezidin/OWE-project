@@ -156,7 +156,7 @@ const Sidebar = ({
       <div ref={topCards}  className="user-sidebar  relative">
         <span
           onClick={() => setIsOpen(-1)}
-          className="absolute back-icon block"
+          className="absolute back-icon-sidebar back-icon block"
         >
           <ArrowForward />
         </span>

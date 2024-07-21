@@ -8,7 +8,7 @@
   margin-top: 30px;
   position: relative;
 }
-.banner-wrap{
+.banner-wrap {
   display: flex;
   align-items: center;
 }
@@ -117,6 +117,19 @@
   height: 16px;
   width: 16px;
 }
+.admin-edit-button{
+  display: flex;
+  align-items: center;
+}
+.admin-edit-img {
+  background: white;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  padding: 5px;
+  text-align: center;
+  cursor: pointer;
+}
 .radiant-anime {
   position: absolute;
   background-image: radial-gradient(
@@ -178,34 +191,55 @@
 }
 
 @media screen and (max-width: 767px) {
-  .straight-line{
+  .straight-line {
     display: none;
   }
-  .banner-wrap{
+  .banner-main {
+    margin-top: 10px;
+  }
+  .banner-wrap {
     flex-direction: column;
     gap: 1rem;
   }
-  .banner-left{
+  .banner-left {
     padding-right: 40px;
   }
-  .banner-left, .banner-right{
+  .banner-left,
+  .banner-right {
     width: 100vw;
     padding-left: 10% !important;
   }
-  .banner-trophy{
-    top: 100px;
+  .banner-trophy {
+    top: 110px;
     bottom: unset;
   }
-  .banner-star-2{
-    top: 130px;
+  .banner-star-2 {
+    top: 140px;
   }
-  .banner-star-1{
-    top: 180px;
+  .banner-star-1 {
+    top: 190px;
   }
-  .banner-star-3{
-    top: 275px;
+  .banner-star-3 {
+    top: 285px;
   }
-  .banner-names{
+  .banner-names {
     z-index: 99;
+  }
+  @media screen and (max-width: 424px) {
+    .banner-trophy {
+      right: -20px;
+    }
+    .banner-star-2 {
+      top: 140px;
+      right: 65px;
+    }
+    .banner-star-1 {
+      top: 200px;
+      right: 185px;
+    }
+    .banner-star-3 {
+      top: 285px;
+      right: 145px;
+    }
   }
 }

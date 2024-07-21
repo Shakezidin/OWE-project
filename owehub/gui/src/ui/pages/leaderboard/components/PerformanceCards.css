@@ -189,14 +189,14 @@
 
 .card-two::after {
   content: '';
-  width: 97%;
+  width: 98%;
   height: 97%;
   border-radius: 10px;
   position: absolute;
   background-color: #fff;
   border-radius: 10px;
   top: 1.5%;
-  left: 1.5%;
+  left: 1%;
   display: grid;
   place-items: center;
   font-size: 20px;
@@ -253,9 +253,12 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   .performance-cards .share-button {
     margin-bottom: 1.5rem;
+  }
+  .performance-cards{
+    margin-top: 10px;
   }
 
   .performance-cards .cards {
@@ -274,5 +277,12 @@
   .performance-cards .card-two {
     transform: scale(1);
     grid-row-start: 1;
+  }
+  .card-two::before{
+    height: 230%;
+  }
+  .card-two::after{
+    height: 97%;
+    top: 1.5%;
   }
 }

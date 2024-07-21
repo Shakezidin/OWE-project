@@ -405,6 +405,22 @@
   }
   .leaderboard-data{
     padding: 1rem;    
+    margin: 10px 0;
+  }
+  .user-profile-sidebar-fixed .user-sidebar{
+    width: 100%;
+  }
+  .back-icon-sidebar{
+    transform: rotate(180deg);
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .back-icon{
+    top: 190px;
+  }
+  .user-profile-sidebar-fixed .user-sidebar{
+    padding-top: 240px;
   }
 }
 
