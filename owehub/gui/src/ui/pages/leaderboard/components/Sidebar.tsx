@@ -116,6 +116,7 @@ const Sidebar = ({
     if (topCards.current) {
       const element = topCards.current;
       const scrollHeight = element.scrollHeight;
+      setGenerating(true);
       toCanvas(element, {
         height: scrollHeight,
       }).then((canvas) => {
@@ -124,6 +125,7 @@ const Sidebar = ({
         link.href = img;
         link.download = 'Performance_Leaderboard.png';
         link.click();
+        setGenerating(false);
       });
     }
   };
@@ -337,10 +339,12 @@ const Sidebar = ({
                   <button
                     onClick={shareImage}
                     className="leader-stats-share-btn"
+                    disabled={isGenerating}
                   >
                     <FaShareSquare size={17} color="#fff" className="mr1" />
-                    <span> {isGenerating ? 'Generating link' : 'Share'} </span>
+                    <span> {isGenerating ? 'Downloading' : 'Share'} </span>
                   </button>
+
                   {isShareOpen && (
                     <SocialShare
                       setIsOpen={setIsShareOpen}
