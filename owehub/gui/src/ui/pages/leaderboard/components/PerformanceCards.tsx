@@ -43,9 +43,9 @@ const PerformanceCards: React.FC<performance> = ({
       <div className="performance-cards">
         <div className="right-button">
           <div className="relative">
-            <button className="share-button" onClick={shareImage}>
+            <button className="share-button" onClick={shareImage} disabled={isGenerating}>
               <MdOutlineIosShare className="share-svg" />
-              <p> {isGenerating ? 'Generating link' : 'Share'} </p>
+              <p> {isGenerating ? 'Downloading' : 'Share'} </p>
             </button>
             {isOpen && (
               <SocialShare setIsOpen={setIsOpen} socialUrl={socialUrl} />

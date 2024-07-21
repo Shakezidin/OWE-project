@@ -92,6 +92,7 @@ const Index = () => {
     if (topCards.current) {
       const element = topCards.current;
       const scrollHeight = element.scrollHeight;
+      setGenerating(true);
       toCanvas(element, {
         height: scrollHeight,
       }).then((canvas) => {
@@ -100,6 +101,8 @@ const Index = () => {
         link.href = img;
         link.download = 'Performance_Leaderboard.png';
         link.click();
+
+        setGenerating(false);
       });
     }
   };
