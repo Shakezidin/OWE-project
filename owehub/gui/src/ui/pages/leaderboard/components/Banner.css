@@ -7,11 +7,11 @@
   margin-top: 30px;
   position: relative;
 }
-.bg-blue{
+.bg-blue {
   background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
 }
-.bg-green-radiant{
-  background: linear-gradient(0deg, #89C115 100%, #8EC126 100%);
+.bg-green-radiant {
+  background: linear-gradient(0deg, #89c115 100%, #8ec126 100%);
 }
 .banner-wrap {
   display: flex;
@@ -43,7 +43,7 @@
   color: #fff;
   font-weight: 500;
 }
-.green-banner-heading{
+.green-banner-heading {
   line-height: 47px;
   font-weight: 600;
   font-size: 3rem;
@@ -99,7 +99,7 @@
   right: 0;
   top: -35px;
 }
-.user-trophy{
+.user-trophy {
   align-self: flex-end;
   position: absolute;
   right: 0;
@@ -187,11 +187,11 @@
   position: absolute;
   background-image: radial-gradient(
     farthest-corner at 40px 40px,
-    #FDD68A 5%,
+    #fdd68a 5%,
     transparent 50%,
-    #11FF1B 100%,
-    #FFC805 100%,
-    #CEFFF0 100%
+    #11ff1b 100%,
+    #ffc805 100%,
+    #cefff0 100%
   );
   opacity: 0.7;
   filter: blur(40px);
@@ -231,23 +231,23 @@
 }
 
 @media screen and (max-width: 1200px) {
-  .banner-trophy img{
+  .banner-trophy img {
     width: 200px;
   }
-  .banner-trophy{
+  .banner-trophy {
     top: -18px;
   }
-  .banner-star-1{
+  .banner-star-1 {
     top: 50px;
     width: 18px;
     right: 170px;
   }
-  .banner-star-2{
+  .banner-star-2 {
     width: 18px;
     top: 13px;
     right: 77px;
   }
-  .banner-star-3{
+  .banner-star-3 {
     right: 140px;
     top: 130px;
     width: 14px;
@@ -286,12 +286,30 @@
   .banner-star-3 {
     top: 278px;
   }
-  .green-banner-heading{
+  .green-banner-heading {
     font-size: 2rem;
     width: 250px;
     line-height: 37px;
   }
-  .banner-left img{
+  .banner-left img {
     width: 110px;
+  }
+}
+
+@media (max-width: 968px) {
+  .user-trophy {
+    position: relative;
+    margin-inline: auto;
+    bottom: -14px;
+  }
+
+  .user-trophy img {
+    transform: scale(1.2);
+  }
+}
+@media (max-width: 400px) {
+  .banner-left,
+  .banner-right {
+    padding-left: 10px !important;
   }
 }
