@@ -94,7 +94,7 @@
 }
 
 
-.leaderboard-data__selected-dates{
+.leaderboard-data__selected-dates {
   text-align: right;
   font-size: 0.875rem;
   color: var(--orange-color);
@@ -389,7 +389,7 @@
     display: flex;
   }
 
-  .leader-board-stats .leaderborder_filter-slect-wrapper {
+  .leaderborder_filter-slect-wrapper {
     display: inline-flex;
   }
 
@@ -435,6 +435,10 @@
 }
 
 @media (max-width: 576px) {
+  .leaderboard-data__selected-dates {
+    font-size: 0.75rem;
+  }
+
   .leaderboard-table-container {
     overflow-x: auto;
     scroll-behavior: smooth;

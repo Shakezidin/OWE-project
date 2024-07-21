@@ -534,7 +534,7 @@ const Table = ({
               {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
               {format(selectedRangeDate.end, 'dd MMM yyyy')}
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center justify-end">
               <PeriodFilter
                 resetPage={resetPage}
                 period={selectedRangeDate}
