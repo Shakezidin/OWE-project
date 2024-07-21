@@ -52,18 +52,7 @@ const Index = () => {
   const [selectDealer, setSelectDealer] = useState<
     { label: string; value: string }[]
   >([]);
-  const [dealer, setDealer] = useState<{
-    dealer?: string;
-    rep_name?: string;
-    start_date?: string;
-    end_date?: string;
-    leader_type: string;
-    name: string;
-    rank: number;
-  }>(
-    // @ts-ignore
-    { leader_type: 'sale' }
-  );
+  const [dealer, setDealer] = useState<any>({});
   const topCards = useRef<HTMLDivElement | null>(null);
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);

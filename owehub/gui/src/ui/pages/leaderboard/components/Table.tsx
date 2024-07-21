@@ -32,7 +32,7 @@ interface IDealer {
   rep_name?: string;
   start_date?: string;
   end_date?: string;
-  leader_type: string;
+  leader_type?: string;
   name: string;
   rank: number;
 }
@@ -564,7 +564,18 @@ const Table = ({
               ) : leaderTable.length ? (
                 leaderTable.map((item) => {
                   return (
-                    <tr key={item.rank}>
+                    <tr  className="pointer" key={item.rank} onClick={() => {
+                      setIsOpen(item.rank);
+                      setDealer((prev) => ({
+                        ...prev,
+                        data_type:groupBy === "primary_sales_rep" ? "sale_rep" : groupBy,
+                        dealer: groupBy === "primary_sales_rep" ? item.dealer : "",        
+                        name: item.rep_name,
+                        rank: item.rank,
+                        
+                        
+                      }));
+                    }}>
                       <td>
                         <div className="flex items-center">
                           <RankColumn rank={item.rank} />
@@ -572,19 +583,8 @@ const Table = ({
                       </td>
                       <td>
                         <span
-                          className="pointer"
-                          onClick={() => {
-                            setIsOpen(item.rank);
-                            setDealer((prev) => ({
-                              ...prev,
-                              data_type:groupBy === "primary_sales_rep" ? "sale_rep" : groupBy,
-                              dealer: groupBy === "primary_sales_rep" ? item.dealer : "",        
-                              name: item.rep_name,
-                              rank: item.rank,
-                              
-                              
-                            }));
-                          }}
+                         
+                          
                         >
                           {item.rep_name || 'N/A'}
                         </span>

@@ -39,11 +39,13 @@ const Banner: React.FC<BannerProps> = ({
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setNewFormData(res.data);
   };
+  const role = localStorage.getItem('role');
   useEffect(() => {
     getNewFormData();
   }, []);
 
   useEffect(() => {
+  if(role !== "Admin"){
     (async () => {
       try {
         const data = await postCaller('get_leaderboarddatarequest', {});
@@ -64,7 +66,8 @@ const Banner: React.FC<BannerProps> = ({
         // setIsLoading(false);
       }
     })();
-  }, [dealerId, refetch]);
+  }
+  }, [dealerId, role,refetch]);
 
   useEffect(() => {
     (async () => {
@@ -98,7 +101,7 @@ const Banner: React.FC<BannerProps> = ({
     })();
   }, []);
 
-  const role = localStorage.getItem('role');
+
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const handleChange = (opt: { label: string; value: string }) => {
     const isExist = selectDealer.some((item) => item.value === opt.value);

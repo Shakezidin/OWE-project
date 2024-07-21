@@ -26,6 +26,7 @@ interface IDealer {
   rep_name?: string;
   start_date?: string;
   end_date?: string;
+  leader_type?:string;
   name: string;
   rank: number;
 }
@@ -128,7 +129,9 @@ const Sidebar = ({
   };
 
   useEffect(() => {
+    if(Object.keys(dealer).length){
     getLeaderDetail();
+    }
   }, [dealer, selectedRangeDate.value]);
 
   return (
@@ -154,12 +157,12 @@ const Sidebar = ({
                 >
                   {dealer.name}
                 </h3>
-                <p
+                {/* <p
                   className=""
                   style={{ color: '#434343', fontSize: 10, marginTop: 6 }}
                 >
                   OUR31245
-                </p>
+                </p> */}
               </div>
             </div>
             <div className="mt2 px2">
