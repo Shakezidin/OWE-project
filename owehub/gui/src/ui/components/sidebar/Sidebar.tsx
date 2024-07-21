@@ -962,6 +962,116 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               ))}
             </div>
 
+
+            <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
+              {el.leaderboard?.map((oth: any, index: number) => (
+                <Link
+                  key={index}
+                  style={{ paddingLeft: toggleOpen ? '.8rem' : '' }}
+                  to={oth.path}
+                  onClick={() => isTablet && setToggleOpen((prev) => !prev)}
+                  onMouseEnter={(e) =>
+                    toggleOpen &&
+                    !isTablet &&
+                    handleMouseover(
+                      e,
+                      oth.sidebarProps.displayText,
+                      [],
+                      index + 8
+                    )
+                  }
+                  onMouseLeave={() => {
+                    timeOut.current = setTimeout(() => {
+                      setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
+                    }, 500);
+                  }}
+                  className={`side-icon-container ${
+                    location.pathname === oth.path
+                      ? 'active-link-bg'
+                      : 'not-active-link'
+                  }`}
+                >
+                  <div
+                    className={
+                      location.pathname === oth.path
+                        ? 'sidebaricon'
+                        : 'sidebariconn'
+                    }
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      width: 24,
+                      height: 24,
+                      borderRadius: 4,
+                      marginLeft: !toggleOpen ? '' : '-1px',
+                      background:
+                        toggleOpen && location.pathname === oth.path
+                          ? ''
+                          : toggleOpen
+                            ? 'transparent'
+                            : 'transparent',
+                    }}
+                  >
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}
+                  </div>
+
+                  {toggleOpen && !isTablet ? null : (
+                    <p
+                      className={
+                        location.pathname === oth.path ? 'tablink' : 'tablinkk'
+                      }
+                    >
+                      {oth.sidebarProps.displayText}
+                    </p>
+                  )}
+                  <div
+                    className="tip"
+                    style={{
+                      backgroundColor: '#fff',
+                      position: 'fixed',
+                      top: cords.top,
+                      left: cords.left,
+                      display:
+                        cords.opacity && cords.id === index + 8
+                          ? 'block'
+                          : 'none',
+
+                      maxHeight: '300px',
+                      minWidth: '150px',
+                      overflowY: 'scroll',
+                      borderBottomRightRadius: '4px',
+                      borderTopRightRadius: '4px',
+                      borderLeft: '1px solid #D9D9D9',
+                      color: 'black',
+                    }}
+                  >
+                    <Link
+                      to="#"
+                      className=""
+                      style={{
+                        display: 'block',
+                        background: '#377CF6',
+                        padding: '11px 12px',
+                        color: 'white',
+                        width: '100%',
+                        fontWeight: '500',
+                        borderBottom: '1px solid #E8E8E8',
+                        fontSize: '13px',
+                        // borderRight: "3px solid #377CF6",
+                        cursor: 'default',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      {' '}
+                      {cords.text}
+                    </Link>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
             
             <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
               {el.support?.map((oth: any, index: number) => (
@@ -1073,6 +1183,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             </div>
             </>
             )}
+
 
            {isMobile && (
             <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>

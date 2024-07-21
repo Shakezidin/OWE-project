@@ -179,14 +179,14 @@ const mob = {
         icon: <ImStatsBars2 size={18} style={{ flexShrink: '0' }} />,
       },
     },
-    {
-      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+    // {
+    //   path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
-      sidebarProps: {
-        displayText: 'Team Management',
-        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
+    //   sidebarProps: {
+    //     displayText: 'Team Management',
+    //     icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
    
   ],
 };
@@ -216,6 +216,11 @@ const other = {
         icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
       },
     },
+  ],
+};
+
+const leaderboard = {
+  leaderboard: [
     {
       path: ROUTES.LEADERBOARD,
       sidebarProps: {
@@ -225,6 +230,9 @@ const other = {
     },
   ],
 };
+
+
+
 const support = {
   support: [
     {
@@ -250,11 +258,12 @@ export const createSideMenuList = (): any[] => {
     sideMenu.push(DB);
     sideMenu.push(project);
     sideMenu.push(other);
+    sideMenu.push(leaderboard);
     sideMenu.push(support);
     sideMenu.push(mob);
+    
   } else {
     if (
-      role === TYPE_OF_USER.DEALER_OWNER ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
       role === TYPE_OF_USER.SUB_DEALER_OWNER ||
       role === TYPE_OF_USER.APPOINTMENT_SETTER ||
@@ -267,6 +276,15 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(DB);
       sideMenu.push(project);
       sideMenu.push(support);
+    }else if(role === TYPE_OF_USER.DEALER_OWNER){
+      sideMenu.push(performance);
+      sideMenu.push(commissionMenu);
+      sideMenu.push(repayMenu);
+      sideMenu.push(arMenu);
+      sideMenu.push(DB);
+      sideMenu.push(project);
+      sideMenu.push(leaderboard);
+      sideMenu.push(support);
       sideMenu.push(mob);
     } else if (
       role === TYPE_OF_USER.REGIONAL_MANGER ||
@@ -276,6 +294,7 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(performance);
       sideMenu.push(repayMenu);
       sideMenu.push(project);
+      sideMenu.push(leaderboard);
       sideMenu.push(support);
       sideMenu.push(mob);
     } else if (role === TYPE_OF_USER.DB_USER) {
