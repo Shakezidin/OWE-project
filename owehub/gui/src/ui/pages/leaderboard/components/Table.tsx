@@ -577,7 +577,7 @@ const Table = ({
                             setIsOpen(item.rank);
                             setDealer((prev) => ({
                               ...prev,
-                              data_type:groupBy,
+                              data_type:groupBy === "primary_sales_rep" ? "sale_rep" : groupBy,
                               dealer: groupBy === "primary_sales_rep" ? item.dealer : "",        
                               name: item.rep_name,
                               rank: item.rank,
