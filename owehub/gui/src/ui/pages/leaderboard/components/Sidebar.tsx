@@ -188,7 +188,7 @@ const Sidebar = ({
                 Performance
               </h4>
 
-              <div className="slect-wrapper">
+              {/* <div className="slect-wrapper">
                 <Select
                   options={rangeOptData}
                   value={selectedRangeDate}
@@ -262,7 +262,8 @@ const Sidebar = ({
                     input: (base) => ({ ...base, margin: 0 }),
                   }}
                 />
-              </div>
+              </div> */}
+
             </div>
             <div className="mt2">
               <div

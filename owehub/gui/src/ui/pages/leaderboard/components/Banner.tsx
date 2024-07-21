@@ -157,11 +157,11 @@ const Banner: React.FC<BannerProps> = ({
             <LiaEdit className="edit-svg" />
             <p>Edit</p>
           </button>
-          <div className="admin-edit-button">
+          {/* <div className="admin-edit-button">
             <div className="admin-edit-img">
               <LiaEdit className="edit-svg" />
             </div>
-            {/* <div className="create-input-field">
+            <div className="create-input-field">
               <SelectOption
                 menuListStyles={{ height: '230px' }}
                 options={dealerOption(newFormData)}
@@ -174,8 +174,8 @@ const Banner: React.FC<BannerProps> = ({
                       )
                 }
               />
-            </div> */}
-          </div>
+            </div>
+          </div> */}
         </div>
       </div>
       {showModal && (

@@ -60,6 +60,7 @@
 .banner-names {
   line-height: 18px;
   gap: 0.7rem;
+  z-index: 99;
 }
 .owner-heading {
   color: #dedede;
@@ -176,17 +177,26 @@
 }
 
 @media screen and (max-width: 1200px) {
-  .banner-left > object {
-    width: 96px;
+  .banner-trophy img{
+    width: 200px;
   }
-
-  .banner-trophy {
-    top: auto;
-    bottom: 0;
+  .banner-trophy{
+    top: -18px;
   }
-
-  .banner-trophy object {
-    width: 144px;
+  .banner-star-1{
+    top: 50px;
+    width: 18px;
+    right: 170px;
+  }
+  .banner-star-2{
+    width: 18px;
+    top: 13px;
+    right: 77px;
+  }
+  .banner-star-3{
+    right: 140px;
+    top: 130px;
+    width: 14px;
   }
 }
 
@@ -210,36 +220,16 @@
     padding-left: 10% !important;
   }
   .banner-trophy {
-    top: 110px;
+    top: 130px;
     bottom: unset;
   }
   .banner-star-2 {
-    top: 140px;
+    top: 155px;
   }
   .banner-star-1 {
-    top: 190px;
+    top: 200px;
   }
   .banner-star-3 {
-    top: 285px;
-  }
-  .banner-names {
-    z-index: 99;
-  }
-  @media screen and (max-width: 424px) {
-    .banner-trophy {
-      right: -20px;
-    }
-    .banner-star-2 {
-      top: 140px;
-      right: 65px;
-    }
-    .banner-star-1 {
-      top: 200px;
-      right: 185px;
-    }
-    .banner-star-3 {
-      top: 285px;
-      right: 145px;
-    }
+    top: 278px;
   }
 }
