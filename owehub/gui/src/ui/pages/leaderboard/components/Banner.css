@@ -12,6 +12,12 @@
   display: flex;
   align-items: center;
 }
+
+.dealer-dropdown-filter{
+  position: absolute;
+  bottom: 10px;
+  right: 111px;
+}
 @keyframes rotate {
   0% {
     transform: rotateZ(0deg);

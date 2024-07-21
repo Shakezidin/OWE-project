@@ -94,96 +94,107 @@ const Banner: React.FC<BannerProps> = ({
     })();
   }, []);
 
-  console.log(dealerId, 'delaerID');
+  const role = localStorage.getItem('role');
 
   return (
-    <div className="banner-main flex items-center">
-      <div className="radiant-anime"></div>
-      <div className="banner-wrap">
-        {/* left side  */}
-        <div className="flex items-center pl4 banner-left">
-          <img src={ICONS.BannerLogo} alt="solar-name-icon" />
-          <div className="">
-            <h1 className="solar-heading">{details?.dealer_name || 'N/A'}</h1>
-            <div className="flex items-center ">
-              <img src={details?.dealer_logo || ICONS.OWEBannerLogo} alt="" />
-              <p className="left-ban-des">
-                Powered by <br /> <span>Our World Energy</span>
-              </p>
+    <div className="relative">
+      <div className="banner-main flex items-center">
+        <div className="radiant-anime"></div>
+        <div className="banner-wrap">
+          {/* left side  */}
+          <div className="flex items-center pl4 banner-left">
+            <img src={ICONS.BannerLogo} alt="solar-name-icon" />
+            <div className="">
+              <h1 className="solar-heading">{details?.dealer_name || 'N/A'}</h1>
+              <div className="flex items-center ">
+                <img src={details?.dealer_logo || ICONS.OWEBannerLogo} alt="" />
+                <p className="left-ban-des">
+                  Powered by <br /> <span>Our World Energy</span>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="straight-line"></div>
-        {/* right side  */}
-        <div className="flex items-center banner-right">
-          <div className="banner-names flex flex-column">
-            <div>
-              <p className="owner-heading">Owner Name</p>
-              <p className="owner-names">{details?.owner_name || 'N/A'}</p>
+          <div className="straight-line"></div>
+          {/* right side  */}
+          <div className="flex items-center banner-right">
+            <div className="banner-names flex flex-column">
+              <div>
+                <p className="owner-heading">Owner Name</p>
+                <p className="owner-names">{details?.owner_name || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="owner-heading">Total Teams</p>
+                <p className="owner-names">{details?.total_teams}</p>
+              </div>
+              <div>
+                <p className="owner-heading">Team Strength</p>
+                <p className="owner-names">{details?.total_strength}</p>
+              </div>
             </div>
-            <div>
-              <p className="owner-heading">Total Teams</p>
-              <p className="owner-names">{details?.total_teams}</p>
+            <div className="banner-trophy">
+              <img src={ICONS.BannerTrophy} alt="login-icon" />
             </div>
-            <div>
-              <p className="owner-heading">Team Strength</p>
-              <p className="owner-names">{details?.total_strength}</p>
-            </div>
-          </div>
-          <div className="banner-trophy">
-            <img src={ICONS.BannerTrophy} alt="login-icon" />
-          </div>
-          <div className="banner-stars">
-            <img
-              src={ICONS.BannerStar}
-              width={30}
-              alt=""
-              className="banner-star-1"
-            />
-            <img
-              src={ICONS.BannerStar}
-              width={30}
-              className="banner-star-2"
-              alt=""
-            />
-            <img
-              src={ICONS.BannerStar}
-              width={20}
-              className="banner-star-3"
-              alt=""
-            />
-          </div>
-          <button className="edit-button" onClick={() => setShowModal(true)}>
-            <LiaEdit className="edit-svg" />
-            <p>Edit</p>
-          </button>
-          <div className="admin-edit-button">
-            <div className="admin-edit-img">
-              <LiaEdit className="edit-svg" />
-            </div>
-            {/* <div className="create-input-field">
-              <SelectOption
-                menuListStyles={{ height: '230px' }}
-                options={dealerOption(newFormData)}
-                onChange={(newValue) => setSelectDealer(newValue?.value!)}
-                value={
-                  !selectDealer
-                    ? undefined
-                    : dealerOption(newFormData)?.find(
-                        (option) => option.value === selectDealer
-                      )
-                }
+            <div className="banner-stars">
+              <img
+                src={ICONS.BannerStar}
+                width={30}
+                alt=""
+                className="banner-star-1"
               />
-            </div> */}
+              <img
+                src={ICONS.BannerStar}
+                width={30}
+                className="banner-star-2"
+                alt=""
+              />
+              <img
+                src={ICONS.BannerStar}
+                width={20}
+                className="banner-star-3"
+                alt=""
+              />
+            </div>
+
+            <button className="edit-button" onClick={() => setShowModal(true)}>
+              <LiaEdit className="edit-svg" />
+              <p>Edit</p>
+            </button>
           </div>
         </div>
+        {showModal && (
+          <EditModal
+            onClose={() => setShowModal(false)}
+            vdealer={vdealer}
+            setRefetch={setRefetch}
+          />
+        )}
       </div>
-      {showModal && (
-        <EditModal
-          onClose={() => setShowModal(false)}
-          vdealer={vdealer}
-          setRefetch={setRefetch}
-        />
+
+      {role === 'Admin' && (
+        <div className=" dealer-dropdown-filter">
+          <SelectOption
+            menuListStyles={{ height: '230px' }}
+            options={dealerOption(newFormData)}
+            controlStyles={{
+              borderRadius: '24px',
+              width: 'fit-content',
+              zIndex: 999,
+            }}
+            dropdownIndicatorStyles={{
+              svg: {
+                fill: '#3B3B3B',
+              },
+            }}
+            onChange={(newValue) => setSelectDealer(newValue?.value!)}
+            value={
+              !selectDealer
+                ? undefined
+                : dealerOption(newFormData)?.find(
+                    (option) => option.value === selectDealer
+                  )
+            }
+          />
+        </div>
       )}
     </div>
   );
