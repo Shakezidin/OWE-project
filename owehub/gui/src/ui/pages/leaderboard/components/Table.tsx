@@ -174,10 +174,9 @@ const SelectableFilter = ({
         <Select
           options={options}
           value={options.find((option) => option.value === selected)}
-          onChange={(newVal) =>{ 
-            setSelected(newVal?.value ?? '')
-            resetPage()
-
+          onChange={(newVal) => {
+            setSelected(newVal?.value ?? '');
+            resetPage();
           }}
           isSearchable={false}
           styles={{
@@ -309,9 +308,10 @@ const DateFilter = ({
     <div className="flex items-center justify-end">
       <div className="leaderborder_filter-slect-wrapper mr1">
         <Select
-          options={[]}
-          value={undefined}
-          // onChange={(value) => setSelectedRangeDate(value!)}
+          options={periodFilterOptions}
+          value={selected}
+          isSearchable={false}
+          onChange={(value) => value && setSelected(value)}
           styles={{
             control: (baseStyles, state) => ({
               ...baseStyles,
