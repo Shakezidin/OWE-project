@@ -187,6 +187,14 @@ const mob = {
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
+    {
+      path: ROUTES.TECHNICAL_SUPPORT,
+
+      sidebarProps: {
+        displayText: 'Technical Support',
+        icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
     // {
     //   path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 

@@ -16,6 +16,7 @@ import {
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
+import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 
 interface ILeaderBordUser {
   rank: number;

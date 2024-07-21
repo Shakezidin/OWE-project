@@ -213,7 +213,7 @@ const Banner: React.FC<BannerProps> = ({
               />
             </div>
 
-            {role === 'Dealer Owner' && (
+            {(role === 'Dealer Owner' || role === 'Admin') && (
               <button
                 className="edit-button"
                 onClick={() => setShowModal(true)}
@@ -261,7 +261,9 @@ const Banner: React.FC<BannerProps> = ({
                     if (e.target.value.trim()) {
                       const filtered = dealerOption(newFormData).filter(
                         (item) =>
-                          item.value.toLocaleLowerCase().includes(e.target.value.toLowerCase().trim())
+                          item.value
+                            .toLocaleLowerCase()
+                            .includes(e.target.value.toLowerCase().trim())
                       );
                       setOpts([...filtered]);
                     } else {

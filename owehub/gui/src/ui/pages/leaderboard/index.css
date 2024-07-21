@@ -93,7 +93,6 @@
   font-size: 0.75rem;
 }
 
-
 .leaderboard-data__selected-dates {
   text-align: right;
   font-size: 0.875rem;
@@ -266,10 +265,9 @@
   overflow-y: auto;
 }
 
-.back-icon {
-  top: 80px;
+.back-icon-sidebar.back-icon {
+  top: 5px;
 }
-
 .user-profile-sidebar-fixed .user-sidebar {
   width: 408px;
   min-height: 100vh;
@@ -279,8 +277,8 @@
     rgba(0, 148, 205, 1) 30%,
     rgba(255, 255, 255, 100%)
   );
-  padding-inline: 22px;
-  padding-top: 128px;
+  padding-inline: 10px;
+  padding-top: 45px;
 }
 
 .user-profile {
@@ -288,15 +286,12 @@
   padding-top: 30px;
   border-radius: 12px;
   padding-bottom: 26px;
-  padding-inline: 32px;
+  padding-inline: 20px;
 }
 
 .user-card {
-  padding-left: 5px;
-  padding-right: 17px;
-  padding-top: 15px;
+  padding: 10px;
   border: 1px solid #ffbc0f;
-  padding-bottom: 27px;
   border-radius: 12px;
 }
 
@@ -321,12 +316,18 @@
   color: #6d6d6d;
   display: block;
 }
+.unit {
+  opacity: 0.8 !important;
+  font-size: 10px !important;
+  color: #6d6d6d;
+  margin-left: 2px;
+}
 
 .grey-weekly-stats {
   border-radius: 8px;
   padding: 10px 13px;
   background-color: #f1f1f1;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .grey-weekly-stats span {
@@ -351,7 +352,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 36px;
+  margin-top: 20px;
   width: 100%;
   cursor: pointer;
 }
@@ -419,18 +420,6 @@
   }
   .user-profile-sidebar-fixed .user-sidebar {
     width: 100%;
-  }
-  .back-icon-sidebar {
-    transform: rotate(180deg);
-  }
-}
-
-@media screen and (max-width: 400px) {
-  .back-icon {
-    top: 190px;
-  }
-  .user-profile-sidebar-fixed .user-sidebar {
-    padding-top: 240px;
   }
 }
 

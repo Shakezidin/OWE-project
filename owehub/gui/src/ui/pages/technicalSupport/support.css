@@ -31,13 +31,14 @@
   align-items: center;
 }
 .create-input-field-support {
-  /* width: 290px; */
-  width: 50%;
-  display: flex;
-  display: block;
   padding-top: 0.5rem;
+  flex: 1;
 }
-
+@media screen and (max-width: 786px) {
+  .create-input-container-support {
+    flex-direction: column;
+  }
+}
 .create-input-field-support label {
   font-size: 12px;
   font-weight: 400;
@@ -55,7 +56,6 @@
   /* border: 1px 0px 0px 0px; */
 }
 .touch-container {
-  height: '50vh';
   padding: 2rem;
   flex: 1;
   background-color: #ffff;
@@ -202,7 +202,6 @@
     margin-top: -70px;
   }
   .reset-Update-support {
-    margin-left: 400px;
     display: flex;
     justify-content: flex-end;
     margin-top: 0;

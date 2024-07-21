@@ -136,7 +136,12 @@ const Index = () => {
         setDealer={setDealer}
         selectDealer={selectDealer}
       />
-      <Sidebar dealer={dealer} setIsOpen={setIsOpen} isOpen={isOpen} />
+      <Sidebar
+        dealer={dealer}
+        setIsOpen={setIsOpen}
+        isOpen={isOpen}
+        unit={activeHead}
+      />
     </div>
   );
 };
