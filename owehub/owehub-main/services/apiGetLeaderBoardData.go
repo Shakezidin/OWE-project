@@ -37,6 +37,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		filter                string
 		RecordCount           int64
 		adminCheck            bool
+		dealerIn              string
+		dlrName               string
 	)
 
 	log.EnterFn(0, "HandleGetLeaderBoardDataRequest")
@@ -75,14 +77,11 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.FuncInfoTrace(0, "CHECKPOINT 3")
-
-	log.FuncInfoTrace(0, "USER ROLE -> %v USER EMAIL -> %v", dataReq.Role, dataReq.Email)
 	if dataReq.Role != "Admin" {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT vd.dealer_name AS dealer_name FROM user_details ud
 			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
-			where email_id = %v;
+			where ud.email_id = '%v';
 		`, dataReq.Email)
 
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
@@ -91,24 +90,40 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
 			return
 		}
-		if len(data) == 0 {
-			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
-			FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+		// if len(data) == 0 {
+		// 	log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+		// 	FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+		// 	return
+		// }
+
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to convert dealer_name to string for data: %v", data[0])
+			FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
 			return
 		}
 
-		dataReq.DealerName, _ = data[0]["dealer_name"].(string)
+		log.FuncErrorTrace(0, "dealer name = = = = %v", dealerName)
+
+		dataReq.DealerName = append(dataReq.DealerName, dealerName)
 	}
 
-	if dataReq.Role == "Admin" && dataReq.DealerName == "" {
-		log.FuncErrorTrace(0, "Failed to get dealer name from user for admin")
-		FormAndSendHttpResp(resp, "Failed to get dealer name, please enter a valid dealer name", http.StatusBadRequest, data)
-		return
+	dealerIn = "dealer IN("
+	for i, data := range dataReq.DealerName {
+		if i > 0 {
+			dealerIn += ","
+		}
+		dealerIn += fmt.Sprintf("'%s'", data)
+	}
+	dealerIn += ")"
+
+	if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
+		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, ", dataReq.GroupBy)
+	} else {
+		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
 	}
 
-	leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
-
-	filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck)
+	filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck, dealerIn)
 	leaderBoardQuery = leaderBoardQuery + filter
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, leaderBoardQuery, whereEleList)
@@ -139,9 +154,14 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			Ntp := toInt64(item["ntp"])
 			Cancel := toInt64(item["cancel"])
 			Install := toInt64(item["install"])
+			if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
+				dlrName, _ = item["dealer"].(string)
+			} else {
+				dlrName = dataReq.DealerName[0]
+			}
 
 			LeaderBoard := models.GetLeaderBoard{
-				Dealer:  dataReq.DealerName,
+				Dealer:  dlrName,
 				Name:    Name,
 				Sale:    Sale,
 				Ntp:     Ntp,
@@ -204,7 +224,7 @@ func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
 * RETURNS:    		void
 ******************************************************************************/
 
-func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck bool) (filters string, whereEleList []interface{}) {
+func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck bool, dealerIn string) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareDateFilters")
 	defer func() { log.ExitFn(0, "PrepareDateFilters", nil) }()
 
@@ -232,11 +252,22 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size ELSE 0 END) AS cancel, ", len(whereEleList)-1, len(whereEleList)))
 		filtersBuilder.WriteString(fmt.Sprintf(" SUM(CASE WHEN pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') THEN system_size ELSE 0 END) AS install", len(whereEleList)-1, len(whereEleList)))
 	}
-	filtersBuilder.WriteString(" FROM consolidated_data_view ")
-	filtersBuilder.WriteString(" WHERE ")
 
-	filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' ", dataReq.DealerName))
-	filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v ", dataReq.GroupBy))
+	filtersBuilder.WriteString(" FROM consolidated_data_view ")
+	if len(dealerIn) > 13 {
+		filtersBuilder.WriteString(" WHERE ")
+		filtersBuilder.WriteString(dealerIn)
+	}
+
+	if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
+		if dataReq.GroupBy != "dealer" {
+			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v , dealer ", dataReq.GroupBy))
+		} else {
+			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v ", dataReq.GroupBy))
+		}
+	} else {
+		filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v ", dataReq.GroupBy))
+	}
 
 	filters = filtersBuilder.String()
 	return filters, whereEleList
