@@ -14,7 +14,7 @@ interface performance {
   socialUrl: string;
   shareImage: () => void;
   isGenerating: boolean;
-  activeHead:string;
+  activeHead: string;
 }
 
 const PerformanceCards: React.FC<performance> = ({
@@ -30,8 +30,13 @@ const PerformanceCards: React.FC<performance> = ({
   const rank2 = details.find((item: any) => item?.rank === 2);
   const rank3 = details.find((item: any) => item?.rank === 3);
 
+  const getCardHeadingStyle = (item: (typeof details)[number]) => {
+    if (!item) return { fontSize: '1.2rem' };
 
-  console.log(rank1, rank2, rank3, "hyrydfhgdf")
+    const fontSizeRaw = (24 - item?.rep_name.length) * 0.15;
+    const fontSizeClamped = Math.min(Math.max(fontSizeRaw, 0.75), 2); // clamp b/w 0.75 and 2rem
+    return { fontSize: `${fontSizeClamped}rem` };
+  };
 
   return (
     <div>
@@ -59,7 +64,9 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="upper-section">
                 <img src={ICONS.GreyTwo} aria-label="grey-icon"></img>
                 <div className="flex flex-column card-title">
-                  <h2>{rank2?.rep_name || "N/A"}</h2>
+                  <h2 style={getCardHeadingStyle(rank2)}>
+                    {rank2?.rep_name || 'N/A'}
+                  </h2>
                   {/* <p>
                     OUR31245
                     <span>
@@ -72,18 +79,18 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="below-section">
                 <div className="below-des">
                   <p>{rank2?.sale.toFixed(2) ?? 0}</p>
-                  <p>Sales ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div className="below-des">
                   <p>{rank2?.ntp?.toFixed(2) ?? 0}</p>
-                  <p>Ntp ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div
                   className="below-des mx-auto"
                   style={{ gridColumn: '1/3' }}
                 >
                   <p className="text-center"> {rank2?.install.toFixed(2)}</p>
-                  <p>Installs ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
               </div>
             </div>
@@ -93,7 +100,9 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="upper-section">
                 <img src={ICONS.GoldOne} aria-label="grey-icon"></img>
                 <div className="flex flex-column card-title">
-                  <h2>{rank1?.rep_name || "N/A"}</h2>
+                  <h2 style={getCardHeadingStyle(rank1)}>
+                    {rank1?.rep_name || 'N/A'}
+                  </h2>
                   {/* <p>
                     OUR31245
                     <span>
@@ -106,11 +115,11 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="below-section">
                 <div className="below-des">
                   <p>{rank1?.sale.toFixed(2) ?? 0} </p>
-                  <p>Sales ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div className="below-des">
                   <p>{rank1?.ntp.toFixed(2)}</p>
-                  <p>Ntp ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div
                   className="below-des mx-auto"
@@ -118,7 +127,7 @@ const PerformanceCards: React.FC<performance> = ({
                 >
                   <p className="text-center">{rank1?.install.toFixed(2)}</p>
 
-                  <p>Installs ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
               </div>
             </div>
@@ -128,7 +137,9 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="upper-section">
                 <img src={ICONS.BrownThree} aria-label="grey-icon"></img>
                 <div className="flex flex-column card-title">
-                  <h2>{rank3?.rep_name || "N/A"}</h2>
+                  <h2 style={getCardHeadingStyle(rank3)}>
+                    {rank3?.rep_name || 'N/A'}
+                  </h2>
                   {/* <p>
                     OUR31245
                     <span>
@@ -141,11 +152,11 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="below-section">
                 <div className="below-des">
                   <p>{rank3?.sale.toFixed(2) ?? 0} </p>
-                  <p>Sales ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div className="below-des">
                   <p>{rank3?.ntp.toFixed(2) ?? 0} </p>
-                  <p>Ntp ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div
                   className="below-des mx-auto"
@@ -153,7 +164,7 @@ const PerformanceCards: React.FC<performance> = ({
                 >
                   <p className="text-center">{rank3?.install.toFixed(2)}</p>
 
-                  <p>Installs ({activeHead == "kw" ? "kW" : "count"})</p>
+                  <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
               </div>
             </div>
