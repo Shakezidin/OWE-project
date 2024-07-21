@@ -128,15 +128,15 @@ const Banner: React.FC<BannerProps> = ({
 
   return (
     <div className="relative">
-      <div className={`${role === "Admin" ? "bg-blue ": "bg-green-radiant" }  banner-main flex items-center`}>
-        <div className={role === "Admin" ? "radiant-anime" : "radiant-anime-2"}></div>
+      <div className={`${role !== "Admin" ? "bg-blue ": "bg-green-radiant" }  banner-main flex items-center`}>
+        <div className={role !== "Admin" ? "radiant-anime" : "radiant-anime-2"}></div>
         <div className="banner-wrap">
           {/* left side  */}
           <div className="flex items-center pl4 banner-left">
-            <img src={role === "Admin" ? ICONS.BannerLogo : ICONS.OWEBanner} alt="solar-name-icon" />
+            <img src={role !== "Admin" ? ICONS.BannerLogo : ICONS.OWEBanner} alt="solar-name-icon" />
             <div className="">
-              {role === "Admin" ? <h1 className="solar-heading">{details?.dealer_name || 'N/A'}</h1> : <h1 className="solar-heading green-banner-heading">OUR WORLD ENERGY</h1>}
-              {role === "Admin" ? (<div className="flex items-center ">
+              {role !== "Admin" ? <h1 className="solar-heading">{details?.dealer_name || 'N/A'}</h1> : <h1 className="solar-heading green-banner-heading">OUR WORLD ENERGY</h1>}
+              {role !== "Admin" ? (<div className="flex items-center ">
                 <img src={details?.dealer_logo || ICONS.OWEBannerLogo} alt="" />
                 <p className="left-ban-des">
                   Powered by <br /> <span>Our World Energy</span>
@@ -144,10 +144,10 @@ const Banner: React.FC<BannerProps> = ({
               </div>) : null}
             </div>
           </div>
-          {role === "Admin" ? <div className="straight-line"></div> : null}
+          {role !== "Admin" ? <div className="straight-line"></div> : null}
           {/* right side  */}
           <div className="flex items-center banner-right">
-            {role === "Admin" ? (<div className="banner-names flex flex-column">
+            {role !== "Admin" ? (<div className="banner-names flex flex-column">
               <div>
                 <p className="owner-heading">Owner Name</p>
                 <p className="owner-names">{details?.owner_name || 'N/A'}</p>
@@ -161,7 +161,7 @@ const Banner: React.FC<BannerProps> = ({
                 <p className="owner-names">{details?.total_strength}</p>
               </div>
             </div>) : null}
-            <div className={role === "Admin" ? "banner-trophy" : "user-trophy"}>
+            <div className={role !== "Admin" ? "banner-trophy" : "user-trophy"}>
               <img src={ICONS.BannerTrophy} alt="login-icon" />
             </div>
             <div className="banner-stars">
