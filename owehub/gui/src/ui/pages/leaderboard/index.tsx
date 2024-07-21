@@ -24,7 +24,7 @@ const categories = [
   { name: 'Cancel', key: 'cancel' },
 ];
 
-const groupby = [{ label: 'Select', value: 'primary_sales_rep' }];
+const groupby = [{ label: 'Dealer', value: 'dealer' }];
 interface Details {
   dealer_name?: string;
   dealer_logo?: string;
@@ -46,7 +46,7 @@ const Index = () => {
   const [bannerDetails, setBannerDetails] = useState<Details>({});
   const [selectDealer, setSelectDealer] = useState<
     { label: string; value: string }[]
-  >([{ label: 'UNTD', value: 'UNTD' }]);
+  >([]);
   const [dealer, setDealer] = useState<{
     dealer?: string;
     rep_name?: string;
@@ -125,6 +125,7 @@ const Index = () => {
           socialUrl={socialUrl}
           setIsOpen={setIsOpenShare}
           details={details}
+          activeHead={activeHead}
         />
       </div>
       <Table

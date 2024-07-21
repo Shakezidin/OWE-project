@@ -44,7 +44,17 @@ const rankByOptions = [
   { label: 'Cancel', value: 'cancel' },
 ];
 
+const role = localStorage.getItem('role');
+
+const groupByOptionss = [
+  { label: 'Sale Rep', value: 'primary_sales_rep' },
+  { label: 'Team', value: 'team' },
+  { label: 'State', value: 'state' },
+  { label: 'Region', value: 'region' },
+];
+
 const groupByOptions = [
+  {label:'Dealer' , value: 'dealer'},
   { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
@@ -465,6 +475,7 @@ const Table = ({
     setPage(page - 1);
   };
 
+  console.log(role, "role")
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       <button className="leaderboard-data__export" disabled>
@@ -503,7 +514,7 @@ const Table = ({
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Group by:"
-            options={groupByOptions}
+            options={role === "Admin" ? groupByOptions : groupByOptionss}
             selected={groupBy}
             setSelected={setGroupBy}
           />
@@ -566,12 +577,12 @@ const Table = ({
                             setIsOpen(item.rank);
                             setDealer((prev) => ({
                               ...prev,
-                              dealer: item.dealer,
-                              rep_name: item.rep_name,
+                              data_type:groupBy,
+                              dealer: groupBy === "primary_sales_rep" ? item.dealer : "",        
                               name: item.rep_name,
                               rank: item.rank,
-                              start_date: selectedRangeDate?.start,
-                              end_date: selectedRangeDate?.end,
+                              
+                              
                             }));
                           }}
                         >

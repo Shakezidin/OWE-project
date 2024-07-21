@@ -26,7 +26,6 @@ interface IDealer {
   rep_name?: string;
   start_date?: string;
   end_date?: string;
-  leader_type: string;
   name: string;
   rank: number;
 }
@@ -98,8 +97,9 @@ const Sidebar = ({
     try {
       const data = await postCaller('get_leaderboardprofiledatarequest', {
         ...dealer,
-        start_date: selectedRangeDate.value.split(',')[0],
-        end_date: selectedRangeDate.value.split(',')[1],
+        // start_date: selectedRangeDate.value.split(',')[0],
+        // end_date: selectedRangeDate.value.split(',')[1],
+
       });
       if (data.status > 201) {
         toast.error(data.message);
