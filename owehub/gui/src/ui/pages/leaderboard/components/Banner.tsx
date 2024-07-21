@@ -243,7 +243,7 @@ const Banner: React.FC<BannerProps> = ({
             onClick={() => setIsOpen(!isOpen)}
             className="dealer-toggler pointer flex items-center"
           >
-            <span>{selectDealer.length} Teams</span>
+            <span>{selectDealer.length} {selectDealer.length>1?"Dealers":"Dealer"}</span>
             <FaChevronDown className="ml1" />
           </div>
           {isOpen && (
