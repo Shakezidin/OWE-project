@@ -464,7 +464,7 @@ const Table = ({
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 10;
   const  [isAuthenticated]   = useState(
-    localStorage.getItem('is_password_change_required') === 'true'
+    localStorage.getItem('is_password_change_required') === 'false'
   );
   useEffect(() => {
     if (isAuthenticated) {

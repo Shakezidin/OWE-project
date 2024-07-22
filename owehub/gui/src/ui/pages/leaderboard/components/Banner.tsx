@@ -36,7 +36,7 @@ const Banner: React.FC<BannerProps> = ({
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
   const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'true'
+    localStorage.getItem('is_password_change_required') === 'false'
   );
 
   const tableData = {
@@ -256,7 +256,7 @@ const Banner: React.FC<BannerProps> = ({
       {role === 'Admin' && (
         <div
           className=" dealer-dropdown-filter"
-          style={{ zIndex: 999 }}
+          style={{ zIndex: 99 }}
           ref={dropdownRef}
         >
           <div

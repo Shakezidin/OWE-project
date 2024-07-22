@@ -63,7 +63,7 @@ const Index = () => {
     });
 
   const [ isAuthenticated]  = useState(
-    localStorage.getItem('is_password_change_required') === 'true'
+    localStorage.getItem('is_password_change_required') === 'false'
   );
 
   useEffect(() => {
