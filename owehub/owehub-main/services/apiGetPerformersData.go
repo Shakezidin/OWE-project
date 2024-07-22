@@ -69,7 +69,7 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	performerData := models.GetPerformarData{}
 
-	if role == "Admin" {
+	if role == "Admin" || role == "Finance Admin" {
 
 	} else if role == "Dealer Owner" {
 		query = `SELECT vd.dealer_name as dealer_name, ud.name as owner_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud 
