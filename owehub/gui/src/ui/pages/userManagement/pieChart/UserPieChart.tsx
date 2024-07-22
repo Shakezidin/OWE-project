@@ -136,6 +136,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         <div className="pieChart-section">
           <h2>Performance</h2>
         </div>
+        <div className='pie2-mob-resp'>
         {userPerformanceList && userPerformanceList.length > 0 ? (
           <div className="pie-chart-container  relative">
             <ResponsiveContainer width={'100%'} height="100%">
@@ -178,6 +179,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
             />
           </div>
         )}
+        
 
         {!!userPerformanceList.length && (
           <div className="flex stats-wrapper items-center justify-center pb2">
@@ -232,6 +234,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import MicroLoader from '../../components/loader/MicroLoader';
 import axios from 'axios';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,63 +28,32 @@ const TechnicalSupport: React.FC = () => {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const uploadFile = async (file: File): Promise<string> => {
-    if (!file) return '';
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', 'xdfcmcf4');
-      formData.append('cloud_name', 'duscqq0ii');
-
-      const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/duscqq0ii/auto/upload`,
-        formData
-      );
-
-      console.log('File uploaded successfully:', response.data.secure_url);
-      return response.data.secure_url;
-    } catch (error) {
-      console.error('Error uploading file to Cloudinary:', error);
-      throw error;
-    }
-  };
-
-  // Modify your handleFileInputChange function to use the uploadFile function
-  const handleFileInputChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
-
+  
     if (file) {
-      const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
+      const allowedExtensions = ['.png', '.jpg', '.jpeg'];
       const fileExtension = file.name
         .toLowerCase()
         .substring(file.name.lastIndexOf('.'));
-
+  
       if (!allowedExtensions.includes(fileExtension)) {
         setSelectedFileName('');
-        setFileSizeError('Only PNG, JPG, and PDF files are allowed');
+        setFileSizeError('Only PNG, JPG files are allowed');
+        setSelectedFile(null);
         return;
       }
-
+  
       if (file.size <= maxSize) {
         setSelectedFileName(file.name);
         setFileSizeError('');
         setSelectedFile(file);
-
-        try {
-          const uploadedFileUrl = await uploadFile(file);
-          console.log('Uploaded file URL:', uploadedFileUrl);
-          // You can use the uploadedFileUrl as needed, e.g., save it to state or send it to your backend
-        } catch (error) {
-          console.error('Error uploading file:', error);
-          setFileSizeError('Error uploading file. Please try again.');
-        }
+        console.log(file, "selected file in tech support");
       } else {
         setSelectedFileName('');
         setFileSizeError('File size exceeds the limit of 10 MB');
+        setSelectedFile(null);
       }
     } else {
       setSelectedFileName('');
@@ -127,8 +97,8 @@ const TechnicalSupport: React.FC = () => {
         formData.append('attachment', file);
       }
       emailjs
-        .sendForm('service_1lawvxm', 'template_wfoo6zc', form.current, {
-          publicKey: 'XGFM59HCeodn-jEDl',
+        .sendForm('service_ll48199', 'template_uxld3x8', form.current, {
+          publicKey: 'D5-fAReJMW0jwRuvN',
         })
         .then(
           (response: any) => {
@@ -154,6 +124,62 @@ const TechnicalSupport: React.FC = () => {
     }
   };
 
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log(selectedFile, 'isuuee');
+  //   // Validation logic
+  //   const newErrors = {
+  //     firstName: firstName ? '' : 'First name is required',
+  //     lastName: lastName ? '' : 'Last name is required',
+  //     email: emailRegex.test(email) ? '' : 'Email address is required',
+  //     phoneNumber: phoneNumber.slice(prevCont.length).trim()
+  //       ? ''
+  //       : 'Phone number is required',
+  //     message: message ? '' : 'Message is required',
+  //   };
+  //   setErrors(newErrors);
+  //   if (form.current && Object.values(newErrors).every((err) => !err)) {
+  //     setIsSubmitting(true);
+  //     const formData = new FormData();
+  //     formData.append('FirstName', firstName);
+  //     formData.append('LastName', lastName);
+  //     formData.append('ToMail', email);
+  //     formData.append('PhoneNumber', phoneNumber);
+  //     formData.append('Message', message);
+  //     formData.append('Issue', selectedIssue);
+  //     if (selectedFile) {
+  //       formData.append('attachment', selectedFile);
+  //     }
+  //     postCaller('SendMail_to_IT_from_User', formData)
+  //       .then((response: any) => {
+  //         if (response.status === 200) {
+  //           console.log('SUCCESS!', response);
+  //           toast.success('Your form has been submitted!');
+  //           setFirstName('');
+  //           setLastName('');
+  //           setEmail('');
+  //           setPhoneNumber(prevCont);
+  //           setMessage('');
+  //           setSelectedFile(null);
+  //           setSelectedFileName('');
+  //           setSelectedIssue('');
+  //           setIsSubmitting(false);
+  //         } else {
+  //           console.error('FAILED...', response);
+  //           toast.error('Failed to submit the form. Please try again.');
+  //           setIsSubmitting(false);
+  //         }
+  //       })
+  //       .catch((error: any) => {
+  //         console.error('FAILED...', error);
+  //         toast.error('An error occurred. Please try again.');
+  //         setIsSubmitting(false);
+  //       });
+  //   }
+  // };
+
+
   const handleStateChange = (selectedOption: any) => {
     setSelectedIssue(selectedOption.value);
   };
@@ -164,34 +190,7 @@ const TechnicalSupport: React.FC = () => {
     { value: 'OWE 3', label: 'OWE 3' },
   ];
 
-  // const handleFileInputChange = (e: FormInput) => {
-  //   const file = e.target.files?.[0];
-  //   const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
-
-  //   if (file) {
-  //     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
-  //     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-
-  //     if (!allowedExtensions.includes(fileExtension)) {
-  //       setSelectedFileName('');
-  //       setFileSizeError('Only PNG, JPG, and PDF files are allowed');
-  //       return;
-  //     }
-
-  //     if (file.size <= maxSize) {
-  //       setSelectedFileName(file.name);
-  //       setFileSizeError('');
-  //       // Perform further actions with the selected file
-  //     } else {
-  //       setSelectedFileName('');
-  //       setFileSizeError('File size exceeds the limit of 10 MB');
-  //     }
-  //   } else {
-  //     setSelectedFileName('');
-  //     setFileSizeError('');
-  //   }
-  // };
-
+ 
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
@@ -376,7 +375,7 @@ const TechnicalSupport: React.FC = () => {
                   />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
-                      {selectedFileName || '.jpg .jpeg .png .pdf'}
+                      {selectedFileName || '.jpg .jpeg .png'}
                     </span>
                     <button
                       className="custom-button"
