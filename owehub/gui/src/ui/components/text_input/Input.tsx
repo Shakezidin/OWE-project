@@ -81,6 +81,7 @@ const Input: FC<InputProps> = ({
           onChange={(e) => {
             if (name.includes('password')) {
               onChange(e);
+              return
             }
             if (name.includes('unique')) {
               const trim = e.target.value.trim();
