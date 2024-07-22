@@ -125,4 +125,12 @@
   .pie-section-2 {
     width: 100%;
   }
+  .pie2-mob-resp{
+    display: flex;
+  }
+  .pie-chart-container {
+    margin-left: -19px;
+    width: 221px;
+  }
 }
+

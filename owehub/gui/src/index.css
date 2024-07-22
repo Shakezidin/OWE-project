@@ -456,3 +456,14 @@ br {
   max-width: 1900px;
   margin-inline: auto;
 }
+
+
+@media screen and (max-width: 767px) {
+
+
+  .country-list{
+    width: 100%;
+    max-width: 244px;
+  }
+
+}

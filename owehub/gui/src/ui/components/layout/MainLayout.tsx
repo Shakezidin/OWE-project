@@ -46,6 +46,8 @@ const MainLayout = () => {
   );
   const [sidebarChange, setSidebarChange] = useState<number>(0);
 
+  
+
   /** TODO: temp solution for session logout. Need to change in future */
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -103,12 +105,6 @@ const MainLayout = () => {
   useEffect(() => {
     setToggleOpen(isTablet);
   }, [isTablet]);
-
-  useEffect(() => {
-    if (isMobile) {
-      navigate(ROUTES.LEADERBOARD);
-    }
-  }, [isMobile]);
 
   return isAuthenticated ? (
     <div className="main-container">

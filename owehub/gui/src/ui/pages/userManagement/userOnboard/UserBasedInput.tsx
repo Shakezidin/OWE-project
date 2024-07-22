@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Input from '../../../components/text_input/Input';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import axios from 'axios';
-import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
+import { dealerOption, teamsOption } from '../../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 
@@ -24,7 +24,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   setLogoUrl
 }) => {
 
- 
+
   const [files, setFiles] = useState<FileList | null>(null);
   const [newFormData, setNewFormData] = useState<any>([]);
   const [delaerVal, setDealerVal] = useState('');
@@ -32,7 +32,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
 
   const getnewformData = async () => {
     const tableData = {
-      tableNames: ['dealer'],
+      tableNames: ['dealer', 'teams'],
     };
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setDealer((prev) => ({ ...prev, ...res.data }));
@@ -50,7 +50,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   }, [dealer]);
 
   console.log(delaerVal, "selected options")
- 
+
 
   return (
     <>
@@ -83,7 +83,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
             />
           </div>
           <div className="create-input-field">
-            <Input
+            {/* <Input
               type={'text'}
               label="Team Name"
               value={formData.team_name}
@@ -97,7 +97,21 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
               }}
               name={'team_name'}
               maxLength={150}
-            />
+            /> */}
+
+            <label className="inputLabel-select select-type-label">
+              Team Name
+            </label>
+            <SelectOption
+              options={teamsOption(newFormData)}
+              onChange={(newValue) =>
+                handleChangeForRegion(newValue, 'team_name')
+              }
+              value={teamsOption(newFormData)?.find(
+                (option) => option?.value === formData.team_name
+              )}
+             />
+
           </div>
         </>
       )}
@@ -138,8 +152,8 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
           </div>
 
 
-         
-            {/* <div className="file-input-container">
+
+          {/* <div className="file-input-container">
               <input
                 type="file"
                 className="file-input"
@@ -179,50 +193,50 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
               </div>
             </div> */}
 
-            <div className="create-input-field">
-              <label className="inputLabel">
-                <p>Attach Logo</p>
-              </label>
-              <div className="file-input-container">
-                <input
-                  type="file"
-                  className="file-input"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={async (e) => {
-                    const selectedFiles = e.target.files;
-                    setFiles(selectedFiles); // Update the files state variable
-                    if (selectedFiles && selectedFiles.length > 0) {
-                      const file = selectedFiles[0];
-                      const formData = new FormData();
-                      formData.append('file', file);
-                      formData.append('upload_preset', 'xdfcmcf4');
-                      formData.append('cloud_name', 'duscqq0ii');
+          <div className="create-input-field">
+            <label className="inputLabel">
+              <p>Attach Logo</p>
+            </label>
+            <div className="file-input-container">
+              <input
+                type="file"
+                className="file-input"
+                accept=".jpg, .jpeg, .png"
+                onChange={async (e) => {
+                  const selectedFiles = e.target.files;
+                  setFiles(selectedFiles); // Update the files state variable
+                  if (selectedFiles && selectedFiles.length > 0) {
+                    const file = selectedFiles[0];
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', 'xdfcmcf4');
+                    formData.append('cloud_name', 'duscqq0ii');
 
-                      try {
-                        const response = await axios.post(
-                          `https://api.cloudinary.com/v1_1/duscqq0ii/image/upload`,
-                          formData
-                        );
-                        const url = response.data.secure_url;
-                        // Store the logoUrl in the formData state
-                        setLogoUrl(url);
-                       
-                      } catch (error) {
-                        console.error('Error uploading logo:', error);
-                      }
+                    try {
+                      const response = await axios.post(
+                        `https://api.cloudinary.com/v1_1/duscqq0ii/image/upload`,
+                        formData
+                      );
+                      const url = response.data.secure_url;
+                      // Store the logoUrl in the formData state
+                      setLogoUrl(url);
+
+                    } catch (error) {
+                      console.error('Error uploading logo:', error);
                     }
-                  }}
-                />
-                <div className="custom-button-container">
-                  <span className="file-input-placeholder">
-                    {files && files.length > 0
-                      ? `${files[0].name.slice(0, 10)}...`
-                      : '.jpg .jpeg .png'}
-                  </span>
-                  <button className="custom-button">Browse</button>
-                </div>
+                  }
+                }}
+              />
+              <div className="custom-button-container">
+                <span className="file-input-placeholder">
+                  {files && files.length > 0
+                    ? `${files[0].name.slice(0, 10)}...`
+                    : '.jpg .jpeg .png'}
+                </span>
+                <button className="custom-button">Browse</button>
               </div>
             </div>
+          </div>
 
         </>
       )}
