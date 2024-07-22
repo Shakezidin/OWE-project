@@ -37,7 +37,14 @@ const PerformanceCards: React.FC<performance> = ({
     const fontSizeClamped = Math.min(Math.max(fontSizeRaw, 0.75), 2); // clamp b/w 0.75 and 2rem
     return { fontSize: `${fontSizeClamped}rem` };
   };
-
+  function formatSaleValue(value:any) {
+    if (value === null || value === undefined) return ''; // Handle null or undefined values
+    const sale = parseFloat(value);
+    if (sale === 0) return '0';
+    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    return sale.toFixed(2); // Otherwise, format it to 2 decimal places
+  }
+  
   return (
     <div>
       <div className="performance-cards">
@@ -78,18 +85,18 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="dashed-border"></div>
               <div className="below-section">
                 <div className="below-des">
-                  <p>{rank2?.sale.toFixed(2) ?? 0}</p>
+                  <p>{formatSaleValue(rank2?.sale) ?? 0}</p>
                   <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div className="below-des">
-                  <p>{rank2?.ntp?.toFixed(2) ?? 0}</p>
+                  <p>{formatSaleValue(rank2?.ntp) ?? 0}</p>
                   <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div
                   className="below-des mx-auto"
                   style={{ gridColumn: '1/3' }}
                 >
-                  <p className="text-center"> {rank2?.install.toFixed(2)}</p>
+                  <p className="text-center"> {formatSaleValue(rank2?.install)}</p>
                   <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
               </div>
@@ -114,18 +121,18 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="dashed-border"></div>
               <div className="below-section">
                 <div className="below-des">
-                  <p>{rank1?.sale.toFixed(2) ?? 0} </p>
+                  <p>{formatSaleValue(rank1?.sale) ?? 0} </p>
                   <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div className="below-des">
-                  <p>{rank1?.ntp.toFixed(2)}</p>
+                  <p>{formatSaleValue(rank1?.ntp)}</p>
                   <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div
                   className="below-des mx-auto"
                   style={{ gridColumn: '1/3' }}
                 >
-                  <p className="text-center">{rank1?.install.toFixed(2)}</p>
+                  <p className="text-center">{formatSaleValue(rank1?.install)}</p>
 
                   <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
@@ -151,18 +158,18 @@ const PerformanceCards: React.FC<performance> = ({
               <div className="dashed-border"></div>
               <div className="below-section">
                 <div className="below-des">
-                  <p>{rank3?.sale.toFixed(2) ?? 0} </p>
+                  <p>{formatSaleValue(rank3?.sale) ?? 0} </p>
                   <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div className="below-des">
-                  <p>{rank3?.ntp.toFixed(2) ?? 0} </p>
+                  <p>{formatSaleValue(rank3?.ntp) ?? 0} </p>
                   <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
                 <div
                   className="below-des mx-auto"
                   style={{ gridColumn: '1/3' }}
                 >
-                  <p className="text-center">{rank3?.install.toFixed(2)}</p>
+                  <p className="text-center">{formatSaleValue(rank3?.install)}</p>
 
                   <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>

@@ -145,6 +145,14 @@ const Sidebar = ({
     }
   }, [dealer, selectedRangeDate.value, isAuthenticated]);
 
+  function formatSaleValue(value:any) {
+    if (value === null || value === undefined) return ''; // Handle null or undefined values
+    const sale = parseFloat(value);
+    if (sale === 0) return '0';
+    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    return sale.toFixed(2); // Otherwise, format it to 2 decimal places
+  }
+
   return (
     <div
       className="user-profile-sidebar-fixed scrollbar flex items-center justify-end"
@@ -293,7 +301,7 @@ const Sidebar = ({
                       style={{ fontSize: 21, fontWeight: 700 }}
                       className="block"
                     >
-                      {dealer.sale?.toFixed?.(2)}
+                      {formatSaleValue(dealer.sale)}
                       <span className="unit">
                         ({unit === 'kw' ? 'kW' : 'count'})
                       </span>
@@ -311,7 +319,7 @@ const Sidebar = ({
                       style={{ fontSize: 21, fontWeight: 700 }}
                       className="block"
                     >
-                      {dealer.ntp?.toFixed?.(2)}
+                      {formatSaleValue(dealer.ntp)}
                       <span className="unit">
                         ({unit === 'kw' ? 'kW' : 'count'})
                       </span>
@@ -329,7 +337,7 @@ const Sidebar = ({
                       style={{ fontSize: 21, fontWeight: 700 }}
                       className="block"
                     >
-                      {dealer.install?.toFixed?.(2)}
+                      {formatSaleValue(dealer.install)}
                       <span className="unit">
                         ({unit === 'kw' ? 'kW' : 'count'})
                       </span>
@@ -342,14 +350,14 @@ const Sidebar = ({
                   <div className="bg-white text-center leader-board-stats-wrapper py1">
                     <span className="block">Weekly sales</span>
                     <span className="block" style={{ fontWeight: 600 }}>
-                      {data?.weekly_sale?.toFixed?.(2) ?? 14}
+                      {formatSaleValue(data?.weekly_sale) }
                     </span>
                   </div>
 
                   <div className="text-center leader-board-stats-wrapper py1">
                     <span className="block">Total sales</span>
                     <span className="block" style={{ fontWeight: 600 }}>
-                      {data?.total_sales?.toFixed?.(2)}
+                      {formatSaleValue(data?.total_sales)}
                     </span>
                   </div>
                 </div>

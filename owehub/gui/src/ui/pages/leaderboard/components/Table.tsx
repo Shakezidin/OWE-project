@@ -531,7 +531,15 @@ const Table = ({
   const sortedPage = leaderTable
     .slice()
     .sort((a, b) => (a.hightlight || b.hightlight ? -1 : 1));
-  console.log(sortedPage, 'srtedPage');
+  
+    
+    function formatSaleValue(value:any) {
+      if (value === null || value === undefined) return ''; // Handle null or undefined values
+      const sale = parseFloat(value);
+      if (sale === 0) return '0';
+      if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+      return sale.toFixed(2); // Otherwise, format it to 2 decimal places
+    }
 
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
@@ -667,10 +675,10 @@ const Table = ({
 
                       <td> {item.dealer} </td>
 
-                      <td>{item?.sale?.toFixed(2)} </td>
-                      <td>{item?.install?.toFixed(2)}</td>
-                      <td>{item?.ntp?.toFixed(2)}</td>
-                      <td>{item?.cancel?.toFixed(2)}</td>
+                      <td>{formatSaleValue(item?.sale)} </td>
+                      <td>{formatSaleValue(item?.install)}</td>
+                      <td>{formatSaleValue(item?.ntp)}</td>
+                      <td>{formatSaleValue(item.cancel)}</td>
                     </tr>
                   );
                 })
