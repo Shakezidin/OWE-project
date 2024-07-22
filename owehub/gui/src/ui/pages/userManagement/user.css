@@ -52,13 +52,6 @@ opacity: 0px;
 
 } */
 
-.delete-icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-  width: 70%;
-}
 .iconsSection-delete {
   align-items: center;
   justify-content: center;

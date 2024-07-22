@@ -72,7 +72,7 @@
   display: flex;
   justify-content: space-between;
   align-items: end;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .leaderboard-data__select-filter label {
@@ -89,8 +89,15 @@
   border-radius: 4px;
 }
 
-.leaderboard-data__select-filter--mobile label  {
+.leaderboard-data__select-filter--mobile label {
   font-size: 0.75rem;
+}
+
+.leaderboard-data__selected-dates {
+  text-align: right;
+  font-size: 0.875rem;
+  color: var(--orange-color);
+  margin-bottom: 0.5rem;
 }
 
 .leaderboard-data__btn-group {
@@ -187,8 +194,6 @@
   border-radius: 12px;
 }
 
-
-
 .leaderboard-table tbody tr {
   padding-block: 2rem;
   vertical-align: middle;
@@ -260,10 +265,9 @@
   overflow-y: auto;
 }
 
-.back-icon {
-  top: 80px;
+.back-icon-sidebar.back-icon {
+  top: 5px;
 }
-
 .user-profile-sidebar-fixed .user-sidebar {
   width: 408px;
   min-height: 100vh;
@@ -273,8 +277,8 @@
     rgba(0, 148, 205, 1) 30%,
     rgba(255, 255, 255, 100%)
   );
-  padding-inline: 22px;
-  padding-top: 128px;
+  padding-inline: 10px;
+  padding-top: 45px;
 }
 
 .user-profile {
@@ -282,15 +286,12 @@
   padding-top: 30px;
   border-radius: 12px;
   padding-bottom: 26px;
-  padding-inline: 32px;
+  padding-inline: 20px;
 }
 
 .user-card {
-  padding-left: 5px;
-  padding-right: 17px;
-  padding-top: 15px;
+  padding: 10px;
   border: 1px solid #ffbc0f;
-  padding-bottom: 27px;
   border-radius: 12px;
 }
 
@@ -315,12 +316,18 @@
   color: #6d6d6d;
   display: block;
 }
+.unit {
+  opacity: 0.8 !important;
+  font-size: 10px !important;
+  color: #6d6d6d;
+  margin-left: 2px;
+}
 
 .grey-weekly-stats {
   border-radius: 8px;
   padding: 10px 13px;
   background-color: #f1f1f1;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .grey-weekly-stats span {
@@ -345,8 +352,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 36px;
+  margin-top: 20px;
   width: 100%;
+  cursor: pointer;
 }
 
 .leaderborad-export-btn {
@@ -374,15 +382,13 @@
 
 @media (max-width: 1024px) {
   .leaderboard-data__btn-group,
-    .leaderboard-data__select-filter {
-      display: none;
-    }
-  
-    .leaderboard-data__select-filter--mobile {
-      display: flex;
-    }
+  .leaderboard-data__select-filter {
+    display: none;
+  }
 
-  .leader-board-stats
+  .leaderboard-data__select-filter--mobile {
+    display: flex;
+  }
 
   .leaderborder_filter-slect-wrapper {
     display: inline-flex;
@@ -399,8 +405,8 @@
   .leaderboard-data__select-filter label {
     white-space: nowrap;
   }
-  .leaderbord-tab-container .tab{
-    padding:.5rem !important;
+  .leaderbord-tab-container .tab {
+    padding: 0.5rem !important;
   }
 }
 
@@ -408,56 +414,45 @@
   .children-container {
     padding-inline: 0;
   }
-  .leaderboard-data{
-    padding: 1rem;    
+  .leaderboard-data {
+    padding: 1rem;
     margin: 10px 0;
   }
-  .user-profile-sidebar-fixed .user-sidebar{
+  .user-profile-sidebar-fixed .user-sidebar {
     width: 100%;
   }
-  .back-icon-sidebar{
-    transform: rotate(180deg);
-  }
 }
-
-@media screen and (max-width: 400px) {
-  .back-icon{
-    top: 190px;
-  }
-  .user-profile-sidebar-fixed .user-sidebar{
-    padding-top: 240px;
-  }
-}
-
-
 
 @media (max-width: 576px) {
+  .leaderboard-data__selected-dates {
+    font-size: 0.75rem;
+  }
+
   .leaderboard-table-container {
     overflow-x: auto;
-  scroll-behavior: smooth;
-}
-  
-.leaderboard-table-container::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-.leaderboard-table-container::-webkit-scrollbar {
-  display: initial;
-}
+    scroll-behavior: smooth;
+  }
 
-.leaderboard-table-container::-webkit-scrollbar-thumb {
-  background-color: rgb(173, 173, 173);
-  border-radius: 30px;
-}
-.leaderboard-table-container::-webkit-scrollbar-button {
-  display: initial;
-}
-.leaderboard-table-container::-webkit-scrollbar {
-  -ms-overflow-style: initial;
-  scrollbar-width: thin;
-}
-.leaderboard-table-container::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-  
+  .leaderboard-table-container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .leaderboard-table-container::-webkit-scrollbar {
+    display: initial;
+  }
+
+  .leaderboard-table-container::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+  .leaderboard-table-container::-webkit-scrollbar-button {
+    display: initial;
+  }
+  .leaderboard-table-container::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  .leaderboard-table-container::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
 }

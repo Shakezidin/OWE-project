@@ -1,7 +1,6 @@
-import { format, parse, subDays } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { DateRange } from 'react-date-range';
-import { DateRangeWithLabel } from '../index';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -10,12 +9,14 @@ import award from '../../../../resources/assets/award_icon.png';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import Pagination from '../../../components/pagination/Pagination';
+import { DateRangeWithLabel } from '../index';
 import {
   Calendar,
   FirstAwardIcon,
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
+import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 
 interface ILeaderBordUser {
   rank: number;
@@ -32,7 +33,7 @@ interface IDealer {
   rep_name?: string;
   start_date?: string;
   end_date?: string;
-  leader_type: string;
+  leader_type?: string;
   name: string;
   rank: number;
 }
@@ -44,7 +45,17 @@ const rankByOptions = [
   { label: 'Cancel', value: 'cancel' },
 ];
 
+const role = localStorage.getItem('role');
+
+const groupByOptionss = [
+  { label: 'Sale Rep', value: 'primary_sales_rep' },
+  { label: 'Team', value: 'team' },
+  { label: 'State', value: 'state' },
+  { label: 'Region', value: 'region' },
+];
+
 const groupByOptions = [
+  { label: 'Dealer', value: 'dealer' },
   { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
@@ -65,39 +76,44 @@ const today = new Date();
 const periodFilterOptions: DateRangeWithLabel[] = [
   {
     label: 'This Week',
-    start: format(subDays(today, 7), 'dd-MM-yyyy'),
-    end: format(today, 'dd-MM-yyyy'),
+    start: subDays(today, 7),
+    end: today,
   },
   {
     label: 'This Month',
-    start: format(subDays(today, 30), 'dd-MM-yyyy'),
-    end: format(today, 'dd-MM-yyyy'),
+    start: subDays(today, 30),
+    end: today,
   },
   {
     label: 'Last Month',
-    start: format(subDays(today, 60), 'dd-MM-yyyy'),
-    end: format(subDays(today, 30), 'dd-MM-yyyy'),
+    start: subDays(today, 60),
+    end: subDays(today, 30),
   },
   {
     label: 'This Year',
-    start: format(subDays(today, 365), 'dd-MM-yyyy'),
-    end: format(today, 'dd-MM-yyyy'),
+    start: subDays(today, 365),
+    end: today,
   },
 ];
 
 const PeriodFilter = ({
   period,
   setPeriod,
+  resetPage,
 }: {
   period: DateRangeWithLabel | null;
   setPeriod: (newVal: DateRangeWithLabel) => void;
+  resetPage: () => void;
 }) => {
   return (
     <ul className="leaderboard-data__btn-group">
       {periodFilterOptions.map((item) => (
         <li key={item.label}>
           <button
-            onClick={() => setPeriod(item)}
+            onClick={() => {
+              setPeriod(item);
+              resetPage();
+            }}
             className={
               'leaderboard-data__btn' +
               (period?.label === item.label
@@ -121,11 +137,13 @@ const SelectableFilter = ({
   options,
   selected,
   setSelected,
+  resetPage,
 }: {
   label: string;
   options: { value: string; label: string }[];
   selected: string;
   setSelected: (newVal: string) => void;
+  resetPage: () => void;
 }) => {
   return (
     <>
@@ -135,7 +153,10 @@ const SelectableFilter = ({
           {options.map((item) => (
             <li key={item.label}>
               <button
-                onClick={() => setSelected(item.value)}
+                onClick={() => {
+                  setSelected(item.value);
+                  resetPage();
+                }}
                 className={
                   'leaderboard-data__btn' +
                   (item.value === selected
@@ -154,7 +175,10 @@ const SelectableFilter = ({
         <Select
           options={options}
           value={options.find((option) => option.value === selected)}
-          onChange={(newVal) => setSelected(newVal?.value ?? '')}
+          onChange={(newVal) => {
+            setSelected(newVal?.value ?? '');
+            resetPage();
+          }}
           isSearchable={false}
           styles={{
             control: (baseStyles) => ({
@@ -211,17 +235,19 @@ const SelectableFilter = ({
 const DateFilter = ({
   selected,
   setSelected,
+  resetPage,
 }: {
   selected: DateRangeWithLabel;
   setSelected: (newVal: DateRangeWithLabel) => void;
+  resetPage: () => void;
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
           {
-            startDate: parse(selected.start, 'dd-MM-yyyy', new Date()),
-            endDate: parse(selected.end, 'dd-MM-yyyy', new Date()),
+            startDate: selected.start,
+            endDate: selected.end,
             key: 'selection',
           },
         ]
@@ -232,10 +258,11 @@ const DateFilter = ({
     const range = selectedRanges[0];
     if (!range) return;
     setSelected({
-      start: format(range.startDate, 'dd-MM-yyyy'),
-      end: format(range.endDate, 'dd-MM-yyyy'),
+      start: range.startDate,
+      end: range.endDate,
     });
     setShowCalendar(false);
+    resetPage();
   };
 
   const onReset = () => {
@@ -243,13 +270,25 @@ const DateFilter = ({
     setSelected(periodFilterOptions[0]);
     setSelectedRanges([
       {
-        startDate: parse(defaultOption.start, 'dd-MM-yyyy', new Date()),
-        endDate: parse(defaultOption.end, 'dd-MM-yyyy', new Date()),
+        startDate: defaultOption.start,
+        endDate: defaultOption.end,
         key: 'selection',
       },
     ]);
     setShowCalendar(false);
+    resetPage();
   };
+
+  // update datepicker if "selected" updated externally
+  useEffect(() => {
+    setSelectedRanges([
+      {
+        startDate: selected.start,
+        endDate: selected.end,
+        key: 'selection',
+      },
+    ]);
+  }, [selected]);
 
   // close on click outside anywhere
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -270,9 +309,10 @@ const DateFilter = ({
     <div className="flex items-center justify-end">
       <div className="leaderborder_filter-slect-wrapper mr1">
         <Select
-          options={[]}
-          value={undefined}
-          // onChange={(value) => setSelectedRangeDate(value!)}
+          options={periodFilterOptions}
+          value={selected}
+          isSearchable={false}
+          onChange={(value) => value && setSelected(value)}
           styles={{
             control: (baseStyles, state) => ({
               ...baseStyles,
@@ -403,7 +443,7 @@ const Table = ({
   setActiveHead: Dispatch<SetStateAction<string>>;
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
-  selectDealer: string;
+  selectDealer: { label: string; value: string }[];
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -417,11 +457,11 @@ const Table = ({
         setIsLoading(true);
         const data = await postCaller('get_perfomance_leaderboard', {
           type: activeHead,
-          dealer: selectDealer,
+          dealer: selectDealer.map((item) => item.value),
           page_size: itemsPerPage,
           page_number: page,
-          start_date: selectedRangeDate.start,
-          end_date: selectedRangeDate.end,
+          start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+          end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
           sort_by: active,
           group_by: groupBy,
         });
@@ -457,6 +497,10 @@ const Table = ({
     setPage(pageNumber);
   };
 
+  const resetPage = () => {
+    setPage(1);
+  };
+
   const goToNextPage = () => {
     setPage(page + 1);
   };
@@ -482,9 +526,38 @@ const Table = ({
           <SelectableFilter
             label="Rank by:"
             options={rankByOptions}
+            resetPage={resetPage}
             selected={active}
             setSelected={setActive}
           />
+          <div>
+            <div className="leaderboard-data__selected-dates">
+              {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
+              {format(selectedRangeDate.end, 'dd MMM yyyy')}
+            </div>
+            <div className="flex items-center justify-end">
+              <PeriodFilter
+                resetPage={resetPage}
+                period={selectedRangeDate}
+                setPeriod={setSelectedRangeDate}
+              />
+              <DateFilter
+                selected={selectedRangeDate}
+                resetPage={resetPage}
+                setSelected={setSelectedRangeDate}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="leaderboard-data__filter-row">
+          <SelectableFilter
+            label="Group by:"
+            options={role === 'Admin' ? groupByOptions : groupByOptionss}
+            selected={groupBy}
+            resetPage={resetPage}
+            setSelected={setGroupBy}
+          />
+
           <div className="leaderbord-tab-container">
             <div
               onClick={() => setActiveHead('kw')}
@@ -500,24 +573,6 @@ const Table = ({
             </div>
           </div>
         </div>
-        <div className="leaderboard-data__filter-row">
-          <SelectableFilter
-            label="Group by:"
-            options={groupByOptions}
-            selected={groupBy}
-            setSelected={setGroupBy}
-          />
-          <div className="flex items-center">
-            <PeriodFilter
-              period={selectedRangeDate}
-              setPeriod={setSelectedRangeDate}
-            />
-            <DateFilter
-              selected={selectedRangeDate}
-              setSelected={setSelectedRangeDate}
-            />
-          </div>
-        </div>
       </div>
       <div>
         <div className="leaderboard-table-container">
@@ -529,7 +584,7 @@ const Table = ({
                 <th>Name</th>
 
                 <th>Dealer</th>
-                <th>Sales</th>
+                <th>Sale</th>
                 <th>Install</th>
                 <th>NTP</th>
                 <th>Cancel</th>
@@ -539,7 +594,13 @@ const Table = ({
               {isLoading ? (
                 <tr>
                   <td colSpan={7}>
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '8rem 0' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        padding: '8rem 0',
+                      }}
+                    >
                       <MicroLoader />
                     </div>
                   </td>
@@ -547,30 +608,31 @@ const Table = ({
               ) : leaderTable.length ? (
                 leaderTable.map((item) => {
                   return (
-                    <tr key={item.rank}>
+                    <tr
+                      className="pointer"
+                      key={item.rank}
+                      onClick={() => {
+                        setIsOpen(item.rank);
+                        setDealer((prev) => ({
+                          ...prev,
+                          data_type:
+                            groupBy === 'primary_sales_rep'
+                              ? 'sale_rep'
+                              : groupBy,
+                          dealer:
+                            groupBy === 'primary_sales_rep' ? item.dealer : '',
+                          name: item.rep_name,
+                          rank: item.rank,
+                        }));
+                      }}
+                    >
                       <td>
                         <div className="flex items-center">
                           <RankColumn rank={item.rank} />
                         </div>
                       </td>
                       <td>
-                        <span
-                          className="pointer"
-                          onClick={() => {
-                            setIsOpen(item.rank);
-                            setDealer((prev) => ({
-                              ...prev,
-                              dealer: item.dealer,
-                              rep_name: item.rep_name,
-                              name: item.rep_name,
-                              rank: item.rank,
-                              start_date: selectedRangeDate?.start,
-                              end_date: selectedRangeDate?.end,
-                            }));
-                          }}
-                        >
-                          {item.rep_name || 'N/A'}
-                        </span>
+                        <span>{item.rep_name || 'N/A'}</span>
                       </td>
 
                       <td> {item.dealer} </td>

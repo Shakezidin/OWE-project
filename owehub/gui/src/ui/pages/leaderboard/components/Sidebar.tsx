@@ -26,7 +26,7 @@ interface IDealer {
   rep_name?: string;
   start_date?: string;
   end_date?: string;
-  leader_type: string;
+  leader_type?: string;
   name: string;
   rank: number;
 }
@@ -80,10 +80,12 @@ const Sidebar = ({
   isOpen,
   setIsOpen,
   dealer,
+  unit,
 }: {
   isOpen: number;
   setIsOpen: Dispatch<SetStateAction<number>>;
   dealer: IDealer;
+  unit: string;
 }) => {
   const [data, setData] = useState<any>({});
   const [selectedRangeDate, setSelectedRangeDate] = useState({
@@ -98,8 +100,8 @@ const Sidebar = ({
     try {
       const data = await postCaller('get_leaderboardprofiledatarequest', {
         ...dealer,
-        start_date: selectedRangeDate.value.split(',')[0],
-        end_date: selectedRangeDate.value.split(',')[1],
+        // start_date: selectedRangeDate.value.split(',')[0],
+        // end_date: selectedRangeDate.value.split(',')[1],
       });
       if (data.status > 201) {
         toast.error(data.message);
@@ -115,6 +117,7 @@ const Sidebar = ({
     if (topCards.current) {
       const element = topCards.current;
       const scrollHeight = element.scrollHeight;
+      setGenerating(true);
       toCanvas(element, {
         height: scrollHeight,
       }).then((canvas) => {
@@ -123,12 +126,15 @@ const Sidebar = ({
         link.href = img;
         link.download = 'Performance_Leaderboard.png';
         link.click();
+        setGenerating(false);
       });
     }
   };
 
   useEffect(() => {
-    getLeaderDetail();
+    if (Object.keys(dealer).length) {
+      getLeaderDetail();
+    }
   }, [dealer, selectedRangeDate.value]);
 
   return (
@@ -136,7 +142,7 @@ const Sidebar = ({
       className="user-profile-sidebar-fixed scrollbar flex items-center justify-end"
       style={{ right: isOpen > 0 ? '0' : '-100%', transition: 'all 500ms' }}
     >
-      <div ref={topCards} className="user-sidebar  relative">
+      <div ref={topCards} className="user-sidebar relative">
         <span
           onClick={() => setIsOpen(-1)}
           className="absolute back-icon-sidebar back-icon block"
@@ -150,16 +156,16 @@ const Sidebar = ({
               <div className="ml2">
                 <h3
                   className="h5 mb0"
-                  style={{ lineHeight: '18px', fontSize: 20, color: '#434343' }}
+                  style={{ lineHeight: 1.2, fontSize: 20, color: '#434343' }}
                 >
                   {dealer.name}
                 </h3>
-                <p
+                {/* <p
                   className=""
                   style={{ color: '#434343', fontSize: 10, marginTop: 6 }}
                 >
                   OUR31245
-                </p>
+                </p> */}
               </div>
             </div>
             <div className="mt2 px2">
@@ -188,7 +194,7 @@ const Sidebar = ({
                 Performance
               </h4>
 
-              <div className="slect-wrapper">
+              {/* <div className="slect-wrapper">
                 <Select
                   options={rangeOptData}
                   value={selectedRangeDate}
@@ -262,12 +268,12 @@ const Sidebar = ({
                     input: (base) => ({ ...base, margin: 0 }),
                   }}
                 />
-              </div>
+              </div> */}
             </div>
             <div className="mt2">
               <div
                 className="flex items-center justify-between"
-                style={{ paddingBottom: 33, borderBottom: '1px solid #EAEAEA' }}
+                style={{ paddingBottom: 10, borderBottom: '1px solid #EAEAEA' }}
               >
                 <div>
                   <div className="icon">
@@ -280,6 +286,7 @@ const Sidebar = ({
                       className="block"
                     >
                       {data?.total_sales}
+                      <span className="unit">({unit})</span>
                     </span>
                   </div>
                 </div>
@@ -295,6 +302,7 @@ const Sidebar = ({
                       className="block"
                     >
                       {data?.total_ntp}
+                      <span className="unit">({unit})</span>
                     </span>
                   </div>
                 </div>
@@ -310,6 +318,7 @@ const Sidebar = ({
                       className="block"
                     >
                       {data?.total_installs}
+                      <span className="unit">({unit})</span>
                     </span>
                   </div>
                 </div>
@@ -334,10 +343,12 @@ const Sidebar = ({
                   <button
                     onClick={shareImage}
                     className="leader-stats-share-btn"
+                    disabled={isGenerating}
                   >
                     <FaShareSquare size={17} color="#fff" className="mr1" />
-                    <span> {isGenerating ? 'Generating link' : 'Share'} </span>
+                    <span> {isGenerating ? 'Downloading' : 'Share'} </span>
                   </button>
+
                   {isShareOpen && (
                     <SocialShare
                       setIsOpen={setIsShareOpen}

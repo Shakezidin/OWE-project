@@ -16,7 +16,7 @@ import {
 import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { AiOutlineDatabase } from 'react-icons/ai';
 import { AiOutlineUserSwitch } from 'react-icons/ai';
-import { ImStatsBars2 } from "react-icons/im";
+import { ImStatsBars2 } from 'react-icons/im';
 
 const performance = {
   performance: [
@@ -180,14 +180,29 @@ const mob = {
       },
     },
     {
-      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+      path: ROUTES.USER_MANAEMENT,
 
       sidebarProps: {
-        displayText: 'Team Management',
-        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+        displayText: 'User Management',
+        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
-   
+    {
+      path: ROUTES.TECHNICAL_SUPPORT,
+
+      sidebarProps: {
+        displayText: 'Technical Support',
+        icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    // {
+    //   path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+
+    //   sidebarProps: {
+    //     displayText: 'Team Management',
+    //     icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
   ],
 };
 
@@ -216,6 +231,11 @@ const other = {
         icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
       },
     },
+  ],
+};
+
+const leaderboard = {
+  leaderboard: [
     {
       path: ROUTES.LEADERBOARD,
       sidebarProps: {
@@ -225,6 +245,7 @@ const other = {
     },
   ],
 };
+
 const support = {
   support: [
     {
@@ -250,11 +271,11 @@ export const createSideMenuList = (): any[] => {
     sideMenu.push(DB);
     sideMenu.push(project);
     sideMenu.push(other);
+    sideMenu.push(leaderboard);
     sideMenu.push(support);
     sideMenu.push(mob);
   } else {
     if (
-      role === TYPE_OF_USER.DEALER_OWNER ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
       role === TYPE_OF_USER.SUB_DEALER_OWNER ||
       role === TYPE_OF_USER.APPOINTMENT_SETTER ||
@@ -267,6 +288,16 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(DB);
       sideMenu.push(project);
       sideMenu.push(support);
+    } else if (role === TYPE_OF_USER.DEALER_OWNER) {
+      sideMenu.push(performance);
+      sideMenu.push(commissionMenu);
+      sideMenu.push(repayMenu);
+      sideMenu.push(arMenu);
+      sideMenu.push(DB);
+      sideMenu.push(project);
+      sideMenu.push(leaderboard);
+      sideMenu.push(support);
+      sideMenu.push(mob);
     } else if (
       role === TYPE_OF_USER.REGIONAL_MANGER ||
       role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
@@ -275,7 +306,9 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(performance);
       sideMenu.push(repayMenu);
       sideMenu.push(project);
+      sideMenu.push(leaderboard);
       sideMenu.push(support);
+      sideMenu.push(mob);
     } else if (role === TYPE_OF_USER.DB_USER) {
       sideMenu.push(DB);
       sideMenu.push(support);

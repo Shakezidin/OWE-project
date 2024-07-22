@@ -30,9 +30,6 @@ function useWindowWidth() {
   return width;
 }
 
-
-
-
 const MainLayout = () => {
   const width = useWindowWidth();
   const isMobile = width < 768;

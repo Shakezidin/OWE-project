@@ -1,20 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Table from './components/Table';
-import './index.css';
-import Sidebar from './components/Sidebar';
-import Banner from './components/Banner';
-import PerformanceCards from './components/PerformanceCards';
+import { format, subDays } from 'date-fns';
+import { toCanvas } from 'html-to-image';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { format, subDays } from 'date-fns';
-import axios from 'axios';
-import { toCanvas } from 'html-to-image';
-import { group } from 'console';
+import Banner from './components/Banner';
+import PerformanceCards from './components/PerformanceCards';
+import Sidebar from './components/Sidebar';
+import Table from './components/Table';
+import './index.css';
 
 export type DateRangeWithLabel = {
   label?: string;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
 };
 
 const categories = [
@@ -24,7 +22,12 @@ const categories = [
   { name: 'Cancel', key: 'cancel' },
 ];
 
-const groupby = [{ label: 'Select', value: 'primary_sales_rep' }];
+const role = localStorage.getItem('role');
+
+const groupby = [{ label: 'Dealer', value: 'dealer' }];
+if (role !== 'Admin') {
+  groupby[0] = { label: 'Sale Rep', value: 'primary_sales_rep' };
+}
 interface Details {
   dealer_name?: string;
   dealer_logo?: string;
@@ -44,27 +47,18 @@ const Index = () => {
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
   const [bannerDetails, setBannerDetails] = useState<Details>({});
-  const [selectDealer, setSelectDealer] = useState<string>('UNTD');
-  const [dealer, setDealer] = useState<{
-    dealer?: string;
-    rep_name?: string;
-    start_date?: string;
-    end_date?: string;
-    leader_type: string;
-    name: string;
-    rank: number;
-  }>(
-    // @ts-ignore
-    { leader_type: 'sale' }
-  );
+  const [selectDealer, setSelectDealer] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [dealer, setDealer] = useState<any>({});
   const topCards = useRef<HTMLDivElement | null>(null);
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
       label: 'This Week',
-      start: format(subDays(today, 7), 'dd-MM-yyyy'),
-      end: format(today, 'dd-MM-yyyy'),
+      start: subDays(today, 7),
+      end: today,
     });
 
   useEffect(() => {
@@ -75,9 +69,9 @@ const Index = () => {
           sort_by: active,
           page_size: 3,
           page_number: 1,
-          start_date: selectedRangeDate.start,
-          end_date: selectedRangeDate.end,
-          dealer: selectDealer,
+          start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+          end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+          dealer: selectDealer.map((item) => item.value),
           group_by: groupBy,
         });
 
@@ -96,6 +90,7 @@ const Index = () => {
     if (topCards.current) {
       const element = topCards.current;
       const scrollHeight = element.scrollHeight;
+      setGenerating(true);
       toCanvas(element, {
         height: scrollHeight,
       }).then((canvas) => {
@@ -104,13 +99,15 @@ const Index = () => {
         link.href = img;
         link.download = 'Performance_Leaderboard.png';
         link.click();
+
+        setGenerating(false);
       });
     }
   };
 
   return (
     <div className="px1">
-      <div ref={topCards} style={{background:"#f3f3f3"}}>
+      <div ref={topCards} style={{ background: '#f3f3f3' }}>
         <Banner
           selectDealer={selectDealer}
           setSelectDealer={setSelectDealer}
@@ -123,6 +120,7 @@ const Index = () => {
           socialUrl={socialUrl}
           setIsOpen={setIsOpenShare}
           details={details}
+          activeHead={activeHead}
         />
       </div>
       <Table
@@ -138,7 +136,12 @@ const Index = () => {
         setDealer={setDealer}
         selectDealer={selectDealer}
       />
-      <Sidebar dealer={dealer} setIsOpen={setIsOpen} isOpen={isOpen} />
+      <Sidebar
+        dealer={dealer}
+        setIsOpen={setIsOpen}
+        isOpen={isOpen}
+        unit={activeHead}
+      />
     </div>
   );
 };

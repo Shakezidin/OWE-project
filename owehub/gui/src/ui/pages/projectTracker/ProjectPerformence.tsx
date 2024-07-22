@@ -25,6 +25,8 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
@@ -110,6 +112,9 @@ const ProjectPerformence = () => {
     isLoading,
   } = useAppSelector((state) => state.perfomanceSlice);
   const { sessionTimeout } = useAppSelector((state) => state.auth);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   useEffect(() => {
     const current = format(new Date(), 'yyyy-MM-dd');
@@ -174,14 +179,14 @@ const ProjectPerformence = () => {
 
    const projectDashData = [
     {
-      ruppes: tileData.all_sales,
+      ruppes: tileData?.all_sales,
       para: 'All Sales',
       percentColor: '#8E81E0',
       key: 'SalesPeriod',
       percent: 80,
     },
     {
-      ruppes: tileData.
+      ruppes: tileData?.
       total_cancellation,
       para: 'Total Cancellation',
       iconBgColor: '#FFE6E6',
@@ -190,7 +195,7 @@ const ProjectPerformence = () => {
       percent: 30,
     },
     {
-      ruppes: tileData.total_installation,
+      ruppes: tileData?.total_installation,
       para: 'Total Installation',
       percentColor: '#63ACA3',
       key: 'installation_period',
@@ -198,30 +203,60 @@ const ProjectPerformence = () => {
     },
   ];
 
-  useEffect(() => {
-    (async () => {
-      try {
+
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
        
-        const data = await postCaller('get_performance_tiledata', {
+  //       const data = await postCaller('get_performance_tiledata', {
         
-          start_date: resDatePicker.startdate,
-          end_date: resDatePicker.enddate 
+  //         start_date: resDatePicker.startdate,
+  //         end_date: resDatePicker.enddate 
          
-        });
-     
-        setTileData(data.data)
-        if (data.status > 201) {
+  //       });
+  //       if(data?.data){
+  //         setTileData(data?.data)
+  //       }
         
-          toast.error(data.message);
-          return;
-        }
+  //       if (data.status > 201) {
+  //         toast.error(data.message);
+  //         return;
+  //       }
        
+  //     } catch (error) {
+  //       console.error(error);
+  //     }  
+  //   })();
+  // }, []);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (isAuthenticated) {
+          const data = await postCaller('get_performance_tiledata', {
+            start_date: resDatePicker.startdate,
+            end_date: resDatePicker.enddate
+          });
+          
+          if (data?.data) {
+            setTileData(data?.data);
+          }
+          
+          if (data.status > 201) {
+            toast.error(data.message);
+            return;
+          }
+        }
       } catch (error) {
         console.error(error);
-      }  
-    })();
-  }, []);
+      }
+    };
+  
+    fetchData();
+  }, [isAuthenticated, resDatePicker.startdate, resDatePicker.enddate]);
 
+  
 console.log(tileData, "title")
   return (
     <div className="">

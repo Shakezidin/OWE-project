@@ -2,21 +2,33 @@
   /* height: 165px; */
   padding: 1.5rem 0;
   width: 100%;
-  background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
   overflow: hidden;
   border-radius: 10px;
   margin-top: 30px;
   position: relative;
+}
+.bg-blue {
+  background: linear-gradient(0deg, #215f9a 0%, #44adf9 100%);
+}
+.bg-green-radiant {
+  background: linear-gradient(0deg, #89c115 100%, #8ec126 100%);
 }
 .banner-wrap {
   display: flex;
   align-items: center;
 }
 
-.dealer-dropdown-filter{
+.dealer-dropdown-filter .dealer-toggler {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 24px;
+  color: #000;
+  font-size: 12px;
+}
+.dealer-dropdown-filter {
   position: absolute;
-  bottom: 10px;
-  right: 111px;
+  bottom: 0.8rem;
+  right: 115px;
 }
 @keyframes rotate {
   0% {
@@ -30,6 +42,11 @@
   text-transform: uppercase;
   color: #fff;
   font-weight: 500;
+}
+.green-banner-heading {
+  line-height: 47px;
+  font-weight: 600;
+  font-size: 3rem;
 }
 .banner-left {
   gap: 1.5rem;
@@ -66,6 +83,7 @@
 .banner-names {
   line-height: 18px;
   gap: 0.7rem;
+  z-index: 99;
 }
 .owner-heading {
   color: #dedede;
@@ -80,6 +98,12 @@
   position: absolute;
   right: 0;
   top: -35px;
+}
+.user-trophy {
+  align-self: flex-end;
+  position: absolute;
+  right: 0;
+  top: -30px;
 }
 .banner-star-1 {
   position: absolute;
@@ -110,7 +134,7 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.4rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   outline: none;
   border: none;
   border-radius: 1.5rem;
@@ -123,7 +147,7 @@
   height: 16px;
   width: 16px;
 }
-.admin-edit-button{
+.admin-edit-button {
   display: flex;
   align-items: center;
 }
@@ -159,6 +183,31 @@
     transform: rotate(360deg);
   }
 }
+.radiant-anime-2 {
+  position: absolute;
+  background-image: radial-gradient(
+    farthest-corner at 40px 40px,
+    #fdd68a 5%,
+    transparent 50%,
+    #11ff1b 100%,
+    #ffc805 100%,
+    #cefff0 100%
+  );
+  opacity: 0.7;
+  filter: blur(40px);
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  animation: color2 4s linear infinite;
+}
+@keyframes color2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 @keyframes spin {
   0% {
     transform: scale(0.5) rotate(0deg);
@@ -182,17 +231,26 @@
 }
 
 @media screen and (max-width: 1200px) {
-  .banner-left > object {
-    width: 96px;
+  .banner-trophy img {
+    width: 200px;
   }
-
   .banner-trophy {
-    top: auto;
-    bottom: 0;
+    top: -18px;
   }
-
-  .banner-trophy object {
-    width: 144px;
+  .banner-star-1 {
+    top: 50px;
+    width: 18px;
+    right: 170px;
+  }
+  .banner-star-2 {
+    width: 18px;
+    top: 13px;
+    right: 77px;
+  }
+  .banner-star-3 {
+    right: 140px;
+    top: 130px;
+    width: 14px;
   }
 }
 
@@ -216,36 +274,42 @@
     padding-left: 10% !important;
   }
   .banner-trophy {
-    top: 110px;
+    top: 130px;
     bottom: unset;
   }
   .banner-star-2 {
-    top: 140px;
+    top: 155px;
   }
   .banner-star-1 {
-    top: 190px;
+    top: 200px;
   }
   .banner-star-3 {
-    top: 285px;
+    top: 278px;
   }
-  .banner-names {
-    z-index: 99;
+  .green-banner-heading {
+    font-size: 2rem;
+    width: 250px;
+    line-height: 37px;
   }
-  @media screen and (max-width: 424px) {
-    .banner-trophy {
-      right: -20px;
-    }
-    .banner-star-2 {
-      top: 140px;
-      right: 65px;
-    }
-    .banner-star-1 {
-      top: 200px;
-      right: 185px;
-    }
-    .banner-star-3 {
-      top: 285px;
-      right: 145px;
-    }
+  .banner-left img {
+    width: 110px;
+  }
+}
+
+@media (max-width: 968px) {
+  .user-trophy {
+    position: relative;
+    margin-inline: auto;
+    bottom: -14px;
+  }
+
+  .user-trophy img {
+    transform: scale(1.2);
+  }
+}
+@media (max-width: 400px) {
+  .banner-left,
+  .banner-right {
+    padding-left: 10px !important;
   }
 }

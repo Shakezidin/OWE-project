@@ -10,14 +10,14 @@ package models
 type GetLeaderBoardRequest struct {
 	Role       string
 	Email      string
-	DealerName string `json:"dealer"`
-	Type       string `json:"type"`
-	StartDate  string `json:"start_date"`
-	EndDate    string `json:"end_date"`
-	GroupBy    string `json:"group_by"`
-	SortBy     string `json:"sort_by"`
-	PageNumber int64  `json:"page_number"`
-	PageSize   int64  `json:"page_size"`
+	DealerName []string `json:"dealer"`
+	Type       string   `json:"type"`
+	StartDate  string   `json:"start_date"`
+	EndDate    string   `json:"end_date"`
+	GroupBy    string   `json:"group_by"`
+	SortBy     string   `json:"sort_by"`
+	PageNumber int64    `json:"page_number"`
+	PageSize   int64    `json:"page_size"`
 }
 
 type GetLeaderBoard struct {
