@@ -27,11 +27,3 @@ type MailRequestBody struct {
 	Subject     string `json:"subject"`
 	ToMail      string `json:"to_mail"`
 }
-
-type UserEmailBody struct {
-	HtmlContent string `json:"html_content"`
-	Message     string `json:"message"`
-	Subject     string `json:"subject"`
-	ToMail      string `json:"to_mail"`
-	Attachments string `json:"attachments"`
-}

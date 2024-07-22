@@ -1565,13 +1565,6 @@ var apiRoutes = ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/SendMail_to_IT_from_User",
-		apiHandler.SendMailtoITfromUser,
-		false,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
 }
 
 /******************************************************************************
