@@ -161,10 +161,10 @@ func HandleManagePerformanceTileDataRequest(resp http.ResponseWriter, req *http.
 	}
 
 	// Log the data being sent
-	log.FuncDebugTrace(0, "rep pay tiles data: %+v", dealerPayTileData)
+	log.FuncDebugTrace(0, "performance tiles data: %+v", dealerPayTileData)
 
 	// Send response using FormAndSendHttpResp function
-	FormAndSendHttpResp(resp, "rep pay tales data retrieved successfully", http.StatusOK, dealerPayTileData)
+	FormAndSendHttpResp(resp, "performance tile data retrieved successfully", http.StatusOK, dealerPayTileData)
 }
 
 /******************************************************************************
@@ -253,17 +253,17 @@ func PreparePerformanceSaleRepFilters(tableName string, dataFilter models.GetPer
 		endDate.Format("02-01-2006 15:04:05"),
 	)
 
-	filtersBuilder.WriteString(fmt.Sprintf(" (rep_pay_pr_data.wc BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-5, len(whereEleList)-4))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR rep_pay_pr_data.pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-3, len(whereEleList)-2))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR rep_pay_pr_data.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS'))", len(whereEleList)-1, len(whereEleList)))
-
 	// contract_date, pv_installdate, cancel_date
 	if !whereAdded {
 		filtersBuilder.WriteString(" WHERE ")
 		whereAdded = true
 	}
 
-	filtersBuilder.WriteString(" rep_pay_pr_data.owe_contractor IN (")
+	filtersBuilder.WriteString(fmt.Sprintf(" (rep_pay_pr_data.wc BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-5, len(whereEleList)-4))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR rep_pay_pr_data.pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-3, len(whereEleList)-2))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR rep_pay_pr_data.cancel_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS'))", len(whereEleList)-1, len(whereEleList)))
+
+	filtersBuilder.WriteString(" AND rep_pay_pr_data.owe_contractor IN (")
 	for i, sale := range saleRepList {
 		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, sale)
@@ -273,7 +273,7 @@ func PreparePerformanceSaleRepFilters(tableName string, dataFilter models.GetPer
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND rep_pay_pr_data.dealer_code = $%d AND intOpsMetSchema.unique_id != '' ", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(") AND rep_pay_pr_data.dealer_code = $%d AND rep_pay_pr_data.unique_id != '' ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	filters = filtersBuilder.String()
