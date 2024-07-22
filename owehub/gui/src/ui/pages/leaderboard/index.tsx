@@ -8,6 +8,7 @@ import PerformanceCards from './components/PerformanceCards';
 import Sidebar from './components/Sidebar';
 import Table from './components/Table';
 import './index.css';
+import { useAppSelector } from '../../../redux/hooks';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -61,31 +62,38 @@ const Index = () => {
       end: today,
     });
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await postCaller('get_perfomance_leaderboard', {
-          type: activeHead,
-          sort_by: active,
-          page_size: 3,
-          page_number: 1,
-          start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-          end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-          dealer: selectDealer.map((item) => item.value),
-          group_by: groupBy,
-        });
+    const { isAuthenticated, role_name } = useAppSelector(
+      (state) => state.auth
+    );
 
-        if (data.status > 201) {
-          toast.error(data.message);
-          return;
+  useEffect(() => {
+    if(isAuthenticated){
+
+      (async () => {
+        try {
+          const data = await postCaller('get_perfomance_leaderboard', {
+            type: activeHead,
+            sort_by: active,
+            page_size: 3,
+            page_number: 1,
+            start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+            end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+            dealer: selectDealer.map((item) => item.value),
+            group_by: groupBy,
+          });
+  
+          if (data.status > 201) {
+            toast.error(data.message);
+            return;
+          }
+          setDetails(data.data?.ap_ded_list);
+        } catch (error) {
+          console.error(error);
+        } finally {
         }
-        setDetails(data.data?.ap_ded_list);
-      } catch (error) {
-        console.error(error);
-      } finally {
-      }
-    })();
-  }, [active, activeHead, selectedRangeDate, selectDealer, groupBy]);
+      })();
+    }
+  }, [active, activeHead, selectedRangeDate, selectDealer, groupBy,isAuthenticated]);
   const shareImage = () => {
     if (topCards.current) {
       const element = topCards.current;

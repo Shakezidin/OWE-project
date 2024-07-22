@@ -11,6 +11,7 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { FaChevronCircleDown, FaChevronDown } from 'react-icons/fa';
 import { json } from 'stream/consumers';
+import { useAppSelector } from '../../../../redux/hooks';
 
 interface BannerProps {
   selectDealer: { label: string; value: string }[];
@@ -34,6 +35,9 @@ const Banner: React.FC<BannerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
+  const { isAuthenticated, role_name } = useAppSelector(
+    (state) => state.auth
+  );
 
   const tableData = {
     tableNames: ['dealer'],
@@ -46,33 +50,39 @@ const Banner: React.FC<BannerProps> = ({
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
-    getNewFormData();
-  }, []);
+    if(isAuthenticated){
+
+      getNewFormData();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (role !== 'Admin') {
-      (async () => {
-        try {
-          const data = await postCaller('get_leaderboarddatarequest', {});
+if(isAuthenticated){
 
-          if (data.status > 201) {
-            // setIsLoading(false);
+  if (role !== 'Admin') {
+    (async () => {
+      try {
+        const data = await postCaller('get_leaderboarddatarequest', {});
 
-            toast.error(data?.message);
-            return;
-          }
-          // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-          // setTotalCount(data?.dbRecCount);
-          setDetails(data?.data);
-          setDealerId(data?.data?.dealer_id);
-        } catch (error) {
-          console.error(error);
-        } finally {
+        if (data.status > 201) {
           // setIsLoading(false);
+
+          toast.error(data?.message);
+          return;
         }
-      })();
-    }
-  }, [dealerId, role, refetch]);
+        // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+        // setTotalCount(data?.dbRecCount);
+        setDetails(data?.data);
+        setDealerId(data?.data?.dealer_id);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        // setIsLoading(false);
+      }
+    })();
+  }
+}
+  }, [dealerId, role, refetch,isAuthenticated]);
 
   useEffect(() => {
   if(role === "Admin"){
@@ -85,7 +95,7 @@ const Banner: React.FC<BannerProps> = ({
   },[refetch])
 
   useEffect(() => {
-    if(details?.dealer_id){
+    if(details?.dealer_id && isAuthenticated){
     (async () => {
       try {
         const data = await postCaller('get_vdealer', {
@@ -116,7 +126,7 @@ const Banner: React.FC<BannerProps> = ({
       }
     })();
     }
-  }, [details]);
+  }, [details,isAuthenticated]);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const handleChange = (opt: { label: string; value: string }) => {
