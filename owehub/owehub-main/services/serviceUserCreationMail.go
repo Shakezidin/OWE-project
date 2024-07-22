@@ -3,10 +3,13 @@ package services
 import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -94,4 +97,107 @@ func SendMailToUserFromUI(resp http.ResponseWriter, req *http.Request) {
 	client.Send(message)
 
 	FormAndSendHttpResp(resp, "Email send succesfully", http.StatusAccepted, fmt.Sprintf("email sent succesfully to %v", dataReq.ToMail), 1)
+}
+
+/***************************************************************************************
+ * FUNCTION:		SendMailtoITfromUser
+ * DESCRIPTION:     sending an email from a user to the IT department
+ * INPUT:			attachments
+ * RETURNS:    		void
+***************************************************************************************/
+func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
+	var (
+		err     error
+		dataReq models.UserEmailBody
+	)
+
+	// Logging
+	log.EnterFn(0, "SendMailtoITfromUser")
+	defer func() { log.ExitFn(0, "SendMailtoITfromUser", nil) }()
+
+	// Parse multipart form data
+	err = req.ParseMultipartForm(10 << 20) // Limit to 10 MB
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse multipart form: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse multipart form", http.StatusBadRequest, nil)
+		return
+	}
+
+	// Extract JSON body
+	jsonData := req.FormValue("data")
+	if jsonData == "" {
+		err = fmt.Errorf("missing JSON body")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Missing JSON body", http.StatusBadRequest, nil)
+		return
+	}
+
+	// Unmarshal JSON body into dataReq
+	err = json.Unmarshal([]byte(jsonData), &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal JSON body: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal JSON body", http.StatusBadRequest, nil)
+		return
+	}
+
+	// Process attachment if present
+	var attachment *mail.Attachment
+	if file, fileHeader, err := req.FormFile("attachment"); err == nil {
+		defer file.Close()
+
+		// Check file type
+		contentType := fileHeader.Header.Get("Content-Type")
+		if !strings.HasPrefix(contentType, "image/") || (contentType != "image/png" && contentType != "image/jpeg" && contentType != "image/jpg") {
+			log.FuncErrorTrace(0, "Unsupported file type: %v", contentType)
+			FormAndSendHttpResp(resp, "Unsupported file type. Only png, jpg, jpeg are allowed.", http.StatusBadRequest, nil)
+			return
+		}
+
+		// Read file content
+		fileContent, err := io.ReadAll(file)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to read file content: %v", err)
+			FormAndSendHttpResp(resp, "Failed to read file content", http.StatusBadRequest, nil)
+			return
+		}
+
+		// Create attachment
+		encoded := base64.StdEncoding.EncodeToString(fileContent)
+		attachment = mail.NewAttachment()
+		attachment.SetContent(encoded)
+		attachment.SetType(contentType)
+		attachment.SetFilename(fileHeader.Filename)
+		attachment.SetDisposition("attachment")
+	}
+
+	from := mail.NewEmail("OWE", "it@ourworldenergy.com")
+	to := mail.NewEmail("", dataReq.ToMail)
+	plainTextContent := dataReq.Message
+	htmlContent := dataReq.HtmlContent
+	subject := dataReq.Subject
+
+	// Optionally include issue in the message if provided
+	if dataReq.Issue != nil {
+		plainTextContent += fmt.Sprintf("\n\nIssue: %s", *dataReq.Issue)
+		htmlContent += fmt.Sprintf("<br><br><b>Issue:</b> %s", *dataReq.Issue)
+	}
+
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+
+	// Add attachment if present
+	if attachment != nil {
+		message.AddAttachment(attachment)
+	}
+
+	// Send the email
+	client := sendgrid.NewSendClient("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")
+	_, err = client.Send(message)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to send email: %v", err)
+		FormAndSendHttpResp(resp, "Failed to send email", http.StatusInternalServerError, nil)
+		return
+	}
+
+	// Respond to client
+	FormAndSendHttpResp(resp, "Email sent successfully", http.StatusAccepted, fmt.Sprintf("Email sent successfully to %v", dataReq.ToMail), 1)
 }

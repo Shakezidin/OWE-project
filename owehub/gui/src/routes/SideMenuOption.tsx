@@ -262,6 +262,8 @@ const support = {
 export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
+const remiainingPage:{ [key: string]: any[] } = {}
+remiainingPage.mob = [{...mob.mob[0]},{...mob.mob[2]}]
 
   if (role === TYPE_OF_USER.ADMIN) {
     sideMenu.push(performance);
@@ -288,6 +290,7 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(DB);
       sideMenu.push(project);
       sideMenu.push(support);
+      sideMenu.push(remiainingPage);
     } else if (role === TYPE_OF_USER.DEALER_OWNER) {
       sideMenu.push(performance);
       sideMenu.push(commissionMenu);
@@ -297,7 +300,7 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(project);
       sideMenu.push(leaderboard);
       sideMenu.push(support);
-      sideMenu.push(mob);
+      sideMenu.push(remiainingPage);
     } else if (
       role === TYPE_OF_USER.REGIONAL_MANGER ||
       role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
@@ -308,10 +311,11 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(project);
       sideMenu.push(leaderboard);
       sideMenu.push(support);
-      sideMenu.push(mob);
+      sideMenu.push(remiainingPage);
     } else if (role === TYPE_OF_USER.DB_USER) {
       sideMenu.push(DB);
       sideMenu.push(support);
+      sideMenu.push(remiainingPage);
     }
   }
 

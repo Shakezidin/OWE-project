@@ -26,6 +26,7 @@ interface ILeaderBordUser {
   install: number;
   ntp: number;
   cancel: number;
+  hightlight: boolean;
 }
 
 interface IDealer {
@@ -509,6 +510,11 @@ const Table = ({
     setPage(page - 1);
   };
 
+  const sortedPage = leaderTable
+    .slice()
+    .sort((a, b) => (a.hightlight || b.hightlight ? -1 : 1));
+console.log(sortedPage,"srtedPage");
+
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       <button className="leaderboard-data__export" disabled>
@@ -605,12 +611,13 @@ const Table = ({
                     </div>
                   </td>
                 </tr>
-              ) : leaderTable.length ? (
-                leaderTable.map((item) => {
+              ) : sortedPage.length ? (
+                sortedPage.map((item) => {
                   return (
                     <tr
                       className="pointer"
                       key={item.rank}
+                      style={{background:item.hightlight?"#D7E6FE":undefined}}
                       onClick={() => {
                         setIsOpen(item.rank);
                         setDealer((prev) => ({
