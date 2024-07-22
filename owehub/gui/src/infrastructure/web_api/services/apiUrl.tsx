@@ -43,7 +43,7 @@ export const postCaller = async (
   const config: AxiosRequestConfig = {
     headers: {
       Authorization: `${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/json',
     },
   };
   try {
