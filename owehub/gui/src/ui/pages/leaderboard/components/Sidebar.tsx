@@ -101,7 +101,7 @@ const Sidebar = ({
   const [isShareOpen, setIsShareOpen] = useState(false);
   const topCards = useRef<HTMLDivElement | null>(null);
   const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'true'
+    localStorage.getItem('is_password_change_required') === 'false'
   );
   const getLeaderDetail = async () => {
     try {
