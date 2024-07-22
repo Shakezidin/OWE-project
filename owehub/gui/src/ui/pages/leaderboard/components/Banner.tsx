@@ -149,7 +149,7 @@ const Banner: React.FC<BannerProps> = ({
   return (
     <div className="relative">
       <div
-        className={`${role !== 'Admin' ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
+        className={`${role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
         style={{ background: details.bg_color || undefined }}
       >
         <div
@@ -164,7 +164,7 @@ const Banner: React.FC<BannerProps> = ({
           <div className="flex items-center pl4 banner-left">
             <img
               src={
-                role === 'Admin' && role === TYPE_OF_USER.FINANCE_ADMIN
+                role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN
                   ? details?.dealer_logo || ICONS.OWEBanner
                   : details?.dealer_logo || ICONS.BannerLogo
               }
@@ -257,7 +257,7 @@ const Banner: React.FC<BannerProps> = ({
         )}
       </div>
 
-      {role === 'Admin' && role === TYPE_OF_USER.FINANCE_ADMIN && (
+      {(role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) && (
         <div
           className=" dealer-dropdown-filter"
           style={{ zIndex: 999 }}
