@@ -315,6 +315,7 @@ const DateFilter = ({
         <Select
           options={periodFilterOptions}
           value={selected}
+          // placeholder={selected?"Custom"}
           isSearchable={false}
           onChange={(value) => value && setSelected(value)}
           styles={{
@@ -659,7 +660,7 @@ console.log(sortedPage,"srtedPage");
                 })
               ) : (
                 <tr style={{ border: 0 }}>
-                  <td colSpan={4}>
+                  <td colSpan={7}>
                     <DataNotFound />
                   </td>
                 </tr>
