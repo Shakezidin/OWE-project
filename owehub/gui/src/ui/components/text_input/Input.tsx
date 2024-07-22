@@ -79,6 +79,9 @@ const Input: FC<InputProps> = ({
           value={value}
           max={'2050-01-01'}
           onChange={(e) => {
+            if (name.includes('password')) {
+              onChange(e);
+            }
             if (name.includes('unique')) {
               const trim = e.target.value.trim();
               e.target.value = trim;
