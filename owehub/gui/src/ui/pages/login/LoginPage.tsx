@@ -123,9 +123,12 @@ export const LoginPage = () => {
             is_password_change_required
           );
           if (role_name === TYPE_OF_USER.DB_USER) {
-            navigate(ROUTES.DB_MANAGER_DASHBOARD);
+            // navigate(ROUTES.DB_MANAGER_DASHBOARD);
+            navigate(ROUTES.LEADERBOARD);
           } else {
-            navigate(ROUTES.PROJECT_PERFORMANCE);
+            // navigate(ROUTES.PROJECT_PERFORMANCE);
+            navigate(ROUTES.LEADERBOARD);
+
           }
         } else {
           toast.error(result.message);

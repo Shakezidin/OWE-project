@@ -233,7 +233,7 @@ function App() {
           path="/login"
           element={
             isAuthenticated ? (
-              <Navigate to={ROUTES.PROJECT_PERFORMANCE} />
+              <Navigate to={ROUTES.LEADERBOARD} />
             ) : (
               <LoginPage />
             )
