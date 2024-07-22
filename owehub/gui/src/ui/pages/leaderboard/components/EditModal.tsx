@@ -7,6 +7,7 @@ import { MdCheck } from 'react-icons/md';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 
 interface EditModalProps {
   onClose: () => void;
@@ -164,7 +165,7 @@ const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
           
         }
       } else {
-        if(role !== "Admin"){
+        if(role !== "Admin" && role !== TYPE_OF_USER.FINANCE_ADMIN ){
         toast.error("Something is Wrong")
         }
       }
