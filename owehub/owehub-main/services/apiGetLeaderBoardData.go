@@ -232,7 +232,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
 
-	if dataReq.Role == "Sale Representative" {
+	if dataReq.Role == "Sale Representative" && dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep" {
 		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
 	}
 
