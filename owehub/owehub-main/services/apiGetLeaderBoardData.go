@@ -79,7 +79,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if dataReq.Role != "Admin" {
+	if dataReq.Role != "Admin" && dataReq.Role != "Finance Admin" {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
 			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
