@@ -149,7 +149,7 @@ const Banner: React.FC<BannerProps> = ({
   return (
     <div className="relative">
       <div
-        className={`${role !== 'Admin' ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
+        className={`${role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
         style={{ background: details.bg_color || undefined }}
       >
         <div
