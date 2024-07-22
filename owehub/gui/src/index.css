@@ -460,10 +460,11 @@ br {
 
 @media screen and (max-width: 767px) {
 
-
-  .country-list{
-    width: 100%;
-    max-width: 244px;
+  .form-control open{
+    width: 35px;
+  }
+  .react-tel-input .country-list{
+    width: 248px;
   }
 
 }
