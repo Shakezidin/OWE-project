@@ -144,13 +144,18 @@ const Banner: React.FC<BannerProps> = ({
           {/* left side  */}
           <div className="flex items-center pl4 banner-left">
             <img
-              src={role !== 'Admin' ? ICONS.BannerLogo : ICONS.OWEBanner}
+              src={
+                role === 'Admin'
+                  ? ICONS.OWEBanner
+                  : details?.dealer_logo || ICONS.BannerLogo
+              }
+              style={{maxWidth:132}}
               alt="solar-name-icon"
             />
             <div className="">
               {role !== 'Admin' ? (
                 <h1 className="solar-heading">
-                  {details?.dealer_name || 'N/A'}
+                  {details?.daeler_name || 'N/A'}
                 </h1>
               ) : (
                 <h1 className="solar-heading green-banner-heading">
@@ -159,10 +164,7 @@ const Banner: React.FC<BannerProps> = ({
               )}
               {role !== 'Admin' ? (
                 <div className="flex items-center ">
-                  <img
-                    src={details?.dealer_logo || ICONS.OWEBannerLogo}
-                    alt=""
-                  />
+                  <img src={ICONS.OWEBannerLogo} alt="" />
                   <p className="left-ban-des">
                     Powered by <br /> <span>Our World Energy</span>
                   </p>
@@ -243,7 +245,10 @@ const Banner: React.FC<BannerProps> = ({
             onClick={() => setIsOpen(!isOpen)}
             className="dealer-toggler pointer flex items-center"
           >
-            <span>{selectDealer.length} {selectDealer.length>1?"Dealers":"Dealer"}</span>
+            <span>
+              {selectDealer.length}{' '}
+              {selectDealer.length > 1 ? 'Dealers' : 'Dealer'}
+            </span>
             <FaChevronDown className="ml1" />
           </div>
           {isOpen && (
