@@ -289,7 +289,7 @@ const Sidebar = ({
                       style={{ fontSize: 21, fontWeight: 700 }}
                       className="block"
                     >
-                      {dealer.sale}
+                      {dealer.sale?.toFixed?.(2)}
                       <span className="unit">({unit==="kw"?"kW":"count"})</span>
                     </span>
                   </div>
