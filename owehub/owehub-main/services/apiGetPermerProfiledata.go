@@ -84,6 +84,10 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		}
 	}
 
+	if dataReq.DataType == "team" {
+		performerProfileData.TeamName = dataReq.Name
+	}
+
 	query = GetQueryForTotalCount(dataReq)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil {
@@ -130,13 +134,13 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 	case "sale_rep":
 		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
-		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 
 	filtersBuilder.WriteString(fmt.Sprintf(" AND contract_date BETWEEN current_date - interval '7 day' * $%d AND current_date ", len(whereEleList)+1))
@@ -153,9 +157,15 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 
 	var filtersBuilder strings.Builder
 
-	filtersBuilder.WriteString("SELECT COUNT(CASE WHEN contract_date IS NOT NULL THEN system_size END) AS total_sales,")
-	filtersBuilder.WriteString(" COUNT(CASE WHEN ntp_date IS NOT NULL THEN system_size END) AS total_ntp,")
-	filtersBuilder.WriteString(" COUNT(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size END) AS total_installs")
+	if dataReq.CountKwSelection {
+		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN contract_date IS NOT NULL THEN system_size END) AS total_sales,")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN ntp_date IS NOT NULL THEN system_size END) AS total_ntp,")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size END) AS total_installs")
+	} else {
+		filtersBuilder.WriteString("SELECT SUM(CASE WHEN contract_date IS NOT NULL THEN system_size ELSE 0 END) AS total_sales,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN ntp_date IS NOT NULL THEN system_size ELSE 0 END) AS total_ntp,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size ELSE 0 END) AS total_installs")
+	}
 
 	filtersBuilder.WriteString(" FROM consolidated_data_view ")
 	filtersBuilder.WriteString(" WHERE ")
@@ -164,13 +174,13 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	case "sale_rep":
 		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
-		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
 		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters : %s", filters)

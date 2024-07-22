@@ -42,11 +42,12 @@ type GetPerformerAllData struct {
 }
 
 type GetPerformerProfileDataReq struct {
-	Email    string
-	DataType string `json:"data_type"`
-	Dealer   string `json:"dealer"`
-	Name     string `json:"name"`
-	Rank     int64    `json:"rank"`
+	Email            string
+	CountKwSelection bool   `json:"count_kw_selection"`
+	DataType         string `json:"data_type"`
+	Dealer           string `json:"dealer"`
+	Name             string `json:"name"`
+	Rank             int64  `json:"rank"`
 }
 
 type GetPerformerProfileData struct {
@@ -59,5 +60,5 @@ type GetPerformerProfileData struct {
 	Total_Installs int64  `json:"total_installs"`
 	WeeklySale     int64  `json:"weekly_sale"`
 	User_code      string `json:"user_code"`
-	Rank int64 `json:"rank"`
+	Rank           int64  `json:"rank"`
 }
