@@ -95,7 +95,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 className={`${isTablet ? '' : 'h4'} mb2 text-dark`}
                 style={{
                   fontWeight: '600',
-                  lineHeight: "20px",
                   fontSize: isTablet ? 14 : undefined,
                 }}
               >
@@ -229,7 +228,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               </div>
               <span className="mx1">-</span>
 
-              <h3 className="h4" style={{ fontWeight: '500' }}>
+              <h3 className="h4" style={{ fontWeight: '500', lineHeight: "20px" }}>
                 Inactive Users
               </h3>
             </div>
