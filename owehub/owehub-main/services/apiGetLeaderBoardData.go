@@ -39,6 +39,8 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		adminCheck            bool
 		dealerIn              string
 		dlrName               string
+		HighlightName         string
+		HighLightDlrName      string
 	)
 
 	log.EnterFn(0, "HandleGetLeaderBoardDataRequest")
@@ -79,7 +81,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if dataReq.Role != "Admin" {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT vd.dealer_name AS dealer_name FROM user_details ud
+			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
 			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
 			where ud.email_id = '%v';
 		`, dataReq.Email)
@@ -103,9 +105,16 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		log.FuncErrorTrace(0, "dealer name = = = = %v", dealerName)
-
 		dataReq.DealerName = append(dataReq.DealerName, dealerName)
+		if dataReq.Role == "Sale Representative" {
+			HighlightName, ok = data[0]["name"].(string)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to convert name to string for data: %v", data[0])
+				FormAndSendHttpResp(resp, "Failed to process sales rep name", http.StatusBadRequest, nil)
+				return
+			}
+			HighLightDlrName = dealerName
+		}
 	}
 
 	dealerIn = "dealer IN("
@@ -137,6 +146,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList := models.GetLeaderBoardList{}
 	if len(data) > 0 {
 		for _, item := range data {
+			var hightlight bool
 			Name, _ := item["name"].(string)
 
 			// Helper function to convert interface{} to int64
@@ -161,13 +171,17 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 				dlrName = dataReq.DealerName[0]
 			}
 
+			if HighLightDlrName == dlrName && HighlightName == Name {
+				hightlight = true
+			}
 			LeaderBoard := models.GetLeaderBoard{
-				Dealer:  dlrName,
-				Name:    Name,
-				Sale:    Sale,
-				Ntp:     Ntp,
-				Cancel:  Cancel,
-				Install: Install,
+				Dealer:    dlrName,
+				Name:      Name,
+				Sale:      Sale,
+				Ntp:       Ntp,
+				Cancel:    Cancel,
+				Install:   Install,
+				HighLight: hightlight,
 			}
 
 			LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, LeaderBoard)
@@ -187,11 +201,20 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	})
 
-	for i := range LeaderBoardList.LeaderBoardList {
+	var currSaleRep models.GetLeaderBoard
+	for i, val := range LeaderBoardList.LeaderBoardList {
+		if val.HighLight { // check name equeals
+			currSaleRep = val
+			currSaleRep.Rank = i + 1
+		}
 		LeaderBoardList.LeaderBoardList[i].Rank = i + 1
 	}
 
 	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
+
+	if dataReq.Role == "Sale Representative" {
+		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
+	}
 
 	RecordCount = int64(len(data))
 	log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
