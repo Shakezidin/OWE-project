@@ -100,7 +100,9 @@ const Sidebar = ({
   const [socialUrl, setSocialUrl] = useState('');
   const [isShareOpen, setIsShareOpen] = useState(false);
   const topCards = useRef<HTMLDivElement | null>(null);
-  const { isAuthenticated, role_name } = useAppSelector((state) => state.auth);
+  const [isAuthenticated] = useState(
+    localStorage.getItem('is_password_change_required') === 'true'
+  );
   const getLeaderDetail = async () => {
     try {
       const data = await postCaller('get_leaderboardprofiledatarequest', {

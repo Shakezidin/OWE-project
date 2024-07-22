@@ -35,8 +35,8 @@ const Banner: React.FC<BannerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
-  const { isAuthenticated, role_name } = useAppSelector(
-    (state) => state.auth
+  const [isAuthenticated] = useState(
+    localStorage.getItem('is_password_change_required') === 'true'
   );
 
   const tableData = {
@@ -50,83 +50,81 @@ const Banner: React.FC<BannerProps> = ({
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
-    if(isAuthenticated){
-
+    if (isAuthenticated) {
       getNewFormData();
     }
   }, [isAuthenticated]);
 
   useEffect(() => {
-if(isAuthenticated){
+    if (isAuthenticated) {
+      if (role !== 'Admin') {
+        (async () => {
+          try {
+            const data = await postCaller('get_leaderboarddatarequest', {});
 
-  if (role !== 'Admin') {
-    (async () => {
-      try {
-        const data = await postCaller('get_leaderboarddatarequest', {});
+            if (data.status > 201) {
+              // setIsLoading(false);
 
-        if (data.status > 201) {
-          // setIsLoading(false);
-
-          toast.error(data?.message);
-          return;
-        }
-        // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-        // setTotalCount(data?.dbRecCount);
-        setDetails(data?.data);
-        setDealerId(data?.data?.dealer_id);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        // setIsLoading(false);
+              toast.error(data?.message);
+              return;
+            }
+            // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+            // setTotalCount(data?.dbRecCount);
+            setDetails(data?.data);
+            setDealerId(data?.data?.dealer_id);
+          } catch (error) {
+            console.error(error);
+          } finally {
+            // setIsLoading(false);
+          }
+        })();
       }
-    })();
-  }
-}
-  }, [dealerId, role, refetch,isAuthenticated]);
-
-  useEffect(() => {
-  if(role === "Admin"){
-   const admintheme = localStorage.getItem("admintheme");
-   if(admintheme){
-    const parsed = JSON.parse(admintheme)
-    setDetails((prev:any) => ({...prev, ...parsed}))
-   }
-  }
-  },[refetch])
-
-  useEffect(() => {
-    if(details?.dealer_id && isAuthenticated){
-    (async () => {
-      try {
-        const data = await postCaller('get_vdealer', {
-          page_number: 1,
-          page_size: 1,
-          filters: [
-            {
-              Column: 'id',
-              Operation: '=',
-              Data: details?.dealer_id ,
-            },
-          ],
-        });
-
-        if (data.status > 201) {
-          // setIsLoading(false);
-
-          toast.error(data.message);
-          return;
-        }
-        // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-        // setTotalCount(data?.dbRecCount);
-        setVdealer(data?.data?.vdealers_list[0]);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        // setIsLoading(false);
-      }
-    })();
     }
-  }, [details,isAuthenticated]);
+  }, [dealerId, role, refetch, isAuthenticated]);
+
+  useEffect(() => {
+    if (role === 'Admin') {
+      const admintheme = localStorage.getItem('admintheme');
+      if (admintheme) {
+        const parsed = JSON.parse(admintheme);
+        setDetails((prev: any) => ({ ...prev, ...parsed }));
+      }
+    }
+  }, [refetch]);
+
+  useEffect(() => {
+    if (details?.dealer_id && isAuthenticated) {
+      (async () => {
+        try {
+          const data = await postCaller('get_vdealer', {
+            page_number: 1,
+            page_size: 1,
+            filters: [
+              {
+                Column: 'id',
+                Operation: '=',
+                Data: details?.dealer_id,
+              },
+            ],
+          });
+
+          if (data.status > 201) {
+            // setIsLoading(false);
+
+            toast.error(data.message);
+            return;
+          }
+          // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+          // setTotalCount(data?.dbRecCount);
+          setVdealer(data?.data?.vdealers_list[0]);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          // setIsLoading(false);
+        }
+      })();
+    }
+  }, [details, isAuthenticated]);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const handleChange = (opt: { label: string; value: string }) => {
@@ -155,14 +153,12 @@ if(isAuthenticated){
     };
   }, []);
 
-
-  console.log(details, "fjkghsj");
+  console.log(details, 'fjkghsj');
   return (
     <div className="relative">
       <div
         className={`${role !== 'Admin' ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
-        style={{background: details.bg_color
-          || undefined}}
+        style={{ background: details.bg_color || undefined }}
       >
         <div
           className={role !== 'Admin' ? 'radiant-anime' : 'radiant-anime-2'}
@@ -176,7 +172,7 @@ if(isAuthenticated){
                   ? details?.dealer_logo || ICONS.OWEBanner
                   : details?.dealer_logo || ICONS.BannerLogo
               }
-              style={{maxWidth:132}}
+              style={{ maxWidth: 132 }}
               alt="solar-name-icon"
             />
             <div className="">
@@ -242,15 +238,10 @@ if(isAuthenticated){
               />
             </div>
 
-           
-              <button
-                className="edit-button"
-                onClick={() => setShowModal(true)}
-              >
-                <LiaEdit className="edit-svg" />
-                <p>Edit</p>
-              </button>
-           
+            <button className="edit-button" onClick={() => setShowModal(true)}>
+              <LiaEdit className="edit-svg" />
+              <p>Edit</p>
+            </button>
           </div>
         </div>
         {showModal && (

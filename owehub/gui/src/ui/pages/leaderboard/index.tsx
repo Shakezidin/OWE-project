@@ -62,7 +62,9 @@ const Index = () => {
       end: today,
     });
 
-  const { isAuthenticated, role_name } = useAppSelector((state) => state.auth);
+  const [ isAuthenticated]  = useState(
+    localStorage.getItem('is_password_change_required') === 'true'
+  );
 
   useEffect(() => {
     if (isAuthenticated) {

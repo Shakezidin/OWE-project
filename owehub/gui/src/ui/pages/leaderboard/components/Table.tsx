@@ -463,7 +463,9 @@ const Table = ({
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 10;
-  const { isAuthenticated,  } = useAppSelector((state) => state.auth);
+  const  [isAuthenticated]   = useState(
+    localStorage.getItem('is_password_change_required') === 'true'
+  );
   useEffect(() => {
     if (isAuthenticated) {
   
