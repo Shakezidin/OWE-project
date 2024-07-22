@@ -291,9 +291,9 @@
     width: 250px;
     line-height: 37px;
   }
-  .banner-left img {
+  /* .banner-left img {
     width: 110px;
-  }
+  } */
 }
 
 @media (max-width: 968px) {
