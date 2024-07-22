@@ -167,7 +167,7 @@ function App() {
       <Route>
         <Route path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage />} />
         <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
-        <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
+
         <Route path={ROUTES.REPORT} element={<Report />} />
         <Route
           path={ROUTES.DB_MANAGER_DASHBOARD}
@@ -239,11 +239,12 @@ function App() {
             )
           }
         />
+      
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
         <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
-
+        <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
