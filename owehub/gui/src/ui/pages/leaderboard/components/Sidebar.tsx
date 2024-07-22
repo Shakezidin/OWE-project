@@ -21,6 +21,7 @@ import {
   ThirdAwardIcon,
 } from './Icons';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
+import { useAppSelector } from '../../../../redux/hooks';
 interface IDealer {
   dealer?: string;
   rep_name?: string;
@@ -29,9 +30,9 @@ interface IDealer {
   leader_type?: string;
   name: string;
   rank: number;
-  sale:number,
-  ntp:number,
-  install:number
+  sale: number;
+  ntp: number;
+  install: number;
 }
 const today = new Date();
 const switchIcons = (rank: number) => {
@@ -99,11 +100,12 @@ const Sidebar = ({
   const [socialUrl, setSocialUrl] = useState('');
   const [isShareOpen, setIsShareOpen] = useState(false);
   const topCards = useRef<HTMLDivElement | null>(null);
+  const { isAuthenticated, role_name } = useAppSelector((state) => state.auth);
   const getLeaderDetail = async () => {
     try {
       const data = await postCaller('get_leaderboardprofiledatarequest', {
         ...dealer,
-        count_kw_selection:true
+        count_kw_selection: true,
         // start_date: selectedRangeDate.value.split(',')[0],
         // end_date: selectedRangeDate.value.split(',')[1],
       });
@@ -136,10 +138,10 @@ const Sidebar = ({
   };
 
   useEffect(() => {
-    if (Object.keys(dealer).length) {
+    if (Object.keys(dealer).length && isAuthenticated) {
       getLeaderDetail();
     }
-  }, [dealer, selectedRangeDate.value]);
+  }, [dealer, selectedRangeDate.value, isAuthenticated]);
 
   return (
     <div
@@ -290,7 +292,9 @@ const Sidebar = ({
                       className="block"
                     >
                       {dealer.sale?.toFixed?.(2)}
-                      <span className="unit">({unit==="kw"?"kW":"count"})</span>
+                      <span className="unit">
+                        ({unit === 'kw' ? 'kW' : 'count'})
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -306,7 +310,9 @@ const Sidebar = ({
                       className="block"
                     >
                       {dealer.ntp?.toFixed?.(2)}
-                      <span className="unit">({unit==="kw"?"kW":"count"})</span>
+                      <span className="unit">
+                        ({unit === 'kw' ? 'kW' : 'count'})
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -322,7 +328,9 @@ const Sidebar = ({
                       className="block"
                     >
                       {dealer.install?.toFixed?.(2)}
-                      <span className="unit">({unit==="kw"?"kW":"count"})</span>
+                      <span className="unit">
+                        ({unit === 'kw' ? 'kW' : 'count'})
+                      </span>
                     </span>
                   </div>
                 </div>

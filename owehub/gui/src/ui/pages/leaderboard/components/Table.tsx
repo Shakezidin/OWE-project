@@ -17,6 +17,7 @@ import {
   ThirdAwardIcon,
 } from './Icons';
 import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
+import { useAppSelector } from '../../../../redux/hooks';
 
 interface ILeaderBordUser {
   rank: number;
@@ -462,35 +463,39 @@ const Table = ({
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 10;
+  const { isAuthenticated,  } = useAppSelector((state) => state.auth);
   useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-        const data = await postCaller('get_perfomance_leaderboard', {
-          type: activeHead,
-          dealer: selectDealer.map((item) => item.value),
-          page_size: itemsPerPage,
-          page_number: page,
-          start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-          end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-          sort_by: active,
-          group_by: groupBy,
-        });
-        if (data.status > 201) {
+    if (isAuthenticated) {
+  
+      (async () => {
+        try {
+          setIsLoading(true);
+          const data = await postCaller('get_perfomance_leaderboard', {
+            type: activeHead,
+            dealer: selectDealer.map((item) => item.value),
+            page_size: itemsPerPage,
+            page_number: page,
+            start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+            end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+            sort_by: active,
+            group_by: groupBy,
+          });
+          if (data.status > 201) {
+            setIsLoading(false);
+            toast.error(data.message);
+            return;
+          }
+          if (data.data?.ap_ded_list) {
+            setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+            setTotalCount(data?.dbRecCount);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
           setIsLoading(false);
-          toast.error(data.message);
-          return;
         }
-        if (data.data?.ap_ded_list) {
-          setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-          setTotalCount(data?.dbRecCount);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+      })();
+    }
   }, [
     activeHead,
     active,
@@ -499,6 +504,7 @@ const Table = ({
     page,
     selectDealer,
     groupBy,
+    isAuthenticated
   ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;

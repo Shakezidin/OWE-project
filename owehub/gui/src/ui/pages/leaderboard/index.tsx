@@ -62,13 +62,10 @@ const Index = () => {
       end: today,
     });
 
-    const { isAuthenticated, role_name } = useAppSelector(
-      (state) => state.auth
-    );
+  const { isAuthenticated, role_name } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if(isAuthenticated){
-
+    if (isAuthenticated) {
       (async () => {
         try {
           const data = await postCaller('get_perfomance_leaderboard', {
@@ -81,7 +78,7 @@ const Index = () => {
             dealer: selectDealer.map((item) => item.value),
             group_by: groupBy,
           });
-  
+
           if (data.status > 201) {
             toast.error(data.message);
             return;
@@ -93,7 +90,14 @@ const Index = () => {
         }
       })();
     }
-  }, [active, activeHead, selectedRangeDate, selectDealer, groupBy,isAuthenticated]);
+  }, [
+    active,
+    activeHead,
+    selectedRangeDate,
+    selectDealer,
+    groupBy,
+    isAuthenticated,
+  ]);
   const shareImage = () => {
     if (topCards.current) {
       const element = topCards.current;
