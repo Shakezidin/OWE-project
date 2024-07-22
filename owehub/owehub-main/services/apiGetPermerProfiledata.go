@@ -112,8 +112,8 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get weekly_sale from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get weekly_sale from DB", http.StatusBadRequest, nil)
 		return
 	}
 	if len(data) > 0 {
@@ -132,7 +132,7 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 
 	switch dataReq.DataType {
 	case "sale_rep":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name, dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v')", dataReq.Dealer, dataReq.Name, dataReq.Name))
 	case "team":
 		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
@@ -143,7 +143,7 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(" AND contract_date BETWEEN current_date - interval '7 day' * $%d AND current_date ", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" AND contract_date BETWEEN current_date - interval '1 days' * $%d AND current_date ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, "7")
 
 	filters = filtersBuilder.String()
@@ -172,7 +172,7 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 
 	switch dataReq.DataType {
 	case "sale_rep":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v' OR secondary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name, dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v')", dataReq.Dealer, dataReq.Name, dataReq.Name))
 	case "team":
 		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
