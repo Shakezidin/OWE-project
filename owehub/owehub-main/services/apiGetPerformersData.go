@@ -72,11 +72,11 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if role == "Admin" {
 
 	} else if role == "Dealer Owner" {
-		query = `SELECT vd.dealer_name as dealer_name, ud.name as owner_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud 
+		query = `SELECT vd.dealer_name as dealer_name, ud.name as owner_name, vd.dealer_logo as dealer_logo, vd.bg_colour as bg_color, vd.id as dealer_id FROM user_details ud 
 				JOIN v_dealer vd ON ud.dealer_id = vd.id
 				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT ud1.name as owner_name, vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.id as dealer_id FROM user_details ud
+		query = `SELECT ud1.name as owner_name, vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.bg_colour as bg_color, vd.id as dealer_id FROM user_details ud
 				  JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id
 					JOIN v_dealer vd ON ud.dealer_id = vd.id
 				  WHERE ud.email_id = $1`
@@ -96,6 +96,7 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	performerData.OwnerName, _ = data[0]["owner_name"].(string)
 	performerData.DealerName, _ = data[0]["dealer_name"].(string)
 	performerData.DealerLogo, _ = data[0]["dealer_logo"].(string)
+	performerData.BgColor, _ = data[0]["bg_color"].(string)
 
 	query = `SELECT
     (SELECT COUNT(DISTINCT ud.team_id)
