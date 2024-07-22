@@ -76,7 +76,7 @@ const Banner: React.FC<BannerProps> = ({
   }, [dealerId, role, refetch]);
 
   useEffect(() => {
-  if(role === "Admin" && role === TYPE_OF_USER.FINANCE_ADMIN ){
+  if(role === "Admin" || role === TYPE_OF_USER.FINANCE_ADMIN ){
    const admintheme = localStorage.getItem("admintheme");
    if(admintheme){
     const parsed = JSON.parse(admintheme)
