@@ -132,7 +132,7 @@ const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
        imageUrl = await uploadImage(logo);
       
       }
-      if(role === "Admin"){
+      if(role === "Admin" || role === TYPE_OF_USER.FINANCE_ADMIN){
         localStorage.setItem("admintheme",JSON.stringify({
           bg_color:color,
           dealer_logo:imageUrl
