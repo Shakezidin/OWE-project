@@ -10,6 +10,7 @@ import { dealerOption } from '../../../../core/models/data_models/SelectDataMode
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { FaChevronCircleDown, FaChevronDown } from 'react-icons/fa';
+import { json } from 'stream/consumers';
 
 interface BannerProps {
   selectDealer: { label: string; value: string }[];
@@ -74,6 +75,17 @@ const Banner: React.FC<BannerProps> = ({
   }, [dealerId, role, refetch]);
 
   useEffect(() => {
+  if(role === "Admin"){
+   const admintheme = localStorage.getItem("admintheme");
+   if(admintheme){
+    const parsed = JSON.parse(admintheme)
+    setDetails((prev:any) => ({...prev, ...parsed}))
+   }
+  }
+  },[refetch])
+
+  useEffect(() => {
+    if(details?.dealer_id){
     (async () => {
       try {
         const data = await postCaller('get_vdealer', {
@@ -83,7 +95,7 @@ const Banner: React.FC<BannerProps> = ({
             {
               Column: 'id',
               Operation: '=',
-              Data: details?.dealer_id || 1,
+              Data: details?.dealer_id ,
             },
           ],
         });
@@ -103,7 +115,8 @@ const Banner: React.FC<BannerProps> = ({
         // setIsLoading(false);
       }
     })();
-  }, []);
+    }
+  }, [details]);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const handleChange = (opt: { label: string; value: string }) => {
@@ -132,10 +145,14 @@ const Banner: React.FC<BannerProps> = ({
     };
   }, []);
 
+
+  console.log(details, "fjkghsj");
   return (
     <div className="relative">
       <div
         className={`${role !== 'Admin' ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
+        style={{background: details.bg_color
+          || undefined}}
       >
         <div
           className={role !== 'Admin' ? 'radiant-anime' : 'radiant-anime-2'}
@@ -146,7 +163,7 @@ const Banner: React.FC<BannerProps> = ({
             <img
               src={
                 role === 'Admin'
-                  ? ICONS.OWEBanner
+                  ? details?.dealer_logo || ICONS.OWEBanner
                   : details?.dealer_logo || ICONS.BannerLogo
               }
               style={{maxWidth:132}}
@@ -215,7 +232,7 @@ const Banner: React.FC<BannerProps> = ({
               />
             </div>
 
-            {(role === 'Dealer Owner' || role === 'Admin') && (
+           
               <button
                 className="edit-button"
                 onClick={() => setShowModal(true)}
@@ -223,7 +240,7 @@ const Banner: React.FC<BannerProps> = ({
                 <LiaEdit className="edit-svg" />
                 <p>Edit</p>
               </button>
-            )}
+           
           </div>
         </div>
         {showModal && (

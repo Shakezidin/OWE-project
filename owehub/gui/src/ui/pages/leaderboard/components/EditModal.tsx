@@ -122,20 +122,35 @@ const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
   const [color, setColor] = useState('#40A2EC');
   const [logo, setLogo] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const role = localStorage.getItem('role');
   const handleUpdate = async () => {
-    if (!logo) return;
+    let imageUrl
     setIsLoading(true);
     try {
-      const imageUrl = await uploadImage(logo);
-      if (imageUrl && vdealer) {
+      if(logo){
+       imageUrl = await uploadImage(logo);
+      
+      }
+      if(role === "Admin"){
+        localStorage.setItem("admintheme",JSON.stringify({
+          bg_color:color,
+          dealer_logo:imageUrl
+          
+        }))
+        setTimeout(() => {
+          setRefetch((prev) => !prev)
+        },100) 
+        onClose();
+       }
+
+      if (vdealer) {
         const response = await postCaller('update_vdealer', {
           record_id: vdealer?.record_id,
           dealer_code: vdealer?.dealer_code,
           dealer_name: vdealer?.dealer_name,
           Description: vdealer?.Description,
           dealer_logo: imageUrl || vdealer.dealer_logo,
-          bg_color: color,
+          bg_colour: color,
         });
         if (response.status > 201) {
           toast.error(response.message);
@@ -143,11 +158,15 @@ const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
           return;
         } else {
           toast.success('Logo Update Successfully');
-          setRefetch(true)
+        
+          setRefetch((prev) => !prev)
           onClose();
+          
         }
       } else {
+        if(role !== "Admin"){
         toast.error("Something is Wrong")
+        }
       }
    
     } catch (error) {

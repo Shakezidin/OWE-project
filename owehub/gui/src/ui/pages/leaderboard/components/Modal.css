@@ -116,6 +116,13 @@
     font-weight: 500;
 }
 
+.cancel-button:hover{
+    background-color: #EE824D;
+    color: white;
+
+
+}
+
 .update-button {
     background-color: #EE824D;
     color: #fff;
