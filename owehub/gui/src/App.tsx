@@ -219,8 +219,8 @@ function App() {
               <Navigate
                 to={
                   role_name === TYPE_OF_USER.DB_USER
-                    ? ROUTES.DB_MANAGER_DASHBOARD
-                    : ROUTES.PROJECT_PERFORMANCE
+                    ? ROUTES.LEADERBOARD
+                    : ROUTES.LEADERBOARD
                 }
               />
             ) : (
