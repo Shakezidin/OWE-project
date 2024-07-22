@@ -10,8 +10,8 @@ import { dealerOption } from '../../../../core/models/data_models/SelectDataMode
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { FaChevronCircleDown, FaChevronDown } from 'react-icons/fa';
-import { json } from 'stream/consumers';
-import { useAppSelector } from '../../../../redux/hooks';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+
 
 interface BannerProps {
   selectDealer: { label: string; value: string }[];
@@ -35,9 +35,6 @@ const Banner: React.FC<BannerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
-  const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
-  );
 
   const tableData = {
     tableNames: ['dealer'],
@@ -50,73 +47,25 @@ const Banner: React.FC<BannerProps> = ({
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
-    if (isAuthenticated) {
-      getNewFormData();
-    }
-  }, [isAuthenticated]);
+    getNewFormData();
+  }, []);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (role !== 'Admin') {
-        (async () => {
-          try {
-            const data = await postCaller('get_leaderboarddatarequest', {});
-
-            if (data.status > 201) {
-              // setIsLoading(false);
-
-              toast.error(data?.message);
-              return;
-            }
-            // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-            // setTotalCount(data?.dbRecCount);
-            setDetails(data?.data);
-            setDealerId(data?.data?.dealer_id);
-          } catch (error) {
-            console.error(error);
-          } finally {
-            // setIsLoading(false);
-          }
-        })();
-      }
-    }
-  }, [dealerId, role, refetch, isAuthenticated]);
-
-  useEffect(() => {
-    if (role === 'Admin') {
-      const admintheme = localStorage.getItem('admintheme');
-      if (admintheme) {
-        const parsed = JSON.parse(admintheme);
-        setDetails((prev: any) => ({ ...prev, ...parsed }));
-      }
-    }
-  }, [refetch]);
-
-  useEffect(() => {
-    if (details?.dealer_id && isAuthenticated) {
+    if (role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN) {
       (async () => {
         try {
-          const data = await postCaller('get_vdealer', {
-            page_number: 1,
-            page_size: 1,
-            filters: [
-              {
-                Column: 'id',
-                Operation: '=',
-                Data: details?.dealer_id,
-              },
-            ],
-          });
+          const data = await postCaller('get_leaderboarddatarequest', {});
 
           if (data.status > 201) {
             // setIsLoading(false);
 
-            toast.error(data.message);
+            toast.error(data?.message);
             return;
           }
           // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
           // setTotalCount(data?.dbRecCount);
-          setVdealer(data?.data?.vdealers_list[0]);
+          setDetails(data?.data);
+          setDealerId(data?.data?.dealer_id);
         } catch (error) {
           console.error(error);
         } finally {
@@ -124,7 +73,52 @@ const Banner: React.FC<BannerProps> = ({
         }
       })();
     }
-  }, [details, isAuthenticated]);
+  }, [dealerId, role, refetch]);
+
+  useEffect(() => {
+  if(role === "Admin" && role === TYPE_OF_USER.FINANCE_ADMIN ){
+   const admintheme = localStorage.getItem("admintheme");
+   if(admintheme){
+    const parsed = JSON.parse(admintheme)
+    setDetails((prev:any) => ({...prev, ...parsed}))
+   }
+  }
+
+  },[refetch])
+
+  useEffect(() => {
+    if(details?.dealer_id){
+    (async () => {
+      try {
+        const data = await postCaller('get_vdealer', {
+          page_number: 1,
+          page_size: 1,
+          filters: [
+            {
+              Column: 'id',
+              Operation: '=',
+              Data: details?.dealer_id ,
+            },
+          ],
+        });
+
+        if (data.status > 201) {
+          // setIsLoading(false);
+
+          toast.error(data.message);
+          return;
+        }
+        // setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+        // setTotalCount(data?.dbRecCount);
+        setVdealer(data?.data?.vdealers_list[0]);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        // setIsLoading(false);
+      }
+    })();
+    }
+  }, [details]);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const handleChange = (opt: { label: string; value: string }) => {
@@ -153,30 +147,32 @@ const Banner: React.FC<BannerProps> = ({
     };
   }, []);
 
-  console.log(details, 'fjkghsj');
+
+  console.log(details, "fjkghsj");
   return (
     <div className="relative">
       <div
         className={`${role !== 'Admin' ? 'bg-blue ' : 'bg-green-radiant'}  banner-main flex items-center`}
-        style={{ background: details.bg_color || undefined }}
+        style={{background: details.bg_color
+          || undefined}}
       >
         <div
-          className={role !== 'Admin' ? 'radiant-anime' : 'radiant-anime-2'}
+          className={role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'radiant-anime' : 'radiant-anime-2'}
         ></div>
         <div className="banner-wrap">
           {/* left side  */}
           <div className="flex items-center pl4 banner-left">
             <img
               src={
-                role === 'Admin'
+                role === 'Admin' && role === TYPE_OF_USER.FINANCE_ADMIN
                   ? details?.dealer_logo || ICONS.OWEBanner
                   : details?.dealer_logo || ICONS.BannerLogo
               }
-              style={{ maxWidth: 132 }}
+              style={{maxWidth:132}}
               alt="solar-name-icon"
             />
             <div className="">
-              {role !== 'Admin' ? (
+              {role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? (
                 <h1 className="solar-heading">
                   {details?.daeler_name || 'N/A'}
                 </h1>
@@ -185,7 +181,7 @@ const Banner: React.FC<BannerProps> = ({
                   OUR WORLD ENERGY
                 </h1>
               )}
-              {role !== 'Admin' ? (
+              {role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? (
                 <div className="flex items-center ">
                   <img src={ICONS.OWEBannerLogo} alt="" />
                   <p className="left-ban-des">
@@ -195,7 +191,7 @@ const Banner: React.FC<BannerProps> = ({
               ) : null}
             </div>
           </div>
-          {role !== 'Admin' ? <div className="straight-line"></div> : null}
+          {role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? <div className="straight-line"></div> : null}
           {/* right side  */}
           <div className="flex items-center banner-right">
             {role !== 'Admin' ? (
@@ -214,7 +210,7 @@ const Banner: React.FC<BannerProps> = ({
                 </div>
               </div>
             ) : null}
-            <div className={role !== 'Admin' ? 'banner-trophy' : 'user-trophy'}>
+            <div className={role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'banner-trophy' : 'user-trophy'}>
               <img src={ICONS.BannerTrophy} alt="login-icon" />
             </div>
             <div className="banner-stars">
@@ -238,10 +234,15 @@ const Banner: React.FC<BannerProps> = ({
               />
             </div>
 
-            <button className="edit-button" onClick={() => setShowModal(true)}>
-              <LiaEdit className="edit-svg" />
-              <p>Edit</p>
-            </button>
+           
+              <button
+                className="edit-button"
+                onClick={() => setShowModal(true)}
+              >
+                <LiaEdit className="edit-svg" />
+                <p>Edit</p>
+              </button>
+           
           </div>
         </div>
         {showModal && (
@@ -253,10 +254,10 @@ const Banner: React.FC<BannerProps> = ({
         )}
       </div>
 
-      {role === 'Admin' && (
+      {role === 'Admin' && role === TYPE_OF_USER.FINANCE_ADMIN && (
         <div
           className=" dealer-dropdown-filter"
-          style={{ zIndex: 99 }}
+          style={{ zIndex: 999 }}
           ref={dropdownRef}
         >
           <div
