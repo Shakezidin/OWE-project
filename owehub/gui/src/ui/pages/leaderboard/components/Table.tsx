@@ -37,6 +37,9 @@ interface IDealer {
   leader_type?: string;
   name: string;
   rank: number;
+  sale:number,
+  ntp:number,
+  install:number
 }
 
 const rankByOptions = [
@@ -630,6 +633,9 @@ console.log(sortedPage,"srtedPage");
                             groupBy === 'primary_sales_rep' ? item.dealer : '',
                           name: item.rep_name,
                           rank: item.rank,
+                          sale:item.sale,
+                          ntp:item.ntp,
+                          install:item.install
                         }));
                       }}
                     >

@@ -29,6 +29,9 @@ interface IDealer {
   leader_type?: string;
   name: string;
   rank: number;
+  sale:number,
+  ntp:number,
+  install:number
 }
 const today = new Date();
 const switchIcons = (rank: number) => {
@@ -100,6 +103,7 @@ const Sidebar = ({
     try {
       const data = await postCaller('get_leaderboardprofiledatarequest', {
         ...dealer,
+        count_kw_selection:true
         // start_date: selectedRangeDate.value.split(',')[0],
         // end_date: selectedRangeDate.value.split(',')[1],
       });
@@ -285,8 +289,8 @@ const Sidebar = ({
                       style={{ fontSize: 21, fontWeight: 700 }}
                       className="block"
                     >
-                      {data?.total_sales}
-                      <span className="unit">({unit})</span>
+                      {dealer.sale}
+                      <span className="unit">({unit==="kw"?"kW":"count"})</span>
                     </span>
                   </div>
                 </div>
@@ -301,8 +305,8 @@ const Sidebar = ({
                       style={{ fontSize: 21, fontWeight: 700 }}
                       className="block"
                     >
-                      {data?.total_ntp}
-                      <span className="unit">({unit})</span>
+                      {dealer.ntp?.toFixed?.(2)}
+                      <span className="unit">({unit==="kw"?"kW":"count"})</span>
                     </span>
                   </div>
                 </div>
@@ -317,8 +321,8 @@ const Sidebar = ({
                       style={{ fontSize: 21, fontWeight: 700 }}
                       className="block"
                     >
-                      {data?.total_installs}
-                      <span className="unit">({unit})</span>
+                      {dealer.install?.toFixed?.(2)}
+                      <span className="unit">({unit==="kw"?"kW":"count"})</span>
                     </span>
                   </div>
                 </div>
@@ -328,14 +332,14 @@ const Sidebar = ({
                   <div className="bg-white text-center leader-board-stats-wrapper py1">
                     <span className="block">Weekly sales</span>
                     <span className="block" style={{ fontWeight: 600 }}>
-                      {data?.weekly_sale ?? 14}
+                      {data?.weekly_sale?.toFixed?.(2) ?? 14}
                     </span>
                   </div>
 
                   <div className="text-center leader-board-stats-wrapper py1">
                     <span className="block">Total sales</span>
                     <span className="block" style={{ fontWeight: 600 }}>
-                      {data?.total_sales}
+                      {data?.total_sales?.toFixed?.(2)}
                     </span>
                   </div>
                 </div>
