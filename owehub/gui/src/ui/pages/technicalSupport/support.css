@@ -232,3 +232,17 @@
     width: 100%;
   }
 }
+
+
+@media screen and (max-width: 767px) {
+
+  .react-tel-input .country-list {
+    width: 256px !important;
+    text-align: left !important;
+  }
+  
+  .react-tel-input .country-list * {
+    text-align: left !important;
+  }
+
+}
