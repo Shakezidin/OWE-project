@@ -2,7 +2,7 @@ import './PerformanceCards.css';
 import { ICONS } from '../../../icons/Icons';
 import { MdOutlineIosShare } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
-
+import { IoChevronDownOutline } from 'react-icons/io5';
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
@@ -26,9 +26,10 @@ const PerformanceCards: React.FC<performance> = ({
   isGenerating,
   activeHead,
 }) => {
-  const rank1 = details.find((item: any) => item?.rank === 1);
-  const rank2 = details.find((item: any) => item?.rank === 2);
-  const rank3 = details.find((item: any) => item?.rank === 3);
+  const rank1 = details?.find?.((item: any) => item?.rank === 1);
+  const rank2 = details?.find?.((item: any) => item?.rank === 2);
+  const rank3 = details?.find?.((item: any) => item?.rank === 3);
+  const [isAccoOpen, setIsAccoOpen] = useState(false);
 
   const getCardHeadingStyle = (item: (typeof details)[number]) => {
     if (!item) return { fontSize: '1.2rem' };
@@ -37,30 +38,63 @@ const PerformanceCards: React.FC<performance> = ({
     const fontSizeClamped = Math.min(Math.max(fontSizeRaw, 0.75), 2); // clamp b/w 0.75 and 2rem
     return { fontSize: `${fontSizeClamped}rem` };
   };
-  function formatSaleValue(value:any) {
+  function formatSaleValue(value: any) {
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
     if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
-  
+
   return (
     <div>
-      <div className="performance-cards">
+      <div
+        className="performance-cards relative"
+        style={{
+          height: isAccoOpen ? 70 : 'auto',
+          transition: 'all 500ms',
+          overflow: 'hidden',
+        }}
+      >
         <div className="right-button">
-          <div className="relative">
-            <button className="share-button" onClick={shareImage} disabled={isGenerating}>
-              <MdOutlineIosShare className="share-svg" />
-              <p> {isGenerating ? 'Downloading' : 'Share'} </p>
-            </button>
+          <div
+          style={{
+            transition: 'all 500ms',
+          }}
+            className={`relative flex items-center ${isAccoOpen ? 'justify-end' : 'justify-between'}`}
+          >
+            <span
+              className="collapse-btn"
+              role="btn"
+              style={{
+                rotate: !isAccoOpen ? '180deg' : '',
+                transition: 'all 500ms',
+              }}
+              onClick={() => setIsAccoOpen(!isAccoOpen)}
+            >
+              <IoChevronDownOutline />
+            </span>
+            {!isAccoOpen && (
+              <button
+                className="share-button"
+                onClick={shareImage}
+                disabled={isGenerating}
+              >
+                <MdOutlineIosShare className="share-svg" />
+                <p> {isGenerating ? 'Downloading' : 'Share'} </p>
+              </button>
+            )}
             {isOpen && (
               <SocialShare setIsOpen={setIsOpen} socialUrl={socialUrl} />
             )}
           </div>
         </div>
         <div className="banner-heading">
-          <img src={ICONS.Performars} aria-label="login-icon"></img>
+          <img
+            src={ICONS.Performars}
+            className={isAccoOpen ? 'absolute-img' : ''}
+            aria-label="login-icon"
+          ></img>
           <p>
             Adjust criteria below to see who leads in different categories..
           </p>
@@ -96,7 +130,10 @@ const PerformanceCards: React.FC<performance> = ({
                   className="below-des mx-auto"
                   style={{ gridColumn: '1/3' }}
                 >
-                  <p className="text-center"> {formatSaleValue(rank2?.install)}</p>
+                  <p className="text-center">
+                    {' '}
+                    {formatSaleValue(rank2?.install)}
+                  </p>
                   <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
               </div>
@@ -132,7 +169,9 @@ const PerformanceCards: React.FC<performance> = ({
                   className="below-des mx-auto"
                   style={{ gridColumn: '1/3' }}
                 >
-                  <p className="text-center">{formatSaleValue(rank1?.install)}</p>
+                  <p className="text-center">
+                    {formatSaleValue(rank1?.install)}
+                  </p>
 
                   <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>
@@ -169,7 +208,9 @@ const PerformanceCards: React.FC<performance> = ({
                   className="below-des mx-auto"
                   style={{ gridColumn: '1/3' }}
                 >
-                  <p className="text-center">{formatSaleValue(rank3?.install)}</p>
+                  <p className="text-center">
+                    {formatSaleValue(rank3?.install)}
+                  </p>
 
                   <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                 </div>

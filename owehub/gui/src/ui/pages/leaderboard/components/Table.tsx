@@ -1,6 +1,14 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { DateRange } from 'react-date-range';
-import { format, subDays, startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfYear } from 'date-fns';
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  startOfYear,
+} from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -18,6 +26,7 @@ import {
 } from './Icons';
 import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 import { useAppSelector } from '../../../../redux/hooks';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 
 interface ILeaderBordUser {
   rank: number;
@@ -74,7 +83,7 @@ export const RankColumn = ({ rank }: { rank: number }) => {
   return <span className="ml1">{rank}</span>;
 };
 
- //
+//
 // PERIOD FILTER
 //
 const today = new Date();
@@ -106,7 +115,6 @@ const periodFilterOptions: DateRangeWithLabel[] = [
     end: today,
   },
 ];
-
 
 const PeriodFilter = ({
   period,
@@ -272,7 +280,7 @@ const DateFilter = ({
     setSelected({
       start: range.startDate,
       end: range.endDate,
-      label:"Custom"
+      label: 'Custom',
     });
     setShowCalendar(false);
     resetPage();
@@ -317,90 +325,86 @@ const DateFilter = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-console.log(selected,"selected");
+  console.log(selected, 'selected');
 
   return (
     <div className="flex items-center justify-end">
       <div className="leaderborder_filter-slect-wrapper mr1">
-        
-          <Select
-            options={periodFilterOptions}
-            value={selected}
-            // placeholder={selected?"Custom"}
-            isSearchable={false}
-            onChange={(value) => value && setSelected(value)}
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                fontSize: '11px',
-                fontWeight: '500',
-                borderRadius: '4px',
-                outline: 'none',
-                width: 'fit-content',
-                minWidth: '92px',
-                height: '28px',
-                alignContent: 'center',
-                cursor: 'pointer',
-                boxShadow: 'none',
-                border: '1px solid #EE824D',
-                minHeight: 30,
-              }),
-              valueContainer: (provided, state) => ({
-                ...provided,
-                height: '30px',
-                padding: '0 6px',
-              }),
-              placeholder: (baseStyles) => ({
-                ...baseStyles,
-                color: '#EE824D',
-              }),
-              indicatorSeparator: () => ({
-                display: 'none',
-              }),
-              dropdownIndicator: (baseStyles, state) => ({
-                ...baseStyles,
-                svg: {
-                  fill: '#EE824D',
-                },
-                marginLeft: '-18px',
-              }),
+        <Select
+          options={periodFilterOptions}
+          value={selected}
+          // placeholder={selected?"Custom"}
+          isSearchable={false}
+          onChange={(value) => value && setSelected(value)}
+          styles={{
+            control: (baseStyles, state) => ({
+              ...baseStyles,
+              fontSize: '11px',
+              fontWeight: '500',
+              borderRadius: '4px',
+              outline: 'none',
+              width: 'fit-content',
+              minWidth: '92px',
+              height: '28px',
+              alignContent: 'center',
+              cursor: 'pointer',
+              boxShadow: 'none',
+              border: '1px solid #EE824D',
+              minHeight: 30,
+            }),
+            valueContainer: (provided, state) => ({
+              ...provided,
+              height: '30px',
+              padding: '0 6px',
+            }),
+            placeholder: (baseStyles) => ({
+              ...baseStyles,
+              color: '#EE824D',
+            }),
+            indicatorSeparator: () => ({
+              display: 'none',
+            }),
+            dropdownIndicator: (baseStyles, state) => ({
+              ...baseStyles,
+              svg: {
+                fill: '#EE824D',
+              },
+              marginLeft: '-18px',
+            }),
 
-              option: (baseStyles, state) => ({
-                ...baseStyles,
-                fontSize: '12px',
-                color: '#fff',
+            option: (baseStyles, state) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              color: '#fff',
+              transition: 'all 500ms',
+              '&:hover': {
+                transform: 'scale(1.1)',
+                background: 'none',
                 transition: 'all 500ms',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                  background: 'none',
-                  transition: 'all 500ms',
-                },
-                background: '#EE824D',
-                transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
-              }),
+              },
+              background: '#EE824D',
+              transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
+            }),
 
-              singleValue: (baseStyles, state) => ({
-                ...baseStyles,
-                color: '#EE824D',
-                fontSize: 11,
-                padding: '0 8px',
-              }),
-              menu: (baseStyles) => ({
-                ...baseStyles,
-                width: '92px',
-                zIndex: 999,
-                color: '#FFFFFF',
-              }),
-              menuList: (base) => ({
-                ...base,
-                background: '#EE824D',
-              }),
-              input: (base) => ({ ...base, margin: 0 }),
-            }}
-          />
-      
-          
-      
+            singleValue: (baseStyles, state) => ({
+              ...baseStyles,
+              color: '#EE824D',
+              fontSize: 11,
+              padding: '0 8px',
+            }),
+            menu: (baseStyles) => ({
+              ...baseStyles,
+              width: '92px',
+              zIndex: 999,
+              color: '#FFFFFF',
+            }),
+            menuList: (base) => ({
+              ...base,
+              background: '#EE824D',
+            }),
+            input: (base) => ({ ...base, margin: 0 }),
+          }}
+        />
       </div>
       <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper">
         <span
@@ -451,6 +455,8 @@ const Table = ({
   setSelectedRangeDate,
   selectedRangeDate,
   selectDealer,
+  exportPdf,
+  isExporting,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -463,19 +469,20 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
+  exportPdf: () => void;
+  isExporting: boolean;
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
 
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const itemsPerPage = 10;
-  const  [isAuthenticated]   = useState(
+  const itemsPerPage = 25;
+  const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
   );
   useEffect(() => {
     if (isAuthenticated) {
-  
       (async () => {
         try {
           setIsLoading(true);
@@ -513,7 +520,7 @@ const Table = ({
     page,
     selectDealer,
     groupBy,
-    isAuthenticated
+    isAuthenticated,
   ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
@@ -538,19 +545,22 @@ const Table = ({
   const sortedPage = leaderTable
     .slice()
     .sort((a, b) => (a.hightlight || b.hightlight ? -1 : 1));
-  
-    
-    function formatSaleValue(value:any) {
-      if (value === null || value === undefined) return ''; // Handle null or undefined values
-      const sale = parseFloat(value);
-      if (sale === 0) return '0';
-      if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
-      return sale.toFixed(2); // Otherwise, format it to 2 decimal places
-    }
 
+  function formatSaleValue(value: any) {
+    if (value === null || value === undefined) return ''; // Handle null or undefined values
+    const sale = parseFloat(value);
+    if (sale === 0) return '0';
+    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    return sale.toFixed(2); // Otherwise, format it to 2 decimal places
+  }
+  const role = localStorage.getItem('role');
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
-      <button className="leaderboard-data__export" disabled>
+      <button
+        className="leaderboard-data__export"
+        disabled={isExporting}
+        onClick={exportPdf}
+      >
         <span>Export</span>
         <FaUpload size={12} />
       </button>
@@ -613,7 +623,84 @@ const Table = ({
           </div>
         </div>
       </div>
-      <div>
+      <div className="mobile-card-wrapper mt2">
+        {isLoading ? (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <MicroLoader />
+          </div>
+        ) : (
+          sortedPage.map((item) => {
+            return (
+              <div  onClick={() => {
+                setIsOpen(item.rank);
+                setDealer((prev) => ({
+                  ...prev,
+                  data_type:
+                    groupBy === 'primary_sales_rep'
+                      ? 'sale_rep'
+                      : groupBy,
+                  dealer:
+                    groupBy === 'primary_sales_rep' ? item.dealer : '',
+                  name: item.rep_name,
+                  rank: item.rank,
+                  sale: item.sale,
+                  ntp: item.ntp,
+                  install: item.install,
+                }));
+              }} className="mobile-rank-card" style={{ marginBottom: 17, border: item.hightlight ? '1px solid #D7E6FE' : undefined, }}>
+                <div
+                  className="rank-standing"
+                  style={{ flexBasis: '40px', flexShrink: 0, }}
+                >
+                  <RankColumn rank={item.rank} />
+                </div>
+                <div className="flex-auto rank-card-body">
+                  <h4 className="card-rep-name "> {item.rep_name || 'N/A'} </h4>
+                  {(role === TYPE_OF_USER.ADMIN ||
+                    role === TYPE_OF_USER.FINANCE_ADMIN) && (
+                    <p className="rank-sm-text"> {item.dealer} </p>
+                  )}
+                  <div className="flex items-center rank-card-stats">
+                    <div>
+                      <span className="rank-stats-num">
+                        {formatSaleValue(item?.sale)}
+                      </span>
+                      <p className="rank-sm-text">Sales</p>
+                    </div>
+
+                    <div>
+                      <span className="rank-stats-num">
+                        {' '}
+                        {formatSaleValue(item?.install)}{' '}
+                      </span>
+                      <p className="rank-sm-text">Installs</p>
+                    </div>
+                    <div>
+                      <span className="rank-stats-num">
+                        {formatSaleValue(item?.ntp)}{' '}
+                      </span>
+                      <p className="rank-sm-text">NTP</p>
+                    </div>
+                    <div>
+                      <span className="rank-stats-num">
+                        {' '}
+                        {formatSaleValue(item.cancel)}{' '}
+                      </span>
+                      <p className="rank-sm-text">Cancel</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+      <div className="leaderboard-table-wrapper">
         <div className="leaderboard-table-container">
           <table className="leaderboard-table">
             <thead>
@@ -622,7 +709,8 @@ const Table = ({
 
                 <th>Name</th>
 
-                <th>Dealer</th>
+                {(role === TYPE_OF_USER.ADMIN ||
+                  role === TYPE_OF_USER.FINANCE_ADMIN) && <th>Dealer</th>}
                 <th>Sale</th>
                 <th>Install</th>
                 <th>NTP</th>
@@ -680,7 +768,10 @@ const Table = ({
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
 
-                      <td> {item.dealer} </td>
+                      {(role === TYPE_OF_USER.ADMIN ||
+                        role === TYPE_OF_USER.FINANCE_ADMIN) && (
+                        <td> {item.dealer} </td>
+                      )}
 
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.install)}</td>
@@ -700,6 +791,7 @@ const Table = ({
           </table>
         </div>
       </div>
+
       {leaderTable?.length > 0 ? (
         <div className="page-heading-container">
           <p className="page-heading">

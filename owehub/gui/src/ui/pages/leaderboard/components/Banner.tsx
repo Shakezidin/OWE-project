@@ -168,7 +168,7 @@ const Banner: React.FC<BannerProps> = ({
                   ? details?.dealer_logo || ICONS.OWEBanner
                   : details?.dealer_logo || ICONS.BannerLogo
               }
-              style={{ maxWidth: 132 }}
+              style={{ maxWidth: 132,maxHeight:180 }}
               alt="solar-name-icon"
             />
             <div className="">

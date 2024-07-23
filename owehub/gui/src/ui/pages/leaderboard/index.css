@@ -72,7 +72,6 @@
   display: flex;
   justify-content: space-between;
   align-items: end;
-  margin-bottom: 1rem;
 }
 
 .leaderboard-data__select-filter label {
@@ -186,12 +185,15 @@
 .leaderboard-table tbody tr td:last-child {
   padding-right: 3rem;
 }
-
+.leaderboard-data__filter-row:nth-child(3) {
+  margin-top: 1rem;
+}
 .leaderboard-table-container {
   position: relative;
   overflow-x: auto;
   border: 1px solid #d8e7ff;
   border-radius: 12px;
+  margin-top: 1rem;
 }
 
 .leaderboard-table tbody tr {
@@ -379,11 +381,21 @@
   top: -162px;
   right: 0;
 }
+.mobile-card-wrapper {
+  display: none;
+}
 
 @media (max-width: 1024px) {
   .leaderboard-data__btn-group,
   .leaderboard-data__select-filter {
     display: none;
+  }
+  .leaderboard-table thead tr th {
+    padding-left: 12px;
+  }
+
+  .leaderboard-table tbody tr td {
+    padding-left: 12px;
   }
 
   .leaderboard-data__select-filter--mobile {
@@ -411,12 +423,47 @@
 }
 
 @media screen and (max-width: 767px) {
+  .leaderboard-table-wrapper {
+    display: none;
+  }
   .children-container {
     padding-inline: 0;
   }
   .leaderboard-data {
     padding: 1rem;
     margin: 10px 0;
+  }
+
+  .mobile-card-wrapper {
+    display: block;
+  }
+  .mobile-rank-card {
+    padding-top: 18px;
+    border-top: 1px solid #d8e7ff;
+    display: flex;
+    padding-left: 12px;
+  }
+
+  .card-rep-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .mobile-rank-card .rank-standing {
+    font-size: 0.75rem;
+  }
+  .mobile-rank-card .rank-card-body .rank-sm-text {
+    font-size: 0.75rem;
+    color: #9b9b9b;
+  }
+  .rank-card-stats {
+    margin-top: 13px;
+    gap: 36px;
+  }
+
+  .rank-card-stats .rank-stats-num {
+    font-weight: 700;
   }
   .user-profile-sidebar-fixed .user-sidebar {
     width: 100%;

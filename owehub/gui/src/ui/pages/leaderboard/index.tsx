@@ -9,6 +9,7 @@ import Sidebar from './components/Sidebar';
 import Table from './components/Table';
 import './index.css';
 import { useAppSelector } from '../../../redux/hooks';
+import jsPDF from 'jspdf';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -25,10 +26,8 @@ const categories = [
 
 const role = localStorage.getItem('role');
 
-const groupby = [{ label: 'Dealer', value: 'dealer' }];
-if (role !== 'Admin') {
-  groupby[0] = { label: 'Sale Rep', value: 'primary_sales_rep' };
-}
+const groupby = [{ label: 'Sale Rep', value: 'primary_sales_rep' }];
+
 interface Details {
   dealer_name?: string;
   dealer_logo?: string;
@@ -44,7 +43,7 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
-  const [activeHead, setActiveHead] = useState('kw');
+  const [activeHead, setActiveHead] = useState('count');
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
   const [bannerDetails, setBannerDetails] = useState<Details>({});
@@ -53,8 +52,10 @@ const Index = () => {
   >([]);
   const [dealer, setDealer] = useState<any>({});
   const topCards = useRef<HTMLDivElement | null>(null);
+  const leaderboard = useRef<HTMLDivElement | null>(null);
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);
+  const [isExporting,setIsExporting] = useState(false)
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
       label: 'This Week',
@@ -62,7 +63,7 @@ const Index = () => {
       end: today,
     });
 
-  const [ isAuthenticated]  = useState(
+  const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
   );
 
@@ -119,8 +120,44 @@ const Index = () => {
     }
   };
 
+  const exportPdf = () => {
+    if (leaderboard.current) {
+      setIsExporting(true)
+      const element = leaderboard.current;
+      const scrollHeight = element.scrollHeight;
+
+      const filter = (node: HTMLElement) => {
+        const exclusionClasses = ['page-heading-container'];
+        return !exclusionClasses.some((classname) =>
+          node.classList?.contains(classname)
+        );
+      };
+      const selector: HTMLDivElement | null = document.querySelector(
+        '.leaderboard-table-container'
+      );
+      if (selector) {
+        selector.style.overflow = 'hidden';
+        toCanvas(element, {
+          height: scrollHeight,
+          filter,
+        }).then((canvas) => {
+          const imageData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'pt',
+            format: [canvas.width, canvas.height],
+          });
+          pdf.addImage(imageData, 'PNG', 0, 0, canvas.width, canvas.height);
+          pdf.save('download.pdf');
+          selector.style.overflow = 'auto';
+          setIsExporting(false)
+        });
+      }
+    }
+  };
+
   return (
-    <div className="px1">
+    <div className="px1" ref={leaderboard}>
       <div ref={topCards} style={{ background: '#f3f3f3' }}>
         <Banner
           selectDealer={selectDealer}
@@ -138,12 +175,14 @@ const Index = () => {
         />
       </div>
       <Table
+        exportPdf={exportPdf}
         setIsOpen={setIsOpen}
         selectedRangeDate={selectedRangeDate}
         setSelectedRangeDate={setSelectedRangeDate}
         activeHead={activeHead}
         setActiveHead={setActiveHead}
         active={active}
+        isExporting={isExporting}
         setActive={setActive}
         setGroupBy={setGroupBy}
         groupBy={groupBy}
