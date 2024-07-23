@@ -46,8 +46,10 @@ const Banner: React.FC<BannerProps> = ({
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
-    getNewFormData();
-  }, []);
+    if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
+      getNewFormData();
+    }
+  }, [role]);
 
   useEffect(() => {
     if (role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN) {
@@ -168,7 +170,7 @@ const Banner: React.FC<BannerProps> = ({
                   ? details?.dealer_logo || ICONS.OWEBanner
                   : details?.dealer_logo || ICONS.BannerLogo
               }
-              style={{ maxWidth: 132,maxHeight:180 }}
+              style={{ maxWidth: 132, maxHeight: 180 }}
               alt="solar-name-icon"
             />
             <div className="">

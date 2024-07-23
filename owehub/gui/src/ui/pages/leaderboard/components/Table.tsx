@@ -94,8 +94,12 @@ const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
 // Calculate the start and end of last week
-const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
+  weekStartsOn: 1,
+});
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
+  weekStartsOn: 1,
+});
 
 const periodFilterOptions: DateRangeWithLabel[] = [
   {
@@ -642,29 +646,33 @@ const Table = ({
           >
             <MicroLoader />
           </div>
-        ) : (
+        ) : sortedPage.length ? (
           sortedPage.map((item) => {
             return (
-              <div  onClick={() => {
-                setIsOpen(item.rank);
-                setDealer((prev) => ({
-                  ...prev,
-                  data_type:
-                    groupBy === 'primary_sales_rep'
-                      ? 'sale_rep'
-                      : groupBy,
-                  dealer:
-                    groupBy === 'primary_sales_rep' ? item.dealer : '',
-                  name: item.rep_name,
-                  rank: item.rank,
-                  sale: item.sale,
-                  ntp: item.ntp,
-                  install: item.install,
-                }));
-              }} className="mobile-rank-card" style={{ marginBottom: 17, border: item.hightlight ? '1px solid #D7E6FE' : undefined, }}>
+              <div
+                onClick={() => {
+                  setIsOpen(item.rank);
+                  setDealer((prev) => ({
+                    ...prev,
+                    data_type:
+                      groupBy === 'primary_sales_rep' ? 'sale_rep' : groupBy,
+                    dealer: groupBy === 'primary_sales_rep' ? item.dealer : '',
+                    name: item.rep_name,
+                    rank: item.rank,
+                    sale: item.sale,
+                    ntp: item.ntp,
+                    install: item.install,
+                  }));
+                }}
+                className="mobile-rank-card"
+                style={{
+                  marginBottom: 17,
+                  border: item.hightlight ? '1px solid #D7E6FE' : undefined,
+                }}
+              >
                 <div
                   className="rank-standing"
-                  style={{ flexBasis: '40px', flexShrink: 0, }}
+                  style={{ flexBasis: '40px', flexShrink: 0 }}
                 >
                   <RankColumn rank={item.rank} />
                 </div>
@@ -707,6 +715,8 @@ const Table = ({
               </div>
             );
           })
+        ) : (
+          <div className='flex items-center justify-center'>No Data Found</div>
         )}
       </div>
       <div className="leaderboard-table-wrapper">
