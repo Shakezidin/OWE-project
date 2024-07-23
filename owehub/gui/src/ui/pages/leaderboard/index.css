@@ -263,7 +263,7 @@
   bottom: 0;
   width: 100%;
   background-color: rgba(42, 42, 42, 0.7);
-  z-index: 100;
+  z-index: 990;
   overflow-y: auto;
 }
 
