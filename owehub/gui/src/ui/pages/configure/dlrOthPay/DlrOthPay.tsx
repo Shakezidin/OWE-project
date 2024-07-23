@@ -40,6 +40,7 @@ const DlrOthPay: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
+  const [refresh, setRefresh] = useState(1);
   const { data: commissionList, dbCount } = useAppSelector(
     (state) => state.dlrOth
   );
@@ -64,7 +65,7 @@ const DlrOthPay: React.FC = () => {
       filters,
     };
     dispatch(getDlrOth({ ...pageNumber, archived: viewArchived }));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  }, [dispatch, currentPage, viewArchived, filters, refresh]);
 
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
@@ -214,6 +215,7 @@ const DlrOthPay: React.FC = () => {
             commission={editedCommission}
             editMode={editMode}
             handleClose={handleClose}
+            setRefresh = {setRefresh}
           />
         )}
 

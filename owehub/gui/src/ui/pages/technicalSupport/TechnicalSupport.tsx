@@ -31,20 +31,20 @@ const TechnicalSupport: React.FC = () => {
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
-  
+
     if (file) {
       const allowedExtensions = ['.png', '.jpg', '.jpeg'];
       const fileExtension = file.name
         .toLowerCase()
         .substring(file.name.lastIndexOf('.'));
-  
+
       if (!allowedExtensions.includes(fileExtension)) {
         setSelectedFileName('');
         setFileSizeError('Only PNG, JPG files are allowed');
         setSelectedFile(null);
         return;
       }
-  
+
       if (file.size <= maxSize) {
         setSelectedFileName(file.name);
         setFileSizeError('');
@@ -75,6 +75,7 @@ const TechnicalSupport: React.FC = () => {
 
   const [prevCont, setPrevCont] = useState('us');
 
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(selectedFile, 'isuuee');
@@ -91,17 +92,82 @@ const TechnicalSupport: React.FC = () => {
     setErrors(newErrors);
     if (form.current && Object.values(newErrors).every((err) => !err)) {
       setIsSubmitting(true);
-      const file = fileInputRef.current?.files?.[0];
-      const formData = new FormData(form.current);
-      if (file) {
-        formData.append('attachment', file);
-      }
-      emailjs
-        .sendForm('service_ll48199', 'template_uxld3x8', form.current, {
-          publicKey: 'D5-fAReJMW0jwRuvN',
+      const formData = new FormData();
+      formData.append(
+        'data',
+        JSON.stringify({
+          html_content: `
+         
+
+  <title>New Support Request</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #dddddd;
+      background-color: #f9f9f9;
+    }
+    .message {
+      padding: 12px;
+      border-left: 4px solid #d0d0d0;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #888888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p>Hello,</p>
+
+    <p>You have received a new technical support request from OWE Hub website:</p>
+
+    <p><strong>First Name:</strong> ${firstName}</p>
+    <p><strong>Last Name:</strong> ${lastName}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Phone Number:</strong> ${phoneNumber}</p>
+<p><strong>Issue:</strong> ${selectedIssue}</p>
+
+    <p><strong>Message:</strong></p>
+    <div class="message">
+      ${message}
+    </div>
+
+    <p>Best regards,<br>${firstName}</p>
+
+    <div class="footer">
+      This email was sent from OWE Hub Technical Support.
+    </div>
+  </div>
+</body>
+</html>
+          `,
+          message: '',
+          subject: 'Technical Support Message',
+          to_mail: email,
+          issue: selectedIssue,
+          attachments: selectedFile?.name,
+          phone_number: phoneNumber,
         })
-        .then(
-          (response: any) => {
+      );
+      if (selectedFile) {
+        formData.append('attachment', selectedFile);
+      }
+      postCaller('SendMail_to_IT_from_User', formData)
+        .then((response: any) => {
+          if (response.status === 202) {
             console.log('SUCCESS!', response);
             toast.success('Your form has been submitted!');
             setFirstName('');
@@ -109,75 +175,23 @@ const TechnicalSupport: React.FC = () => {
             setEmail('');
             setPhoneNumber(prevCont);
             setMessage('');
-            setSelectedFileName(''); // Clear the selected file name
-            setSelectedIssue(''); // Clear the selected issue
-            if (fileInputRef.current) {
-              fileInputRef.current.value = ''; // Clear the file input value
-            }
+            setSelectedFile(null);
+            setSelectedFileName('');
+            setSelectedIssue('');
             setIsSubmitting(false);
-          },
-          (error: any) => {
-            console.error('FAILED...', error);
+          } else {
+            console.error('FAILED...', response);
+            toast.error('Failed to submit the form. Please try again.');
             setIsSubmitting(false);
           }
-        );
+        })
+        .catch((error: any) => {
+          console.error('FAILED...', error);
+          toast.error('An error occurred. Please try again.');
+          setIsSubmitting(false);
+        });
     }
   };
-
-
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   console.log(selectedFile, 'isuuee');
-  //   // Validation logic
-  //   const newErrors = {
-  //     firstName: firstName ? '' : 'First name is required',
-  //     lastName: lastName ? '' : 'Last name is required',
-  //     email: emailRegex.test(email) ? '' : 'Email address is required',
-  //     phoneNumber: phoneNumber.slice(prevCont.length).trim()
-  //       ? ''
-  //       : 'Phone number is required',
-  //     message: message ? '' : 'Message is required',
-  //   };
-  //   setErrors(newErrors);
-  //   if (form.current && Object.values(newErrors).every((err) => !err)) {
-  //     setIsSubmitting(true);
-  //     const formData = new FormData();
-  //     formData.append('FirstName', firstName);
-  //     formData.append('LastName', lastName);
-  //     formData.append('ToMail', email);
-  //     formData.append('PhoneNumber', phoneNumber);
-  //     formData.append('Message', message);
-  //     formData.append('Issue', selectedIssue);
-  //     if (selectedFile) {
-  //       formData.append('attachment', selectedFile);
-  //     }
-  //     postCaller('SendMail_to_IT_from_User', formData)
-  //       .then((response: any) => {
-  //         if (response.status === 200) {
-  //           console.log('SUCCESS!', response);
-  //           toast.success('Your form has been submitted!');
-  //           setFirstName('');
-  //           setLastName('');
-  //           setEmail('');
-  //           setPhoneNumber(prevCont);
-  //           setMessage('');
-  //           setSelectedFile(null);
-  //           setSelectedFileName('');
-  //           setSelectedIssue('');
-  //           setIsSubmitting(false);
-  //         } else {
-  //           console.error('FAILED...', response);
-  //           toast.error('Failed to submit the form. Please try again.');
-  //           setIsSubmitting(false);
-  //         }
-  //       })
-  //       .catch((error: any) => {
-  //         console.error('FAILED...', error);
-  //         toast.error('An error occurred. Please try again.');
-  //         setIsSubmitting(false);
-  //       });
-  //   }
-  // };
 
 
   const handleStateChange = (selectedOption: any) => {
@@ -190,7 +204,7 @@ const TechnicalSupport: React.FC = () => {
     { value: 'OWE 3', label: 'OWE 3' },
   ];
 
- 
+
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
@@ -228,7 +242,7 @@ const TechnicalSupport: React.FC = () => {
             </div>
             <div className="supportImage">
               <img
-              style={{maxWidth:"100%"}}
+                style={{ maxWidth: "100%" }}
                 src={ICONS.supportImage}
                 aria-label="support-icon"
               ></img>
@@ -371,7 +385,7 @@ const TechnicalSupport: React.FC = () => {
                     ref={fileInputRef}
                     className="file-input"
                     onChange={handleFileInputChange}
-                    //  name="attachment"
+                  //  name="attachment"
                   />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
@@ -425,9 +439,8 @@ const TechnicalSupport: React.FC = () => {
 
             <div className="reset-Update-support">
               <button type="submit" disabled={isSubmitting}>
-                Submit
+                {isSubmitting ? 'Wait...' : 'Submit'}
               </button>
-              {/* <ActionButton title={"Submit"} type="submit" onClick={() => {handleSubmit}} /> */}
             </div>
           </div>
         </div>

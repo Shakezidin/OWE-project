@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActionButton } from '../../components/button/ActionButton';
 import Input from '../../components/text_input/Input';
 import './AccountSettings.css';
@@ -12,6 +12,18 @@ import { changePasswordAction } from '../../../redux/apiActions/auth/authActions
 
 interface ChangePasswordProps {
   handleOpenNClose: () => void;
+}
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return width;
 }
 
 const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
@@ -120,6 +132,9 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
     handleOpenNClose();
     handleLogout();
   };
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
   return (
     <>
       <div className="" style={{ flex: '1', padding: '1rem' }}>
@@ -143,6 +158,11 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                         setCurrentPassword(inputValue);
                       }
                     }}
+                    onClickEyeIcon={() => {
+                      if (isMobile) {
+                        setShowCurrentPassword(!showCurrentPassword);
+                      }
+                    }}
                     placeholder="Enter"
                     isTypePassword={true}
                     // onClickEyeIcon={() => {
@@ -158,6 +178,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                       setShowCurrentPassword(false);
                     }}
                     maxLength={50}
+                    isMobile={isMobile} 
                   />
                 </div>
                 <div className="create-input-field-profile-password relative">
@@ -175,6 +196,11 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                         });
                       }
                     }}
+                    onClickEyeIcon={() => {
+                      if (isMobile) {
+                        setShowNewPassword(!showNewPassword);
+                      }
+                    }}
                     placeholder="Enter"
                     isTypePassword={true}
                     // onClickEyeIcon={() => {
@@ -190,6 +216,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                       setShowNewPassword(false);
                     }}
                     maxLength={50}
+                    isMobile={isMobile} 
                   />
                   {error.newPassword && (
                     <span className="error absolute">{error.newPassword}</span>
@@ -215,9 +242,11 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     }}
                     placeholder="Enter"
                     isTypePassword={true}
-                    // onClickEyeIcon={() => {
-                    //   setShowConfirmPassword(!showConfirmPassword);
-                    // }}
+                    onClickEyeIcon={() => {
+                      if (isMobile) {
+                        setShowConfirmPassword(!showConfirmPassword);
+                      }
+                    }}
                     onMouseDown={() => {
                       setShowConfirmPassword(true);
                     }}
@@ -228,6 +257,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                       setShowConfirmPassword(false);
                     }}
                     maxLength={50}
+                    isMobile={isMobile} 
                   />
                   {error.confirmPassword && (
                     <span className="error">{error.confirmPassword}</span>
