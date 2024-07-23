@@ -222,17 +222,19 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	})
 
 	var currSaleRep models.GetLeaderBoard
+	var add bool
 	for i, val := range LeaderBoardList.LeaderBoardList {
 		if val.HighLight { // check name equeals
 			currSaleRep = val
 			currSaleRep.Rank = i + 1
+			add = true
 		}
 		LeaderBoardList.LeaderBoardList[i].Rank = i + 1
 	}
 
 	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
 
-	if dataReq.Role == "Sale Representative" && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") {
+	if dataReq.Role == "Sale Representative" && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
 		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
 	}
 
