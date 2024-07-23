@@ -143,25 +143,25 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	//it is for secondary sales rep, if it is not required, we can remove it later
-	if dataReq.GroupBy == "primary_sales_rep" {
-		dataReq.GroupBy = "secondary_sales_rep"
-		if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
-			leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, ", dataReq.GroupBy)
-		} else {
-			leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
-		}
+	// if dataReq.GroupBy == "primary_sales_rep" {
+	// 	dataReq.GroupBy = "secondary_sales_rep"
+	// 	if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
+	// 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, ", dataReq.GroupBy)
+	// 	} else {
+	// 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
+	// 	}
 
-		filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck, dealerIn)
-		leaderBoardQuery = leaderBoardQuery + filter
+	// 	filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck, dealerIn)
+	// 	leaderBoardQuery = leaderBoardQuery + filter
 
-		Secondarydata, err := db.ReteriveFromDB(db.RowDataDBIndex, leaderBoardQuery, whereEleList)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
-			FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
-			return
-		}
-		data = append(data, Secondarydata...)
-	}
+	// 	Secondarydata, err := db.ReteriveFromDB(db.RowDataDBIndex, leaderBoardQuery, whereEleList)
+	// 	if err != nil {
+	// 		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
+	// 		FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+	// 		return
+	// 	}
+	// 	data = append(data, Secondarydata...)
+	// }
 
 	LeaderBoardList := models.GetLeaderBoardList{}
 	if len(data) > 0 {
