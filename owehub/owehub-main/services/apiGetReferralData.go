@@ -424,10 +424,10 @@ func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestB
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.r2_addr_resp) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.start_date) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.start_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.end_date) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
