@@ -1,9 +1,17 @@
-import { format, subDays } from 'date-fns';
 import { toCanvas } from 'html-to-image';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import Banner from './components/Banner';
+import {
+  format,
+  subDays,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  startOfYear,
+} from 'date-fns';
 import PerformanceCards from './components/PerformanceCards';
 import Sidebar from './components/Sidebar';
 import Table from './components/Table';
@@ -40,6 +48,9 @@ const today = new Date();
 
 export type Tcategory = (typeof categories)[0];
 const Index = () => {
+  const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
+  const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
   const [isOpen, setIsOpen] = useState(-1);
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
@@ -58,9 +69,9 @@ const Index = () => {
   const [isExporting,setIsExporting] = useState(false)
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
-      label: 'This Week',
-      start: subDays(today, 7),
-      end: today,
+    label: 'Last Week',
+    start: startOfLastWeek,
+    end: endOfLastWeek,
     });
 
   const [isAuthenticated] = useState(

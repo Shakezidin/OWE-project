@@ -87,17 +87,26 @@ export const RankColumn = ({ rank }: { rank: number }) => {
 // PERIOD FILTER
 //
 const today = new Date();
-const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Sunday, change to 1 if it starts on Monday
+const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+// Calculate the start and end of last week
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
 
 const periodFilterOptions: DateRangeWithLabel[] = [
   {
     label: 'This Week',
     start: startOfThisWeek,
     end: today,
+  },
+  {
+    label: 'Last Week',
+    start: startOfLastWeek,
+    end: endOfLastWeek,
   },
   {
     label: 'This Month',
