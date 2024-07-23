@@ -139,13 +139,14 @@ const Banner: React.FC<BannerProps> = ({
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setOpts(dealerOption(newFormData));
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [newFormData]);
 
   console.log(details, 'fjkghsj');
   return (
@@ -286,7 +287,9 @@ const Banner: React.FC<BannerProps> = ({
                   className="input"
                   placeholder="Search Dealers"
                   style={{ width: '100%' }}
+                  value={search}
                   onChange={(e) => {
+                    setSearch(e.target.value);
                     if (e.target.value.trim()) {
                       const filtered = dealerOption(newFormData).filter(
                         (item) =>

@@ -58,9 +58,9 @@ const PerformanceCards: React.FC<performance> = ({
       >
         <div className="right-button">
           <div
-          style={{
-            transition: 'all 500ms',
-          }}
+            style={{
+              transition: 'all 500ms',
+            }}
             className={`relative flex items-center ${isAccoOpen ? 'justify-end' : 'justify-between'}`}
           >
             <span
@@ -217,6 +217,10 @@ const PerformanceCards: React.FC<performance> = ({
               </div>
             </div>
           ) : null}
+
+          {!(rank2 && rank1 && rank3) && (
+            <div style={{textAlign:"center",}} className="text-center mx-auto">Nothing to show</div>
+          )} 
         </div>
       </div>
     </div>

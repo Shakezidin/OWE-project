@@ -288,9 +288,6 @@
     font-size: 2rem;
     line-height: 37px;
   }
-  .banner-left img {
-    width: 100px;
-  }
 }
 
 @media (max-width: 968px) {

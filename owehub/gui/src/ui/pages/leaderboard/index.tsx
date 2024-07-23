@@ -49,8 +49,12 @@ const today = new Date();
 export type Tcategory = (typeof categories)[0];
 const Index = () => {
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
-  const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
+  const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
+    weekStartsOn: 1,
+  });
+  const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
+    weekStartsOn: 1,
+  });
   const [isOpen, setIsOpen] = useState(-1);
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
@@ -66,12 +70,12 @@ const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 }
   const leaderboard = useRef<HTMLDivElement | null>(null);
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);
-  const [isExporting,setIsExporting] = useState(false)
+  const [isExporting, setIsExporting] = useState(false);
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
-    label: 'Last Week',
-    start: startOfLastWeek,
-    end: endOfLastWeek,
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
     });
 
   const [isAuthenticated] = useState(
@@ -133,7 +137,7 @@ const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 }
 
   const exportPdf = () => {
     if (leaderboard.current) {
-      setIsExporting(true)
+      setIsExporting(true);
       const element = leaderboard.current;
       const scrollHeight = element.scrollHeight;
 
@@ -151,17 +155,19 @@ const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 }
         toCanvas(element, {
           height: scrollHeight,
           filter,
+          cacheBust: true,
+          canvasWidth: element.clientWidth - 80,
         }).then((canvas) => {
           const imageData = canvas.toDataURL('image/png');
           const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'pt',
-            format: [canvas.width, canvas.height],
+            format: [canvas.width + 10, canvas.height],
           });
           pdf.addImage(imageData, 'PNG', 0, 0, canvas.width, canvas.height);
           pdf.save('download.pdf');
           selector.style.overflow = 'auto';
-          setIsExporting(false)
+          setIsExporting(false);
         });
       }
     }
