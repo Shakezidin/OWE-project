@@ -1,6 +1,6 @@
-import { format, subDays } from 'date-fns';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { DateRange } from 'react-date-range';
+import { format, subDays, startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfYear } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -74,32 +74,39 @@ export const RankColumn = ({ rank }: { rank: number }) => {
   return <span className="ml1">{rank}</span>;
 };
 
-//
+ //
 // PERIOD FILTER
 //
 const today = new Date();
+const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Sunday, change to 1 if it starts on Monday
+const startOfThisMonth = startOfMonth(today);
+const startOfThisYear = startOfYear(today);
+const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
 const periodFilterOptions: DateRangeWithLabel[] = [
   {
     label: 'This Week',
-    start: subDays(today, 7),
+    start: startOfThisWeek,
     end: today,
   },
   {
     label: 'This Month',
-    start: subDays(today, 30),
+    start: startOfThisMonth,
     end: today,
   },
   {
     label: 'Last Month',
-    start: subDays(today, 60),
-    end: subDays(today, 30),
+    start: startOfLastMonth,
+    end: endOfLastMonth,
   },
   {
     label: 'This Year',
-    start: subDays(today, 365),
+    start: startOfThisYear,
     end: today,
   },
 ];
+
 
 const PeriodFilter = ({
   period,
