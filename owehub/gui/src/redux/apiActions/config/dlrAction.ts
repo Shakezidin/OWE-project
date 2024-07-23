@@ -43,9 +43,7 @@ export const createDlrOth = createAsyncThunk(
       if (data instanceof Error || data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getDlrOth({ page_number: 1, page_size: 10, archived: false })
-      );
+      
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

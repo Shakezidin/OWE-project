@@ -82,7 +82,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
               )}
             />
           </div>
-          <div className="create-input-field">
+          <div className="create-input-field" style={{marginTop: "4px"}}>
             {/* <Input
               type={'text'}
               label="Team Name"

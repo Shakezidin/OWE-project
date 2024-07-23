@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ChangePassword.css';
 import Input from '../../../components/text_input/Input';
 import { toast } from 'react-toastify';
@@ -13,6 +13,18 @@ import { logout } from '../../../../redux/apiSlice/authSlice/authSlice';
 
 interface ChangePasswordProps {
   handleOpenNClose: () => void;
+}
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return width;
 }
 const ChangePassword: React.FC<ChangePasswordProps> = ({
   handleOpenNClose,
@@ -144,6 +156,9 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
     handleLogout();
   };
 
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
   return (
     <div className="change-transparent-model">
       <div className="changepass-change-password">
@@ -176,6 +191,12 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
                 setShowCurrentPassword(false);
               }}
               maxLength={50}
+              onClickEyeIcon={() => {
+                if (isMobile) {
+                  setShowCurrentPassword(!showCurrentPassword);
+                }
+              }}
+              isMobile={isMobile}
             />
           </div>
           <div className="changepass-form-group">
@@ -192,6 +213,11 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
                   });
                 }
               }}
+              onClickEyeIcon={() => {
+                if (isMobile) {
+                  setShowNewPassword(!showNewPassword);
+                }
+              }}
               placeholder="New Password"
               isTypePassword={true}
               onMouseDown={() => {
@@ -204,6 +230,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
                 setShowNewPassword(false);
               }}
               maxLength={50}
+              isMobile={isMobile}
             />
             {error.newPassword && (
               <span className="error">{error.newPassword}</span>
@@ -228,6 +255,12 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
               }}
               placeholder="Confirm Password"
               isTypePassword={true}
+              onClickEyeIcon={() => {
+                if (isMobile) {
+                  setShowConfirmPassword(!showConfirmPassword);
+                }
+              }}
+              isMobile={isMobile}
               onMouseDown={() => {
                 setShowConfirmPassword(true);
               }}

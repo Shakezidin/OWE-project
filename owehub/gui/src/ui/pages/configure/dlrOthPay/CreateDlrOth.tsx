@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -23,6 +23,7 @@ interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
   commission: IRowDLR | null;
+  setRefresh: Dispatch<SetStateAction<number>>
 }
 
 interface IError {
@@ -33,6 +34,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
   handleClose,
   commission,
   editMode,
+  setRefresh
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.dlrOth);
@@ -103,7 +105,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     e.preventDefault();
     if (handleValidation()) {
       if (editMode) {
-        dispatch(
+       await dispatch(
           updateDlrOth({
             ...createCommission,
             amount: parseFloat(createCommission.amount as string),
@@ -111,13 +113,14 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
           })
         );
       } else {
-        dispatch(
+       await dispatch(
           createDlrOth({
             ...createCommission,
             amount: parseFloat(createCommission.amount as string),
           })
         );
       }
+      setRefresh(prev => prev+1);
     }
   };
 
