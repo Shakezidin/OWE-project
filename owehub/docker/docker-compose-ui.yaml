@@ -9,7 +9,7 @@ services:
      owe_net1:
        ipv4_address: 172.30.0.221
    ports:
-     - "80:80"
+     - "3000:80"
    environment:
      BACKEND_HOST: "localhost"
    volumes:
