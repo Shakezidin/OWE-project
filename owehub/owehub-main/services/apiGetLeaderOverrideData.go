@@ -261,7 +261,7 @@ func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataReques
 				filtersBuilder.WriteString(fmt.Sprintf("lo.team_kw_q %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "pay_rate":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.pay_rate) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("lo.pay_rate %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
 				filtersBuilder.WriteString(fmt.Sprintf("lo.start_date %s $%d", operator, len(whereEleList)+1))

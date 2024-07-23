@@ -299,6 +299,13 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 			case "commission_model":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.commission_model) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.end_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
