@@ -51,10 +51,7 @@
 .banner-left {
   gap: 1.5rem;
   width: 50vw;
-  z-index: 99;
-}
-.banner-left > object {
-  width: 120px;
+  z-index: 110;
 }
 
 .left-ban-des {
@@ -240,17 +237,21 @@
   .banner-star-1 {
     top: 50px;
     width: 18px;
-    right: 170px;
+    right: 205px;
   }
   .banner-star-2 {
     width: 18px;
-    top: 13px;
-    right: 77px;
+    top: 2px;
+    right: 100px;
   }
   .banner-star-3 {
     right: 140px;
     top: 130px;
     width: 14px;
+  }
+  .green-banner-heading{
+    font-size: 2rem;
+    line-height: 37px;
   }
 }
 .banner-left{
@@ -279,36 +280,20 @@
   .banner-right{
     margin-right: auto;
   }
-  
-  .banner-trophy {
-    top: 130px;
-    bottom: unset;
-  }
-  .banner-star-2 {
-    top: 155px;
-  }
-  .banner-star-1 {
-    top: 200px;
-  }
-  .banner-star-3 {
-    top: 278px;
+
+  .banner-trophy, .user-trophy, .banner-star-1, .banner-star-2, .banner-star-3{
+    display: none;
   }
   .green-banner-heading {
     font-size: 2rem;
     line-height: 37px;
   }
-  /* .banner-left img {
-    width: 110px;
-  } */
+  .banner-left img {
+    width: 100px;
+  }
 }
 
 @media (max-width: 968px) {
-  .user-trophy {
-    display: none;
-  }
-  .banner-trophy{
-    display: none;
-  }
   .owner-names{
     font-size: 0.75rem;
   }
@@ -330,10 +315,6 @@
     font-size: 1.5rem;
     line-height: 30px;
   }
-
-  /* .user-trophy img {
-    transform: scale(1.2);
-  } */
 }
 @media (max-width: 400px) {
   .banner-left,
@@ -350,8 +331,4 @@
     font-size: 1.5rem;
     line-height: 30px;
   }
-
-  
-
-
 }
