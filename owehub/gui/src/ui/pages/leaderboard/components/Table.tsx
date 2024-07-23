@@ -731,8 +731,8 @@ const Table = ({
                 {(role === TYPE_OF_USER.ADMIN ||
                   role === TYPE_OF_USER.FINANCE_ADMIN) && <th>Dealer</th>}
                 <th>Sale</th>
-                <th>Install</th>
                 <th>NTP</th>
+                <th>Install</th>
                 <th>Cancel</th>
               </tr>
             </thead>
@@ -793,8 +793,9 @@ const Table = ({
                       )}
 
                       <td>{formatSaleValue(item?.sale)} </td>
-                      <td>{formatSaleValue(item?.install)}</td>
                       <td>{formatSaleValue(item?.ntp)}</td>
+                      <td>{formatSaleValue(item?.install)}</td>
+                   
                       <td>{formatSaleValue(item.cancel)}</td>
                     </tr>
                   );
