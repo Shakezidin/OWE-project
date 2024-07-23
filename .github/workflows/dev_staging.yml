@@ -20,13 +20,12 @@ jobs:
 
     - name: Copy files to server
       run: |
-        ls -ltr
-        scp -P ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no -r . ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }}:/home/ubuntu
+        scp -P ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no -r ./* ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }}:/home/ubuntu/github
 
     - name: Run deployment script on server
       run: |
         ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
-        cd /home/ubuntu/OweAppPlatform/owehub/scripts
+        cd /home/ubuntu/github/owehub/scripts
         # Run your deployment commands here, for example:
         ./deploy-owehub.sh backend
         EOF
