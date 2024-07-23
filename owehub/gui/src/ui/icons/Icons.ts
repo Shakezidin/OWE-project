@@ -250,5 +250,5 @@ export const ICONS = {
   GoldOne: GoldOne,
   BrownThree: BrownThree,
   BannerStar: BannerStar,
-  OWEBanner: OWEBanner
+  OWEBanner: OWEBanner,
 };

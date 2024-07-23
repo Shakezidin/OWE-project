@@ -69,7 +69,7 @@ const groupByOptionss = [
 ];
 
 const groupByOptions = [
-  { label: 'Dealer', value: 'dealer' },
+  { label: 'Partner', value: 'dealer' },
   { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
@@ -338,7 +338,6 @@ const DateFilter = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  console.log(selected, 'selected');
 
   return (
     <div className="flex items-center justify-end">
@@ -716,7 +715,7 @@ const Table = ({
             );
           })
         ) : (
-          <div className='flex items-center justify-center'>No Data Found</div>
+          <div className="flex items-center justify-center">No Data Found</div>
         )}
       </div>
       <div className="leaderboard-table-wrapper">
@@ -729,7 +728,7 @@ const Table = ({
                 <th>Name</th>
 
                 {(role === TYPE_OF_USER.ADMIN ||
-                  role === TYPE_OF_USER.FINANCE_ADMIN) && <th>Dealer</th>}
+                  role === TYPE_OF_USER.FINANCE_ADMIN) && <th>Partner</th>}
                 <th>Sale</th>
                 <th>NTP</th>
                 <th>Install</th>
@@ -795,7 +794,7 @@ const Table = ({
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
                       <td>{formatSaleValue(item?.install)}</td>
-                   
+
                       <td>{formatSaleValue(item.cancel)}</td>
                     </tr>
                   );

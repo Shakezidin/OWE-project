@@ -94,7 +94,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       setProject(false);
     }
   }, [toggleOpen]);
-  console.log(cords, 'cordssssss');
 
   const width = useWindowWidth();
 

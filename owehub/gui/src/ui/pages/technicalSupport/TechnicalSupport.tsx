@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Input from '../../components/text_input/Input';
 import { ICONS } from '../../icons/Icons';
 import './support.css';
@@ -11,14 +11,26 @@ import 'react-phone-input-2/lib/style.css';
 import MicroLoader from '../../components/loader/MicroLoader';
 import axios from 'axios';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { getUser } from '../../../redux/apiActions/GetUser/getUserAction';
 
 const TechnicalSupport: React.FC = () => {
+  const { userDetail, userUpdate, isFormSubmitting } = useAppSelector(
+    (state) => state.userSlice
+  );
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getUser({ page_number: 1, page_size: 10 }));
+  }, []);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedIssue, setSelectedIssue] = useState<string>('');
   const form = useRef<HTMLFormElement>(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(userDetail?.email_id || '');
   const [phoneNumber, setPhoneNumber] = useState<any>('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +40,14 @@ const TechnicalSupport: React.FC = () => {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  useEffect(() => {
+    if (userDetail) {
+      setFirstName(userDetail?.name?.split(' ')[0]);
+      setLastName(userDetail?.name?.split(' ')[1]);
+      setEmail(userDetail?.email_id);
+      setPhoneNumber('1' + userDetail?.mobile_number);
+    }
+  }, [userDetail]);
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
@@ -49,7 +69,7 @@ const TechnicalSupport: React.FC = () => {
         setSelectedFileName(file.name);
         setFileSizeError('');
         setSelectedFile(file);
-        console.log(file, "selected file in tech support");
+        console.log(file, 'selected file in tech support');
       } else {
         setSelectedFileName('');
         setFileSizeError('File size exceeds the limit of 10 MB');
@@ -74,7 +94,6 @@ const TechnicalSupport: React.FC = () => {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const [prevCont, setPrevCont] = useState('us');
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,7 +212,6 @@ const TechnicalSupport: React.FC = () => {
     }
   };
 
-
   const handleStateChange = (selectedOption: any) => {
     setSelectedIssue(selectedOption.value);
   };
@@ -203,7 +221,6 @@ const TechnicalSupport: React.FC = () => {
     { value: 'OWE 2', label: 'OWE 2' },
     { value: 'OWE 3', label: 'OWE 3' },
   ];
-
 
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
@@ -242,7 +259,7 @@ const TechnicalSupport: React.FC = () => {
             </div>
             <div className="supportImage">
               <img
-                style={{ maxWidth: "100%" }}
+                style={{ maxWidth: '100%' }}
                 src={ICONS.supportImage}
                 aria-label="support-icon"
               ></img>
@@ -385,7 +402,7 @@ const TechnicalSupport: React.FC = () => {
                     ref={fileInputRef}
                     className="file-input"
                     onChange={handleFileInputChange}
-                  //  name="attachment"
+                    //  name="attachment"
                   />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">

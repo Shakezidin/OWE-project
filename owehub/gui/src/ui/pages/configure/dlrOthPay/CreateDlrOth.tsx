@@ -23,7 +23,7 @@ interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
   commission: IRowDLR | null;
-  setRefresh: Dispatch<SetStateAction<number>>
+  setRefresh: Dispatch<SetStateAction<number>>;
 }
 
 interface IError {
@@ -34,7 +34,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
   handleClose,
   commission,
   editMode,
-  setRefresh
+  setRefresh,
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.dlrOth);
@@ -105,7 +105,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     e.preventDefault();
     if (handleValidation()) {
       if (editMode) {
-       await dispatch(
+        await dispatch(
           updateDlrOth({
             ...createCommission,
             amount: parseFloat(createCommission.amount as string),
@@ -113,14 +113,14 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
           })
         );
       } else {
-       await dispatch(
+        await dispatch(
           createDlrOth({
             ...createCommission,
             amount: parseFloat(createCommission.amount as string),
           })
         );
       }
-      setRefresh(prev => prev+1);
+      setRefresh((prev) => prev + 1);
     }
   };
 
@@ -130,7 +130,6 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
       dispatch(resetSuccess());
     }
   }, [isSuccess]);
-  console.log(errors, 'hfhfg');
 
   return (
     <div className="transparent-model">

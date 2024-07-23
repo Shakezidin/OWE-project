@@ -24,7 +24,6 @@ interface Toggleprops {
   sidebarChange: number;
 }
 
-
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
 
@@ -118,7 +117,6 @@ const Header: React.FC<Toggleprops> = ({
             ) : (
               <RxCross2 size={20} className="mx-auto" />
             )
-            
           ) : (
             <img
               src={ICONS.sidebarLogo}
@@ -159,7 +157,7 @@ const Header: React.FC<Toggleprops> = ({
         </div>
         <div
           className="header-logo flex items-center"
-          style={{ marginLeft: isTablet ? 0 : 25, height: '100%',  }}
+          style={{ marginLeft: isTablet ? 0 : 25, height: '100%' }}
         >
           <object
             type="image/svg+xml"
@@ -232,9 +230,7 @@ const Header: React.FC<Toggleprops> = ({
         </div>
       )}
 
-
       {isMobile && (
-
         <div className="search-container">
           <div
             className="user-container"
@@ -291,9 +287,7 @@ const Header: React.FC<Toggleprops> = ({
             </div>
           </div>
         </div>
-
       )}
-
     </div>
   );
 };

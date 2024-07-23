@@ -148,7 +148,6 @@ const Banner: React.FC<BannerProps> = ({
     };
   }, [newFormData]);
 
-  console.log(details, 'fjkghsj');
   return (
     <div className="relative">
       <div

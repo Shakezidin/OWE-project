@@ -20,6 +20,7 @@ const MyProfile = () => {
   const { userDetail, userUpdate, isFormSubmitting } = useAppSelector(
     (state) => state.userSlice
   );
+
   const [name, setName] = useState<String>(userDetail?.name);
   const userRole = userDetail?.role_name;
   const userName = userDetail?.name;

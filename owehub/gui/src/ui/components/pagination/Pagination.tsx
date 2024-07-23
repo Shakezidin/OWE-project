@@ -23,8 +23,6 @@ const Pagination: React.FC<PaginationProps> = ({
   goToPrevPage,
   perPage,
 }) => {
-  console.log(currentPage, 'current');
-
   return (
     <div className="pagination-container">
       <ReactPaginate
@@ -42,7 +40,9 @@ const Pagination: React.FC<PaginationProps> = ({
             />
           </button>
         }
-        onPageChange={({ selected }: { selected: number }) => paginate(selected + 1)}
+        onPageChange={({ selected }: { selected: number }) =>
+          paginate(selected + 1)
+        }
         containerClassName="pagination"
         pageRangeDisplayed={3}
         marginPagesDisplayed={2}

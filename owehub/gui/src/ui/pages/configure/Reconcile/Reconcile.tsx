@@ -86,8 +86,6 @@ const Reconcile = () => {
   };
 
   if (sortKey) {
-    console.log(sortKey, 'testtt');
-
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];

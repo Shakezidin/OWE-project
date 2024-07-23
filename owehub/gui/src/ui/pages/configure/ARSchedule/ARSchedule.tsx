@@ -171,8 +171,6 @@ const ARSchedule = () => {
     }
   };
 
-  console.log(selectedRows, 'rorrrrr');
-
   return (
     <div className="comm">
       <Breadcrumb

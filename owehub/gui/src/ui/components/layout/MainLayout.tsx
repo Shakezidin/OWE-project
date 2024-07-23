@@ -46,8 +46,6 @@ const MainLayout = () => {
   );
   const [sidebarChange, setSidebarChange] = useState<number>(0);
 
-  
-
   /** TODO: temp solution for session logout. Need to change in future */
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -87,7 +85,6 @@ const MainLayout = () => {
       dispatch(checkUserExists(email))
         .then((response: any) => {
           if (response.payload) {
-            console.log('User exists');
           } else {
             // User does not exist, log out
             dispatch(logout());

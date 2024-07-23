@@ -84,7 +84,6 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   };
   React.useEffect(() => {
     if (editMode) {
-      console.log('jhgfgj', editData?.dealer);
       setNewFormData({
         dealerName: editData?.dealer || '',
         installerName: editData?.installer || '',
@@ -167,7 +166,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
       }
     }
   };
-console.log(errors,"errors");
+  console.log(errors, 'errors');
 
   return (
     <div className="transparent-model">

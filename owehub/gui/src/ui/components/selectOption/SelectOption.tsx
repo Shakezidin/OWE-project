@@ -37,9 +37,7 @@ const SelectOption: React.FC<Props> = ({
   labelColor,
 }) => {
   const scrollRef = useRef(null);
-  useEffect(() => {
-    console.log(scrollRef.current, 'select');
-  }, [scrollRef]);
+
   return (
     <div className="select-container">
       {/* {label && <label className="inputLabel">{label}</label>} */}

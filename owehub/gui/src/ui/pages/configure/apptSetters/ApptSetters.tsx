@@ -77,7 +77,6 @@ const ApptSetters = () => {
 
   const endIndex = currentPage * itemsPerPage;
 
-  console.log(endIndex, "endddddd");
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -201,7 +200,7 @@ const ApptSetters = () => {
   //   return <div>Loading...</div>;
   // }
 
- console.log("okkkcehck")
+  console.log('okkkcehck');
 
   return (
     <div className="comm">

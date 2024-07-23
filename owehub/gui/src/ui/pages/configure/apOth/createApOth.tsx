@@ -41,7 +41,6 @@ const CreateApOth: React.FC<payScheduleProps> = ({
     (state) => state.apOthSlice
   );
 
-  console.log(editData, 'fisklgh');
   const [createAppSettersData, setAppSettersData] = useState({
     unique_id: editData?.unique_id || '',
     payee: editData?.payee || '',
