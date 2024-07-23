@@ -106,9 +106,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
         amount:commission.amount,
         notes:commission.notes,
         rep_doll_divby_per:commission.rep_doll_divby_per,
-        start_date:dateFormat(commission.start_date),
-
-
+        start_date: commission.start_date ? format(new Date(commission.start_date),"yyyy-MM-dd") : ""
       })
     }
   }, [commission]);
@@ -367,7 +365,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                   <Input
                     type={'date'}
                     label="Start Date"
-                    value={dateFormat(createCommission.start_date)}
+                    value={createCommission.start_date}
                     name="start_date"
                     placeholder={'Start Date'}
                     onChange={(e) => handleInputChange(e)}
