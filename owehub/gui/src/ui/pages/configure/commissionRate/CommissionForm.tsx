@@ -8,6 +8,7 @@ import {
   partnerOption,
   stateOption,
   salesTypeOption,
+  repTypeOption
 } from '../../../../core/models/data_models/SelectDataModel';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import { respTypeData } from '../../../../resources/static_data/StaticData';
@@ -143,12 +144,15 @@ const CommissionForm: React.FC<formProps> = ({
                     Representative Type
                   </label>
                   <SelectOption
-                    options={respTypeData}
-                    onChange={(newValue) => handleChange(newValue, 'rep_type')}
-                    value={respTypeData?.find(
-                      (option) => option.value === createCommission.rep_type
-                    )}
-                  />
+                      options={repTypeOption(newFormData)}
+                      onChange={(newValue) =>
+                        handleChange(newValue, 'rep_type')
+                      }
+                      value={repTypeOption(newFormData)?.find(
+                        (option) => option.value === createCommission.rep_type
+                      )}
+                    />
+                  
                   {errors.rep_type && (
                     <span className="error">{errors.rep_type}</span>
                   )}
