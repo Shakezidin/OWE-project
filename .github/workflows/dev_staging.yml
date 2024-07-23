@@ -1,0 +1,31 @@
+name: Deploy to Staging Server
+
+on:
+  push:
+    branches:
+      - dev  # Deploy when code is pushed to the dev branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.OWEHUB_STAGING_SSH_PRIVATE_KEY }}
+
+    - name: Copy files to server
+      run: |
+        scp -P ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no -r . ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }}:/home/ubuntu
+
+    - name: Run deployment script on server
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/OweAppPlatform/owehub/scripts
+        # Run your deployment commands here, for example:
+        ./deploy-owehub.sh backend
+        EOF
