@@ -20,6 +20,7 @@ jobs:
 
     - name: Copy files to server
       run: |
+        ls -ltr
         scp -P ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no -r . ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }}:/home/ubuntu
 
     - name: Run deployment script on server
