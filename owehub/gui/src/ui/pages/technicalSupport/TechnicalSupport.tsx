@@ -294,6 +294,7 @@ const TechnicalSupport: React.FC = () => {
                       });
                     }
                   }}
+                  disabled={true}
                 />
                 {errors.firstName && (
                   <span className="error">{errors.firstName}</span>
@@ -319,6 +320,7 @@ const TechnicalSupport: React.FC = () => {
                       });
                     }
                   }}
+                  disabled={true}
                 />
                 {errors.lastName && (
                   <span className="error">{errors.lastName}</span>
@@ -339,6 +341,7 @@ const TechnicalSupport: React.FC = () => {
                       e.preventDefault();
                     }
                   }}
+                  disabled={true}
                 />
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
@@ -361,6 +364,7 @@ const TechnicalSupport: React.FC = () => {
                     setErrors({ ...errors, phoneNumber: '' });
                   }}
                   placeholder="Enter phone number"
+                  disabled={true}
                 />
                 <input type="hidden" name="phoneNumber" value={phoneNumber} />
                 {errors.phoneNumber && (
