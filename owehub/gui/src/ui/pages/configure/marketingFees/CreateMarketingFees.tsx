@@ -25,6 +25,14 @@ interface marketingProps {
   page_size: number;
 }
 
+function dateFormat(dateString: string | undefined): string {
+  if (!dateString) return '';
+
+  const [month, day, year] = dateString.split('-');
+  const formattedYear = year.length === 2 ? `20${year}` : year;
+  return `${formattedYear}-${month}-${day}`;
+}
+
 const CreateMarketingFees: React.FC<marketingProps> = ({
   handleClose,
   editMode,
@@ -42,8 +50,8 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     fee_rate: marketingData ? marketingData.fee_rate : '',
     chg_dlr:  marketingData?.chg_dlr ? 'yes' : 'no',
     pay_src: marketingData?.pay_src ? 'yes' : 'no',
-    start_date: marketingData ? marketingData.start_date : '',
-    end_date: marketingData ? marketingData.end_date : '',
+    start_date: marketingData ? dateFormat(marketingData.start_date?.trim()) : '',
+    end_date: marketingData ? dateFormat(marketingData.end_date?.trim()) : '',
     description: marketingData ? marketingData.description?.trim() : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);

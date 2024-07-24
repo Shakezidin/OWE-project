@@ -23,6 +23,14 @@ import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
 import { firstCapitalize } from '../../../../utiles';
 
+function dateFormat(dateString: string | undefined): string {
+  if (!dateString) return '';
+
+  const [month, day, year] = dateString.split('-');
+  const formattedYear = year.length === 2 ? `20${year}` : year;
+  return `${formattedYear}-${month}-${day}`;
+}
+
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -45,8 +53,8 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
     name: editData?.name || '',
     team_name: editData?.team_name || '',
     pay_rate: editData?.pay_rate || '',
-    start_date: editData?.start_date || '',
-    end_date: editData?.end_date || '',
+    start_date: dateFormat(editData?.start_date) || '',
+    end_date: dateFormat(editData?.end_date) || '',
   });
   type TError = typeof createAppSettersData;
   const [errors, setErrors] = useState<TError>({} as TError);

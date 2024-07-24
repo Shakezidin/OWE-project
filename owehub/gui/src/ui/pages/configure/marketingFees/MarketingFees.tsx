@@ -203,7 +203,18 @@ const MarketingFees: React.FC = () => {
 
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
-    setFilters(req.filters);
+    setFilters(req?.filters?.map(
+      (item : any) => {
+         if(item.Column == 'start_date' || item.Column == 'end_date'){
+          return {
+            ...item, 
+            Data: dateFormat(item.Data)
+          }
+         } else{
+          return item;
+         }
+      }
+    ));
   };
 
   return (

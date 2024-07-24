@@ -44,7 +44,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
     unique_id: editData?.unique_id || '',
     rep: editData?.rep || '',
     dba:  editData?.dba  || '',
-    final: editData?.final || '',
+    type: editData?.type || '',
     date: editData?.date || '',
     amount:  editData?.amount || '',
     method: editData?.method || '',
@@ -89,7 +89,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
       dba: [
         { condition: (value: any) => !!value, message: 'DBA is required' },
       ],
-      final: [
+      type: [
         {
           condition: (value: any) => !!value,
           message: 'Type is required',
@@ -119,7 +119,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
       //     unique_id: createArData.unique_id,
       //     rep: createArData.rep,
       //     dba: createArData.dba,
-      //     final: createArData.type,
+      //     type: createArData.type,
       //     date: createArData.date,
       //     amount: parseInt(createArData.amount),
       //     method:createArData.method,
@@ -219,8 +219,8 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                   <Input
                     type={'text'}
                     label="Type"
-                    value={createArData.final}
-                    name="final"
+                    value={createArData.type}
+                    name="type"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
