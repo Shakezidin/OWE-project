@@ -34,7 +34,9 @@ const Banner: React.FC<BannerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
-
+  const [isAuthenticated] = useState(
+    localStorage.getItem('is_password_change_required') === 'false'
+  );
   const tableData = {
     tableNames: ['dealer'],
   };
@@ -52,7 +54,7 @@ const Banner: React.FC<BannerProps> = ({
   }, [role]);
 
   useEffect(() => {
-    if (role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN) {
+    if (role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN && isAuthenticated) {
       (async () => {
         try {
           const data = await postCaller('get_leaderboarddatarequest', {});
@@ -74,7 +76,7 @@ const Banner: React.FC<BannerProps> = ({
         }
       })();
     }
-  }, [dealerId, role, refetch]);
+  }, [dealerId, role, refetch,isAuthenticated]);
 
   useEffect(() => {
     if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
