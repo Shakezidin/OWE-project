@@ -1,6 +1,7 @@
 version: "3.0"
 services:
-  ##############owehub-ui#####################
+
+##############owehub-ui#####################
   service-owehub-ui:
     restart: always
     image: owehub-ui:v1
@@ -14,6 +15,7 @@ services:
     volumes:
       - /var/log/owe-ui/:/var/log/owe-ui/
     privileged: true
+
 
 networks:
   owe_net1:
