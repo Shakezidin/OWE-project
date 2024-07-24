@@ -172,9 +172,9 @@ const Banner: React.FC<BannerProps> = ({
           {/* left side  */}
 
           <div className="flex items-center pl4 banner-left">
-            {details?.dealer_logo &&
-              role !== TYPE_OF_USER.FINANCE_ADMIN &&
-              role !== TYPE_OF_USER.ADMIN && (
+            {role !== TYPE_OF_USER.FINANCE_ADMIN &&
+              role !== TYPE_OF_USER.ADMIN &&
+              details?.dealer_logo && (
                 <img
                   src={
                     role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN
@@ -185,6 +185,18 @@ const Banner: React.FC<BannerProps> = ({
                   alt="solar-name-icon"
                 />
               )}
+            {(role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ADMIN) && (
+              <img
+                src={
+                  role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN
+                    ? details?.dealer_logo || ICONS.OWEBanner
+                    : details?.dealer_logo || ICONS.BannerLogo
+                }
+                style={{ maxWidth: 132, maxHeight: 180 }}
+                alt="solar-name-icon"
+              />
+            )}
             <div className="">
               {role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? (
                 <h1 className="solar-heading">
