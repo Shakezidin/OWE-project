@@ -105,7 +105,9 @@ const LogoPicker = ({
   };
   const role = localStorage.getItem('role');
   const switchImg = () => {
-    if (role === TYPE_OF_USER.ADMIN || TYPE_OF_USER.FINANCE_ADMIN) {
+    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
+      console.log('if state');
+
       const admintheme = localStorage.getItem('admintheme');
       if (admintheme) {
         const parsed = JSON.parse(admintheme);
@@ -113,13 +115,15 @@ const LogoPicker = ({
           return parsed.dealer_logo;
         }
       } else {
-        return PLaceholderImg;
+        return ICONS.OWEBanner;
       }
     } else {
+      console.log('else state');
+
       return dealerLogo || PLaceholderImg;
     }
   };
- 
+
   return (
     <>
       {previewSrc ? (

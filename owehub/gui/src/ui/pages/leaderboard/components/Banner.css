@@ -17,7 +17,9 @@
   display: flex;
   align-items: center;
 }
-
+.banner-heading{
+  margin-top: -1.5rem;
+}
 .dealer-dropdown-filter .dealer-toggler {
   padding: 0.5rem 1rem;
   background-color: #fff;
@@ -288,9 +290,14 @@
     font-size: 2rem;
     line-height: 37px;
   }
+  .banner-heading{
+margin-top: 0;
+  }
 }
 
 @media (max-width: 968px) {
+
+  
   .owner-names{
     font-size: 0.75rem;
   }

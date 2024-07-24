@@ -72,6 +72,7 @@ const PerformanceCards: React.FC<performance> = ({
               style={{
                 rotate: !isAccoOpen ? '180deg' : '',
                 transition: 'all 500ms',
+                marginTop:isAccoOpen?10:undefined
               }}
               onClick={() => setIsAccoOpen(!isAccoOpen)}
             >
@@ -98,7 +99,7 @@ const PerformanceCards: React.FC<performance> = ({
             className={isAccoOpen ? 'absolute-img' : ''}
             aria-label="login-icon"
           ></img>
-          <p>
+          <p className={isAccoOpen?"sm-hide":""}>
             Adjust criteria below to see who leads in different categories..
           </p>
         </div>
@@ -234,7 +235,8 @@ const PerformanceCards: React.FC<performance> = ({
         {!Boolean(details.length) && !isLoading && (
           <div
             style={{ textAlign: 'center' }}
-            className="text-center mx-auto flex items-center justify-center"
+       
+            className={`text-center mx-auto flex items-center justify-center ${isAccoOpen?"sm-hide":""}`}
           >
             <img src={artboard} style={{ maxWidth: 350 }} />
           </div>

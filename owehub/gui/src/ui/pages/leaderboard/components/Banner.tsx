@@ -170,16 +170,21 @@ const Banner: React.FC<BannerProps> = ({
         ></div>
         <div className="banner-wrap">
           {/* left side  */}
+
           <div className="flex items-center pl4 banner-left">
-            <img
-              src={
-                role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN
-                  ? details?.dealer_logo || ICONS.OWEBanner
-                  : details?.dealer_logo || ICONS.BannerLogo
-              }
-              style={{ maxWidth: 132, maxHeight: 180 }}
-              alt="solar-name-icon"
-            />
+            {details?.dealer_logo &&
+              role !== TYPE_OF_USER.FINANCE_ADMIN &&
+              role !== TYPE_OF_USER.ADMIN && (
+                <img
+                  src={
+                    role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN
+                      ? details?.dealer_logo || ICONS.OWEBanner
+                      : details?.dealer_logo || ICONS.BannerLogo
+                  }
+                  style={{ maxWidth: 132, maxHeight: 180 }}
+                  alt="solar-name-icon"
+                />
+              )}
             <div className="">
               {role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? (
                 <h1 className="solar-heading">
@@ -200,6 +205,7 @@ const Banner: React.FC<BannerProps> = ({
               ) : null}
             </div>
           </div>
+
           {role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN ? (
             <div className="straight-line"></div>
           ) : null}
