@@ -164,7 +164,7 @@ func HandleGetApRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Rep:         Rep,
 			Dba:         Dba,
 			Type:        Type,
-			Date:        Date.Format("2006-01-02"),
+			Date:        Date.Format("02-01-2006"),
 			Amount:      Amount,
 			Method:      Method,
 			Cbiz:        Cbiz,

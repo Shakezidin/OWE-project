@@ -10,7 +10,7 @@ type CreateApRepReq struct {
 	UniqueId    string  `json:"unique_id"`
 	Rep         string  `json:"rep"`
 	Dba         string  `json:"dba"`
-	Type        string  `json:"final"`
+	Type        string  `json:"type"`
 	Date        string  `json:"date"`
 	Amount      float64 `json:"amount"`
 	Method      string  `json:"method"`
