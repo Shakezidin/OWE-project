@@ -16,9 +16,9 @@ interface="enp1s0"
 ip_address=$(ip addr show "$interface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 
 # Update IP address in the file (gui/./.env)
-update_ip "$AppRoot/gui/.env" "144.202.31.130" "$ip_address"
-update_ip "$AppRoot/gui/src/config/env_local.json" "144.202.31.130" "$ip_address"
-update_ip "$AppRoot/gui/src/config/env_dev.json" "144.202.31.130" "$ip_address"
+update_ip "$AppRoot/gui/.env" "155.138.163.236" "$ip_address"
+update_ip "$AppRoot/gui/src/config/env_local.json" "155.138.163.236" "$ip_address"
+update_ip "$AppRoot/gui/src/config/env_dev.json" "155.138.163.236" "$ip_address"
 
 # Check if any argument is passed
 if [ $# -eq 0 ]; then
