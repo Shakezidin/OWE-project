@@ -346,7 +346,7 @@ const Sidebar = ({
                 </div>
               </div>
               <div className="px2">
-                <div className="grey-weekly-stats flex items-center">
+                <div className="grey-weekly-stats justify-center flex items-center">
                   <div className="bg-white text-center leader-board-stats-wrapper py1">
                     <span className="block">Weekly sales</span>
                     <span className="block" style={{ fontWeight: 600 }}>
