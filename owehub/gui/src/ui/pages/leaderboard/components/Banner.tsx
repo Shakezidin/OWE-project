@@ -140,13 +140,14 @@ const Banner: React.FC<BannerProps> = ({
       ) {
         setIsOpen(false);
         setOpts(dealerOption(newFormData));
+        setSearch("")
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [newFormData]);
+  }, [newFormData,search]);
 
   return (
     <div className="relative">
@@ -303,23 +304,25 @@ const Banner: React.FC<BannerProps> = ({
                   }}
                 />
               </div>
-              <div className="dropdown-item">
-                <input
-                  type="checkbox"
-                  style={{ flexShrink: 0 }}
-                  checked={
-                    dealerOption(newFormData).length === selectDealer.length
-                  }
-                  onChange={() => {
-                    if (opts.length === selectDealer.length) {
-                      setSelectDealer([]);
-                    } else {
-                      setSelectDealer([...opts]);
+              {!search.trim() && (
+                <div className="dropdown-item">
+                  <input
+                    type="checkbox"
+                    style={{ flexShrink: 0 }}
+                    checked={
+                      dealerOption(newFormData).length === selectDealer.length
                     }
-                  }}
-                />
-                All
-              </div>
+                    onChange={() => {
+                      if (opts.length === selectDealer.length) {
+                        setSelectDealer([]);
+                      } else {
+                        setSelectDealer([...opts]);
+                      }
+                    }}
+                  />
+                  All
+                </div>
+              )}
               {opts?.map?.((option, ind) => (
                 <div key={ind} className="dropdown-item">
                   <input
