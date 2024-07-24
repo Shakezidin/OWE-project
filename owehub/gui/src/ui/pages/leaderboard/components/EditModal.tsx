@@ -1,18 +1,26 @@
 import './Modal.css';
 import { ICONS } from '../../../icons/Icons';
 import { GoUpload } from 'react-icons/go';
-import { Dispatch, SetStateAction, useEffect, useRef, useState ,ChangeEventHandler} from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+  ChangeEventHandler,
+} from 'react';
 import { ColorpickerIcon } from './Icons';
 import { MdCheck } from 'react-icons/md';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
-
+import PLaceholderImg from '../../../../resources/assets/placeholder_img.svg';
 interface EditModalProps {
   onClose: () => void;
   vdealer: any;
   setRefetch: Dispatch<SetStateAction<boolean>>;
+  dealerLogo: undefined | string;
 }
 
 const ColorPicker = ({
@@ -74,8 +82,10 @@ const ColorPicker = ({
 
 const LogoPicker = ({
   setLogo,
+  dealerLogo,
 }: {
   setLogo: (newVal: File | null) => void;
+  dealerLogo: undefined | string;
 }) => {
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
 
@@ -93,13 +103,29 @@ const LogoPicker = ({
       }
     };
   };
-
+  const role = localStorage.getItem('role');
+  const switchImg = () => {
+    if (role === TYPE_OF_USER.ADMIN || TYPE_OF_USER.FINANCE_ADMIN) {
+      const admintheme = localStorage.getItem('admintheme');
+      if (admintheme) {
+        const parsed = JSON.parse(admintheme);
+        if (parsed) {
+          return parsed.dealer_logo;
+        }
+      } else {
+        return PLaceholderImg;
+      }
+    } else {
+      return dealerLogo || PLaceholderImg;
+    }
+  };
+ 
   return (
     <>
       {previewSrc ? (
         <img alt="Preview" src={previewSrc} />
       ) : (
-        <img src={ICONS.BannerLogo} width={150} alt="banner-logo" />
+        <img src={switchImg()} width={150} alt="banner-logo" />
       )}
 
       <input
@@ -119,30 +145,36 @@ const LogoPicker = ({
   );
 };
 
-const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
+const EditModal = ({
+  onClose,
+  vdealer,
+  setRefetch,
+  dealerLogo,
+}: EditModalProps) => {
   const [color, setColor] = useState('#40A2EC');
   const [logo, setLogo] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const role = localStorage.getItem('role');
   const handleUpdate = async () => {
-    let imageUrl
+    let imageUrl;
     setIsLoading(true);
     try {
-      if(logo){
-       imageUrl = await uploadImage(logo);
-      
+      if (logo) {
+        imageUrl = await uploadImage(logo);
       }
-      if(role === "Admin" || role === TYPE_OF_USER.FINANCE_ADMIN){
-        localStorage.setItem("admintheme",JSON.stringify({
-          bg_color:color,
-          dealer_logo:imageUrl
-          
-        }))
+      if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
+        localStorage.setItem(
+          'admintheme',
+          JSON.stringify({
+            bg_color: color,
+            dealer_logo: imageUrl,
+          })
+        );
         setTimeout(() => {
-          setRefetch((prev) => !prev)
-        },100) 
+          setRefetch((prev) => !prev);
+        }, 100);
         onClose();
-       }
+      }
 
       if (vdealer) {
         const response = await postCaller('update_vdealer', {
@@ -159,17 +191,15 @@ const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
           return;
         } else {
           toast.success('Logo Update Successfully');
-        
-          setRefetch((prev) => !prev)
+
+          setRefetch((prev) => !prev);
           onClose();
-          
         }
       } else {
-        if(role !== "Admin" && role !== TYPE_OF_USER.FINANCE_ADMIN ){
-        toast.error("Something is Wrong")
+        if (role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN) {
+          toast.error('Something is Wrong');
         }
       }
-   
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
@@ -203,14 +233,18 @@ const EditModal = ({ onClose, vdealer, setRefetch }: EditModalProps) => {
       <div className="leader-modal">
         <h2>Change Picture</h2>
         <div className="modal-center">
-          <LogoPicker setLogo={setLogo} />
+          <LogoPicker setLogo={setLogo} dealerLogo={dealerLogo} />
           <ColorPicker color={color} setColor={setColor} />
         </div>
         <div className="leader-buttons">
           <button className="cancel-button" onClick={onClose}>
             Cancel
           </button>
-          <button className="update-button" onClick={handleUpdate} disabled={isLoading}>
+          <button
+            className="update-button"
+            onClick={handleUpdate}
+            disabled={isLoading}
+          >
             {isLoading ? (
               <span className="blinking">Uploading...</span>
             ) : (

@@ -54,7 +54,11 @@ const Banner: React.FC<BannerProps> = ({
   }, [role]);
 
   useEffect(() => {
-    if (role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN && isAuthenticated) {
+    if (
+      role !== 'Admin' &&
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      isAuthenticated
+    ) {
       (async () => {
         try {
           const data = await postCaller('get_leaderboarddatarequest', {});
@@ -76,7 +80,7 @@ const Banner: React.FC<BannerProps> = ({
         }
       })();
     }
-  }, [dealerId, role, refetch,isAuthenticated]);
+  }, [dealerId, role, refetch, isAuthenticated]);
 
   useEffect(() => {
     if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
@@ -142,14 +146,14 @@ const Banner: React.FC<BannerProps> = ({
       ) {
         setIsOpen(false);
         setOpts(dealerOption(newFormData));
-        setSearch("")
+        setSearch('');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [newFormData,search]);
+  }, [newFormData, search]);
 
   return (
     <div className="relative">
@@ -257,6 +261,7 @@ const Banner: React.FC<BannerProps> = ({
           <EditModal
             onClose={() => setShowModal(false)}
             vdealer={vdealer}
+            dealerLogo={details?.dealer_logo}
             setRefetch={setRefetch}
           />
         )}
@@ -274,7 +279,7 @@ const Banner: React.FC<BannerProps> = ({
           >
             <span>
               {selectDealer.length}{' '}
-              {selectDealer.length > 1 ? 'Dealers' : 'Dealer'}
+              {selectDealer.length > 1 ? 'Partners' : 'Partner'}
             </span>
             <FaChevronDown className="ml1" />
           </div>

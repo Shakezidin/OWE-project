@@ -329,9 +329,12 @@ const DateFilter = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      console.log(event);
+    const remain = window.innerWidth - event.clientX
       if (
         wrapperRef.current &&
         !event.composedPath().includes(wrapperRef.current)
+        && remain > 15
       )
         setShowCalendar(false);
     };

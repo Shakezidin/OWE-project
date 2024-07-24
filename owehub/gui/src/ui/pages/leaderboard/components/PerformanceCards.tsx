@@ -4,8 +4,9 @@ import { MdOutlineIosShare } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-
+import artboard from '../../../../resources/assets/artboard.svg';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 interface performance {
   details: any;
@@ -15,6 +16,7 @@ interface performance {
   shareImage: () => void;
   isGenerating: boolean;
   activeHead: string;
+  isLoading: boolean;
 }
 
 const PerformanceCards: React.FC<performance> = ({
@@ -25,6 +27,7 @@ const PerformanceCards: React.FC<performance> = ({
   shareImage,
   isGenerating,
   activeHead,
+  isLoading,
 }) => {
   const rank1 = details?.find?.((item: any) => item?.rank === 1);
   const rank2 = details?.find?.((item: any) => item?.rank === 2);
@@ -99,129 +102,143 @@ const PerformanceCards: React.FC<performance> = ({
             Adjust criteria below to see who leads in different categories..
           </p>
         </div>
-        <div className="cards flex justify-between">
-          {rank2 ? (
-            <div className="card-one">
-              <div className="upper-section">
-                <img src={ICONS.GreyTwo} aria-label="grey-icon"></img>
-                <div className="flex flex-column card-title">
-                  <h2 style={getCardHeadingStyle(rank2)}>
-                    {rank2?.rep_name || 'N/A'}
-                  </h2>
-                  {/* <p>
+        {isLoading && (
+          <div className="flex mt3 items-center justify-center">
+            <MicroLoader />
+          </div>
+        )}
+        {!isLoading && details.length ? (
+          <div className="cards flex justify-between">
+            {rank2 && !isLoading ? (
+              <div className="card-one">
+                <div className="upper-section">
+                  <img src={ICONS.GreyTwo} aria-label="grey-icon"></img>
+                  <div className="flex flex-column card-title">
+                    <h2 style={getCardHeadingStyle(rank2)}>
+                      {rank2?.rep_name || 'N/A'}
+                    </h2>
+                    {/* <p>
                     OUR31245
                     <span>
                       <MdContentCopy />
                     </span>
                   </p> */}
+                  </div>
+                </div>
+                <div className="dashed-border"></div>
+                <div className="below-section">
+                  <div className="below-des">
+                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank2?.sale) ?? 0}</p>
+                    <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
+                  <div className="below-des">
+                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank2?.ntp) ?? 0}</p>
+                    <p>NTP ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
+                  <div
+                    className="below-des mx-auto"
+                    style={{ gridColumn: '1/3' }}
+                  >
+                    <p className="text-center">
+                      {' '}
+                      {formatSaleValue(rank2?.install)}
+                    </p>
+                    <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
                 </div>
               </div>
-              <div className="dashed-border"></div>
-              <div className="below-section">
-                <div className="below-des">
-                  <p>{formatSaleValue(rank2?.sale) ?? 0}</p>
-                  <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-                <div className="below-des">
-                  <p>{formatSaleValue(rank2?.ntp) ?? 0}</p>
-                  <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-                <div
-                  className="below-des mx-auto"
-                  style={{ gridColumn: '1/3' }}
-                >
-                  <p className="text-center">
-                    {' '}
-                    {formatSaleValue(rank2?.install)}
-                  </p>
-                  <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-              </div>
-            </div>
-          ) : null}
-          {rank1 ? (
-            <div className="card-two">
-              <div className="upper-section">
-                <img src={ICONS.GoldOne} aria-label="grey-icon"></img>
-                <div className="flex flex-column card-title">
-                  <h2 style={getCardHeadingStyle(rank1)}>
-                    {rank1?.rep_name || 'N/A'}
-                  </h2>
-                  {/* <p>
+            ) : null}
+            {rank1 && !isLoading ? (
+              <div className="card-two">
+                <div className="upper-section">
+                  <img src={ICONS.GoldOne} aria-label="grey-icon"></img>
+                  <div className="flex flex-column card-title">
+                    <h2 style={getCardHeadingStyle(rank1)}>
+                      {rank1?.rep_name || 'N/A'}
+                    </h2>
+                    {/* <p>
                     OUR31245
                     <span>
                       <MdContentCopy />
                     </span>
                   </p> */}
+                  </div>
                 </div>
-              </div>
-              <div className="dashed-border"></div>
-              <div className="below-section">
-                <div className="below-des">
-                  <p>{formatSaleValue(rank1?.sale) ?? 0} </p>
-                  <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-                <div className="below-des">
-                  <p>{formatSaleValue(rank1?.ntp)}</p>
-                  <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-                <div
-                  className="below-des mx-auto"
-                  style={{ gridColumn: '1/3' }}
-                >
-                  <p className="text-center">
-                    {formatSaleValue(rank1?.install)}
-                  </p>
+                <div className="dashed-border"></div>
+                <div className="below-section">
+                  <div className="below-des">
+                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank1?.sale) ?? 0} </p>
+                    <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
+                  <div className="below-des">
+                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank1?.ntp)}</p>
+                    <p>NTP ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
+                  <div
+                    className="below-des mx-auto"
+                    style={{ gridColumn: '1/3' }}
+                  >
+                    <p  className="text-center">
+                      {formatSaleValue(rank1?.install)}
+                    </p>
 
-                  <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                    <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : null}
-          {rank3 ? (
-            <div className="card-three">
-              <div className="upper-section">
-                <img src={ICONS.BrownThree} aria-label="grey-icon"></img>
-                <div className="flex flex-column card-title">
-                  <h2 style={getCardHeadingStyle(rank3)}>
-                    {rank3?.rep_name || 'N/A'}
-                  </h2>
-                  {/* <p>
+            ) : null}
+            {rank3 && !isLoading ? (
+              <div className="card-three">
+                <div className="upper-section">
+                  <img src={ICONS.BrownThree} aria-label="grey-icon"></img>
+                  <div className="flex flex-column card-title">
+                    <h2 style={getCardHeadingStyle(rank3)}>
+                      {rank3?.rep_name || 'N/A'}
+                    </h2>
+                    {/* <p>
                     OUR31245
                     <span>
                       <MdContentCopy />
                     </span>
                   </p> */}
+                  </div>
+                </div>
+                <div className="dashed-border"></div>
+                <div className="below-section">
+                  <div className="below-des">
+                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank3?.sale) ?? 0} </p>
+                    <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
+                  <div className="below-des">
+                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank3?.ntp) ?? 0} </p>
+                    <p>NTP ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
+                  <div
+                    className="below-des mx-auto"
+                    style={{ gridColumn: '1/3' }}
+                  >
+                    <p className="text-center">
+                      {formatSaleValue(rank3?.install)}
+                    </p>
+
+                    <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
+                  </div>
                 </div>
               </div>
-              <div className="dashed-border"></div>
-              <div className="below-section">
-                <div className="below-des">
-                  <p>{formatSaleValue(rank3?.sale) ?? 0} </p>
-                  <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-                <div className="below-des">
-                  <p>{formatSaleValue(rank3?.ntp) ?? 0} </p>
-                  <p>Ntp ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-                <div
-                  className="below-des mx-auto"
-                  style={{ gridColumn: '1/3' }}
-                >
-                  <p className="text-center">
-                    {formatSaleValue(rank3?.install)}
-                  </p>
+            ) : null}
+          </div>
+        ) : (
+          ''
+        )}
 
-                  <p>Installs ({activeHead == 'kw' ? 'kW' : 'count'})</p>
-                </div>
-              </div>
-            </div>
-          ) : null}
-
-          {!(rank2 && rank1 && rank3) && (
-            <div style={{textAlign:"center",}} className="text-center mx-auto">Nothing to show</div>
-          )} 
-        </div>
+        {!Boolean(details.length) && !isLoading && (
+          <div
+            style={{ textAlign: 'center' }}
+            className="text-center mx-auto flex items-center justify-center"
+          >
+            <img src={artboard} style={{ maxWidth: 350 }} />
+          </div>
+        )}
       </div>
     </div>
   );
