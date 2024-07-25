@@ -275,14 +275,6 @@ const Banner: React.FC<BannerProps> = ({
             </button>
           </div>
         </div>
-        {showModal && (
-          <EditModal
-            onClose={() => setShowModal(false)}
-            vdealer={vdealer}
-            dealerLogo={details?.dealer_logo}
-            setRefetch={setRefetch}
-          />
-        )}
       </div>
 
       {(role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) && (
@@ -407,6 +399,14 @@ const Banner: React.FC<BannerProps> = ({
             value={selectDealer}
           /> */}
         </div>
+      )}
+      {showModal && (
+        <EditModal
+          onClose={() => setShowModal(false)}
+          vdealer={vdealer}
+          dealerLogo={details?.dealer_logo}
+          setRefetch={setRefetch}
+        />
       )}
     </div>
   );
