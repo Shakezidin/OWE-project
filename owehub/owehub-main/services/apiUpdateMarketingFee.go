@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -72,6 +73,22 @@ func HandleUpdateMarketingFeeRequest(resp http.ResponseWriter, req *http.Request
 		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
+
+	startDate, err := time.Parse("2006-01-02", updateMarketingFeeReq.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid start date not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", updateMarketingFeeReq.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid end date not allowed", http.StatusBadRequest, nil)
+		return
+	}
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateMarketingFeeReq.RecordId)
 	queryParameters = append(queryParameters, updateMarketingFeeReq.Source)
@@ -80,8 +97,8 @@ func HandleUpdateMarketingFeeRequest(resp http.ResponseWriter, req *http.Request
 	queryParameters = append(queryParameters, updateMarketingFeeReq.FeeRate)
 	queryParameters = append(queryParameters, updateMarketingFeeReq.ChgDlr)
 	queryParameters = append(queryParameters, updateMarketingFeeReq.PaySrc)
-	queryParameters = append(queryParameters, updateMarketingFeeReq.StartDate)
-	queryParameters = append(queryParameters, updateMarketingFeeReq.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 	queryParameters = append(queryParameters, updateMarketingFeeReq.Description)
 
 	// Call the database function

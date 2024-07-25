@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -117,18 +118,21 @@ func HandleGetApptSettersDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
+
+		startDate := StartDate.Format("2006-01-02")
+		endDate := EndDate.Format("2006-01-02")
 
 		ApptSettersData := models.GetApptSettersReq{
 			RecordId:  RecordId,
@@ -136,8 +140,8 @@ func HandleGetApptSettersDataRequest(resp http.ResponseWriter, req *http.Request
 			Name:      Name,
 			TeamName:  Team_name,
 			PayRate:   PayRate,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			StartDate: startDate,
+			EndDate:   endDate,
 		}
 		ApptSettersList.ApptSettersList = append(ApptSettersList.ApptSettersList, ApptSettersData)
 	}
@@ -206,6 +210,12 @@ func PrepareApptSettersFilters(tableName string, dataFilter models.DataRequestBo
 				whereEleList = append(whereEleList, value)
 			case "pay_rate":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.pay_rate) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("ap.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("ap.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ap.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

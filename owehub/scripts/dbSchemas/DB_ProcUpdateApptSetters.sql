@@ -4,8 +4,8 @@ CREATE OR REPLACE FUNCTION update_appt_setters(
     p_name                     VARCHAR,
     p_team_name                VARCHAR,
     p_pay_rate                 VARCHAR,
-    p_start_date               VARCHAR,
-    p_end_date                 VARCHAR,
+    p_start_date               date,
+    p_end_date                 date,
     OUT v_appt_setters_id INT
 )
 RETURNS INT 

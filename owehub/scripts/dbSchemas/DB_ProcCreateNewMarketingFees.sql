@@ -5,8 +5,8 @@ CREATE OR REPLACE FUNCTION create_new_marketing_fees(
     p_fee_rate character varying,
     p_chg_dlr BOOLEAN,
     p_pay_src BOOLEAN,
-    p_start_date character varying,
-    p_end_date character varying,
+    p_start_date date,
+    p_end_date date,
     p_description character varying,
     OUT v_marketing_fees_id INT
 )

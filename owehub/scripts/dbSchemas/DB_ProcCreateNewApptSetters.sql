@@ -3,8 +3,8 @@ CREATE OR REPLACE FUNCTION create_new_appt_setters(
     p_name character varying,
     p_team_name character varying,
     p_pay_rate character varying,
-    p_start_date character varying,
-    p_end_date character varying,
+    p_start_date date,
+    p_end_date date,
     OUT v_setters_id INT
 )
 RETURNS INT
