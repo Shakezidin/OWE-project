@@ -17,6 +17,7 @@ import { fetchmarketingFees } from '../../../../redux/apiSlice/configSlice/confi
 import { FormEvent } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface marketingProps {
   handleClose: () => void;
   editMode: boolean;
@@ -25,13 +26,7 @@ interface marketingProps {
   page_size: number;
 }
 
-function dateFormat(dateString: string | undefined): string {
-  if (!dateString) return '';
 
-  const [month, day, year] = dateString.split('-');
-  const formattedYear = year.length === 2 ? `20${year}` : year;
-  return `${formattedYear}-${month}-${day}`;
-}
 
 const CreateMarketingFees: React.FC<marketingProps> = ({
   handleClose,
@@ -50,8 +45,8 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     fee_rate: marketingData ? marketingData.fee_rate : '',
     chg_dlr:  marketingData?.chg_dlr ? 'yes' : 'no',
     pay_src: marketingData?.pay_src ? 'yes' : 'no',
-    start_date: marketingData ? dateFormat(marketingData.start_date?.trim()) : '',
-    end_date: marketingData ? dateFormat(marketingData.end_date?.trim()) : '',
+    start_date: marketingData?.start_date ? format(new Date(marketingData?.start_date?.trim()),"yyyy-MM-dd") : '',
+    end_date: marketingData?.end_date ? format(new Date(marketingData.end_date?.trim()),"yyyy-MM-dd") : '',
     description: marketingData ? marketingData.description?.trim() : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
