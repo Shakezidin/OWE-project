@@ -198,7 +198,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 />
 
                 <span className="bold" style={{ color: '#263747' }}>
-                  {userPerformanceList?.[1]?.value}
+                  {userPerformanceList?.[0]?.value}
                 </span>
               </div>
               <span className="mx1">-</span>
@@ -223,7 +223,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 />
 
                 <span className="bold" style={{ color: '#263747' }}>
-                  {userPerformanceList?.[0]?.value}
+                  {userPerformanceList?.[1]?.value}
                 </span>
               </div>
               <span className="mx1">-</span>
