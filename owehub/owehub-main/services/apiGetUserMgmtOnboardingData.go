@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -25,16 +26,13 @@ import (
  ******************************************************************************/
 func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		dataReq         models.DataRequestBody
-		data            []map[string]interface{}
-		whereEleList    []interface{}
-		query           string
-		queryInactive   string
-		dayCount        string
-		activeSaleRep   int64
-		inactiveSaleRep int64
-		totalSaleRep    int64
+		err            error
+		dataReq        models.DataRequestBody
+		data           []map[string]interface{}
+		whereEleList   []interface{}
+		query          string
+		activeRepQuery string
+		salesRep       []string
 	)
 
 	log.EnterFn(0, "HandleGetUserMgmtOnboardingDataRequest")
@@ -61,18 +59,20 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
-	dayCount = "90"
-	queryInactive = `
-		SELECT primary_sales_rep AS unique_sales_reps
-		FROM consolidated_data_view
-		WHERE contract_date BETWEEN current_date - interval '1 day' * $1 AND current_date GROUP BY unique_sales_reps;	
-	`
-
 	query = ` 
-		SELECT ur.role_name, COUNT(u.user_id) AS user_count
-		FROM user_details u
-		INNER JOIN user_roles ur ON u.role_id = ur.role_id
-		GROUP BY ur.role_name;`
+		SELECT 
+		ur.role_name, 
+		COUNT(u.user_id) AS user_count,
+		CASE
+			WHEN ur.role_name = 'Sale Representative' THEN string_agg(u.name, ', ')
+			ELSE NULL
+		END AS sales_representatives
+	FROM 
+		user_details u
+	INNER JOIN 
+		user_roles ur ON u.role_id = ur.role_id
+	GROUP BY 
+		ur.role_name;`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -81,9 +81,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
-	log.FuncErrorTrace(0, "Data Tables %+v", data)
 	usrMgOnbList := models.GetUsMgmtOnbList{}
-	totalSaleRep = 0
 
 	for _, item := range data {
 		// RoleName
@@ -92,14 +90,17 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 			log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding role name for Item: %+v\n", item)
 			RoleName = ""
 		}
-		if RoleName == "Sale Representative" {
-			totalSaleRep += 1
-		}
 
 		UserCount, ok := item["user_count"].(int64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get User Count for Item: %+v\n", item)
 			continue
+		}
+
+		// SalesRepresentatives
+		SalesRepresentatives, repOk := item["sales_representatives"].(string)
+		if repOk && SalesRepresentatives != "" {
+			salesRep = strings.Split(SalesRepresentatives, ", ")
 		}
 
 		// Create a new GetDealerTierData object
@@ -112,21 +113,44 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		usrMgOnbList.UsrMgmtOnbList = append(usrMgOnbList.UsrMgmtOnbList, usrOnboardingData)
 	}
 
-	// dayCount is the date bracket from current date to how many day behind
-	whereEleList = make([]interface{}, 0)
-	whereEleList = append(whereEleList, dayCount)
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryInactive, whereEleList)
+	activeRepQuery = `
+		SELECT DISTINCT
+		primary_sales_rep AS active_sales_representative
+	FROM
+		consolidated_data_view
+	WHERE
+		contract_date BETWEEN current_date - interval '90 day' AND current_date;
+	`
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, activeRepQuery, nil)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get UserMgmt Onboarding data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get active sales representatives from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get active sales representatives from DB", http.StatusBadRequest, nil)
 		return
 	}
 
-	activeSaleRep = int64(len(data))
-	inactiveSaleRep = totalSaleRep - activeSaleRep
-	usrMgOnbList.InactiveSaleRep = inactiveSaleRep
+	activeSalesReps := make(map[string]bool)
+	for _, item := range data {
+		repName, nameOk := item["active_sales_representative"].(string)
+		if nameOk && repName != "" {
+			activeSalesReps[repName] = true
+		}
+	}
 
-	usrMgOnbList.ActiveSaleRep = activeSaleRep
+	// Determine active and inactive sales representatives
+	activeCount := int64(0)
+	inactiveSalesReps := []string{}
+
+	for _, rep := range salesRep {
+		if activeSalesReps[rep] {
+			activeCount++
+		} else {
+			inactiveSalesReps = append(inactiveSalesReps, rep)
+		}
+	}
+
+	usrMgOnbList.ActiveSaleRep = activeCount
+	usrMgOnbList.InactiveSaleRep = int64(len(inactiveSalesReps))
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of UserMgmt Onboarding List fetched : %v list %+v", len(usrMgOnbList.UsrMgmtOnbList), usrMgOnbList)
