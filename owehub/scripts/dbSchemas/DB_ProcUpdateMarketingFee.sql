@@ -8,8 +8,8 @@ CREATE OR REPLACE FUNCTION update_marketing_fee(
     p_chg_dlr BOOLEAN,
     p_pay_src BOOLEAN,
     p_start_date VARCHAR,
-    p_end_date VARCHAR,
-    p_description VARCHAR,
+    p_end_date date,
+    p_description date,
     OUT v_marketing_fee_id INT
 )
 RETURNS INT 

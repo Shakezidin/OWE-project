@@ -77,18 +77,21 @@ func (pApptSettersCfg *ApptSettersCfgStruct) LoadApptSettersCfg() (err error) {
 		}
 
 		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
+
+		startDate := StartDate.Format("01-02-2006")
+		endDate := EndDate.Format("01-02-2006")
 
 		ApptSettersData := models.GetApptSettersReq{
 			RecordId:  RecordId,
@@ -96,8 +99,8 @@ func (pApptSettersCfg *ApptSettersCfgStruct) LoadApptSettersCfg() (err error) {
 			Name:      Name,
 			TeamName:  Team_name,
 			PayRate:   PayRate,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			StartDate: startDate,
+			EndDate:   endDate,
 		}
 		pApptSettersCfg.ApptSettersList.ApptSettersList = append(pApptSettersCfg.ApptSettersList.ApptSettersList, ApptSettersData)
 	}

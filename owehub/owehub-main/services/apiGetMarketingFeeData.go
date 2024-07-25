@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -130,17 +131,17 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 			PaySrc = false // Default PaySrc value of false
 		}
 		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
 
 		// Description
@@ -149,6 +150,9 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
+
+		startDate := StartDate.Format("2006-01-02")
+		endDate := EndDate.Format("2006-01-02")
 
 		// Create a new GetMarketingFeesData object
 		marketingFeesData := models.GetMarketingFeesData{
@@ -159,8 +163,8 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 			FeeRate:     FeeRate,
 			ChgDlr:      ChgDlr,
 			PaySrc:      PaySrc,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			StartDate:   startDate,
+			EndDate:     endDate,
 			Description: Description,
 		}
 
@@ -240,6 +244,12 @@ func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequest
 				whereEleList = append(whereEleList, value)
 			case "fee_rate":
 				filtersBuilder.WriteString(fmt.Sprintf("mf.fee_rate %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("mf.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("mf.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly

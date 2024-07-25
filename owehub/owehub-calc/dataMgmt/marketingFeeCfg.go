@@ -91,18 +91,19 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 			log.FuncErrorTrace(0, "Failed to get pay src for Record ID %v. Item: %+v\n", RecordId, item)
 			PaySrc = false // Default PaySrc value of false
 		}
+
 		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
 
 		// Description
@@ -112,6 +113,8 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 			Description = ""
 		}
 
+		startDate := StartDate.Format("01-02-2006")
+		endDate := EndDate.Format("01-02-2006")
 		MarketingFeeData := models.GetMarketingFeesData{
 			RecordId:    RecordId,
 			Source:      Source,
@@ -120,8 +123,8 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 			FeeRate:     FeeRate,
 			ChgDlr:      ChgDlr,
 			PaySrc:      PaySrc,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			StartDate:   startDate,
+			EndDate:     endDate,
 			Description: Description,
 		}
 		pMarketingFee.MarketingFeeCfg.MarketingFeesList = append(pMarketingFee.MarketingFeeCfg.MarketingFeesList, MarketingFeeData)
@@ -144,7 +147,7 @@ func (pMarketingFee *MarketingFeeCfgStruct) CalculateChgDlr(Type string) (chgDlr
 	for _, data := range pMarketingFee.MarketingFeeCfg.MarketingFeesList {
 		if len(data.Source) > 0 {
 			if len(data.StartDate) > 0 {
-				startDate, err = time.Parse("01-02-06", data.StartDate)
+				startDate, err = time.Parse("01-02-2006", data.StartDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
 				}

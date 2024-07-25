@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -72,13 +73,28 @@ func HandleUpdateApptSettersDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
+	// converting string to date format
+	startDate, err := time.Parse("2006-01-02", UpdateApptSettersReq.StartDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", UpdateApptSettersReq.EndDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		return
+	}
+
 	queryParameters = append(queryParameters, UpdateApptSettersReq.RecordId)
 	queryParameters = append(queryParameters, UpdateApptSettersReq.UniqueId)
 	queryParameters = append(queryParameters, UpdateApptSettersReq.Name)
 	queryParameters = append(queryParameters, UpdateApptSettersReq.TeamName)
 	queryParameters = append(queryParameters, UpdateApptSettersReq.PayRate)
-	queryParameters = append(queryParameters, UpdateApptSettersReq.StartDate)
-	queryParameters = append(queryParameters, UpdateApptSettersReq.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateApptSettersFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
