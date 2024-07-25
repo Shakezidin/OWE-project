@@ -288,7 +288,7 @@ const Banner: React.FC<BannerProps> = ({
       {(role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) && (
         <div
           className=" dealer-dropdown-filter"
-          style={{ zIndex: 999 }}
+          style={{ zIndex: 99 }}
           ref={dropdownRef}
         >
           <div

@@ -106,13 +106,11 @@ const LogoPicker = ({
   const role = localStorage.getItem('role');
   const switchImg = () => {
     if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
-      console.log('if state');
-
       const admintheme = localStorage.getItem('admintheme');
       if (admintheme) {
         const parsed = JSON.parse(admintheme);
         if (parsed) {
-          return parsed.dealer_logo;
+          return parsed.dealer_logo || ICONS.OWEBanner;
         }
       } else {
         return ICONS.OWEBanner;
