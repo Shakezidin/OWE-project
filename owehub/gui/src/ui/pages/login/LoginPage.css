@@ -41,6 +41,23 @@
   height: 40px;
   text-transform: capitalize;
 }
+
+.login-buttonn {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11.962px;
+  cursor: pointer;
+  height: 40px;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .loginBox {
   background-color: transparent;
   display: flex;
@@ -50,6 +67,8 @@
   flex-direction: column;
   z-index: 4;
 }
+
+ 
 .reset-password {
   color: var(--danger-color);
   border: none;

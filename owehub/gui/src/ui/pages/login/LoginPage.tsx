@@ -9,7 +9,7 @@
 import React, { useEffect, useState } from 'react';
 import './LoginPage.css';
 import { ICONS } from '../../icons/Icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Routes, useNavigate } from 'react-router-dom';
 import { ReactComponent as LOGO_SMALL } from '../../../resources/assets/commisson_small_logo.svg';
 import { ReactComponent as UNDER_LINE } from '../../../resources/assets/BlueAndGreenUnderline.svg';
 import Input from '../../components/text_input/Input';
@@ -25,6 +25,7 @@ import { RootState } from '../../../redux/store';
 import Loading from '../../components/loader/Loading';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { FormEvent } from '../../../core/models/data_models/typesModel';
+
 
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -45,6 +46,15 @@ export const LoginPage = () => {
     password: '',
     isRememberMe: false,
   });
+
+ 
+  
+  // Other code ...
+
+  const handleBattery = () => {
+    navigate(ROUTES.SR_IMAGE_UPLOAD);
+  };
+
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -141,6 +151,8 @@ export const LoginPage = () => {
 
   const width = useWindowWidth();
   const isMobile = width < 768;
+
+ 
 
   return (
     <div className="mainContainer">
@@ -258,6 +270,15 @@ export const LoginPage = () => {
               >
                 Log In
               </button>
+             <div className='text-center m1 loginRBM '> OR </div> 
+              
+             <div
+        className="login-buttonn"
+        onClick={handleBattery}
+      >
+        Battery Calculator
+      </div>
+           
             </div>
           </form>
         </div>

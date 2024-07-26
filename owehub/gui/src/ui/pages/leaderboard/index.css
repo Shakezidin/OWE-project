@@ -440,6 +440,10 @@ padding-right: 4.5rem;
    
 }
 
+.bold-text {
+  font-weight: bold;
+}
+
 .export-btnn{
   margin-top: 5px;
   width: 100%;

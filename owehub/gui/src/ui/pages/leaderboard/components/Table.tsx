@@ -948,13 +948,13 @@ const Table = ({
             </tbody>
             <tfoot>
               <tr>
-            
-               <td  colSpan={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 3 : 4} className={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'dealer-t right-align' : 'admin-t right-align'}>{getTotal('sale')}</td>
+              <td colSpan={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 2 : 3} className={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'dealer-t right-align bold-text' : 'admin-t right-align bold-text'}>Total </td>
+               <td className="bold-text">{getTotal('sale')}</td>
                     
               
-                <td>{getTotal('ntp')}</td>
-                <td>{getTotal('install')}</td>
-                <td>{getTotal('cancel')}</td>
+                <td className="bold-text">{getTotal('ntp')}</td>
+                <td className="bold-text">{getTotal('install')}</td>
+                <td className="bold-text">{getTotal('cancel')}</td>
 
               </tr>
             </tfoot>
