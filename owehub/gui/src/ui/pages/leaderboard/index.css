@@ -545,6 +545,15 @@ padding-right: 4.5rem;
     gap: 36px;
   }
 
+.rank-card-statss {
+    margin-top: 13px;
+    gap: 36px;
+    margin-right: 10px;
+}
+  .rank-card-statss .rank-stats-num {
+    font-weight: 700;
+  }
+
   .rank-card-stats .rank-stats-num {
     font-weight: 700;
   }

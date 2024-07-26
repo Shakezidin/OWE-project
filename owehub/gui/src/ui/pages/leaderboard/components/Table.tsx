@@ -773,90 +773,116 @@ const Table = ({
         </div>
       </div>
       <div className="mobile-card-wrapper mt2">
-        {isLoading ? (
+  {isLoading ? (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      <MicroLoader />
+    </div>
+  ) : sortedPage.length ? (
+    <>
+     
+
+      {sortedPage.map((item) => {
+        return (
           <div
+            onClick={() => {
+              setIsOpen(item.rank);
+              setDealer((prev) => ({
+                ...prev,
+                data_type:
+                  groupBy === 'primary_sales_rep' ? 'sale_rep' : groupBy,
+                dealer: groupBy === 'primary_sales_rep' ? item.dealer : '',
+                name: item.rep_name,
+                rank: item.rank,
+                sale: item.sale,
+                ntp: item.ntp,
+                install: item.install,
+              }));
+            }}
+            className="mobile-rank-card"
             style={{
-              display: 'flex',
-              justifyContent: 'center',
+              marginBottom: 17,
+              border: item.hightlight ? '1px solid #D7E6FE' : undefined,
             }}
           >
-            <MicroLoader />
-          </div>
-        ) : sortedPage.length ? (
-          sortedPage.map((item) => {
-            return (
-              <div
-                onClick={() => {
-                  setIsOpen(item.rank);
-                  setDealer((prev) => ({
-                    ...prev,
-                    data_type:
-                      groupBy === 'primary_sales_rep' ? 'sale_rep' : groupBy,
-                    dealer: groupBy === 'primary_sales_rep' ? item.dealer : '',
-                    name: item.rep_name,
-                    rank: item.rank,
-                    sale: item.sale,
-                    ntp: item.ntp,
-                    install: item.install,
-                  }));
-                }}
-                className="mobile-rank-card"
-                style={{
-                  marginBottom: 17,
-                  border: item.hightlight ? '1px solid #D7E6FE' : undefined,
-                }}
-              >
-                <div
-                  className="rank-standing"
-                  style={{ flexBasis: '40px', flexShrink: 0 }}
-                >
-                  <RankColumn rank={item.rank} />
-                </div>
-                <div className="flex-auto rank-card-body">
-                  <h4 className="card-rep-name "> {item.rep_name || 'N/A'} </h4>
-                  {(role === TYPE_OF_USER.ADMIN ||
-                    role === TYPE_OF_USER.FINANCE_ADMIN) && (
-                    <p className="rank-sm-text"> {item.dealer} </p>
-                  )}
-                  <div className="flex items-center rank-card-stats">
-                    <div>
-                      <span className="rank-stats-num">
-                        {formatSaleValue(item?.sale)}
-                      </span>
-                      <p className="rank-sm-text">Sales</p>
-                    </div>
-
-                    <div>
-                      <span className="rank-stats-num">
-                        {' '}
-                        {formatSaleValue(item?.install)}{' '}
-                      </span>
-                      <p className="rank-sm-text">Installs</p>
-                    </div>
-                    <div>
-                      <span className="rank-stats-num">
-                        {formatSaleValue(item?.ntp)}{' '}
-                      </span>
-                      <p className="rank-sm-text">NTP</p>
-                    </div>
-                    <div>
-                      <span className="rank-stats-num">
-                        {' '}
-                        {formatSaleValue(item.cancel)}{' '}
-                      </span>
-                      <p className="rank-sm-text">Cancel</p>
-                    </div>
-                  </div>
+            <div
+              className="rank-standing"
+              style={{ flexBasis: '40px', flexShrink: 0 }}
+            >
+              <RankColumn rank={item.rank} />
+            </div>
+            <div className="flex-auto rank-card-body">
+              <h4 className="card-rep-name"> {item.rep_name || 'N/A'} </h4>
+              {(role === TYPE_OF_USER.ADMIN ||
+                role === TYPE_OF_USER.FINANCE_ADMIN) && (
+                <p className="rank-sm-text"> {item.dealer} </p>
+              )}
+              <div className="flex items-center rank-card-stats">
+                <div>
+                  <span className="rank-stats-num">
+                    {formatSaleValue(item?.sale)}
+                  </span>
+                  <p className="rank-sm-text">Sales</p>
                 </div>
 
-
+                <div>
+                  <span className="rank-stats-num">
+                    {formatSaleValue(item?.install)}{' '}
+                  </span>
+                  <p className="rank-sm-text">Installs</p>
+                </div>
+                <div>
+                  <span className="rank-stats-num">
+                    {formatSaleValue(item?.ntp)}{' '}
+                  </span>
+                  <p className="rank-sm-text">NTP</p>
+                </div>
+                <div>
+                  <span className="rank-stats-num">
+                    {formatSaleValue(item.cancel)}{' '}
+                  </span>
+                  <p className="rank-sm-text">Cancel</p>
+                </div>
               </div>
-            );
-          })
-        ) : (
-          <div className="flex items-center justify-center">No Data Found</div>
-        )}
+            </div>
+          </div>
+        );
+      })}
+       <div className="mobile-rank-card" style={{ marginBottom: 17 }}>
+        <div className="rank-standing" style={{ flexBasis: '40px', flexShrink: 0 }}>
+           
+        </div>
+        <div className="flex-auto rank-card-body">
+          <h4 className="card-rep-name">Total</h4>
+          <div className="flex items-center rank-card-statss">
+            <div>
+              <span className="rank-stats-num">{formatSaleValue(getTotal('sale'))}</span>
+              <p className="rank-sm-text">Sales</p>
+            </div>
+            <div>
+              <span className="rank-stats-num">{formatSaleValue(getTotal('ntp'))}</span>
+              <p className="rank-sm-text">NTP</p>
+            </div>
+            <div>
+              <span className="rank-stats-num">{formatSaleValue(getTotal('install'))}</span>
+              <p className="rank-sm-text">Install</p>
+            </div>
+            <div>
+              <span className="rank-stats-num">{formatSaleValue(getTotal('cancel'))}</span>
+              <p className="rank-sm-text">Cancel</p>
+            </div>
+          </div>
+        </div>
       </div>
+    </>
+  ) : (
+    <div className="flex items-center justify-center">No Data Found</div>
+  )}
+</div>
       <div className="leaderboard-table-wrapper">
         <div className="leaderboard-table-container">
           <table className="leaderboard-table">
@@ -949,12 +975,12 @@ const Table = ({
             <tfoot>
               <tr>
               <td colSpan={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 2 : 3} className={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'dealer-t right-align bold-text' : 'admin-t right-align bold-text'}>Total </td>
-               <td className="bold-text">{getTotal('sale')}</td>
+               <td className="bold-text">{formatSaleValue(getTotal('sale'))}</td>
                     
               
-                <td className="bold-text">{getTotal('ntp')}</td>
-                <td className="bold-text">{getTotal('install')}</td>
-                <td className="bold-text">{getTotal('cancel')}</td>
+                <td className="bold-text">{formatSaleValue(getTotal('ntp'))}</td>
+                <td className="bold-text">{formatSaleValue(getTotal('install'))}</td>
+                <td className="bold-text">{formatSaleValue(getTotal('cancel'))}</td>
 
               </tr>
             </tfoot>
