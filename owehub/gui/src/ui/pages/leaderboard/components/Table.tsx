@@ -17,6 +17,7 @@ import award from '../../../../resources/assets/award_icon.png';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import Pagination from '../../../components/pagination/Pagination';
+import Papa from 'papaparse'
 import { DateRangeWithLabel } from '../index';
 import {
   Calendar,
@@ -492,6 +493,14 @@ const Table = ({
 
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [exportShow, setExportShow] = useState<boolean>(false);
+
+  const toggleExportShow = () => {
+    setExportShow((prev) => !prev);
+  };
+ 
+  const [selectedOption, setSelectedOption] = useState<any>("")
+  const [exportOption, setExportOption] = useState<any>("");
   const itemsPerPage = 25;
   const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
@@ -569,16 +578,141 @@ const Table = ({
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
   const role = localStorage.getItem('role');
+  const getTotal = (column: keyof ILeaderBordUser): number => {
+    return sortedPage.reduce((sum, item) => {
+      const value = item[column];
+      // Ensure value is a number
+      return sum + (typeof value === 'number' ? value : 0);
+    }, 0);
+  };
+    const wrapperReff = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (wrapperReff.current && !wrapperReff.current.contains(event.target as Node)) {
+      setExportShow(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const exportCsv = () => {
+    // Define the headers for the CSV
+    const headers = ['Rank', 'Name', 'Partner', 'Sale', 'NTP', 'Install', 'Cancel'];
+  
+    // Map the leaderTable data to CSV rows
+    const csvData = sortedPage.map((item) => [
+      item.rank,
+      item.rep_name,
+      role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN ? item.dealer : '',
+      formatSaleValue(item.sale),
+      formatSaleValue(item.ntp),
+      formatSaleValue(item.install),
+      formatSaleValue(item.cancel),
+    ]);
+  
+    // Add headers to the beginning of the CSV data
+    const csvRows = [headers, ...csvData];
+  
+    // Convert the array to CSV format
+    const csvString = Papa.unparse(csvRows);
+  
+    // Create a downloadable link and trigger a click to download the file
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'leaderboard.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
-      <button
-        className="leaderboard-data__export"
+      <div className='relative exportt' ref={wrapperReff}>
+        <div onClick={toggleExportShow} >
+        <FaUpload size={12} className='mr1' />
+          <span >  Export </span>
+        </div>
+        {exportShow && (
+        <div className='export-opt'>
+        <button
+        className='export-btn'
         disabled={isExporting}
         onClick={exportPdf}
       >
-        <span>Export</span>
-        <FaUpload size={12} />
+        <span>Pdf</span>
+     
       </button>
+      <button
+        className='export-btn export-btnn'
+         
+        onClick={exportCsv}
+      >
+        <span>Csv</span>
+       
+      </button>
+        </div>
+        )}
+      </div>
+      {/* <div className="leaderboard-data__export">
+        <Select
+          options={exportOptions}
+          value={exportOption}
+          onChange={(selectedOption) => {
+            setExportOption(selectedOption);
+            // handleExport(selectedOption.value);
+          }}
+          isSearchable={false}
+          placeholder="Export Options"
+          styles={{
+            control: (baseStyles) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              fontWeight: '500',
+              border: 'none',
+              outline: 'none',
+              width: '120px',
+              alignContent: 'center',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              boxShadow: 'none',
+            }),
+            indicatorSeparator: () => ({
+              display: 'none',
+            }),
+            dropdownIndicator: (baseStyles) => ({
+              ...baseStyles,
+              color: '#ee824d',
+            }),
+            option: (baseStyles, state) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              backgroundColor: state.isSelected ? '#ee824d' : '#fff',
+              '&:hover': {
+                backgroundColor: state.isSelected ? '#ee824d' : '#ffebe2',
+                color: state.isSelected ? '#fff' : '#ee824d',
+              },
+            }),
+            singleValue: (baseStyles) => ({
+              ...baseStyles,
+              fontSize: '12px',
+              color: exportOption ? '#ee824d' : '#222',
+              width: 'fit-content',
+            }),
+            menu: (baseStyles) => ({
+              ...baseStyles,
+              marginTop: '-4px',
+            }),
+          }}
+        />
+      </div> */}
+
       <div>
         <div className="leaderboard-data__title">
           <img src={award} alt="" />
@@ -714,6 +848,8 @@ const Table = ({
                     </div>
                   </div>
                 </div>
+
+
               </div>
             );
           })
@@ -810,6 +946,18 @@ const Table = ({
                 </tr>
               )}
             </tbody>
+            <tfoot>
+              <tr>
+            
+               <td  colSpan={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 3 : 4} className={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'dealer-t right-align' : 'admin-t right-align'}>{getTotal('sale')}</td>
+                    
+              
+                <td>{getTotal('ntp')}</td>
+                <td>{getTotal('install')}</td>
+                <td>{getTotal('cancel')}</td>
+
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
