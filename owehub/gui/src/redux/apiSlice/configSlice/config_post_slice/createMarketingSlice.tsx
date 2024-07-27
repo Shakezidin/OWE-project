@@ -20,10 +20,7 @@ const createMarketingSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    updateMarketingForm(
-      state,
-      action
-    ) {
+    updateMarketingForm(state, action) {
       return { ...state, ...action.payload };
     },
     marketingresetForm(state) {

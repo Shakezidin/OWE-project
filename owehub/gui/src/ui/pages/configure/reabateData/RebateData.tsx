@@ -172,7 +172,13 @@ const RebeteData: React.FC = () => {
           setSelectAllChecked(false);
           // If API call is successful, refetch commissions
           dispatch(fetchRebateData(pageNumber));
-          checkLastPage(currentPage,totalPages,setCurrentPage,selectedRows.size,currentPageData.length)
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -206,7 +212,13 @@ const RebeteData: React.FC = () => {
         setSelectAllChecked(false);
         setSelectedRows(new Set());
         dispatch(fetchRebateData(pageNumber));
-        checkLastPage(currentPage,totalPages,setCurrentPage,selectedRows.size,currentPageData.length)
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
 
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -222,7 +234,7 @@ const RebeteData: React.FC = () => {
       </div>
     );
   }
-  const notAllowed = selectedRows.size>1
+  const notAllowed = selectedRows.size > 1;
   return (
     <div className="comm">
       <Breadcrumb
@@ -298,15 +310,11 @@ const RebeteData: React.FC = () => {
                   />
                 ))}
 
-         
-                  <th
-                    
-                  >
-                    <div className="action-header">
-                     <p>Action</p>
-                    </div>
-                  </th>
-              
+                <th>
+                  <div className="action-header">
+                    <p>Action</p>
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -364,26 +372,31 @@ const RebeteData: React.FC = () => {
                     <td>{el.r2_addr_resp || 'N/A'}</td>
                     <td>{dateFormat(el.start_date) || 'N/A'}</td>
                     {/* <td>{el.end_date || 'N/A'}</td> */}
-                 
-                      <td>
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor:notAllowed ?"not-allowed" :'pointer' }}
-                            onClick={() =>!notAllowed && handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            onClick={() => !notAllowed && handleEdit(el)}
-                            style={{ cursor:notAllowed ?"not-allowed": 'pointer' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+
+                    <td>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      </td>
-              
+                        <div
+                          className=""
+                          onClick={() => !notAllowed && handleEdit(el)}
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
+                    </td>
                   </tr>
                 ))
               ) : (

@@ -43,7 +43,7 @@ export const createDlrOth = createAsyncThunk(
       if (data instanceof Error || data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

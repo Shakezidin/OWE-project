@@ -145,7 +145,12 @@ export const RebeteDataColumn: Column[] = [
     isCheckbox: false,
   },
   { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
-  { name: 'rep1_name', displayName: 'Rep 1', type: 'string', isCheckbox: false },
+  {
+    name: 'rep1_name',
+    displayName: 'Rep 1',
+    type: 'string',
+    isCheckbox: false,
+  },
   {
     name: 'rep2_name',
     displayName: 'Rep 2',

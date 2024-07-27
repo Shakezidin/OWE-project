@@ -76,7 +76,6 @@ const CommissionRate: React.FC = () => {
     setCurrentPage1(1); // Reset to the first page when changing items per page
   };
 
-  
   const totalPages1 = Math.ceil(dbCount / pageSize1);
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
   const endIndex = currentPage1 * pageSize1;
@@ -297,7 +296,6 @@ const CommissionRate: React.FC = () => {
             />
           </div>
         ) : null}
-
       </div>
     </div>
   );

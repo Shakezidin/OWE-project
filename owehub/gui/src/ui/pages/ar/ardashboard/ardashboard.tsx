@@ -35,16 +35,12 @@ export const ARDashboardPage: React.FC = () => {
     setFilterModal(false);
   };
 
-
   const options1 = [
     { value: 'ALL', label: 'All' },
     { value: 'Current Due', label: 'Current Due' },
     { value: 'Overpaid', label: 'Overpaid' },
   ];
-  const options2 = [
-    { value: 'ALL', label: 'All' },
-
-  ];
+  const options2 = [{ value: 'ALL', label: 'All' }];
   const options3 = [
     { value: 'Partner', label: 'Partner' },
     { value: 'installer', label: 'Installer' },
@@ -106,11 +102,11 @@ export const ARDashboardPage: React.FC = () => {
 
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
-    resetPagination()
+    resetPagination();
   };
-  const resetPagination = () =>{
+  const resetPagination = () => {
     setCurrentPage(1);
-  }
+  };
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
     setAdditionalFilter(req.filters);
@@ -341,7 +337,12 @@ export const ARDashboardPage: React.FC = () => {
                   >
                     Includes
                   </label>
-                  <ArDropdownWithCheckboxes resetPagination={resetPagination} selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} options={options} />
+                  <ArDropdownWithCheckboxes
+                    resetPagination={resetPagination}
+                    selectedOptions={selectedOptions}
+                    setSelectedOptions={setSelectedOptions}
+                    options={options}
+                  />
                 </div>
               </div>
 

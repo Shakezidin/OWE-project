@@ -45,7 +45,7 @@ const MainLayout = () => {
     (state: RootState) => state.auth.isAuthenticated
   );
   const [sidebarChange, setSidebarChange] = useState<number>(0);
-  const [sessionExist,setSessionExist] = useState(false)
+  const [sessionExist, setSessionExist] = useState(false);
 
   /** TODO: temp solution for session logout. Need to change in future */
   useEffect(() => {
@@ -56,7 +56,7 @@ const MainLayout = () => {
     if (token && expirationTime && expirationTimeInMin) {
       const currentTime = Date.now();
       if (currentTime < parseInt(expirationTime, 10)) {
-        setSessionExist(true)
+        setSessionExist(true);
         const timeout = setTimeout(
           () => {
             dispatch(activeSessionTimeout());
@@ -127,9 +127,7 @@ const MainLayout = () => {
               !toggleOpen && !isTablet ? '240px' : isTablet ? 0 : '50px',
           }}
         >
-          <div className="children-container">
-          {sessionExist &&  <Outlet />}
-          </div>
+          <div className="children-container">{sessionExist && <Outlet />}</div>
         </div>
         {isOpenChangePassword && (
           <ChangePassword

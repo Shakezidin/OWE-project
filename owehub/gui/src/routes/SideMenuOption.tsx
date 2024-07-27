@@ -262,8 +262,8 @@ const support = {
 export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
-const remiainingPage:{ [key: string]: any[] } = {}
-remiainingPage.mob = [{...mob.mob[0]},{...mob.mob[2]}]
+  const remiainingPage: { [key: string]: any[] } = {};
+  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[2] }];
 
   if (role === TYPE_OF_USER.ADMIN) {
     sideMenu.push(performance);

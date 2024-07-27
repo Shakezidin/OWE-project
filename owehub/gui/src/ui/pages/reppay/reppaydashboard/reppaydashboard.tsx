@@ -57,17 +57,15 @@ export const RepPayDashboardPage: React.FC = () => {
   const { isActive } = useAppSelector((state) => state.filterSlice);
   const { pathname } = useLocation();
 
-
-  useEffect(()=>{
-    (async()=>{
-      const data = await postCaller("get_reppay_tiledata",{dealer:"ALL"})
-      if (data.status>201) {
-        toast.error(data?.message)
+  useEffect(() => {
+    (async () => {
+      const data = await postCaller('get_reppay_tiledata', { dealer: 'ALL' });
+      if (data.status > 201) {
+        toast.error(data?.message);
       }
-      console.log(data,"dataaaa");
-      
-    })()
-  },[])
+      console.log(data, 'dataaaa');
+    })();
+  }, []);
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -218,7 +216,9 @@ export const RepPayDashboardPage: React.FC = () => {
                   </label>
                   <Select
                     options={comissionValueData}
-                    value={comissionValueData.find(item=>item.value===filters.commission_model)}
+                    value={comissionValueData.find(
+                      (item) => item.value === filters.commission_model
+                    )}
                     onFocus={() => setIsOpen(false)}
                     onChange={(value) =>
                       handleChange('commission_model', value?.value!)

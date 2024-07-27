@@ -26,8 +26,6 @@ interface marketingProps {
   page_size: number;
 }
 
-
-
 const CreateMarketingFees: React.FC<marketingProps> = ({
   handleClose,
   editMode,
@@ -43,10 +41,14 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     dba: marketingData ? marketingData.dba?.trim() : '',
     state: marketingData ? marketingData.state : '',
     fee_rate: marketingData ? marketingData.fee_rate : '',
-    chg_dlr:  marketingData?.chg_dlr ? 'yes' : 'no',
+    chg_dlr: marketingData?.chg_dlr ? 'yes' : 'no',
     pay_src: marketingData?.pay_src ? 'yes' : 'no',
-    start_date: marketingData?.start_date ? format(new Date(marketingData?.start_date?.trim()),"yyyy-MM-dd") : '',
-    end_date: marketingData?.end_date ? format(new Date(marketingData.end_date?.trim()),"yyyy-MM-dd") : '',
+    start_date: marketingData?.start_date
+      ? format(new Date(marketingData?.start_date?.trim()), 'yyyy-MM-dd')
+      : '',
+    end_date: marketingData?.end_date
+      ? format(new Date(marketingData.end_date?.trim()), 'yyyy-MM-dd')
+      : '',
     description: marketingData ? marketingData.description?.trim() : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -81,7 +83,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    
+
     if (name === 'start_date') {
       setCreateMarketing((prevData) => ({
         ...prevData,
@@ -110,10 +112,16 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
         { condition: (value: any) => !!value, message: 'Fee Rate is required' },
       ],
       chg_dlr: [
-        { condition: (value: any) => value !== undefined, message: 'CHG DLR is required' },
+        {
+          condition: (value: any) => value !== undefined,
+          message: 'CHG DLR is required',
+        },
       ],
       pay_src: [
-        { condition: (value: any) => value !== undefined, message: 'Pay Src is required' },
+        {
+          condition: (value: any) => value !== undefined,
+          message: 'Pay Src is required',
+        },
       ],
       description: [
         {
@@ -259,7 +267,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handlemarketingInputChange(e)}
                   /> */}
-                   <label className="inputLabel-select">Chg DLR</label>
+                  <label className="inputLabel-select">Chg DLR</label>
                   <SelectOption
                     options={[
                       { value: 'yes', label: 'Yes' },
@@ -376,7 +384,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

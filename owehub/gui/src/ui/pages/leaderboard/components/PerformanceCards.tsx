@@ -72,7 +72,7 @@ const PerformanceCards: React.FC<performance> = ({
               style={{
                 rotate: !isAccoOpen ? '180deg' : '',
                 transition: 'all 500ms',
-                marginTop:isAccoOpen?10:undefined
+                marginTop: isAccoOpen ? 10 : undefined,
               }}
               onClick={() => setIsAccoOpen(!isAccoOpen)}
             >
@@ -99,7 +99,7 @@ const PerformanceCards: React.FC<performance> = ({
             className={isAccoOpen ? 'absolute-img' : ''}
             aria-label="login-icon"
           ></img>
-          <p className={isAccoOpen?"sm-hide":""}>
+          <p className={isAccoOpen ? 'sm-hide' : ''}>
             Adjust criteria below to see who leads in different categories..
           </p>
         </div>
@@ -129,11 +129,15 @@ const PerformanceCards: React.FC<performance> = ({
                 <div className="dashed-border"></div>
                 <div className="below-section">
                   <div className="below-des">
-                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank2?.sale) ?? 0}</p>
+                    <p style={{ textAlign: 'center' }}>
+                      {formatSaleValue(rank2?.sale) ?? 0}
+                    </p>
                     <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                   <div className="below-des">
-                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank2?.ntp) ?? 0}</p>
+                    <p style={{ textAlign: 'center' }}>
+                      {formatSaleValue(rank2?.ntp) ?? 0}
+                    </p>
                     <p>NTP ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                   <div
@@ -168,18 +172,22 @@ const PerformanceCards: React.FC<performance> = ({
                 <div className="dashed-border"></div>
                 <div className="below-section">
                   <div className="below-des">
-                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank1?.sale) ?? 0} </p>
+                    <p style={{ textAlign: 'center' }}>
+                      {formatSaleValue(rank1?.sale) ?? 0}{' '}
+                    </p>
                     <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                   <div className="below-des">
-                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank1?.ntp)}</p>
+                    <p style={{ textAlign: 'center' }}>
+                      {formatSaleValue(rank1?.ntp)}
+                    </p>
                     <p>NTP ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                   <div
                     className="below-des mx-auto"
                     style={{ gridColumn: '1/3' }}
                   >
-                    <p  className="text-center">
+                    <p className="text-center">
                       {formatSaleValue(rank1?.install)}
                     </p>
 
@@ -207,11 +215,15 @@ const PerformanceCards: React.FC<performance> = ({
                 <div className="dashed-border"></div>
                 <div className="below-section">
                   <div className="below-des">
-                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank3?.sale) ?? 0} </p>
+                    <p style={{ textAlign: 'center' }}>
+                      {formatSaleValue(rank3?.sale) ?? 0}{' '}
+                    </p>
                     <p>Sales ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                   <div className="below-des">
-                    <p      style={{ textAlign: 'center' }}>{formatSaleValue(rank3?.ntp) ?? 0} </p>
+                    <p style={{ textAlign: 'center' }}>
+                      {formatSaleValue(rank3?.ntp) ?? 0}{' '}
+                    </p>
                     <p>NTP ({activeHead == 'kw' ? 'kW' : 'count'})</p>
                   </div>
                   <div
@@ -235,8 +247,7 @@ const PerformanceCards: React.FC<performance> = ({
         {!Boolean(details.length) && !isLoading && (
           <div
             style={{ textAlign: 'center' }}
-       
-            className={`text-center mx-auto flex items-center justify-center ${isAccoOpen?"sm-hide":""}`}
+            className={`text-center mx-auto flex items-center justify-center ${isAccoOpen ? 'sm-hide' : ''}`}
           >
             <img src={artboard} style={{ maxWidth: 350 }} />
           </div>

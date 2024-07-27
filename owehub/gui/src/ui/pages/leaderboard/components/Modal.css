@@ -1,157 +1,154 @@
 .edit-modal {
-    position: fixed;
-    inset: 0;
-    display: grid;
-    place-content: center;
-    z-index: 9999;
-    background-color: #2A2A2AC4;
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  z-index: 9999;
+  background-color: #2a2a2ac4;
 }
 
 .leader-modal {
-    width: 600px;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    padding: 1.5rem;
-    border-radius: 1rem;
+  width: 600px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 1rem;
 }
 
-.leader-modal input[type="file"] {
-    display: none;
+.leader-modal input[type='file'] {
+  display: none;
 }
 
 .leader-modal h2 {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .modal-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
 }
 
 .leader-modal-upload {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    margin-top: 1rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    border: none;
-    background: none;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  border: none;
+  background: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
 }
 
 .leader-modal-upload:hover {
-    background-color: var(--children-bg-color);
+  background-color: var(--children-bg-color);
 }
 
 .leader-modal img {
-    width: 150px;
-    height: 150px;
-    border-radius: 1rem;
-    object-fit: cover;
+  width: 150px;
+  height: 150px;
+  border-radius: 1rem;
+  object-fit: cover;
 }
 
 .leader-modal-colorpicker {
-    display: grid;
-    grid-auto-flow: column;
-    margin-top: 1.5rem;
-    padding: 1rem 0;
-    font-size: 0.875rem;
-    border-top: 1px solid var(--border-color);
+  display: grid;
+  grid-auto-flow: column;
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+  font-size: 0.875rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .leader-modal-colorpicker p {
-    grid-column: 1/ span 8;
-    text-align: center;
-    padding: 1rem 0;
+  grid-column: 1 / span 8;
+  text-align: center;
+  padding: 1rem 0;
 }
 
 .leader-modal-colorpicker button {
-    grid-row-start: 2;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: none;
-    background: none;
-    cursor: pointer;
-    outline: 2px solid;
-    outline-offset: 2px;
-    margin-right: 1rem;
-    display: grid;
-    place-content: center;
+  grid-row-start: 2;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: 2px solid;
+  outline-offset: 2px;
+  margin-right: 1rem;
+  display: grid;
+  place-content: center;
 }
 
-.leader-modal-colorpicker input[type="color"] {
-    visibility: hidden;
+.leader-modal-colorpicker input[type='color'] {
+  visibility: hidden;
 }
 
 .leader-modal-colorpicker button:last-child {
-    margin-right: 0;
-    margin-left: -46px;
+  margin-right: 0;
+  margin-left: -46px;
 }
 
-
-
 .leader-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin: 2rem 0 1rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0 1rem 0;
 }
 
 .leader-buttons button {
-    padding: 0.8rem 4rem;
-    border-radius: 0.8rem;
-    cursor: pointer;
+  padding: 0.8rem 4rem;
+  border-radius: 0.8rem;
+  cursor: pointer;
 }
 
 .cancel-button {
-    color: #EE824D;
-    background: white;
-    border: 1px solid #EE824D;
-    font-weight: 500;
+  color: #ee824d;
+  background: white;
+  border: 1px solid #ee824d;
+  font-weight: 500;
 }
 
-.cancel-button:hover{
-    background-color: #EE824D;
-    color: white;
-
-
+.cancel-button:hover {
+  background-color: #ee824d;
+  color: white;
 }
 
 .update-button {
-    background-color: #EE824D;
-    color: #fff;
-    border: none;
-    font-weight: 500;
+  background-color: #ee824d;
+  color: #fff;
+  border: none;
+  font-weight: 500;
 }
 
-@media screen and (max-width: 767px){
-    .leader-modal{
-        width: unset;
-        padding: .5rem 1rem;
-    }
+@media screen and (max-width: 767px) {
+  .leader-modal {
+    width: unset;
+    padding: 0.5rem 1rem;
+  }
 }
-@media screen and (max-width: 440px){
-    .leader-modal{
-        width: 370px;
+@media screen and (max-width: 440px) {
+  .leader-modal {
+    width: 370px;
+  }
+  .leader-modal-colorpicker button,
+  .file-picker {
+    width: 20px;
+    height: 20px;
+  }
+  .leader-buttons {
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0 1rem 0;
+  }
+  @media screen and (max-width: 386px) {
+    .leader-modal {
+      width: 330px;
     }
-    .leader-modal-colorpicker button, .file-picker{
-        width: 20px;
-        height: 20px;
-    }
-    .leader-buttons {
-        flex-direction: column;
-        gap: 1rem;
-        margin: 1rem 0 1rem 0;
-}
-@media screen and (max-width: 386px){
-    .leader-modal{
-        width: 330px;
-    }
-}
+  }
 }

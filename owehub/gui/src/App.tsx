@@ -239,12 +239,12 @@ function App() {
             )
           }
         />
-      
+
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
-        <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
-        <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
+          <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
+          <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
@@ -292,7 +292,6 @@ function App() {
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
-
       </Routes>
     </BrowserRouter>
   );

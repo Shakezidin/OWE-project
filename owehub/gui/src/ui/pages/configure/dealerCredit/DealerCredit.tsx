@@ -202,7 +202,7 @@ const DealerCredit: React.FC = () => {
     setSelectedRows(new Set());
     setSelectAllChecked(false);
   };
-  const notAllowed = selectedRows.size>1
+  const notAllowed = selectedRows.size > 1;
   return (
     <div className="comm">
       <Breadcrumb
@@ -337,30 +337,32 @@ const DealerCredit: React.FC = () => {
                     <td>{el.total_amount || 'N/A'}</td>
                     <td>{el.sys_size || 'N/A'}</td>
 
-                
-                      <td>
-                       
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor:notAllowed?"not-allowed" : 'pointer' }}
-                              onClick={() => !notAllowed && handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor:notAllowed?"not-allowed" : 'pointer' }}
-                              onClick={() =>  !notAllowed && handleEditDealer(el)}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
-                          </div>
-                        
-                      </td>
-                    
+                    <td>
+                      <div className="action-icon">
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
+                          {/* <span className="tooltiptext">Archive</span> */}
+                        </div>
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() => !notAllowed && handleEditDealer(el)}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                          {/* <span className="tooltiptext">Edit</span> */}
+                        </div>
+                      </div>
+                    </td>
                   </tr>
                 ))
               ) : (

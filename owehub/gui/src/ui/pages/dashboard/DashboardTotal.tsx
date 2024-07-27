@@ -86,7 +86,14 @@ const DashboardTotal: React.FC = () => {
                     style={{ marginBottom: '8px' }}
                   >
                     <p>{el.paid}</p>
-                    <h4 style={{ wordBreak: el.doller.length > 5 ? 'break-all' : 'normal' }}>{el.doller}</h4>
+                    <h4
+                      style={{
+                        wordBreak:
+                          el.doller.length > 5 ? 'break-all' : 'normal',
+                      }}
+                    >
+                      {el.doller}
+                    </h4>
                   </div>
                   <div className="teamImg">
                     <img src={el.img} alt="" />

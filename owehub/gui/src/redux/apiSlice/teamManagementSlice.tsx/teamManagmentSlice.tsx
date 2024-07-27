@@ -1,27 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import {
- getTeams,
- getTeam,
- getSalesManagerList,
- getsaleRepList,
- createTeam,
- manageTeam
- 
-} from "../../apiActions/teamManagement/teamManagement";
-
- 
+  getTeams,
+  getTeam,
+  getSalesManagerList,
+  getsaleRepList,
+  createTeam,
+  manageTeam,
+} from '../../apiActions/teamManagement/teamManagement';
 
 interface IState {
   isLoading: boolean;
   isFormSubmitting: boolean;
   error: string;
   teams: [];
-  team:any;
-  sales_manager_list:[];
-  sale_rep_list:[];
+  team: any;
+  sales_manager_list: [];
+  sale_rep_list: [];
   isSuccess: boolean;
-  isMove:boolean;
+  isMove: boolean;
   totalcount: number;
 }
 
@@ -30,11 +27,11 @@ const initialState: IState = {
   isFormSubmitting: false,
   error: '',
   teams: [],
-  team:{},
-  sales_manager_list:[],
-  sale_rep_list:[],
+  team: {},
+  sales_manager_list: [],
+  sale_rep_list: [],
   isSuccess: false,
-  isMove:false,
+  isMove: false,
   totalcount: 0,
 };
 
@@ -44,7 +41,7 @@ const teamManagementSlice = createSlice({
   reducers: {
     resetSuccess: (state) => {
       state.isSuccess = false;
-      state.isMove= false;
+      state.isMove = false;
     },
   },
   extraReducers: (builder) => {
@@ -56,7 +53,6 @@ const teamManagementSlice = createSlice({
         state.isLoading = false;
         state.teams = action.payload.list || [];
         state.totalcount = action.payload.count;
-        
       })
       .addCase(getTeams.rejected, (state, action) => {
         state.isLoading = false;
@@ -68,7 +64,7 @@ const teamManagementSlice = createSlice({
       })
       .addCase(getTeam.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.team = action.payload.data;     
+        state.team = action.payload.data;
       })
       .addCase(getTeam.rejected, (state, action) => {
         state.isLoading = false;
@@ -80,8 +76,7 @@ const teamManagementSlice = createSlice({
       })
       .addCase(getSalesManagerList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.sales_manager_list = action.payload.data.users_name_list || []
-        ;     
+        state.sales_manager_list = action.payload.data.users_name_list || [];
       })
       .addCase(getSalesManagerList.rejected, (state, action) => {
         state.isLoading = false;
@@ -93,7 +88,7 @@ const teamManagementSlice = createSlice({
       })
       .addCase(getsaleRepList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.sale_rep_list = action.payload.data.sale_rep_list || [];     
+        state.sale_rep_list = action.payload.data.sale_rep_list || [];
       })
       .addCase(getsaleRepList.rejected, (state, action) => {
         state.isLoading = false;
@@ -129,9 +124,7 @@ const teamManagementSlice = createSlice({
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
-      })
-      
-   
+      });
   },
 });
 

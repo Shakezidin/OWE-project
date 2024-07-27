@@ -40,8 +40,8 @@ const CreateLoanType: React.FC<loanProps> = ({
   const [createLoanTypeData, setCreateLoanTypeData] = useState<LoanTypeModel>({
     record_id: loanData ? loanData?.record_id : 0,
     product_code: loanData ? loanData?.product_code : '',
-    active: loanData ? loanData?.active : "",
-    adder: loanData ? loanData?.adder : "",
+    active: loanData ? loanData?.active : '',
+    adder: loanData ? loanData?.adder : '',
     description: loanData ? loanData?.description : '',
   });
   const [isPending, setIsPending] = useState(false);
@@ -105,12 +105,12 @@ const CreateLoanType: React.FC<loanProps> = ({
       setIsPending(true);
       dispatch(updateLoanTypeForm(createLoanTypeData));
       if (createLoanTypeData.record_id) {
-        const res = await postCaller(
-          EndPoints.update_loantype,
-          {...createLoanTypeData,active:createLoanTypeData.active?1:0}
-        );
+        const res = await postCaller(EndPoints.update_loantype, {
+          ...createLoanTypeData,
+          active: createLoanTypeData.active ? 1 : 0,
+        });
         if ((await res.status) === 200) {
-          toast.success("Loan Type Updated successfully");
+          toast.success('Loan Type Updated successfully');
           handleClose();
           dispatch(fetchLoanType(page));
           setIsPending(false);
@@ -120,12 +120,12 @@ const CreateLoanType: React.FC<loanProps> = ({
         }
       } else {
         const { record_id, ...cleanedFormData } = createLoanTypeData;
-        const res = await postCaller(
-          EndPoints.create_loantype,
-          {...cleanedFormData,active:cleanedFormData.active?1:0}
-        );
+        const res = await postCaller(EndPoints.create_loantype, {
+          ...cleanedFormData,
+          active: cleanedFormData.active ? 1 : 0,
+        });
         if ((await res.status) === 200) {
-          toast.success("Loan Type Created successfully");
+          toast.success('Loan Type Created successfully');
           handleClose();
           dispatch(fetchLoanType(page));
           setIsPending(false);

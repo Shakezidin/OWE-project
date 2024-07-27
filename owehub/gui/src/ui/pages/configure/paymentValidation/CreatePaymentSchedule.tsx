@@ -57,8 +57,12 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
     rep_draw: payEditedData ? payEditedData?.rep_draw : '',
     rep_draw_max: payEditedData ? payEditedData?.rep_draw_max : '',
     rep_pay: payEditedData ? payEditedData?.rep_pay : '',
-    start_date: payEditedData ? format(new Date( payEditedData?.start_date), "yyyy-MM-dd") : '',
-    end_date: payEditedData ? format(new Date( payEditedData?.end_date), "yyyy-MM-dd") : '',
+    start_date: payEditedData
+      ? format(new Date(payEditedData?.start_date), 'yyyy-MM-dd')
+      : '',
+    end_date: payEditedData
+      ? format(new Date(payEditedData?.end_date), 'yyyy-MM-dd')
+      : '',
     commission_model: payEditedData ? payEditedData?.commission_model : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -488,7 +492,6 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                         'yyyy-MM-dd'
                       )
                     }
-                    
                     placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />

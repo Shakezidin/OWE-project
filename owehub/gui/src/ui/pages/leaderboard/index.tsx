@@ -81,12 +81,12 @@ const Index = () => {
   const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
   );
-  const [isLoading,setIsLoading]=useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
       (async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
           const data = await postCaller('get_perfomance_leaderboard', {
             type: activeHead,
@@ -104,7 +104,7 @@ const Index = () => {
             return;
           }
           setDetails(data.data?.ap_ded_list);
-          setIsLoading(false)
+          setIsLoading(false);
         } catch (error) {
           console.error(error);
         } finally {

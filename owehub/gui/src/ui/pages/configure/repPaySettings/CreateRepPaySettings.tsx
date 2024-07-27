@@ -319,7 +319,6 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                   <label className="inputLabel-select">BE</label>
                   <SelectOption
                     options={[
-
                       { value: 'yes', label: 'Yes' },
                       { value: 'no', label: 'No' },
                     ]}

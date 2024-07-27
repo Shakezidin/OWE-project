@@ -79,7 +79,6 @@ const PaymentSchedule = () => {
     setCurrentPage(currentPage - 1);
   };
 
-
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const currentPageData = payScheduleList?.slice();
@@ -100,7 +99,7 @@ const PaymentSchedule = () => {
     setEditedPaySchedule(payEditedData);
     handleOpen();
   };
- 
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');

@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Input from '../../../components/text_input/Input';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import axios from 'axios';
-import { dealerOption, teamsOption } from '../../../../core/models/data_models/SelectDataModel';
+import {
+  dealerOption,
+  teamsOption,
+} from '../../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 
@@ -12,7 +15,7 @@ interface inputSelectProps {
   regionList: any[];
   handleChangeForRegion: (value: any, name: string) => void;
   handleChangeForDealer?: (value: any, name: string) => void;
-  setLogoUrl: any
+  setLogoUrl: any;
 }
 
 const UserBasedInput: React.FC<inputSelectProps> = ({
@@ -21,10 +24,8 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   regionList,
   handleChangeForRegion,
   handleChangeForDealer,
-  setLogoUrl
+  setLogoUrl,
 }) => {
-
-
   const [files, setFiles] = useState<FileList | null>(null);
   const [newFormData, setNewFormData] = useState<any>([]);
   const [delaerVal, setDealerVal] = useState('');
@@ -49,8 +50,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
     }
   }, [dealer]);
 
-  console.log(delaerVal, "selected options")
-
+  console.log(delaerVal, 'selected options');
 
   return (
     <>
@@ -82,7 +82,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
               )}
             />
           </div>
-          <div className="create-input-field" style={{marginTop: "4px"}}>
+          <div className="create-input-field" style={{ marginTop: '4px' }}>
             {/* <Input
               type={'text'}
               label="Team Name"
@@ -110,8 +110,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
               value={teamsOption(newFormData)?.find(
                 (option) => option?.value === formData.team_name
               )}
-             />
-
+            />
           </div>
         </>
       )}
@@ -135,23 +134,18 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
       )}
       {formData?.role_name === 'Dealer Owner' && (
         <>
-
           <div className="create-input-field">
             <label className="inputLabel-select select-type-label">
               Dealer
             </label>
             <SelectOption
               options={dealerOption(newFormData)}
-              onChange={(newValue) =>
-                handleChangeForRegion(newValue, 'dealer')
-              }
+              onChange={(newValue) => handleChangeForRegion(newValue, 'dealer')}
               value={dealerOption(newFormData)?.find(
                 (option) => option?.value === formData.dealer
               )}
             />
           </div>
-
-
 
           {/* <div className="file-input-container">
               <input
@@ -220,7 +214,6 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
                       const url = response.data.secure_url;
                       // Store the logoUrl in the formData state
                       setLogoUrl(url);
-
                     } catch (error) {
                       console.error('Error uploading logo:', error);
                     }
@@ -237,7 +230,6 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
               </div>
             </div>
           </div>
-
         </>
       )}
     </>

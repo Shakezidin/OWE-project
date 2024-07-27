@@ -140,7 +140,7 @@ export const store = configureStore({
     apOthSlice,
     apAdvSlice,
     apDedSlice,
-    teamManagmentSlice
+    teamManagmentSlice,
   },
 });
 

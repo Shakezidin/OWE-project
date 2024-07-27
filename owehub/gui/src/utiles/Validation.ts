@@ -129,7 +129,7 @@ export const createUserObject = (
     createObject = {
       ...createObject,
       dealer_logo: formData?.dealer_logo,
-      dealer: formData.dealer
+      dealer: formData.dealer,
     };
   }
 

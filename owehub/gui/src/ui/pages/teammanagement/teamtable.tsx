@@ -11,7 +11,12 @@ import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { ROUTES } from '../../../routes/routes';
-import { BrowserRouter as Router, Route, useParams, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  useParams,
+  useLocation,
+} from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
 import DataNotFound from '../../components/loader/DataNotFound';
 
@@ -44,19 +49,19 @@ const TeamTable: React.FC = () => {
   const handleClose = () => setOpen(false);
   const handleClose1 = () => setOpen1(false);
 
- 
-
   const count = team?.sale_rep_list?.length;
   const itemsPerPage = 10;
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const goToNextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   const totalPages = Math.ceil(count / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
-  const currentPageData = team?.sale_rep_list?.slice(startIndex, endIndex) || [];
+  const currentPageData =
+    team?.sale_rep_list?.slice(startIndex, endIndex) || [];
 
   const onSubmitCreateUser = () => {
     console.log('User created');
@@ -74,9 +79,9 @@ const TeamTable: React.FC = () => {
     }
   }, [id, teamName, managerName, dispatch, refetch]);
 
-  const handleMoveMemberClick = (el:any) => {
-   console.log(el, "el")
-   setSelectedMember(el); 
+  const handleMoveMemberClick = (el: any) => {
+    console.log(el, 'el');
+    setSelectedMember(el);
     setOpen1(true);
   };
 
@@ -150,69 +155,84 @@ const TeamTable: React.FC = () => {
                     </div>
                   </th>
                   <th>
-                    <div className="action-header" style={{ paddingRight: '94px' }}>
+                    <div
+                      className="action-header"
+                      style={{ paddingRight: '94px' }}
+                    >
                       <p>Move</p>
                     </div>
                   </th>
                   <th>
-                    <div className="table-header" style={{ paddingRight: '34px' }}>
+                    <div
+                      className="table-header"
+                      style={{ paddingRight: '34px' }}
+                    >
                       <p>Offboard</p>
                     </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {currentPageData.length > 0
-                  ? currentPageData.map((el:any, index:any) => (
-                      <tr key={index}>
-                        <td
+                {currentPageData.length > 0 ? (
+                  currentPageData.map((el: any, index: any) => (
+                    <tr key={index}>
+                      <td
+                        style={{
+                          color: '101828',
+                          paddingLeft: '33px',
+                          fontWeight: '500',
+                        }}
+                      >
+                        {el.sale_rep_name}
+                      </td>
+                      <td style={{ color: '#101828' }}>{el.phone_number}</td>
+                      <td style={{ color: '#101828' }}>{el.sale_rep_name}</td>
+                      <td
+                        className="zoom-out-help"
+                        style={{ paddingLeft: '18px' }}
+                      >
+                        <img
+                          src={ICONS.TeamEdit}
                           style={{
-                            color: '101828',
-                            paddingLeft: '33px',
-                            fontWeight: '500',
+                            height: '18px',
+                            width: '18px',
+                            stroke: '0.2',
                           }}
-                        >
-                          {el.sale_rep_name}
-                        </td>
-                        <td style={{ color: '#101828' }}>{el.phone_number}</td>
-                        <td style={{ color: '#101828' }}>{el.sale_rep_name}</td>
-                        <td className="zoom-out-help" style={{ paddingLeft: '18px' }}>
-                          <img
-                            src={ICONS.TeamEdit}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              stroke: '0.2',
-                            }}
-                            alt=""
-                            onClick={() => handleMoveMemberClick(el)}
-                          />
-                        </td>
-                        <td className="zoom-out-help" style={{ paddingLeft: '30px' }}>
-                          <img
-                            src={ICONS.deleteIcon}
-                            style={{
-                              height: '18px',
-                              width: '18px',
-                              stroke: '0.2',
-                            }}
-                            alt=""
-                          />
-                        </td>
-                      </tr>
-                    ))
-                  : <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
-                    <DataNotFound />
-                  </td>
-                </tr>}
+                          alt=""
+                          onClick={() => handleMoveMemberClick(el)}
+                        />
+                      </td>
+                      <td
+                        className="zoom-out-help"
+                        style={{ paddingLeft: '30px' }}
+                      >
+                        <img
+                          src={ICONS.deleteIcon}
+                          style={{
+                            height: '18px',
+                            width: '18px',
+                            stroke: '0.2',
+                          }}
+                          alt=""
+                        />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr style={{ border: 0 }}>
+                    <td colSpan={10}>
+                      <DataNotFound />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
           {team?.sale_rep_list?.length > 0 ? (
             <div className="page-heading-container">
               <p className="page-heading">
-                Showing {startIndex + 1} - {endIndex > count ? count : endIndex} of {count} items
+                Showing {startIndex + 1} - {endIndex > count ? count : endIndex}{' '}
+                of {count} items
               </p>
               <Pagination
                 currentPage={currentPage}

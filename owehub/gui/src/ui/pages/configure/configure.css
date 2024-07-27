@@ -392,8 +392,8 @@ table tbody tr:has(td[colspan='10'] .data-not-found):hover {
   }
 }
 
-@media screen and (max-width: 767px){
-  .page-heading-container{
+@media screen and (max-width: 767px) {
+  .page-heading-container {
     flex-direction: column;
     justify-content: unset;
     gap: 1rem;

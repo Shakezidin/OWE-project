@@ -26,16 +26,15 @@ import Loading from '../../components/loader/Loading';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { FormEvent } from '../../../core/models/data_models/typesModel';
 
-
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
-  
+
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   return width;
 }
 
@@ -47,14 +46,11 @@ export const LoginPage = () => {
     isRememberMe: false,
   });
 
- 
-  
   // Other code ...
 
   const handleBattery = () => {
     navigate(ROUTES.SR_IMAGE_UPLOAD);
   };
-
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -138,7 +134,6 @@ export const LoginPage = () => {
           } else {
             // navigate(ROUTES.PROJECT_PERFORMANCE);
             navigate(ROUTES.LEADERBOARD);
-
           }
         } else {
           toast.error(result.message);
@@ -151,8 +146,6 @@ export const LoginPage = () => {
 
   const width = useWindowWidth();
   const isMobile = width < 768;
-
- 
 
   return (
     <div className="mainContainer">
@@ -198,6 +191,7 @@ export const LoginPage = () => {
                   name={'email_id'}
                   value={credentials.email_id}
                   placeholder={'Enter Email'}
+                  autoComplete="email_id"
                   onChange={(e) => {
                     const { name, value } = e.target;
                     if (name === 'email_id' && !/\s/.test(value)) {
@@ -210,6 +204,7 @@ export const LoginPage = () => {
                   value={credentials.password}
                   name={'password'}
                   placeholder={'Enter Password'}
+                  autoComplete="password"
                   onChange={(e) => {
                     const { name, value } = e.target;
                     if (name === 'password' && !/\s/.test(value)) {
@@ -232,7 +227,7 @@ export const LoginPage = () => {
                     setShowPassword(false);
                   }}
                   maxLength={50}
-                  isMobile={isMobile} 
+                  isMobile={isMobile}
                 />
               </div>
 
@@ -270,15 +265,11 @@ export const LoginPage = () => {
               >
                 Log In
               </button>
-             <div className='text-center m1 loginRBM '> OR </div> 
-              
-             <div
-        className="login-buttonn"
-        onClick={handleBattery}
-      >
-        Battery Calculator
-      </div>
-           
+              <div className="text-center m1 loginRBM "> OR </div>
+
+              <div className="login-buttonn" onClick={handleBattery}>
+                Battery Calculator
+              </div>
             </div>
           </form>
         </div>

@@ -156,7 +156,7 @@ const CreateDealer: React.FC<dealerProps> = ({
           sub_dealer: createDealer.sub_dealers,
         });
         if (res.status === 200) {
-          toast.success("Dealer Overrides Updated Successfully");
+          toast.success('Dealer Overrides Updated Successfully');
           handleClose();
           dispatch(fetchDealer(page));
         } else {
@@ -170,7 +170,7 @@ const CreateDealer: React.FC<dealerProps> = ({
           sub_dealer: createDealer.sub_dealers,
         });
         if (res.status === 200) {
-          toast.success("Dealer Overrides Created Successfully");
+          toast.success('Dealer Overrides Created Successfully');
           handleClose();
           dispatch(fetchDealer(page));
         } else {

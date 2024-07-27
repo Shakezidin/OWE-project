@@ -16,8 +16,8 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import Select from 'react-select';
 import {
-createApRep,
-updateApRep
+  createApRep,
+  updateApRep,
 } from '../../../../redux/apiActions/config/apRepAction';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
@@ -37,18 +37,20 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.apRepSlice);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.apRepSlice
+  );
 
   const [createArData, setCreateArData] = useState({
     // customer_name:editData?.customer_name || "",
     unique_id: editData?.unique_id || '',
     rep: editData?.rep || '',
-    dba:  editData?.dba  || '',
+    dba: editData?.dba || '',
     type: editData?.type || '',
     date: editData?.date || '',
-    amount:  editData?.amount || '',
+    amount: editData?.amount || '',
     method: editData?.method || '',
-    cbiz:editData?.cbiz || '',
+    cbiz: editData?.cbiz || '',
     transaction: editData?.transaction || '',
     notes: editData?.notes || '',
   });
@@ -83,12 +85,8 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
           message: 'Unique Id is required',
         },
       ],
-      rep: [
-        { condition: (value: any) => !!value, message: 'Rep is required' },
-      ],
-      dba: [
-        { condition: (value: any) => !!value, message: 'DBA is required' },
-      ],
+      rep: [{ condition: (value: any) => !!value, message: 'Rep is required' }],
+      dba: [{ condition: (value: any) => !!value, message: 'DBA is required' }],
       type: [
         {
           condition: (value: any) => !!value,
@@ -98,54 +96,63 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
       date: [
         { condition: (value: any) => !!value, message: 'date is required' },
       ],
-      amount: [{ condition: (value: any) => !!value, message: 'amount is required' }],
-      method: [{ condition: (value: any) => !!value, message: 'method is required' }],
-      cbiz: [{ condition: (value: any) => !!value, message: 'cbiz is required' }],
-      transaction: [{ condition: (value: any) => !!value, message: 'Transaction is required' }],
-      notes: [{ condition: (value: any) => !!value, message: 'Notes is required' }],
+      amount: [
+        { condition: (value: any) => !!value, message: 'amount is required' },
+      ],
+      method: [
+        { condition: (value: any) => !!value, message: 'method is required' },
+      ],
+      cbiz: [
+        { condition: (value: any) => !!value, message: 'cbiz is required' },
+      ],
+      transaction: [
+        {
+          condition: (value: any) => !!value,
+          message: 'Transaction is required',
+        },
+      ],
+      notes: [
+        { condition: (value: any) => !!value, message: 'Notes is required' },
+      ],
     };
     const { isValid, errors } = validateConfigForm(
       createArData!,
       validationRules
-    ); 
+    );
     if (!isValid) {
       setErrors(errors);
       return;
     }
 
-     
-      // dispatch(
-      //   createApRep({
-      //     unique_id: createArData.unique_id,
-      //     rep: createArData.rep,
-      //     dba: createArData.dba,
-      //     type: createArData.type,
-      //     date: createArData.date,
-      //     amount: parseInt(createArData.amount),
-      //     method:createArData.method,
-      //     cbiz:createArData.cbiz,
-      //     transaction:createArData.transaction,
-      //     notes:createArData.notes
-      //   })
-      // );
-      if (editMode) {
-        dispatch(
-          updateApRep({
-            ...createArData,
-            record_id: editData?.record_id!,
-            amount: parseInt(createArData.amount),
-
-          })
-        );
-      }
-      else {
+    // dispatch(
+    //   createApRep({
+    //     unique_id: createArData.unique_id,
+    //     rep: createArData.rep,
+    //     dba: createArData.dba,
+    //     type: createArData.type,
+    //     date: createArData.date,
+    //     amount: parseInt(createArData.amount),
+    //     method:createArData.method,
+    //     cbiz:createArData.cbiz,
+    //     transaction:createArData.transaction,
+    //     notes:createArData.notes
+    //   })
+    // );
+    if (editMode) {
+      dispatch(
+        updateApRep({
+          ...createArData,
+          record_id: editData?.record_id!,
+          amount: parseInt(createArData.amount),
+        })
+      );
+    } else {
       const data = {
         ...createArData,
         amount: parseFloat(createArData.amount), // Convert to number
       };
       dispatch(createApRep(data));
     }
-    
   };
 
   useEffect(() => {
@@ -181,7 +188,9 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.unique_id && <span className="error">{errors.unique_id}</span>}
+                  {errors.unique_id && (
+                    <span className="error">{errors.unique_id}</span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -190,13 +199,11 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     value={createArData.rep}
                     name="rep"
                     placeholder={'Enter'}
-                    onChange={(e) => {                       
+                    onChange={(e) => {
                       handleInputChange(e);
                     }}
                   />
-                  {errors.rep && (
-                    <span className="error">{errors.rep}</span>
-                  )}
+                  {errors.rep && <span className="error">{errors.rep}</span>}
                 </div>
 
                 <div className="create-input-field">
@@ -208,9 +215,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.dba && (
-                    <span className="error">{errors.dba}</span>
-                  )}
+                  {errors.dba && <span className="error">{errors.dba}</span>}
                 </div>
               </div>
 
@@ -224,9 +229,7 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.type && (
-                    <span className="error">{errors.type}</span>
-                  )}
+                  {errors.type && <span className="error">{errors.type}</span>}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -255,7 +258,9 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                       handleInputChange(e);
                     }}
                   />
-                  {errors.amount&& <span className="error">{errors.amount}</span>}
+                  {errors.amount && (
+                    <span className="error">{errors.amount}</span>
+                  )}
                 </div>
               </div>
 
@@ -293,7 +298,9 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors.transaction&& <span className="error">{errors.transaction}</span>}
+                  {errors.transaction && (
+                    <span className="error">{errors.transaction}</span>
+                  )}
                 </div>
               </div>
               <div className="create-input-container">
@@ -310,7 +317,6 @@ const CreatedApRep: React.FC<payScheduleProps> = ({
                     <span className="error">{errors.notes}</span>
                   )}
                 </div>
-                
               </div>
             </div>
           </div>

@@ -136,104 +136,109 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         <div className="pieChart-section">
           <h2>Performance</h2>
         </div>
-        <div className='pie2-mob-resp'>
-        {userPerformanceList && userPerformanceList.length > 0 ? (
-          <div className="pie-chart-container  relative">
-            <ResponsiveContainer width={'100%'} height="100%">
-              <PieChart>
-                <Pie
-                  data={userPerformanceList}
-                  cx="50%"
-                  className="dougnout"
-                  cy="50%"
-                  innerRadius={isTablet ? 60 : 90} // Adjust the inner radius for the doughnut thickness
-                  outerRadius={isTablet ? 90 : 130}
-                  fill="#8884d8"
-                  paddingAngle={2}
-                  dataKey="value"
-                  strokeWidth={3}
+        <div className="pie2-mob-resp">
+          {userPerformanceList && userPerformanceList.length > 0 ? (
+            <div className="pie-chart-container  relative">
+              <ResponsiveContainer width={'100%'} height="100%">
+                <PieChart>
+                  <Pie
+                    data={userPerformanceList}
+                    cx="50%"
+                    className="dougnout"
+                    cy="50%"
+                    innerRadius={isTablet ? 60 : 90} // Adjust the inner radius for the doughnut thickness
+                    outerRadius={isTablet ? 90 : 130}
+                    fill="#8884d8"
+                    paddingAngle={2}
+                    dataKey="value"
+                    strokeWidth={3}
+                  >
+                    {userPerformanceList.map((entry, index) => (
+                      <Cell
+                        id={`${index}`}
+                        key={`cell-${index}`}
+                        fill={entry.fill}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    cursor={false}
+                    content={(va) => {
+                      return va.payload?.[0]?.value;
+                    }}
+                    wrapperClassName="pie-tooltip"
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <img src={perfomance_mask} alt="" className="mask-chart-img" />
+            </div>
+          ) : (
+            <div className="data-not-found">
+              <DataNotFound
+                title={loading ? 'Searching..' : 'No SaleRep Found'}
+              />
+            </div>
+          )}
+
+          {!!userPerformanceList.length && (
+            <div className="flex stats-wrapper items-center justify-center pb2">
+              <div className="flex items-center">
+                <div className="flex items-center">
+                  <div
+                    className="flex items-center mr1"
+                    style={{
+                      background: '#63ACA3',
+                      width: 18,
+                      height: 18,
+                      borderRadius: '50%',
+                      border: '3px solid #D2FFF9',
+                      flexShrink: 0,
+                    }}
+                  />
+
+                  <span className="bold" style={{ color: '#263747' }}>
+                    {userPerformanceList?.[0]?.value}
+                  </span>
+                </div>
+                <span className="mx1">-</span>
+
+                <h3
+                  className="h4"
+                  style={{ fontWeight: '500', lineHeight: '20px' }}
                 >
-                  {userPerformanceList.map((entry, index) => (
-                    <Cell
-                      id={`${index}`}
-                      key={`cell-${index}`}
-                      fill={entry.fill}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  cursor={false}
-                  content={(va) => {
-                    return va.payload?.[0]?.value;
-                  }}
-                  wrapperClassName="pie-tooltip"
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <img src={perfomance_mask} alt="" className="mask-chart-img" />
-          </div>
-        ) : (
-          <div className="data-not-found">
-            <DataNotFound
-              title={loading ? 'Searching..' : 'No SaleRep Found'}
-            />
-          </div>
-        )}
-        
-
-        {!!userPerformanceList.length && (
-          <div className="flex stats-wrapper items-center justify-center pb2">
-            <div className="flex items-center">
-              <div className="flex items-center">
-                <div
-                  className="flex items-center mr1"
-                  style={{
-                    background: '#63ACA3',
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    border: '3px solid #D2FFF9',
-                    flexShrink: 0,
-                  }}
-                />
-
-                <span className="bold" style={{ color: '#263747' }}>
-                  {userPerformanceList?.[0]?.value}
-                </span>
+                  Active Users
+                </h3>
               </div>
-              <span className="mx1">-</span>
 
-              <h3 className="h4" style={{ fontWeight: '500', lineHeight: "20px" }}>
-                Active Users
-              </h3>
-            </div>
+              <div className="flex items-center ">
+                <div className="flex items-center">
+                  <div
+                    className="flex items-center mr1"
+                    style={{
+                      background: '#EE824D',
+                      width: 18,
+                      height: 18,
+                      borderRadius: '50%',
+                      border: '3px solid #FFE2D4',
+                      flexShrink: 0,
+                    }}
+                  />
 
-            <div className="flex items-center ">
-              <div className="flex items-center">
-                <div
-                  className="flex items-center mr1"
-                  style={{
-                    background: '#EE824D',
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    border: '3px solid #FFE2D4',
-                    flexShrink: 0,
-                  }}
-                />
+                  <span className="bold" style={{ color: '#263747' }}>
+                    {userPerformanceList?.[1]?.value}
+                  </span>
+                </div>
+                <span className="mx1">-</span>
 
-                <span className="bold" style={{ color: '#263747' }}>
-                  {userPerformanceList?.[1]?.value}
-                </span>
+                <h3
+                  className="h4"
+                  style={{ fontWeight: '500', lineHeight: '20px' }}
+                >
+                  Inactive Users
+                </h3>
               </div>
-              <span className="mx1">-</span>
-
-              <h3 className="h4" style={{ fontWeight: '500', lineHeight: "20px" }}>
-                Inactive Users
-              </h3>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </div>
     </div>

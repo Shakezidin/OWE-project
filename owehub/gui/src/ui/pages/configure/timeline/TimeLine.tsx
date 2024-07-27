@@ -151,8 +151,13 @@ const TimeLine = () => {
 
           setSelectAllChecked(false);
           setSelectedRows(new Set());
-          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
-
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
 
           Swal.fire({
             title: 'Archived!',
@@ -199,7 +204,13 @@ const TimeLine = () => {
         await dispatch(fetchTimeLineSla(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
-        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
 
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -237,7 +248,7 @@ const TimeLine = () => {
       </div>
     );
   }
-const notAllowed = selectedRows.size>1
+  const notAllowed = selectedRows.size > 1;
   return (
     <div className="comm">
       <Breadcrumb
@@ -348,24 +359,30 @@ const notAllowed = selectedRows.size>1
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>
-                     
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor:notAllowed?"not-allowed": 'pointer' }}
-                            onClick={() =>!notAllowed && handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                            onClick={() =>!notAllowed && handleEditTimeLineSla(el)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-      
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleEditTimeLineSla(el)
+                          }
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))

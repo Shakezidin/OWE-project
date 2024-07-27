@@ -9,24 +9,29 @@ export const sendMail = ({
   toMail,
   message,
   subject,
-  html_content
+  html_content,
 }: {
   toMail: string;
   message: string;
   subject: string;
-  html_content:string
+  html_content: string;
 }) => {
-  return postCaller('sendmail', { subject, message, to_mail: toMail,html_content });
+  return postCaller('sendmail', {
+    subject,
+    message,
+    to_mail: toMail,
+    html_content,
+  });
 };
 
 export const checkLastPage = (
   current: number,
   total: number,
   setCurrentPage: Dispatch<SetStateAction<number>>,
-  rows:number,
-  totalPageData:number
+  rows: number,
+  totalPageData: number
 ) => {
-  if (current === total && current > 1 && rows===totalPageData) {
+  if (current === total && current > 1 && rows === totalPageData) {
     setCurrentPage((prev) => prev - 1);
   }
   return;

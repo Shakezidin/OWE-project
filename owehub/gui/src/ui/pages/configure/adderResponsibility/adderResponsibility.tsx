@@ -35,7 +35,7 @@ const AdderResponsibility = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, isLoading , totalCount} = useAppSelector(
+  const { data, isLoading, totalCount } = useAppSelector(
     (state) => state.adderresponsbility
   );
   //   const loading = useAppSelector((state) => state.timelineSla.loading);

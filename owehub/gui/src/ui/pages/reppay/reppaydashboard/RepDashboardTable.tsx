@@ -751,7 +751,8 @@ const RepDashBoardTable = ({
               ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                    <td style={{ fontWeight: '500' }}
+                    <td
+                      style={{ fontWeight: '500' }}
                       onClick={() => {
                         setOpen(true);
                       }}
@@ -774,7 +775,9 @@ const RepDashBoardTable = ({
                             }
                           }}
                         />
-                        <span className="zoom-out-td">{el.unique_id || "N/A"}</span>
+                        <span className="zoom-out-td">
+                          {el.unique_id || 'N/A'}
+                        </span>
                       </div>
                     </td>
                     <td>{el.home_owner || 'N/A'}</td>

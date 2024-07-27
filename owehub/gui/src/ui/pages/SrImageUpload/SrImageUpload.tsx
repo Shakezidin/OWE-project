@@ -246,7 +246,9 @@ OWE Battery Calc
     checkFormValidity();
   }, [prospectName, email, uploadedImages]);
 
-  const lightHouseAmpSize = Math.ceil(((parseFloat(squareFeet) * 1.5) / 120) * 0.6);
+  const lightHouseAmpSize = Math.ceil(
+    ((parseFloat(squareFeet) * 1.5) / 120) * 0.6
+  );
   return (
     <div>
       <div className="sr-image-container">

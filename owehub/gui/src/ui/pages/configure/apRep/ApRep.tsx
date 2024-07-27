@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {  fetchApRep } from '../../../../redux/apiActions/config/apRepAction';
+import { fetchApRep } from '../../../../redux/apiActions/config/apRepAction';
 // import CreateTimeLine from "./CreateTimeLine";
 import CreatedApRep from './CreateApRep';
 import CheckBox from '../../../components/chekbox/CheckBox';
@@ -38,7 +38,9 @@ const ApRep = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const { data, totalCount, isSuccess, isLoading } = useAppSelector((state) => state.apRepSlice);
+  const { data, totalCount, isSuccess, isLoading } = useAppSelector(
+    (state) => state.apRepSlice
+  );
 
   // const filterState = useAppDispatch((state)=> state.)
 
@@ -279,13 +281,14 @@ const ApRep = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                
-                  <th>
-                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
+
+                <th>
+                  {!viewArchived && selectedRows.size < 2 && (
+                    <div className="action-header">
                       <p>Action</p>
-                    </div>}
-                  </th>
-           
+                    </div>
+                  )}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -320,15 +323,16 @@ const ApRep = () => {
                     <td>{el.dba || 'N/A'}</td>
 
                     <td>{el.type || 'N/A'}</td>
-                    <td>{el.date && dateFormat(el.date) || 'N/A'}</td>
+                    <td>{(el.date && dateFormat(el.date)) || 'N/A'}</td>
                     <td>{el.amount || 'N/A'}</td>
-                    <td>{el.method|| 'N/A'}</td>
+                    <td>{el.method || 'N/A'}</td>
                     <td>{el.cbiz || 'N/A'}</td>
                     <td>{el.transaction || 'N/A'}</td>
                     <td>{el.notes?.trim?.() || 'N/A'}</td>
-             
-                      <td>
-                        {(!viewArchived && selectedRows.size<2) &&<div className="action-icon">
+
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
+                        <div className="action-icon">
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
@@ -343,9 +347,9 @@ const ApRep = () => {
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
-                        </div>}
-                      </td>
-                 
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -364,8 +368,8 @@ const ApRep = () => {
         <div className="page-heading-container">
           {!!totalCount && (
             <p className="page-heading">
-              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
-              item
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {totalCount} item
             </p>
           )}
 

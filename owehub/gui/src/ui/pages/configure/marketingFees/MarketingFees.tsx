@@ -203,18 +203,18 @@ const MarketingFees: React.FC = () => {
 
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
-    setFilters(req?.filters?.map(
-      (item : any) => {
-         if(item.Column == 'start_date' || item.Column == 'end_date'){
+    setFilters(
+      req?.filters?.map((item: any) => {
+        if (item.Column == 'start_date' || item.Column == 'end_date') {
           return {
-            ...item, 
-            Data: dateFormat(item.Data)
-          }
-         } else{
+            ...item,
+            Data: dateFormat(item.Data),
+          };
+        } else {
           return item;
-         }
-      }
-    ));
+        }
+      })
+    );
   };
 
   return (
@@ -234,8 +234,8 @@ const MarketingFees: React.FC = () => {
           onPressArchive={() => handleArchiveAllClick()}
           viewArchive={viewArchived}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
-          onpressExport={() => { }}
+          onPressImport={() => {}}
+          onpressExport={() => {}}
           onpressAddNew={() => handleAddMarketing()}
         />
 
@@ -335,8 +335,20 @@ const MarketingFees: React.FC = () => {
                     <td>{el.dba?.trim?.() || 'N/A'}</td>
                     <td>{el.state || 'N/A'}</td>
                     <td>{el.fee_rate || 'N/A'}</td>
-                    <td>{el.chg_dlr === true ? 'Yes' : el.chg_dlr === false ? 'No' : 'N/A'}</td>
-                    <td>{el.pay_src === true ? 'Yes' : el.pay_src === false ? 'No' : 'N/A'}</td>
+                    <td>
+                      {el.chg_dlr === true
+                        ? 'Yes'
+                        : el.chg_dlr === false
+                          ? 'No'
+                          : 'N/A'}
+                    </td>
+                    <td>
+                      {el.pay_src === true
+                        ? 'Yes'
+                        : el.pay_src === false
+                          ? 'No'
+                          : 'N/A'}
+                    </td>
                     <td>{el.description?.trim?.() || 'N/A'}</td>
                     <td>{dateFormat(el.start_date.trim())}</td>
                     <td>{dateFormat(el.end_date.trim())} </td>

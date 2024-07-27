@@ -32,14 +32,13 @@
   gap: 28px;
   flex-wrap: wrap;
   padding: 16px 7px;
- 
+
   overflow: hidden;
   transition:
     max-height 0s ease,
     visibility 0s linear 0s;
 }
 
- 
 .team-cards:not(.open) {
   max-height: 0;
   visibility: hidden;
@@ -257,12 +256,8 @@
   line-height: 30px;
 }
 
-
 @media screen and (max-width: 1024px) {
-
-
   .team-cards {
     gap: 16px;
   }
-
 }

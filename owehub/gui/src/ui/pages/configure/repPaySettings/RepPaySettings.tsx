@@ -179,7 +179,13 @@ const RepPaySettings = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRepaySettings(pageNumber));
-          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -210,7 +216,13 @@ const RepPaySettings = () => {
       const res = await postCaller('update_rep_pay_settings_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepaySettings(pageNumber));
-        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
@@ -220,7 +232,7 @@ const RepPaySettings = () => {
     }
   };
 
-  const notAllowed = selectedRows.size>1
+  const notAllowed = selectedRows.size > 1;
 
   return (
     <div className="comm">
@@ -291,7 +303,7 @@ const RepPaySettings = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                   <p>Action</p>
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -333,24 +345,28 @@ const RepPaySettings = () => {
                     <td>{dateFormat(el?.start_date)}</td>
                     <td>{dateFormat(el?.end_date)}</td>
                     <td>
-                     
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                            onClick={() => !notAllowed && handleArchiveClick(el.RecordId)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            onClick={() => !notAllowed && handleEdit(el)}
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.RecordId)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                    
+                        <div
+                          className=""
+                          onClick={() => !notAllowed && handleEdit(el)}
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -365,24 +381,22 @@ const RepPaySettings = () => {
           </table>
         </div>
         <div className="page-heading-container">
-        {currentPageData?.length > 0 ? (
-          <>
-          <p className="page-heading">
-            {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
-            {dbCount} item
-          </p>
+          {currentPageData?.length > 0 ? (
+            <>
+              <p className="page-heading">
+                {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+                {dbCount} item
+              </p>
 
-
-         
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
             </>
           ) : null}
         </div>

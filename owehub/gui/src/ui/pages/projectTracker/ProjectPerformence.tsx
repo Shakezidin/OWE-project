@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { cardData} from './projectData';
+import { cardData } from './projectData';
 import { ICONS } from '../../icons/Icons';
 import '../projectTracker/projectTracker.css';
 import { IoMdInformationCircleOutline } from 'react-icons/io';
@@ -39,16 +39,12 @@ const ProjectPerformence = () => {
     key: 'selection',
   });
 
-  const [tileData, setTileData] = useState<any>({})
+  const [tileData, setTileData] = useState<any>({});
 
-
-  const [resDatePicker, setResDatePicker] = useState(
-    {
-      startdate: format(subMonths(new Date(), 3), 'dd-MM-yyyy'),
-      enddate: format(subDays(new Date(), 1), 'dd-MM-yyyy'),
-
-    }
-  );
+  const [resDatePicker, setResDatePicker] = useState({
+    startdate: format(subMonths(new Date(), 3), 'dd-MM-yyyy'),
+    enddate: format(subDays(new Date(), 1), 'dd-MM-yyyy'),
+  });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const handleSelect = (ranges: any) => {
@@ -56,29 +52,29 @@ const ProjectPerformence = () => {
   };
 
   const handleToggleDatePicker = () => {
-    const formattedStartDate = selectionRange.startDate.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).split('/').join('-');
+    const formattedStartDate = selectionRange.startDate
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+      .split('/')
+      .join('-');
 
-    const formattedEndDate = selectionRange.endDate.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).split('/').join('-');
+    const formattedEndDate = selectionRange.endDate
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+      .split('/')
+      .join('-');
     setShowDatePicker(!showDatePicker);
     setResDatePicker({
       startdate: formattedStartDate,
-      enddate: formattedEndDate
-    })
+      enddate: formattedEndDate,
+    });
   };
-
-
-
-
-
-
 
   const handleResetDates = () => {
     setSelectionRange({
@@ -89,7 +85,7 @@ const ProjectPerformence = () => {
     setResDatePicker({
       startdate: format(subMonths(new Date(), 3), 'dd-MM-yyyy'),
       enddate: format(subDays(new Date(), 1), 'dd-MM-yyyy'),
-    })
+    });
     setShowDatePicker(!showDatePicker);
   };
 
@@ -118,7 +114,12 @@ const ProjectPerformence = () => {
 
   useEffect(() => {
     const current = format(new Date(), 'yyyy-MM-dd');
-    dispatch(getPerfomance({ startdate: resDatePicker.startdate, enddate: resDatePicker.enddate }));
+    dispatch(
+      getPerfomance({
+        startdate: resDatePicker.startdate,
+        enddate: resDatePicker.enddate,
+      })
+    );
     return () => {
       const expirationTime = localStorage.getItem('expirationTime');
       const currentTime = Date.now();
@@ -145,10 +146,15 @@ const ProjectPerformence = () => {
     };
   }, []);
 
-
-
   useEffect(() => {
-    dispatch(getPerfomanceStatus({ page, perPage, startDate: resDatePicker.startdate, endDate: resDatePicker.enddate }));
+    dispatch(
+      getPerfomanceStatus({
+        page,
+        perPage,
+        startDate: resDatePicker.startdate,
+        endDate: resDatePicker.enddate,
+      })
+    );
   }, [page, resDatePicker.startdate, resDatePicker.enddate]);
 
   const calculateCompletionPercentage = (
@@ -177,7 +183,7 @@ const ProjectPerformence = () => {
   const startIndex = (page - 1) * perPage + 1;
   const endIndex = page * perPage;
 
-   const projectDashData = [
+  const projectDashData = [
     {
       ruppes: tileData?.all_sales,
       para: 'All Sales',
@@ -186,8 +192,7 @@ const ProjectPerformence = () => {
       percent: 80,
     },
     {
-      ruppes: tileData?.
-      total_cancellation,
+      ruppes: tileData?.total_cancellation,
       para: 'Total Cancellation',
       iconBgColor: '#FFE6E6',
       percentColor: '#C470C7',
@@ -203,32 +208,30 @@ const ProjectPerformence = () => {
     },
   ];
 
-
   // useEffect(() => {
   //   (async () => {
   //     try {
-       
+
   //       const data = await postCaller('get_performance_tiledata', {
-        
+
   //         start_date: resDatePicker.startdate,
-  //         end_date: resDatePicker.enddate 
-         
+  //         end_date: resDatePicker.enddate
+
   //       });
   //       if(data?.data){
   //         setTileData(data?.data)
   //       }
-        
+
   //       if (data.status > 201) {
   //         toast.error(data.message);
   //         return;
   //       }
-       
+
   //     } catch (error) {
   //       console.error(error);
-  //     }  
+  //     }
   //   })();
   // }, []);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -236,13 +239,13 @@ const ProjectPerformence = () => {
         if (isAuthenticated) {
           const data = await postCaller('get_performance_tiledata', {
             start_date: resDatePicker.startdate,
-            end_date: resDatePicker.enddate
+            end_date: resDatePicker.enddate,
           });
-          
+
           if (data?.data) {
             setTileData(data?.data);
           }
-          
+
           if (data.status > 201) {
             toast.error(data.message);
             return;
@@ -252,12 +255,11 @@ const ProjectPerformence = () => {
         console.error(error);
       }
     };
-  
+
     fetchData();
   }, [isAuthenticated, resDatePicker.startdate, resDatePicker.enddate]);
 
-  
-console.log(tileData, "title")
+  console.log(tileData, 'title');
   return (
     <div className="">
       <Breadcrumb
@@ -307,7 +309,7 @@ console.log(tileData, "title")
                   style={{ color: '#292929' }}
                 >
                   {selectionRange.startDate.toLocaleDateString() !==
-                    selectionRange.endDate.toLocaleDateString()
+                  selectionRange.endDate.toLocaleDateString()
                     ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
                     : 'Select Date'}
                 </label>
@@ -316,8 +318,12 @@ console.log(tileData, "title")
                     <DateRangePicker
                       ranges={[selectionRange]}
                       onChange={handleSelect}
-                      minDate={new Date(new Date().setMonth(new Date().getMonth() - 3))}
-                      maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+                      minDate={
+                        new Date(new Date().setMonth(new Date().getMonth() - 3))
+                      }
+                      maxDate={
+                        new Date(new Date().setDate(new Date().getDate() - 1))
+                      }
                     />
                     <button
                       className="reset-calender"
@@ -336,7 +342,6 @@ console.log(tileData, "title")
               </div>
             </div>
           </div>
-
         </div>
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
@@ -564,17 +569,17 @@ console.log(tileData, "title")
                                   <p>
                                     {project.contract_date
                                       ? format(
-                                        new Date(project.contract_date),
-                                        'dd MMMM'
-                                      ).slice(0, 6)
+                                          new Date(project.contract_date),
+                                          'dd MMMM'
+                                        ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.contract_date
                                       ? format(
-                                        new Date(project.contract_date),
-                                        'yyyy'
-                                      )
+                                          new Date(project.contract_date),
+                                          'yyyy'
+                                        )
                                       : ''}
                                   </p>
                                 </div>
@@ -605,22 +610,22 @@ console.log(tileData, "title")
                                   <p>
                                     {project.site_survey_complete_date
                                       ? format(
-                                        new Date(
-                                          project.site_survey_complete_date
-                                        ),
-                                        'dd MMMM'
-                                      ).slice(0, 6)
+                                          new Date(
+                                            project.site_survey_complete_date
+                                          ),
+                                          'dd MMMM'
+                                        ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.site_survey_complete_date
                                       ? format(
-                                        new Date(
-                                          project.site_survey_complete_date
-                                        ),
-                                        'yyyy'
-                                      )
+                                          new Date(
+                                            project.site_survey_complete_date
+                                          ),
+                                          'yyyy'
+                                        )
                                       : ''}
                                   </p>
                                 </div>
@@ -652,22 +657,22 @@ console.log(tileData, "title")
                                   <p>
                                     {project.permit_approved_date
                                       ? format(
-                                        new Date(
-                                          project.permit_approved_date
-                                        ),
-                                        'dd MMMM'
-                                      ).slice(0, 6)
+                                          new Date(
+                                            project.permit_approved_date
+                                          ),
+                                          'dd MMMM'
+                                        ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.permit_approved_date
                                       ? format(
-                                        new Date(
-                                          project.permit_approved_date
-                                        ),
-                                        'yyyy'
-                                      )
+                                          new Date(
+                                            project.permit_approved_date
+                                          ),
+                                          'yyyy'
+                                        )
                                       : ''}
                                   </p>
                                 </div>
@@ -698,18 +703,18 @@ console.log(tileData, "title")
                                   <p>
                                     {project.install_ready_date
                                       ? format(
-                                        new Date(project.install_ready_date),
-                                        'dd MMMM'
-                                      ).slice(0, 6)
+                                          new Date(project.install_ready_date),
+                                          'dd MMMM'
+                                        ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.install_ready_date
                                       ? format(
-                                        new Date(project.install_ready_date),
-                                        'yyyy'
-                                      )
+                                          new Date(project.install_ready_date),
+                                          'yyyy'
+                                        )
                                       : ''}
                                   </p>
                                 </div>
@@ -740,21 +745,21 @@ console.log(tileData, "title")
                                   <p>
                                     {project.install_completed_date
                                       ? format(
-                                        new Date(
-                                          project.install_completed_date
-                                        ),
-                                        'dd MMMM'
-                                      ).slice(0, 6)
+                                          new Date(
+                                            project.install_completed_date
+                                          ),
+                                          'dd MMMM'
+                                        ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.install_completed_date
                                       ? format(
-                                        new Date(
-                                          project.install_completed_date
-                                        ),
-                                        'yyyy'
-                                      ).slice(0, 6)
+                                          new Date(
+                                            project.install_completed_date
+                                          ),
+                                          'yyyy'
+                                        ).slice(0, 6)
                                       : ''}
                                   </p>
                                 </div>
@@ -783,17 +788,17 @@ console.log(tileData, "title")
                                   <p>
                                     {project.pto_date
                                       ? format(
-                                        new Date(project.pto_date),
-                                        'dd MMMM'
-                                      ).slice(0, 6)
+                                          new Date(project.pto_date),
+                                          'dd MMMM'
+                                        ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.pto_date
                                       ? format(
-                                        new Date(project.pto_date),
-                                        'yyyy'
-                                      ).slice(0, 6)
+                                          new Date(project.pto_date),
+                                          'yyyy'
+                                        ).slice(0, 6)
                                       : ''}
                                   </p>
                                 </div>

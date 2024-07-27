@@ -151,10 +151,10 @@ const ArDashBoardTable = ({
       sort_by: filters.sort_by,
       shaky: includedFilter.includes('Shaky'),
       cancel: includedFilter.includes('Cancel'),
-      sold: includedFilter.includes("SOLD"),
-      permits: includedFilter.includes("QC/Permit/NTP"),
-      ntp: includedFilter.includes("QC/Permit/NTP"),
-      install: includedFilter.includes("Install"),
+      sold: includedFilter.includes('SOLD'),
+      permits: includedFilter.includes('QC/Permit/NTP'),
+      ntp: includedFilter.includes('QC/Permit/NTP'),
+      install: includedFilter.includes('Install'),
       pto: includedFilter.includes('PTO'),
       filters: additionalFilter,
     };
@@ -166,7 +166,7 @@ const ArDashBoardTable = ({
     viewArchived,
     filters,
     additionalFilter,
-    includedFilter
+    includedFilter,
   ]);
 
   const goToNextPage = () => {

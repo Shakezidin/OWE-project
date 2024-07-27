@@ -156,7 +156,13 @@ const RepIncent = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRepIncent(pageNumber));
-          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -188,7 +194,13 @@ const RepIncent = () => {
       const res = await postCaller('update_rep_incentive_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepIncent(pageNumber));
-        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
         setSelectedRows(new Set());
 
         setSelectAllChecked(false);
@@ -201,9 +213,7 @@ const RepIncent = () => {
   // if (isLoading) {
   //   return <div>Loading...</div>;
   // }
-  const notAllowed = selectedRows.size>1
-
-
+  const notAllowed = selectedRows.size > 1;
 
   return (
     <div className="comm">
@@ -273,11 +283,9 @@ const RepIncent = () => {
                 ))}
 
                 <th>
-                  
-                    <div className="action-header">
-                      <p>Action</p>
-                    </div>
-                  
+                  <div className="action-header">
+                    <p>Action</p>
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -315,24 +323,28 @@ const RepIncent = () => {
                     <td>{el.comment || 'N/A'}</td>
 
                     <td>
-                      
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                            onClick={() => !notAllowed &&   handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            onClick={() => !notAllowed &&   handleEdit(el)}
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                     
+                        <div
+                          className=""
+                          onClick={() => !notAllowed && handleEdit(el)}
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))

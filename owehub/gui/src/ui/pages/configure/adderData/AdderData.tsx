@@ -102,7 +102,7 @@ const AdderData = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
- 
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -300,9 +300,9 @@ const AdderData = () => {
                     <td>{el.exact_amount}</td>
                     <td>{el.per_kw_amt}</td>
                     <td>{el.rep_percent}</td>
-                    <td>{el.description || "N/A"}</td>
-                    <td>{el.notes || "N/A"}</td>
-                    <td>{el.type_ad_mktg || "N/A"}</td>
+                    <td>{el.description || 'N/A'}</td>
+                    <td>{el.notes || 'N/A'}</td>
+                    <td>{el.type_ad_mktg || 'N/A'}</td>
                     <td>{el.sys_size}</td>
                     <td>{el.adder_cal}</td>
                     <td>

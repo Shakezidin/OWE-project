@@ -12,13 +12,16 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import Select from 'react-select';
-import { getTeams ,manageTeam } from '../../../../redux/apiActions/teamManagement/teamManagement';
+import {
+  getTeams,
+  manageTeam,
+} from '../../../../redux/apiActions/teamManagement/teamManagement';
 import { resetSuccess } from '../../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 
 interface createUserProps {
   handleClose1: () => void;
   onSubmitCreateUser: (e: any) => void;
-  team:any,
+  team: any;
   member: any;
   setRefetch: Dispatch<SetStateAction<number>>;
 }
@@ -28,13 +31,12 @@ interface Option {
   label: string;
 }
 
-
 const MoveMember: React.FC<createUserProps> = ({
   handleClose1,
   onSubmitCreateUser,
   team,
   member,
-  setRefetch
+  setRefetch,
 }) => {
   const dispatch = useAppDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState('');
@@ -64,14 +66,14 @@ const MoveMember: React.FC<createUserProps> = ({
     // };
     dispatch(getTeams());
   }, []);
-  const { isMove, isFormSubmitting,teams } = useAppSelector(
+  const { isMove, isFormSubmitting, teams } = useAppSelector(
     (state) => state.teamManagmentSlice
   );
 
-  const comissionValueData:Option[]  = teams?.map((rep:any) => ({
+  const comissionValueData: Option[] = teams?.map((rep: any) => ({
     value: rep?.team_id,
-    label: rep?.team_name
-}));
+    label: rep?.team_name,
+  }));
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0]?.label
   );
@@ -85,26 +87,25 @@ const MoveMember: React.FC<createUserProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const data = {
-        team_id:selectedOption2,
-        rep_ids:[member?.rep_id],
-        delete_check:false
+      team_id: selectedOption2,
+      rep_ids: [member?.rep_id],
+      delete_check: false,
     };
     dispatch(manageTeam(data));
-};
-
-
-useEffect(() => {
-  if (isMove) {
-    handleClose1();
-    setRefetch((prev) => prev + 1); 
-  }
-  return () => {
-    isMove && dispatch(resetSuccess());
   };
-}, [isMove]);
-console.log(member, "member")
+
+  useEffect(() => {
+    if (isMove) {
+      handleClose1();
+      setRefetch((prev) => prev + 1);
+    }
+    return () => {
+      isMove && dispatch(resetSuccess());
+    };
+  }, [isMove]);
+  console.log(member, 'member');
 
   return (
     <div className="transparent-model">
@@ -113,10 +114,7 @@ console.log(member, "member")
           <Loading /> {loading}
         </div>
       )}
-      <form
-         onSubmit={handleSubmit}
-        className="tm-modal"
-      >
+      <form onSubmit={handleSubmit} className="tm-modal">
         <div className="createUserCrossButton" onClick={handleClose1}>
           <CROSS_BUTTON />
         </div>

@@ -215,7 +215,7 @@ const DlrOthPay: React.FC = () => {
             commission={editedCommission}
             editMode={editMode}
             handleClose={handleClose}
-            setRefresh = {setRefresh}
+            setRefresh={setRefresh}
           />
         )}
 

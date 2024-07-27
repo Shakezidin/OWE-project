@@ -99,15 +99,17 @@ const CreateReferalData: React.FC<ButtonProps> = ({
     if (commission) {
       setCreateCommission({
         ...createCommission,
-        unique_id:commission.unique_id,
-        new_customer:commission.new_customer,
-        referrer_serial:commission.referrer_serial,
-        referrer_name:commission.referrer_name,
-        amount:commission.amount,
-        notes:commission.notes,
-        rep_doll_divby_per:commission.rep_doll_divby_per,
-        start_date: commission.start_date ? format(new Date(commission.start_date),"yyyy-MM-dd") : ""
-      })
+        unique_id: commission.unique_id,
+        new_customer: commission.new_customer,
+        referrer_serial: commission.referrer_serial,
+        referrer_name: commission.referrer_name,
+        amount: commission.amount,
+        notes: commission.notes,
+        rep_doll_divby_per: commission.rep_doll_divby_per,
+        start_date: commission.start_date
+          ? format(new Date(commission.start_date), 'yyyy-MM-dd')
+          : '',
+      });
     }
   }, [commission]);
 
@@ -335,7 +337,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       }}
                       className="error"
                     >
-                      {errors.rep_doll_divby_per = "Rep $ / % is required"}
+                      {(errors.rep_doll_divby_per = 'Rep $ / % is required')}
                     </span>
                   )}
                 </div>

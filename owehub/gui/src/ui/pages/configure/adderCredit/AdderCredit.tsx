@@ -154,8 +154,13 @@ const AdderCredit = () => {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
-        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
-
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
       } else {
         await successSwal('Archived', 'The data has been archived ');
       }

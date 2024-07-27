@@ -125,7 +125,7 @@
   .pie-section-2 {
     width: 100%;
   }
-  .pie2-mob-resp{
+  .pie2-mob-resp {
     display: flex;
   }
   .pie-chart-container {
@@ -133,4 +133,3 @@
     width: 240px;
   }
 }
-

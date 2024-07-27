@@ -17,7 +17,7 @@ import award from '../../../../resources/assets/award_icon.png';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import Pagination from '../../../components/pagination/Pagination';
-import Papa from 'papaparse'
+import Papa from 'papaparse';
 import { DateRangeWithLabel } from '../index';
 import {
   Calendar,
@@ -331,11 +331,11 @@ const DateFilter = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       console.log(event);
-    const remain = window.innerWidth - event.clientX
+      const remain = window.innerWidth - event.clientX;
       if (
         wrapperRef.current &&
-        !event.composedPath().includes(wrapperRef.current)
-        && remain > 15
+        !event.composedPath().includes(wrapperRef.current) &&
+        remain > 15
       )
         setShowCalendar(false);
     };
@@ -498,9 +498,9 @@ const Table = ({
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
- 
-  const [selectedOption, setSelectedOption] = useState<any>("")
-  const [exportOption, setExportOption] = useState<any>("");
+
+  const [selectedOption, setSelectedOption] = useState<any>('');
+  const [exportOption, setExportOption] = useState<any>('');
   const itemsPerPage = 25;
   const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
@@ -585,10 +585,13 @@ const Table = ({
       return sum + (typeof value === 'number' ? value : 0);
     }, 0);
   };
-    const wrapperReff = useRef<HTMLDivElement>(null);
+  const wrapperReff = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (wrapperReff.current && !wrapperReff.current.contains(event.target as Node)) {
+    if (
+      wrapperReff.current &&
+      !wrapperReff.current.contains(event.target as Node)
+    ) {
       setExportShow(false);
     }
   };
@@ -602,25 +605,35 @@ const Table = ({
 
   const exportCsv = () => {
     // Define the headers for the CSV
-    const headers = ['Rank', 'Name', 'Partner', 'Sale', 'NTP', 'Install', 'Cancel'];
-  
+    const headers = [
+      'Rank',
+      'Name',
+      'Partner',
+      'Sale',
+      'NTP',
+      'Install',
+      'Cancel',
+    ];
+
     // Map the leaderTable data to CSV rows
     const csvData = sortedPage.map((item) => [
       item.rank,
       item.rep_name,
-      role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN ? item.dealer : '',
+      role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN
+        ? item.dealer
+        : '',
       formatSaleValue(item.sale),
       formatSaleValue(item.ntp),
       formatSaleValue(item.install),
       formatSaleValue(item.cancel),
     ]);
-  
+
     // Add headers to the beginning of the CSV data
     const csvRows = [headers, ...csvData];
-  
+
     // Convert the array to CSV format
     const csvString = Papa.unparse(csvRows);
-  
+
     // Create a downloadable link and trigger a click to download the file
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -634,30 +647,24 @@ const Table = ({
 
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
-      <div className='relative exportt' ref={wrapperReff}>
-        <div onClick={toggleExportShow} >
-        <FaUpload size={12} className='mr1' />
-          <span >  Export </span>
+      <div className="relative exportt" ref={wrapperReff}>
+        <div onClick={toggleExportShow}>
+          <FaUpload size={12} className="mr1" />
+          <span> Export </span>
         </div>
         {exportShow && (
-        <div className='export-opt'>
-        <button
-        className='export-btn'
-        disabled={isExporting}
-        onClick={exportPdf}
-      >
-        <span>Pdf</span>
-     
-      </button>
-      <button
-        className='export-btn export-btnn'
-         
-        onClick={exportCsv}
-      >
-        <span>Csv</span>
-       
-      </button>
-        </div>
+          <div className="export-opt">
+            <button
+              className="export-btn"
+              disabled={isExporting}
+              onClick={exportPdf}
+            >
+              <span>Pdf</span>
+            </button>
+            <button className="export-btn export-btnn" onClick={exportCsv}>
+              <span>Csv</span>
+            </button>
+          </div>
         )}
       </div>
       {/* <div className="leaderboard-data__export">
@@ -773,116 +780,127 @@ const Table = ({
         </div>
       </div>
       <div className="mobile-card-wrapper mt2">
-  {isLoading ? (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-    >
-      <MicroLoader />
-    </div>
-  ) : sortedPage.length ? (
-    <>
-     
-
-      {sortedPage.map((item) => {
-        return (
+        {isLoading ? (
           <div
-            onClick={() => {
-              setIsOpen(item.rank);
-              setDealer((prev) => ({
-                ...prev,
-                data_type:
-                  groupBy === 'primary_sales_rep' ? 'sale_rep' : groupBy,
-                dealer: groupBy === 'primary_sales_rep' ? item.dealer : '',
-                name: item.rep_name,
-                rank: item.rank,
-                sale: item.sale,
-                ntp: item.ntp,
-                install: item.install,
-              }));
-            }}
-            className="mobile-rank-card"
             style={{
-              marginBottom: 17,
-              border: item.hightlight ? '1px solid #D7E6FE' : undefined,
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
-            <div
-              className="rank-standing"
-              style={{ flexBasis: '40px', flexShrink: 0 }}
-            >
-              <RankColumn rank={item.rank} />
-            </div>
-            <div className="flex-auto rank-card-body">
-              <h4 className="card-rep-name"> {item.rep_name || 'N/A'} </h4>
-              {(role === TYPE_OF_USER.ADMIN ||
-                role === TYPE_OF_USER.FINANCE_ADMIN) && (
-                <p className="rank-sm-text"> {item.dealer} </p>
-              )}
-              <div className="flex items-center rank-card-stats">
-                <div>
-                  <span className="rank-stats-num">
-                    {formatSaleValue(item?.sale)}
-                  </span>
-                  <p className="rank-sm-text">Sales</p>
-                </div>
+            <MicroLoader />
+          </div>
+        ) : sortedPage.length ? (
+          <>
+            {sortedPage.map((item) => {
+              return (
+                <div
+                  onClick={() => {
+                    setIsOpen(item.rank);
+                    setDealer((prev) => ({
+                      ...prev,
+                      data_type:
+                        groupBy === 'primary_sales_rep' ? 'sale_rep' : groupBy,
+                      dealer:
+                        groupBy === 'primary_sales_rep' ? item.dealer : '',
+                      name: item.rep_name,
+                      rank: item.rank,
+                      sale: item.sale,
+                      ntp: item.ntp,
+                      install: item.install,
+                    }));
+                  }}
+                  className="mobile-rank-card"
+                  style={{
+                    marginBottom: 17,
+                    border: item.hightlight ? '1px solid #D7E6FE' : undefined,
+                  }}
+                >
+                  <div
+                    className="rank-standing"
+                    style={{ flexBasis: '40px', flexShrink: 0 }}
+                  >
+                    <RankColumn rank={item.rank} />
+                  </div>
+                  <div className="flex-auto rank-card-body">
+                    <h4 className="card-rep-name">
+                      {' '}
+                      {item.rep_name || 'N/A'}{' '}
+                    </h4>
+                    {(role === TYPE_OF_USER.ADMIN ||
+                      role === TYPE_OF_USER.FINANCE_ADMIN) && (
+                      <p className="rank-sm-text"> {item.dealer} </p>
+                    )}
+                    <div className="flex items-center rank-card-stats">
+                      <div>
+                        <span className="rank-stats-num">
+                          {formatSaleValue(item?.sale)}
+                        </span>
+                        <p className="rank-sm-text">Sales</p>
+                      </div>
 
-                <div>
-                  <span className="rank-stats-num">
-                    {formatSaleValue(item?.install)}{' '}
-                  </span>
-                  <p className="rank-sm-text">Installs</p>
+                      <div>
+                        <span className="rank-stats-num">
+                          {formatSaleValue(item?.install)}{' '}
+                        </span>
+                        <p className="rank-sm-text">Installs</p>
+                      </div>
+                      <div>
+                        <span className="rank-stats-num">
+                          {formatSaleValue(item?.ntp)}{' '}
+                        </span>
+                        <p className="rank-sm-text">NTP</p>
+                      </div>
+                      <div>
+                        <span className="rank-stats-num">
+                          {formatSaleValue(item.cancel)}{' '}
+                        </span>
+                        <p className="rank-sm-text">Cancel</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="rank-stats-num">
-                    {formatSaleValue(item?.ntp)}{' '}
-                  </span>
-                  <p className="rank-sm-text">NTP</p>
-                </div>
-                <div>
-                  <span className="rank-stats-num">
-                    {formatSaleValue(item.cancel)}{' '}
-                  </span>
-                  <p className="rank-sm-text">Cancel</p>
+              );
+            })}
+            <div className="mobile-rank-card" style={{ marginBottom: 17 }}>
+              <div
+                className="rank-standing"
+                style={{ flexBasis: '40px', flexShrink: 0 }}
+              ></div>
+              <div className="flex-auto rank-card-body">
+                <h4 className="card-rep-name">Total</h4>
+                <div className="flex items-center rank-card-statss">
+                  <div>
+                    <span className="rank-stats-num">
+                      {formatSaleValue(getTotal('sale'))}
+                    </span>
+                    <p className="rank-sm-text">Sales</p>
+                  </div>
+                  <div>
+                    <span className="rank-stats-num">
+                      {formatSaleValue(getTotal('ntp'))}
+                    </span>
+                    <p className="rank-sm-text">NTP</p>
+                  </div>
+                  <div>
+                    <span className="rank-stats-num">
+                      {formatSaleValue(getTotal('install'))}
+                    </span>
+                    <p className="rank-sm-text">Install</p>
+                  </div>
+                  <div>
+                    <span className="rank-stats-num">
+                      {formatSaleValue(getTotal('cancel'))}
+                    </span>
+                    <p className="rank-sm-text">Cancel</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })}
-       <div className="mobile-rank-card" style={{ marginBottom: 17 }}>
-        <div className="rank-standing" style={{ flexBasis: '40px', flexShrink: 0 }}>
-           
-        </div>
-        <div className="flex-auto rank-card-body">
-          <h4 className="card-rep-name">Total</h4>
-          <div className="flex items-center rank-card-statss">
-            <div>
-              <span className="rank-stats-num">{formatSaleValue(getTotal('sale'))}</span>
-              <p className="rank-sm-text">Sales</p>
-            </div>
-            <div>
-              <span className="rank-stats-num">{formatSaleValue(getTotal('ntp'))}</span>
-              <p className="rank-sm-text">NTP</p>
-            </div>
-            <div>
-              <span className="rank-stats-num">{formatSaleValue(getTotal('install'))}</span>
-              <p className="rank-sm-text">Install</p>
-            </div>
-            <div>
-              <span className="rank-stats-num">{formatSaleValue(getTotal('cancel'))}</span>
-              <p className="rank-sm-text">Cancel</p>
-            </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <div className="flex items-center justify-center">No Data Found</div>
+        )}
       </div>
-    </>
-  ) : (
-    <div className="flex items-center justify-center">No Data Found</div>
-  )}
-</div>
       <div className="leaderboard-table-wrapper">
         <div className="leaderboard-table-container">
           <table className="leaderboard-table">
@@ -974,14 +992,35 @@ const Table = ({
             </tbody>
             <tfoot>
               <tr>
-              <td colSpan={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 2 : 3} className={role !== TYPE_OF_USER.ADMIN && role !== TYPE_OF_USER.FINANCE_ADMIN ? 'dealer-t right-align bold-text' : 'admin-t right-align bold-text'}>Total </td>
-               <td className="bold-text">{formatSaleValue(getTotal('sale'))}</td>
-                    
-              
-                <td className="bold-text">{formatSaleValue(getTotal('ntp'))}</td>
-                <td className="bold-text">{formatSaleValue(getTotal('install'))}</td>
-                <td className="bold-text">{formatSaleValue(getTotal('cancel'))}</td>
+                <td
+                  colSpan={
+                    role !== TYPE_OF_USER.ADMIN &&
+                    role !== TYPE_OF_USER.FINANCE_ADMIN
+                      ? 2
+                      : 3
+                  }
+                  className={
+                    role !== TYPE_OF_USER.ADMIN &&
+                    role !== TYPE_OF_USER.FINANCE_ADMIN
+                      ? 'dealer-t right-align bold-text'
+                      : 'admin-t right-align bold-text'
+                  }
+                >
+                  Total{' '}
+                </td>
+                <td className="bold-text">
+                  {formatSaleValue(getTotal('sale'))}
+                </td>
 
+                <td className="bold-text">
+                  {formatSaleValue(getTotal('ntp'))}
+                </td>
+                <td className="bold-text">
+                  {formatSaleValue(getTotal('install'))}
+                </td>
+                <td className="bold-text">
+                  {formatSaleValue(getTotal('cancel'))}
+                </td>
               </tr>
             </tfoot>
           </table>

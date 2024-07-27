@@ -133,7 +133,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
         );
         if ((await res?.status) === 200) {
           // await successSwal('', res.message);
-          toast.success("Dealer Tier Updated Successfully");
+          toast.success('Dealer Tier Updated Successfully');
           handleClose();
           dispatch(fetchDealerTier(page));
           setIsPending(false);
@@ -148,7 +148,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
           cleanedFormData
         );
         if (res?.status === 200) {
-         toast.success("Dealer Tier Created Successfully");
+          toast.success('Dealer Tier Created Successfully');
           handleClose();
           dispatch(fetchDealerTier(page));
           setIsPending(false);
@@ -162,7 +162,6 @@ const CreateDealerTier: React.FC<dealerProps> = ({
     }
   };
 
- 
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => submitTierLoan(e)} className="modal">

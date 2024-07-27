@@ -279,7 +279,7 @@ const NonCommDlrPay: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                  <p>Action</p>
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>

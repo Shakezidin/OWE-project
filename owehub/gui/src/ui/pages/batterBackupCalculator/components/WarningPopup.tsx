@@ -78,7 +78,7 @@ const WarningPopup = ({
             }}
             className="calc-grey-btn warning-popup-btn pointer"
           >
-           I would like to switch to a partial home back-up.
+            I would like to switch to a partial home back-up.
           </button>
           <button
             onClick={() => {
@@ -92,7 +92,7 @@ const WarningPopup = ({
             }}
             className="calc-green-btn pointer warning-popup-btn"
           >
-           I would like to remain with the recommended configuration.
+            I would like to remain with the recommended configuration.
           </button>
         </div>
       </div>

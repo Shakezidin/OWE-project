@@ -172,7 +172,13 @@ const RateAdjustments = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRateAdjustments(pageNumber));
-          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -205,7 +211,13 @@ const RateAdjustments = () => {
       const res = await postCaller('update_rateadjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRateAdjustments(pageNumber));
-        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
         setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -213,8 +225,7 @@ const RateAdjustments = () => {
       }
     }
   };
-  const notAllowed = selectedRows.size>1
-
+  const notAllowed = selectedRows.size > 1;
 
   return (
     <div className="comm">
@@ -284,7 +295,7 @@ const RateAdjustments = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                   <p>Action</p>
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -322,25 +333,28 @@ const RateAdjustments = () => {
                     <td>{el.min_rate}</td>
                     <td>{el.max_rate}</td>
                     <td>
-                     
-                     
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                            onClick={() => !notAllowed &&  handleArchiveClick([el.record_id])}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            onClick={() => !notAllowed &&  handleEdit(el)}
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick([el.record_id])
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      
+                        <div
+                          className=""
+                          onClick={() => !notAllowed && handleEdit(el)}
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -10,9 +10,8 @@ import { getTeams } from '../../../redux/apiActions/teamManagement/teamManagemen
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 
 interface AccordionSection {
-  
   data: any;
-  state:any;
+  state: any;
 }
 
 const TeamManagement: React.FC = () => {
@@ -32,14 +31,12 @@ const TeamManagement: React.FC = () => {
     dispatch(getTeams());
   }, [refetch]);
 
-
-  const { isSuccess, isFormSubmitting,teams } = useAppSelector(
+  const { isSuccess, isFormSubmitting, teams } = useAppSelector(
     (state) => state.teamManagmentSlice
   );
 
   const accordionSections: AccordionSection[] = [
     {
-    
       // data: [
       //   { title: 'Bizon',size: 27, route: ROUTES.TEAM_MANAGEMENT_TABLE },
       //   // { title: "Adders", route: ROUTES.CONFIG_ADDER },
@@ -51,34 +48,33 @@ const TeamManagement: React.FC = () => {
       //   { title: 'Prime',size: 113, route: ROUTES.TEAM_MANAGEMENT_TABLE },
       //   { title: 'Light Work',size: 78, route: ROUTES.TEAM_MANAGEMENT_TABLE },
       // ],
-      data:teams,
+      data: teams,
       state: useState<boolean>(true),
     },
   ];
 
   const [open2, setOpen2] = useState<boolean>(false);
 
-  
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
     setOpen2(false);
   };
 
   const onSubmitCreateTeam = () => {
-    console.log("")
-  }
+    console.log('');
+  };
 
   let prevColorIndex = -1;
 
   // const handleRedirect = (id: number) => {
   //   history.push(`/team/${id}`);
   // };
-  console.log(teams, "teMS")
-  console.log(accordionSections, "acjkbf")
+  console.log(teams, 'teMS');
+  console.log(accordionSections, 'acjkbf');
 
   return (
     <>
-    {open2 && (
+      {open2 && (
         <NewTeam
           handleClose2={handleClose2}
           setRefetch={setRefetch}
@@ -88,7 +84,7 @@ const TeamManagement: React.FC = () => {
       <div className="team-container">
         <div className="team-main">
           <div className="team-main-section">
-            {accordionSections.map(({  data, state }, index) => {
+            {accordionSections.map(({ data, state }, index) => {
               if (!state) return null;
               const [isOpen, setIsOpen] = state;
               return (
@@ -97,16 +93,8 @@ const TeamManagement: React.FC = () => {
                   // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
                   <div className={`team-cards ${isOpen ? 'open' : ''}`}>
-
-
-
-
-
                     <div onClick={handleOpen2}>
-                      <Link
-                        to=""
-                        className="create-new-card"
-                      >
+                      <Link to="" className="create-new-card">
                         <div className="team-cust-file">
                           <div className="team-cust-group">
                             <img src={ICONS.addicon} alt="" />
@@ -116,17 +104,21 @@ const TeamManagement: React.FC = () => {
                       </Link>
                     </div>
 
-                    
-                   {data.map((item:any, index:any) => {
+                    {data.map((item: any, index: any) => {
                       let randomColorIndex;
                       let randomCardColor;
                       let randomArrowColor;
 
                       do {
-                        randomColorIndex = Math.floor(Math.random() * cardColors.length);
+                        randomColorIndex = Math.floor(
+                          Math.random() * cardColors.length
+                        );
                         randomCardColor = cardColors[randomColorIndex];
                         randomArrowColor = arrowColors[randomColorIndex];
-                      } while (index > 0 && randomColorIndex === prevColorIndex);
+                      } while (
+                        index > 0 &&
+                        randomColorIndex === prevColorIndex
+                      );
 
                       // Update the previous color index
                       prevColorIndex = randomColorIndex;
@@ -138,31 +130,31 @@ const TeamManagement: React.FC = () => {
                             className="team-pay-card"
                             style={{ backgroundColor: randomCardColor }}
                           >
-                            <h1 className="team-card-heading">{item.team_name
-                            }</h1>
+                            <h1 className="team-card-heading">
+                              {item.team_name}
+                            </h1>
                             <div className="team-con-fle">
                               <div className="teamp-group">
                                 <img src={ICONS.teamgroup} alt="" />
                                 <h4>{item.team_strength} members</h4>
                               </div>
-                              <Link to = {`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}>
-                              <div
-                                className="team-arrow-wrapper"
-                                style={{ color: randomArrowColor }}
+                              <Link
+                                to={`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}
                               >
-                                <span className="view-text">View</span>
-                              <RiArrowRightLine className="team-arrow-right" />
-                              </div>
-                              </Link> 
+                                <div
+                                  className="team-arrow-wrapper"
+                                  style={{ color: randomArrowColor }}
+                                >
+                                  <span className="view-text">View</span>
+                                  <RiArrowRightLine className="team-arrow-right" />
+                                </div>
+                              </Link>
                             </div>
                           </Link>
                         </div>
                       );
                     })}
-
-
                   </div>
-
                 </div>
               );
             })}

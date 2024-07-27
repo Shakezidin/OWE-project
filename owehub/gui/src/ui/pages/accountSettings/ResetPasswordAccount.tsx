@@ -16,13 +16,13 @@ interface ChangePasswordProps {
 
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
-  
+
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   return width;
 }
 
@@ -178,7 +178,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                       setShowCurrentPassword(false);
                     }}
                     maxLength={50}
-                    isMobile={isMobile} 
+                    isMobile={isMobile}
                   />
                 </div>
                 <div className="create-input-field-profile-password relative">
@@ -216,7 +216,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                       setShowNewPassword(false);
                     }}
                     maxLength={50}
-                    isMobile={isMobile} 
+                    isMobile={isMobile}
                   />
                   {error.newPassword && (
                     <span className="error absolute">{error.newPassword}</span>
@@ -257,7 +257,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                       setShowConfirmPassword(false);
                     }}
                     maxLength={50}
-                    isMobile={isMobile} 
+                    isMobile={isMobile}
                   />
                   {error.confirmPassword && (
                     <span className="error">{error.confirmPassword}</span>

@@ -145,7 +145,7 @@ const Sidebar = ({
     }
   }, [dealer, selectedRangeDate.value, isAuthenticated]);
 
-  function formatSaleValue(value:any) {
+  function formatSaleValue(value: any) {
     if (value === null || value === undefined) return ''; // Handle null or undefined values
     const sale = parseFloat(value);
     if (sale === 0) return '0';
@@ -350,7 +350,7 @@ const Sidebar = ({
                   <div className="bg-white text-center leader-board-stats-wrapper py1">
                     <span className="block">Weekly sales</span>
                     <span className="block" style={{ fontWeight: 600 }}>
-                      {formatSaleValue(data?.weekly_sale) }
+                      {formatSaleValue(data?.weekly_sale)}
                     </span>
                   </div>
 

@@ -45,13 +45,13 @@ const DropdownWithCheckboxes = ({
   setIsOpen,
   selectedOptions,
   setSelectedOptions,
-  resetPage
+  resetPage,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
   selectedOptions: string[];
   setSelectedOptions: React.Dispatch<SetStateAction<string[]>>;
-  resetPage:()=>void;
+  resetPage: () => void;
 }) => {
   const dispatch = useAppDispatch();
   // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -98,7 +98,7 @@ const DropdownWithCheckboxes = ({
         }
       }
     });
-    resetPage()
+    resetPage();
   };
 
   return (

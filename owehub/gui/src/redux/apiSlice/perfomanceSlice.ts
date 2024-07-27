@@ -39,7 +39,10 @@ export const getPerfomance = createAsyncThunk(
   'get/perfomance',
   async (params: any, { rejectWithValue }) => {
     try {
-      const data = await postCaller('get_perfomancemetrics', {start_data: params.startdate, end_date: params.enddate});
+      const data = await postCaller('get_perfomancemetrics', {
+        start_data: params.startdate,
+        end_date: params.enddate,
+      });
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
@@ -54,21 +57,19 @@ export const getPerfomance = createAsyncThunk(
   }
 );
 
-
-
 export const getPerfomanceStatus = createAsyncThunk(
   'get/perfomancestatus',
   async (
-    { 
-      page, 
-      perPage, 
-      startDate, 
-      endDate 
-    }: { 
-      page: number; 
-      perPage: number; 
-      startDate: string; 
-      endDate: string 
+    {
+      page,
+      perPage,
+      startDate,
+      endDate,
+    }: {
+      page: number;
+      perPage: number;
+      startDate: string;
+      endDate: string;
     },
     { rejectWithValue }
   ) => {
@@ -93,7 +94,6 @@ export const getPerfomanceStatus = createAsyncThunk(
     }
   }
 );
-
 
 interface IState {
   perfomaceSale: IPerfomanceSale[];

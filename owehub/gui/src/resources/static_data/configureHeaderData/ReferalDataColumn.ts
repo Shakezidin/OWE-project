@@ -26,7 +26,7 @@ export const ReferalDataColumn: Column[] = [
     isCheckbox: false,
   },
   { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
-  
+
   {
     name: 'rep_doll_divby_per',
     displayName: 'Rep $ / %',

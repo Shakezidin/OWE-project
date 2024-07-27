@@ -623,12 +623,12 @@
 
 /*Responsive*/
 @media screen and (max-width: 1024px) {
-  .children-container{
+  .children-container {
     padding: 0.5rem 1rem;
   }
 }
-@media screen and (max-width: 768px){
-  .children-container{
+@media screen and (max-width: 768px) {
+  .children-container {
     padding: unset;
     overflow-x: hidden;
   }

@@ -159,8 +159,13 @@ const DealerOverRides: React.FC = () => {
           setSelectedRows(new Set());
 
           dispatch(fetchDealer(pageNumber));
-          checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
-
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            selectedRows.size,
+            currentPageData.length
+          );
 
           await successSwal('Archived', 'The data has been archived ');
         } else {
@@ -191,7 +196,13 @@ const DealerOverRides: React.FC = () => {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
-        checkLastPage(currentPage, totalPages, setCurrentPage,selectedRows.size,currentPageData.length);
+        checkLastPage(
+          currentPage,
+          totalPages,
+          setCurrentPage,
+          selectedRows.size,
+          currentPageData.length
+        );
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -216,7 +227,7 @@ const DealerOverRides: React.FC = () => {
       </div>
     );
   }
-  const notAllowed = selectedRows.size>1
+  const notAllowed = selectedRows.size > 1;
   return (
     <div className="comm">
       <Breadcrumb
@@ -332,26 +343,30 @@ const DealerOverRides: React.FC = () => {
                     <td>{dateFormat(el.end_date) || 'N/A'}</td>
 
                     <td>
-                      
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor:notAllowed?"not-allowed" :'pointer' }}
-                            onClick={() => !notAllowed && handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            {/* <span className="tooltiptext">Archive</span> */}
-                          </div>
-                          <div
-                            className="action-archive"
-                            style={{ cursor:notAllowed?"not-allowed" : 'pointer' }}
-                            onClick={() => !notAllowed && handleEditDealer(el)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
-                          </div>
+                      <div className="action-icon">
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() =>
+                            !notAllowed && handleArchiveClick(el.record_id)
+                          }
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
+                          {/* <span className="tooltiptext">Archive</span> */}
                         </div>
-                      
+                        <div
+                          className="action-archive"
+                          style={{
+                            cursor: notAllowed ? 'not-allowed' : 'pointer',
+                          }}
+                          onClick={() => !notAllowed && handleEditDealer(el)}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
+                          {/* <span className="tooltiptext">Edit</span> */}
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))

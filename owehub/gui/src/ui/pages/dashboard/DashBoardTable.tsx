@@ -131,12 +131,12 @@ const DashBoardTable = ({
               ) : currentPageData.length > 0 ? (
                 currentPageData.map((el: any, index: any) => (
                   <tr key={index}>
-                    <td 
-                    style={{ fontWeight: '500' }}
-                    onClick={() => {
-                      setOpen(true);
-                    }}
-                     >
+                    <td
+                      style={{ fontWeight: '500' }}
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                    >
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(index)}
@@ -164,7 +164,8 @@ const DashBoardTable = ({
                       {el.home_owner || 'N/A'}
                     </td>
                     <td style={{ color: '#101828' }}>
-                      {el.contract_date && dateFormat(el.contract_date) || 'N/A'}
+                      {(el.contract_date && dateFormat(el.contract_date)) ||
+                        'N/A'}
                     </td>
                     <td style={{ color: '#101828' }}>
                       {el.contract_value ?? 'N/A'}

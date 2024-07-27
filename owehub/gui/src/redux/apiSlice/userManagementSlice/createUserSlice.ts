@@ -23,7 +23,7 @@ const initialState: CreateOnboardUserStateModel = {
     description: '',
     report_to: '',
     dealer_logo: '',
-    dealer: ''
+    dealer: '',
   },
   dealerOwenerList: [],
   regionList: [],
