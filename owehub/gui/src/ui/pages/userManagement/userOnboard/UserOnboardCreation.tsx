@@ -79,14 +79,17 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   };
 
   /**handle change for report */
-  const handleChangeForRegion = (newValue: any, fieldName: string) => {
+  const handleChangeForRegion = async (newValue: any, fieldName: string) => {
     const { value } = newValue;
-    dispatch(updateUserForm({ field: fieldName, value }));
+    await dispatch(updateUserForm({ field: fieldName, value }));
+  
+    onChangeRole('Dealer', value)
   };
 
-  const handleChangeAssignManager = (newValue: any, fieldName: string)=>{
+  const handleChangeAssignManager = async (newValue: any, fieldName: string)=>{
     const { value } = newValue;
-    dispatch(updateUserForm({ field: fieldName, value }));
+    await dispatch(updateUserForm({ field: fieldName, value }));
+    onChangeRole('Manager', value)
   }
   const validateEmail = (email: string) => {
     // Simple email validation regex pattern

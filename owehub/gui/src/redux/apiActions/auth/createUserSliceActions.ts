@@ -6,6 +6,7 @@ import {
   CreateUserParamModel,
   DealerOwner,
   DeleteUserModel,
+  ReportTo,
   UserDropdownModel,
 } from '../../../core/models/api_models/UserManagementModel';
 
@@ -37,9 +38,9 @@ export const fetchDealerOwner = createAsyncThunk(
 /** get region list */
 export const fetchRegionList = createAsyncThunk(
   'user/get_region',
-  async (data: DealerOwner) => {
+  async (data: ReportTo) => {
     const response = await postCaller(
-      EndPoints.get_user_by_role,
+      EndPoints.get_users_by_dealer,
       JSON.stringify(data)
     );
     if (response.status !== HTTP_STATUS.OK) {

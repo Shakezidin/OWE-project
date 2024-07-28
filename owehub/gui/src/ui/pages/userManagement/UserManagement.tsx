@@ -111,33 +111,34 @@ const UserManagement: React.FC = () => {
   }, [formData.role_name]);
 
   /** check role  */
-  const onChangeRole = useCallback(
-    async (role: string, value: string) => {
-      if (role === 'Role') {
-        setSelectedOption(
-          ALL_USER_ROLE_LIST?.find((role) => role.value === value)!
-        );
-        await dispatch(
-          fetchDealerOwner({
-            role: TYPE_OF_USER.DEALER_OWNER,
-          })
-        );
-      } else {
-        if (
-          formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
-          formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE
-        )
+  const onChangeRole = async (role: string, value: string) =>{
+    if (role === 'Role') {
+      setSelectedOption(
+        ALL_USER_ROLE_LIST?.find((role) => role.value === value)!
+      );
+      await dispatch(
+        fetchDealerOwner({
+          role: TYPE_OF_USER.DEALER_OWNER,
+        })
+      );
+    } else {
+      if (
+        formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
+        formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE
+      ){
+        console.log(formData)
+        if(formData.assigned_Manager !== '' && formData.dealer !== ''){
           await dispatch(
             fetchRegionList({
-              role: TYPE_OF_USER.DEALER_OWNER,
-              name: value,
-              sub_role: getSubRole,
+              dealer_name: formData.dealer,
+              role: formData.role_name  
             })
           );
+        }
       }
-    },
-    [formData.role_name]
-  );
+       
+    }
+  }
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
@@ -225,6 +226,8 @@ const UserManagement: React.FC = () => {
           userOnboard={null}
           onSubmitCreateUser={onSubmitCreateUser}
           onChangeRole={(role, value) => {
+
+            console.log("formData",formData)
             onChangeRole(role, value);
           }}
           setLogoUrl={setLogoUrl}

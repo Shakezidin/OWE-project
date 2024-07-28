@@ -20,6 +20,11 @@ export interface DealerOwner {
   sub_role?: string;
 }
 
+export interface ReportTo {
+  dealer_name: string;
+  role: string;
+}
+
 export interface UserRoleBasedListModel {
   name: string;
   user_code: string;
@@ -64,7 +69,7 @@ export interface CreateUserModel {
   tablePermission?: any;
   dealer_logo: string;
   dealer: string;
-  assigned_Manager: string
+  assigned_Manager: string;
 }
 
 export interface CreateUserParamModel {
