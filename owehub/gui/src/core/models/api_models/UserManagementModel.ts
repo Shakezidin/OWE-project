@@ -64,6 +64,7 @@ export interface CreateUserModel {
   tablePermission?: any;
   dealer_logo: string;
   dealer: string;
+  assigned_Manager: string
 }
 
 export interface CreateUserParamModel {

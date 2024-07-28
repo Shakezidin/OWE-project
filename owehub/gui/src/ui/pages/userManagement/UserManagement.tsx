@@ -36,7 +36,6 @@ import { showAlert } from '../../components/alert/ShowAlert';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const userName = localStorage.getItem('userName');
   const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -209,14 +208,6 @@ const UserManagement: React.FC = () => {
   /** render UI */
   return (
     <>
-      {/* <div className="management-section">
-        <div className="manage-user">
-          <p>Welcome, {userName}</p>
-          <h3>User Management</h3>
-        </div>
-
-        
-      </div> */}
       {loading && (
         <div>
           <Loading /> {loading}

@@ -24,6 +24,7 @@ const initialState: CreateOnboardUserStateModel = {
     report_to: '',
     dealer_logo: '',
     dealer: '',
+    assigned_Manager: ''
   },
   dealerOwenerList: [],
   regionList: [],

@@ -63,6 +63,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     dispatch(updateUserForm({ field: 'team_name', value: '' }));
     dispatch(updateUserForm({ field: 'report_to', value: '' }));
     dispatch(updateUserForm({ field: 'dealer', value: '' }));
+    dispatch(updateUserForm({ field: 'assigned_Manager', value: '' }));
     const { value } = newValue;
     onChangeRole('Role', value);
     setTablePermissions({});
@@ -77,11 +78,16 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     dispatch(updateUserForm({ field: 'report_to', value: '' }));
   };
 
-  /**handle change for dealer */
+  /**handle change for report */
   const handleChangeForRegion = (newValue: any, fieldName: string) => {
     const { value } = newValue;
     dispatch(updateUserForm({ field: fieldName, value }));
   };
+
+  const handleChangeAssignManager = (newValue: any, fieldName: string)=>{
+    const { value } = newValue;
+    dispatch(updateUserForm({ field: fieldName, value }));
+  }
   const validateEmail = (email: string) => {
     // Simple email validation regex pattern
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -253,11 +259,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     )}
                   </div>
 
-                  {formData.role_name === 'Admin' ||
-                  formData.role_name === 'SubDealer Owner' ||
-                  formData.role_name === 'DB User' ||
-                  formData.role_name === 'Dealer Owner' ||
-                  formData.role_name === 'Finance Admin' ? null : (
+                  {formData.role_name === TYPE_OF_USER.PARTNER ||
+                  formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ? (
                     <div className="create-input-field">
                       <label className="inputLabel-select selected-fields-onboard">
                         Dealer Owner
@@ -276,7 +279,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         )}
                       />
                     </div>
-                  )}
+                  ): null}
 
                   <UserBasedInput
                     formData={formData}
@@ -284,6 +287,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     regionList={regionList}
                     handleChangeForRegion={(value: any, name: string) => {
                       handleChangeForRegion(value, name);
+                    }}
+                    handleChangeAssignManager={(value: any, name: string) => {
+                      handleChangeAssignManager(value, name);
                     }}
                     setLogoUrl={setLogoUrl}
                   />
