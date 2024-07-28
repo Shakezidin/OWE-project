@@ -505,6 +505,13 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_users_by_dealer",
+		apiHandler.HandleGetUsersByDealerRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_rebate_data",
 		apiHandler.HandleCreateRebateDataRequest,
 		true,

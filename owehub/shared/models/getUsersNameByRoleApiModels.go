@@ -7,8 +7,8 @@
 package models
 
 type GetUsers struct {
-	Role string `json:"role"`
-	Name string `json:"name"`
+	Role    string `json:"role"`
+	Name    string `json:"name"`
 	SubRole string `json:"sub_role"`
 }
 
@@ -18,4 +18,9 @@ type GetUsersName struct {
 
 type GetUsersNameList struct {
 	UsersNameList []GetUsersName `json:"users_name_list"`
+}
+
+type GetUserByDealer struct {
+	DealerName string `json:"dealer_name"`
+	Role       string `json:"role"`
 }
