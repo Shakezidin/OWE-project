@@ -76,8 +76,7 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 				JOIN v_dealer vd ON ud.dealer_id = vd.id
 				WHERE ud.email_id = $1`
 	} else {
-		query = `SELECT ud1.name as owner_name, vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.bg_colour as bg_color, vd.id as dealer_id FROM user_details ud
-				  JOIN user_details ud1 ON ud.dealer_owner = ud1.user_id
+		query = `SELECT vd.dealer_name as dealer_name, vd.dealer_logo as dealer_logo, vd.bg_colour as bg_color, vd.id as dealer_id FROM user_details ud
 					JOIN v_dealer vd ON ud.dealer_id = vd.id
 				  WHERE ud.email_id = $1`
 	}
@@ -86,17 +85,31 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get dealer data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	whereEleList = nil
 
 	performerData.DealerId, _ = data[0]["dealer_id"].(int64)
-	performerData.OwnerName, _ = data[0]["owner_name"].(string)
 	performerData.DealerName, _ = data[0]["dealer_name"].(string)
 	performerData.DealerLogo, _ = data[0]["dealer_logo"].(string)
 	performerData.BgColor, _ = data[0]["bg_color"].(string)
+
+	queryForDealerOwner := fmt.Sprintf(`
+	select * from user_details ud
+	join v_dealer vd on ud.dealer_id = vd.id
+	where role_id = 2 and dealer_id = %d
+	`, performerData.DealerId)
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForDealerOwner, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	performerData.OwnerName, _ = data[0]["name"].(string)
 
 	query = `SELECT
     (SELECT COUNT(DISTINCT ud.team_id)
