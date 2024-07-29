@@ -106,6 +106,7 @@ export const createUserObject = (
     createObject = {
       ...createObject,
       dealer_owner: formData.dealer,
+      reporting_manager: formData.report_to,
       region: formData.add_region, //TODO: need to discuss
     };
   }
