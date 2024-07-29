@@ -41,7 +41,7 @@ export const fetchRegionList = createAsyncThunk(
   async (data: ReportTo) => {
     const response = await postCaller(
       EndPoints.get_users_by_dealer,
-      JSON.stringify(data)
+      data
     );
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error(response.message);

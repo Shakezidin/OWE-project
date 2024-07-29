@@ -111,7 +111,8 @@ const UserManagement: React.FC = () => {
   }, [formData.role_name]);
 
   /** check role  */
-  const onChangeRole = async (role: string, value: string) =>{
+  const onChangeRole = async (role: string, value: string) => {
+    console.log('working on first change');
     if (role === 'Role') {
       setSelectedOption(
         ALL_USER_ROLE_LIST?.find((role) => role.value === value)!
@@ -125,20 +126,19 @@ const UserManagement: React.FC = () => {
       if (
         formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
         formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE
-      ){
-        console.log(formData)
-        if(formData.assigned_Manager !== '' && formData.dealer !== ''){
+      ) {
+        console.log(formData);
+        if (value && formData.dealer) {
           await dispatch(
             fetchRegionList({
               dealer_name: formData.dealer,
-              role: formData.role_name  
+              role: value,
             })
           );
         }
       }
-       
     }
-  }
+  };
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
@@ -226,8 +226,7 @@ const UserManagement: React.FC = () => {
           userOnboard={null}
           onSubmitCreateUser={onSubmitCreateUser}
           onChangeRole={(role, value) => {
-
-            console.log("formData",formData)
+            console.log('formData', formData);
             onChangeRole(role, value);
           }}
           setLogoUrl={setLogoUrl}
