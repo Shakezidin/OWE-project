@@ -76,7 +76,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ud.created_at,
 			ud.updated_at, 
 			COALESCE(ud1.name, 'NA') AS reporting_manager, 
-			COALESCE(ud2.name, 'NA') AS dealer_owner, 
+			COALESCE(vd.dealer_name, 'NA') AS dealer_owner, 
 			ud.user_status, 
 			ud.user_designation, 
 			ud.description, 
@@ -97,7 +97,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			LEFT JOIN states st ON ud.state = st.state_id
 			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
 			LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id`
+			LEFT JOIN v_dealer vd ON ud.dealer_owner = vd.id`
 
 	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false)
 	if filter != "" {
