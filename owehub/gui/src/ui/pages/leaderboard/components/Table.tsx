@@ -658,6 +658,7 @@ const Table = ({
     link.click();
     document.body.removeChild(link);
     setIsExporting(false);
+    setExportShow(false);
   };
 
   return (

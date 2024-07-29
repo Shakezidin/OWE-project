@@ -8,16 +8,44 @@ import { ICONS } from '../../icons/Icons';
 import NewTeam from './NewMember/NewTeam';
 import { getTeams } from '../../../redux/apiActions/teamManagement/teamManagement';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import Select from 'react-select';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import { dealerOption } from '../../../core/models/data_models/SelectDataModel';
 
 interface AccordionSection {
   data: any;
   state: any;
+}
+interface Option {
+  value: string;
+  label: string;
 }
 
 const TeamManagement: React.FC = () => {
   const cardColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const [refetch, setRefetch] = useState(1);
+  const [newFormData, setNewFormData] = useState<any>([]);
+  const [dealer, setDealer] = useState<{ [key: string]: any }>({});
+  const [selectedDealer, setSelectedDealer] = useState(null);
+
+  const getnewformData = async () => {
+    const tableData = {
+      tableNames: ['dealer'],
+    };
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setDealer((prev) => ({ ...prev, ...res.data }));
+  };
+  useEffect(() => {
+    getnewformData();
+  }, []);
+
+  useEffect(() => {
+    if (dealer) {
+      setNewFormData((prev: any) => ({ ...prev, ...dealer }));
+    }
+  }, [dealer]);
 
   const dispatch = useAppDispatch();
 
@@ -37,17 +65,7 @@ const TeamManagement: React.FC = () => {
 
   const accordionSections: AccordionSection[] = [
     {
-      // data: [
-      //   { title: 'Bizon',size: 27, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-      //   // { title: "Adders", route: ROUTES.CONFIG_ADDER },
-      //   { title: 'Pirates',size: 74, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-      //   // { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE },
-      //   { title: 'UNTD',size: 65, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-      //   { title: 'Propector',size: 36, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-      //   { title: 'Morgan',size: 89, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-      //   { title: 'Prime',size: 113, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-      //   { title: 'Light Work',size: 78, route: ROUTES.TEAM_MANAGEMENT_TABLE },
-      // ],
+
       data: teams,
       state: useState<boolean>(true),
     },
@@ -60,9 +78,8 @@ const TeamManagement: React.FC = () => {
     setOpen2(false);
   };
 
-  const onSubmitCreateTeam = () => {
-    console.log('');
-  };
+
+
 
   let prevColorIndex = -1;
 
@@ -72,13 +89,18 @@ const TeamManagement: React.FC = () => {
   console.log(teams, 'teMS');
   console.log(accordionSections, 'acjkbf');
 
+  const handleChange = (selectedOption: any) => {
+    setSelectedDealer(selectedOption);
+  };
+
+
   return (
     <>
       {open2 && (
         <NewTeam
           handleClose2={handleClose2}
           setRefetch={setRefetch}
-          // onSubmitCreateUser={onSubmitCreateTeam}
+        // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
       <div className="team-container">
@@ -90,19 +112,71 @@ const TeamManagement: React.FC = () => {
               return (
                 <div
                   key={index}
-                  // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
+                // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
-                  <div className={`team-cards ${isOpen ? 'open' : ''}`}>
-                    <div onClick={handleOpen2}>
-                      <Link to="" className="create-new-card">
-                        <div className="team-cust-file">
-                          <div className="team-cust-group">
-                            <img src={ICONS.addicon} alt="" />
-                            <h4>Create new team</h4>
-                          </div>
-                        </div>
-                      </Link>
+                  <div className='teamdash-header'>
+                    <h1>Total Teams: {teams?.length}</h1>
+                    <div className='dash-newteam'>
+                      <button onClick={handleOpen2}>+ Create New Team</button>
+                      <Select
+                        options={dealerOption(newFormData)}
+                        onChange={handleChange}
+                        value={selectedDealer}
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            borderRadius: '8px',
+                            outline: 'none',
+                            color: '#101828',
+                            width: '200px',
+                            height: '36px',
+                            fontSize: '12px',
+                            border: '1px solid #d0d5dd',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            alignContent: 'center',
+                            backgroundColor: '#ffffff',
+                            boxShadow: 'none',
+                            marginRight: '18px'
+                          }),
+                          placeholder: (baseStyles) => ({
+                            ...baseStyles,
+                            color: '#292929', // Change the placeholder color here
+                          }),
+                          indicatorSeparator: () => ({
+                            display: 'none',
+                          }),
+                          dropdownIndicator: (baseStyles, state) => ({
+                            ...baseStyles,
+                            color: '#292929',
+                            '&:hover': {
+                              color: '#292929',
+                            },
+                          }),
+                          option: (baseStyles, state) => ({
+                            ...baseStyles,
+                            fontSize: '13px',
+                            color: state.isSelected ? '#ffffff' : '#000000',
+                            backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                            '&:hover': {
+                              backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                            },
+                            cursor: 'pointer',
+                          }),
+                          singleValue: (baseStyles, state) => ({
+                            ...baseStyles,
+                            color: '#292929',
+                          }),
+                          menu: (baseStyles) => ({
+                            ...baseStyles,
+                            width: '212px',
+                          }),
+                        }}
+                      />
                     </div>
+                  </div>
+                  <div className={`team-cards ${isOpen ? 'open' : ''}`}>
+
 
                     {data.map((item: any, index: any) => {
                       let randomColorIndex;
