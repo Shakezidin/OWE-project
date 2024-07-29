@@ -31,10 +31,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		createUserReq         models.CreateUserReq
 		queryParameters       []interface{}
 		tablesPermissionsJSON []byte
-		// whereEleList          []interface{}
-		username          string
-		usernamePrefix    string
-		nameAssignedCheck bool
+		username              string
+		usernamePrefix        string
+		nameAssignedCheck     bool
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -61,23 +60,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// nameQuery := `
-	// 		select count(name) from user_details where name = $1
-	// 	`
-
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
-		(len(createUserReq.MobileNumber) <= 0) ||
-		//(len(createUserReq.Password) <= 0) ||
-		(len(createUserReq.Designation) <= 0) || (len(createUserReq.RoleName) <= 0) {
-		//(len(createUserReq.UserCode) <= 0) ||
-		//(len(createUserReq.ReportingManager) <= 0) ||
-		//(len(createUserReq.UserStatus) <= 0) ||
-		//(len(createUserReq.Description) <= 0) ||
-		//(len(createUserReq.Region) <= 0) ||
-		//(len(createUserReq.DealerOwner) <= 0) {
-		//(len(createUserReq.StreetAddress) <= 0) ||
-		//(len(createUserReq.State) <= 0) || (len(createUserReq.City) <= 0) ||
-		//(len(createUserReq.Zipcode) <= 0) || (len(createUserReq.Country) <= 0){
+		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Designation) <= 0) ||
+		(len(createUserReq.RoleName) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -85,11 +70,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	createUserReq.Password = "Welcome@123"
 	createUserReq.PasswordChangeReq = true
-	//createUserReq.StreetAddress = ""
-	//createUserReq.State = ""
-	//createUserReq.City = ""
-	//createUserReq.Zipcode = ""
-	//createUserReq.Country = ""
 
 	if createUserReq.TablesPermissions != nil {
 		tablesPermissionsJSON, err = json.Marshal(createUserReq.TablesPermissions)
@@ -107,31 +87,23 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// If the user role is "DB User", create the database user and grant privileges
+	/**
+			If the user role is "DB User" or "Admin"
+			this if condition statements helps in
+			creating the database user
+			and granting privileges
+	 	**/
 	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
-		// whereEleList = append(whereEleList, createUserReq.Name)
-		// data, err := db.ReteriveFromDB(db.OweHubDbIndex, nameQuery, whereEleList)
-		// if err != nil {
-		// 	log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
-		// 	FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
-		// 	return
-		// }
-
-		// here we get the count of users having the same name and create a
-		// unique username for every coming user
-		// count := data[0]["count"].(int64)
-		//  usernamePrefix = strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
-		// username = fmt.Sprintf("%s_%d", usernamePrefix, count+1)
-		// username = strings.ToLower(username)
-		//  usernamePrefix = "test_user"
-
+		// this takes the name of the user entered
 		nameParts := strings.Fields(createUserReq.Name)
 		if len(nameParts) >= 2 {
+			// this joins the different names using '_'
 			usernamePrefix = strings.Join(nameParts[0:2], "_")
 		} else {
 			usernamePrefix = nameParts[0]
 		}
 
+		// this fetches the db username
 		dbQuery := `select * from pg_user order by usename desc`
 		data, err := db.ReteriveFromDB(db.RowDataDBIndex, dbQuery, nil)
 		if err != nil {
@@ -228,8 +200,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the stored procedure or function to create the user
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
-		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM '%s';", username))
-		dropErr = db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
+		// dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM '%s';", username))
+		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
 		if dropErr != nil {
 			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
 			// Handle the error as needed, such as logging or returning an HTTP response

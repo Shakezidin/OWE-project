@@ -55,7 +55,7 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 	/* If role is not passed then get users for all roles of dealer */
 	if len(dataReq.Role) <= 0 {
 		query = `
-				SELECT name FROM user_details
+				SELECT name FROM, user_code user_details
 				WHERE dealer_id IN (
 					SELECT id FROM v_dealer
 					WHERE LOWER(dealer_code) = LOWER($1)
@@ -64,7 +64,7 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 		whereEleList = append(whereEleList, dataReq.DealerName)
 	} else {
 		query = `
-				SELECT name FROM user_details
+				SELECT name, user_code FROM user_details
 				WHERE dealer_id IN (
 					SELECT id FROM v_dealer
 					WHERE LOWER(dealer_code) = LOWER($1)
@@ -95,8 +95,14 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
 			name = ""
 		}
+		userCode, nameOk := item["user_code"].(string)
+		if !nameOk || userCode == "" {
+			log.FuncErrorTrace(0, "Failed to get userCode for Item: %+v\n", item)
+			userCode = ""
+		}
 		usersData := models.GetUsersName{
-			Name: name,
+			Name:     name,
+			UserCode: userCode,
 		}
 
 		usersNameList.UsersNameList = append(usersNameList.UsersNameList, usersData)
