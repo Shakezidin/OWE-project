@@ -25,7 +25,7 @@ interface Option {
 }
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 
 const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   const dispatch = useAppDispatch();
@@ -39,8 +39,27 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     first_name: '',
   });
 
-  const [selectedOption2, setSelectedOption2] = useState<string>('');
+
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
+  const [selectedOption2, setSelectedOption2] = useState<string>('');
+  const [selectedOption3, setSelectedOption3] = useState<string>('');
+
+  const [selectedOptions2, setSelectedOptions2] = useState<Option[]>([]);
+
+  const [userRole, setUserRole] = useState<string>('');
+
+  useEffect(() => {
+    if (localStorage.getItem('role')) {
+      const roleAdmin = localStorage.getItem('role');
+      if (roleAdmin !== null) {
+        setUserRole(roleAdmin);
+      } else {
+        console.log('role value is null');
+      }
+    } else {
+      console.log('role key does not exist in localStorage');
+    }
+  }, []);
 
   useEffect(() => {
     const data = { role: 'Sales Manager' };
@@ -63,6 +82,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
   const comissionValueDataa: Option[] = [
     { value: 'option0', label: 'Select Manager' },
+    { value: 'option1', label: 'Select Manager1' },
+    { value: 'option2', label: 'Select Manager2' },
     ...sales_manager_list.map((manager: any) => ({
       value: manager.name,
       label: manager.name,
@@ -78,18 +99,42 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   members.unshift({ value: 'option1', label: 'Select Sales Rep' });
 
   const handleSelectChange2 = (selectedOption: Option | null) => {
-    setSelectedOption2(selectedOption ? selectedOption.value : '');
+    if (selectedOption) {
+      setSelectedOptions2((prevOptions) => {
+        const optionExists = prevOptions.some(
+          (option) => option.value === selectedOption.value
+        );
+  
+        if (!optionExists) {
+          return [...prevOptions, selectedOption];
+        }
+  
+        return prevOptions;
+      });
+    }
+  };
+  
+  const handleRemoveOption2 = (optionToRemove: Option) => {
+    setSelectedOptions2((prevOptions) =>
+      prevOptions.filter((option) => option !== optionToRemove)
+    );
   };
 
   const handleSelectChange = (selectedOption: Option | null) => {
     if (selectedOption) {
-      setSelectedOptions([...selectedOptions, selectedOption]);
+      const optionExists = selectedOptions.some(
+        (option) => option.value === selectedOption.value
+      );
+  
+      if (!optionExists) {
+        setSelectedOptions([...selectedOptions, selectedOption]);
+      }
     }
   };
 
   const handleRemoveOption = (optionToRemove: Option) => {
     setSelectedOptions(
-      selectedOptions.filter((option) => option.value !== optionToRemove.value)
+      selectedOptions.filter((option) => option !== optionToRemove)
     );
   };
 
@@ -113,9 +158,28 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     };
   }, [isSuccess]);
 
-  const handleClose = () => {};
+  const handleClose = () => { };
 
-  console.log(sale_rep_list, 'oihd');
+
+  const options = [
+    { value: 'Select Dealer', label: 'Select Dealer' },
+    { value: 'option2', label: 'Option 2' },
+    { value: 'option3', label: 'Option 3' },
+  ];
+
+  const handleSelectChange3 = (selectedOption3: Option | null) => {
+    setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
+  };
+
+
+
+
+
+
+
+
+
+
   return (
     <div className="transparent-model">
       {loading && <Loading />}
@@ -169,8 +233,54 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                     />
                   </div>
                 </div>
+
+                {userRole === 'Admin' && (
+                  <div className="create-input-container">
+
+                    <div className="tm-new-create-input-field">
+                      <label
+                        className="inputLabel-select"
+                        style={{ fontWeight: 400 }}
+                      >
+                        Dealer Name
+                      </label>
+                      <SelectOption
+                        options={options}
+                        value={options.find(
+                          (option) => option.value === selectedOption3
+                        )}
+                        onChange={handleSelectChange3}
+                      />
+                    </div>
+
+                  </div>
+                )}
+
+
                 <div className="tm-select-data">
-                  <p>Team Members</p>
+                  <p>Managers</p>
+                  <div className="nt-select-cust">
+                    {selectedOptions2.map((option) => (
+                      <div key={option.value} className="tm-selected-option">
+                        <span>{option.label}</span>
+                        <button
+                          type="button"
+                          className="remove-button"
+                          onClick={() => handleRemoveOption2(option)}
+                        >
+                          <img
+                            src={ICONS.crossIconUser}
+                            alt=""
+                            className="remove-icon"
+                          />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="tm-select-data" style={{ marginTop: '40px' }}>
+                  <p>Sales Rep</p>
                   <div className="nt-select-cust">
                     {selectedOptions.map((option) => (
                       <div key={option.value} className="tm-selected-option">
@@ -194,7 +304,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                 </div>
                 <div
                   className="create-input-container"
-                  style={{ marginTop: '70px' }}
+                  style={{ marginTop: '40px' }}
                 >
                   <div className="create-input-field-note">
                     <label htmlFor="" className="inputLabel">

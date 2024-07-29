@@ -261,3 +261,36 @@
     gap: 16px;
   }
 }
+
+
+.teamdash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+.teamdash-header h1{
+  font-weight: 600;
+  font-size: 28px;
+}
+.dash-newteam button {
+  background-color: #ffffff;
+  color: #377CF6;
+  padding: 6.33px, 8.13px, 6.33px, 8.13px;
+  border: 1px solid #377CF6;
+  border-radius: 8px;
+  height: 38px;
+  width: 180px;
+  cursor: pointer;
+}
+.dash-newteam{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+
+
+
+
