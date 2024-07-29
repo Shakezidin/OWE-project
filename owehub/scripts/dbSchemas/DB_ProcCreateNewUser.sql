@@ -66,10 +66,10 @@ BEGIN
     IF p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN
         SELECT user_id INTO v_reporting_manager_id
         FROM user_details
-        WHERE name = p_reporting_manager;
+        WHERE user_code = p_reporting_manager;
 
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'Reporting manager with name % not found', p_reporting_manager;
+            RAISE EXCEPTION 'Reporting manager with the name % not found', p_reporting_manager;
         END IF;
     ELSE
         v_reporting_manager_id := NULL;
@@ -77,9 +77,9 @@ BEGIN
 
     -- Get the dealer owner's user_id
     IF p_dealer_owner IS NOT NULL AND p_dealer_owner != '' THEN
-        SELECT user_id INTO v_dealer_owner_id
-        FROM user_details
-        WHERE name = p_dealer_owner;
+        SELECT id INTO v_dealer_owner_id
+        FROM v_dealer
+        WHERE dealer_code = p_dealer_owner;
 
         IF NOT FOUND THEN
             RAISE EXCEPTION 'Dealer owner with name % not found', p_dealer_owner;
@@ -131,7 +131,7 @@ BEGIN
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
         SELECT id INTO v_dealer_id
         FROM v_dealer
-        WHERE dealer_name = p_dealer_name;
+        WHERE dealer_code = p_dealer_name;
 
         IF NOT FOUND THEN
             RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
@@ -147,12 +147,12 @@ BEGIN
     END IF;
 
     IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
-    SELECT dealer_id INTO v_dealer_id
-        FROM user_details
-        WHERE name = v_reporting_manager;
+    SELECT id INTO v_dealer_id
+        FROM v_dealer
+        WHERE dealer_code = p_dealer_owner;
 
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'reporting manager with name % not found', p_reporting_manager;
+            RAISE EXCEPTION 'reporting manager with the name % not found', p_reporting_manager;
         END IF;
     END IF;
 

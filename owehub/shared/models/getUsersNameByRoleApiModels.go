@@ -13,7 +13,8 @@ type GetUsers struct {
 }
 
 type GetUsersName struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
+	UserCode string `json:"user_code"`
 }
 
 type GetUsersNameList struct {
