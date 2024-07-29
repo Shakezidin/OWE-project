@@ -473,6 +473,7 @@ const Table = ({
   selectDealer,
   exportPdf,
   isExporting,
+  count,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -487,6 +488,7 @@ const Table = ({
   selectDealer: { label: string; value: string }[];
   exportPdf: () => void;
   isExporting: boolean;
+  count: number;
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -494,7 +496,7 @@ const Table = ({
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [exportShow, setExportShow] = useState<boolean>(false);
-
+  const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
@@ -603,8 +605,10 @@ const Table = ({
     };
   }, []);
 
-  const exportCsv = () => {
+  const exportCsv = async () => {
     // Define the headers for the CSV
+
+    setIsExporting(true);
     const headers = [
       'Rank',
       'Name',
@@ -615,8 +619,21 @@ const Table = ({
       'Cancel',
     ];
 
-    // Map the leaderTable data to CSV rows
-    const csvData = sortedPage.map((item) => [
+    const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
+      type: activeHead,
+      dealer: selectDealer.map((item) => item.value),
+      page_size: count,
+      page_number: 1,
+      start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+      sort_by: active,
+      group_by: groupBy,
+    });
+    if (getAllLeaders.status > 201) {
+      toast.error(getAllLeaders.message);
+      return;
+    }
+    const csvData = getAllLeaders?.data?.ap_ded_list?.map?.((item: any) => [
       item.rank,
       item.rep_name,
       role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN
@@ -628,13 +645,10 @@ const Table = ({
       formatSaleValue(item.cancel),
     ]);
 
-    // Add headers to the beginning of the CSV data
     const csvRows = [headers, ...csvData];
 
-    // Convert the array to CSV format
     const csvString = Papa.unparse(csvRows);
 
-    // Create a downloadable link and trigger a click to download the file
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -643,6 +657,7 @@ const Table = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setIsExporting(false);
   };
 
   return (
@@ -656,12 +671,12 @@ const Table = ({
           <div className="export-opt">
             <button
               className="export-btn"
-              disabled={isExporting}
+              disabled={isExporting || isExportingData}
               onClick={exportPdf}
             >
               <span>Pdf</span>
             </button>
-            <button className="export-btn export-btnn" onClick={exportCsv}>
+            <button disabled={isExportingData} className="export-btn export-btnn" onClick={exportCsv}>
               <span>Csv</span>
             </button>
           </div>

@@ -56,6 +56,7 @@ const Index = () => {
     weekStartsOn: 1,
   });
   const [isOpen, setIsOpen] = useState(-1);
+  const [count, setCount] = useState(0);
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
   const [activeHead, setActiveHead] = useState('count');
@@ -105,6 +106,7 @@ const Index = () => {
           }
           setDetails(data.data?.ap_ded_list);
           setIsLoading(false);
+          setCount(data?.dbRecCount || 0);
         } catch (error) {
           console.error(error);
         } finally {
@@ -196,6 +198,7 @@ const Index = () => {
         />
       </div>
       <Table
+        count={count}
         exportPdf={exportPdf}
         setIsOpen={setIsOpen}
         selectedRangeDate={selectedRangeDate}
