@@ -84,18 +84,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
          )}
         </>
       )}
-        {formData?.role_name === 'Regional Manager' && (
-        <div className="create-input-field">
-          <Input
-            type={'text'}
-            label="Region"
-            value={formData.add_region}
-            placeholder={'Region'}
-            onChange={(e) => onChange(e)}
-            name={'add_region'}
-          />
-        </div>
-      )}
+      
       {(formData?.role_name === 'Sale Representative' || formData?.role_name === "Regional Manager") && (
         <>
           <div className="create-input-field">
@@ -127,6 +116,19 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
             />
           </div>
         </>
+      )}
+
+        {formData?.role_name === 'Regional Manager' && (
+        <div className="create-input-field">
+          <Input
+            type={'text'}
+            label="Region"
+            value={formData.add_region}
+            placeholder={'Region'}
+            onChange={(e) => onChange(e)}
+            name={'add_region'}
+          />
+        </div>
       )}
       {formData?.role_name === 'Sales Manager'  && (
         <>
