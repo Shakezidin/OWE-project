@@ -677,7 +677,11 @@ const Table = ({
             >
               <span>Pdf</span>
             </button>
-            <button disabled={isExportingData} className="export-btn export-btnn" onClick={exportCsv}>
+            <button
+              disabled={isExportingData}
+              className="export-btn export-btnn"
+              onClick={exportCsv}
+            >
               <span>Csv</span>
             </button>
           </div>
@@ -1006,39 +1010,41 @@ const Table = ({
                 </tr>
               )}
             </tbody>
-            <tfoot>
-              <tr>
-                <td
-                  colSpan={
-                    role !== TYPE_OF_USER.ADMIN &&
-                    role !== TYPE_OF_USER.FINANCE_ADMIN
-                      ? 2
-                      : 3
-                  }
-                  className={
-                    role !== TYPE_OF_USER.ADMIN &&
-                    role !== TYPE_OF_USER.FINANCE_ADMIN
-                      ? 'dealer-t right-align bold-text'
-                      : 'admin-t right-align bold-text'
-                  }
-                >
-                  Total{' '}
-                </td>
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('sale'))}
-                </td>
+            {(!isLoading && leaderTable?.length) && (
+              <tfoot>
+                <tr>
+                  <td
+                    colSpan={
+                      role !== TYPE_OF_USER.ADMIN &&
+                      role !== TYPE_OF_USER.FINANCE_ADMIN
+                        ? 2
+                        : 3
+                    }
+                    className={
+                      role !== TYPE_OF_USER.ADMIN &&
+                      role !== TYPE_OF_USER.FINANCE_ADMIN
+                        ? 'dealer-t right-align bold-text'
+                        : 'admin-t right-align bold-text'
+                    }
+                  >
+                    Total{' '}
+                  </td>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('sale'))}
+                  </td>
 
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('ntp'))}
-                </td>
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('install'))}
-                </td>
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('cancel'))}
-                </td>
-              </tr>
-            </tfoot>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('ntp'))}
+                  </td>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('install'))}
+                  </td>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('cancel'))}
+                  </td>
+                </tr>
+              </tfoot>
+            )}
           </table>
         </div>
       </div>
