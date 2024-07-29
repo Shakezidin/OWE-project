@@ -51,10 +51,10 @@ export const fetchRegionList = createAsyncThunk(
 
     if (users_name_list) {
       const mapList: UserDropdownModel[] = users_name_list.map(
-        (el: { name: string }) => {
+        (el: { name: string, user_code:string }) => {
           return {
             label: el.name,
-            value: el.name,
+            value: el.user_code,
           };
         }
       );

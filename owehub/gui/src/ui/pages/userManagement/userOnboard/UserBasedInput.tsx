@@ -128,7 +128,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
           </div>
         </>
       )}
-      {formData?.role_name === 'Sales Manager' && (
+      {formData?.role_name === 'Sales Manager'  && (
         <>
           <div className="create-input-field">
             <label className="inputLabel selected-fields-onboard">

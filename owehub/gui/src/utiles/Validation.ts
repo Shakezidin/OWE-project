@@ -50,31 +50,31 @@ export const validateForm = (
     }
   }
 
-  if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    } else if (formData.add_region.length === 0) {
-      errors.Region = true;
-    }
-  }
+  // if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = false;
+  //   } else if (formData.add_region.length === 0) {
+  //     errors.Region = true;
+  //   }
+  // }
 
-  if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    } else if (formData.report_to.length === 0) {
-      errors.ReportTo = true;
-    }
-    //  else if (formData.team_name.length === 0) {
-    //   errors.Team_name = true;
-    // }
-  }
-  if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    } else if (formData.report_to.length === 0) {
-      errors.ReportTo = true;
-    }
-  }
+  // if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = false;
+  //   } else if (formData.report_to.length === 0) {
+  //     errors.ReportTo = true;
+  //   }
+  //   //  else if (formData.team_name.length === 0) {
+  //   //   errors.Team_name = true;
+  //   // }
+  // }
+  // if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = false;
+  //   } else if (formData.report_to.length === 0) {
+  //     errors.ReportTo = true;
+  //   }
+  // }
   // Add more validations for other fields
 
   return errors;
@@ -98,14 +98,14 @@ export const createUserObject = (
   ) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer_owner: formData.dealer,
     };
   }
 
   if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer_owner: formData.dealer,
       region: formData.add_region, //TODO: need to discuss
     };
   }
@@ -113,7 +113,7 @@ export const createUserObject = (
   if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer_owner: formData.dealer,
       reporting_manager: formData.report_to,
       team_name: formData.team_name,
     };
@@ -121,7 +121,7 @@ export const createUserObject = (
   if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer_owner: formData.dealer,
       reporting_manager: formData.report_to,
     };
   }

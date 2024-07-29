@@ -125,7 +125,8 @@ const UserManagement: React.FC = () => {
     } else {
       if (
         formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
-        formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE
+        formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+        formData.role_name === TYPE_OF_USER.REGIONAL_MANGER
       ) {
         console.log(formData);
         if (value && formData.dealer) {
@@ -205,6 +206,9 @@ const UserManagement: React.FC = () => {
       }
     }
   };
+
+
+  console.log(regionList, "regionList")
 
   /** render UI */
   return (
