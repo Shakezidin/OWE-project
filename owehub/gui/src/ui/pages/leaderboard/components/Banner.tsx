@@ -304,7 +304,7 @@ const Banner: React.FC<BannerProps> = ({
           </div>
           {isOpen && (
             <div
-              className=" scrollbar dropdown-menu "
+              className=" scrollbar dealer-dropdown dropdown-menu "
               style={{ overflowX: 'clip' }}
             >
               <div className="searchBox">
