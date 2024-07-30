@@ -21,7 +21,7 @@ export const validateForm = (
   formData: CreateUserModel
 ): { [key: string]: boolean } => {
   const errors: { [key: string]: boolean } = {};
-
+if(formData.role_name  !== 'Partner'){
   if (!validateName(formData.first_name)) {
     errors.FirstName = true;
   }
@@ -37,13 +37,13 @@ export const validateForm = (
   if (!validateMobileNumber(formData.mobile_number)) {
     errors.PhoneNumber = true;
   }
+}
   if (formData.role_name.length === 0) {
     errors.Role = true;
   }
 
   if (
-    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
-    formData.role_name === TYPE_OF_USER.PARTNER
+    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
   ) {
     if (formData.assigned_dealer_name.length === 0) {
       errors.DealerOwner = true;

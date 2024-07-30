@@ -104,3 +104,22 @@ export const fetchUserListBasedOnRole = createAsyncThunk(
     return { users_data_list, count: response.dbRecCount };
   }
 );
+
+
+export const fetchDealerList = createAsyncThunk(
+  'dealer/user_list_dealer',
+  async (data: any) => {
+    const response = await postCaller(
+      'get_vdealer' ,
+       data
+    );
+    if (response.status !== HTTP_STATUS.OK) {
+      throw new Error('Failed to fetch onboarding data');
+    }
+    const { vdealers_list } = response.data;
+    if (!vdealers_list || vdealers_list.length === 0) {
+      return { vdealers_list: [], count: 0 };
+    }
+    return { vdealers_list , count: response.dbRecCount };
+  }
+);

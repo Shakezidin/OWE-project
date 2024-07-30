@@ -70,6 +70,8 @@ export interface CreateUserModel {
   dealer_logo: string;
   dealer: string;
   assigned_Manager: string;
+  preferred_name: string;
+  dealer_code:string;
 }
 
 export interface CreateUserParamModel {

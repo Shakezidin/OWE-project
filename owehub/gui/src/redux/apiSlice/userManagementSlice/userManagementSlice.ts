@@ -4,16 +4,19 @@ import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
   createTablePermission,
+  fetchDealerList
 } from '../../apiActions/userManagement/userManagementActions';
 
 const initialState: UserOnboardingStateModel = {
   userOnboardingList: [],
   userRoleBasedList: [],
+  dealerList:[],
   userPerformanceList: [],
   dbTables: [],
   loading: false,
   error: null,
   totalCount: 0,
+  dealerCount:0,
 };
 
 const userManagementSlice = createSlice({
@@ -53,28 +56,53 @@ const userManagementSlice = createSlice({
       )
       //get user based list
       .addCase(
-        fetchUserListBasedOnRole.pending,
+        fetchDealerList.pending,
         (state: UserOnboardingStateModel) => {
           state.loading = true;
           state.error = null;
         }
       )
       .addCase(
-        fetchUserListBasedOnRole.fulfilled,
+        fetchDealerList.fulfilled,
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
           state.error = null;
-          state.userRoleBasedList = action.payload.users_data_list;
-          state.totalCount = action.payload.count;
+          state.dealerList = action.payload.vdealers_list;
+          state.dealerCount = action.payload.count;
         }
       )
       .addCase(
-        fetchUserListBasedOnRole.rejected,
+        fetchDealerList.rejected,
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
           state.error = action.error.message ?? 'Unable to fetch User list';
         }
       )
+
+        //get user based list of dealer
+        .addCase(
+          fetchUserListBasedOnRole.pending,
+          (state: UserOnboardingStateModel) => {
+            state.loading = true;
+            state.error = null;
+          }
+        )
+        .addCase(
+          fetchUserListBasedOnRole.fulfilled,
+          (state: UserOnboardingStateModel, action) => {
+            state.loading = false;
+            state.error = null;
+            state.userRoleBasedList = action.payload.users_data_list;
+            state.totalCount = action.payload.count;
+          }
+        )
+        .addCase(
+          fetchUserListBasedOnRole.rejected,
+          (state: UserOnboardingStateModel, action) => {
+            state.loading = false;
+            state.error = action.error.message ?? 'Unable to fetch User list';
+          }
+        )
 
       //  get db tables
       .addCase(

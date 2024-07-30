@@ -78,12 +78,42 @@ export const createUserOnboarding = createAsyncThunk(
   }
 );
 
+
+export const createDealer = createAsyncThunk(
+  'user/create_dealer',
+  async (data: any, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller('create_vdealer', data);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+
 /** delete user */
 export const deleteUserOnboarding = createAsyncThunk(
   'user/delete_onboarding_users',
   async (data: DeleteUserModel, { rejectWithValue }): Promise<any> => {
     try {
       const response = await postCaller(EndPoints.delete_users, data);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+
+/** delete user */
+export const deleteUserDealer = createAsyncThunk(
+  'userdealer/delete_dealer_users',
+  async (data: any, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller('update_vdealer_active', data);
       console.log(response);
       return response;
     } catch (error) {

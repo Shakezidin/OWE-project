@@ -81,19 +81,22 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   /**handle change for report */
   const handleChangeForRegion = async (newValue: any, fieldName: string) => {
     const { value } = newValue;
-  
+
     await dispatch(updateUserForm({ field: fieldName, value }));
-  
-    if(fieldName !== "report_to" && fieldName !== "team_name" ){
-    onChangeRole('Dealer', value)
+
+    if (fieldName !== 'report_to' && fieldName !== 'team_name') {
+      onChangeRole('Dealer', value);
     }
   };
 
-  const handleChangeAssignManager = async (newValue: any, fieldName: string)=>{
+  const handleChangeAssignManager = async (
+    newValue: any,
+    fieldName: string
+  ) => {
     const { value } = newValue;
     await dispatch(updateUserForm({ field: fieldName, value }));
-    onChangeRole('Manager', value)
-  }
+    onChangeRole('Manager', value);
+  };
   const validateEmail = (email: string) => {
     // Simple email validation regex pattern
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -172,6 +175,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             <div className="createProfileInputView">
               <div className="createProfileTextView">
                 <div className="create-input-container">
+                {formData.role_name !== TYPE_OF_USER.PARTNER ? (
+                  
                   <div className="create-input-field">
                     <Input
                       type={'text'}
@@ -183,6 +188,39 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       maxLength={100}
                     />
                   </div>
+                ) : null}
+
+               {formData.role_name === TYPE_OF_USER.PARTNER ? (
+                  
+                  <div className="create-input-field">
+                    <Input
+                      type={'text'}
+                      label="Dealer Code"
+                      value={formData.dealer_code}
+                      placeholder={'Enter Dealer Code'}
+                      onChange={(e) => handleInputChange(e)}
+                      name={'dealer_code'}
+                      maxLength={100}
+                    />
+                  </div>
+                ) : null}
+
+                {formData.role_name === TYPE_OF_USER.PARTNER ? (
+                  
+                  <div className="create-input-field">
+                    <Input
+                      type={'text'}
+                      label="Dealer Name"
+                      value={formData.dealer}
+                      placeholder={'Enter Dealer Name'}
+                      onChange={(e) => handleInputChange(e)}
+                      name={'dealer'}
+                      maxLength={100}
+                    />
+                  </div>
+                ) : null}
+
+                {formData.role_name !== TYPE_OF_USER.PARTNER ? (
                   <div className="create-input-field">
                     <Input
                       type={'text'}
@@ -194,6 +232,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       maxLength={100}
                     />
                   </div>
+                  ) : null}
+                  
+                   
                   <div className="create-input-field">
                     <label className="inputLabel-select selected-fields-onboard">
                       Role
@@ -228,7 +269,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     />
                   </div>
                 </div>
+
                 <div className="create-input-container">
+                  
+                {formData.role_name !== TYPE_OF_USER.PARTNER ? (
                   <div className="create-input-field">
                     <Input
                       type={'text'}
@@ -243,49 +287,45 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       <div className="error-message">{emailError}</div>
                     )}
                   </div>
-
-                  <div className="create-input-field" style={{ marginTop: -3 }}>
-                    <label className="inputLabel">Phone Number</label>
-                    <PhoneInput
-                      countryCodeEditable={false}
-                      country={'us'}
-                      disableCountryGuess={true}
-                      enableSearch
-                      value={formData.mobile_number}
-                      onChange={(value: any) => {
-                        console.log('date', value);
-                        dispatch(
-                          updateUserForm({ field: 'mobile_number', value })
-                        );
-                      }}
-                      placeholder="Enter phone number"
-                    />
-                    {phoneNumberError && (
-                      <p className="error-message">{phoneNumberError}</p>
-                    )}
-                  </div>
-
-                  {formData.role_name === TYPE_OF_USER.PARTNER ||
-                  formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ? (
-                    <div className="create-input-field">
-                      <label className="inputLabel-select selected-fields-onboard">
-                        Dealer Owner
-                      </label>
-                      <SelectOption
-                        options={dealerList}
-                        onChange={(newValue) =>
-                          handleChangeForDealer(
-                            newValue,
-                            'assigned_dealer_name'
-                          )
-                        }
-                        value={dealerList?.find(
-                          (option) =>
-                            option?.value === formData.assigned_dealer_name
-                        )}
+                ) : null}
+                  {formData.role_name !== TYPE_OF_USER.PARTNER ? (
+                    <div
+                      className="create-input-field"
+                      style={{ marginTop: -3 }}
+                    >
+                      <label className="inputLabel">Phone Number</label>
+                      <PhoneInput
+                        countryCodeEditable={false}
+                        country={'us'}
+                        disableCountryGuess={true}
+                        enableSearch
+                        value={formData.mobile_number}
+                        onChange={(value: any) => {
+                          console.log('date', value);
+                          dispatch(
+                            updateUserForm({ field: 'mobile_number', value })
+                          );
+                        }}
+                        placeholder="Enter phone number"
                       />
+                      {phoneNumberError && (
+                        <p className="error-message">{phoneNumberError}</p>
+                      )}
                     </div>
-                  ): null}
+                  ) : null}
+                  {formData.role_name === TYPE_OF_USER.PARTNER ? (
+                      <div className="create-input-field">
+                      <Input
+                        type={'text'}
+                        label="Preferred Name"
+                        value={formData.preferred_name}
+                        placeholder={'Enter'}
+                        onChange={(e) => handleInputChange(e)}
+                        name={'preferred_name'}
+                      />
+                     
+                    </div>
+                  ) : null}
 
                   <UserBasedInput
                     formData={formData}
