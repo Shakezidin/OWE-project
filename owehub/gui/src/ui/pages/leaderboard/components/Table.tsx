@@ -726,7 +726,9 @@ const Table = ({
             <button
               className="export-btn"
               disabled={isExporting || isExportingData}
-              onClick={exportPdf}
+              onClick={() => {
+                Promise.resolve(exportPdf()).then(() => toggleExportShow());
+              }}
             >
               <span>Pdf</span>
             </button>
@@ -832,7 +834,9 @@ const Table = ({
           <SelectableFilter
             label="Group by:"
             options={
-              role === 'Admin' || role === TYPE_OF_USER.DEALER_OWNER || role===TYPE_OF_USER.FINANCE_ADMIN
+              role === 'Admin' ||
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -901,15 +905,12 @@ const Table = ({
                     <RankColumn rank={item.rank} />
                   </div>
                   <div className="flex-auto rank-card-body">
-                    <h4 className="card-rep-name">
-                 
-                      {item.rep_name || 'N/A'}{' '}
-                    </h4>
+                    <h4 className="card-rep-name">{item.rep_name || 'N/A'} </h4>
                     {role !== TYPE_OF_USER.ADMIN &&
-                        role !== TYPE_OF_USER.DEALER_OWNER &&
-                        role !== TYPE_OF_USER.FINANCE_ADMIN && (
-                      <p className="rank-sm-text"> {item.dealer} </p>
-                    )}
+                      role !== TYPE_OF_USER.DEALER_OWNER &&
+                      role !== TYPE_OF_USER.FINANCE_ADMIN && (
+                        <p className="rank-sm-text"> {item.dealer} </p>
+                      )}
                     <div className="flex items-center rank-card-stats">
                       <div>
                         <span className="rank-stats-num">
@@ -1057,7 +1058,9 @@ const Table = ({
                       </td>
                       {role !== TYPE_OF_USER.ADMIN &&
                         role !== TYPE_OF_USER.DEALER_OWNER &&
-                        role !== TYPE_OF_USER.FINANCE_ADMIN && <td> {item.dealer} </td>}
+                        role !== TYPE_OF_USER.FINANCE_ADMIN && (
+                          <td> {item.dealer} </td>
+                        )}
 
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
