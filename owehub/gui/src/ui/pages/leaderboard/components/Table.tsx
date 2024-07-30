@@ -28,7 +28,8 @@ import {
 import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 import { useAppSelector } from '../../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
-
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
   dealer: string;
@@ -517,6 +518,46 @@ const Table = ({
   const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
   );
+  // const handleGeneratePdf = async () => {
+  //   const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
+  //     type: activeHead,
+  //     dealer: selectDealer.map((item) => item.value),
+  //     page_size: count,
+  //     page_number: 1,
+  //     start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+  //     end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+  //     sort_by: active,
+  //     group_by: groupBy,
+  //   });
+  //   const doc = new jsPDF();
+  //   const columns = [
+  //     { header: 'Rank', dataKey: 'rank' },
+  //     { header: 'Name', dataKey: 'rep_name' },
+  //     { header: 'Partner', dataKey: 'dealer' },
+  //     { header: 'Sale', dataKey: 'sale' },
+  //     { header: 'NTP', dataKey: 'ntp' },
+  //     { header: 'Install', dataKey: 'install' },
+  //     { header: 'Cancel', dataKey: 'cancel' },
+  //   ];
+
+  //   const data = getAllLeaders?.data?.ap_ded_list.map((item: any) => ({
+  //     rank: item.rank,
+  //     rep_name: item.rep_name,
+  //     dealer: item.dealer,
+  //     sale: item.sale,
+  //     ntp: item.ntp,
+  //     install: item.install,
+  //     cancel: item.cancel,
+  //   }));
+
+  //   // @ts-ignore
+  //   doc.autoTable({
+  //     columns: columns,
+  //     body: data,
+  //     margin: { top: 20 },
+  //   });
+  //   doc.save('leaderboard.pdf');
+  // };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -674,6 +715,7 @@ const Table = ({
 
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
+      {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
         <div onClick={toggleExportShow}>
           <FaUpload size={12} className="mr1" />
@@ -860,11 +902,12 @@ const Table = ({
                   </div>
                   <div className="flex-auto rank-card-body">
                     <h4 className="card-rep-name">
-                      {' '}
+                 
                       {item.rep_name || 'N/A'}{' '}
                     </h4>
-                    {(role === TYPE_OF_USER.ADMIN ||
-                      role === TYPE_OF_USER.FINANCE_ADMIN) && (
+                    {role !== TYPE_OF_USER.ADMIN &&
+                        role !== TYPE_OF_USER.DEALER_OWNER &&
+                        role !== TYPE_OF_USER.FINANCE_ADMIN && (
                       <p className="rank-sm-text"> {item.dealer} </p>
                     )}
                     <div className="flex items-center rank-card-stats">
@@ -946,14 +989,16 @@ const Table = ({
                 <th>Rank</th>
 
                 <th>
-                  {role === TYPE_OF_USER.PARTNER ||
+                  {role === TYPE_OF_USER.ADMIN ||
+                  role === TYPE_OF_USER.FINANCE_ADMIN ||
                   role === TYPE_OF_USER.DEALER_OWNER
                     ? 'Code Name'
                     : 'Name'}
                 </th>
 
-                {role !== TYPE_OF_USER.PARTNER &&
-                  role !== TYPE_OF_USER.DEALER_OWNER && <th>Partner</th>}
+                {role !== TYPE_OF_USER.ADMIN &&
+                  role !== TYPE_OF_USER.DEALER_OWNER &&
+                  role !== TYPE_OF_USER.FINANCE_ADMIN && <th>Partner</th>}
                 <th>Sale</th>
                 <th>NTP</th>
                 <th>Install</th>
@@ -1010,11 +1055,9 @@ const Table = ({
                       <td>
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
-
-                      {role !== TYPE_OF_USER.PARTNER &&
-                        role !== TYPE_OF_USER.DEALER_OWNER && (
-                          <td> {item.dealer} </td>
-                        )}
+                      {role !== TYPE_OF_USER.ADMIN &&
+                        role !== TYPE_OF_USER.DEALER_OWNER &&
+                        role !== TYPE_OF_USER.FINANCE_ADMIN && <td> {item.dealer} </td>}
 
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
@@ -1036,7 +1079,8 @@ const Table = ({
               <tfoot>
                 <tr>
                   <td></td>
-                  {role !== TYPE_OF_USER.PARTNER &&
+                  {role !== TYPE_OF_USER.ADMIN &&
+                    role !== TYPE_OF_USER.FINANCE_ADMIN &&
                     role !== TYPE_OF_USER.DEALER_OWNER && <td></td>}
                   <td className="bold-text">Total </td>
                   <td className="bold-text">
