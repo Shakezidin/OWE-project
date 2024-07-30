@@ -1,6 +1,6 @@
 /**************************************************************************
-* File			: apiUpdateVDealerArchive.go
-* DESCRIPTION	: This file contains functions for update VDealer archive
+* File			: apiUpdateVDealerActive.go
+* DESCRIPTION	: This file contains functions for update VDealer Active
 						setter handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
@@ -21,13 +21,13 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleUpdateVDealerArchiveRequest
- * DESCRIPTION:     handler for update VDealer Archive request
+ * FUNCTION:		HandleUpdateVDealerActiveRequest
+ * DESCRIPTION:     handler for update VDealer Active request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 
-func HandleUpdateVDealerArchiveRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleUpdateVDealerActiveRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                error
 		updateVAdderArcReq models.UpdateVAdderArchive
@@ -35,11 +35,11 @@ func HandleUpdateVDealerArchiveRequest(resp http.ResponseWriter, req *http.Reque
 		result             []interface{}
 	)
 
-	log.EnterFn(0, "HandleUpdateVDealerArchiveRequest")
-	defer func() { log.ExitFn(0, "HandleUpdateVDealerArchiveRequest", err) }()
+	log.EnterFn(0, "HandleUpdateVDealerActiveRequest")
+	defer func() { log.ExitFn(0, "HandleUpdateVDealerActiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update vadder Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update vadder Active request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,22 +47,22 @@ func HandleUpdateVDealerArchiveRequest(resp http.ResponseWriter, req *http.Reque
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update vadder Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update vadder Active request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateVAdderArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update vadder Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update vadder Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update vadder Active request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update vadder Active request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(updateVAdderArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty, Update vadder Archive failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Record Id is empty, Update vadder Active failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateVDealerArchiveRequest(resp http.ResponseWriter, req *http.Reque
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateVDealerArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update vadder Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update vadder Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Update vadder Active in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update vadder Active", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "vadder Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "vadder Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "vadder Active updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "vadder Active Updated Successfully", http.StatusOK, nil)
 }
