@@ -63,7 +63,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_dealer
 	query = `
-	 SELECT vd.id as record_id, vd.dealer_code, vd.dealer_name, vd.description, vd.dealer_logo, vd.bg_colour
+	 SELECT vd.id as record_id, vd.dealer_code, vd.dealer_name, vd.description, vd.dealer_logo, vd.bg_colour, vd.preferred_name
 	 FROM v_dealer vd`
 
 	filter, whereEleList = PrepareVdealerFilters(tableName, dataReq, false)
@@ -123,14 +123,22 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 			bgColour = ""
 		}
 
+		// PreferredName
+		PreferredName, PreferredNameOk := item["preferred_name"].(string)
+		if !PreferredNameOk || PreferredName == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
+			PreferredName = ""
+		}
+
 		// Create a new GetVdealerData object
 		vDealerData := models.GetVDealerData{
-			RecordId:    RecordId,
-			DealerCode:  dealerCode,
-			DealerName:  DealerName,
-			Description: Description,
-			DealerLogo:  DealerLogo,
-			BgColour:    bgColour,
+			RecordId:      RecordId,
+			DealerCode:    dealerCode,
+			DealerName:    DealerName,
+			Description:   Description,
+			DealerLogo:    DealerLogo,
+			BgColour:      bgColour,
+			PreferredName: PreferredName,
 		}
 
 		// Append the new vDealerData to the vDealerList
@@ -225,14 +233,14 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("vd.is_archived = TRUE")
+		filtersBuilder.WriteString("vd.is_active = TRUE")
 	} else {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("vd.is_archived = FALSE")
+		filtersBuilder.WriteString("vd.is_active = FALSE")
 	}
 
 	if forDataCount == true {

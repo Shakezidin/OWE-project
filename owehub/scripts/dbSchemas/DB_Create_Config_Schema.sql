@@ -59,7 +59,8 @@ CREATE TABLE v_dealer (
     description character varying,
     dealer_logo character varying,
     bg_colour character varying,
-    is_archived BOOLEAN DEFAULT FALSE, 
+    preferred_name character varying,
+    is_active BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)

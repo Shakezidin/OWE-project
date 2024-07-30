@@ -69,6 +69,7 @@ func HandleUpdateVDealerDataRequest(resp http.ResponseWriter, req *http.Request)
 	queryParameters = append(queryParameters, UpdateVDealerReq.Description)
 	queryParameters = append(queryParameters, UpdateVDealerReq.DealerLogo)
 	queryParameters = append(queryParameters, UpdateVDealerReq.BgColour)
+	queryParameters = append(queryParameters, UpdateVDealerReq.PreferredName)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateVDealerFunction, queryParameters)

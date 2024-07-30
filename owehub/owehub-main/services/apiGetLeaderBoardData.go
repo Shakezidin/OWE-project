@@ -106,7 +106,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		dataReq.DealerName = append(dataReq.DealerName, dealerName)
-		if dataReq.Role == "Sale Representative" {
+		if dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter" {
 			HighlightName, ok = data[0]["name"].(string)
 			if !ok {
 				log.FuncErrorTrace(0, "Failed to convert name to string for data: %v", data[0])
@@ -234,7 +234,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
 
-	if dataReq.Role == "Sale Representative" && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
+	if (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
 		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
 	}
 
