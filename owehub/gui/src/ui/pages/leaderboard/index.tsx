@@ -18,6 +18,7 @@ import Table from './components/Table';
 import './index.css';
 import { useAppSelector } from '../../../redux/hooks';
 import jsPDF from 'jspdf';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -72,6 +73,7 @@ const Index = () => {
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isShowDropdown, setIsShowDropdown] = useState(false);
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
       label: 'Last Week',
@@ -139,7 +141,21 @@ const Index = () => {
       });
     }
   };
+  // useEffect(() => {
+  //   if (groupBy === 'dealer' && role === TYPE_OF_USER.DEALER_OWNER) {
+  //     setIsShowDropdown(true);
+  //   }
+  // }, [groupBy]);
 
+  const resetDealer = (value:string) =>{
+    if (value !== 'dealer' && isShowDropdown && selectDealer.length) {
+      setIsShowDropdown(false);
+      setSelectDealer([]);
+    }
+    if(value==="dealer"){
+      setIsShowDropdown(true)
+    }
+  }
   const exportPdf = () => {
     if (leaderboard.current) {
       setIsExporting(true);
@@ -184,6 +200,8 @@ const Index = () => {
         <Banner
           selectDealer={selectDealer}
           setSelectDealer={setSelectDealer}
+          groupBy={groupBy}
+          isShowDropdown={isShowDropdown}
           bannerDetails={bannerDetails}
         />
         <PerformanceCards
@@ -207,6 +225,7 @@ const Index = () => {
         setActiveHead={setActiveHead}
         active={active}
         isExporting={isExporting}
+        resetDealer={resetDealer}
         setActive={setActive}
         setGroupBy={setGroupBy}
         groupBy={groupBy}

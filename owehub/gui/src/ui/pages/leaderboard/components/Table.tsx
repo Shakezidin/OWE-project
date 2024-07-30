@@ -172,12 +172,14 @@ const SelectableFilter = ({
   selected,
   setSelected,
   resetPage,
+  resetDealer,
 }: {
   label: string;
   options: { value: string; label: string }[];
   selected: string;
   setSelected: (newVal: string) => void;
   resetPage: () => void;
+  resetDealer: (value: string) => void;
 }) => {
   return (
     <>
@@ -190,6 +192,9 @@ const SelectableFilter = ({
                 onClick={() => {
                   setSelected(item.value);
                   resetPage();
+                  if (label === 'Group by:') {
+                    resetDealer(item.value);
+                  }
                 }}
                 className={
                   'leaderboard-data__btn' +
@@ -212,6 +217,9 @@ const SelectableFilter = ({
           onChange={(newVal) => {
             setSelected(newVal?.value ?? '');
             resetPage();
+            if (newVal?.value && label === 'Group by:') {
+              resetDealer(newVal.value);
+            }
           }}
           isSearchable={false}
           styles={{
@@ -474,6 +482,7 @@ const Table = ({
   exportPdf,
   isExporting,
   count,
+  resetDealer,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -489,6 +498,7 @@ const Table = ({
   exportPdf: () => void;
   isExporting: boolean;
   count: number;
+  resetDealer: (value: string) => void;
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -507,6 +517,7 @@ const Table = ({
   const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
   );
+
   useEffect(() => {
     if (isAuthenticated) {
       (async () => {
@@ -753,6 +764,7 @@ const Table = ({
             options={rankByOptions}
             resetPage={resetPage}
             selected={active}
+            resetDealer={resetDealer}
             setSelected={setActive}
           />
           <div>
@@ -777,7 +789,12 @@ const Table = ({
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Group by:"
-            options={role === 'Admin' ? groupByOptions : groupByOptionss}
+            options={
+              role === 'Admin' || role === TYPE_OF_USER.DEALER_OWNER
+                ? groupByOptions
+                : groupByOptionss
+            }
+            resetDealer={resetDealer}
             selected={groupBy}
             resetPage={resetPage}
             setSelected={setGroupBy}
@@ -928,10 +945,15 @@ const Table = ({
               <tr>
                 <th>Rank</th>
 
-                <th>Name</th>
+                <th>
+                  {role === TYPE_OF_USER.PARTNER ||
+                  role === TYPE_OF_USER.DEALER_OWNER
+                    ? 'Code Name'
+                    : 'Name'}
+                </th>
 
-                {(role === TYPE_OF_USER.ADMIN ||
-                  role === TYPE_OF_USER.FINANCE_ADMIN) && <th>Partner</th>}
+                {role !== TYPE_OF_USER.PARTNER &&
+                  role !== TYPE_OF_USER.DEALER_OWNER && <th>Partner</th>}
                 <th>Sale</th>
                 <th>NTP</th>
                 <th>Install</th>
@@ -989,10 +1011,10 @@ const Table = ({
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
 
-                      {(role === TYPE_OF_USER.ADMIN ||
-                        role === TYPE_OF_USER.FINANCE_ADMIN) && (
-                        <td> {item.dealer} </td>
-                      )}
+                      {role !== TYPE_OF_USER.PARTNER &&
+                        role !== TYPE_OF_USER.DEALER_OWNER && (
+                          <td> {item.dealer} </td>
+                        )}
 
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
@@ -1010,25 +1032,13 @@ const Table = ({
                 </tr>
               )}
             </tbody>
-            {(!isLoading && leaderTable?.length) && (
+            {!isLoading && !!leaderTable?.length && (
               <tfoot>
                 <tr>
-                  <td
-                    colSpan={
-                      role !== TYPE_OF_USER.ADMIN &&
-                      role !== TYPE_OF_USER.FINANCE_ADMIN
-                        ? 2
-                        : 3
-                    }
-                    className={
-                      role !== TYPE_OF_USER.ADMIN &&
-                      role !== TYPE_OF_USER.FINANCE_ADMIN
-                        ? 'dealer-t right-align bold-text'
-                        : 'admin-t right-align bold-text'
-                    }
-                  >
-                    Total{' '}
-                  </td>
+                  <td></td>
+                  {role !== TYPE_OF_USER.PARTNER &&
+                    role !== TYPE_OF_USER.DEALER_OWNER && <td></td>}
+                  <td className="bold-text">Total </td>
                   <td className="bold-text">
                     {formatSaleValue(getTotal('sale'))}
                   </td>
