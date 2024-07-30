@@ -198,7 +198,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       type="text"
                       label="Team Name"
                       value={formData.first_name}
-                      placeholder="Team name"
+                      placeholder="Enter Team name"
                       onChange={handleInputChange}
                       name="first_name"
                       maxLength={100}
@@ -209,7 +209,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       className="inputLabel-select"
                       style={{ fontWeight: 400 }}
                     >
-                      Report to
+                      Select Managers
                     </label>
                     <SelectOption
                       options={comissionValueDataa}
@@ -224,7 +224,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       className="inputLabel-select"
                       style={{ fontWeight: 400 }}
                     >
-                      Add Members
+                      Select Members
                     </label>
                     <SelectOption
                       options={members}
@@ -279,7 +279,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                   </div>
                 </div>
 
-                <div className="tm-select-data" style={{ marginTop: '40px' }}>
+                <div className="tm-select-data" style={{ marginTop: '20px' }}>
                   <p>Sales Rep</p>
                   <div className="nt-select-cust">
                     {selectedOptions.map((option) => (
@@ -304,7 +304,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                 </div>
                 <div
                   className="create-input-container"
-                  style={{ marginTop: '40px' }}
+                  style={{ marginTop: '20px' }}
                 >
                   <div className="create-input-field-note">
                     <label htmlFor="" className="inputLabel">

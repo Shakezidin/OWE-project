@@ -13,15 +13,23 @@
   height: 40px;
   text-transform: capitalize;
   width: 150px;
+  transition: transform 0.3s ease;
 }
 .loginButton:hover {
   background-color: var(--primary-color);
+  transform: scale(1.07);
 }
 .cancel {
   border: 1px solid var(--primary-color);
   color: #000000;
   background-color: transparent !important;
+  transition: transform 0.3s ease;
 }
+
+.cancel:hover {
+  transform: scale(1.05);
+}
+
 
 .cancel:disabled {
   color: #a9a9a9;
