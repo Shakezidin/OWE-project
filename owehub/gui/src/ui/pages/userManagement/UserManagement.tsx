@@ -153,7 +153,7 @@ const UserManagement: React.FC = () => {
       if (
         formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
         formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
-        formData.role_name === TYPE_OF_USER.REGIONAL_MANGER
+        formData.role_name === TYPE_OF_USER.REGIONAL_MANGER || formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER
       ) {
         console.log(formData);
         if (value && formData.dealer) {

@@ -42,13 +42,13 @@ if(formData.role_name  !== 'Partner'){
     errors.Role = true;
   }
 
-  if (
-    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
-  ) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    }
-  }
+  // if (
+  //   formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
+  // ) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = true;
+  //   }
+  // }
 
   // if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
   //   if (formData.assigned_dealer_name.length === 0) {
@@ -93,12 +93,14 @@ export const createUserObject = (
     description: formData.description,
   };
   if (
-    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
-    formData.role_name === TYPE_OF_USER.PARTNER
+    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
+    
   ) {
     createObject = {
       ...createObject,
       dealer_owner: formData.dealer,
+      reporting_manager: formData.report_to,
+      team_name: formData.team_name,
     };
   }
 
