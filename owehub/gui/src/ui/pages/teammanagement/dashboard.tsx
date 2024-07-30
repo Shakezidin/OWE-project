@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../routes/routes';
@@ -12,6 +12,8 @@ import Select from 'react-select';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { dealerOption } from '../../../core/models/data_models/SelectDataModel';
+import ArDropdownWithCheckboxes from '../ar/ardashboard/Dropdown';
+import DropWithCheck from '../../components/dropwithcheck/dropwithcheck';
 
 interface AccordionSection {
   data: any;
@@ -29,6 +31,7 @@ const TeamManagement: React.FC = () => {
   const [newFormData, setNewFormData] = useState<any>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
   const [selectedDealer, setSelectedDealer] = useState(null);
+  const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = useState(false);
 
   const getnewformData = async () => {
     const tableData = {
@@ -79,6 +82,15 @@ const TeamManagement: React.FC = () => {
   };
 
 
+  const dummyOptions = [
+    { label: 'All', value: 'All', key: 'all' },
+    { label: 'Option 1', value: 'option1', key: 'key1' },
+    { label: 'Option 2', value: 'option2', key: 'key2' },
+    { label: 'Option 3', value: 'option3', key: 'key3' },
+    { label: 'Option 4', value: 'option4', key: 'key4' },
+  ];
+
+
 
 
   let prevColorIndex = -1;
@@ -93,6 +105,16 @@ const TeamManagement: React.FC = () => {
     setSelectedDealer(selectedOption);
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      setIsAnyCheckboxChecked(true);
+    } else {
+      const anyOtherChecked = document.querySelectorAll('.team-checkbox:checked').length > 0;
+      setIsAnyCheckboxChecked(anyOtherChecked);
+    }
+  }
 
   return (
     <>
@@ -117,62 +139,13 @@ const TeamManagement: React.FC = () => {
                   <div className='teamdash-header'>
                     <h1>Total Teams: {teams?.length}</h1>
                     <div className='dash-newteam'>
-                      <button onClick={handleOpen2}>+ Create New Team</button>
-                      <Select
-                        options={dealerOption(newFormData)}
-                        onChange={handleChange}
-                        value={selectedDealer}
-                        styles={{
-                          control: (baseStyles, state) => ({
-                            ...baseStyles,
-                            borderRadius: '8px',
-                            outline: 'none',
-                            color: '#101828',
-                            width: '200px',
-                            height: '36px',
-                            fontSize: '12px',
-                            border: '1px solid #d0d5dd',
-                            fontWeight: '500',
-                            cursor: 'pointer',
-                            alignContent: 'center',
-                            backgroundColor: '#ffffff',
-                            boxShadow: 'none',
-                            marginRight: '18px'
-                          }),
-                          placeholder: (baseStyles) => ({
-                            ...baseStyles,
-                            color: '#292929', // Change the placeholder color here
-                          }),
-                          indicatorSeparator: () => ({
-                            display: 'none',
-                          }),
-                          dropdownIndicator: (baseStyles, state) => ({
-                            ...baseStyles,
-                            color: '#292929',
-                            '&:hover': {
-                              color: '#292929',
-                            },
-                          }),
-                          option: (baseStyles, state) => ({
-                            ...baseStyles,
-                            fontSize: '13px',
-                            color: state.isSelected ? '#ffffff' : '#000000',
-                            backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
-                            '&:hover': {
-                              backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
-                            },
-                            cursor: 'pointer',
-                          }),
-                          singleValue: (baseStyles, state) => ({
-                            ...baseStyles,
-                            color: '#292929',
-                          }),
-                          menu: (baseStyles) => ({
-                            ...baseStyles,
-                            width: '212px',
-                          }),
-                        }}
-                      />
+                      {/* <button className='delete' onClick={handleOpen2}>Remove Team</button> */}
+                      {isAnyCheckboxChecked && (
+                        <button className='delete' >Remove Team</button>
+                      )}
+                      <button className='create' onClick={handleOpen2}>+ Create New Team</button>
+
+                      <DropWithCheck options={dummyOptions} />
                     </div>
                   </div>
                   <div className={`team-cards ${isOpen ? 'open' : ''}`}>
@@ -199,32 +172,45 @@ const TeamManagement: React.FC = () => {
 
                       return (
                         <div key={index}>
-                          <Link
-                            to={item.route}
-                            className="team-pay-card"
-                            style={{ backgroundColor: randomCardColor }}
-                          >
-                            <h1 className="team-card-heading">
-                              {item.team_name}
-                            </h1>
-                            <div className="team-con-fle">
-                              <div className="teamp-group">
-                                <img src={ICONS.teamgroup} alt="" />
-                                <h4>{item.team_strength} members</h4>
-                              </div>
-                              <Link
-                                to={`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}
-                              >
-                                <div
-                                  className="team-arrow-wrapper"
-                                  style={{ color: randomArrowColor }}
-                                >
-                                  <span className="view-text">View</span>
-                                  <RiArrowRightLine className="team-arrow-right" />
+                          <div className="team-pay-card-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+
+                            <Link
+                              to={item.route}
+                              className="team-pay-card"
+                              style={{ backgroundColor: randomCardColor, flexGrow: 1 }}
+                            >
+                              <div className='team-checkbox-wrapper'>
+
+                                <div className="team-name-tooltip">
+                                  <h1 className="team-card-heading">{item.team_name}</h1>
                                 </div>
-                              </Link>
-                            </div>
-                          </Link>
+                                <input
+                                  type="checkbox"
+                                  className="team-checkbox"
+                                  onChange={handleCheckboxChange}
+                                  onClick={(e: React.MouseEvent<HTMLInputElement>) => e.stopPropagation()}
+                                />
+                              </div>
+                              <div className="team-con-fle">
+                                <div className="teamp-group">
+                                  <img src={ICONS.teamgroup} alt="" />
+                                  <h4>{item.team_strength} members</h4>
+                                </div>
+                                <Link
+                                  to={`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}
+                                  onClick={(e) => e.stopPropagation()} // Prevent triggering outer Link when clicking inner Link
+                                >
+                                  <div
+                                    className="team-arrow-wrapper"
+                                    style={{ color: randomArrowColor }}
+                                  >
+                                    <span className="view-text">View</span>
+                                    <RiArrowRightLine className="team-arrow-right" />
+                                  </div>
+                                </Link>
+                              </div>
+                            </Link>
+                          </div>
                         </div>
                       );
                     })}

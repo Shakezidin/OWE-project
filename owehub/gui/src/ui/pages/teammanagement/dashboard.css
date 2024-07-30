@@ -47,13 +47,34 @@
     visibility 0s linear;
 }
 
+
+
 .team-card-heading {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
-  line-height: 20px;
-  /* width: 100px; */
+  line-height: 1.2;
   color: #ffffff;
+  max-width: 170px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .team-card-p {
   font-size: 11px;
   font-weight: 400;
@@ -274,7 +295,7 @@
   font-weight: 600;
   font-size: 28px;
 }
-.dash-newteam button {
+.dash-newteam .create {
   background-color: #ffffff;
   color: #377CF6;
   padding: 6.33px, 8.13px, 6.33px, 8.13px;
@@ -283,7 +304,29 @@
   height: 38px;
   width: 180px;
   cursor: pointer;
+  transition: transform 0.3s ease;
 }
+
+.dash-newteam .delete {
+  background-color: #ff0000;
+  color: #ffffff;
+  padding: 6.33px, 8.13px, 6.33px, 8.13px;
+  border-radius: 8px;
+  height: 38px;
+  width: 170px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.dash-newteam .create:hover,
+.dash-newteam .delete:hover {
+  transform: scale(1.07);
+}
+
+
 .dash-newteam{
   display: flex;
   flex-direction: row;
@@ -293,4 +336,36 @@
 
 
 
+.team-checkbox-wrapper{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
+.team-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1.9px solid #ffffff;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.team-checkbox:checked {
+  background-color: #33333300;
+}
+
+.team-checkbox:checked::after {
+  content: '\2714';
+  font-size: 16px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
