@@ -273,19 +273,19 @@ if(role===TYPE_OF_USER.ADMIN){
       ),
     },
   })
-  mob.mob.push({
-    path: ROUTES.PROJECT_PERFORMANCE,
-    sidebarProps: {
-      displayText: 'Performance',
-      icon: (
-        <GrDocumentPerformance
-          size={20}
-          style={{ marginLeft: '5px' }}
-          className="hover-icon"
-        />
-      ),
-    },
-  },)
+  // mob.mob.push({
+  //   path: ROUTES.PROJECT_PERFORMANCE,
+  //   sidebarProps: {
+  //     displayText: 'Performance',
+  //     icon: (
+  //       <GrDocumentPerformance
+  //         size={20}
+  //         style={{ marginLeft: '5px' }}
+  //         className="hover-icon"
+  //       />
+  //     ),
+  //   },
+  // },)
 }
 export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
