@@ -82,17 +82,6 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
   return (
     <div className="comm-dropdown-container" ref={dropdownRef}>
       <div className="comm-dropdown-toggle" onClick={toggleDropdown}>
-        {/* <span className="comm-toggle-text">
-          {selectedOptions.length > 0
-            ? selectedOptions.includes('All')
-              ? 'All'
-              : ''
-            : 'Select Dealer'}
-        </span>
-        {selectedOptions.length > 0 && !selectedOptions.includes('All') && (
-          <span className="selected-count">{selectedOptions.length}</span>
-        )}
-        <DropIcon /> */}
         <span className="comm-toggle-text">
           {selectedOptions.length > 0 ? (
             selectedOptions.includes('All') ? (
