@@ -29,7 +29,7 @@ import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 import { useAppSelector } from '../../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+// import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
   dealer: string;
