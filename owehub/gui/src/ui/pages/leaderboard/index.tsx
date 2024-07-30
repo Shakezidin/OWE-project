@@ -156,7 +156,7 @@ const Index = () => {
       setIsShowDropdown(true)
     }
   }
-  const exportPdf = () => {
+  const exportPdf = (fn:()=>void) => {
     if (leaderboard.current) {
       setIsExporting(true);
       const element = leaderboard.current;
@@ -189,6 +189,7 @@ const Index = () => {
           pdf.save('download.pdf');
           selector.style.overflow = 'auto';
           setIsExporting(false);
+          fn()
         });
       }
     }

@@ -496,7 +496,7 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
-  exportPdf: () => void;
+  exportPdf: (fn:()=>void) => void;
   isExporting: boolean;
   count: number;
   resetDealer: (value: string) => void;
@@ -727,7 +727,7 @@ const Table = ({
               className="export-btn"
               disabled={isExporting || isExportingData}
               onClick={() => {
-                Promise.resolve(exportPdf()).then(() => toggleExportShow());
+               exportPdf(toggleExportShow)
               }}
             >
               <span>Pdf</span>
