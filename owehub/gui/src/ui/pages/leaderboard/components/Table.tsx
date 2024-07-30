@@ -832,7 +832,7 @@ const Table = ({
           <SelectableFilter
             label="Group by:"
             options={
-              role === 'Admin' || role === TYPE_OF_USER.DEALER_OWNER
+              role === 'Admin' || role === TYPE_OF_USER.DEALER_OWNER || role===TYPE_OF_USER.FINANCE_ADMIN
                 ? groupByOptions
                 : groupByOptionss
             }
