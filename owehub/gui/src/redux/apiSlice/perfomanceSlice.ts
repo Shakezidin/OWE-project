@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 export interface IPerfomanceSale {
-  Type: string;
+  type: string;
   sales: number;
   sales_kw: number;
 }

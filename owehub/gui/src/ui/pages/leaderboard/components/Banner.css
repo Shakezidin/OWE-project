@@ -141,6 +141,10 @@
   background: var(--row-bg-color);
   color: #3b3b3b;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.edit-button:hover {
+  transform: scale(1.08);
 }
 .edit-svg {
   font-size: 1rem;
@@ -150,6 +154,10 @@
 .admin-edit-button {
   display: flex;
   align-items: center;
+  transition: transform 0.3s ease;
+}
+.admin-edit-button:hover {
+  transform: scale(1.08);
 }
 .admin-edit-img {
   background: white;

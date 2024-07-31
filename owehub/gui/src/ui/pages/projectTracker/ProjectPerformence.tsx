@@ -259,7 +259,7 @@ const ProjectPerformence = () => {
     fetchData();
   }, [isAuthenticated, resDatePicker.startdate, resDatePicker.enddate]);
 
-  console.log(tileData, 'title');
+  console.log(perfomaceSale, '677567657title');
   return (
     <div className="">
       <Breadcrumb
@@ -346,8 +346,11 @@ const ProjectPerformence = () => {
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
             {cardData.map((el, i) => {
+              // const findSale = perfomaceSale.find(
+              //   (s: (typeof perfomaceSale)[0]) => s.Type === el.type
+              // );
               const findSale = perfomaceSale.find(
-                (s: (typeof perfomaceSale)[0]) => s.Type === el.type
+                (s: (typeof perfomaceSale)[0]) => s.type === el.type
               );
               return (
                 <div
