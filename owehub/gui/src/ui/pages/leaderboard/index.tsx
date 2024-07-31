@@ -19,7 +19,8 @@ import './index.css';
 import { useAppSelector } from '../../../redux/hooks';
 import jsPDF from 'jspdf';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-
+import { PDFDocument } from 'pdf-lib';
+import 'jspdf-autotable';
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
@@ -141,58 +142,132 @@ const Index = () => {
       });
     }
   };
-  // useEffect(() => {
-  //   if (groupBy === 'dealer' && role === TYPE_OF_USER.DEALER_OWNER) {
-  //     setIsShowDropdown(true);
-  //   }
-  // }, [groupBy]);
 
-  const resetDealer = (value:string) =>{
+  const resetDealer = (value: string) => {
     if (value !== 'dealer' && isShowDropdown && selectDealer.length) {
       setIsShowDropdown(false);
       setSelectDealer([]);
     }
-    if(value==="dealer"){
-      setIsShowDropdown(true)
+    if (value === 'dealer') {
+      setIsShowDropdown(true);
     }
-  }
-  const exportPdf = (fn:()=>void) => {
+  };
+
+  const exportPdf = async (callback: () => void) => {
     if (leaderboard.current) {
       setIsExporting(true);
       const element = leaderboard.current;
       const scrollHeight = element.scrollHeight;
 
       const filter = (node: HTMLElement) => {
-        const exclusionClasses = ['page-heading-container'];
+        const exclusionClasses = [
+          'page-heading-container',
+          "exportt"
+        ];
         return !exclusionClasses.some((classname) =>
           node.classList?.contains(classname)
         );
       };
-      const selector: HTMLDivElement | null = document.querySelector(
+
+      const selector = document.querySelector(
         '.leaderboard-table-container'
-      );
+      ) as HTMLElement;
       if (selector) {
         selector.style.overflow = 'hidden';
-        toCanvas(element, {
+        const canvas = await toCanvas(element, {
           height: scrollHeight,
           filter,
           cacheBust: true,
-          canvasWidth: element.clientWidth - 80,
-        }).then((canvas) => {
-          const imageData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'pt',
-            format: [canvas.width + 10, canvas.height],
-          });
-          pdf.addImage(imageData, 'PNG', 0, 0, canvas.width, canvas.height);
-          pdf.save('download.pdf');
-          selector.style.overflow = 'auto';
-          setIsExporting(false);
-          fn()
+          canvasWidth: element.clientWidth,
         });
+
+        const imageData = canvas.toDataURL('image/png');
+        const screenshotPdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'pt',
+          format: [canvas.width, canvas.height],
+        });
+        screenshotPdf.addImage(
+          imageData,
+          'PNG',
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        const tablePdf = await generateTablePdf(canvas.width, canvas.height);
+        const mergedPdfBytes = await mergePdfs([screenshotPdf, tablePdf]);
+        const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'merged.pdf';
+        a.click();
+        URL.revokeObjectURL(url);
+        selector.style.overflow = 'auto';
+        setIsExporting(false);
+        callback();
       }
     }
+  };
+
+  const generateTablePdf = async (width: number, height: number) => {
+    const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
+      type: activeHead,
+      dealer: selectDealer.map((item) => item.value),
+      page_size: count,
+      page_number: 1,
+      start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+      sort_by: active,
+      group_by: groupBy,
+    });
+    const data = await getAllLeaders.data;
+
+    const doc = new jsPDF({
+      orientation: 'portrait', 
+      unit: 'pt',
+      format: [width, height],
+    });
+    const columns = [
+      { header: 'Rank', dataKey: 'rank' },
+      { header: 'Name', dataKey: 'rep_name' },
+      { header: 'Partner', dataKey: 'dealer' },
+      { header: 'Sale', dataKey: 'sale' },
+      { header: 'NTP', dataKey: 'ntp' },
+      { header: 'Install', dataKey: 'install' },
+      { header: 'Cancel', dataKey: 'cancel' },
+    ];
+
+    // @ts-ignore
+    doc.autoTable({
+      columns: columns,
+      body: data.ap_ded_list.map((item: any) => ({
+        rank: item.rank,
+        rep_name: item.rep_name,
+        dealer: item.dealer,
+        sale: item.sale,
+        ntp: item.ntp,
+        install: item.install,
+        cancel: item.cancel,
+      })),
+      margin: { top: 20 },
+      tableWidth: "auto",
+    });
+
+    return doc; // Returns PDF as ArrayBuffer
+  };
+
+  const mergePdfs = async (pdfs: jsPDF[]) => {
+    const mergedPdf = await PDFDocument.create();
+    for (const pdf of pdfs) {
+      const pdfBytes = pdf.output('arraybuffer');
+      const pdfDoc = await PDFDocument.load(pdfBytes);
+      const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+      pages.forEach((page) => mergedPdf.addPage(page));
+    }
+
+    return await mergedPdf.save();
   };
 
   return (
