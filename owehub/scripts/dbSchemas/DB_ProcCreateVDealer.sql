@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION create_v_dealer(
     p_description VARCHAR,
     p_dealer_logo VARCHAR,
     p_bg_colour VARCHAR,
+    p_preferred_name VARCHAR,
     OUT v_dealer_id INT
 )
 RETURNS INT
@@ -16,7 +17,8 @@ BEGIN
         description,
         dealer_logo,
         bg_colour,
-        is_archived
+        preferred_name,
+        is_active
     )
     VALUES (
         p_dealer_code,
@@ -24,6 +26,7 @@ BEGIN
         p_description,
         p_dealer_logo,
         p_bg_colour,
+        p_preferred_name,
         FALSE
     )
     RETURNING id INTO v_dealer_id;

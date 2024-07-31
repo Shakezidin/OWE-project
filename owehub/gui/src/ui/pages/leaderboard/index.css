@@ -547,6 +547,24 @@
 }
 
 @media (max-width: 576px) {
+ .banner-main .edit-button p{
+  display: none;
+
+ }
+ .banner-main .edit-button{
+  padding:0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  bottom: 3.5rem;
+ }
+
+ .dealer-toggler span span {
+  display: none;
+ }
   .leaderboard-data__selected-dates {
     font-size: 0.75rem;
   }
@@ -554,6 +572,9 @@
   .leaderboard-table-container {
     overflow-x: auto;
     scroll-behavior: smooth;
+  }
+  .dealer-dropdown-filter{
+    right: 20px;
   }
 
   .leaderboard-table-container::-webkit-scrollbar {

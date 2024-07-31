@@ -6,6 +6,7 @@ import {
   CreateUserParamModel,
   DealerOwner,
   DeleteUserModel,
+  ReportTo,
   UserDropdownModel,
 } from '../../../core/models/api_models/UserManagementModel';
 
@@ -37,10 +38,10 @@ export const fetchDealerOwner = createAsyncThunk(
 /** get region list */
 export const fetchRegionList = createAsyncThunk(
   'user/get_region',
-  async (data: DealerOwner) => {
+  async (data: ReportTo) => {
     const response = await postCaller(
-      EndPoints.get_user_by_role,
-      JSON.stringify(data)
+      EndPoints.get_users_by_dealer,
+      data
     );
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error(response.message);
@@ -50,10 +51,10 @@ export const fetchRegionList = createAsyncThunk(
 
     if (users_name_list) {
       const mapList: UserDropdownModel[] = users_name_list.map(
-        (el: { name: string }) => {
+        (el: { name: string, user_code:string }) => {
           return {
             label: el.name,
-            value: el.name,
+            value: el.user_code,
           };
         }
       );
@@ -77,12 +78,42 @@ export const createUserOnboarding = createAsyncThunk(
   }
 );
 
+
+export const createDealer = createAsyncThunk(
+  'user/create_dealer',
+  async (data: any, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller('create_vdealer', data);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+
 /** delete user */
 export const deleteUserOnboarding = createAsyncThunk(
   'user/delete_onboarding_users',
   async (data: DeleteUserModel, { rejectWithValue }): Promise<any> => {
     try {
       const response = await postCaller(EndPoints.delete_users, data);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+
+/** delete user */
+export const deleteUserDealer = createAsyncThunk(
+  'userdealer/delete_dealer_users',
+  async (data: any, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller('update_vdealer_active', data);
       console.log(response);
       return response;
     } catch (error) {

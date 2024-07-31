@@ -20,7 +20,7 @@ import {
 } from '../../../../core/models/api_models/UserManagementModel';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
-import { fetchUserListBasedOnRole } from '../../../../redux/apiActions/userManagement/userManagementActions';
+import { fetchDealerList, fetchUserListBasedOnRole } from '../../../../redux/apiActions/userManagement/userManagementActions';
 import DBUserTable from '../userManagerAllTable/DBUserTable';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 import { resetOpt } from '../../../../redux/apiSlice/DbManager/dataTableSlice';
@@ -60,7 +60,14 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
 
+  
   const count = useAppSelector((state) => state.userManagement.totalCount);
+  const {
+    loading,
+    dealerList,
+    dealerCount,
+  } = useAppSelector((state) => state.userManagement);
+
   useEffect(() => {
     const data = {
       page_number: currentPage1,
@@ -73,7 +80,16 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         },
       ],
     };
+    const dataa = {
+      page_number: currentPage1,
+      page_size: pageSize1,
+       
+    };
     dispatch(fetchUserListBasedOnRole(data));
+
+    if(selectedOption.value === 'Partner'){
+    dispatch(fetchDealerList(dataa))
+    }
     return () => {
       dispatch(resetOpt());
     };
@@ -99,6 +115,17 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
   const endIndex = currentPage1 * pageSize1;
   /** render table based on dropdown */
+
+
+  //dealerpagination
+  const totalPages1 = Math.ceil(dealerCount! / pageSize1);
+
+  const startIndex1 = (currentPage1 - 1) * pageSize1 + 1;
+  const endIndex1 = currentPage1 * pageSize1;
+
+
+  console.log(totalPages1, "totalpages")
+  console.log(dealerCount, "chnage")
   const renderComponent = () => {
     switch (selectedOption.label) {
       case TYPE_OF_USER.ADMIN:
@@ -184,11 +211,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       case TYPE_OF_USER.PARTNER:
         return (
           <PartnerTable
-            data={userRoleBasedList}
+            data={dealerList}
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {
+            onClickDelete={(item: any) => {
               onClickDelete(item);
             }}
             selectedRows={selectedRows}
@@ -267,6 +294,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   };
 
   /** render UI */
+
+  console.log(selectedOption, "dealerlist")
   return (
     <>
       <div className="ManagerUser-container">
@@ -349,8 +378,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
       {selectedOption && renderComponent()}
 
+      { selectedOption.value !== 'Partner' ?
       <div className="user-page-heading-container">
-        {userRoleBasedList?.length > 0 ? (
+        {userRoleBasedList?.length > 0  ? (
           <>
             <p className="page-heading">
               {startIndex} - {endIndex > count! ? count : endIndex} of {count}{' '}
@@ -366,6 +396,25 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           </>
         ) : null}
       </div>
+      : null}
+   { selectedOption.value === 'Partner' ?
+      <div className="user-page-heading-container">
+       
+          <>
+            <p className="page-heading">
+              {startIndex1} - {endIndex1 > dealerCount! ? dealerCount : endIndex} of {dealerCount}{' '}
+              item
+            </p>
+            <PaginationComponent
+              currentPage={currentPage1}
+              itemsPerPage={pageSize1}
+              totalPages={totalPages1}
+              onPageChange={handlePageChange}
+              handleItemsPerPageChange={handleItemsPerPageChange}
+            />
+          </>
+             </div>
+      : null}
     </>
   );
 };

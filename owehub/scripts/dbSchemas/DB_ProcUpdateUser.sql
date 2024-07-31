@@ -44,7 +44,7 @@ BEGIN
         v_reporting_manager := p_reporting_manager;
     END IF;
 
-    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
+    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative' OR p_role_name = 'Appointment Setter') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
     SELECT dealer_id INTO v_dealer_id
         FROM user_details
         WHERE name = v_reporting_manager;

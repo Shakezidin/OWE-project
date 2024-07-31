@@ -100,7 +100,7 @@ export const UserRegionalTableColumn: Column[] = [
   { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'dealer_owner',
-    displayName: 'Dealer Owner',
+    displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
   },
@@ -136,7 +136,7 @@ export const UserSaleMangerTableColumn: Column[] = [
   { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'dealer_owner',
-    displayName: 'Dealer Owner',
+    displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
   },
@@ -172,7 +172,7 @@ export const UserSaleRepresentTableColumn: Column[] = [
   { name: 'role_name', displayName: 'Role', type: 'string', isCheckbox: false },
   {
     name: 'dealer_owner',
-    displayName: 'Dealer Owner',
+    displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
   },

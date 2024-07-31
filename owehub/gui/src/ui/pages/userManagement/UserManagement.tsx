@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
+  fetchDealerList
 } from '../../../redux/apiActions/userManagement/userManagementActions';
 import {
   UserDropdownModel,
@@ -15,9 +16,11 @@ import {
 import UserManagementTable from './userTableList/UserManagementTable';
 import {
   createUserOnboarding,
+  createDealer,
   deleteUserOnboarding,
   fetchDealerOwner,
   fetchRegionList,
+  deleteUserDealer
 } from '../../../redux/apiActions/auth/createUserSliceActions';
 import { createUserObject, validateForm } from '../../../utiles/Validation';
 import {
@@ -34,9 +37,9 @@ import {
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
 
+
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const userName = localStorage.getItem('userName');
   const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -73,6 +76,12 @@ const UserManagement: React.FC = () => {
     fetchData();
   }, [createUserResult, deleteUserResult]);
 
+  useEffect(() => {
+  if(selectedOption){
+    setPage(1)
+  }
+  },[selectedOption])
+
   /** role based get data */
   useEffect(() => {
     const data = {
@@ -86,10 +95,27 @@ const UserManagement: React.FC = () => {
         },
       ],
     };
+
+    const dataa = {
+      page_number: page,
+      page_size: 10,
+     
+    };
     const fetchList = async () => {
       await dispatch(fetchUserListBasedOnRole(data));
     };
+
+
+    if(selectedOption.value !== 'Partner'){
     fetchList();
+    }
+    
+    const fetchDealer = async () => {
+      await dispatch(fetchDealerList(dataa))
+    }
+    if(selectedOption.value === 'Partner'){
+    fetchDealer();
+    }
   }, [selectedOption, createUserResult, deleteUserResult, page]);
 
   /** handle dropdown value */
@@ -112,33 +138,35 @@ const UserManagement: React.FC = () => {
   }, [formData.role_name]);
 
   /** check role  */
-  const onChangeRole = useCallback(
-    async (role: string, value: string) => {
-      if (role === 'Role') {
-        setSelectedOption(
-          ALL_USER_ROLE_LIST?.find((role) => role.value === value)!
-        );
-        await dispatch(
-          fetchDealerOwner({
-            role: TYPE_OF_USER.DEALER_OWNER,
-          })
-        );
-      } else {
-        if (
-          formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
-          formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE
-        )
+  const onChangeRole = async (role: string, value: string) => {
+    console.log('working on first change');
+    if (role === 'Role') {
+      setSelectedOption(
+        ALL_USER_ROLE_LIST?.find((role) => role.value === value)!
+      );
+      await dispatch(
+        fetchDealerOwner({
+          role: TYPE_OF_USER.DEALER_OWNER,
+        })
+      );
+    } else {
+      if (
+        formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
+        formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+        formData.role_name === TYPE_OF_USER.REGIONAL_MANGER || formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER
+      ) {
+        console.log(formData);
+        if (value && formData.dealer) {
           await dispatch(
             fetchRegionList({
-              role: TYPE_OF_USER.DEALER_OWNER,
-              name: value,
-              sub_role: getSubRole,
+              dealer_name: formData.dealer,
+              role: value,
             })
           );
+        }
       }
-    },
-    [formData.role_name]
-  );
+    }
+  };
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
@@ -159,6 +187,8 @@ const UserManagement: React.FC = () => {
 
   /** API call to submit */
   const createUserRequest = async (tablePermissions: any) => {
+    console.log(formData,"formData")
+    if(formData.role_name !== "Partner"){
     let data = createUserObject(formData);
     const actionResult = await dispatch(
       createUserOnboarding({
@@ -176,6 +206,24 @@ const UserManagement: React.FC = () => {
     } else {
       toast.warning(result.message);
     }
+  }else {
+   const dealerDate = {
+    dealer_code:formData.dealer_code,
+    dealer_name:formData.dealer,
+    Description:formData.description,
+    preferred_name:formData.preferred_name
+   }
+   const actionResult = await dispatch(createDealer(dealerDate));
+   const result = unwrapResult(actionResult);
+
+   if (result.status === HTTP_STATUS.OK) {
+     handleClose();
+     toast.success(result.message);
+     
+   } else {
+     toast.warning(result.message);
+   }
+  }
   };
 
   /** API call to submit */
@@ -189,6 +237,7 @@ const UserManagement: React.FC = () => {
       'Yes',
       'No'
     );
+  
     if (confirmed) {
       const actionResult = await dispatch(
         deleteUserOnboarding({ user_codes: deleteRows, usernames })
@@ -204,19 +253,53 @@ const UserManagement: React.FC = () => {
         toast.warning(result.message);
       }
     }
+  
+     
   };
+
+
+    /** API call to submit */
+    const deleteDealerRequest = async (
+      item:any
+    ) => {
+      const confirmed = await showAlert(
+        'Delete User',
+        'Are you sure you want to delete user?',
+        'Yes',
+        'No'
+      );
+      const dataa = {
+        page_number: page,
+        page_size: 10,
+       
+      };
+    
+      if (confirmed) {
+        const actionResult = await dispatch(
+          deleteUserDealer({ record_id: [item.record_id], is_archived: true })
+        );
+        const result = unwrapResult(actionResult);
+  
+        if (result.status === HTTP_STATUS.OK) {
+          handleClose();
+          setSelectedRows(new Set());
+          setSelectAllChecked(false);
+          toast.success(result.message);
+          fetchDealerList(dataa)
+        } else {
+          toast.warning(result.message);
+        }
+      }
+    
+       
+    };
+
+
+  console.log(regionList, "regionList")
 
   /** render UI */
   return (
     <>
-      {/* <div className="management-section">
-        <div className="manage-user">
-          <p>Welcome, {userName}</p>
-          <h3>User Management</h3>
-        </div>
-
-        
-      </div> */}
       {loading && (
         <div>
           <Loading /> {loading}
@@ -234,6 +317,7 @@ const UserManagement: React.FC = () => {
           userOnboard={null}
           onSubmitCreateUser={onSubmitCreateUser}
           onChangeRole={(role, value) => {
+            console.log('formData', formData);
             onChangeRole(role, value);
           }}
           setLogoUrl={setLogoUrl}
@@ -267,8 +351,10 @@ const UserManagement: React.FC = () => {
           userDropdownData={ALL_USER_ROLE_LIST}
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
-          onClickDelete={(item: UserRoleBasedListModel) => {
-            deleteUserRequest(
+          onClickDelete={(item: any) => {
+         selectedOption.value === "Partner" ?  deleteDealerRequest(
+        item
+        ): deleteUserRequest(
               [item.user_code],
               [item.name.split(' ').join('_')]
             );

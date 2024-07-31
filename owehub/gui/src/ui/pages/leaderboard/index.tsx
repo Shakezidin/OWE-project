@@ -18,6 +18,7 @@ import Table from './components/Table';
 import './index.css';
 import { useAppSelector } from '../../../redux/hooks';
 import jsPDF from 'jspdf';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -56,6 +57,7 @@ const Index = () => {
     weekStartsOn: 1,
   });
   const [isOpen, setIsOpen] = useState(-1);
+  const [count, setCount] = useState(0);
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
   const [activeHead, setActiveHead] = useState('count');
@@ -71,6 +73,7 @@ const Index = () => {
   const [socialUrl, setSocialUrl] = useState('');
   const [isOpenShare, setIsOpenShare] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isShowDropdown, setIsShowDropdown] = useState(false);
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
       label: 'Last Week',
@@ -105,6 +108,7 @@ const Index = () => {
           }
           setDetails(data.data?.ap_ded_list);
           setIsLoading(false);
+          setCount(data?.dbRecCount || 0);
         } catch (error) {
           console.error(error);
         } finally {
@@ -137,8 +141,22 @@ const Index = () => {
       });
     }
   };
+  // useEffect(() => {
+  //   if (groupBy === 'dealer' && role === TYPE_OF_USER.DEALER_OWNER) {
+  //     setIsShowDropdown(true);
+  //   }
+  // }, [groupBy]);
 
-  const exportPdf = () => {
+  const resetDealer = (value:string) =>{
+    if (value !== 'dealer' && isShowDropdown && selectDealer.length) {
+      setIsShowDropdown(false);
+      setSelectDealer([]);
+    }
+    if(value==="dealer"){
+      setIsShowDropdown(true)
+    }
+  }
+  const exportPdf = (fn:()=>void) => {
     if (leaderboard.current) {
       setIsExporting(true);
       const element = leaderboard.current;
@@ -171,6 +189,7 @@ const Index = () => {
           pdf.save('download.pdf');
           selector.style.overflow = 'auto';
           setIsExporting(false);
+          fn()
         });
       }
     }
@@ -182,6 +201,8 @@ const Index = () => {
         <Banner
           selectDealer={selectDealer}
           setSelectDealer={setSelectDealer}
+          groupBy={groupBy}
+          isShowDropdown={isShowDropdown}
           bannerDetails={bannerDetails}
         />
         <PerformanceCards
@@ -196,6 +217,7 @@ const Index = () => {
         />
       </div>
       <Table
+        count={count}
         exportPdf={exportPdf}
         setIsOpen={setIsOpen}
         selectedRangeDate={selectedRangeDate}
@@ -204,6 +226,7 @@ const Index = () => {
         setActiveHead={setActiveHead}
         active={active}
         isExporting={isExporting}
+        resetDealer={resetDealer}
         setActive={setActive}
         setGroupBy={setGroupBy}
         groupBy={groupBy}

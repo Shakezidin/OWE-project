@@ -28,7 +28,8 @@ import {
 import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 import { useAppSelector } from '../../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
-
+import jsPDF from 'jspdf';
+// import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
   dealer: string;
@@ -172,12 +173,14 @@ const SelectableFilter = ({
   selected,
   setSelected,
   resetPage,
+  resetDealer,
 }: {
   label: string;
   options: { value: string; label: string }[];
   selected: string;
   setSelected: (newVal: string) => void;
   resetPage: () => void;
+  resetDealer: (value: string) => void;
 }) => {
   return (
     <>
@@ -190,6 +193,9 @@ const SelectableFilter = ({
                 onClick={() => {
                   setSelected(item.value);
                   resetPage();
+                  if (label === 'Group by:') {
+                    resetDealer(item.value);
+                  }
                 }}
                 className={
                   'leaderboard-data__btn' +
@@ -212,6 +218,9 @@ const SelectableFilter = ({
           onChange={(newVal) => {
             setSelected(newVal?.value ?? '');
             resetPage();
+            if (newVal?.value && label === 'Group by:') {
+              resetDealer(newVal.value);
+            }
           }}
           isSearchable={false}
           styles={{
@@ -473,6 +482,8 @@ const Table = ({
   selectDealer,
   exportPdf,
   isExporting,
+  count,
+  resetDealer,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -485,8 +496,10 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
-  exportPdf: () => void;
+  exportPdf: (fn:()=>void) => void;
   isExporting: boolean;
+  count: number;
+  resetDealer: (value: string) => void;
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -494,7 +507,7 @@ const Table = ({
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [exportShow, setExportShow] = useState<boolean>(false);
-
+  const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
@@ -505,6 +518,47 @@ const Table = ({
   const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
   );
+  // const handleGeneratePdf = async () => {
+  //   const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
+  //     type: activeHead,
+  //     dealer: selectDealer.map((item) => item.value),
+  //     page_size: count,
+  //     page_number: 1,
+  //     start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+  //     end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+  //     sort_by: active,
+  //     group_by: groupBy,
+  //   });
+  //   const doc = new jsPDF();
+  //   const columns = [
+  //     { header: 'Rank', dataKey: 'rank' },
+  //     { header: 'Name', dataKey: 'rep_name' },
+  //     { header: 'Partner', dataKey: 'dealer' },
+  //     { header: 'Sale', dataKey: 'sale' },
+  //     { header: 'NTP', dataKey: 'ntp' },
+  //     { header: 'Install', dataKey: 'install' },
+  //     { header: 'Cancel', dataKey: 'cancel' },
+  //   ];
+
+  //   const data = getAllLeaders?.data?.ap_ded_list.map((item: any) => ({
+  //     rank: item.rank,
+  //     rep_name: item.rep_name,
+  //     dealer: item.dealer,
+  //     sale: item.sale,
+  //     ntp: item.ntp,
+  //     install: item.install,
+  //     cancel: item.cancel,
+  //   }));
+
+  //   // @ts-ignore
+  //   doc.autoTable({
+  //     columns: columns,
+  //     body: data,
+  //     margin: { top: 20 },
+  //   });
+  //   doc.save('leaderboard.pdf');
+  // };
+
   useEffect(() => {
     if (isAuthenticated) {
       (async () => {
@@ -603,8 +657,10 @@ const Table = ({
     };
   }, []);
 
-  const exportCsv = () => {
+  const exportCsv = async () => {
     // Define the headers for the CSV
+
+    setIsExporting(true);
     const headers = [
       'Rank',
       'Name',
@@ -615,8 +671,21 @@ const Table = ({
       'Cancel',
     ];
 
-    // Map the leaderTable data to CSV rows
-    const csvData = sortedPage.map((item) => [
+    const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
+      type: activeHead,
+      dealer: selectDealer.map((item) => item.value),
+      page_size: count,
+      page_number: 1,
+      start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+      sort_by: active,
+      group_by: groupBy,
+    });
+    if (getAllLeaders.status > 201) {
+      toast.error(getAllLeaders.message);
+      return;
+    }
+    const csvData = getAllLeaders?.data?.ap_ded_list?.map?.((item: any) => [
       item.rank,
       item.rep_name,
       role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN
@@ -628,13 +697,10 @@ const Table = ({
       formatSaleValue(item.cancel),
     ]);
 
-    // Add headers to the beginning of the CSV data
     const csvRows = [headers, ...csvData];
 
-    // Convert the array to CSV format
     const csvString = Papa.unparse(csvRows);
 
-    // Create a downloadable link and trigger a click to download the file
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -643,10 +709,13 @@ const Table = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setIsExporting(false);
+    setExportShow(false);
   };
 
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
+      {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
         <div onClick={toggleExportShow}>
           <FaUpload size={12} className="mr1" />
@@ -656,12 +725,18 @@ const Table = ({
           <div className="export-opt">
             <button
               className="export-btn"
-              disabled={isExporting}
-              onClick={exportPdf}
+              disabled={isExporting || isExportingData}
+              onClick={() => {
+               exportPdf(toggleExportShow)
+              }}
             >
               <span>Pdf</span>
             </button>
-            <button className="export-btn export-btnn" onClick={exportCsv}>
+            <button
+              disabled={isExportingData}
+              className="export-btn export-btnn"
+              onClick={exportCsv}
+            >
               <span>Csv</span>
             </button>
           </div>
@@ -733,6 +808,7 @@ const Table = ({
             options={rankByOptions}
             resetPage={resetPage}
             selected={active}
+            resetDealer={resetDealer}
             setSelected={setActive}
           />
           <div>
@@ -757,7 +833,14 @@ const Table = ({
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Group by:"
-            options={role === 'Admin' ? groupByOptions : groupByOptionss}
+            options={
+              role === 'Admin' ||
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN
+                ? groupByOptions
+                : groupByOptionss
+            }
+            resetDealer={resetDealer}
             selected={groupBy}
             resetPage={resetPage}
             setSelected={setGroupBy}
@@ -822,14 +905,12 @@ const Table = ({
                     <RankColumn rank={item.rank} />
                   </div>
                   <div className="flex-auto rank-card-body">
-                    <h4 className="card-rep-name">
-                      {' '}
-                      {item.rep_name || 'N/A'}{' '}
-                    </h4>
-                    {(role === TYPE_OF_USER.ADMIN ||
-                      role === TYPE_OF_USER.FINANCE_ADMIN) && (
-                      <p className="rank-sm-text"> {item.dealer} </p>
-                    )}
+                    <h4 className="card-rep-name">{item.rep_name || 'N/A'} </h4>
+                    {role !== TYPE_OF_USER.ADMIN &&
+                      role !== TYPE_OF_USER.DEALER_OWNER &&
+                      role !== TYPE_OF_USER.FINANCE_ADMIN && (
+                        <p className="rank-sm-text"> {item.dealer} </p>
+                      )}
                     <div className="flex items-center rank-card-stats">
                       <div>
                         <span className="rank-stats-num">
@@ -908,10 +989,17 @@ const Table = ({
               <tr>
                 <th>Rank</th>
 
-                <th>Name</th>
+                <th>
+                  {role === TYPE_OF_USER.ADMIN ||
+                  role === TYPE_OF_USER.FINANCE_ADMIN ||
+                  role === TYPE_OF_USER.DEALER_OWNER
+                    ? 'Code Name'
+                    : 'Name'}
+                </th>
 
-                {(role === TYPE_OF_USER.ADMIN ||
-                  role === TYPE_OF_USER.FINANCE_ADMIN) && <th>Partner</th>}
+                {role !== TYPE_OF_USER.ADMIN &&
+                  role !== TYPE_OF_USER.DEALER_OWNER &&
+                  role !== TYPE_OF_USER.FINANCE_ADMIN && <th>Partner</th>}
                 <th>Sale</th>
                 <th>NTP</th>
                 <th>Install</th>
@@ -968,11 +1056,11 @@ const Table = ({
                       <td>
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
-
-                      {(role === TYPE_OF_USER.ADMIN ||
-                        role === TYPE_OF_USER.FINANCE_ADMIN) && (
-                        <td> {item.dealer} </td>
-                      )}
+                      {role !== TYPE_OF_USER.ADMIN &&
+                        role !== TYPE_OF_USER.DEALER_OWNER &&
+                        role !== TYPE_OF_USER.FINANCE_ADMIN && (
+                          <td> {item.dealer} </td>
+                        )}
 
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
@@ -990,39 +1078,30 @@ const Table = ({
                 </tr>
               )}
             </tbody>
-            <tfoot>
-              <tr>
-                <td
-                  colSpan={
-                    role !== TYPE_OF_USER.ADMIN &&
-                    role !== TYPE_OF_USER.FINANCE_ADMIN
-                      ? 2
-                      : 3
-                  }
-                  className={
-                    role !== TYPE_OF_USER.ADMIN &&
-                    role !== TYPE_OF_USER.FINANCE_ADMIN
-                      ? 'dealer-t right-align bold-text'
-                      : 'admin-t right-align bold-text'
-                  }
-                >
-                  Total{' '}
-                </td>
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('sale'))}
-                </td>
+            {!isLoading && !!leaderTable?.length && (
+              <tfoot>
+                <tr>
+                  <td></td>
+                  {role !== TYPE_OF_USER.ADMIN &&
+                    role !== TYPE_OF_USER.FINANCE_ADMIN &&
+                    role !== TYPE_OF_USER.DEALER_OWNER && <td></td>}
+                  <td className="bold-text">Total </td>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('sale'))}
+                  </td>
 
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('ntp'))}
-                </td>
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('install'))}
-                </td>
-                <td className="bold-text">
-                  {formatSaleValue(getTotal('cancel'))}
-                </td>
-              </tr>
-            </tfoot>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('ntp'))}
+                  </td>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('install'))}
+                  </td>
+                  <td className="bold-text">
+                    {formatSaleValue(getTotal('cancel'))}
+                  </td>
+                </tr>
+              </tfoot>
+            )}
           </table>
         </div>
       </div>

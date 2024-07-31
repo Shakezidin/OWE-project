@@ -1204,8 +1204,8 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_vdealer_archive",
-		apiHandler.HandleUpdateVDealerArchiveRequest,
+		"/owe-commisions-service/v1/update_vdealer_active",
+		apiHandler.HandleUpdateVDealerActiveRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},

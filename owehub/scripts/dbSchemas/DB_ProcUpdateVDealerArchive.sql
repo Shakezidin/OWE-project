@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION update_v_dealer_archive(
     p_ids BIGINT[],
-    p_is_archived BOOLEAN,
+    p_is_active BOOLEAN,
     OUT v_dealer_id BIGINT
 )
 AS $$
@@ -11,7 +11,7 @@ BEGIN
     LOOP
         UPDATE v_dealer vd
         SET
-            is_archived = p_is_archived,
+            is_active = p_is_active,
             updated_at = CURRENT_TIMESTAMP
         WHERE vd.id = v_dealers_id;
 

@@ -7,12 +7,13 @@
 package models
 
 type GetVDealerData struct {
-	RecordId    int64  `json:"record_id"`
-	DealerCode  string `json:"dealer_code"`
-	DealerName  string `json:"dealer_name"`
-	Description string `json:"Description"`
-	DealerLogo  string `json:"dealer_logo"`
-	BgColour    string `json:"bg_colour"`
+	RecordId      int64  `json:"record_id"`
+	DealerCode    string `json:"dealer_code"`
+	DealerName    string `json:"dealer_name"`
+	Description   string `json:"Description"`
+	DealerLogo    string `json:"dealer_logo"`
+	BgColour      string `json:"bg_colour"`
+	PreferredName string `json:"preferred_name"`
 }
 
 type GetVDealersList struct {

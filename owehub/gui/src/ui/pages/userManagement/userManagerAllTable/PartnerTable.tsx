@@ -101,7 +101,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
 
           <tbody>
             {sortedData?.length > 0 ? (
-              sortedData.map((el: UserRoleBasedListModel, i: number) => (
+              sortedData.map((el: any, i: number) => (
                 <tr key={el.email_id}>
                   <td>
                     <div className="flex-check">
@@ -118,7 +118,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
                           );
                         }}
                       />
-                      {el.user_code}
+                      {el.dealer_code}
                     </div>
                   </td>
                   <td
@@ -128,7 +128,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
                       fontWeight: '500',
                     }}
                   >
-                    {el.name}
+                    {el.dealer_name}
                   </td>
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}

@@ -18,12 +18,16 @@ interface BannerProps {
     React.SetStateAction<{ label: string; value: string }[]>
   >;
   bannerDetails: any;
+  groupBy: string;
+  isShowDropdown: boolean;
 }
 
 const Banner: React.FC<BannerProps> = ({
   selectDealer,
   setSelectDealer,
   bannerDetails,
+  groupBy,
+  isShowDropdown,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
@@ -48,10 +52,10 @@ const Banner: React.FC<BannerProps> = ({
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
-    if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
+    if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN || isShowDropdown) {
       getNewFormData();
     }
-  }, [role]);
+  }, [role, isShowDropdown]);
 
   useEffect(() => {
     if (
@@ -277,10 +281,12 @@ const Banner: React.FC<BannerProps> = ({
         </div>
       </div>
 
-      {(role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) && (
+      {(role === 'Admin' ||
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        isShowDropdown) && (
         <div
           className=" dealer-dropdown-filter"
-          style={{ zIndex: 99 }}
+          style={{ zIndex: 100 }}
           ref={dropdownRef}
         >
           <div
@@ -288,14 +294,17 @@ const Banner: React.FC<BannerProps> = ({
             className="dealer-toggler pointer flex items-center"
           >
             <span>
-              {selectDealer.length}{' '}
-              {selectDealer.length > 1 ? 'Partners' : 'Partner'}
+              {selectDealer?.length}{' '}
+              <span>
+
+              {selectDealer?.length > 1 ? 'Partners' : 'Partner'}
+              </span>
             </span>
             <FaChevronDown className="ml1" />
           </div>
           {isOpen && (
             <div
-              className=" scrollbar dropdown-menu "
+              className=" scrollbar dealer-dropdown dropdown-menu "
               style={{ overflowX: 'clip' }}
             >
               <div className="searchBox">

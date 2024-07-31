@@ -1,25 +1,43 @@
 export const TYPE_OF_USER = {
   ADMIN: 'Admin',
   FINANCE_ADMIN: 'Finance Admin',
-  SUB_DEALER_OWNER: 'SubDealer Owner',
-  APPOINTMENT_SETTER: 'Appointment Setter',
-  PARTNER: 'Partner',
-  REGIONAL_MANGER: 'Regional Manager',
-  DEALER_OWNER: 'Dealer Owner',
-  SALES_REPRESENTATIVE: 'Sale Representative',
-  SALE_MANAGER: 'Sales Manager',
   DB_USER: 'DB User',
+  SUB_DEALER_OWNER: 'SubDealer Owner',
+  PARTNER: 'Partner',
+  APPOINTMENT_SETTER: 'Appointment Setter',
+  DEALER_OWNER: 'Dealer Owner',
+  REGIONAL_MANGER: 'Regional Manager',
+  SALE_MANAGER: 'Sales Manager',
+  SALES_REPRESENTATIVE: 'Sale Representative',
 };
 
 export const ALL_USER_ROLE_LIST = [
   { value: 'Admin', label: 'Admin' },
   { value: 'Finance Admin', label: 'Finance Admin' },
-  { value: 'SubDealer Owner', label: 'SubDealer Owner' },
-  { value: 'Appointment Setter', label: 'Appointment Setter' },
-  { value: 'Partner', label: 'Partner' },
-  { value: 'Regional Manager', label: 'Regional Manager' },
-  { value: 'Dealer Owner', label: 'Dealer Owner' },
-  { value: 'Sale Representative', label: 'Sale Representative' },
-  { value: 'Sales Manager', label: 'Sales Manager' },
   { value: 'DB User', label: 'DB User' },
+  { value: 'SubDealer Owner', label: 'SubDealer Owner' },
+  { value: 'Partner', label: 'Partner' },
+  { value: 'Appointment Setter', label: 'Appointment Setter' },
+  { value: 'Dealer Owner', label: 'Dealer Owner' },
+  { value: 'Regional Manager', label: 'Regional Manager' },
+  { value: 'Sales Manager', label: 'Sales Manager' },
+  { value: 'Sale Representative', label: 'Sale Representative' },
 ];
+
+export const MANAGER_ASSIGN_TO_USER = [
+  { value: 'Dealer Owner', label: 'Dealer Owner' },
+  { value: 'Regional Manager', label: 'Regional Manager' },
+  { value: 'Sales Manager', label: 'Sales Manager' },
+  { value: 'Sale Representative', label: 'Sale Representative' },
+];
+
+export const getObjectsBeforeMatch = (arr: any, matchLabel: string) => {
+  const index = arr.findIndex((obj: any) => obj.label === matchLabel);
+
+  console.log(index);
+  if (index === 0) {
+    return [{ value: 'Dealer Owner', label: 'Dealer Owner' }]; // No match found
+  }
+
+  return arr.slice(0, index);
+};

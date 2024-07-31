@@ -21,7 +21,7 @@ export const validateForm = (
   formData: CreateUserModel
 ): { [key: string]: boolean } => {
   const errors: { [key: string]: boolean } = {};
-
+if(formData.role_name  !== 'Partner'){
   if (!validateName(formData.first_name)) {
     errors.FirstName = true;
   }
@@ -37,44 +37,44 @@ export const validateForm = (
   if (!validateMobileNumber(formData.mobile_number)) {
     errors.PhoneNumber = true;
   }
+}
   if (formData.role_name.length === 0) {
     errors.Role = true;
   }
 
-  if (
-    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
-    formData.role_name === TYPE_OF_USER.PARTNER
-  ) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    }
-  }
+  // if (
+  //   formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
+  // ) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = true;
+  //   }
+  // }
 
-  if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    } else if (formData.add_region.length === 0) {
-      errors.Region = true;
-    }
-  }
+  // if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = false;
+  //   } else if (formData.add_region.length === 0) {
+  //     errors.Region = true;
+  //   }
+  // }
 
-  if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    } else if (formData.report_to.length === 0) {
-      errors.ReportTo = true;
-    }
-    //  else if (formData.team_name.length === 0) {
-    //   errors.Team_name = true;
-    // }
-  }
-  if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
-    if (formData.assigned_dealer_name.length === 0) {
-      errors.DealerOwner = true;
-    } else if (formData.report_to.length === 0) {
-      errors.ReportTo = true;
-    }
-  }
+  // if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = false;
+  //   } else if (formData.report_to.length === 0) {
+  //     errors.ReportTo = true;
+  //   }
+  //   //  else if (formData.team_name.length === 0) {
+  //   //   errors.Team_name = true;
+  //   // }
+  // }
+  // if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
+  //   if (formData.assigned_dealer_name.length === 0) {
+  //     errors.DealerOwner = false;
+  //   } else if (formData.report_to.length === 0) {
+  //     errors.ReportTo = true;
+  //   }
+  // }
   // Add more validations for other fields
 
   return errors;
@@ -93,19 +93,22 @@ export const createUserObject = (
     description: formData.description,
   };
   if (
-    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
-    formData.role_name === TYPE_OF_USER.PARTNER
+    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
+    
   ) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer: formData.dealer,
+      reporting_manager: formData.report_to,
+      team_name: formData.team_name,
     };
   }
 
   if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer: formData.dealer,
+      reporting_manager: formData.report_to,
       region: formData.add_region, //TODO: need to discuss
     };
   }
@@ -113,7 +116,7 @@ export const createUserObject = (
   if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer: formData.dealer,
       reporting_manager: formData.report_to,
       team_name: formData.team_name,
     };
@@ -121,7 +124,7 @@ export const createUserObject = (
   if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.assigned_dealer_name,
+      dealer: formData.dealer,
       reporting_manager: formData.report_to,
     };
   }

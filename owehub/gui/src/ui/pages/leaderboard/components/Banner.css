@@ -298,9 +298,15 @@
   .banner-heading {
     margin-top: 0;
   }
+  
 }
 
 @media (max-width: 968px) {
+   .dealer-dropdown{
+    left: auto !important;
+    right: 0 !important;
+
+   }
   .owner-names {
     font-size: 0.75rem;
   }

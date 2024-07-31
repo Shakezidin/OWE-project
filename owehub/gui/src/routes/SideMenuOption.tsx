@@ -258,12 +258,41 @@ const support = {
     },
   ],
 };
-
+let role = localStorage.getItem('role');
+if(role===TYPE_OF_USER.ADMIN){
+  mob.mob.push( {
+    path: ROUTES.PROJECT_STATUS,
+    sidebarProps: {
+      displayText: 'Project Management',
+      icon: (
+        <AiOutlineProject
+          size={20}
+          style={{ marginLeft: '3px' }}
+          color="black"
+        />
+      ),
+    },
+  })
+  // mob.mob.push({
+  //   path: ROUTES.PROJECT_PERFORMANCE,
+  //   sidebarProps: {
+  //     displayText: 'Performance',
+  //     icon: (
+  //       <GrDocumentPerformance
+  //         size={20}
+  //         style={{ marginLeft: '5px' }}
+  //         className="hover-icon"
+  //       />
+  //     ),
+  //   },
+  // },)
+}
 export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
   const remiainingPage: { [key: string]: any[] } = {};
   remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[2] }];
+  
 
   if (role === TYPE_OF_USER.ADMIN) {
     sideMenu.push(performance);

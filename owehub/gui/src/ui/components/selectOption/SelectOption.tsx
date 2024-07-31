@@ -44,7 +44,6 @@ const SelectOption: React.FC<Props> = ({
       <Select
         options={options}
         isSearchable
-        // className='dropdown'
         onChange={onChange}
         placeholder="Select"
         ref={scrollRef}
@@ -62,7 +61,6 @@ const SelectOption: React.FC<Props> = ({
             cursor: 'pointer',
             ...controlStyles,
           }),
-
           indicatorSeparator: () => ({
             display: 'none',
           }),
@@ -72,6 +70,9 @@ const SelectOption: React.FC<Props> = ({
             cursor: 'pointer',
             background: state.isSelected ? '#377CF6' : '#fff',
             color: labelColor || baseStyles.color,
+            '&:hover': {
+              background: state.isSelected ? '#377CF6' : '#DDEBFF',
+            },
           }),
           menu: (base) => ({
             ...base,
