@@ -15,7 +15,7 @@
   position: sticky;
   border-bottom: 1px solid #f0f0f0;
   top: 0;
-  z-index: 100;
+  z-index: 101;
   padding-right: 2rem;
 }
 .header-scrolled {
