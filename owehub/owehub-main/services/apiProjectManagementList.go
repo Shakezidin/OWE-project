@@ -162,6 +162,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		})
 	}
 
+	recordLen := len(projectList)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList), recordLen)
 	FormAndSendHttpResp(resp, "ProjectManagementStatus Data", http.StatusOK, projectList, int64(recordLen))
 }

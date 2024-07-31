@@ -187,14 +187,6 @@ const mob = {
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
-    {
-      path: ROUTES.TECHNICAL_SUPPORT,
-
-      sidebarProps: {
-        displayText: 'Technical Support',
-        icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
     // {
     //   path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
@@ -260,6 +252,20 @@ const support = {
 };
 let role = localStorage.getItem('role');
 if(role===TYPE_OF_USER.ADMIN){
+  mob.mob.push({
+    path: ROUTES.PROJECT_PERFORMANCE,
+    sidebarProps: {
+      displayText: 'Performance',
+      icon: (
+        <GrDocumentPerformance
+          size={20}
+          style={{ marginLeft: '5px' }}
+          className="hover-icon"
+        />
+      ),
+    },
+  },)
+
   mob.mob.push( {
     path: ROUTES.PROJECT_STATUS,
     sidebarProps: {
@@ -273,20 +279,19 @@ if(role===TYPE_OF_USER.ADMIN){
       ),
     },
   })
-  // mob.mob.push({
-  //   path: ROUTES.PROJECT_PERFORMANCE,
-  //   sidebarProps: {
-  //     displayText: 'Performance',
-  //     icon: (
-  //       <GrDocumentPerformance
-  //         size={20}
-  //         style={{ marginLeft: '5px' }}
-  //         className="hover-icon"
-  //       />
-  //     ),
-  //   },
-  // },)
 }
+
+mob.mob.push(
+  {
+    path: ROUTES.TECHNICAL_SUPPORT,
+
+    sidebarProps: {
+      displayText: 'Technical Support',
+      icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
+    },
+  },
+
+)
 export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');

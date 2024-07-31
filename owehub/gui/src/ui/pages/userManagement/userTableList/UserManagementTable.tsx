@@ -59,8 +59,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  const [isHovered, setIsHovered] = useState(false);
 
-  
+
   const count = useAppSelector((state) => state.userManagement.totalCount);
   const {
     loading,
@@ -83,12 +84,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     const dataa = {
       page_number: currentPage1,
       page_size: pageSize1,
-       
+
     };
     dispatch(fetchUserListBasedOnRole(data));
 
-    if(selectedOption.value === 'Partner'){
-    dispatch(fetchDealerList(dataa))
+    if (selectedOption.value === 'Partner') {
+      dispatch(fetchDealerList(dataa))
     }
     return () => {
       dispatch(resetOpt());
@@ -122,6 +123,14 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const startIndex1 = (currentPage1 - 1) * pageSize1 + 1;
   const endIndex1 = currentPage1 * pageSize1;
+
+
+  const buttonStyle = {
+    cursor: 'pointer',
+    transition: 'transform 0.3s ease',
+    transform: isHovered ? 'scale(1.09)' : 'scale(1)',
+  };
+
 
 
   console.log(totalPages1, "totalpages")
@@ -350,7 +359,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClick={onClickMultiDelete}
             className="trash-btn rounded-8 border-none flex items-center justify-center"
             type="button"
-            style={{ cursor: 'pointer' }}
+            style={buttonStyle}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
             <svg
               width="24"
@@ -378,28 +389,28 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
       {selectedOption && renderComponent()}
 
-      { selectedOption.value !== 'Partner' ?
-      <div className="user-page-heading-container">
-        {userRoleBasedList?.length > 0  ? (
-          <>
-            <p className="page-heading">
-              {startIndex} - {endIndex > count! ? count : endIndex} of {count}{' '}
-              item
-            </p>
-            <PaginationComponent
-              currentPage={currentPage1}
-              itemsPerPage={pageSize1}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              handleItemsPerPageChange={handleItemsPerPageChange}
-            />
-          </>
-        ) : null}
-      </div>
-      : null}
-   { selectedOption.value === 'Partner' ?
-      <div className="user-page-heading-container">
-       
+      {selectedOption.value !== 'Partner' ?
+        <div className="user-page-heading-container">
+          {userRoleBasedList?.length > 0 ? (
+            <>
+              <p className="page-heading">
+                {startIndex} - {endIndex > count! ? count : endIndex} of {count}{' '}
+                item
+              </p>
+              <PaginationComponent
+                currentPage={currentPage1}
+                itemsPerPage={pageSize1}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                handleItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </>
+          ) : null}
+        </div>
+        : null}
+      {selectedOption.value === 'Partner' ?
+        <div className="user-page-heading-container">
+
           <>
             <p className="page-heading">
               {startIndex1} - {endIndex1 > dealerCount! ? dealerCount : endIndex} of {dealerCount}{' '}
@@ -413,8 +424,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               handleItemsPerPageChange={handleItemsPerPageChange}
             />
           </>
-             </div>
-      : null}
+        </div>
+        : null}
     </>
   );
 };

@@ -15,7 +15,7 @@
   position: sticky;
   border-bottom: 1px solid #f0f0f0;
   top: 0;
-  z-index: 100;
+  z-index: 101;
   padding-right: 2rem;
 }
 .header-scrolled {
@@ -37,6 +37,10 @@
   display: flex;
   align-items: center;
   gap: 2rem;
+  transition: transform 0.3s ease;
+}
+.search-container:hover {
+  transform: scale(1.02);
 }
 
 .search-input-field {

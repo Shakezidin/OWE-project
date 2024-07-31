@@ -191,7 +191,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 				dlrName = dataReq.DealerName[0]
 			}
 
-			if HighLightDlrName == dlrName && HighlightName == Name {
+			if HighLightDlrName == dlrName && HighlightName == Name && (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") {
 				hightlight = true
 			}
 			LeaderBoard := models.GetLeaderBoard{

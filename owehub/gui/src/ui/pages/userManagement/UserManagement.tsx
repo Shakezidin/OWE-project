@@ -285,7 +285,7 @@ const UserManagement: React.FC = () => {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
           toast.success(result.message);
-          fetchDealerList(dataa)
+       dispatch(fetchDealerList(dataa))
         } else {
           toast.warning(result.message);
         }
@@ -295,7 +295,7 @@ const UserManagement: React.FC = () => {
     };
 
 
-  console.log(regionList, "regionList")
+  
 
   /** render UI */
   return (

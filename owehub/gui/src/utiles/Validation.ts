@@ -42,39 +42,43 @@ if(formData.role_name  !== 'Partner'){
     errors.Role = true;
   }
 
-  // if (
-  //   formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
-  // ) {
-  //   if (formData.assigned_dealer_name.length === 0) {
-  //     errors.DealerOwner = true;
-  //   }
-  // }
+  if (
+    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
+  ) {
+    if (formData.report_to.length === 0) {
+     
+      errors.Report_Manager = true;
+    }
+  }
 
-  // if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
-  //   if (formData.assigned_dealer_name.length === 0) {
-  //     errors.DealerOwner = false;
-  //   } else if (formData.add_region.length === 0) {
-  //     errors.Region = true;
-  //   }
-  // }
+  if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
+    if (formData.report_to.length === 0) {
+     
+      errors.Report_Manager = true;
+    }
+  }
 
-  // if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
-  //   if (formData.assigned_dealer_name.length === 0) {
-  //     errors.DealerOwner = false;
-  //   } else if (formData.report_to.length === 0) {
-  //     errors.ReportTo = true;
-  //   }
-  //   //  else if (formData.team_name.length === 0) {
-  //   //   errors.Team_name = true;
-  //   // }
-  // }
-  // if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
-  //   if (formData.assigned_dealer_name.length === 0) {
-  //     errors.DealerOwner = false;
-  //   } else if (formData.report_to.length === 0) {
-  //     errors.ReportTo = true;
-  //   }
-  // }
+  if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
+      if (formData.report_to.length === 0) {
+     
+      errors.Report_Manager = true;
+    }
+    //  else if (formData.team_name.length === 0) {
+    //   errors.Team_name = true;
+    // }
+  }
+  if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
+    if (formData.report_to.length === 0) {
+     
+      errors.Report_Manager = true;
+    }
+  }
+  if (formData.role_name === TYPE_OF_USER.PARTNER) {
+    if (formData.dealer_code.length === 0) {
+     
+      errors.Dealer_Code = true;
+    }
+  }
   // Add more validations for other fields
 
   return errors;

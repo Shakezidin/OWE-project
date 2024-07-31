@@ -1,5 +1,5 @@
 import { toCanvas } from 'html-to-image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import Banner from './components/Banner';
@@ -87,6 +87,26 @@ const Index = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
 
+  const showPartner = useMemo(() => {
+    if (
+      (role === TYPE_OF_USER.ADMIN ||
+        role === TYPE_OF_USER.DEALER_OWNER ||
+        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+      groupBy !== 'dealer'
+    ) {
+      return true;
+    }
+    if (
+      role !== TYPE_OF_USER.ADMIN &&
+      role !== TYPE_OF_USER.DEALER_OWNER &&
+      role !== TYPE_OF_USER.FINANCE_ADMIN
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [groupBy, role]);
+
   useEffect(() => {
     if (isAuthenticated) {
       (async () => {
@@ -160,10 +180,7 @@ const Index = () => {
       const scrollHeight = element.scrollHeight;
 
       const filter = (node: HTMLElement) => {
-        const exclusionClasses = [
-          'page-heading-container',
-          "exportt"
-        ];
+        const exclusionClasses = ['page-heading-container', 'exportt'];
         return !exclusionClasses.some((classname) =>
           node.classList?.contains(classname)
         );
@@ -225,19 +242,22 @@ const Index = () => {
     const data = await getAllLeaders.data;
 
     const doc = new jsPDF({
-      orientation: 'portrait', 
+      orientation: 'portrait',
       unit: 'pt',
       format: [width, height],
     });
     const columns = [
       { header: 'Rank', dataKey: 'rank' },
       { header: 'Name', dataKey: 'rep_name' },
-      { header: 'Partner', dataKey: 'dealer' },
       { header: 'Sale', dataKey: 'sale' },
       { header: 'NTP', dataKey: 'ntp' },
       { header: 'Install', dataKey: 'install' },
       { header: 'Cancel', dataKey: 'cancel' },
     ];
+
+    if (showPartner) {
+      columns.splice(2, 0, { header: 'Partner', dataKey: 'dealer' });
+    }
 
     // @ts-ignore
     doc.autoTable({
@@ -252,7 +272,7 @@ const Index = () => {
         cancel: item.cancel,
       })),
       margin: { top: 20 },
-      tableWidth: "auto",
+      tableWidth: 'auto',
     });
 
     return doc; // Returns PDF as ArrayBuffer
