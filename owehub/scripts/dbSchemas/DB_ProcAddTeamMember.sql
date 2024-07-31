@@ -40,7 +40,6 @@ BEGIN
                 manager_id,
                 'manager'
             )
-            ON CONFLICT (team_id, user_id) DO NOTHING;
         END LOOP;
     RETURN 1; -- Indicate success
 END;

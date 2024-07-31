@@ -53,7 +53,6 @@ BEGIN
                 manager_id,
                 'manager'
             )
-            ON CONFLICT (team_id, user_id) DO NOTHING;
         END LOOP;
 END;
 $$ LANGUAGE plpgsql;
