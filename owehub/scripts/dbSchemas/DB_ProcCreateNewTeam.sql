@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION create_new_team(
     p_team_name character varying,
+    p_dealer_id INT,
     p_team_description character varying,
     p_sale_rep_codes TEXT[],
     p_manager_codes TEXT[],
@@ -15,11 +16,13 @@ DECLARE
 BEGIN
     INSERT INTO teams (
         team_name,
-        description
+        description,
+        dealer_id
     )
     VALUES (
         p_team_name,
-        p_team_description
+        p_team_description,
+        p_dealer_id
     )
     RETURNING team_id INTO v_team_id;
     FOREACH sale_rep_code IN ARRAY p_sale_rep_codes
