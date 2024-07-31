@@ -1,15 +1,42 @@
 import { ICONS } from '../../icons/Icons';
 
+// export const cardData = [
+//   {
+//     name: 'Total Sales',
+//     bgColor: `var(--teritary-color)`,
+//     iconBgColor: `#fff`,
+//     color: '#fff',
+//     icon: ICONS.sales_per,
+//     type: 'contract_date',
+//     key: '',
+//   },
+//   {
+//     name: 'NTP',
+//     bgColor: `var(--orange-color)`,
+//     iconBgColor: `var(--white-color)`,
+//     icon: ICONS.ntp_per,
+//     color: `var(--white-color)`,
+//     type: 'ntp_date',
+//   },
+//   {
+//     name: 'Installed',
+//     bgColor: `var(--secondary-color)`,
+//     iconBgColor: `var(--white-color)`,
+//     icon: ICONS.installed_per,
+//     color: `var(--white-color)`,
+//     type: 'pv_install_completed_date',
+//   },
+//   {
+//     name: 'Cancelled',
+//     bgColor: `var(--purpink-color)`,
+//     iconBgColor: `var(--white-color)`,
+//     icon: ICONS.cancelled_per,
+//     color: `var(--white-color)`,
+//     type: 'cancelled_date',
+//   },
+// ];
+
 export const cardData = [
-  {
-    name: 'Total Sales',
-    bgColor: `var(--teritary-color)`,
-    iconBgColor: `#fff`,
-    color: '#fff',
-    icon: ICONS.sales_per,
-    type: 'contract_date',
-    key: '',
-  },
   {
     name: 'NTP',
     bgColor: `var(--orange-color)`,
@@ -17,6 +44,14 @@ export const cardData = [
     icon: ICONS.ntp_per,
     color: `var(--white-color)`,
     type: 'ntp_date',
+  },
+  {
+    name: 'Cancelled',
+    bgColor: `var(--purpink-color)`,
+    iconBgColor: `var(--white-color)`,
+    icon: ICONS.cancelled_per,
+    color: `var(--white-color)`,
+    type: 'cancelled_date',
   },
   {
     name: 'Installed',
@@ -27,14 +62,17 @@ export const cardData = [
     type: 'pv_install_completed_date',
   },
   {
-    name: 'Cancelled',
-    bgColor: `var(--purpink-color)`,
-    iconBgColor: `var(--white-color)`,
-    icon: ICONS.cancelled_per,
-    color: `var(--white-color)`,
-    type: 'cancelled_date',
+    name: 'Total Sales',
+    bgColor: `var(--teritary-color)`,
+    iconBgColor: `#fff`,
+    color: '#fff',
+    icon: ICONS.sales_per,
+    type: 'contract_date',
+    key: '',
   },
 ];
+
+
 export const projectDashData = [
   {
     ruppes: '$620,450.05',
