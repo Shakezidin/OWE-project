@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION update_user(
     p_country VARCHAR(255),
     p_user_code VARCHAR(255),
     p_dealer_name VARCHAR(255),
+    p_preferred_name VARCHAR(255),
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
@@ -29,7 +30,7 @@ BEGIN
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
         SELECT id INTO v_dealer_id
         FROM v_dealer
-        WHERE dealer_name = p_dealer_name;
+        WHERE dealer_code = p_dealer_name;
 
         IF NOT FOUND THEN
             RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
@@ -38,21 +39,21 @@ BEGIN
         v_dealer_id := NULL;
     END IF;
 
-    IF p_role_name = 'Regional Manager' AND (p_reporting_manager IS NULL OR p_reporting_manager = '') THEN
-        v_reporting_manager := p_dealer_owner;
-    ELSE
-        v_reporting_manager := p_reporting_manager;
-    END IF;
+    -- IF p_role_name = 'Regional Manager'  AND (p_reporting_manager IS NULL OR p_reporting_manager = '') THEN
+    --     v_reporting_manager := p_dealer_owner;
+    -- ELSE
+    --     v_reporting_manager := p_reporting_manager;
+    -- END IF;
 
-    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative' OR p_role_name = 'Appointment Setter') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
-    SELECT dealer_id INTO v_dealer_id
-        FROM user_details
-        WHERE name = v_reporting_manager;
+    -- IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative' OR p_role_name = 'Appointment Setter') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
+    -- SELECT dealer_id INTO v_dealer_id
+    --     FROM user_details
+    --     WHERE name = v_reporting_manager;
 
-        IF NOT FOUND THEN
-            RAISE EXCEPTION 'reporting manager with name % not found', p_reporting_manager;
-        END IF;
-    END IF;
+    --     IF NOT FOUND THEN
+    --         RAISE EXCEPTION 'reporting manager with name % not found', p_reporting_manager;
+    --     END IF;
+    -- END IF;
     -- Update user details
     UPDATE user_details
     SET 
@@ -78,6 +79,12 @@ BEGIN
     
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Record with ID % not found in user_details table', p_record_id;
+    END IF;
+
+    IF p_role_name = 'Dealer Owner' AND p_preferred_name IS NOT NULL AND p_preferred_name != '' THEN
+        UPDATE v_dealer
+        SET preferred_name = p_preferred_name
+        WHERE id = v_dealer_id;
     END IF;
 
 EXCEPTION
