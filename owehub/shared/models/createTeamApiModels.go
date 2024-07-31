@@ -8,9 +8,11 @@ package models
 
 type TeamData struct {
 	TeamName    string   `json:"team_name"`
+	DealerName  string   `json:"dealer_name"`
 	SaleRepIds  []string `json:"sale_rep_ids"`
 	ManagerIds  []string `json:"manager_ids"`
 	Description string   `json:"description"`
+	Email       string
 }
 
 type TeamsList struct {
