@@ -98,7 +98,7 @@ export const createUserObject = (
   ) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.dealer,
+      dealer: formData.dealer,
       reporting_manager: formData.report_to,
       team_name: formData.team_name,
     };
@@ -107,7 +107,7 @@ export const createUserObject = (
   if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.dealer,
+      dealer: formData.dealer,
       reporting_manager: formData.report_to,
       region: formData.add_region, //TODO: need to discuss
     };
@@ -116,7 +116,7 @@ export const createUserObject = (
   if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.dealer,
+      dealer: formData.dealer,
       reporting_manager: formData.report_to,
       team_name: formData.team_name,
     };
@@ -124,7 +124,7 @@ export const createUserObject = (
   if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     createObject = {
       ...createObject,
-      dealer_owner: formData.dealer,
+      dealer: formData.dealer,
       reporting_manager: formData.report_to,
     };
   }
