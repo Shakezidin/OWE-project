@@ -54,7 +54,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if role == "Admin" {
+	if role == "Admin" && len(dataReq.DealerName) <= 0 {
 		log.FuncErrorTrace(0, "for admins, dealer should be selected for team creation")
 		FormAndSendHttpResp(resp, "dealer not selected for team creation", http.StatusBadRequest, nil)
 		return
