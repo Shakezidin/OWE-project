@@ -140,21 +140,21 @@ BEGIN
         v_dealer_id := NULL;
     END IF;
 
-    IF p_role_name = 'Regional Manager' AND (p_reporting_manager IS NULL OR p_reporting_manager = '') THEN
-        v_reporting_manager := p_dealer_owner;
-    ELSE
-        v_reporting_manager := p_reporting_manager;
-    END IF;
+    -- IF p_role_name = 'Regional Manager' AND (p_reporting_manager IS NULL OR p_reporting_manager = '') THEN
+    --     v_reporting_manager := p_dealer_owner;
+    -- ELSE
+    --     v_reporting_manager := p_reporting_manager;
+    -- END IF;
 
-    IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative' OR p_role_name = 'Appointment Setter') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
-    SELECT id INTO v_dealer_id
-        FROM v_dealer
-        WHERE dealer_code = p_dealer_owner;
+    -- IF (p_role_name = 'Regional Manager' OR p_role_name = 'Sales Manager' OR p_role_name = 'Sale Representative' OR p_role_name = 'Appointment Setter') AND v_reporting_manager IS NOT NULL AND v_reporting_manager != '' THEN
+    -- SELECT id INTO v_dealer_id
+    --     FROM v_dealer
+    --     WHERE dealer_code = p_dealer_owner;
 
-        IF NOT FOUND THEN
-            RAISE EXCEPTION 'reporting manager with the name % not found', p_reporting_manager;
-        END IF;
-    END IF;
+    --     IF NOT FOUND THEN
+    --         RAISE EXCEPTION 'reporting manager with the name % not found', p_reporting_manager;
+    --     END IF;
+    -- END IF;
 
 
     -- Fetch the maximum user code and increment it
@@ -212,7 +212,7 @@ BEGIN
     )
     RETURNING user_id INTO v_user_id;
 
-    IF p_role_name = 'Dealer Owner' AND p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
+    IF p_role_name = 'Dealer Owner' AND p_dealer_name IS NOT NULL AND p_dealer_name != '' AND p_dealer_logo != '' THEN
         UPDATE v_dealer
         SET dealer_logo = p_dealer_logo
         WHERE id = v_dealer_id;

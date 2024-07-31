@@ -1,4 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { DateRange } from 'react-date-range';
 import {
   format,
@@ -496,7 +504,7 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
-  exportPdf: (fn:()=>void) => void;
+  exportPdf: (fn: () => void) => void;
   isExporting: boolean;
   count: number;
   resetDealer: (value: string) => void;
@@ -657,6 +665,26 @@ const Table = ({
     };
   }, []);
 
+  const showPartner = useMemo(() => {
+    if (
+      (role === TYPE_OF_USER.ADMIN ||
+        role === TYPE_OF_USER.DEALER_OWNER ||
+        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+      groupBy !== 'dealer'
+    ) {
+      return true;
+    }
+    if (
+      role !== TYPE_OF_USER.ADMIN &&
+      role !== TYPE_OF_USER.DEALER_OWNER &&
+      role !== TYPE_OF_USER.FINANCE_ADMIN
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [groupBy, role]);
+
   const exportCsv = async () => {
     // Define the headers for the CSV
 
@@ -727,7 +755,7 @@ const Table = ({
               className="export-btn"
               disabled={isExporting || isExportingData}
               onClick={() => {
-               exportPdf(toggleExportShow)
+                exportPdf(toggleExportShow);
               }}
             >
               <span>Pdf</span>
@@ -906,11 +934,9 @@ const Table = ({
                   </div>
                   <div className="flex-auto rank-card-body">
                     <h4 className="card-rep-name">{item.rep_name || 'N/A'} </h4>
-                    {role !== TYPE_OF_USER.ADMIN &&
-                      role !== TYPE_OF_USER.DEALER_OWNER &&
-                      role !== TYPE_OF_USER.FINANCE_ADMIN && (
-                        <p className="rank-sm-text"> {item.dealer} </p>
-                      )}
+                    {showPartner && (
+                      <p className="rank-sm-text"> {item.dealer} </p>
+                    )}
                     <div className="flex items-center rank-card-stats">
                       <div>
                         <span className="rank-stats-num">
@@ -990,16 +1016,15 @@ const Table = ({
                 <th>Rank</th>
 
                 <th>
-                  {role === TYPE_OF_USER.ADMIN ||
-                  role === TYPE_OF_USER.FINANCE_ADMIN ||
-                  role === TYPE_OF_USER.DEALER_OWNER
+                  {(role === TYPE_OF_USER.ADMIN ||
+                    role === TYPE_OF_USER.FINANCE_ADMIN ||
+                    role === TYPE_OF_USER.DEALER_OWNER) &&
+                  groupBy === 'dealer'
                     ? 'Code Name'
                     : 'Name'}
                 </th>
 
-                {role !== TYPE_OF_USER.ADMIN &&
-                  role !== TYPE_OF_USER.DEALER_OWNER &&
-                  role !== TYPE_OF_USER.FINANCE_ADMIN && <th>Partner</th>}
+                {showPartner && <th>Partner</th>}
                 <th>Sale</th>
                 <th>NTP</th>
                 <th>Install</th>
@@ -1056,11 +1081,7 @@ const Table = ({
                       <td>
                         <span>{item.rep_name || 'N/A'}</span>
                       </td>
-                      {role !== TYPE_OF_USER.ADMIN &&
-                        role !== TYPE_OF_USER.DEALER_OWNER &&
-                        role !== TYPE_OF_USER.FINANCE_ADMIN && (
-                          <td> {item.dealer} </td>
-                        )}
+                      {showPartner && <td> {item.dealer} </td>}
 
                       <td>{formatSaleValue(item?.sale)} </td>
                       <td>{formatSaleValue(item?.ntp)}</td>
@@ -1082,9 +1103,7 @@ const Table = ({
               <tfoot>
                 <tr>
                   <td></td>
-                  {role !== TYPE_OF_USER.ADMIN &&
-                    role !== TYPE_OF_USER.FINANCE_ADMIN &&
-                    role !== TYPE_OF_USER.DEALER_OWNER && <td></td>}
+                  {showPartner && <td></td>}
                   <td className="bold-text">Total </td>
                   <td className="bold-text">
                     {formatSaleValue(getTotal('sale'))}
