@@ -27,6 +27,7 @@
   border-radius: 24px;
   color: #000;
   font-size: 12px;
+  transition: all 0.3s ease;
 }
 .dealer-dropdown-filter {
   position: absolute;
@@ -141,10 +142,18 @@
   background: var(--row-bg-color);
   color: #3b3b3b;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 .edit-button:hover {
-  transform: scale(1.08);
+  transition: all 0.3s ease;
+  background-color: var(--orange-color);
+  color: #fff;
+}
+
+.dealer-dropdown-filter .dealer-toggler:hover{
+  transition: all 0.3s ease;
+  background-color: var(--orange-color);
+  color: #fff;
 }
 .edit-svg {
   font-size: 1rem;
