@@ -52,7 +52,7 @@ BEGIN
                 v_team_id,
                 manager_id,
                 'manager'
-            )
+            );
         END LOOP;
 END;
 $$ LANGUAGE plpgsql;
