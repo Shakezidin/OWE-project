@@ -30,7 +30,7 @@ const MyProfile = () => {
   const [preferredName, setPreferredName] = useState<any>('')
   const [newFormData, setNewFormData] = useState<any>([]);
 
-
+  const role = localStorage.getItem('role');
   const tableData = {
     tableNames: [
       'partners',
@@ -93,6 +93,10 @@ const MyProfile = () => {
     Promise.resolve(dispatch(updateUser(data))).then(() => {
       toast.success('Successfully Updated');
       setIsEditMode(!isEditMode);
+      if(role === TYPE_OF_USER.DEALER_OWNER){
+        setIsEditModee(!isEditModee);
+      }
+
     });
   };
 
@@ -105,9 +109,7 @@ const MyProfile = () => {
     if(role === TYPE_OF_USER.DEALER_OWNER){
     setPreferredName(userDetail.preferred_name)
     }
-    // if(role === TYPE_OF_USER.DEALER_OWNER){
-    //   setPreferredName()
-    // }
+    
   };
 
   const handleStreetChange = (e: any) => {
@@ -167,7 +169,7 @@ const MyProfile = () => {
     city: '',
     state: '',
   });
-  const role = localStorage.getItem('role');
+ 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -350,7 +352,7 @@ const MyProfile = () => {
               <div
                 className={`edit-section ${!isEditMode ? 'active-edit-section' : ''}`}
                 onClick={() => {
-                  setIsEditModee(!isEditMode);
+                  setIsEditMode(!isEditMode);
                 }}
               >
                 <img src={ICONS.editIcon} alt="" />
@@ -369,7 +371,7 @@ const MyProfile = () => {
                   name=""
                   placeholder={'Enter'}
                   onChange={(e) => setPreferredName(e.target.value)}
-                  disabled={isEditModee}
+                  disabled={isEditMode}
                 />
                 
               </div>
