@@ -162,25 +162,6 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		})
 	}
 
-	type Response struct {
-		Message     string      `json:"message"`
-		RecordCount int64       `json:"record_count"`
-		Data        interface{} `json:"data"`
-		StatusCode  int         `json:"status"`
-	}
-	recordLen := len(data)
-	response := Response{
-		Message:     "Table Data",
-		RecordCount: int64(recordLen),
-		Data:        projectList,
-		StatusCode:  http.StatusOK,
-	}
-
-	resp.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(resp).Encode(response); err != nil {
-		http.Error(resp, fmt.Sprintf("Failed to encode data as JSON: %v", err), http.StatusInternalServerError)
-		return
-	}
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList), recordLen)
 	FormAndSendHttpResp(resp, "ProjectManagementStatus Data", http.StatusOK, projectList, int64(recordLen))
 }
