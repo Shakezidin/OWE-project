@@ -285,7 +285,12 @@
 
 .back-icon-sidebar.back-icon {
   top: 25px;
+  transition: transform 0.3s ease;
 }
+.back-icon-sidebar.back-icon:hover {
+  transform: scale(1.09);
+}
+
 .user-profile-sidebar-fixed .user-sidebar {
   width: 408px;
   min-height: 100vh;
@@ -374,6 +379,10 @@
   margin-top: 20px;
   width: 100%;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.leader-stats-share-btn:hover {
+  transform: scale(1.08);
 }
 
 .leaderborad-export-btn {
