@@ -14,11 +14,11 @@ import (
 
 func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err        error
-		query      string
-		data       []map[string]interface{}
-		dealerName string
-		role       string
+		err   error
+		query string
+		data  []map[string]interface{}
+		// dealerName string
+		role string
 	)
 
 	log.EnterFn(0, "HandleGetTeamsDataRequest")
@@ -97,8 +97,10 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Execute query
-	if dealerName != "" {
+	if len(dataReq.DealerNames) > 0 {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{pq.Array(dataReq.DealerNames)})
+	} else if role == "Admin" {
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	} else {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{email})
 	}
