@@ -22,7 +22,6 @@ type PerfomanceStatusReq struct {
 }
 
 type PerfomanceResponse struct {
-	ItemId                 int64  `json:"item_id"`
 	UniqueId               string `json:"unqiue_id"`
 	Customer               string `json:"customer"`
 	ContractDate           string `json:"contract_date"`

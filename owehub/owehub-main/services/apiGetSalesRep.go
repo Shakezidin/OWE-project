@@ -1,8 +1,8 @@
-/**************************************************************************
- * File       	   : apiGetSalesRep.go
- * DESCRIPTION     : This file contains functions for get users data handler
- * DATE            : 23-Apr-2024
- **************************************************************************/
+/******************************************************************************
+ * File           : apiGetSalesRep.go
+ * DESCRIPTION    : This file contains functions for get users data handler
+ * DATE           : 23-Apr-2024
+ ******************************************************************************/
 
 package services
 
@@ -10,7 +10,6 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -18,15 +17,17 @@ import (
 )
 
 /******************************************************************************
-* FUNCTION:		HandleGetSalesRepDataRequest
+* FUNCTION:        HandleGetSalesRepDataRequest
 * DESCRIPTION:     handler for get users by role request
-* INPUT:			resp, req
-* RETURNS:    		void
+* INPUT:           resp, req
+* RETURNS:         void
 ******************************************************************************/
-func HandleGetSaleRepDataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err   error
-		query string
+		err      error
+		query    string
+		data     []map[string]interface{}
+		dealerId int
 	)
 
 	log.EnterFn(0, "HandleGetSalesRepDataRequest")
@@ -46,64 +47,142 @@ func HandleGetSaleRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var data []map[string]interface{}
-	query = `
-		 WITH subrole_data AS (
-    SELECT role_id
-    FROM user_roles
-    WHERE LOWER(role_name) LIKE LOWER($1)
-		),
-		manager_data AS (
-				SELECT user_id
-				FROM user_details
-				WHERE LOWER(name) LIKE LOWER($2)
-		)
-		SELECT ud.name, ud.email_id, ud.mobile_number, ud.user_code, ud.user_id
-		FROM user_details ud
-		WHERE ud.role_id IN (SELECT role_id FROM subrole_data)
-		AND ud.reporting_manager IN (SELECT user_id FROM manager_data);
+	role := req.Context().Value("rolename").(string)
+	if role == "Sale Representative" {
+		log.FuncErrorTrace(0, "sale rep accessing")
+		FormAndSendHttpResp(resp, "unauthorized user", http.StatusBadRequest, nil)
+		return
+	}
+
+	if role == "Admin" {
+		log.FuncErrorTrace(0, "for admins, dealer should be selected for team creation")
+		FormAndSendHttpResp(resp, "dealer not selected for team creation", http.StatusBadRequest, nil)
+		return
+	}
+
+	if dataReq.DealerName == "" {
+		// Get dealer_id based on email of logged-in user
+		dataReq.Email = req.Context().Value("emailid").(string)
+		if dataReq.Email == "" {
+			FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+			return
+		}
+		userEmail := dataReq.Email
+		query = `
+						 SELECT dealer_id 
+						 FROM user_details 
+						 WHERE email_id = $1
+				 `
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{userEmail})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get dealer ID from DB with err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get dealer ID", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(data) == 0 {
+			err = fmt.Errorf("no dealer found for the given email")
+			log.FuncErrorTrace(0, "%v", err)
+			FormAndSendHttpResp(resp, "No dealer found for the given email", http.StatusBadRequest, nil)
+			return
+		}
+
+		dealerId = int(data[0]["dealer_id"].(int64))
+
+	} else {
+		// Get dealer_id based on dealer_name
+		dealerName := dataReq.DealerName
+		query = `
+						 SELECT id 
+						 FROM v_dealer 
+						 WHERE LOWER(dealer_code) = LOWER($1)
+				 `
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get dealer ID from DB with err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get dealer ID", http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(data) == 0 {
+			err = fmt.Errorf("no dealer found with the given name")
+			log.FuncErrorTrace(0, "%v", err)
+			FormAndSendHttpResp(resp, "No dealer found with the given name", http.StatusBadRequest, nil)
+			return
+		}
+
+		dealerId = int(data[0]["id"].(int64))
+	}
+
+	if dataReq.TeamId > 0 {
+		query = `
+			SELECT ur.role_name, ud.name, ud.email_id, ud.mobile_number, ud.user_code, ud.user_id
+			FROM user_details ud
+			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
+			WHERE ud.dealer_id = $1
+			AND NOT EXISTS (
+				SELECT 1
+				FROM team_members tm
+				WHERE tm.user_id = ud.user_id
+				AND tm.team_id = $2
+			)
 		`
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{"%" + strings.ToLower(dataReq.SubRole) + "%", "%" + strings.ToLower(dataReq.Name) + "%"})
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerId, dataReq.TeamId})
+	} else {
+		query = `
+			SELECT ur.role_name, ud.name, ud.email_id, ud.mobile_number, ud.user_code, ud.user_id
+			FROM user_details ud
+			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
+			WHERE ud.dealer_id = $1
+		`
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerId})
+	}
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get Users data from DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 		return
 	}
-	usersNameList := models.GetSaleRepeList{}
+
+	usersNameList := models.GetSaleRepList{}
 	for _, item := range data {
-		// Name
 		name, nameOk := item["name"].(string)
 		if !nameOk || name == "" {
 			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
 			name = ""
 		}
-		email, nameOk := item["email_id"].(string)
-		if !nameOk || email == "" {
-			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
+		email, emailOk := item["email_id"].(string)
+		if !emailOk || email == "" {
+			log.FuncErrorTrace(0, "Failed to get Email for Item: %+v\n", item)
 			email = ""
 		}
-		phone, nameOk := item["mobile_number"].(string)
-		if !nameOk || phone == "" {
-			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
+		phone, phoneOk := item["mobile_number"].(string)
+		if !phoneOk || phone == "" {
+			log.FuncErrorTrace(0, "Failed to get Phone for Item: %+v\n", item)
 			phone = ""
 		}
-		UserId, ok := item["user_code"].(string)
-		if !ok {
+		userCode, userCodeOk := item["user_code"].(string)
+		if !userCodeOk {
+			log.FuncErrorTrace(0, "Failed to get UserCode for Item: %+v\n", item)
+			continue
+		}
+		userId, userIdOk := item["user_id"].(int64)
+		if !userIdOk {
 			log.FuncErrorTrace(0, "Failed to get UserId for Item: %+v\n", item)
 			continue
 		}
-		Id, ok := item["user_id"].(int64)
-		if !ok {
+		userRoles, userIdOk := item["role_name"].(string)
+		if !userIdOk {
 			log.FuncErrorTrace(0, "Failed to get UserId for Item: %+v\n", item)
 			continue
 		}
 
 		usersData := models.SaleReps{
-			Name:    name,
-			RepId:   Id,
-			Email:   email,
-			Phone:   phone,
-			RepCode: UserId,
+			Name:      name,
+			RepId:     userId,
+			Email:     email,
+			Phone:     phone,
+			RepCode:   userCode,
+			UserRoles: userRoles,
 		}
 		usersNameList.SaleRepList = append(usersNameList.SaleRepList, usersData)
 	}

@@ -1,7 +1,7 @@
 /**************************************************************************
- * File       	   : apiGetTeams.go
- * DESCRIPTION     : This file contains functions for get users data handler
- * DATE            : 23-Apr-2024
+ * File           : apiGetTeams.go
+ * DESCRIPTION    : This file contains functions for get users data handler
+ * DATE           : 23-Apr-2024
  **************************************************************************/
 
 package services
@@ -10,18 +10,17 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"strings"
-
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 /******************************************************************************
-* FUNCTION:		HandleGetTeamsDataRequest
-* DESCRIPTION:     handler for get users by role request
-* INPUT:			resp, req
-* RETURNS:    		void
+* FUNCTION:      HandleGetTeamDataRequest
+* DESCRIPTION:   handler for get users by role request
+* INPUT:         resp, req
+* RETURNS:       void
 ******************************************************************************/
 func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
@@ -47,40 +46,24 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	queryForHeader := `
-    SELECT
-        u.name AS user_name,
-        u.mobile_number,
-        rm.name AS reporting_manager_name
-    FROM
-        user_details u
-    LEFT JOIN
-        user_details rm ON u.reporting_manager = rm.user_id
-    WHERE
-        u.user_id = $1
-    ORDER BY
-        u.user_id;
-	 `
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForHeader, []interface{}{dataReq.ManagerId})
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
-		return
-	}
-
-	regionalManager := data[0]["reporting_manager_name"].(string)
-	salesManager := data[0]["user_name"].(string)
+	// Query to get team members and count of members and managers
 	query = `
-		SELECT
-			name,
-			email_id,
-			mobile_number AS phone_number,
-			user_id
-			FROM
-					user_details
-			WHERE
-					team_id = $1 
-	`
+		 SELECT
+			 ud.user_code,
+			 tm.role_in_team,
+			 ud.name,
+			 ud.email_id,
+			 tm.team_member_id,
+			 ud.mobile_number AS phone_number,
+			 COUNT(CASE WHEN tm.role_in_team = 'member' THEN 1 END) OVER (PARTITION BY tm.team_id) AS member_count,
+			 COUNT(CASE WHEN tm.role_in_team = 'manager' THEN 1 END) OVER (PARTITION BY tm.team_id) AS manager_count
+		 FROM
+			 team_members tm
+		 JOIN
+			 user_details ud ON tm.user_id = ud.user_id
+		 WHERE
+			 tm.team_id = $1
+	 `
 	filer, _ := PrepareTeamsFilters("", dataReq, true)
 	query = query + filer
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TeamId})
@@ -91,43 +74,46 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	usersNameList := []models.GetRepResponse{}
+	memberCount := 0
+	managerCount := 0
 	for _, item := range data {
-		name, nameOk := item["name"].(string)
-		if !nameOk || name == "" {
-			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
-			name = ""
-		}
-		Email, ok := item["email_id"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get TeamId for Item: %+v\n", item)
-			continue
-		}
-		Phone, ok := item["phone_number"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get TeamId for Item: %+v\n", item)
-			continue
-		}
-		Id, ok := item["user_id"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Id for Item: %+v\n", item)
+		userCode, ok1 := item["user_code"].(string)
+		role, ok2 := item["role_in_team"].(string)
+		name, ok3 := item["name"].(string)
+		email, ok4 := item["email_id"].(string)
+		phone, ok5 := item["phone_number"].(string)
+		teamMemberId, ok6 := item["team_member_id"].(int64)
+
+		if !ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6 {
+			log.FuncErrorTrace(0, "Failed to get details for Item: %+v\n", item)
 			continue
 		}
 
+		// Increment counts based on role
+		if role == "member" {
+			memberCount++
+		} else if role == "manager" {
+			managerCount++
+		}
+
 		usersData := models.GetRepResponse{
-			Id:          Id,
-			SaleRepName: name,
-			EmailId:     Email,
-			PhoneNumber: Phone,
+			UserCode:     userCode,
+			Role:         role,
+			Name:         name,
+			EmailId:      email,
+			PhoneNumber:  phone,
+			TeamMemberId: teamMemberId,
 		}
 		usersNameList = append(usersNameList, usersData)
 	}
 
+	// Prepare response
 	TeamResp := models.GetTeamResponse{
-		TeamName:            dataReq.TeamName,
-		ManagerName:         salesManager,
-		RegionalManagerName: regionalManager,
-		SaleRep:             usersNameList,
-		TeamID:              dataReq.TeamId,
+		TeamName:     dataReq.TeamName,
+		SaleRep:      usersNameList,
+		TeamID:       dataReq.TeamId,
+		MemberCount:  memberCount,
+		ManagerCount: managerCount,
 	}
 
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(TeamResp.SaleRep), usersNameList)
@@ -135,14 +121,14 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareStateFilters
- * DESCRIPTION:     handler for create select query
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:      PrepareTeamsFilters
+* DESCRIPTION:   handler for create select query
+* INPUT:         resp, req
+* RETURNS:       void
+******************************************************************************/
 func PrepareTeamsFilters(tableName string, dataFilter models.GetTeamRequest, forDataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareFilters")
-	defer func() { log.ExitFn(0, "PrepareFilters", nil) }()
+	log.EnterFn(0, "PrepareTeamsFilters")
+	defer func() { log.ExitFn(0, "PrepareTeamsFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 

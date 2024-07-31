@@ -21,11 +21,11 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetPerfomanceProjectStatusRequest
- * DESCRIPTION:     handler for get InstallCost data request
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:		HandleGetPerfomanceProjectStatusRequest
+* DESCRIPTION:     handler for get InstallCost data request
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
@@ -45,8 +45,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
-		filterCount        string
-		whereEleListCount  []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -85,7 +83,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 	// this sets the data interval bracket for querying
-	// dataReq.IntervalDays = "90"
+	dataReq.IntervalDays = "90"
 	// Check whether the user is Admin, Dealer, Sales Rep
 
 	whereEleList = append(whereEleList, dataReq.Email)
@@ -101,19 +99,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		switch role {
 		case "Admin":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
-			filterCount, whereEleListCount = PrepareAdminDlrFilters(tableName, dataReq, true, false, true)
-			break
 		case "Dealer Owner":
 			dataReq.DealerName = name
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
-			filterCount, whereEleListCount = PrepareAdminDlrFilters(tableName, dataReq, true, false, true)
-			break
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
 			dataReq.DealerName = dealerName
-			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, false)
-			filterCount, whereEleListCount = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, true)
-			break
+			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 		// this is for the roles regional manager and sales manager
 		default:
 			rgnSalesMgrCheck = true
@@ -149,8 +141,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		dealerName := data[0]["dealer_name"]
 		dataReq.DealerName = dealerName
-		filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, false)
-		filterCount, whereEleListCount = PrepareSaleRepFilters(tableName, dataReq, SaleRepList, true)
+		filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
 	if filter != "" {
@@ -169,9 +160,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	RecordCount = int64(len(data))
+	paginatedData := PaginateData(data, dataReq)
 	perfomanceList := models.PerfomanceListResponse{}
 
-	for _, item := range data {
+	for _, item := range paginatedData {
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
@@ -233,14 +226,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			InstallD = InstallReadyDate.Format("2006-01-02")
 		}
 
-		ItemId, ok := item["row_id"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get InstallReadyDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			// InstallD =
-		}
-
 		perfomanceResponse := models.PerfomanceResponse{
-			ItemId:                 ItemId,
 			UniqueId:               UniqueId,
 			Customer:               Customer,
 			ContractDate:           ContractD,
@@ -253,41 +239,18 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
 
-	countQuery := `
-	SELECT COUNT(*) AS total_count
-	FROM internal_ops_metrics_schema AS intOpsMetSchema 
-	LEFT JOIN sales_metrics_schema AS salMetSchema 
-  ON intOpsMetSchema.unique_id = salMetSchema.unique_id
-	LEFT JOIN field_ops_metrics_schema AS fieldOpsSchema 
-  ON intOpsMetSchema.unique_id = fieldOpsSchema.unique_id
-	LEFT JOIN second_field_ops_metrics_schema AS secondFieldOpsSchema 
-  ON intOpsMetSchema.unique_id = secondFieldOpsSchema.unique_id `
-
-	start := time.Now()
-	countQuery = countQuery + filterCount
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, countQuery, whereEleListCount)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
-		return
-	}
-	duration := time.Since(start).Seconds()
-	log.FuncInfoTrace(0, "DURATION++ %v", duration)
-
-	RecordCount = data[0]["total_count"].(int64)
-
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAdminDlrFilters
- * DESCRIPTION:
-		 PaginateData function paginates data directly from the returned data itself
-		 without setting any offset value. For large data sizes, using an offset
-		 was creating performance issues. This approach manages to keep the response
-		 time under 2 seconds.
- ******************************************************************************/
+* FUNCTION:		PrepareAdminDlrFilters
+* DESCRIPTION:
+		PaginateData function paginates data directly from the returned data itself
+		without setting any offset value. For large data sizes, using an offset
+		was creating performance issues. This approach manages to keep the response
+		time under 2 seconds.
+******************************************************************************/
 
 func PaginateData(data []map[string]interface{}, req models.PerfomanceStatusReq) []map[string]interface{} {
 	paginatedData := make([]map[string]interface{}, 0, req.PageSize)
@@ -304,11 +267,11 @@ func PaginateData(data []map[string]interface{}, req models.PerfomanceStatusReq)
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAdminDlrFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:		PrepareAdminDlrFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
 
 func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, fitlterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
@@ -372,26 +335,14 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 
 	if !whereAdded {
 		filtersBuilder.WriteString(` WHERE intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 `)
-	} else if whereAdded && !dataCount {
-		filtersBuilder.WriteString(fmt.Sprintf(` AND intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 AND intOpsMetSchema.row_id > $%d `, len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.ItemLastSeen)
-	}
-
-	if dataCount {
-		filtersBuilder.WriteString(` 
-			AND intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0
-		`)
+			 AND intOpsMetSchema.unique_id <> ''
+			 AND intOpsMetSchema.system_size IS NOT NULL
+			 AND intOpsMetSchema.system_size > 0 `)
 	} else {
-		filtersBuilder.WriteString(` ORDER BY intOpsMetSchema.row_id LIMIT 10`)
+		filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
+			 AND intOpsMetSchema.unique_id <> ''
+			 AND intOpsMetSchema.system_size IS NOT NULL
+			 AND intOpsMetSchema.system_size > 0 `)
 	}
 
 	filters = filtersBuilder.String()
@@ -401,12 +352,12 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareInstallCostFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
-func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}, dataCount bool) (filters string, whereEleList []interface{}) {
+* FUNCTION:		PrepareInstallCostFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
 
@@ -477,15 +428,16 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	filtersBuilder.WriteString(fmt.Sprintf(") AND salMetSchema.dealer = $%d ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
 
-	if dataCount {
-		filtersBuilder.WriteString(` 
-			AND intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0
-		`)
+	if !whereAdded {
+		filtersBuilder.WriteString(` WHERE intOpsMetSchema.unique_id IS NOT NULL
+			 AND intOpsMetSchema.unique_id <> ''
+			 AND intOpsMetSchema.system_size IS NOT NULL
+			 AND intOpsMetSchema.system_size > 0 `)
 	} else {
-		filtersBuilder.WriteString(` ORDER BY intOpsMetSchema.row_id LIMIT 10`)
+		filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
+			 AND intOpsMetSchema.unique_id <> ''
+			 AND intOpsMetSchema.system_size IS NOT NULL
+			 AND intOpsMetSchema.system_size > 0 `)
 	}
 
 	filters = filtersBuilder.String()

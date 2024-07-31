@@ -7,11 +7,12 @@
 package models
 
 type TeamData struct {
-	TeamName    string `json:"team_name"`
-	RepId       []int  `json:"rep_ids"`
-	Description string `json:"description"`
-	DeleteCheck bool   `json:"delete_check"`
+	TeamName    string   `json:"team_name"`
+	SaleRepIds  []string `json:"sale_rep_ids"`
+	ManagerIds  []string `json:"manager_ids"`
+	Description string   `json:"description"`
 }
+
 type TeamsList struct {
 	TeamsList []TeamData `json:"teams_list"`
 }
@@ -30,19 +31,24 @@ type GetTeams struct {
 
 //* induvidual team
 
+type GetTeamsRequest struct {
+	DealerNames []string `json:"dealer_names"`
+}
+
 type GetTeamRequest struct {
 	PageNumber int64  `json:"page_number"`
 	PageSize   int64  `jsob:"page_size"`
 	TeamName   string `json:"team_name"`
-	ManagerId  int64  `json:"manager_id"`
 	TeamId     int64  `json:"team_id"`
 }
 
 type GetRepResponse struct {
-	Id          int64  `json:"rep_id"`
-	SaleRepName string `json:"sale_rep_name"`
-	EmailId     string `json:"email_id"`
-	PhoneNumber string `json:"phone_number"`
+	UserCode     string `json:"user_code"`
+	Name         string `json:"sale_rep_name"`
+	EmailId      string `json:"email_id"`
+	PhoneNumber  string `json:"phone_number"`
+	Role         string `json:"role"`
+	TeamMemberId int64  `json:"team_member_id"`
 }
 
 type GetTeamResponse struct {
@@ -51,12 +57,27 @@ type GetTeamResponse struct {
 	TeamID              int64            `json:"team_id"`
 	RegionalManagerName string           `json:"rehgional_manager_name"`
 	SaleRep             []GetRepResponse `json:"sale_rep_list"`
+	MemberCount         int              `jsosn:"member_count"`
+	ManagerCount        int              `json:"manager_count"`
 }
 
 //* manage team data
 
-type TeamDataRequest struct {
-	TeamId      int64 `json:"team_id"`
-	RepId       []int `json:"rep_ids"`
-	DeleteCheck bool  `json:"delete_check"`
+type TeamUpdateData struct {
+	TeamID     int64    `json:"team_id"`
+	ManagerIds []string `json:"manager_ids"`
+	SaleRepIds []string `json:"rep_ids"`
+}
+
+type DeleteTeamMemberRequest struct {
+	TeamMemberID int `json:"team_member_id"`
+}
+
+type UpdateTeamNameRequest struct {
+	TeamID   int    `json:"team_id"`
+	TeamName string `json:"team_name"`
+}
+
+type DeleteTeamsRequest struct {
+	TeamIDs []int `json:"team_ids"`
 }

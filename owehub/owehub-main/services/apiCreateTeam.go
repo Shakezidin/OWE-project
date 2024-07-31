@@ -1,8 +1,8 @@
-/**************************************************************************
- * File       	   : apiCreateTeam.go
- * DESCRIPTION     : This file contains functions for create team handler
- * DATE            : 22-Jan-2024
- **************************************************************************/
+/******************************************************************************
+ * File           : apiCreateTeam.go
+ * DESCRIPTION    : This file contains functions for create team handler
+ * DATE           : 22-Jan-2024
+ ******************************************************************************/
 
 package services
 
@@ -20,18 +20,16 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateTeamRequest
- * DESCRIPTION:     handler for create team request
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:        HandleCreateTeamRequest
+* DESCRIPTION:     handler for create team request
+* INPUT:           resp, req
+* RETURNS:         void
+******************************************************************************/
 func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		TeamData         models.TeamData
-		queryParameters  []interface{}
-		queryParameters2 []interface{}
-		data             []map[string]interface{}
+		err             error
+		TeamData        models.TeamData
+		queryParameters []interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateTeamRequest")
@@ -65,40 +63,36 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	saleRepSet := make(map[string]struct{})
+	for _, saleRepId := range TeamData.SaleRepIds {
+		saleRepSet[saleRepId] = struct{}{}
+	}
+
+	for _, managerId := range TeamData.ManagerIds {
+		if _, exists := saleRepSet[managerId]; exists {
+			err = fmt.Errorf("User ID %s cannot be both a Sale Representative and a Manager", managerId)
+			log.FuncErrorTrace(0, "%v", err)
+			FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
+			return
+		}
+	}
+
 	queryParameters = append(queryParameters, TeamData.TeamName)
 	queryParameters = append(queryParameters, TeamData.Description)
-	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateTeamFunction, queryParameters)
+	queryParameters = append(queryParameters, pq.Array(TeamData.SaleRepIds))
+	queryParameters = append(queryParameters, pq.Array(TeamData.ManagerIds))
+
+	var v_team_id int
+	result, err := db.CallDBFunction(db.OweHubDbIndex, db.CreateTeamFunction, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Add Team in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Team", http.StatusInternalServerError, nil)
 		return
 	}
 
-	query := fmt.Sprintf("select team_id from teams where team_name = '%s'", TeamData.TeamName)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Team from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to create team", http.StatusBadRequest, nil)
-		return
+	if len(result) > 0 {
+		v_team_id = result[0].(int)
 	}
 
-	if len(data) == 0 {
-		log.FuncErrorTrace(0, "Failed to get Teams data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to create team", http.StatusBadRequest, nil)
-		return
-	}
-
-	teamId := data[0]["team_id"].(int64)
-
-	queryParameters2 = append(queryParameters2, pq.Array(TeamData.RepId))
-	queryParameters2 = append(queryParameters2, teamId)
-	queryParameters2 = append(queryParameters2, TeamData.DeleteCheck)
-	_, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRepTeamFuntion, queryParameters2)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to update Team in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Team", http.StatusInternalServerError, nil)
-		return
-	}
-
-	FormAndSendHttpResp(resp, "Team Created Successfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, fmt.Sprintf("Team Created Successfully with Team ID: %d", v_team_id), http.StatusOK, nil)
 }
