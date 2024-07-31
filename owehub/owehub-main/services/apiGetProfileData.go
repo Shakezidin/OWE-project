@@ -56,6 +56,7 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 			 vd.dealer_name as dealer,
 			 vd.dealer_logo,
 			 vd.bg_colour,
+			 vd.preferred_name,
 			 ud.tables_permissions
 			 FROM user_details ud
 			 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
@@ -211,6 +212,12 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 		bgColour = ""
 	}
 
+	// preferredName
+	preferredName, preferredNameOk := data[0]["preferred_name"].(string)
+	if !preferredNameOk || preferredName == "" {
+		preferredName = ""
+	}
+
 	// tablesPermissions
 	tablesPermissionsJSON, Ok := data[0]["tables_permissions"].([]byte)
 	if !Ok || tablesPermissionsJSON == nil {
@@ -246,6 +253,7 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 		Dealer:            Dealer,
 		DealerLogo:        DealerLogo,
 		BgColour:          bgColour,
+		PreferredName:     preferredName,
 	}
 
 	// Send the response
