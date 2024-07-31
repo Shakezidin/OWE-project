@@ -23,8 +23,6 @@ type GetTeam struct {
 	TeamId       int64  `json:"team_id"`
 	TeamName     string `json:"team_name"`
 	TeamStrength int64  `json:"team_strength"`
-	Name         string `json:"name"`
-	ManagerId    int64  `json:"manager_id"`
 }
 
 type GetTeams struct {
@@ -54,13 +52,11 @@ type GetRepResponse struct {
 }
 
 type GetTeamResponse struct {
-	TeamName            string           `json:"team_name"`
-	ManagerName         string           `json:"manager_name"`
-	TeamID              int64            `json:"team_id"`
-	RegionalManagerName string           `json:"rehgional_manager_name"`
-	SaleRep             []GetRepResponse `json:"sale_rep_list"`
-	MemberCount         int              `jsosn:"member_count"`
-	ManagerCount        int              `json:"manager_count"`
+	TeamName     string           `json:"team_name"`
+	TeamID       int64            `json:"team_id"`
+	SaleRep      []GetRepResponse `json:"sale_rep_list"`
+	MemberCount  int              `jsosn:"member_count"`
+	ManagerCount int              `json:"manager_count"`
 }
 
 //* manage team data
@@ -73,6 +69,7 @@ type TeamUpdateData struct {
 
 type DeleteTeamMemberRequest struct {
 	TeamMemberID int `json:"team_member_id"`
+	TeamId       int `json:"team_id"`
 }
 
 type UpdateTeamNameRequest struct {

@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS teams (
 CREATE TABLE IF NOT EXISTS team_members (
     team_member_id SERIAL PRIMARY KEY,
     team_id INT NOT NULL,
-    user_id INT NOT NULL,
+    user_id INT NOT NULL UNIQUE,
     role_in_team VARCHAR(50) NOT NULL,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamptz,

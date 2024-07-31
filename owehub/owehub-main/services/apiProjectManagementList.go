@@ -166,12 +166,14 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		Message     string      `json:"message"`
 		RecordCount int64       `json:"record_count"`
 		Data        interface{} `json:"data"`
+		StatusCode  int         `json:"status"`
 	}
 	recordLen := len(data)
 	response := Response{
 		Message:     "Table Data",
 		RecordCount: int64(recordLen),
 		Data:        projectList,
+		StatusCode:  http.StatusOK,
 	}
 
 	resp.Header().Set("Content-Type", "application/json")
