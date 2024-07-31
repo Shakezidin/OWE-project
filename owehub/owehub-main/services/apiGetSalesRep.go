@@ -75,7 +75,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 				 `
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{userEmail})
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get dealer ID from DB with err: %v", err)
+			log.FuncErrorTrace(0, "Failed to get dealers ID from DB with err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get dealers ID", http.StatusBadRequest, nil)
 			return
 		}
