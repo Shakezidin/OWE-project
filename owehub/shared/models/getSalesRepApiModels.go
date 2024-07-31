@@ -7,19 +7,20 @@
 package models
 
 type GetSalesRep struct {
-	Role    string `json:"role"`
-	Name    string `json:"name"`
-	SubRole string `json:"sub_role"`
+	TeamId     int64  `json:"team_id"`
+	DealerName string `json:"dealer_name"`
+	Email      string
 }
 
 type SaleReps struct {
-	RepId int64 `json:"rep_id"`
-	RepCode string `json:"rep_code"`
-	Name  string `json:"name"`
-	Phone string `json:"phone"`
-	Email string `json:"email"`
+	UserRoles string `json:"user_roles"`
+	RepId     int64  `json:"rep_id"`
+	RepCode   string `json:"rep_code"`
+	Name      string `json:"name"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
 }
 
-type GetSaleRepeList struct {
+type GetSaleRepList struct {
 	SaleRepList []SaleReps `json:"sale_rep_list"`
 }

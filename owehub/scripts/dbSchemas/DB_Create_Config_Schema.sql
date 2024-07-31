@@ -1,28 +1,9 @@
 /***************************** SETTINGS DB TABLE START  ************************************************/
 /*Table to store the teams information for appointment setters*/
-CREATE TABLE teams (
-    team_id serial NOT NULL,
-    description CHARACTER VARYING,
-    team_name character varying UNIQUE,
-    PRIMARY KEY (team_id)
-);
+
+
 
 /*Table to store thrae appointment setters on  boarding information*/
-CREATE TABLE appointment_setters (
-    setters_id serial NOT NULL,
-    team_id INT,
-    first_name character varying,
-    last_name character varying,
-    pay_rate double precision,
-    description character varying,
-    is_archived BOOLEAN DEFAULT FALSE,
-    start_date character varying NOT NULL,
-    end_date character varying,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    PRIMARY KEY (setters_id),
-    FOREIGN KEY (team_id) REFERENCES teams(team_id)
-);
 
 CREATE TABLE states (
     state_id SERIAL NOT NULL,
@@ -65,7 +46,6 @@ CREATE TABLE v_dealer (
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE IF NOT EXISTS user_details(
     user_id SERIAL,
     name VARCHAR(255) NOT NULL,
@@ -97,10 +77,48 @@ CREATE TABLE IF NOT EXISTS user_details(
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
-    FOREIGN KEY (team_id) REFERENCES teams(team_id),
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     PRIMARY KEY (user_id)
 );
+
+CREATE TABLE IF NOT EXISTS teams (
+    team_id SERIAL NOT NULL,
+    team_name VARCHAR(255) NOT NULL,
+    dealer_id INT NOT NULL,
+    description VARCHAR(255),
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamptz,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    PRIMARY KEY (team_id)
+);
+
+CREATE TABLE IF NOT EXISTS team_members (
+    team_member_id SERIAL PRIMARY KEY,
+    team_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role_in_team VARCHAR(50) NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamptz,
+    FOREIGN KEY (team_id) REFERENCES teams(team_id),
+    FOREIGN KEY (user_id) REFERENCES user_details(user_id)
+);
+
+CREATE TABLE appointment_setters (
+    setters_id serial NOT NULL,
+    team_id INT,
+    first_name character varying,
+    last_name character varying,
+    pay_rate double precision,
+    description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (setters_id),
+    FOREIGN KEY (team_id) REFERENCES teams(team_id)
+);
+
 
 CREATE TABLE partners (
     partner_id serial NOT NULL,

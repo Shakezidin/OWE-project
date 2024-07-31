@@ -44,7 +44,7 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy adder_type(adder_type) FROM '/docker-entrypoint-initdb.d/adder_type.csv' DELIMITER ',' CSV;
 \copy states(abbr,name) FROM '/docker-entrypoint-initdb.d/states.csv' DELIMITER ',' CSV;
 \copy project_status(status) FROM '/docker-entrypoint-initdb.d/project_status.csv' DELIMITER ',' CSV;
-\copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
+-- \copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
 \copy rep_type(rep_type) FROM '/docker-entrypoint-initdb.d/rep_type.csv' DELIMITER ',' CSV;
 \copy sale_type(type_name) FROM '/docker-entrypoint-initdb.d/sale_type.csv' DELIMITER ',' CSV;
 \copy source(name,description) FROM '/docker-entrypoint-initdb.d/source.csv' DELIMITER ',' CSV;
@@ -52,7 +52,7 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
 \copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
 \copy commission_rates(partner_id, installer_id,sale_type_id, state_id, rl, rate, rep_type, sale_price, start_date, end_date) FROM '/docker-entrypoint-initdb.d/commission_rates.csv' DELIMITER ',' CSV;
-\copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
+-- \copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 \copy loan_type (product_code,description,active,adder) FROM '/docker-entrypoint-initdb.d/loan_type.csv' DELIMITER ',' CSV;
 \copy v_dealer (id,dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
 \copy dealer_override(sub_dealer,dealer_id,pay_rate,start_date,end_date,state) FROM '/docker-entrypoint-initdb.d/dealer_override.csv' DELIMITER ',' CSV;
@@ -90,8 +90,8 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy adder_responsibility(pay_scale,percentage) FROM '/docker-entrypoint-initdb.d/adder_responsibility.csv' DELIMITER ',' CSV;
 \copy noncomm_dlrpay(unique_id,date,exact_amount,approved_by,notes) FROM '/docker-entrypoint-initdb.d/non_comm.csv' DELIMITER ',' CSV;
 \copy dlr_oth(unique_id,payee,amount,date,description,balance,paid_amount,dba) FROM '/docker-entrypoint-initdb.d/dlr_oth.csv' DELIMITER ',' CSV;
-\copy appt_setters(name,team_id,pay_rate,start_date,end_date) FROM '/docker-entrypoint-initdb.d/appt_setters.csv' DELIMITER ',' CSV;
-\copy leader_override(team_id,leader_name,type,term,qual,sales_q,team_kw_q,pay_rate,start_date,end_date) FROM '/docker-entrypoint-initdb.d/leader_override.csv' DELIMITER ',' CSV;
+-- \copy appt_setters(name,team_id,pay_rate,start_date,end_date) FROM '/docker-entrypoint-initdb.d/appt_setters.csv' DELIMITER ',' CSV;
+-- \copy leader_override(team_id,leader_name,type,term,qual,sales_q,team_kw_q,pay_rate,start_date,end_date) FROM '/docker-entrypoint-initdb.d/leader_override.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
@@ -230,6 +230,10 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveDba.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepTeam.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcDeleteTeamMember.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateTeamName.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcDeleteTeams.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcAddTeamMember.sql';
 
 
 /* Battery Backup Calcuator Schema */
