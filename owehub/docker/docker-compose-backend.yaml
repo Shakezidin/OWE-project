@@ -7,8 +7,8 @@ services:
     container_name: postgres_db_latest_1
     restart: always
     environment:
-      - POSTGRES_USER=OwePostgres
-      - POSTGRES_PASSWORD=OwePostgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - /var/postgresql/data/:/var/lib/postgresql/data
     ports:
@@ -16,6 +16,19 @@ services:
     networks:
       owe_net:
         ipv4_address: 172.30.0.211
+
+##############DB MIGRATION#####################
+ migrate:
+    image: migrate_db_latest:v1
+    container_name: migrate_db_latest_1
+    restart: on-failure
+    depends_on:
+      - service-postgres
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=${SSL_MODE}
+    networks:
+      owe_net:
+        ipv4_address: 172.30.0.214
 
 ############### OWE HUB UTILS #####################
 #  service-owehub-utils:
@@ -34,6 +47,9 @@ services:
 #      OPEN_HTTP_STD_PORT: "NO"
 #      HTTPS_SUPPORT: "NO"
 #      HTTP_READ_HEADER_TIMEOUT: "10"
+#   depends_on:
+#     - service-postgres
+#     - migrate
 #    volumes:
 #      - /var/log/owe/:/var/log/owe/
 #    privileged: true
@@ -54,6 +70,9 @@ services:
      OPEN_HTTP_STD_PORT: "NO"
      HTTPS_SUPPORT: "NO"
      HTTP_READ_HEADER_TIMEOUT: "10"
+   depends_on:
+     - service-postgres
+     - migrate
    volumes:
      - /var/log/owe/:/var/log/owe/
    privileged: true
@@ -74,6 +93,9 @@ services:
      OPEN_HTTP_STD_PORT: "NO"
      HTTPS_SUPPORT: "NO"
      HTTP_READ_HEADER_TIMEOUT: "10"
+   depends_on:
+     - service-postgres
+     - migrate
    volumes:
      - /var/log/owe/:/var/log/owe/
    privileged: true

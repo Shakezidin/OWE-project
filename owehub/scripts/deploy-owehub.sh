@@ -20,7 +20,7 @@ update_ip "$AppRoot/gui/.env" "155.138.163.236" "$ip_address"
 
 # Check if any argument is passed
 if [ $# -eq 0 ]; then
-    echo "No arguments provided. Usage: $0 {all|gui|backend|database}"
+    echo "No arguments provided. Usage: $0 {all|gui|backend|migrate_db|database}"
     exit 1
 fi
 
@@ -28,14 +28,19 @@ fi
 case "$1" in
     all)
         ./restart_ui.sh
-        ./make_postgres_image.sh
-        ./restart-owehub-backend.sh
+        ./migrate_postgres_image.sh
+	./restart-owehub-backend.sh
         ;;
     gui)
         ./restart_ui.sh
         ;;
     backend)
         ./restart-owehub-backend.sh
+	;;
+    migrate_db)
+        ./stop-OweApp-Backend-svc.sh
+        ./migrate_postgres_image.sh
+	./start-OweApp-Backend-svc.sh
         ;;
     database)
         ./stop-OweApp-Backend-svc.sh

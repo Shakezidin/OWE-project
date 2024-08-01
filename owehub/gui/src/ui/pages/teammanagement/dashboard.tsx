@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../routes/routes';
@@ -14,6 +14,10 @@ import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints'
 import { dealerOption } from '../../../core/models/data_models/SelectDataModel';
 import ArDropdownWithCheckboxes from '../ar/ardashboard/Dropdown';
 import DropWithCheck from '../../components/dropwithcheck/dropwithcheck';
+import { toast } from 'react-toastify';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
 
 interface AccordionSection {
   data: any;
@@ -31,8 +35,11 @@ const TeamManagement: React.FC = () => {
   const [newFormData, setNewFormData] = useState<any>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
   const [selectedDealer, setSelectedDealer] = useState(null);
-  const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = useState(false);
-
+  const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = useState<number[]>(
+    []
+  );
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [isPending, setIspending] = useState(false);
   const getnewformData = async () => {
     const tableData = {
       tableNames: ['dealer'],
@@ -46,29 +53,28 @@ const TeamManagement: React.FC = () => {
 
   useEffect(() => {
     if (dealer) {
-      setNewFormData((prev: any) => ({ ...prev, ...dealer }));
+      const roleAdmin = localStorage.getItem('role');
+      if (roleAdmin === TYPE_OF_USER.ADMIN) {
+        setNewFormData((prev: any) => ({ ...prev, ...dealer }));
+        setSelectedOptions(
+          (dealer?.dealer ? ['All', ...dealer?.dealer] : []) as string[]
+        );
+      }
     }
   }, [dealer]);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // const pageNumber = {
-    //   page_number: currentPage,
-    //   page_size: itemsPerPage,
-    //   archived: viewArchived ? true : undefined,
-    //   filters,
-    // };
-    dispatch(getTeams());
-  }, [refetch]);
+    dispatch(getTeams(selectedOptions));
+  }, [refetch, selectedOptions]);
 
-  const { isSuccess, isFormSubmitting, teams } = useAppSelector(
+  const { isSuccess, isFormSubmitting, teams, isLoading } = useAppSelector(
     (state) => state.teamManagmentSlice
   );
 
   const accordionSections: AccordionSection[] = [
     {
-
       data: teams,
       state: useState<boolean>(true),
     },
@@ -81,48 +87,70 @@ const TeamManagement: React.FC = () => {
     setOpen2(false);
   };
 
+  const dealerOption = useMemo(() => {
+    const arr = [{ label: 'All', value: 'All', key: 'all' }];
+    if (newFormData?.dealer) {
+      arr.push(
+        ...newFormData?.dealer?.map?.((item: string) => ({
+          label: item,
+          value: item,
+          key: item,
+        }))
+      );
+    }
 
-  const dummyOptions = [
-    { label: 'All', value: 'All', key: 'all' },
-    { label: 'Option 1', value: 'option1', key: 'key1' },
-    { label: 'Option 2', value: 'option2', key: 'key2' },
-    { label: 'Option 3', value: 'option3', key: 'key3' },
-    { label: 'Option 4', value: 'option4', key: 'key4' },
-  ];
-
-
-
+    return arr;
+  }, [newFormData]);
 
   let prevColorIndex = -1;
 
   // const handleRedirect = (id: number) => {
   //   history.push(`/team/${id}`);
   // };
-  console.log(teams, 'teMS');
-  console.log(accordionSections, 'acjkbf');
 
   const handleChange = (selectedOption: any) => {
     setSelectedDealer(selectedOption);
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.target.checked;
+  const handleCheckboxChange = (id: number) => {
+    // const isChecked = e.target.checked;
 
-    if (isChecked) {
-      setIsAnyCheckboxChecked(true);
-    } else {
-      const anyOtherChecked = document.querySelectorAll('.team-checkbox:checked').length > 0;
-      setIsAnyCheckboxChecked(anyOtherChecked);
+    // if (isChecked) {
+    //   setIsAnyCheckboxChecked(true);
+    // } else {
+    //   const anyOtherChecked = document.querySelectorAll('.team-checkbox:checked').length > 0;
+    //   setIsAnyCheckboxChecked(anyOtherChecked);
+    // }
+    setIsAnyCheckboxChecked((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+  const handleDelete = async () => {
+    try {
+      setIspending(true);
+      const data = await postCaller('delete_teams', {
+        team_ids: isAnyCheckboxChecked,
+      });
+      if (data.status > 201) {
+        toast.error(data.message);
+        return;
+      }
+      await dispatch(getTeams());
+      setIsAnyCheckboxChecked([]);
+      setIspending(false);
+      toast.success('Teams deleted successfully');
+    } catch (error) {
+      console.error(error);
     }
-  }
-
+  };
+  const roleAdmin = localStorage.getItem('role');
   return (
     <>
       {open2 && (
         <NewTeam
           handleClose2={handleClose2}
           setRefetch={setRefetch}
-        // onSubmitCreateUser={onSubmitCreateTeam}
+          // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
       <div className="team-container">
@@ -134,86 +162,126 @@ const TeamManagement: React.FC = () => {
               return (
                 <div
                   key={index}
-                // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
+                  // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
-                  <div className='teamdash-header'>
+                  <div className="teamdash-header">
                     <h1>Total Teams: {teams?.length}</h1>
-                    <div className='dash-newteam'>
+                    <div className="dash-newteam">
                       {/* <button className='delete' onClick={handleOpen2}>Remove Team</button> */}
-                      {isAnyCheckboxChecked && (
-                        <button className='delete' >Remove Team</button>
+                      {!!isAnyCheckboxChecked.length && (
+                        <button
+                          disabled={isPending}
+                          className="delete"
+                          onClick={handleDelete}
+                        >
+                          Remove Team
+                        </button>
                       )}
-                      <button className='create' onClick={handleOpen2}>+ Create New Team</button>
-
-                      <DropWithCheck options={dummyOptions} />
+                      <button className="create" onClick={handleOpen2}>
+                        + Create New Team
+                      </button>
+                      {roleAdmin === TYPE_OF_USER.ADMIN && (
+                        <DropWithCheck
+                          selectedOptions={selectedOptions}
+                          setSelectedOptions={setSelectedOptions}
+                          options={dealerOption}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className={`team-cards ${isOpen ? 'open' : ''}`}>
+                    {isLoading ? (
+                      <div
+                        style={{ width: '100%' }}
+                        className="flex justify-center items-center"
+                      >
+                        <MicroLoader />
+                      </div>
+                    ) : !data.length ? (
+                      <div
+                        style={{ width: '100%' }}
+                        className="flex justify-center items-center"
+                      >
+                        <DataNotFound />
+                      </div>
+                    ) : (
+                      data.map((item: any, index: any) => {
+                        let randomColorIndex;
+                        let randomCardColor;
+                        let randomArrowColor;
 
-
-                    {data.map((item: any, index: any) => {
-                      let randomColorIndex;
-                      let randomCardColor;
-                      let randomArrowColor;
-
-                      do {
-                        randomColorIndex = Math.floor(
-                          Math.random() * cardColors.length
+                        do {
+                          randomColorIndex = Math.floor(
+                            Math.random() * cardColors.length
+                          );
+                          randomCardColor = cardColors[randomColorIndex];
+                          randomArrowColor = arrowColors[randomColorIndex];
+                        } while (
+                          index > 0 &&
+                          randomColorIndex === prevColorIndex
                         );
-                        randomCardColor = cardColors[randomColorIndex];
-                        randomArrowColor = arrowColors[randomColorIndex];
-                      } while (
-                        index > 0 &&
-                        randomColorIndex === prevColorIndex
-                      );
 
-                      // Update the previous color index
-                      prevColorIndex = randomColorIndex;
+                        // Update the previous color index
+                        prevColorIndex = randomColorIndex;
 
-                      return (
-                        <div key={index}>
-                          <div className="team-pay-card-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-
-                            <Link
-                              to={item.route}
-                              className="team-pay-card"
-                              style={{ backgroundColor: randomCardColor, flexGrow: 1 }}
+                        return (
+                          <div key={index}>
+                            <div
+                              className="team-pay-card-wrapper"
+                              style={{ display: 'flex', alignItems: 'center' }}
                             >
-                              <div className='team-checkbox-wrapper'>
-
-                                <div className="team-name-tooltip">
-                                  <h1 className="team-card-heading">{item.team_name}</h1>
-                                </div>
-                                <input
-                                  type="checkbox"
-                                  className="team-checkbox"
-                                  onChange={handleCheckboxChange}
-                                  onClick={(e: React.MouseEvent<HTMLInputElement>) => e.stopPropagation()}
-                                />
-                              </div>
-                              <div className="team-con-fle">
-                                <div className="teamp-group">
-                                  <img src={ICONS.teamgroup} alt="" />
-                                  <h4>{item.team_strength} members</h4>
-                                </div>
-                                <Link
-                                  to={`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}
-                                  onClick={(e) => e.stopPropagation()} // Prevent triggering outer Link when clicking inner Link
-                                >
-                                  <div
-                                    className="team-arrow-wrapper"
-                                    style={{ color: randomArrowColor }}
-                                  >
-                                    <span className="view-text">View</span>
-                                    <RiArrowRightLine className="team-arrow-right" />
+                              <Link
+                                to={item.route}
+                                className="team-pay-card"
+                                style={{
+                                  backgroundColor: randomCardColor,
+                                  flexGrow: 1,
+                                }}
+                              >
+                                <div className="team-checkbox-wrapper">
+                                  <div className="team-name-tooltip">
+                                    <h1 className="team-card-heading">
+                                      {item.team_name}
+                                    </h1>
                                   </div>
-                                </Link>
-                              </div>
-                            </Link>
+                                  <input
+                                    type="checkbox"
+                                    className="team-checkbox"
+                                    checked={isAnyCheckboxChecked.includes(
+                                      item.team_id
+                                    )}
+                                    onChange={() =>
+                                      handleCheckboxChange(item.team_id)
+                                    }
+                                    onClick={(
+                                      e: React.MouseEvent<HTMLInputElement>
+                                    ) => e.stopPropagation()}
+                                  />
+                                </div>
+                                <div className="team-con-fle">
+                                  <div className="teamp-group">
+                                    <img src={ICONS.teamgroup} alt="" />
+                                    <h4>{item.team_strength} members</h4>
+                                  </div>
+                                  <Link
+                                    to={`/team-management/${item.team_id}?team-manager=${item.manager_id}&team-name=${item.team_name}`}
+                                    onClick={(e) => e.stopPropagation()} // Prevent triggering outer Link when clicking inner Link
+                                  >
+                                    <div
+                                      className="team-arrow-wrapper"
+                                      style={{ color: randomArrowColor }}
+                                    >
+                                      <span className="view-text">View</span>
+                                      <RiArrowRightLine className="team-arrow-right" />
+                                    </div>
+                                  </Link>
+                                </div>
+                              </Link>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })
+                    )}
                   </div>
                 </div>
               );

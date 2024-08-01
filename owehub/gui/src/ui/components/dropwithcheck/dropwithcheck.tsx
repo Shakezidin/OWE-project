@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, SetStateAction } from 'react';
 import './DropWithCheck.css';
 
 interface Option {
@@ -9,6 +9,8 @@ interface Option {
 
 interface DropWithCheckProps {
   options: Option[];
+  selectedOptions: string[];
+  setSelectedOptions:React.Dispatch<SetStateAction<string[]>>
 }
 
 const DropIcon = () => {
@@ -29,9 +31,11 @@ const DropIcon = () => {
 
 const DropWithCheck: React.FC<DropWithCheckProps> = ({
   options,
+  selectedOptions,
+  setSelectedOptions
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+ 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

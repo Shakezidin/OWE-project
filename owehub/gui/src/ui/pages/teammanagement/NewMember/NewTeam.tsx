@@ -13,6 +13,10 @@ import {
 } from '../../../../redux/apiActions/teamManagement/teamManagement';
 import { ICONS } from '../../../icons/Icons';
 import { resetSuccess } from '../../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 
 interface CreateUserProps {
   handleClose2: () => void;
@@ -25,7 +29,7 @@ interface Option {
 }
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
 const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   const dispatch = useAppDispatch();
@@ -33,20 +37,30 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   const { sales_manager_list, sale_rep_list, isSuccess } = useAppSelector(
     (state) => state.teamManagmentSlice
   );
-
   const [formData, setFormData] = useState({
     description: '',
     first_name: '',
   });
 
-
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
   const [selectedOption2, setSelectedOption2] = useState<string>('');
   const [selectedOption3, setSelectedOption3] = useState<string>('');
-
   const [selectedOptions2, setSelectedOptions2] = useState<Option[]>([]);
-
   const [userRole, setUserRole] = useState<string>('');
+  const [membersOption, setMembersOption] = useState<Option[]>([]);
+  const [newFormData, setNewFormData] = useState<string[]>([]);
+
+  const getnewformData = async () => {
+    const tableData = {
+      tableNames: ['dealer'],
+    };
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData(res.data?.dealer as string[]);
+  };
+  useEffect(() => {
+    getnewformData();
+  }, []);
+  console.log(newFormData, 'form data');
 
   useEffect(() => {
     if (localStorage.getItem('role')) {
@@ -69,7 +83,6 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       sub_role: 'Sale Representative',
     };
     dispatch(getSalesManagerList(data));
-    dispatch(getsaleRepList(dataa));
   }, [dispatch, selectedOption2]);
 
   const handleInputChange = (e: FormInput) => {
@@ -79,24 +92,21 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       [name]: value,
     }));
   };
+  const [managerOptions, setManagerOptions] = useState<Option[]>([]);
 
-  const comissionValueDataa: Option[] = [
-    { value: 'option0', label: 'Select Manager' },
-    { value: 'option1', label: 'Select Manager1' },
-    { value: 'option2', label: 'Select Manager2' },
-    ...sales_manager_list.map((manager: any) => ({
-      value: manager.name,
-      label: manager.name,
-    })),
-  ];
-
-  const members: Option[] = sale_rep_list.map((rep: any) => ({
-    value: rep.rep_id,
-    label: rep.name,
-  }));
-
-  // Adding the initial option
-  members.unshift({ value: 'option1', label: 'Select Sales Rep' });
+  const getUsersByDealer = async (dealer?: string) => {
+    try {
+      const data = await postCaller('get_team_member_dropdown', {
+        dealer_name: dealer,
+      });
+      if (data.status > 201) {
+        return new Error(data);
+      }
+      return await data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSelectChange2 = (selectedOption: Option | null) => {
     if (selectedOption) {
@@ -104,20 +114,22 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         const optionExists = prevOptions.some(
           (option) => option.value === selectedOption.value
         );
-  
         if (!optionExists) {
           return [...prevOptions, selectedOption];
         }
-  
         return prevOptions;
       });
+      setMembersOption((prev) =>
+        prev.filter((opt) => opt.value !== selectedOption.value)
+      );
     }
   };
-  
+
   const handleRemoveOption2 = (optionToRemove: Option) => {
     setSelectedOptions2((prevOptions) =>
       prevOptions.filter((option) => option !== optionToRemove)
     );
+    setMembersOption((prev) => [...prev, { ...optionToRemove }]);
   };
 
   const handleSelectChange = (selectedOption: Option | null) => {
@@ -125,10 +137,13 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       const optionExists = selectedOptions.some(
         (option) => option.value === selectedOption.value
       );
-  
+
       if (!optionExists) {
         setSelectedOptions([...selectedOptions, selectedOption]);
       }
+      setManagerOptions((prev) =>
+        prev.filter((opt) => opt.value !== selectedOption.value)
+      );
     }
   };
 
@@ -136,17 +151,49 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     setSelectedOptions(
       selectedOptions.filter((option) => option !== optionToRemove)
     );
+    setManagerOptions((prev) => [...prev, { ...optionToRemove }]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const data = {
       team_name: formData.first_name,
-      rep_ids: selectedOptions.map((option) => option.value),
+      sale_rep_ids: selectedOptions2.map((option) => option.value),
+      manager_ids: selectedOptions.map((option) => option.value),
       description: formData.description,
+      dealer_name: selectedOption3 || undefined,
     };
     dispatch(createTeam(data));
   };
+
+  useEffect(() => {
+    const roleAdmin = localStorage.getItem('role');
+    if (roleAdmin !== TYPE_OF_USER.ADMIN) {
+      (async () => {
+        const data: { [key: string]: any } = await getUsersByDealer('');
+        if (data?.data?.sale_rep_list) {
+          const managers =
+            data?.data?.sale_rep_list
+              ?.filter(
+                (item: any) =>
+                  item.user_roles !== TYPE_OF_USER.SALES_REPRESENTATIVE
+              )
+              .map((item: any) => ({
+                label: `${item.name}-${item.rep_code}`,
+                value: item.rep_code,
+              })) || [];
+
+          const members =
+            data?.data?.sale_rep_list.map((item: any) => ({
+              label: `${item.name}-${item.rep_code}`,
+              value: item.rep_code,
+            })) || [];
+          setManagerOptions(managers);
+          setMembersOption(members);
+        }
+      })();
+    }
+  }, [userRole]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -158,27 +205,37 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     };
   }, [isSuccess]);
 
-  const handleClose = () => { };
+  const handleClose = () => {};
 
-
-  const options = [
-    { value: 'Select Dealer', label: 'Select Dealer' },
-    { value: 'option2', label: 'Option 2' },
-    { value: 'option3', label: 'Option 3' },
-  ];
-
-  const handleSelectChange3 = (selectedOption3: Option | null) => {
+  const handleSelectChange3 = async (selectedOption3: Option | null) => {
     setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
+    if (selectedOption3?.value) {
+      const data: { [key: string]: any } = await getUsersByDealer(
+        selectedOption3.value
+      );
+      if (data?.data?.sale_rep_list) {
+        const managers =
+          data?.data?.sale_rep_list
+            ?.filter(
+              (item: any) =>
+                item.user_roles !== TYPE_OF_USER.SALES_REPRESENTATIVE
+            )
+            .map((item: any) => ({ label: item.name, value: item.rep_code })) ||
+          [];
+
+        const members =
+          data?.data?.sale_rep_list.map((item: any) => ({
+            label: item.name,
+            value: item.rep_code,
+          })) || [];
+        setManagerOptions(managers);
+        setMembersOption(members);
+      }
+    }
   };
-
-
-
-
-
-
-
-
-
+  const slectedDealer = newFormData.find(
+    (option) => option === selectedOption3
+  );
 
   return (
     <div className="transparent-model">
@@ -204,6 +261,32 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       maxLength={100}
                     />
                   </div>
+
+                  {userRole === 'Admin' && (
+                    <div className="tm-new-create-input-field">
+                      <label
+                        className="inputLabel-select"
+                        style={{ fontWeight: 400 }}
+                      >
+                        Dealer Name
+                      </label>
+                      <SelectOption
+                        options={newFormData.map((item) => ({
+                          label: item,
+                          value: item,
+                        }))}
+                        value={
+                          slectedDealer
+                            ? {
+                                label: slectedDealer,
+                                value: slectedDealer,
+                              }
+                            : undefined
+                        }
+                        onChange={handleSelectChange3}
+                      />
+                    </div>
+                  )}
                   <div className="tm-new-create-input-field">
                     <label
                       className="inputLabel-select"
@@ -212,8 +295,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       Select Managers
                     </label>
                     <SelectOption
-                      options={comissionValueDataa}
-                      value={comissionValueDataa.find(
+                      options={managerOptions}
+                      value={managerOptions.find(
                         (option) => option.value === selectedOption2
                       )}
                       onChange={handleSelectChange2}
@@ -227,69 +310,26 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       Select Members
                     </label>
                     <SelectOption
-                      options={members}
-                      value={members.find((option) => option.value === '')}
+                      options={membersOption}
+                      value={membersOption.find(
+                        (option) => option.value === ''
+                      )}
                       onChange={handleSelectChange}
                     />
                   </div>
                 </div>
 
-                {userRole === 'Admin' && (
-                  <div className="create-input-container">
-
-                    <div className="tm-new-create-input-field">
-                      <label
-                        className="inputLabel-select"
-                        style={{ fontWeight: 400 }}
-                      >
-                        Dealer Name
-                      </label>
-                      <SelectOption
-                        options={options}
-                        value={options.find(
-                          (option) => option.value === selectedOption3
-                        )}
-                        onChange={handleSelectChange3}
-                      />
-                    </div>
-
-                  </div>
-                )}
-
-
-                <div className="tm-select-data">
-                  <p>Managers</p>
-                  <div className="nt-select-cust">
-                    {selectedOptions2.map((option) => (
-                      <div key={option.value} className="tm-selected-option">
-                        <span>{option.label}</span>
-                        <button
-                          type="button"
-                          className="remove-button"
-                          onClick={() => handleRemoveOption2(option)}
-                        >
-                          <img
-                            src={ICONS.crossIconUser}
-                            alt=""
-                            className="remove-icon"
-                          />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="tm-select-data" style={{ marginTop: '20px' }}>
-                  <p>Sales Rep</p>
-                  <div className="nt-select-cust">
-                    {selectedOptions.map((option) => (
-                      <div key={option.value} className="tm-selected-option">
-                        <span>{option.label}</span>
-                        <div>
+                {!!selectedOptions2.length && (
+                  <div className="tm-select-data">
+                    <p>Managers</p>
+                    <div className="nt-select-cust">
+                      {selectedOptions2.map((option) => (
+                        <div key={option.value} className="tm-selected-option">
+                          <span>{option.label}</span>
                           <button
                             type="button"
                             className="remove-button"
-                            onClick={() => handleRemoveOption(option)}
+                            onClick={() => handleRemoveOption2(option)}
                           >
                             <img
                               src={ICONS.crossIconUser}
@@ -298,10 +338,36 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                             />
                           </button>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {!!selectedOptions.length && (
+                  <div className="tm-select-data" style={{ marginTop: '20px' }}>
+                    <p>Sales Rep</p>
+                    <div className="nt-select-cust">
+                      {selectedOptions.map((option) => (
+                        <div key={option.value} className="tm-selected-option">
+                          <span>{option.label}</span>
+                          <div>
+                            <button
+                              type="button"
+                              className="remove-button"
+                              onClick={() => handleRemoveOption(option)}
+                            >
+                              <img
+                                src={ICONS.crossIconUser}
+                                alt=""
+                                className="remove-icon"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div
                   className="create-input-container"
                   style={{ marginTop: '20px' }}

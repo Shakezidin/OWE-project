@@ -1,15 +1,7 @@
 import { ICONS } from '../../icons/Icons';
 
+
 // export const cardData = [
-//   {
-//     name: 'Total Sales',
-//     bgColor: `var(--teritary-color)`,
-//     iconBgColor: `#fff`,
-//     color: '#fff',
-//     icon: ICONS.sales_per,
-//     type: 'contract_date',
-//     key: '',
-//   },
 //   {
 //     name: 'NTP',
 //     bgColor: `var(--orange-color)`,
@@ -17,6 +9,14 @@ import { ICONS } from '../../icons/Icons';
 //     icon: ICONS.ntp_per,
 //     color: `var(--white-color)`,
 //     type: 'ntp_date',
+//   },
+//   {
+//     name: 'Cancelled',
+//     bgColor: `var(--purpink-color)`,
+//     iconBgColor: `var(--white-color)`,
+//     icon: ICONS.cancelled_per,
+//     color: `var(--white-color)`,
+//     type: 'cancelled_date',
 //   },
 //   {
 //     name: 'Installed',
@@ -27,16 +27,27 @@ import { ICONS } from '../../icons/Icons';
 //     type: 'pv_install_completed_date',
 //   },
 //   {
-//     name: 'Cancelled',
-//     bgColor: `var(--purpink-color)`,
-//     iconBgColor: `var(--white-color)`,
-//     icon: ICONS.cancelled_per,
-//     color: `var(--white-color)`,
-//     type: 'cancelled_date',
+//     name: 'Total Sales',
+//     bgColor: `var(--teritary-color)`,
+//     iconBgColor: `#fff`,
+//     color: '#fff',
+//     icon: ICONS.sales_per,
+//     type: 'contract_date',
+//     key: '',
 //   },
 // ];
 
+
 export const cardData = [
+  {
+    name: 'Total Sales',
+    bgColor: `var(--teritary-color)`,
+    iconBgColor: `#fff`,
+    color: '#fff',
+    icon: ICONS.sales_per,
+    type: 'contract_date',
+    key: '',
+  },
   {
     name: 'NTP',
     bgColor: `var(--orange-color)`,
@@ -44,14 +55,6 @@ export const cardData = [
     icon: ICONS.ntp_per,
     color: `var(--white-color)`,
     type: 'ntp_date',
-  },
-  {
-    name: 'Cancelled',
-    bgColor: `var(--purpink-color)`,
-    iconBgColor: `var(--white-color)`,
-    icon: ICONS.cancelled_per,
-    color: `var(--white-color)`,
-    type: 'cancelled_date',
   },
   {
     name: 'Installed',
@@ -62,16 +65,15 @@ export const cardData = [
     type: 'pv_install_completed_date',
   },
   {
-    name: 'Total Sales',
-    bgColor: `var(--teritary-color)`,
-    iconBgColor: `#fff`,
-    color: '#fff',
-    icon: ICONS.sales_per,
-    type: 'contract_date',
-    key: '',
+    name: 'Cancelled',
+    bgColor: `var(--purpink-color)`,
+    iconBgColor: `var(--white-color)`,
+    icon: ICONS.cancelled_per,
+    color: `var(--white-color)`,
+    type: 'cancelled_date',
   },
+  
 ];
-
 
 export const projectDashData = [
   {

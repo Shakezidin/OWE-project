@@ -1,0 +1,7 @@
+# Dockerfile.migrate
+
+FROM migrate/migrate:v4.15.2
+
+COPY ./migrations /migrations
+
+ENTRYPOINT ["sh", "-c", "migrate -path /migrations -database ${DATABASE_URL} up"]
