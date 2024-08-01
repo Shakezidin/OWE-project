@@ -179,13 +179,13 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                   item.user_roles !== TYPE_OF_USER.SALES_REPRESENTATIVE
               )
               .map((item: any) => ({
-                label: item.name,
+                label: `${item.name}-${item.rep_code}`,
                 value: item.rep_code,
               })) || [];
 
           const members =
             data?.data?.sale_rep_list.map((item: any) => ({
-              label: item.name,
+              label: `${item.name}-${item.rep_code}`,
               value: item.rep_code,
             })) || [];
           setManagerOptions(managers);
