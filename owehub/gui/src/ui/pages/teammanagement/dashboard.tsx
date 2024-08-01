@@ -17,6 +17,7 @@ import DropWithCheck from '../../components/dropwithcheck/dropwithcheck';
 import { toast } from 'react-toastify';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
 
 interface AccordionSection {
   data: any;
@@ -195,6 +196,13 @@ const TeamManagement: React.FC = () => {
                         className="flex justify-center items-center"
                       >
                         <MicroLoader />
+                      </div>
+                    ) : !data.length ? (
+                      <div
+                        style={{ width: '100%' }}
+                        className="flex justify-center items-center"
+                      >
+                        <DataNotFound />
                       </div>
                     ) : (
                       data.map((item: any, index: any) => {
