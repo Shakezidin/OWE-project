@@ -1,15 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-
 import '../projectTracker/projectTracker.css';
-import Input from '../../components/text_input/Input';
-import { stateData } from '../../../resources/static_data/StaticData';
 import { projectStatusHeadData } from './projectData';
-import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import SelectOption from '../../components/selectOption/SelectOption';
-import { ICONS } from '../../icons/Icons';
 import { FaCheck } from 'react-icons/fa6';
 import { useLocation } from 'react-router-dom';
-import project_management_chart from './lib/project_management_chart.png';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
   getProjectDetail,
@@ -21,6 +15,7 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { toast } from 'react-toastify';
 import Proj_pie_chart from './lib/proj_pie_chart';
+
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -31,25 +26,21 @@ interface Option {
 const data = [
   {
     name: 'Page A',
-
     pv: 2400,
     amt: 2400,
   },
   {
     name: 'Page B',
-
     pv: 1398,
     amt: 2210,
   },
   {
     name: 'Page C',
-
     pv: 9800,
     amt: 2290,
   },
   {
     name: 'Page D',
-
     pv: 3908,
     amt: 2000,
   },
@@ -199,7 +190,6 @@ const ProjectStatus = () => {
       name: 'Electrical',
       number: '5',
       color: 'white',
-
       numColor: '#0493CE',
       bgColor: '#4191C9',
       childStatusData: [
@@ -237,7 +227,6 @@ const ProjectStatus = () => {
       number: '6',
       bgColor: '#4191C9',
       color: 'white',
-
       numColor: '#0493CE',
       childStatusData: [
         {
@@ -273,7 +262,6 @@ const ProjectStatus = () => {
       name: 'IC Permit Submitted',
       number: '7',
       color: 'white',
-
       numColor: '#0493CE',
       bgColor: '#4191C9',
       childStatusData: [
@@ -311,7 +299,6 @@ const ProjectStatus = () => {
       bgColor: '#4191C9',
       number: '8',
       color: 'white',
-
       numColor: '#0493CE',
       childStatusData: [
         {
@@ -358,7 +345,6 @@ const ProjectStatus = () => {
       name: 'Final Inspection',
       number: '9',
       color: 'white',
-
       numColor: '#0493CE',
       bgColor: '#4191C9',
       childStatusData: [
@@ -396,7 +382,6 @@ const ProjectStatus = () => {
       name: 'PTO',
       number: '10',
       color: 'white',
-
       numColor: '#0493CE',
       bgColor: '#4191C9',
       childStatusData: [
@@ -431,6 +416,7 @@ const ProjectStatus = () => {
       ],
     },
   ];
+
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
   const isTablet = useMatchMedia('(max-width:1024px)');
@@ -500,21 +486,15 @@ const ProjectStatus = () => {
 
   return (
     <div className="">
-      {/* <Breadcrumb
-        head="Project Tracking"
-        linkPara="Project Management"
-        route={''}
-        linkparaSecond="Dashboard"
-      /> */}
       <div style={{ padding: '0px' }}>
-        <div className="flex mt1">
+        <div className="flex mt1 top-project-cards">
           <div
             className="px1 project-card-wrapper  bg-white rounded-16"
             style={{ paddingInline: 16, paddingBottom: 16 }}
           >
             <div className="project-heading mb3">
               <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
-              <div className="" style={{ minWidth: 200 }}>
+              <div className="pro-status-dropdown" style={{ minWidth: 200 }}>
                 <div className="">
                   <SelectOption
                     options={projectOption}
@@ -557,36 +537,13 @@ const ProjectStatus = () => {
                           ] || 'N/A'}
                         </span>
                       </div>
-                      {/* {el.viewButton ? (
-                      <div
-                        className="view-flex"
-                        ref={refBtn}
-                        onClick={() => setActivePopups((prev) => !prev)}
-                      >
-                        <p>View</p>
-
-                        <img src={ICONS.arrowDown} alt="" />
-                      </div>
-                    ) : null}
-
-                    {activePopups && i === 1 && (
-                      <div className="popup">
-                        <p className="pop-head">Adder Details</p>
-                        <ol className="order-list">
-                          <li className="order-list-name">Adders</li>
-                          <li className="order-list-name">Sub Adder</li>
-                          <li className="order-list-name">$20 Adder</li>
-                          <li className="order-list-name">$20 Sub Adder</li>
-                        </ol>
-                      </div>
-                    )} */}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="pl2 flex-auto">
+          <div className="pl2 flex-auto second-project-card">
             <div
               className="bg-white rounded-16 flex items-center justify-center"
               style={{
@@ -596,22 +553,14 @@ const ProjectStatus = () => {
                 alignItems: 'center',
               }}
             >
-              {/* <img
-                className=" mx-auto"
-                style={{ objectFit: 'contain' }}
-                width={300}
-                height={231}
-                src={project_management_chart}
-                alt=""
-              /> */}
               <Proj_pie_chart />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-16">
-          <div className="project-heading   mt2" style={{ padding: '22px' }}>
-            <div className=" flex items-center ">
+        <div className="bg-white rounded-16 project-table-wrapper">
+          <div className="project-heading mt2" style={{ padding: '22px' }}>
+            <div className=" flex items-center project-status-table-title ">
               <h3>Project Stages</h3>
               <div className="progress-box-container ml3">
                 <div className="progress-box-body mt0">
@@ -734,19 +683,19 @@ const ProjectStatus = () => {
                                       {!(
                                         el.key &&
                                         projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                        el.key as keyof typeof projectDetail
                                         ]
                                       ) && (
-                                        <span
-                                          className="date-para"
-                                          style={{
-                                            color: el.color,
-                                            fontSize: '9px',
-                                          }}
-                                        >
-                                          ETA
-                                        </span>
-                                      )}
+                                          <span
+                                            className="date-para"
+                                            style={{
+                                              color: el.color,
+                                              fontSize: '9px',
+                                            }}
+                                          >
+                                            ETA
+                                          </span>
+                                        )}
                                       <p
                                         style={{
                                           color: el.color,
@@ -754,22 +703,22 @@ const ProjectStatus = () => {
                                         }}
                                       >
                                         {el.key &&
-                                        projectDetail[
+                                          projectDetail[
                                           el.key as keyof typeof projectDetail
-                                        ]
+                                          ]
                                           ? format(
-                                              new Date(
-                                                projectDetail[
-                                                  el.key as keyof typeof projectDetail
-                                                ]
-                                              ),
-                                              'dd MMMM'
-                                            ).slice(0, 6)
+                                            new Date(
+                                              projectDetail[
+                                              el.key as keyof typeof projectDetail
+                                              ]
+                                            ),
+                                            'dd MMMM'
+                                          ).slice(0, 6)
                                           : 'N/A'}
                                       </p>
                                       {el.key &&
                                         projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                        el.key as keyof typeof projectDetail
                                         ] && (
                                           <p
                                             className="stage-1-para"
@@ -782,7 +731,7 @@ const ProjectStatus = () => {
                                             {format(
                                               new Date(
                                                 projectDetail[
-                                                  el.key as keyof typeof projectDetail
+                                                el.key as keyof typeof projectDetail
                                                 ]
                                               ),
                                               'yyyy'

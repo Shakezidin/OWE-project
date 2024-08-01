@@ -106,7 +106,6 @@
 .project-card-body {
   display: flex;
   align-items: center;
-  /* flex-wrap: wrap; */
   gap: 1rem;
   justify-content: space-between;
   margin-top: 1rem;
@@ -116,11 +115,8 @@
   flex: 1;
   height: 60px;
   background-color: var(--white-color);
-  /* padding: 1rem; */
   display: flex;
-  /* align-items: center; */
   justify-content: center;
-  /* flex-wrap: wrap; */
   border-radius: 8px;
   flex-direction: column;
   padding-left: 1rem;
@@ -189,16 +185,13 @@
   padding: 22px;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
-  /* flex-wrap: wrap; */
 }
 
 .project-status-body {
   display: flex;
   flex: 1;
-  /* flex: 1.8; */
   flex-wrap: wrap;
   gap: 1rem;
-  /* justify-content: space-between; */
 }
 
 .project-status-body-card {
@@ -259,17 +252,14 @@
   position: absolute;
   background-color: white;
   width: 180px;
-  /* height: 40px; */
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
   transform: translate(-50, -50%);
   right: -150px;
   bottom: -120px;
   border-radius: 8px;
-  /* top: 35%; */
   margin-top: -132px;
   z-index: 10;
   padding: 1rem;
-  /* height: 133px; */
 }
 
 .pop-head {
@@ -283,7 +273,6 @@
   gap: 0.3rem;
   padding-left: 0.7rem;
   margin-top: 0.3rem;
-  /* align-items: center; */
 }
 
 .order-list-name {
@@ -309,15 +298,12 @@
   height: 156px;
   padding: 1rem;
   position: relative;
-  /* flex: 1; */
-  /* width: 379px; */
   width: 34%;
   border-radius: 8px;
 }
 
 .project-status-table {
   display: flex;
-  /* gap: 1rem; */
   align-items: center;
 }
 .project-management-table {
@@ -405,7 +391,7 @@
 }
 
 .dotted-border {
-  border-left: 3px dotted var(--primary-color);
+  border-left: 3px dotted #4191c9;
   height: 18px;
   position: relative;
   bottom: 0rem;
@@ -416,18 +402,14 @@
   background-color: #57b93a;
   display: flex;
   height: 50px;
-  /* flex: .5; */
   align-items: center;
-  /* gap: 1rem; */
   width: 220px;
   justify-content: center;
-  /* width: 229px; */
   border-top-right-radius: 2rem;
   border-bottom-right-radius: 2rem;
   position: relative;
   overflow: hidden;
   padding: 1rem;
-  /* margin-top: .2rem; */
 }
 .child-corner {
   position: absolute;
@@ -469,7 +451,6 @@
   align-items: center;
   z-index: 12;
   display: flex;
-  /* flex-direction: column; */
   justify-content: center;
   align-items: center;
   position: relative;
@@ -530,8 +511,6 @@
   font-size: 10px;
   line-height: 12px;
   font-weight: 400;
-  /* width: 35px; */
-  /* word-wrap: break-word; */
 }
 .strip-des p {
   display: flex;
@@ -596,17 +575,11 @@
 @media (max-width: 1200px) {
   .project-status-head-card {
     flex-direction: column;
-    /* justify-content: flex-start; */
   }
 
   .project-status-body {
     width: 100%;
     justify-content: flex-start;
-    /* flex-direction: column; */
-  }
-
-  .project-status-body-card {
-    /* width: 50%; */
   }
 
   .project-status-graph {
@@ -675,11 +648,39 @@
     font-size: 11px !important;
   }
 }
-
+@media (max-width: 767px){
+  .top-project-cards{
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+  }
+  .project-card-wrapper{
+    width: 100%;
+  }
+  .second-project-card{
+    padding-left: 0 !important;
+  }
+  .project-table-wrapper{
+    margin: 10px;
+  }
+  .project-status-table-title{
+    flex-direction: column;
+    gap: 10px;
+  }
+  .project-heading{
+    flex-direction: column;
+    margin-top: unset !important;
+    align-items: unset;
+    margin-bottom: 1.5rem !important;
+  }
+  .pro-status-dropdown{
+    margin-top: -1rem;
+  }
+}
 .per-head-input {
   display: flex;
   background-color: #ffffff;
-  padding: 0 3px 0 3px; /*here change for reduce left space ***************/
+  padding: 0 3px 0 3px; 
   gap: 0px;
   align-items: center;
   border-radius: 8px;
