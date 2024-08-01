@@ -74,9 +74,9 @@ const ResetPassword = () => {
             Yours
           </span>
           <div className={'hrLine'}></div>
-          <span className={'loginNormalTextDescription'}>
+          {/* <span className={'loginNormalTextDescription'}>
             {'YOUR TRUSTED SOLAR EXPERTS'}
-          </span>
+          </span> */}
         </div>
 
         <div className={'loginBox2'}>

@@ -27,6 +27,7 @@ import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
@@ -208,30 +209,6 @@ const ProjectPerformence = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-
-  //       const data = await postCaller('get_performance_tiledata', {
-
-  //         start_date: resDatePicker.startdate,
-  //         end_date: resDatePicker.enddate
-
-  //       });
-  //       if(data?.data){
-  //         setTileData(data?.data)
-  //       }
-
-  //       if (data.status > 201) {
-  //         toast.error(data.message);
-  //         return;
-  //       }
-
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   })();
-  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -259,7 +236,7 @@ const ProjectPerformence = () => {
     fetchData();
   }, [isAuthenticated, resDatePicker.startdate, resDatePicker.enddate]);
 
-  console.log(perfomaceSale, '677567657title');
+  const isMobile = useMatchMedia('(max-width: 767px)');
   return (
     <div className="">
       <Breadcrumb
@@ -267,6 +244,7 @@ const ProjectPerformence = () => {
         linkPara="Performance"
         route={''}
         linkparaSecond="Dashboard"
+        marginLeftMobile="12px"
       />
       <div className="project-container">
         <div className="project-heading">
@@ -309,12 +287,13 @@ const ProjectPerformence = () => {
                   style={{ color: '#292929' }}
                 >
                   {selectionRange.startDate.toLocaleDateString() !==
-                  selectionRange.endDate.toLocaleDateString()
+                    selectionRange.endDate.toLocaleDateString()
                     ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
                     : 'Select Date'}
                 </label>
                 {showDatePicker && (
                   <div className="per-calender-container">
+                   
                     <DateRangePicker
                       ranges={[selectionRange]}
                       onChange={handleSelect}
@@ -337,6 +316,7 @@ const ProjectPerformence = () => {
                     >
                       Apply
                     </button>
+                 
                   </div>
                 )}
               </div>
@@ -346,9 +326,6 @@ const ProjectPerformence = () => {
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
             {cardData.map((el, i) => {
-              // const findSale = perfomaceSale.find(
-              //   (s: (typeof perfomaceSale)[0]) => s.Type === el.type
-              // );
               const findSale = perfomaceSale.find(
                 (s: (typeof perfomaceSale)[0]) => s.type === el.type
               );
@@ -401,7 +378,10 @@ const ProjectPerformence = () => {
               <div className="project-ruppes-card" key={i}>
                 <div
                   className="performance-bars"
-                  style={{ height: '130px', width: '200px' }}
+                  style={{
+                    height: isMobile ? '160px' : '130px',
+                    width: '200px',
+                  }}
                 >
                   <CircularProgressbarWithChildren
                     className="my-custom-progressbar"
@@ -416,20 +396,24 @@ const ProjectPerformence = () => {
                       trailColor: '#F2F4F6',
                     })}
                   >
+
                     <div
                       className="flex flex-column items-center flex-center gap-20"
-                      style={{ gap: '4px' }}
+                      style={{
+                        gap: '4px',
+                        ...(isMobile && { marginTop: '-30px' }),
+                      }}
                     >
                       <p
                         style={{
-                          fontSize: '12px',
+                          fontSize: isMobile ? '16px' :'12px',
                           color: '#646464',
                           fontWeight: '300',
                         }}
                       >
                         {item.para}
                       </p>
-                      <p style={{ fontSize: '16px', color: '#0C0B18' }}>
+                      <p style={{ fontSize: isMobile ? '18px' : '16px', color: '#0C0B18' }}>
                         {item.ruppes}
                       </p>
                     </div>
@@ -572,17 +556,17 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.contract_date
                                       ? format(
-                                          new Date(project.contract_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(project.contract_date),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.contract_date
                                       ? format(
-                                          new Date(project.contract_date),
-                                          'yyyy'
-                                        )
+                                        new Date(project.contract_date),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -613,22 +597,22 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.site_survey_complete_date
                                       ? format(
-                                          new Date(
-                                            project.site_survey_complete_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.site_survey_complete_date
+                                        ),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.site_survey_complete_date
                                       ? format(
-                                          new Date(
-                                            project.site_survey_complete_date
-                                          ),
-                                          'yyyy'
-                                        )
+                                        new Date(
+                                          project.site_survey_complete_date
+                                        ),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -660,22 +644,22 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.permit_approved_date
                                       ? format(
-                                          new Date(
-                                            project.permit_approved_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.permit_approved_date
+                                        ),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.permit_approved_date
                                       ? format(
-                                          new Date(
-                                            project.permit_approved_date
-                                          ),
-                                          'yyyy'
-                                        )
+                                        new Date(
+                                          project.permit_approved_date
+                                        ),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -706,18 +690,18 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.install_ready_date
                                       ? format(
-                                          new Date(project.install_ready_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(project.install_ready_date),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
 
                                   <p>
                                     {project.install_ready_date
                                       ? format(
-                                          new Date(project.install_ready_date),
-                                          'yyyy'
-                                        )
+                                        new Date(project.install_ready_date),
+                                        'yyyy'
+                                      )
                                       : ''}
                                   </p>
                                 </div>
@@ -748,21 +732,21 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.install_completed_date
                                       ? format(
-                                          new Date(
-                                            project.install_completed_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.install_completed_date
+                                        ),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.install_completed_date
                                       ? format(
-                                          new Date(
-                                            project.install_completed_date
-                                          ),
-                                          'yyyy'
-                                        ).slice(0, 6)
+                                        new Date(
+                                          project.install_completed_date
+                                        ),
+                                        'yyyy'
+                                      ).slice(0, 6)
                                       : ''}
                                   </p>
                                 </div>
@@ -791,17 +775,17 @@ const ProjectPerformence = () => {
                                   <p>
                                     {project.pto_date
                                       ? format(
-                                          new Date(project.pto_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
+                                        new Date(project.pto_date),
+                                        'dd MMMM'
+                                      ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
                                   <p>
                                     {project.pto_date
                                       ? format(
-                                          new Date(project.pto_date),
-                                          'yyyy'
-                                        ).slice(0, 6)
+                                        new Date(project.pto_date),
+                                        'yyyy'
+                                      ).slice(0, 6)
                                       : ''}
                                   </p>
                                 </div>
