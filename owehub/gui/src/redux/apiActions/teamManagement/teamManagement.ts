@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
-export const getTeams = createAsyncThunk('fetchteams/get_teams', async () => {
-  const response = await postCaller('get_teams', {});
+export const getTeams = createAsyncThunk('fetchteams/get_teams', async (data?:string[]) => {
+  const response = await postCaller('get_teams', {dealer_names:data});
   return {
     list: response.data,
     count: response.dbRecCount,
