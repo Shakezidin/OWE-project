@@ -28,6 +28,7 @@
 
 .cancel:hover {
   transform: scale(1.05);
+  background-color: #DDEBFF !important;
 }
 
 

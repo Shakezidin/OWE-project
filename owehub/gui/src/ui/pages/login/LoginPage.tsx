@@ -160,9 +160,9 @@ export const LoginPage = () => {
             Yours
           </span>
           <div className={'hrLine'} />
-          <span className={'loginNormalTextDescription'}>
+          {/* <span className={'loginNormalTextDescription'}>
             {'YOUR TRUSTED SOLAR EXPERTS'}
-          </span>
+          </span> */}
         </div>
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleLogin(e)}>
