@@ -84,9 +84,9 @@ const Proj_pie_chart: React.FC = () => {
                   {Number(tileData?.amount_prepaid).toFixed(2)}
                 </span>
               </div>
-              <span className="">-</span>
+              <span className='bold' style={{padding: "0 5px"}}>-</span>
 
-              <h3 className="h4" style={{ fontWeight: '500' }}>
+              <h3 className="h5" style={{ fontWeight: '500' }}>
                 Amount Prepaid
               </h3>
             </div>
@@ -109,9 +109,9 @@ const Proj_pie_chart: React.FC = () => {
                   {Number(tileData?.pipeline_remaining).toFixed(2)}
                 </span>
               </div>
-              <span className="mxhalf">-</span>
+              <span className="mxhalf bold" style={{padding: "0 5px"}}>-</span>
 
-              <h3 className="h4" style={{ fontWeight: '500' }}>
+              <h3 className="h5" style={{ fontWeight: '500' }}>
                 Pipeline Remaining
               </h3>
             </div>
