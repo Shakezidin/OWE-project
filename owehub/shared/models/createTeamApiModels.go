@@ -49,6 +49,7 @@ type GetRepResponse struct {
 	PhoneNumber  string `json:"phone_number"`
 	Role         string `json:"role"`
 	TeamMemberId int64  `json:"team_member_id"`
+	DealerCode   string `json:"dealer_code"`
 }
 
 type GetTeamResponse struct {
