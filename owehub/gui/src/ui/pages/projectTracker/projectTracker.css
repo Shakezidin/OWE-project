@@ -676,6 +676,10 @@
   .pro-status-dropdown{
     margin-top: -1rem;
   }
+  .project-status-heading{
+    gap: 0 !important;
+    align-items: unset !important;
+  }
 }
 .per-head-input {
   display: flex;

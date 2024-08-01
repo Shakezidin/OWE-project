@@ -492,7 +492,7 @@ const ProjectStatus = () => {
             className="px1 project-card-wrapper  bg-white rounded-16"
             style={{ paddingInline: 16, paddingBottom: 16 }}
           >
-            <div className="project-heading mb3">
+            <div className="project-heading project-status-heading mb3">
               <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
               <div className="pro-status-dropdown" style={{ minWidth: 200 }}>
                 <div className="">
@@ -559,7 +559,7 @@ const ProjectStatus = () => {
         </div>
 
         <div className="bg-white rounded-16 project-table-wrapper">
-          <div className="project-heading mt2" style={{ padding: '22px' }}>
+          <div className="project-heading project-status-heading mt2" style={{ padding: '22px' }}>
             <div className=" flex items-center project-status-table-title ">
               <h3>Project Stages</h3>
               <div className="progress-box-container ml3">
