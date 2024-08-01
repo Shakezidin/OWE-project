@@ -49,7 +49,6 @@ type GetRepResponse struct {
 	PhoneNumber  string `json:"phone_number"`
 	Role         string `json:"role"`
 	TeamMemberId int64  `json:"team_member_id"`
-	DealerCode   string `json:"dealer_code"`
 }
 
 type GetTeamResponse struct {
@@ -58,6 +57,7 @@ type GetTeamResponse struct {
 	SaleRep      []GetRepResponse `json:"sale_rep_list"`
 	MemberCount  int              `jsosn:"member_count"`
 	ManagerCount int              `json:"manager_count"`
+	DealerCode   string           `json:"dealer_name"`
 }
 
 //* manage team data
