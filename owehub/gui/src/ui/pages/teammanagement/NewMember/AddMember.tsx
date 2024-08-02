@@ -20,6 +20,8 @@ interface createUserProps {
   handleClose: () => void;
   onSubmitCreateUser: (e: any) => void;
   team:any
+  setIsRefresh:React.Dispatch<React.SetStateAction<boolean>>
+ 
 }
  
 interface Option {
@@ -36,7 +38,10 @@ interface SelectOptionProps {
 const AddMember: React.FC<createUserProps> = ({
   handleClose,
   onSubmitCreateUser,
-  team
+  team,
+  setIsRefresh,
+ 
+
 }) => {
   const dispatch = useAppDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState('');
@@ -111,7 +116,7 @@ useEffect(() => {
 dispatch(getTeamMemberDropdown(data))
 },[])
   
-const userOptions: Option[] = team_dropdown.map((user: User) => ({
+const userOptions: Option[] = team_dropdown?.map((user: User) => ({
   label: user.name,
   value: user.rep_code
 }));
@@ -137,13 +142,16 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       data
     );
 
-    if (!response.ok) {
+    console.log(response, "response")
+
+    if (response.status > 201) {
       throw new Error('Network response was not ok');
     }
-
-    const result = await response.json();
+   if(response.status === 200){
     toast.success('Form submitted successfully');
     handleClose()
+    setIsRefresh((prev) => !prev);
+   }
   } catch (error) {
     console.error('There was an error submitting the form:', error);
   }

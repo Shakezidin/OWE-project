@@ -16,6 +16,8 @@ import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement
 import DataNotFound from '../../components/loader/DataNotFound';
 import { BiEditAlt } from "react-icons/bi";
 import { MdOutlineDone } from "react-icons/md";
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
  
 interface User {
   name: string;
@@ -47,8 +49,9 @@ const TeamTable: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleClose1 = () => setOpen1(false);
-  const [inputValue, setInputValue] = useState(team?.team_name || 'N/A');
+  const [inputValue, setInputValue] = useState<any>("");
   const [isEditing, setIsEditing] = useState(false);
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
  
  
@@ -68,6 +71,12 @@ const TeamTable: React.FC = () => {
     console.log('User created');
     handleClose();
   };
+
+  useEffect(() => {
+  if(team?.team_name){
+    setInputValue(team?.team_name)
+  }
+  },[team?.team_name])
  
   useEffect(() => {
      if( teamName && id){
@@ -80,7 +89,7 @@ const TeamTable: React.FC = () => {
       dispatch(getTeam(data));
     }
     
-  }, [teamName, id]);
+  }, [teamName, id, isRefresh]);
  
   const handleMoveMemberClick = (el: any) => {
     console.log(el, "el")
@@ -118,7 +127,32 @@ const TeamTable: React.FC = () => {
     { id: 20, name: 'Kennedy', role: 'Manager', email: 'Kennedy@gmail.com', phone: '+1 1234567800' }
   ];
  
- console.log(team, "team")
+
+  const handleDelete = async (id: any) => {
+    const data = {
+     
+    }
+    try {
+      const response = await postCaller("delete_team_member", 
+      {team_member_id: id,
+        team_id:team?.team_id
+      }
+      );
+  
+      if (response.status > 201) {
+        toast.error('Network response was not ok');
+      }
+  
+      if(response.status === 200){
+      toast.success('Delete successful:');
+      setIsRefresh((prev) => !prev);
+      }
+    } catch (error) {
+      console.error('There was an error deleting the team member:', error);
+    }
+  };
+
+  
   return (
     <>
       <div className="comm">
@@ -133,6 +167,8 @@ const TeamTable: React.FC = () => {
             handleClose={handleClose}
             onSubmitCreateUser={onSubmitCreateUser}
             team={team}
+            setIsRefresh={setIsRefresh}
+           
           />
         )}
         {open1 && (
@@ -260,7 +296,7 @@ const TeamTable: React.FC = () => {
                     </td>
                     <td style={{ color: '#101828' }}>{item.email_id}</td>
                     <td style={{ color: '#101828' }}>{item.phone_number}</td>
-                    <td className="zoom-out-help" style={{ paddingLeft: '30px' }}>
+                    <td className="zoom-out-help" style={{ paddingLeft: '30px' }} onClick={(e) => handleDelete(item.team_member_id)}>
                         <img
                           src={ICONS.deleteIcon}
                           style={{
