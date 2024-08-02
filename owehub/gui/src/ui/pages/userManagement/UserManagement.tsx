@@ -294,6 +294,11 @@ const UserManagement: React.FC = () => {
        
     };
 
+    // useEffect(() => {
+    //   if(formData.assigned_Manager){
+    //     dispatch(updateUserForm({ field: 'assigned_Manager', value: '' }));
+    //   }
+    // },[formData.assigned_Manager])
 
   
 
