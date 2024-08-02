@@ -32,6 +32,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   const [files, setFiles] = useState<FileList | null>(null);
   const [newFormData, setNewFormData] = useState<any>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
+  const [reportError, setReportError] = useState('');
 
   const getnewformData = async () => {
     const tableData = {
@@ -100,6 +101,9 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
                 (option) => option?.value === formData.report_to
               )}
             />
+            {reportError && (
+                      <div className="error-message">{reportError}</div>
+                    )}
           </div>
           <div className="create-input-field" style={{ marginTop: '4px' }}>
             <label className="inputLabel-select select-type-label">

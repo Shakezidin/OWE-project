@@ -152,7 +152,7 @@ const TeamTable: React.FC = () => {
             <div className="team-table-top">
               <div className="team-members-top">
                 <div className="team-members">
-                  <div className="team-container">
+                  <div className="team-table-container">
                     <input
                       type="text"
                       ref={inputRef}
@@ -256,7 +256,7 @@ const TeamTable: React.FC = () => {
                         }}>{item.unique_id || "N/A"}</td>
                     <td style={{ color: '#101828' }}>{item.sale_rep_name}</td>
                     <td style={{ color: '#101828' }}>
-                      <p className={item.role === "Manager" ? "user-mg" : "user-namg"}>{item.role}</p>
+                      <p className={item.role === "manager" ? "user-mg" : "user-namg"}>{item.role}</p>
                     </td>
                     <td style={{ color: '#101828' }}>{item.email_id}</td>
                     <td style={{ color: '#101828' }}>{item.phone_number}</td>
