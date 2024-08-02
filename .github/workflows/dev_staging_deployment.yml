@@ -1,9 +1,10 @@
 name: Deploy to Staging Server
 
 on:
-  push:
-    branches:
-      - dev  # Deploy when code is pushed to the dev branch
+  workflow_dispatch:
+  #push:
+  #branches:
+  #   - dev  # Deploy when code is pushed to the dev branch
 
 jobs:
   deploy:
