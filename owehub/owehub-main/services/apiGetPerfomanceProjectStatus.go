@@ -92,21 +92,19 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	// This checks if the user is admin, sale rep or dealer
 	if len(data) > 0 {
-		log.FuncInfoTrace(0, "====== 1 %s", data)
 		role := data[0]["role_name"]
 		name := data[0]["name"]
 		dealerName = data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
+		dataReq.DealerName = dealerName
 
 		switch role {
 		case "Admin":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
 		case "Dealer Owner":
-			dataReq.DealerName = name
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
-			dataReq.DealerName = dealerName
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 		// this is for the roles regional manager and sales manager
 		default:
@@ -141,13 +139,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			SaleRepList = append(SaleRepList, SaleRepName)
 		}
 
-		log.FuncInfoTrace(0, "====== 2 %s", data)
 		dealerName = data[0]["dealer_name"]
 		dataReq.DealerName = dealerName
 		filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
-	log.FuncInfoTrace(0, "%s", dealerName)
 	if filter != "" {
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
