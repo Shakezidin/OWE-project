@@ -556,7 +556,6 @@ const ProjectStatus = () => {
                         onClick={() => setActivePopups((prev) => !prev)}
                       >
                         <p>View</p>
-
                         <img src={ICONS.arrowDown} alt="" />
                       </div>
                     ) : null}
