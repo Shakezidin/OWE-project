@@ -22,17 +22,32 @@ jobs:
           #run: |
           #scp -P ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no -r ./* ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }}:/home/ubuntu/github
 
-    - name: Run deployment script on server
+    - name: SSH on Staging Server
       run: |
         ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+
+    - name: Checkout latest dev branch
+      run: |
         cd /home/ubuntu/deploy/OweAppPlatform
-        # Checkout dev branch on server
         git clean -fd
         git checkout .
         git fetch --all
         git checkout dev
         git pull origin dev
-        # Run your deployment commands here, for example:
+
+    - name: Deploying GUI
+      run: |
         cd owehub/scripts/
-        ./deploy-owehub.sh all
+        cp ../gui/.env.staging ../gui/.env
+        ./deploy-owehub.sh gui
+        rm ../gui/.env
+        
+    - name: Migrating Databse
+      run: |
+        ./deploy-owehub.sh migrate_db
+    
+    - name: Deploying Backend
+      run: |
+        ./deploy-owehub.sh backend
+    
         EOF
