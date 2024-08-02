@@ -69,28 +69,25 @@ type ProjectListResponse struct {
 }
 
 type ProjectResponse struct {
-	UniqueId              string `json:"unqiue_id"`
-	SalesCompleted        string `json:"sales_completed"`
-	NtpPending            string `json:"ntp_pending"`
-	NtpCompleted          string `json:"ntp_completed"`
-	SiteSurveyScheduled   string `json:"site_survey_scheduled"`
-	SiteSurevyRescheduled string `json:"site_survey_rescheduled"`
-	SiteSurveyCompleted   string `json:"site_survey_completed"`
-	RoofingPending        string `json:"roofing_pending"`
-	RoofingScheduled      string `json:"roofing_scheduled"`
-	RoofingCompleted      string `json:"roofing_completed"`
-	MpuPending            string `json:"mpu_pending"`
-	MpuScheduled          string `json:"mpu_scheduled"`
-	MpuCompleted          string `json:"mpu_completed"`
-	DeratePending         string `json:"derate_pending"`
-	DerateScheduled       string `json:"derate_scheduled"`
-	DerateCompleted       string `json:"derate_completed"`
-	TrenchingPending      string `json:"trenching_pending"`
-	TrenchingScheduled    string `json:"tenching_scheduled"`
-	TrenchingCompleted    string `json:"trenching_completed"`
-	// ElectricalPending        string  `json:"electrical_pending"`
-	// ElectricalScheduled      string  `json:"electrical_scheduled"`
-	// ElectricalCompleted      string  `json:"electrical_completed"`
+	UniqueId                 string  `json:"unqiue_id"`
+	SalesCompleted           string  `json:"sales_completed"`
+	NtpPending               string  `json:"ntp_pending"`
+	NtpCompleted             string  `json:"ntp_completed"`
+	SiteSurveyScheduled      string  `json:"site_survey_scheduled"`
+	SiteSurevyRescheduled    string  `json:"site_survey_rescheduled"`
+	SiteSurveyCompleted      string  `json:"site_survey_completed"`
+	RoofingPending           string  `json:"roofing_pending"`
+	RoofingScheduled         string  `json:"roofing_scheduled"`
+	RoofingCompleted         string  `json:"roofing_completed"`
+	MpuPending               string  `json:"mpu_pending"`
+	MpuScheduled             string  `json:"mpu_scheduled"`
+	MpuCompleted             string  `json:"mpu_completed"`
+	DeratePending            string  `json:"derate_pending"`
+	DerateScheduled          string  `json:"derate_scheduled"`
+	DerateCompleted          string  `json:"derate_completed"`
+	TrenchingPending         string  `json:"trenching_pending"`
+	TrenchingScheduled       string  `json:"tenching_scheduled"`
+	TrenchingCompleted       string  `json:"trenching_completed"`
 	PvPermitPending          string  `json:"pv_permit_pending"`
 	PvPermitScheduled        string  `json:"pv_permit_scehduled"`
 	PvPermitCompleted        string  `json:"pv_permit_completed"`
@@ -107,7 +104,8 @@ type ProjectResponse struct {
 	PtoSubmitted             string  `json:"pto_submitted"`
 	PtoCompleted             string  `json:"pto_completed"`
 	SystemSize               float64 `json:"system_size"`
-	Adder                    string  `json:"adder"`
+	AddersTotal              string  `json:"adders_total"`
+	AdderBreakDownAndTotal   string  `json:"adder_breakdown_and_total"`
 	AHJ                      string  `json:"ajh"`
 	Epc                      float64 `json:"epc"`
 	State                    string  `json:"state"`
@@ -153,7 +151,8 @@ var ColumnToField = map[string]string{
 	"pto_submitted_date":           "PtoSubmitted",
 	"pto_date":                     "PtoCompleted",
 	"system_size":                  "SystemSize",
-	"prospect":                     "Adder", // unsure value
+	"adders_total":                 "AddersTotal",
+	"adder_breakdown_and_total":    "AdderBreakDownAndTotal",
 	"ahj":                          "AHJ",
 	"epc":                          "Epc", //check
 	"state":                        "State",
