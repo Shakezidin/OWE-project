@@ -65,17 +65,12 @@ func HandleDeleteTeamMemberRequest(resp http.ResponseWriter, req *http.Request) 
 		deleteData.TeamId,
 	}
 
-	result, err := db.CallDBFunction(db.OweHubDbIndex, db.DeleteTeamMember, queryParameters)
+	_, err = db.CallDBFunction(db.OweHubDbIndex, db.DeleteTeamMember, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to delete team member from DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to delete team member", http.StatusInternalServerError, nil)
 		return
 	}
 
-	if len(result) > 0 && result[0].(int) == 1 {
-		FormAndSendHttpResp(resp, "Team member deleted successfully", http.StatusOK, nil)
-	} else {
-		FormAndSendHttpResp(resp, "No team member found to delete", http.StatusNotFound, nil)
-	}
-	// FormAndSendHttpResp(resp, "Team member deleted successfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Team member deleted succesfully", http.StatusOK, nil, 0)
 }
