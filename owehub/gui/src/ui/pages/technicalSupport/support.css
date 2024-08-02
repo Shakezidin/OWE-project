@@ -49,7 +49,7 @@
 
 .vertical-support {
   border-left: 1px solid #dbdddf;
-  height: 450px;
+  height: 650px;
   margin-top: 3rem;
   padding: 1rem;
 }
@@ -229,6 +229,9 @@
     align-items: center;
   }
   .support-container {
+    width: 100%;
+  }
+  .touch-container{
     width: 100%;
   }
 }
