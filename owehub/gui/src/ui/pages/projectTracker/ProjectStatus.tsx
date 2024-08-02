@@ -15,6 +15,7 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { toast } from 'react-toastify';
 import Proj_pie_chart from './lib/proj_pie_chart';
+import { ICONS } from '../../icons/Icons';
 
 interface ActivePopups {
   [key: number]: number | null;
@@ -440,6 +441,16 @@ const ProjectStatus = () => {
   };
 
   useEffect(() => {
+    if (activePopups) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activePopups]);
+
+  useEffect(() => {
     dispatch(getProjects());
 
     return () => toast.dismiss();
@@ -483,6 +494,7 @@ const ProjectStatus = () => {
   }, [selectedProject.value]);
 
   console.log('options', projectOption, selectedProject);
+  console.log(activePopups, "---------------------------")
 
   return (
     <div className="">
@@ -520,7 +532,7 @@ const ProjectStatus = () => {
                     style={{ padding: 3, border: `1px dashed ${el.bgColor}` }}
                   >
                     <div
-                      className=" flex items-center rounded-8 justify-center"
+                      className=" flex items-center rounded-8 justify-center relative"
                       style={{ background: el.bgColor, height: 83 }}
                     >
                       <div
@@ -537,6 +549,28 @@ const ProjectStatus = () => {
                           ] || 'N/A'}
                         </span>
                       </div>
+                       {el.viewButton ? (
+                      <div
+                        className="view-flex"
+                        ref={refBtn}
+                        onClick={() => setActivePopups((prev) => !prev)}
+                      >
+                        <p>View</p>
+
+                        <img src={ICONS.arrowDown} alt="" />
+                      </div>
+                    ) : null}
+                    {activePopups && i === 1 && (
+                      <div className="popup">
+                        <p className="pop-head">Adder Details</p>
+                        <ol className="order-list">
+                          <li className="order-list-name">Adders</li>
+                          <li className="order-list-name">Sub Adder</li>
+                          <li className="order-list-name">$20 Adder</li>
+                          <li className="order-list-name">$20 Sub Adder</li>
+                        </ol>
+                      </div>
+                    )}
                     </div>
                   </div>
                 </div>
