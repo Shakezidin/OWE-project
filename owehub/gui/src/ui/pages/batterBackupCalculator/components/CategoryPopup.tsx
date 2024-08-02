@@ -53,10 +53,6 @@ const CategoryPopup = ({
       name: 'Washing Machine',
       ampere: 13,
     },
-    {
-      name: 'Lights and Outlets',
-      ampere: lightHouseAmpSize,
-    },
   ];
 
   useEffect(() => {

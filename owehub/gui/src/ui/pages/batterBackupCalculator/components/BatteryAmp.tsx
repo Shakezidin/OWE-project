@@ -124,6 +124,9 @@ const BatteryAmp = () => {
   const [mainDisabled, setMainDisabled] = useState(true);
   const [mssg, setMssg] = useState('');
   const [totalAmp, setTotalAmp] = useState(0);
+  const [lightHouseAmpSize, setLightHouseAmpSize] = useState<string | number>(
+    0
+  );
   const [btnText, setBtnText] = useState({
     primaryText: '',
     secondaryText: '',
@@ -211,6 +214,14 @@ const BatteryAmp = () => {
     return initial;
   }, [initial]);
 
+  function formatSaleValue(value: any) {
+    if (value === null || value === undefined) return ''; // Handle null or undefined values
+    const sale = parseFloat(value);
+    if (sale === 0) return '0';
+    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    return sale.toFixed(2); // Otherwise, format it to 2 decimal places
+  }
+
   useEffect(() => {
     const getProspectDetail = async () => {
       try {
@@ -227,6 +238,10 @@ const BatteryAmp = () => {
           })) as Ibattery[];
           setBatteryPower([...batt]);
           setInitialBattery([...batt]);
+          const lightHouse = Math.ceil(
+            ((data?.data?.house_square * 1.5) / 120) * 0.6
+          );
+          setLightHouseAmpSize(formatSaleValue(lightHouse));
           const addedAmp =
             data?.data?.total_catergory_amperes * 0.6 +
             ((data?.data?.house_square * 1.5) / 120) * 0.6;
@@ -591,6 +606,47 @@ const BatteryAmp = () => {
                     </div>
                   );
                 })}
+
+                <div
+                  style={{ border: '1px solid #D1D1D1' }}
+                  className={` flex items-center relative `}
+                >
+                  <div className="battery flex items-center flex-grow-1">
+                    <div className=" flex-grow-1  ">
+                      <span
+                        className={`block text-center py1`}
+                        style={{
+                          backgroundColor: '#129537',
+                          fontSize: 10,
+                          color: '#fff',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {lightHouseAmpSize}
+                      </span>
+                      <div
+                        className="breaker-category text-center flex items-center justify-center py-1"
+                        style={{ backgroundColor: '#EEEEEE', height: 32 }}
+                      >
+                        <span
+                          className="block"
+                          style={{ fontSize: 10, lineHeight: 1.2 }}
+                        >
+                          Lights and Outlet
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="batter-amp-switch sm-switch flex items-center justify-center">
+                    <img
+                      src={on}
+                      width={26}
+                      height={31}
+                      alt=""
+                      className="pointer"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
