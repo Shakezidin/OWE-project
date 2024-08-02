@@ -42,7 +42,7 @@ jobs:
         cp ../gui/.env.production ../gui/.env
         rm -rf ../gui/.env.staging ../gui/.env.production
         ./deploy-owehub.sh gui
-        rm ../gui/.env
+        git clean -fd ../../
         git checkout ../../
 
     - name: Migrating Databse
