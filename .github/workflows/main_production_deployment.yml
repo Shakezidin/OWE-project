@@ -21,12 +21,13 @@ jobs:
           #run: |
           #scp -P ${{ secrets.OWEHUB_PRODUCTION_SSH_PORT }} -o StrictHostKeyChecking=no -r ./* ${{ secrets.OWEHUB_PRODUCTION_USERNAME }}@${{ secrets.OWEHUB_PRODUCTION_SERVER }}:/home/ubuntu/github
 
-    - name: SSH on Production Server
-      run: |
-        ssh -p ${{ secrets.OWEHUB_PRODUCTION_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_PRODUCTION_USERNAME }}@${{ secrets.OWEHUB_PRODUCTION_SERVER }} << 'EOF'
+          #    - name: SSH on Production Server
+          #run: |
+          #ssh -p ${{ secrets.OWEHUB_PRODUCTION_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_PRODUCTION_USERNAME }}@${{ secrets.OWEHUB_PRODUCTION_SERVER }} << 'EOF'
 
     - name: Checkout latest main branch
       run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
         cd /home/ubuntu/deploy/OweAppPlatform
         git clean -fd
         git checkout .
@@ -36,17 +37,22 @@ jobs:
         
     - name: Deploying GUI
       run: |
-        cd owehub/scripts/
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
         cp ../gui/.env.production ../gui/.env
         ./deploy-owehub.sh gui
         rm ../gui/.env
 
     - name: Migrating Databse
       run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
         ./deploy-owehub.sh migrate_db
 
     - name: Deploying Backend
       run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
         ./deploy-owehub.sh backend
 
         EOF
