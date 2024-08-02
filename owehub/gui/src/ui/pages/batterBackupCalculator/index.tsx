@@ -63,13 +63,11 @@ const apms = [
   '40 AMP',
   '45 AMP',
   '50 AMP',
-  `Single Pull Breaker`,
   '60 AMP',
   '70+ AMP',
 ];
 const Index = () => {
   const { id } = useParams();
-  console.log(id, 'params');
   const [inputDetails, setInputDetails] = useState<{
     prospectName: string;
     lra: string;
@@ -211,8 +209,6 @@ OWE Battery Calc
           ...battery,
           ampere: battery.amp.includes('70')
             ? parseFloat(battery.amp.split('+')[0])
-            : battery.amp.includes('Single Pull Breaker')
-              ? 0
               : parseFloat(battery.amp.split(' ')[0]),
         })),
       });
