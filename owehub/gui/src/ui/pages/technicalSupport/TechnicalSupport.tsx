@@ -2,14 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import Input from '../../components/text_input/Input';
 import { ICONS } from '../../icons/Icons';
 import './support.css';
-import emailjs from '@emailjs/browser';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
-import { FormInput } from '../../../core/models/data_models/typesModel';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import MicroLoader from '../../components/loader/MicroLoader';
-import axios from 'axios';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getUser } from '../../../redux/apiActions/GetUser/getUserAction';
@@ -116,8 +112,6 @@ const TechnicalSupport: React.FC = () => {
         'data',
         JSON.stringify({
           html_content: `
-         
-
   <title>New Support Request</title>
   <style>
     body {
@@ -223,16 +217,16 @@ const TechnicalSupport: React.FC = () => {
   ];
 
   const handleButtonClick = () => {
-    fileInputRef.current?.click(); // Trigger file input click event
+    fileInputRef.current?.click();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const trimmedValue = value.replace(/\s/g, ''); // Trim the input value
+    const trimmedValue = value.replace(/\s/g, '');
 
     if (name === 'email') {
       if (trimmedValue.length > 0) {
-        setEmail(trimmedValue); // Update the email state with the trimmed value
+        setEmail(trimmedValue);
 
         if (!emailRegex.test(trimmedValue)) {
           setErrors({
@@ -243,7 +237,7 @@ const TechnicalSupport: React.FC = () => {
           setErrors({ ...errors, email: '' });
         }
       } else {
-        setEmail(''); // Clear the email state if the trimmed value is empty
+        setEmail('');
         setErrors({ ...errors, email: 'Please enter an email address.' });
       }
     }
@@ -274,7 +268,7 @@ const TechnicalSupport: React.FC = () => {
             </div>
 
             <div className="create-input-container-support">
-              <div className="create-input-field-support">
+              <div className="create-input-field-support hide">
                 <Input
                   type={'text'}
                   label="First Name"
@@ -300,7 +294,7 @@ const TechnicalSupport: React.FC = () => {
                   <span className="error">{errors.firstName}</span>
                 )}
               </div>
-              <div className="create-input-field-support">
+              <div className="create-input-field-support hide">
                 <Input
                   type={'text'}
                   label="Last Name"
@@ -328,7 +322,7 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
             <div className="create-input-container-support">
-              <div className="create-input-field-support">
+              <div className="create-input-field-support hide">
                 <Input
                   type={'text'}
                   label="Email"
@@ -347,7 +341,7 @@ const TechnicalSupport: React.FC = () => {
               </div>
 
               <div
-                className="create-input-field-support"
+                className="create-input-field-support hide"
                 style={{ marginTop: '-10px' }}
               >
                 <label className="inputLabel">Phone Number</label>
@@ -373,7 +367,7 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
 
-            <div className="create-input-container-support">
+            <div className="create-input-container-support" style={{ marginBottom: "1rem" }}>
               <div className="create-input-field-support">
                 <label
                   className="inputLabel-select select-type-label"
@@ -406,7 +400,6 @@ const TechnicalSupport: React.FC = () => {
                     ref={fileInputRef}
                     className="file-input"
                     onChange={handleFileInputChange}
-                    //  name="attachment"
                   />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
@@ -441,7 +434,6 @@ const TechnicalSupport: React.FC = () => {
                 maxLength={300}
                 onChange={(e) => {
                   const trimmedValue = e.target.value.trimStart();
-                  // const singleSpaceValue = trimmedValue.replace(/\s+/g, ' ');
                   setMessage(trimmedValue);
                   setErrors({ ...errors, message: '' });
                 }}
