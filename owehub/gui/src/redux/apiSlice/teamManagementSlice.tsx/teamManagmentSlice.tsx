@@ -7,19 +7,21 @@ import {
   getsaleRepList,
   createTeam,
   manageTeam,
+  getTeamMemberDropdown
 } from '../../apiActions/teamManagement/teamManagement';
 
 interface IState {
   isLoading: boolean;
   isFormSubmitting: boolean;
   error: string;
-  teams: [];
+  teams: any[];
   team: any;
-  sales_manager_list: [];
-  sale_rep_list: [];
+  sales_manager_list: any[];
+  sale_rep_list: any[];
   isSuccess: boolean;
   isMove: boolean;
   totalcount: number;
+  team_dropdown:any[];
 }
 
 const initialState: IState = {
@@ -33,6 +35,7 @@ const initialState: IState = {
   isSuccess: false,
   isMove: false,
   totalcount: 0,
+  team_dropdown:[],
 };
 
 const teamManagementSlice = createSlice({
@@ -95,8 +98,7 @@ const teamManagementSlice = createSlice({
         state.error = action.payload as string;
         toast.error(action.payload as string);
       })
-
-      .addCase(createTeam.pending, (state, action) => {
+      .addCase(createTeam.pending, (state) => {
         state.isFormSubmitting = true;
       })
       .addCase(createTeam.fulfilled, (state, action) => {
@@ -110,8 +112,7 @@ const teamManagementSlice = createSlice({
         state.error = action.payload as string;
         toast.error(action.payload as string);
       })
-
-      .addCase(manageTeam.pending, (state, action) => {
+      .addCase(manageTeam.pending, (state) => {
         state.isFormSubmitting = true;
       })
       .addCase(manageTeam.fulfilled, (state, action) => {
@@ -121,6 +122,21 @@ const teamManagementSlice = createSlice({
         toast.success('Moved Successfully');
       })
       .addCase(manageTeam.rejected, (state, action) => {
+        state.isFormSubmitting = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      })
+
+      .addCase(getTeamMemberDropdown.pending, (state) => {
+        state.isFormSubmitting = true;
+      })
+      .addCase(getTeamMemberDropdown.fulfilled, (state, action) => {
+        state.isFormSubmitting = false;
+        state.team_dropdown= action.payload;
+        state.error = '';
+      
+      })
+      .addCase(getTeamMemberDropdown.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);

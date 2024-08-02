@@ -83,3 +83,20 @@ export const manageTeam = createAsyncThunk(
     }
   }
 );
+
+
+export const getTeamMemberDropdown = createAsyncThunk(
+  'getManageDropdown/Member_dropdown',
+  async (params: any, { rejectWithValue, dispatch }) => {
+    try {
+      const data = await postCaller('get_team_member_dropdown', params);
+      if (data.status > 201) {
+        return rejectWithValue((data as Error).message);
+      }
+      return data.data.sale_rep_list;
+      ;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
