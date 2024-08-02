@@ -63,6 +63,8 @@ func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT intOpsMetSchema.unique_id, intOpsMetSchema.home_owner
         FROM internal_ops_metrics_schema intOpsMetSchema
+        LEFT JOIN sales_metrics_schema AS salMetSchema 
+            ON intOpsMetSchema.unique_id = salMetSchema.unique_id 
         WHERE intOpsMetSchema.unique_id IS NOT NULL
             AND intOpsMetSchema.unique_id <> ''
             AND intOpsMetSchema.system_size IS NOT NULL
@@ -75,10 +77,10 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
 	AdminDlrSaleRepRetrieveQuery := `
     SELECT ud.name AS name,
         ur.role_name AS role_name,
-        d.name AS dealer_name
+        d.dealer_name AS dealer_name
     FROM user_details ud
     JOIN user_roles ur ON ud.role_id = ur.role_id
-    LEFT JOIN user_details d ON ud.dealer_owner = d.user_id
+    LEFT JOIN v_dealer d ON ud.dealer_id = d.id
     WHERE ud.email_id = $1;
     `
 	return AdminDlrSaleRepRetrieveQuery
