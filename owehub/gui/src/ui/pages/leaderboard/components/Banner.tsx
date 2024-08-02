@@ -174,7 +174,10 @@ const Banner: React.FC<BannerProps> = ({
         ></div>
         <div className="banner-wrap">
           {/* left side  */}
-
+          <button className="edit-button" onClick={() => setShowModal(true)}>
+              <LiaEdit className="edit-svg" />
+              <p>Edit</p>
+            </button>
           <div className="flex items-center pl4 banner-left">
             {role !== TYPE_OF_USER.FINANCE_ADMIN &&
               role !== TYPE_OF_USER.ADMIN &&
@@ -273,10 +276,7 @@ const Banner: React.FC<BannerProps> = ({
               />
             </div>
 
-            <button className="edit-button" onClick={() => setShowModal(true)}>
-              <LiaEdit className="edit-svg" />
-              <p>Edit</p>
-            </button>
+    
           </div>
         </div>
       </div>
