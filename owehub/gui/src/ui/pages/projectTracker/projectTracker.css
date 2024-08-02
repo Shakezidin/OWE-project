@@ -223,6 +223,9 @@
   color: #333333;
   font-size: 12px;
   cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 57px;
 }
 
 .status-graph-heading p {
@@ -254,10 +257,9 @@
   width: 180px;
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
   transform: translate(-50, -50%);
-  right: -150px;
-  bottom: -120px;
+  right: 0;
+  top: 87px;
   border-radius: 8px;
-  margin-top: -132px;
   z-index: 10;
   padding: 1rem;
 }

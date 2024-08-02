@@ -267,7 +267,7 @@ const TechnicalSupport: React.FC = () => {
               <p>Get In Touch with us for more Information</p>
             </div>
 
-            <div className="create-input-container-support">
+            <div className="create-input-container-support" style={{marginTop: "0px"}}>
               <div className="create-input-field-support hide">
                 <Input
                   type={'text'}
@@ -342,7 +342,6 @@ const TechnicalSupport: React.FC = () => {
 
               <div
                 className="create-input-field-support hide"
-                style={{ marginTop: '-10px' }}
               >
                 <label className="inputLabel">Phone Number</label>
                 <PhoneInput
@@ -367,7 +366,7 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
 
-            <div className="create-input-container-support" style={{ marginBottom: "1rem" }}>
+            <div className="create-input-container-support" style={{ marginBottom: "1rem", marginTop: "0px" }}>
               <div className="create-input-field-support">
                 <label
                   className="inputLabel-select select-type-label"
