@@ -2,6 +2,11 @@ name: Deploy to Production Server
 
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: false
+        default: 'main'  # Default value if not specified
   #push:
   #branches:
   #    - main  # Deploy when code is pushed to the main branch
