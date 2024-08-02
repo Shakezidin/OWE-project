@@ -41,8 +41,10 @@ jobs:
         ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
         cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
         cp ../gui/.env.staging ../gui/.env
+        rm -rf ../gui/.env.staging ../gui/.env.production
         ./deploy-owehub.sh gui
         rm ../gui/.env
+        git checkout ../../
         
     - name: Migrating Databse
       run: |
