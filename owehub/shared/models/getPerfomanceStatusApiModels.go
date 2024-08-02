@@ -12,7 +12,7 @@ type PerfomanceStatusReq struct {
 	PageNumber   int `json:"page_number"`
 	PageSize     int `json:"page_size"`
 	Email        string
-	UniqueIds    []string
+	UniqueIds    []string `json:"unique_ids"`
 	ProjectLimit int
 	DealerName   interface{}
 	IntervalDays string

@@ -186,7 +186,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf("dealer = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf("salMetSchema.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
@@ -207,7 +207,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 	defer func() { log.ExitFn(0, "PrepareProjectSaleRepFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := false
+	whereAdded := true
 
 	if whereAdded {
 		filtersBuilder.WriteString(" AND ")
@@ -215,7 +215,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 		filtersBuilder.WriteString(" WHERE ")
 	}
 
-	filtersBuilder.WriteString(" primary_sales_rep IN (")
+	filtersBuilder.WriteString(" salMetSchema.primary_sales_rep IN (")
 	for i, sale := range saleRepList {
 		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, sale)
@@ -225,7 +225,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(") AND salMetSchema.dealer = $%d", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
 	filters = filtersBuilder.String()
 

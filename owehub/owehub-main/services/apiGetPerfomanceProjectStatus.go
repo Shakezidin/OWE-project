@@ -42,6 +42,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		PtoD               string
 		SiteD              string
 		InstallD           string
+		dealerName         interface{}
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
@@ -91,9 +92,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	// This checks if the user is admin, sale rep or dealer
 	if len(data) > 0 {
+		log.FuncInfoTrace(0, "====== 1 %s", data)
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName := data[0]["dealer_name"]
+		dealerName = data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
 
 		switch role {
@@ -139,11 +141,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			SaleRepList = append(SaleRepList, SaleRepName)
 		}
 
-		dealerName := data[0]["dealer_name"]
+		log.FuncInfoTrace(0, "====== 2 %s", data)
+		dealerName = data[0]["dealer_name"]
 		dataReq.DealerName = dealerName
 		filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
+	log.FuncInfoTrace(0, "%s", dealerName)
 	if filter != "" {
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
