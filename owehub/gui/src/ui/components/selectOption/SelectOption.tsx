@@ -20,6 +20,9 @@ interface Props {
   dropdownIndicatorStyles?: CSSObjectWithLabel;
   marginTop?: string | number;
   labelColor?: string;
+  width?: string; // Add width prop
+  placeholder?: string; // Add placeholder prop
+  menuWidth?: string;
 }
 
 const SelectOption: React.FC<Props> = ({
@@ -34,7 +37,10 @@ const SelectOption: React.FC<Props> = ({
   menuStyles = {},
   dropdownIndicatorStyles = {},
   marginTop = '25px',
+  width,
   labelColor,
+  placeholder,
+  menuWidth
 }) => {
   const scrollRef = useRef(null);
 
@@ -45,9 +51,9 @@ const SelectOption: React.FC<Props> = ({
         options={options}
         isSearchable
         onChange={onChange}
-        placeholder="Select"
+        placeholder={placeholder || 'Select'} // Pass the placeholder prop here
         ref={scrollRef}
-        value={value ? value : { label: 'Select', value: 'Select' }}
+        value={value || { label: placeholder || 'Select', value: '' }}
         isDisabled={disabled}
         styles={{
           control: (baseStyles, state: any) => ({
@@ -57,9 +63,15 @@ const SelectOption: React.FC<Props> = ({
             outline: 'none',
             fontSize: '13px',
             height: '2.25rem',
-            border: '1px solid #d0d5dd',
+            border: '2px solid #377CF6',
             cursor: 'pointer',
+            width: width || baseStyles.width,
             ...controlStyles,
+            transition: 'all 0.3s ease', // Add transition for smooth effect
+            '&:hover': {
+              borderColor: '#aaa', // Change border color on hover
+              boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)', // Add box shadow on hover
+            },
           }),
           indicatorSeparator: () => ({
             display: 'none',
@@ -78,6 +90,7 @@ const SelectOption: React.FC<Props> = ({
             ...base,
             zIndex: 999,
             ...menuStyles,
+            width: menuWidth || base.width,
           }),
           menuList: (base) => ({
             ...base,
