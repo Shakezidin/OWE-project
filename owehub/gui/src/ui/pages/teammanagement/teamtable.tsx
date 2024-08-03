@@ -18,6 +18,7 @@ import { BiEditAlt } from "react-icons/bi";
 import { MdOutlineDone } from "react-icons/md";
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
  
 interface User {
   name: string;
@@ -102,7 +103,12 @@ const TeamTable: React.FC = () => {
       inputRef.current.focus();
     }
     setIsEditing(true)
+
+
+   
   };
+
+  const role = localStorage.getItem('role');
  
   const users = [
     { id: 1, name: 'Alex', role: 'Manager', email: 'Alex@gmail.com', phone: '+1 7594594545' },
@@ -144,7 +150,7 @@ const TeamTable: React.FC = () => {
       }
   
       if(response.status === 200){
-      toast.success('Delete successful:');
+      toast.success('Successfully Deleted');
       setIsRefresh((prev) => !prev);
       }
     } catch (error) {
@@ -152,7 +158,32 @@ const TeamTable: React.FC = () => {
     }
   };
 
+ 
+  const handleUpdateName = async () => {
+   console.log("check")
+    try {
+      const response = await postCaller("update_team", {
+        team_id: team?.team_id,
+        team_name: inputValue // Use inputValue instead of teamName
+      });
   
+      if (response.status > 201) {
+        toast.error('Network response was not ok');
+      }
+  
+      if(response.status === 200){
+        toast.success('Update successful:');
+        setIsRefresh((prev) => !prev);
+        setIsEditing(false); // Exit edit mode after successful update
+      }
+    } catch (error) {
+      console.error('There was an error updating the team name:', error);
+    }
+  };
+
+
+
+   
   return (
     <>
       <div className="comm">
@@ -162,7 +193,8 @@ const TeamTable: React.FC = () => {
           route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
           linkparaSecond="Team Details"
         />
-        {open && (
+        
+        {role !== TYPE_OF_USER.SALES_REPRESENTATIVE && open && (
           <AddMember
             handleClose={handleClose}
             onSubmitCreateUser={onSubmitCreateUser}
@@ -171,6 +203,7 @@ const TeamTable: React.FC = () => {
            
           />
         )}
+      
         {open1 && (
           <MoveMember
             handleClose1={handleClose1}
@@ -199,7 +232,13 @@ const TeamTable: React.FC = () => {
                       onClick={(e) => e.stopPropagation()}
                       readOnly={!isEditing}
                     />
-                    <span onClick={handleIconClick}>{isEditing ? <MdOutlineDone /> : <BiEditAlt />}</span>
+                     <div>
+                      {isEditing ?
+                      <div ><MdOutlineDone onClick={handleUpdateName} />
+                      </div>
+                       : <div><BiEditAlt onClick={handleIconClick} /></div>  }
+                    </div>
+
                   </div>
                   <p>{team?.manager_count} Managers, {team?.MemberCount} Sales Rep</p>
                 </div>
@@ -213,7 +252,7 @@ const TeamTable: React.FC = () => {
                 <tr>
                   <th style={{ paddingLeft: '34px' }}>
                     <div className="table-header">
-                      <p>Unique ID</p>
+                      <p>User Code</p>
                       <FaArrowDown style={{ color: '#667085' }} />
                     </div>
                   </th>
@@ -242,9 +281,11 @@ const TeamTable: React.FC = () => {
                     </div>
                   </th>
                   <th>
+                    {role !== TYPE_OF_USER.SALES_REPRESENTATIVE && team?.manager_count > 1 ?
                     <div className="table-header" style={{ paddingRight: '34px' }}>
                       <p>Action</p>
                     </div>
+                    : null}
                   </th>
                 </tr>
               </thead>
@@ -289,13 +330,14 @@ const TeamTable: React.FC = () => {
                           color: '#101828',
                           paddingLeft: '33px',
                           fontWeight: '500',
-                        }}>{item.unique_id || "N/A"}</td>
+                        }}>{item.user_code || "N/A"}</td>
                     <td style={{ color: '#101828' }}>{item.sale_rep_name}</td>
                     <td style={{ color: '#101828' }}>
                       <p className={item.role === "manager" ? "user-mg" : "user-namg"}>{item.role}</p>
                     </td>
                     <td style={{ color: '#101828' }}>{item.email_id}</td>
                     <td style={{ color: '#101828' }}>{item.phone_number}</td>
+                    { role !== TYPE_OF_USER.SALES_REPRESENTATIVE && team?.manager_count > 1?
                     <td className="zoom-out-help" style={{ paddingLeft: '30px' }} onClick={(e) => handleDelete(item.team_member_id)}>
                         <img
                           src={ICONS.deleteIcon}
@@ -307,6 +349,7 @@ const TeamTable: React.FC = () => {
                           alt=""
                         />
                       </td>
+                     : null}
                   </tr>
                 ))}
               </tbody>
