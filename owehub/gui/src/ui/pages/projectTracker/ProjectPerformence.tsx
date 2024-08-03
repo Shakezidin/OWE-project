@@ -18,6 +18,9 @@ import {
   getPerfomance,
   getPerfomanceStatus,
 } from '../../../redux/apiSlice/perfomanceSlice';
+import {
+  getProjects,
+} from '../../../redux/apiSlice/projectManagement';
 import { format, subMonths, subDays } from 'date-fns';
 import Pagination from '../../components/pagination/Pagination';
 import MicroLoader from '../../components/loader/MicroLoader';
@@ -28,11 +31,45 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import SelectOption from '../../components/selectOption/SelectOption';
+
+interface Option {
+  value: string;
+  label: string;
+}
 
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const datePickerRef = useRef<HTMLDivElement>(null);
+  const refBtn = useRef<null | HTMLDivElement>(null);
+  const [activePopups, setActivePopups] = useState<boolean>(false);
+  const { projects } = useAppSelector(
+    (state) => state.projectManagement
+  );
+
+  const [selectedProject, setSelectedProject] = useState<{
+    label: string;
+    value: string;
+  }>({} as Option);
+
+  const handleCancel = () => {
+    setSelectedProject({} as Option);
+  };
+
+
+  const handleClickOutside = (e: MouseEvent) => {
+    const elm = e.target as HTMLElement;
+    if (
+      refBtn?.current &&
+      (elm === refBtn?.current || refBtn?.current?.contains(elm))
+    ) {
+      return;
+    }
+    if (!elm.closest('.popup')) {
+      setActivePopups(false);
+    }
+  };
 
   const [selectionRange, setSelectionRange] = useState({
     startDate: subMonths(new Date(), 3),
@@ -41,6 +78,8 @@ const ProjectPerformence = () => {
   });
 
   const [tileData, setTileData] = useState<any>({});
+
+
 
   const [resDatePicker, setResDatePicker] = useState({
     startdate: format(subMonths(new Date(), 3), 'dd-MM-yyyy'),
@@ -101,6 +140,13 @@ const ProjectPerformence = () => {
     }
   };
 
+  const projectOption: Option[] = projects?.map?.(
+    (item: (typeof projects)[0]) => ({
+      label: `${item.unqiue_id}-${item.customer}`,
+      value: item.unqiue_id,
+    })
+  );
+
   const {
     perfomaceSale,
     commisionMetrics,
@@ -112,6 +158,24 @@ const ProjectPerformence = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+
+  // useEffect(() => {
+  //   if (projectOption.length) {
+  //     const val = {
+  //       label: projectOption[0].label || '',
+  //       value: projectOption[0].value || '',
+  //     };
+  //     console.log('val86786876', uniqueId);
+  //     setUniqueId(projectOption[0]?.value);
+  //     console.log(selectedProject, "hjghgfghfhgf")
+  //   }
+  // }, [selectedProject.value]);
+
+  useEffect(() => {
+    dispatch(getProjects());
+
+    return () => toast.dismiss();
+  }, []);
 
   useEffect(() => {
     const current = format(new Date(), 'yyyy-MM-dd');
@@ -154,9 +218,11 @@ const ProjectPerformence = () => {
         perPage,
         startDate: resDatePicker.startdate,
         endDate: resDatePicker.enddate,
+        uniqueId: selectedProject?.value || ''
       })
     );
-  }, [page, resDatePicker.startdate, resDatePicker.enddate]);
+  }, [page, resDatePicker.startdate, resDatePicker.enddate, selectedProject.value]);
+
 
   const calculateCompletionPercentage = (
     project: (typeof projectStatus)[0]
@@ -236,6 +302,8 @@ const ProjectPerformence = () => {
     fetchData();
   }, [isAuthenticated, resDatePicker.startdate, resDatePicker.enddate]);
 
+
+
   const isMobile = useMatchMedia('(max-width: 767px)');
   return (
     <div className="">
@@ -293,7 +361,7 @@ const ProjectPerformence = () => {
                 </label>
                 {showDatePicker && (
                   <div className="per-calender-container">
-                   
+
                     <DateRangePicker
                       ranges={[selectionRange]}
                       onChange={handleSelect}
@@ -316,12 +384,14 @@ const ProjectPerformence = () => {
                     >
                       Apply
                     </button>
-                 
+
                   </div>
                 )}
               </div>
             </div>
           </div>
+
+
         </div>
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
@@ -406,7 +476,7 @@ const ProjectPerformence = () => {
                     >
                       <p
                         style={{
-                          fontSize: isMobile ? '16px' :'12px',
+                          fontSize: isMobile ? '16px' : '12px',
                           color: '#646464',
                           fontWeight: '300',
                         }}
@@ -468,31 +538,53 @@ const ProjectPerformence = () => {
         style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
         <div className="performance-table-heading">
-          <div className="performance-project">
-            <h2>Projects</h2>
-            <div className="progress-box-container">
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#377CF6' }}
-                ></div>
-                <p>In Progress</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#63ACA3' }}
-                ></div>
-                <p>Active</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#E9E9E9' }}
-                ></div>
-                <p>Not Started</p>
+          <div className='proper-top'>
+            <div className="performance-project">
+              <h2>Projects</h2>
+              <div className="progress-box-container">
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#377CF6' }}
+                  ></div>
+                  <p>In Progress</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#63ACA3' }}
+                  ></div>
+                  <p>Active</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#E9E9E9' }}
+                  ></div>
+                  <p>Not Started</p>
+                </div>
               </div>
             </div>
+
+            <div className="proper-select">
+
+              <SelectOption
+                options={projectOption}
+                value={selectedProject.value ? selectedProject : undefined}
+                onChange={(val) => {
+                  if (val) {
+                    setSelectedProject({ ...val });
+                  }
+                }}
+                placeholder="Select Project Id"
+                menuWidth="300px"
+                width="300px"
+              />
+
+              <button onClick={handleCancel}>Cancel</button>
+
+            </div>
+
           </div>
 
           <div className="performance-milestone-table">

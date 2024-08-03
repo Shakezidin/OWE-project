@@ -170,6 +170,35 @@ const project = {
   ],
 };
 
+// const mob = {
+//   mob: [
+//     {
+//       path: ROUTES.LEADERBOARD,
+//       sidebarProps: {
+//         displayText: 'Leaderboard',
+//         icon: <ImStatsBars2 size={18} style={{ flexShrink: '0' }} />,
+//       },
+//     },
+//     {
+//       path: ROUTES.USER_MANAEMENT,
+
+//       sidebarProps: {
+//         displayText: 'User Management',
+//         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
+//       },
+//     },
+//     // {
+//     //   path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+
+//     //   sidebarProps: {
+//     //     displayText: 'Team Management',
+//     //     icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+//     //   },
+//     // },
+//   ],
+// };
+
+
 const mob = {
   mob: [
     {
@@ -187,14 +216,40 @@ const mob = {
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
-    // {
-    //   path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+    {
+      path: ROUTES.PROJECT_PERFORMANCE,
+      sidebarProps: {
+        displayText: 'Performance',
+        icon: (
+          <GrDocumentPerformance
+            size={20}
+            style={{ marginLeft: '5px' }}
+            className="hover-icon"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.PROJECT_STATUS,
+      sidebarProps: {
+        displayText: 'Project Management',
+        icon: (
+          <AiOutlineProject
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.TECHNICAL_SUPPORT,
 
-    //   sidebarProps: {
-    //     displayText: 'Team Management',
-    //     icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
-    //   },
-    // },
+      sidebarProps: {
+        displayText: 'Technical Support',
+        icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
   ],
 };
 
@@ -250,53 +305,17 @@ const support = {
     },
   ],
 };
-let role = localStorage.getItem('role');
-if(role===TYPE_OF_USER.ADMIN){
-  mob.mob.push({
-    path: ROUTES.PROJECT_PERFORMANCE,
-    sidebarProps: {
-      displayText: 'Performance',
-      icon: (
-        <GrDocumentPerformance
-          size={20}
-          style={{ marginLeft: '5px' }}
-          className="hover-icon"
-        />
-      ),
-    },
-  },)
 
-  mob.mob.push( {
-    path: ROUTES.PROJECT_STATUS,
-    sidebarProps: {
-      displayText: 'Project Management',
-      icon: (
-        <AiOutlineProject
-          size={20}
-          style={{ marginLeft: '3px' }}
-          color="black"
-        />
-      ),
-    },
-  })
-}
 
-mob.mob.push(
-  {
-    path: ROUTES.TECHNICAL_SUPPORT,
 
-    sidebarProps: {
-      displayText: 'Technical Support',
-      icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
-    },
-  },
 
-)
 export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
   const remiainingPage: { [key: string]: any[] } = {};
-  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[2] }];
+  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[2] },{ ...mob.mob[3] }, { ...mob.mob[4] }];
+  const remiainingPage1: { [key: string]: any[] } = {};
+  remiainingPage1.mob = [{ ...mob.mob[0] }, { ...mob.mob[2] }];
   
 
   if (role === TYPE_OF_USER.ADMIN) {
@@ -349,7 +368,7 @@ export const createSideMenuList = (): any[] => {
     } else if (role === TYPE_OF_USER.DB_USER) {
       sideMenu.push(DB);
       sideMenu.push(support);
-      sideMenu.push(remiainingPage);
+      sideMenu.push(remiainingPage1);
     }
   }
 

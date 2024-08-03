@@ -573,7 +573,9 @@
     width: 100%;
   }
 }
-
+.banner-main .edit-button{
+  z-index: 115;
+}
 @media (max-width: 576px) {
   .banner-main .edit-button p {
     display: none;

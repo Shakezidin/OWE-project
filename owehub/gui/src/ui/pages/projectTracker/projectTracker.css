@@ -220,9 +220,15 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  color: #333333;
+  color: #fff;
   font-size: 12px;
   cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 57px;
+}
+.view-flex img{
+  filter: invert(1);
 }
 
 .status-graph-heading p {
@@ -254,10 +260,9 @@
   width: 180px;
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
   transform: translate(-50, -50%);
-  right: -150px;
-  bottom: -120px;
+  right: 0;
+  top: 87px;
   border-radius: 8px;
-  margin-top: -132px;
   z-index: 10;
   padding: 1rem;
 }
@@ -376,6 +381,43 @@
   color: white;
   font-weight: 500;
 }
+
+.proper-top{
+  display: flex;
+  justify-content: space-between;
+  
+}
+.proper-select{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-top: -14px;
+  margin-right: 12px;
+}
+
+.proper-select button {
+  background-color: #377CF6;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid white;
+  width: 90px;
+  height: 2.35rem;
+  margin-top: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.proper-select button:hover{
+   color: black;
+   background-color: white;
+   border: 1px solid black;
+}
+
+
+
 
 .status-number {
   width: 25px;
@@ -747,6 +789,18 @@
 }
 .project-container{
   margin: 10px;
+}
+
+
+.proper-top{
+  display: flex;
+  flex-direction: column;
+  
+}
+.proper-select{
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 16px;
 }
   
 }

@@ -65,11 +65,13 @@ export const getPerfomanceStatus = createAsyncThunk(
       perPage,
       startDate,
       endDate,
+      uniqueId
     }: {
       page: number;
       perPage: number;
       startDate: string;
       endDate: string;
+      uniqueId?: string
     },
     { rejectWithValue }
   ) => {
@@ -79,6 +81,7 @@ export const getPerfomanceStatus = createAsyncThunk(
         page_number: page,
         start_date: startDate,
         end_date: endDate,
+        ...(uniqueId && { unique_ids: [uniqueId] })
       });
 
       if (data.status > 201) {

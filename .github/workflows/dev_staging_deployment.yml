@@ -1,9 +1,15 @@
 name: Deploy to Staging Server
 
 on:
-  push:
-    branches:
-      - dev  # Deploy when code is pushed to the dev branch
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: false
+        default: 'dev'  # Default value if not specified
+  #push:
+  #branches:
+  #   - dev  # Deploy when code is pushed to the dev branch
 
 jobs:
   deploy:
@@ -22,17 +28,40 @@ jobs:
           #run: |
           #scp -P ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no -r ./* ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }}:/home/ubuntu/github
 
-    - name: Run deployment script on server
+          #- name: SSH on Staging Server
+          #run: |
+          #ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+
+    - name: Checkout latest dev branch
       run: |
         ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
         cd /home/ubuntu/deploy/OweAppPlatform
-        # Checkout dev branch on server
         git clean -fd
         git checkout .
         git fetch --all
         git checkout dev
         git pull origin dev
-        # Run your deployment commands here, for example:
-        cd owehub/scripts/
-        ./deploy-owehub.sh all
+
+    - name: Deploying GUI
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        cp ../gui/.env.staging ../gui/.env
+        rm -rf ../gui/.env.staging ../gui/.env.production
+        ./deploy-owehub.sh gui
+        git clean -fd ../../
+        git checkout ../../
+        
+    - name: Migrating Databse
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        ./deploy-owehub.sh migrate_db
+    
+    - name: Deploying Backend
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        ./deploy-owehub.sh backend
+    
         EOF

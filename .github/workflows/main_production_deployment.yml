@@ -1,10 +1,15 @@
 name: Deploy to Production Server
 
 on:
-  push:
-    branches:
-      - main  # Deploy when code is pushed to the main branch
-
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: false
+        default: 'main'  # Default value if not specified
+  #push:
+  #branches:
+  #    - main  # Deploy when code is pushed to the main branch
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,17 +27,40 @@ jobs:
           #run: |
           #scp -P ${{ secrets.OWEHUB_PRODUCTION_SSH_PORT }} -o StrictHostKeyChecking=no -r ./* ${{ secrets.OWEHUB_PRODUCTION_USERNAME }}@${{ secrets.OWEHUB_PRODUCTION_SERVER }}:/home/ubuntu/github
 
-    - name: Run deployment script on server
+          #    - name: SSH on Production Server
+          #run: |
+          #ssh -p ${{ secrets.OWEHUB_PRODUCTION_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_PRODUCTION_USERNAME }}@${{ secrets.OWEHUB_PRODUCTION_SERVER }} << 'EOF'
+
+    - name: Checkout latest main branch
       run: |
-        ssh -p ${{ secrets.OWEHUB_PRODUCTION_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_PRODUCTION_USERNAME }}@${{ secrets.OWEHUB_PRODUCTION_SERVER }} << 'EOF'
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
         cd /home/ubuntu/deploy/OweAppPlatform
-        # Checkout dev branch on server
         git clean -fd
         git checkout .
         git fetch --all
         git checkout main
         git pull origin main
-        # Run your deployment commands here, for example:
-        cd owehub/scripts/
-        ./deploy-owehub.sh all
+        
+    - name: Deploying GUI
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        cp ../gui/.env.production ../gui/.env
+        rm -rf ../gui/.env.staging ../gui/.env.production
+        ./deploy-owehub.sh gui
+        git clean -fd ../../
+        git checkout ../../
+
+    - name: Migrating Databse
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        ./deploy-owehub.sh migrate_db
+
+    - name: Deploying Backend
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        ./deploy-owehub.sh backend
+
         EOF

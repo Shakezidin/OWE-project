@@ -170,8 +170,10 @@ func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
 		attachment.SetDisposition("attachment")
 	}
 
+	dataReq.ToMail = "it@ourworldenergy.com"
+
 	from := mail.NewEmail("OWE", "it@ourworldenergy.com")
-	to := mail.NewEmail("", dataReq.ToMail)
+	to := mail.NewEmail("", "it@ourworldenergy.com")
 	plainTextContent := dataReq.Message
 	htmlContent := dataReq.HtmlContent
 	subject := dataReq.Subject

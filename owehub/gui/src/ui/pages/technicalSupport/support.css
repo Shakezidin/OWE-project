@@ -45,15 +45,13 @@
   line-height: 18px;
   text-align: left;
   margin-top: -6px;
-  /* background-color: #0493CE; */
 }
 
 .vertical-support {
   border-left: 1px solid #dbdddf;
-  height: 450px;
+  height: 650px;
   margin-top: 3rem;
   padding: 1rem;
-  /* border: 1px 0px 0px 0px; */
 }
 .touch-container {
   padding: 2rem;
@@ -100,10 +98,9 @@
 
 .file-input-container {
   position: relative;
-  border: 1px solid #ced4da; /* Show border */
+  border: 1px solid #ced4da;
   border-radius: 8px;
   padding: 5px;
-  /* width: 290px; */
   margin-top: 0.1rem;
   height: 39px;
   border-style: dashed;
@@ -133,7 +130,6 @@
 .inputLabel p {
   font-size: 12px;
   font-weight: 400;
-  /* line-height: 18px; */
   text-align: left;
 }
 .custom-button {
@@ -191,15 +187,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 10px;
   }
   .vertical-support {
     display: none;
     margin-top: 0rem;
-  }
-
-  .support-section h3 {
-    /* position: absolute;
-    left: -50px; */
   }
   .touch-info p {
     color: #848484;
@@ -237,6 +229,9 @@
     align-items: center;
   }
   .support-container {
+    width: 100%;
+  }
+  .touch-container{
     width: 100%;
   }
 }
