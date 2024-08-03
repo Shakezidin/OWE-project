@@ -142,18 +142,18 @@
   background: var(--row-bg-color);
   color: #3b3b3b;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 300ms ease-in-out;
 }
 .edit-button:hover {
-  transition: all 0.3s ease;
-  background-color: var(--orange-color);
-  color: #fff;
+  transition: all 300ms ease-in-out;
+  background-color: #DDEBFF;
+  transform: scale(1.05);
 }
 
 .dealer-dropdown-filter .dealer-toggler:hover{
-  transition: all 0.3s ease;
-  background-color: var(--orange-color);
-  color: #fff;
+  transition: all 300ms ease-in-out;
+  background-color: #DDEBFF;
+  transform: scale(1.05);
 }
 .edit-svg {
   font-size: 1rem;
