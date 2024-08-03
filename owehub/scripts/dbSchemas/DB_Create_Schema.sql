@@ -31,7 +31,8 @@ INSERT INTO user_roles (role_name) VALUES ('DB User');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Jaitunjai Singh', 'OWE002', '0987654322', 'Jai22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 1, 1, 'Active', 'Software Engineer', 'SE');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'Software Engineer', 'SE');
 */
-\copy user_details (name,user_code,mobile_number,email_id,password,password_change_required,reporting_manager,dealer_owner,role_id,user_status,user_designation,description,region,street_address,state,city,zipcode,country,tables_permissions,created_at,updated_at) FROM '/docker-entrypoint-initdb.d/user_details.csv' DELIMITER ',' CSV;
+\copy v_dealer (dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
+\copy user_details (name,user_code,mobile_number,email_id,password,password_change_required,reporting_manager,dealer_id,role_id,user_status,user_designation,description,region,street_address,state,city,zipcode,country,tables_permissions,created_at,updated_at) FROM '/docker-entrypoint-initdb.d/user_details.csv' DELIMITER ',' CSV;
 -- INSERT INTO partners (partner_name,description) VALUES ('PartnerABC','Example Partner Description');
 -- INSERT INTO tier (tier_name) VALUES ('TierName123');
 -- INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,10,'Example Loan Type Description');
@@ -54,7 +55,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy commission_rates(partner_id, installer_id,sale_type_id, state_id, rl, rate, rep_type, sale_price, start_date, end_date) FROM '/docker-entrypoint-initdb.d/commission_rates.csv' DELIMITER ',' CSV;
 -- \copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 \copy loan_type (product_code,description,active,adder) FROM '/docker-entrypoint-initdb.d/loan_type.csv' DELIMITER ',' CSV;
-\copy v_dealer (dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
 \copy dealer_override(sub_dealer,dealer_id,pay_rate,start_date,end_date,state) FROM '/docker-entrypoint-initdb.d/dealer_override.csv' DELIMITER ',' CSV;
 \copy dealer_tier(dealer_id,tier_id,start_date,end_date) FROM '/docker-entrypoint-initdb.d/dealer_tier1.csv' DELIMITER ',' CSV;
 \copy loan_fee(dealer_id,installer,loan_type,state_id,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/loan_fee1.csv' DELIMITER ',' CSV;

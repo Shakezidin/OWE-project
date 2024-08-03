@@ -1,6 +1,6 @@
 // SelectComponent.tsx
 import React, { useEffect, useRef } from 'react';
-import Select, { CSSObjectWithLabel } from 'react-select';
+import Select, { CSSObjectWithLabel,MenuPosition } from 'react-select';
 import './drop.css';
 interface Option {
   value: string;
@@ -23,6 +23,7 @@ interface Props {
   width?: string; // Add width prop
   placeholder?: string; // Add placeholder prop
   menuWidth?: string;
+  menuPosition?:MenuPosition|undefined
 }
 
 const SelectOption: React.FC<Props> = ({
@@ -40,7 +41,8 @@ const SelectOption: React.FC<Props> = ({
   width,
   labelColor,
   placeholder,
-  menuWidth
+  menuWidth,
+  menuPosition="absolute"
 }) => {
   const scrollRef = useRef(null);
 
@@ -50,6 +52,7 @@ const SelectOption: React.FC<Props> = ({
       <Select
         options={options}
         isSearchable
+        menuPosition={menuPosition}
         onChange={onChange}
         placeholder={placeholder || 'Select'} // Pass the placeholder prop here
         ref={scrollRef}
@@ -68,10 +71,6 @@ const SelectOption: React.FC<Props> = ({
             width: width || baseStyles.width,
             ...controlStyles,
             transition: 'all 0.3s ease', // Add transition for smooth effect
-            '&:hover': {
-              borderColor: '#aaa', // Change border color on hover
-              boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)', // Add box shadow on hover
-            },
           }),
           indicatorSeparator: () => ({
             display: 'none',

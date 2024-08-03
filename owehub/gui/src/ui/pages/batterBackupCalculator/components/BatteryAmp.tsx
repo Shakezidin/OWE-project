@@ -132,6 +132,13 @@ const BatteryAmp = () => {
     secondaryText: '',
   });
   const form = useRef<HTMLDivElement | null>(null);
+  function formatSaleValue(value: any) {
+    if (value === null || value === undefined) return ''; // Handle null or undefined values
+    const sale = parseFloat(value);
+    if (sale === 0) return '0';
+    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
+    return sale.toFixed(2); // Otherwise, format it to 2 decimal places
+  }
 
   const exportPdf = () => {
     if (form.current) {
@@ -168,7 +175,9 @@ const BatteryAmp = () => {
     } else if (batteries[index].isOn) {
       batteries[index].isOn = false;
     } else {
-      toast.error(`Cannot turn on this breaker needs ${ampValue} amp.`);
+      toast.error(
+        `Cannot turn on this breaker needs ${formatSaleValue(ampValue)} amp.`
+      );
     }
     setBatteryPower([...batteries]);
   };
@@ -196,7 +205,11 @@ const BatteryAmp = () => {
   };
 
   const avavilableAmpPercentage = useMemo(() => {
-    const ampCapacity = requiredBattery * 48;
+    const ampCapacity =
+      requiredBattery * 48 -
+      (typeof lightHouseAmpSize === 'string'
+        ? parseFloat(lightHouseAmpSize)
+        : lightHouseAmpSize);
     setTotalAmp(ampCapacity);
     let selectedAmp = 0;
     batteryPower.forEach((item) => {
@@ -208,19 +221,11 @@ const BatteryAmp = () => {
     const remainingAmps = ampCapacity - selectedAmp;
     const percentage = (remainingAmps / ampCapacity) * 100;
     return { percentage, remainingAmps };
-  }, [requiredBattery, batteryPower]);
+  }, [requiredBattery, batteryPower,lightHouseAmpSize]);
 
   const required = useMemo(() => {
     return initial;
   }, [initial]);
-
-  function formatSaleValue(value: any) {
-    if (value === null || value === undefined) return ''; // Handle null or undefined values
-    const sale = parseFloat(value);
-    if (sale === 0) return '0';
-    if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
-    return sale.toFixed(2); // Otherwise, format it to 2 decimal places
-  }
 
   useEffect(() => {
     const getProspectDetail = async () => {
@@ -259,7 +264,12 @@ const BatteryAmp = () => {
               max = 2;
             }
           });
-          setTotalAmp(Math.max(addedAmp, max, data?.data?.lra / 185));
+          setTotalAmp(
+            Math.max(addedAmp, max, data?.data?.lra / 185) -
+              (typeof lightHouseAmpSize === 'string'
+                ? parseFloat(lightHouseAmpSize)
+                : lightHouseAmpSize)
+          );
 
           setOtherDeatil(data?.data);
           setInitial(min);
@@ -280,7 +290,6 @@ const BatteryAmp = () => {
       setBatteryPower((prev) => prev.map((ba) => ({ ...ba, isOn: true })));
     }
   }, [required, requiredBattery]);
-
   return (
     <div
       ref={form}
