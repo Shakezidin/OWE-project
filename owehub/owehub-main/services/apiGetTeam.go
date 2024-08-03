@@ -29,6 +29,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data             []map[string]interface{}
 		dealerCode       string
 		loggedMemberRole string
+		teamName string
 	)
 
 	log.EnterFn(0, "HandleGetTeamDataRequest")
@@ -77,6 +78,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	query = `
 		 SELECT
 			 ud.user_code,
+			 t.team_name,
 			 tm.role_in_team,
 			 ud.name,
 			 ud.email_id,
@@ -116,6 +118,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		phone, ok5 := item["phone_number"].(string)
 		teamMemberId, ok6 := item["team_member_id"].(int64)
 		dealerCode, _ = item["dealer_code"].(string)
+		teamName, _ = item["team_name"].(string)
 
 		if !ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6 {
 			log.FuncErrorTrace(0, "Failed to get details for Item: %+v\n", item)
@@ -140,7 +143,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	TeamResp := models.GetTeamResponse{
-		TeamName:           dataReq.TeamName,
+		TeamName:           teamName,
 		SaleRep:            usersNameList,
 		TeamID:             dataReq.TeamId,
 		MemberCount:        memberCount,
