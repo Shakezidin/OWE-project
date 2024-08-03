@@ -235,12 +235,13 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   ) : null}
                   
                    
-                  <div className="create-input-field">
+                  <div className="create-input-field relative" style={{zIndex:10}} >
                     <label className="inputLabel-select selected-fields-onboard">
                       Role
                     </label>
                     <SelectOption
                       options={ALL_USER_ROLE_LIST}
+                      menuPosition="fixed"
                       onChange={(newValue) => {
                         handleChange(newValue, 'role_name');
                         if (newValue?.value !== TYPE_OF_USER.ADMIN) {
