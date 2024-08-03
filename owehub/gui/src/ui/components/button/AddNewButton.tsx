@@ -22,9 +22,7 @@ export const AddNewButton = (props: ActionButtonProps) => {
       <button
         type="button"
         style={{
-          background: `var(--primary-color)`,
-          color: 'white',
-          border: '1px solid var(--primary-color)',
+          
         }}
         // className="hover-btn"
         onClick={onClick}

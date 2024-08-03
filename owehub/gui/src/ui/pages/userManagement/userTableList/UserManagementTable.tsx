@@ -127,8 +127,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const buttonStyle = {
     cursor: 'pointer',
-    transition: 'transform 0.3s ease',
-    transform: isHovered ? 'scale(1.09)' : 'scale(1)',
+  transition: 'transform 0.3s ease, background-color 0.3s ease',
+  transform: isHovered ? 'scale(1.09)' : 'scale(1)',
+  backgroundColor: isHovered ? '#0053e7' : '',
   };
 
 
@@ -313,7 +314,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         </div>
         <div className="delete-icon-container items-start mt2">
           <div className="user_user-type">
-            <div>{AddBtn}</div>
+          <div>{AddBtn}</div>
             <div className="flex items-end">
               <div className="mr1">
                 <UserIcon />
@@ -329,7 +330,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 <SelectOption
                   options={userDropdownData}
                   value={selectedOption}
-                  menuStyles={{ width: 'fit-content', left: -42 }}
+                  menuStyles={{ width: 'fit-content', left: -54 }}
+                  
                   controlStyles={{
                     boxShadow: 'none',
                     border: 'none',
@@ -350,6 +352,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     setSelectedRows(new Set());
                     setSelectAllChecked(false);
                   }}
+                  menuWidth="130px"
                 />
               </div>
             </div>
