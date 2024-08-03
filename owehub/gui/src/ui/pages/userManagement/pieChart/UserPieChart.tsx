@@ -28,6 +28,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           padding: '1.5rem',
           alignItems: 'center',
           justifyContent: 'center',
+          outline: 'none'
         }}
       >
         <div className="pieChart-section">
@@ -39,13 +40,15 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            outline: 'none',
           }}
         >
           {!!onboardingList.length ? (
-            <div style={{ width: 'fit-content' }} className="relative">
+            <div style={{ width: 'fit-content' , outline: 'none', }} className="relative">
               <PieChart
                 width={isTablet ? 210 : 360}
                 height={isTablet ? 200 : 300}
+                style={{ outline: 'none'}}
               >
                 <Pie
                   data={onboardingList}
@@ -58,9 +61,12 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   paddingAngle={0.1}
                   dataKey="value"
                   strokeWidth={3}
+                  focusable={false}
+                  
                 >
                   {onboardingList.map((entry, index) => (
                     <Cell
+                    style={{outline: 'none'}}
                       id={`${index}`}
                       key={`cell-${index}`}
                       fill={entry.fill}
@@ -155,6 +161,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   >
                     {userPerformanceList.map((entry, index) => (
                       <Cell
+                      style={{outline: 'none'}}
                         id={`${index}`}
                         key={`cell-${index}`}
                         fill={entry.fill}
