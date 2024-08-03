@@ -49,6 +49,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   const [userRole, setUserRole] = useState<string>('');
   const [membersOption, setMembersOption] = useState<Option[]>([]);
   const [newFormData, setNewFormData] = useState<string[]>([]);
+  const [managers, setManagers] = useState<any[]>([]);
 
   const getnewformData = async () => {
     const tableData = {
@@ -74,16 +75,6 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       console.log('role key does not exist in localStorage');
     }
   }, []);
-
-  useEffect(() => {
-    const data = { role: 'Sales Manager' };
-    const dataa = {
-      role: 'Sales Manager',
-      name: selectedOption2,
-      sub_role: 'Sale Representative',
-    };
-    dispatch(getSalesManagerList(data));
-  }, [dispatch, selectedOption2]);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -156,10 +147,23 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const roleAdmin = localStorage.getItem('role');
+    const email = localStorage.getItem('email');
+    let userCode;
+    if (roleAdmin === TYPE_OF_USER.SALE_MANAGER) {
+      userCode = managers.find((item) => item.email === email);
+    }
+
     const data = {
       team_name: formData.first_name,
       sale_rep_ids: selectedOptions2.map((option) => option.value),
-      manager_ids: selectedOptions.map((option) => option.value),
+      manager_ids:
+        roleAdmin === TYPE_OF_USER.SALE_MANAGER
+          ? [
+              userCode?.rep_code,
+              ...selectedOptions.map((option) => option.value),
+            ]
+          : selectedOptions.map((option) => option.value),
       description: formData.description,
       dealer_name: selectedOption3 || undefined,
     };
@@ -182,7 +186,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                 label: `${item.name}-${item.rep_code}`,
                 value: item.rep_code,
               })) || [];
-
+          setManagers(data?.data?.sale_rep_list || []);
           const members =
             data?.data?.sale_rep_list.map((item: any) => ({
               label: `${item.name}-${item.rep_code}`,
