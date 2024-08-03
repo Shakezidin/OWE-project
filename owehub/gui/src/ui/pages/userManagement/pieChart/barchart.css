@@ -1,3 +1,11 @@
+
+.recharts-pie-sector:focus {
+  outline: none;
+}
+.recharts-layer {
+  outline: none !important;
+}
+
 .pieChart-section h2 {
   font-size: 1.125rem;
   font-weight: 600;
@@ -7,10 +15,6 @@
 
 .text-dark {
   color: var(--page-heading-color);
-}
-
-.recharts-layer {
-  outline: none !important;
 }
 
 .chart-view {

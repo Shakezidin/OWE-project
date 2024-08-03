@@ -58,6 +58,7 @@ const Proj_pie_chart: React.FC = () => {
             >
               {chartData.map((entry, index: number) => (
                 <Cell
+                style={{outline: 'none'}}
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
                 />
