@@ -50,7 +50,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   const [membersOption, setMembersOption] = useState<Option[]>([]);
   const [newFormData, setNewFormData] = useState<string[]>([]);
   const [managers, setManagers] = useState<any[]>([]);
- 
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
 
   const getnewformData = async () => {
@@ -148,12 +148,15 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.log("jdkfgh");
+    console.log('jdkfgh');
     e.preventDefault();
     const roleAdmin = localStorage.getItem('role');
     const email = localStorage.getItem('email');
     let userCode;
-    if (roleAdmin === TYPE_OF_USER.SALE_MANAGER) {
+    if (
+      roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
+      roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
+    ) {
       userCode = managers.find((item) => item.email === email);
     }
 
@@ -162,8 +165,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     if (formData.first_name.trim() === '') {
       validationErrors.first_name = 'Team Name is required.';
     }
-   
-    
+
     if (selectedOptions2.length === 0) {
       validationErrors.managers = 'Please select at least one manager';
     }
@@ -177,7 +179,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       team_name: formData.first_name,
       sale_rep_ids: selectedOptions2.map((option) => option.value),
       manager_ids:
-        roleAdmin === TYPE_OF_USER.SALE_MANAGER
+        roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
+        roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
           ? [
               userCode?.rep_code,
               ...selectedOptions.map((option) => option.value),
@@ -260,8 +263,6 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     (option) => option === selectedOption3
   );
 
- 
-
   return (
     <div className="transparent-model">
       {loading && <Loading />}
@@ -273,7 +274,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         <div className="modal-body">
           <div className="scroll-user">
             <div className="createProfileInputView">
-              <div className="createProfileTextView" >
+              <div className="createProfileTextView">
                 <div className="create-input-container">
                   <div className="tm-new-create-input-field">
                     <Input
@@ -285,16 +286,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       name="first_name"
                       maxLength={100}
                     />
-                  {errors.first_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.first_name}
-                    </span>
-                  )}
+                    {errors.first_name && (
+                      <span
+                        style={{
+                          display: 'block',
+                        }}
+                        className="error"
+                      >
+                        {errors.first_name}
+                      </span>
+                    )}
                   </div>
 
                   {userRole === 'Admin' && (
@@ -319,7 +320,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                             : undefined
                         }
                         onChange={handleSelectChange3}
-                      />               
+                      />
                     </div>
                   )}
                   <div className="tm-new-create-input-field">
@@ -336,16 +337,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       )}
                       onChange={handleSelectChange2}
                     />
-                      {errors.managers && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.managers}
-                    </span>
-                  )}
+                    {errors.managers && (
+                      <span
+                        style={{
+                          display: 'block',
+                        }}
+                        className="error"
+                      >
+                        {errors.managers}
+                      </span>
+                    )}
                   </div>
                   <div className="tm-new-create-input-field">
                     <label
