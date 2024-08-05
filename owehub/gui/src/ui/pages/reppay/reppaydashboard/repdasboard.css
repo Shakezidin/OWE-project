@@ -62,6 +62,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.rep-filter-line:hover{
+  transform: scale(1.07);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 .rep-active-filter-line {
   background-color: #377cf6;

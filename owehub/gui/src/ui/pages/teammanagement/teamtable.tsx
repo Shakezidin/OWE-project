@@ -113,148 +113,6 @@ const TeamTable: React.FC = () => {
 
   const role = localStorage.getItem('role');
 
-  const users = [
-    {
-      id: 1,
-      name: 'Alex',
-      role: 'Manager',
-      email: 'Alex@gmail.com',
-      phone: '+1 7594594545',
-    },
-    {
-      id: 2,
-      name: 'Jordan',
-      role: 'Member',
-      email: 'Jordan@gmail.com',
-      phone: '+1 1234567890',
-    },
-    {
-      id: 3,
-      name: 'Taylor',
-      role: 'Member',
-      email: 'Taylor@gmail.com',
-      phone: '+1 2345678901',
-    },
-    {
-      id: 4,
-      name: 'Morgan',
-      role: 'Manager',
-      email: 'Morgan@gmail.com',
-      phone: '+1 3456789012',
-    },
-    {
-      id: 5,
-      name: 'Casey',
-      role: 'Member',
-      email: 'Casey@gmail.com',
-      phone: '+1 4567890123',
-    },
-    {
-      id: 6,
-      name: 'Riley',
-      role: 'Manager',
-      email: 'Riley@gmail.com',
-      phone: '+1 5678901234',
-    },
-    {
-      id: 7,
-      name: 'Jamie',
-      role: 'Member',
-      email: 'Jamie@gmail.com',
-      phone: '+1 6789012345',
-    },
-    {
-      id: 8,
-      name: 'Sydney',
-      role: 'Member',
-      email: 'Sydney@gmail.com',
-      phone: '+1 7890123456',
-    },
-    {
-      id: 9,
-      name: 'Alexis',
-      role: 'Manager',
-      email: 'Alexis@gmail.com',
-      phone: '+1 8901234567',
-    },
-    {
-      id: 10,
-      name: 'Blake',
-      role: 'Member',
-      email: 'Blake@gmail.com',
-      phone: '+1 9012345678',
-    },
-    {
-      id: 11,
-      name: 'Quinn',
-      role: 'Manager',
-      email: 'Quinn@gmail.com',
-      phone: '+1 1234567899',
-    },
-    {
-      id: 12,
-      name: 'Parker',
-      role: 'Member',
-      email: 'Parker@gmail.com',
-      phone: '+1 2345678908',
-    },
-    {
-      id: 13,
-      name: 'Drew',
-      role: 'Manager',
-      email: 'Drew@gmail.com',
-      phone: '+1 3456789017',
-    },
-    {
-      id: 14,
-      name: 'Avery',
-      role: 'Member',
-      email: 'Avery@gmail.com',
-      phone: '+1 4567890126',
-    },
-    {
-      id: 15,
-      name: 'Reese',
-      role: 'Manager',
-      email: 'Reese@gmail.com',
-      phone: '+1 5678901235',
-    },
-    {
-      id: 16,
-      name: 'Rowan',
-      role: 'Member',
-      email: 'Rowan@gmail.com',
-      phone: '+1 6789012346',
-    },
-    {
-      id: 17,
-      name: 'Finley',
-      role: 'Member',
-      email: 'Finley@gmail.com',
-      phone: '+1 7890123457',
-    },
-    {
-      id: 18,
-      name: 'Emery',
-      role: 'Manager',
-      email: 'Emery@gmail.com',
-      phone: '+1 8901234568',
-    },
-    {
-      id: 19,
-      name: 'Harper',
-      role: 'Member',
-      email: 'Harper@gmail.com',
-      phone: '+1 9012345679',
-    },
-    {
-      id: 20,
-      name: 'Kennedy',
-      role: 'Manager',
-      email: 'Kennedy@gmail.com',
-      phone: '+1 1234567800',
-    },
-  ];
 
   const handleDelete = async (id: any) => {
     const data = {};
@@ -362,11 +220,11 @@ const TeamTable: React.FC = () => {
                     <div>
                       {isEditing ? (
                         <div>
-                          <MdOutlineDone onClick={handleUpdateName} />
+                          <MdOutlineDone className='done-icon' onClick={handleUpdateName} />
                         </div>
                       ) : (
                         <div>
-                          <BiEditAlt onClick={handleIconClick} />
+                          <BiEditAlt className='edit-icon' onClick={handleIconClick} />
                         </div>
                       )}
                     </div>

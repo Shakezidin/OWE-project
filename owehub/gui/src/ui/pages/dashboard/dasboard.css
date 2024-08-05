@@ -50,6 +50,7 @@
   left: 410px;
   bottom: 10px;
   border: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 .reset-calender {
   background: #3d91ff;
@@ -62,6 +63,11 @@
   left: 400px;
   bottom: 10px;
   border: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.reset-calender:hover, .apply-calender:hover{
+  transform: scale(1.07);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 .commission-section-dash {
   display: flex;
@@ -186,6 +192,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.filter-line:hover{
+  transform: scale(1.07);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 .filter-disable {
   width: 36px !important;
