@@ -1,6 +1,6 @@
 // SelectComponent.tsx
 import React, { useEffect, useRef } from 'react';
-import Select, { CSSObjectWithLabel,MenuPosition } from 'react-select';
+import Select, { CSSObjectWithLabel, MenuPosition } from 'react-select';
 import './drop.css';
 interface Option {
   value: string;
@@ -23,8 +23,11 @@ interface Props {
   width?: string; // Add width prop
   placeholder?: string; // Add placeholder prop
   menuWidth?: string;
-  menuPosition?:MenuPosition|undefined
+  menuPosition?: MenuPosition | undefined;
+  enableHoverEffect?: boolean;
+
 }
+
 
 const SelectOption: React.FC<Props> = ({
   options,
@@ -42,7 +45,8 @@ const SelectOption: React.FC<Props> = ({
   labelColor,
   placeholder,
   menuWidth,
-  menuPosition="absolute"
+  menuPosition = "absolute",
+  enableHoverEffect = true,
 }) => {
   const scrollRef = useRef(null);
 
@@ -66,11 +70,16 @@ const SelectOption: React.FC<Props> = ({
             outline: 'none',
             fontSize: '13px',
             height: '2.25rem',
-            border: '2px solid #377CF6',
+            border: '1px solid #d0d5dd',
             cursor: 'pointer',
+            boxShadow: 'none',
             width: width || baseStyles.width,
             ...controlStyles,
-            transition: 'all 0.3s ease', // Add transition for smooth effect
+            transition: 'background-color 0.3s ease, border-color 0.3s ease', // Modify this line
+            '&:hover': enableHoverEffect ? {
+              border: '1px solid #377CF6',
+              backgroundColor: '#DDEBFF',
+            } : {},
           }),
           indicatorSeparator: () => ({
             display: 'none',

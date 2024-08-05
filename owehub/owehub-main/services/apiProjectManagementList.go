@@ -88,17 +88,16 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		role = data[0]["role_name"].(string)
 		name := data[0]["name"]
 		dealerName := data[0]["dealer_name"]
+		dataReq.DealerName = dealerName
 		rgnSalesMgrCheck = false
 
 		switch role {
 		case "Admin":
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, true)
 		case "Dealer Owner":
-			dataReq.DealerName = name
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, false)
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
-			dataReq.DealerName = dealerName
 			filter, whereEleList = PreparePrjtSaleRepFilters(tableName, dataReq, SaleRepList)
 		// this is for roles regional manager & sales manager
 		default:
@@ -178,7 +177,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 	defer func() { log.ExitFn(0, "PrepareProjectAdminDlrFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := false
+	whereAdded := true
 
 	if !adminCheck {
 		if !whereAdded {

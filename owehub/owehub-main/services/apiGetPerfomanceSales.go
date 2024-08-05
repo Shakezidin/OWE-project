@@ -105,18 +105,17 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		name := data[0]["name"]
 		dealerName := data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
+		dataReq.DealerName = dealerName
 
 		switch role {
 		case "Admin":
 			filter, whereEleList = PreparePerfomanceAdminDlrFilters(tableName, dataReq, true)
 			// break
 		case "Dealer Owner":
-			dataReq.DealerName = name
 			filter, whereEleList = PreparePerfomanceAdminDlrFilters(tableName, dataReq, false)
 			// break
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
-			dataReq.DealerName = dealerName
 			filter, whereEleList = PrepareSaleRepPerfFilters(tableName, dataReq, SaleRepList)
 			// break
 		// this is for regional manager and sales manager

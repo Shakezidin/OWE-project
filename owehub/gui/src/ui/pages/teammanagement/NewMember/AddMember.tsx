@@ -13,49 +13,48 @@ import 'react-phone-input-2/lib/style.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { ICONS } from '../../../icons/Icons';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import {getTeamMemberDropdown} from '../../../../redux/apiActions/teamManagement/teamManagement'
+import { getTeamMemberDropdown } from '../../../../redux/apiActions/teamManagement/teamManagement';
 import { toast } from 'react-toastify';
- 
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+
 interface createUserProps {
   handleClose: () => void;
   onSubmitCreateUser: (e: any) => void;
-  team:any
-  setIsRefresh:React.Dispatch<React.SetStateAction<boolean>>
- 
+  team: any;
+  setIsRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 }
- 
+
 interface Option {
   value: string;
   label: string;
+  disbaled?: boolean;
 }
- 
+
 interface SelectOptionProps {
   options: Option[];
   value: Option | undefined; // The value should be an Option or undefined
   onChange: (selectedOption: Option | undefined) => void; // The onChange should receive Option or undefined
 }
- 
+
 const AddMember: React.FC<createUserProps> = ({
   handleClose,
   onSubmitCreateUser,
   team,
   setIsRefresh,
- 
-
 }) => {
   const dispatch = useAppDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const { loading, formData } = useAppSelector(
     (state) => state.createOnboardUser
   );
- 
+
   const { team_dropdown } = useAppSelector((state) => state.teamManagmentSlice);
 
   const handleInputChange = (
     e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
- 
+
     if (name === 'first_name' || name === 'last_name') {
       const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
       dispatch(updateUserForm({ field: name, value: sanitizedValue }));
@@ -63,11 +62,13 @@ const AddMember: React.FC<createUserProps> = ({
       dispatch(updateUserForm({ field: name, value }));
     }
   };
- 
+
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
-  const [selectedRole, setSelectedRole] = useState<any>(undefined);
-  const [selectedDropdown, setSelectDropdown] = useState<any>([])
- 
+  const [selectedDropdown, setSelectDropdown] = useState<Option | undefined>(undefined);
+  const [selectedRole, setSelectedRole] = useState<Option | undefined>(undefined);
+   
+  const [errors, setErrors] = useState<{ [key: string]: string }>({}); 
+
   const handleSelectChange = (selectedOption: Option | null) => {
     if (selectedOption) {
       setSelectedOptions({ ...selectedOptions });
@@ -85,79 +86,109 @@ const AddMember: React.FC<createUserProps> = ({
   // const handleSelectChange = (selectedOption: Option | undefined) => {
   //   setSelectedRole(selectedOption);
   // };
- 
+
   // const handleRole = (event: React.ChangeEvent<HTMLSelectElement>) => {
   //   setSelectedRole(event.target.value);
   // };
- 
- 
+
   const handleRemoveOption = (optionToRemove: Option) => {
     //@ts-ignore
-    setSelectedOptions(selectedOptions?.filter((option) => option.value !== optionToRemove.value));
-  };
- 
-  const users = {
-    id: 1234567, name: 'Alex', email: 'Alex@gmail.com', phone: '+1 7594594545'
-  }
- 
- 
-  const roles: Option[] = [
-    { value: 'manager', label: 'Manager' },
-    { value: 'member', label: 'Member' }
-  ]
- 
-  /** render ui */
-//team-dropdown
-useEffect(() => {
-  const data = {
-    dealer_name: team?.dealer_name,
-    team_id:team?.team_id,
-  }
-dispatch(getTeamMemberDropdown(data))
-},[])
-  
-const userOptions: Option[] = team_dropdown?.map((user: User) => ({
-  label: user.name,
-  value: user.rep_code
-}));
-
-const handleSelectDropdown = (selectedDropdown: Option | null) => {
-  if (selectedDropdown) {
-    setSelectDropdown({ ...selectedDropdown });
-    
-  }
-}
-
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  
-  try {
-    
-    const data = {
-      team_id: team?.team_id,
-      rep_ids: selectedRole?.value === 'member' ? [selectedDropdown?.value] : [],
-      manager_ids: selectedRole?.value === 'manager' ? [selectedDropdown?.value] : []
-    };
-    const response = await postCaller('add_team_member', 
-      data
+    setSelectedOptions(
+      selectedOptions?.filter(
+        (option: any) => option.value !== optionToRemove.value
+      )
     );
+  };
 
-    console.log(response, "response")
+  const [roles, setRoles] = useState([
+    { value: 'manager', label: 'Manager', disabled: false },
+    { value: 'member', label: 'Member', disabled: false },
+  ]);
 
-    if (response.status > 201) {
-      throw new Error('Network response was not ok');
+  /** render ui */
+  //team-dropdown
+  useEffect(() => {
+    const data = {
+      dealer_name: team?.dealer_name,
+      team_id: team?.team_id,
+    };
+    dispatch(getTeamMemberDropdown(data));
+  }, []);
+
+  const userOptions: Option[] = team_dropdown?.map((user: User) => ({
+    label: user.name,
+    value: user.rep_code,
+  }));
+
+  const handleSelectDropdown = (selectedDropdown: Option | null) => {
+    if (selectedDropdown) {
+      setSelectDropdown({ ...selectedDropdown });
+      const isSalesRep = team_dropdown.find(
+        (item: any) => item.rep_code === selectedDropdown.value
+      );
+      setSelectedRole(undefined)
+      if (isSalesRep.user_roles === TYPE_OF_USER.SALES_REPRESENTATIVE) {
+        setRoles((prev) =>
+          prev.filter(
+            (item: { value: string; label: string; disabled: boolean }) =>
+              item.value !== 'manager'
+          )
+        );
+      } else {
+        setRoles([
+          { value: 'manager', label: 'Manager', disabled: false },
+          { value: 'member', label: 'Member', disabled: false },
+        ]);
+      }
     }
-   if(response.status === 200){
-    toast.success('Form submitted successfully');
-    handleClose()
-    setIsRefresh((prev) => !prev);
-   }
-  } catch (error) {
-    console.error('There was an error submitting the form:', error);
-  }
-};
+  };
 
- 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const validationErrors: { [key: string]: string } = {};
+
+    if (!selectedDropdown) {
+      validationErrors.user = 'User is required.';
+    }
+   
+    
+    if (!selectedRole) {
+      validationErrors.role = 'Role is required.';
+    }
+  
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const data = {
+        team_id: team?.team_id,
+        rep_ids:
+          selectedRole?.value === 'member' ? [selectedDropdown?.value] : [],
+        manager_ids:
+          selectedRole?.value === 'manager' ? [selectedDropdown?.value] : [],
+      };
+      const response = await postCaller('add_team_member', data);
+
+      console.log(response, 'response');
+
+      if (response.status > 201) {
+        throw new Error('Network response was not ok');
+      }
+      if (response.status === 200) {
+        toast.success('Added in Team Successfully');
+        handleClose();
+        setIsRefresh((prev) => !prev);
+      }
+    } catch (error) {
+      console.error('There was an error submitting the form:', error);
+    }
+  };
+
+
+  console.log(errors, "Errors")
+  console.log(selectedDropdown, selectedRole, selectedOptions)
 
   return (
     <div className="transparent-model">
@@ -168,7 +199,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       )}
       <form
         onSubmit={(e) => {
-         handleSubmit(e)
+          handleSubmit(e);
         }}
         className="tm-modal"
       >
@@ -179,88 +210,60 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         <div className="modal-body">
           <div className="scroll-user">
             <div className="createProfileInputView">
-              <div className="createProfileTextView">
+              <div
+                className="createProfileTextView"
+                style={{ minHeight: '200px' }}
+              >
                 <div className="create-input-container">
-
-                <div className="tm-create-input-field">
-                    <label className="inputLabel-select" style={{ fontWeight: 400 }}>Select User</label>
+                  <div className="tm-create-input-field">
+                    <label
+                      className="inputLabel-select"
+                      style={{ fontWeight: 400 }}
+                    >
+                      Select User
+                    </label>
                     <SelectOption
                       options={userOptions}
                       value={selectedDropdown}
                       onChange={handleSelectDropdown}
                     />
+                      {errors.user && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.user}
+                    </span>
+                  )}
                   </div>
                   <div className="tm-create-input-field">
-                    <label className="inputLabel-select" style={{ fontWeight: 400 }}>Select Role</label>
+                    <label
+                      className="inputLabel-select"
+                      style={{ fontWeight: 400 }}
+                    >
+                      Select Role
+                    </label>
                     <SelectOption
                       options={roles}
                       value={selectedRole}
                       onChange={handleSelectChange}
                     />
-                  </div>
-
-          
-                </div>
-                <div className="create-input-container">
-                 
-
-              
-
-
-                  {/* <div
-                    className="tm-create-input-field"
-                    style={{ marginTop: -3 }}
-                  >
-                    <Input
-                      type={'number'}
-                      label="Phone Number"
-                      value={users.phone}
-                      placeholder={'9847463434'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'mobile_number'}
-                      disabled={formData.isEdit}
-                    />
- 
-                    {phoneNumberError && (
-                      <p className="error-message">{phoneNumberError}</p>
-                    )}
-                  </div> */}
-                
-                </div>
-                {/* <div className="tm-select-data">
-                  <p>Managers</p>
-                  <div className="nt-select-cust">
-                    {
-                      //@ts-ignore
-                    selectedOptions?.map(option => (
-                      <div key={option.value} className="tm-selected-option">
-                        <span>{option.label}</span>
-                        <div>
-                          <button type="button" className="remove-button" onClick={() => handleRemoveOption(option)}>
-                            <img src={ICONS.crossIconUser} alt="" className="remove-icon" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                     {errors.role && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.role}
+                    </span>
+                  )}
                   </div>
                 </div>
-                <div className="tm-select-data">
-                  <p>Sales Rep</p>
-                  <div className="nt-select-cust">
-                    {
-                      //@ts-ignore
-                    selectedOptions?.map(option => (
-                      <div key={option.value} className="tm-selected-option">
-                        <span>{option.label}</span>
-                        <div>
-                          <button type="button" className="remove-button" onClick={() => handleRemoveOption(option)}>
-                            <img src={ICONS.crossIconUser} alt="" className="remove-icon" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div> */}
+                <div className="create-input-container"></div>
+
                 <div style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <div
                     style={{
@@ -277,15 +280,20 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         <div className="tm-createUserActionButton">
           <ActionButton
             title={'Add to team'}
-            onClick={() => { }}
+            onClick={() => {}}
             type={'submit'}
-            style={{ background: "#0493CE", padding: "18px 100px", width: "unset", textTransform: "none", height: "unset" }}
+            style={{
+              background: '#0493CE',
+              padding: '18px 100px',
+              width: 'unset',
+              textTransform: 'none',
+              height: 'unset',
+            }}
           />
         </div>
       </form>
     </div>
   );
 };
- 
+
 export default AddMember;
- 

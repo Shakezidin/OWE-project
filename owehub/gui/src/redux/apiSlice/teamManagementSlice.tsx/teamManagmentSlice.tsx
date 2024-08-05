@@ -55,7 +55,6 @@ const teamManagementSlice = createSlice({
       .addCase(getTeams.fulfilled, (state, action) => {
         state.isLoading = false;
         state.teams = action.payload.list || [];
-        state.totalcount = action.payload.count;
       })
       .addCase(getTeams.rejected, (state, action) => {
         state.isLoading = false;
@@ -68,6 +67,7 @@ const teamManagementSlice = createSlice({
       .addCase(getTeam.fulfilled, (state, action) => {
         state.isLoading = false;
         state.team = action.payload.data;
+        state.totalcount = action.payload.dbRecCount
       })
       .addCase(getTeam.rejected, (state, action) => {
         state.isLoading = false;
