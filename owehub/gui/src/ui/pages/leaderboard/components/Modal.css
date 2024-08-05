@@ -40,12 +40,15 @@
   font-size: 0.875rem;
   border: none;
   background: none;
-  padding: 0.25rem 0.5rem;
+  padding: 0.40rem 0.5rem;
   border-radius: 0.25rem;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .leader-modal-upload:hover {
-  background-color: var(--children-bg-color);
+  transform: scale(1.05) !important;
+  background-color: #DDEBFF;
+  border: 0.03px solid black;
 }
 
 .leader-modal img {
