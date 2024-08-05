@@ -256,6 +256,11 @@
   margin-top: 14px;
   margin-right: 12px;
   cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.team-button-sec button:hover{
+  transform: scale(1.07);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .team-members-top {
@@ -327,6 +332,14 @@
   padding: 0;
   box-shadow: none;
   color: #263747;
+}
+
+.done-icon, .edit-icon{
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+.done-icon:hover, .edit-icon:hover{
+  transform: scale(1.07);
 }
 
 @media screen and (max-width: 1024px) {

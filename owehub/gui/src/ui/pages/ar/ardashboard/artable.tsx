@@ -334,6 +334,7 @@ const ArDashBoardTable = ({
                           stroke: '0.2',
                           cursor: 'pointer',
                         }}
+                        className='support-icon'
                       >
                         <BiSupport
                           onClick={() => {

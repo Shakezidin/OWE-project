@@ -254,11 +254,11 @@ const TeamTable: React.FC = () => {
                     <div>
                       {isEditing ? (
                         <div>
-                          <MdOutlineDone onClick={handleUpdateName} />
+                          <MdOutlineDone className='done-icon' onClick={handleUpdateName} />
                         </div>
                       ) : (
                         <div>
-                          <BiEditAlt onClick={handleIconClick} />
+                          <BiEditAlt className='edit-icon' onClick={handleIconClick} />
                         </div>
                       )}
                     </div>
