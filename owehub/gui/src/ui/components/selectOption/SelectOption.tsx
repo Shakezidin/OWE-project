@@ -71,10 +71,6 @@ const SelectOption: React.FC<Props> = ({
             width: width || baseStyles.width,
             ...controlStyles,
             transition: 'all 0.3s ease', // Add transition for smooth effect
-            '&:hover': {
-              borderColor: '#aaa', // Change border color on hover
-              boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)', // Add box shadow on hover
-            },
           }),
           indicatorSeparator: () => ({
             display: 'none',

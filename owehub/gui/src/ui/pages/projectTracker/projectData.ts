@@ -112,7 +112,7 @@ export const projectStatusHeadData = [
     para: '$65,000',
     bgColor: '#EE824D',
     viewButton: true,
-    key: 'adder',
+    key: 'adders_total',
   },
   {
     name: 'AHJ',
