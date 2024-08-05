@@ -24,10 +24,12 @@ import (
  ******************************************************************************/
 func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err        error
-		query      string
-		data       []map[string]interface{}
-		dealerCode string
+		err              error
+		query            string
+		data             []map[string]interface{}
+		dealerCode       string
+		loggedMemberRole string
+		teamName string
 	)
 
 	log.EnterFn(0, "HandleGetTeamDataRequest")
@@ -47,9 +49,36 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	role := req.Context().Value("rolename").(string)
+	email := req.Context().Value("emailid").(string)
+	if email == "" {
+		FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if role != "Admin" {
+		queryForMember := `
+		select role_in_team from team_members ts
+		JOIN user_details ud on ud.user_id = ts.user_id
+		where ud.email_id = $1
+		and ts.team_id = $2 
+	`
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForMember, []interface{}{email, dataReq.TeamId})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+			return
+		}
+
+		loggedMemberRole = data[0]["role_in_team"].(string)
+	} else {
+		loggedMemberRole = "manager"
+	}
+
 	query = `
 		 SELECT
 			 ud.user_code,
+			 t.team_name,
 			 tm.role_in_team,
 			 ud.name,
 			 ud.email_id,
@@ -89,6 +118,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		phone, ok5 := item["phone_number"].(string)
 		teamMemberId, ok6 := item["team_member_id"].(int64)
 		dealerCode, _ = item["dealer_code"].(string)
+		teamName, _ = item["team_name"].(string)
 
 		if !ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6 {
 			log.FuncErrorTrace(0, "Failed to get details for Item: %+v\n", item)
@@ -113,12 +143,13 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	TeamResp := models.GetTeamResponse{
-		TeamName:     dataReq.TeamName,
-		SaleRep:      usersNameList,
-		TeamID:       dataReq.TeamId,
-		MemberCount:  memberCount,
-		ManagerCount: managerCount,
-		DealerCode:   dealerCode,
+		TeamName:           teamName,
+		SaleRep:            usersNameList,
+		TeamID:             dataReq.TeamId,
+		MemberCount:        memberCount,
+		ManagerCount:       managerCount,
+		DealerCode:         dealerCode,
+		LoggedInMemberRole: loggedMemberRole,
 	}
 
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(TeamResp.SaleRep), usersNameList)

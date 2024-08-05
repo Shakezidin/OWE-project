@@ -87,16 +87,15 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		name := data[0]["name"]
 		dealerName := data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
+		dataReq.DealerName = dealerName
 
 		switch role {
 		case "Admin":
 			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, true)
 		case "Dealer Owner":
-			dataReq.DealerName = name
 			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, false)
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
-			dataReq.DealerName = dealerName
 			filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
 		// default handles Regional Manager & Sales Manager and is entryway to below if
 		default:
