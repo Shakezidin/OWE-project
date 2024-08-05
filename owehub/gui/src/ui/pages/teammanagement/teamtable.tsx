@@ -57,7 +57,7 @@ const TeamTable: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleClose1 = () => setOpen1(false);
-  const [inputValue, setInputValue] = useState<any>('');
+  const [inputValue, setInputValue] = useState<any>(team?.team_name);
   const [isEditing, setIsEditing] = useState(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
