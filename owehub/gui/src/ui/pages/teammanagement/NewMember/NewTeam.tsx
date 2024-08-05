@@ -148,6 +148,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+    console.log("jdkfgh");
     e.preventDefault();
     const roleAdmin = localStorage.getItem('role');
     const email = localStorage.getItem('email');
@@ -161,10 +162,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     if (formData.first_name.trim() === '') {
       validationErrors.first_name = 'Team Name is required.';
     }
-    
-    if (!selectedOption3) {
-      validationErrors.dealer_name = 'Dealer Name is required.';
-    }
+   
     
     if (selectedOptions2.length === 0) {
       validationErrors.managers = 'Please select at least one manager';
@@ -262,6 +260,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     (option) => option === selectedOption3
   );
 
+ 
+
   return (
     <div className="transparent-model">
       {loading && <Loading />}
@@ -319,17 +319,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                             : undefined
                         }
                         onChange={handleSelectChange3}
-                      />
-                         {errors.dealer_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.dealer_name}
-                    </span>
-                  )}
+                      />               
                     </div>
                   )}
                   <div className="tm-new-create-input-field">
