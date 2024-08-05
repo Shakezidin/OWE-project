@@ -70,14 +70,15 @@ const SelectOption: React.FC<Props> = ({
             outline: 'none',
             fontSize: '13px',
             height: '2.25rem',
-            // border: '2px solid #377CF6',
             border: '1px solid #d0d5dd',
             cursor: 'pointer',
             boxShadow: 'none',
             width: width || baseStyles.width,
             ...controlStyles,
-            '&:hover': enableHoverEffect ? { 
-              border: '2px solid #377CF6',
+            transition: 'background-color 0.3s ease, border-color 0.3s ease', // Modify this line
+            '&:hover': enableHoverEffect ? {
+              border: '1px solid #377CF6',
+              backgroundColor: '#DDEBFF',
             } : {},
           }),
           indicatorSeparator: () => ({
