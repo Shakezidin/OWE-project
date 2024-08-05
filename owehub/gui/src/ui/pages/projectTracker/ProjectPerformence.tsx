@@ -350,7 +350,7 @@ const ProjectPerformence = () => {
                 ref={datePickerRef}
               >
                 <label
-                  className="date-button"
+                  className="per-date-button"
                   onClick={() => setShowDatePicker(!showDatePicker)}
                   style={{ color: '#292929' }}
                 >
@@ -578,7 +578,7 @@ const ProjectPerformence = () => {
                 }}
                 placeholder="Select Project Id"
                 menuWidth="300px"
-                width="300px"
+                width="190px"
               />
 
               <button onClick={handleCancel}>Cancel</button>
