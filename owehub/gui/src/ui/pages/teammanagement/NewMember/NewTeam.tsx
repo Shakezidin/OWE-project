@@ -273,7 +273,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         <div className="modal-body">
           <div className="scroll-user">
             <div className="createProfileInputView">
-              <div className="createProfileTextView" style={{minHeight:200}}>
+              <div className="createProfileTextView" >
                 <div className="create-input-container">
                   <div className="tm-new-create-input-field">
                     <Input
