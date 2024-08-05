@@ -25,7 +25,7 @@ import { toast } from 'react-toastify';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
-
+import { showAlert } from '../../components/alert/ShowAlert';
 interface User {
   name: string;
   phoneNumber: string;
@@ -258,6 +258,13 @@ const TeamTable: React.FC = () => {
 
   const handleDelete = async (id: any) => {
     const data = {};
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      `This action will delete this team member`,
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
     try {
       const response = await postCaller('delete_team_member', {
         team_member_id: id,
@@ -272,9 +279,11 @@ const TeamTable: React.FC = () => {
         toast.success('Successfully Deleted');
         setIsRefresh((prev) => !prev);
       }
+    
     } catch (error) {
       console.error('There was an error deleting the team member:', error);
     }
+  }
   };
 
   const handleUpdateName = async () => {
