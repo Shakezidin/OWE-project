@@ -10,7 +10,7 @@ interface Option {
 interface DropWithCheckProps {
   options: Option[];
   selectedOptions: string[];
-  setSelectedOptions:React.Dispatch<SetStateAction<string[]>>
+  setSelectedOptions: React.Dispatch<SetStateAction<string[]>>;
 }
 
 const DropIcon = () => {
@@ -32,12 +32,12 @@ const DropIcon = () => {
 const DropWithCheck: React.FC<DropWithCheckProps> = ({
   options,
   selectedOptions,
-  setSelectedOptions
+  setSelectedOptions,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
- 
+  const [search, setSearch] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const [dropDownOptions, setDropDownOptions] = useState<Option[]>([]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -58,6 +58,17 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  useEffect(() => {
+    setDropDownOptions(options);
+  }, [options]);
+
+  useEffect(() => {
+    if (search.trim()) {
+      setDropDownOptions((prev) =>
+        prev.filter((prev) => prev.value !== 'all' && prev.value !== 'All')
+      );
+    }
+  }, [search]);
 
   const handleOptionChange = (option: string) => {
     setSelectedOptions((prevSelectedOptions) => {
@@ -104,10 +115,33 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
       </div>
       {isOpen && (
         <div className="scrollbar comm-dropdown-menu">
-          {options.map((option) => (
-            <div key={option.value} className="comm-dropdown-item">
+          <div className="searchBox">
+            <input
+              type="text"
+              className="input"
+              placeholder="Search Dealers"
+              style={{ width: '100%' }}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                if (e.target.value.trim()) {
+                  const filtered = options.filter((item) =>
+                    item.value
+                      .toLocaleLowerCase()
+                      .includes(e.target.value.toLowerCase().trim())
+                  );
+                  setDropDownOptions([...filtered]);
+                } else {
+                  setDropDownOptions([...options]);
+                }
+              }}
+            />
+          </div>
+          {dropDownOptions.map((option,ind) => (
+            <div key={ind} className="comm-dropdown-item">
               <input
                 type="checkbox"
+                style={{ flexShrink: 0 }}
                 checked={selectedOptions.includes(option.value)}
                 onChange={() => handleOptionChange(option.value)}
               />

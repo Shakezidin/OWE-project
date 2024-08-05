@@ -148,7 +148,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       throw new Error('Network response was not ok');
     }
    if(response.status === 200){
-    toast.success('Form submitted successfully');
+    toast.success('Added in Team Successfully');
     handleClose()
     setIsRefresh((prev) => !prev);
    }

@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
+import { showAlert } from '../../components/alert/ShowAlert';
 
 interface AccordionSection {
   data: any;
@@ -128,17 +129,25 @@ const TeamManagement: React.FC = () => {
   const handleDelete = async () => {
     try {
       setIspending(true);
-      const data = await postCaller('delete_teams', {
-        team_ids: isAnyCheckboxChecked,
-      });
-      if (data.status > 201) {
-        toast.error(data.message);
-        return;
+      const confirmed = await showAlert(
+        'Are Your Sure',
+        `This action will remove your selected ${isAnyCheckboxChecked.length > 1 ? 'teams' : 'team'}`,
+        'Yes',
+        'No'
+      );
+      if (confirmed) {
+        const data = await postCaller('delete_teams', {
+          team_ids: isAnyCheckboxChecked,
+        });
+        if (data.status > 201) {
+          toast.error(data.message);
+          return;
+        }
+        await dispatch(getTeams());
+        setIsAnyCheckboxChecked([]);
+        setIspending(false);
+        toast.success('Teams deleted successfully');
       }
-      await dispatch(getTeams());
-      setIsAnyCheckboxChecked([]);
-      setIspending(false);
-      toast.success('Teams deleted successfully');
     } catch (error) {
       console.error(error);
     }
@@ -153,6 +162,7 @@ const TeamManagement: React.FC = () => {
           // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
+
       <div className="team-container">
         <div className="team-main">
           <div className="team-main-section">
@@ -177,9 +187,11 @@ const TeamManagement: React.FC = () => {
                           Remove Team
                         </button>
                       )}
-                      <button className="create" onClick={handleOpen2}>
-                        + Create New Team
-                      </button>
+                      {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+                        <button className="create" onClick={handleOpen2}>
+                          + Create New Team
+                        </button>
+                      ) : null}
                       {roleAdmin === TYPE_OF_USER.ADMIN && (
                         <DropWithCheck
                           selectedOptions={selectedOptions}
@@ -244,19 +256,22 @@ const TeamManagement: React.FC = () => {
                                       {item.team_name}
                                     </h1>
                                   </div>
-                                  <input
-                                    type="checkbox"
-                                    className="team-checkbox"
-                                    checked={isAnyCheckboxChecked.includes(
-                                      item.team_id
-                                    )}
-                                    onChange={() =>
-                                      handleCheckboxChange(item.team_id)
-                                    }
-                                    onClick={(
-                                      e: React.MouseEvent<HTMLInputElement>
-                                    ) => e.stopPropagation()}
-                                  />
+                                  {roleAdmin === TYPE_OF_USER.ADMIN ||
+                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER ? (
+                                    <input
+                                      type="checkbox"
+                                      className="team-checkbox"
+                                      checked={isAnyCheckboxChecked.includes(
+                                        item.team_id
+                                      )}
+                                      onChange={() =>
+                                        handleCheckboxChange(item.team_id)
+                                      }
+                                      onClick={(
+                                        e: React.MouseEvent<HTMLInputElement>
+                                      ) => e.stopPropagation()}
+                                    />
+                                  ) : null}
                                 </div>
                                 <div className="team-con-fle">
                                   <div className="teamp-group">

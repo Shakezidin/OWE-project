@@ -18,13 +18,14 @@ import {
   useLocation,
 } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
-import DataNotFound from '../../components/loader/DataNotFound';
 import { BiEditAlt } from 'react-icons/bi';
 import { MdOutlineDone } from 'react-icons/md';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
+import { showAlert } from '../../components/alert/ShowAlert';
 interface User {
   name: string;
   phoneNumber: string;
@@ -43,7 +44,9 @@ const TeamTable: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
-  const { team } = useAppSelector((state) => state.teamManagmentSlice);
+  const { team, isLoading } = useAppSelector(
+    (state) => state.teamManagmentSlice
+  );
 
   const getQueryParams = (search: string) => new URLSearchParams(search);
   const queryParams = getQueryParams(location.search);
@@ -110,151 +113,16 @@ const TeamTable: React.FC = () => {
 
   const role = localStorage.getItem('role');
 
-  const users = [
-    {
-      id: 1,
-      name: 'Alex',
-      role: 'Manager',
-      email: 'Alex@gmail.com',
-      phone: '+1 7594594545',
-    },
-    {
-      id: 2,
-      name: 'Jordan',
-      role: 'Member',
-      email: 'Jordan@gmail.com',
-      phone: '+1 1234567890',
-    },
-    {
-      id: 3,
-      name: 'Taylor',
-      role: 'Member',
-      email: 'Taylor@gmail.com',
-      phone: '+1 2345678901',
-    },
-    {
-      id: 4,
-      name: 'Morgan',
-      role: 'Manager',
-      email: 'Morgan@gmail.com',
-      phone: '+1 3456789012',
-    },
-    {
-      id: 5,
-      name: 'Casey',
-      role: 'Member',
-      email: 'Casey@gmail.com',
-      phone: '+1 4567890123',
-    },
-    {
-      id: 6,
-      name: 'Riley',
-      role: 'Manager',
-      email: 'Riley@gmail.com',
-      phone: '+1 5678901234',
-    },
-    {
-      id: 7,
-      name: 'Jamie',
-      role: 'Member',
-      email: 'Jamie@gmail.com',
-      phone: '+1 6789012345',
-    },
-    {
-      id: 8,
-      name: 'Sydney',
-      role: 'Member',
-      email: 'Sydney@gmail.com',
-      phone: '+1 7890123456',
-    },
-    {
-      id: 9,
-      name: 'Alexis',
-      role: 'Manager',
-      email: 'Alexis@gmail.com',
-      phone: '+1 8901234567',
-    },
-    {
-      id: 10,
-      name: 'Blake',
-      role: 'Member',
-      email: 'Blake@gmail.com',
-      phone: '+1 9012345678',
-    },
-    {
-      id: 11,
-      name: 'Quinn',
-      role: 'Manager',
-      email: 'Quinn@gmail.com',
-      phone: '+1 1234567899',
-    },
-    {
-      id: 12,
-      name: 'Parker',
-      role: 'Member',
-      email: 'Parker@gmail.com',
-      phone: '+1 2345678908',
-    },
-    {
-      id: 13,
-      name: 'Drew',
-      role: 'Manager',
-      email: 'Drew@gmail.com',
-      phone: '+1 3456789017',
-    },
-    {
-      id: 14,
-      name: 'Avery',
-      role: 'Member',
-      email: 'Avery@gmail.com',
-      phone: '+1 4567890126',
-    },
-    {
-      id: 15,
-      name: 'Reese',
-      role: 'Manager',
-      email: 'Reese@gmail.com',
-      phone: '+1 5678901235',
-    },
-    {
-      id: 16,
-      name: 'Rowan',
-      role: 'Member',
-      email: 'Rowan@gmail.com',
-      phone: '+1 6789012346',
-    },
-    {
-      id: 17,
-      name: 'Finley',
-      role: 'Member',
-      email: 'Finley@gmail.com',
-      phone: '+1 7890123457',
-    },
-    {
-      id: 18,
-      name: 'Emery',
-      role: 'Manager',
-      email: 'Emery@gmail.com',
-      phone: '+1 8901234568',
-    },
-    {
-      id: 19,
-      name: 'Harper',
-      role: 'Member',
-      email: 'Harper@gmail.com',
-      phone: '+1 9012345679',
-    },
-    {
-      id: 20,
-      name: 'Kennedy',
-      role: 'Manager',
-      email: 'Kennedy@gmail.com',
-      phone: '+1 1234567800',
-    },
-  ];
 
   const handleDelete = async (id: any) => {
     const data = {};
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      `This action will delete this team member`,
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
     try {
       const response = await postCaller('delete_team_member', {
         team_member_id: id,
@@ -269,9 +137,11 @@ const TeamTable: React.FC = () => {
         toast.success('Successfully Deleted');
         setIsRefresh((prev) => !prev);
       }
+    
     } catch (error) {
       console.error('There was an error deleting the team member:', error);
     }
+  }
   };
 
   const handleUpdateName = async () => {
@@ -305,8 +175,11 @@ const TeamTable: React.FC = () => {
           route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
           linkparaSecond="Team Details"
         />
-
-        {role !== TYPE_OF_USER.SALES_REPRESENTATIVE && open && (
+        {(role === TYPE_OF_USER.ADMIN ||
+            role === TYPE_OF_USER.DEALER_OWNER ||
+            team?.logged_in_member_role === 'manager') ?
+         <>
+        {open && (
           <AddMember
             handleClose={handleClose}
             onSubmitCreateUser={onSubmitCreateUser}
@@ -314,6 +187,8 @@ const TeamTable: React.FC = () => {
             setIsRefresh={setIsRefresh}
           />
         )}
+        </>
+        : null }
 
         {open1 && (
           <MoveMember
@@ -345,11 +220,11 @@ const TeamTable: React.FC = () => {
                     <div>
                       {isEditing ? (
                         <div>
-                          <MdOutlineDone onClick={handleUpdateName} />
+                          <MdOutlineDone className='done-icon' onClick={handleUpdateName} />
                         </div>
                       ) : (
                         <div>
-                          <BiEditAlt onClick={handleIconClick} />
+                          <BiEditAlt className='edit-icon' onClick={handleIconClick} />
                         </div>
                       )}
                     </div>
@@ -361,9 +236,9 @@ const TeamTable: React.FC = () => {
                 </div>
               </div>
               <div className="team-button-sec">
-                { team?.logged_in_member_role === "manager" ? 
-                <button onClick={handleOpen}>+ Add New Member</button>
-                  : null }
+                {team?.logged_in_member_role === 'manager' ? (
+                  <button onClick={handleOpen}>+ Add New Member</button>
+                ) : null}
               </div>
             </div>
             <table>
@@ -452,75 +327,106 @@ const TeamTable: React.FC = () => {
                       <DataNotFound />
                     </td>
                   </tr>} */}
-                {team?.sale_rep_list?.map((item: any, index: number) => (
-                  <tr key={index}>
-                    <td
-                      style={{
-                        color: '#101828',
-                        paddingLeft: '33px',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {item.user_code || 'N/A'}
-                    </td>
-                    <td style={{ color: '#101828' }}>{item.sale_rep_name}</td>
-                    <td style={{ color: '#101828' }}>
-                      <p
-                        className={
-                          item.role === 'manager' ? 'user-mg' : 'user-namg'
-                        }
-                      >
-                        {item.role}
-                      </p>
-                    </td>
-                    <td style={{ color: '#101828' }}>{item.email_id}</td>
-                    <td style={{ color: '#101828' }}>{item.phone_number}</td>
-                    { role !== TYPE_OF_USER.SALES_REPRESENTATIVE ?
-                    <td
-                      className="zoom-out-help"
-                      style={{
-                        paddingLeft: '30px',
-                        cursor:
-                          team?.logged_in_member_role === "manager" &&
-                          !(team?.manager_count <= 1 && item.role === 'manager')
-                            ? 'pointer'
-                            : 'not-allowed',
-                        opacity:
-                          team?.logged_in_member_role === "manager" &&
-                          !(team?.manager_count <= 1 && item.role === 'manager')
-                            ? '1'
-                            : '0.5',
-                      }}
-                      onClick={(e) => {
-                        if (
-                         team?.logged_in_member_role === "manager" &&
-                          !(team?.manager_count <= 1 && item.role === 'manager')
-                        ) {
-                          handleDelete(item.team_member_id);
-                        }
-                      }}
-                    >
-                      <img
-                        src={ICONS.deleteIcon}
+                {isLoading ? (
+                  <div
+                    style={{ width: '100%' }}
+                    className="flex justify-center items-center"
+                  >
+                    <MicroLoader />
+                  </div>
+                ) : !team?.sale_rep_list?.length ? (
+                  <div
+                    style={{ width: '100%' }}
+                    className="flex justify-center items-center"
+                  >
+                    <DataNotFound />
+                  </div>
+                ) : (
+                  team?.sale_rep_list?.map((item: any, index: number) => (
+                    <tr key={index}>
+                      <td
                         style={{
-                          height: '18px',
-                          width: '16px',
-                          stroke: '0.2',
-                          pointerEvents:
-                            role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&
-                            !(
-                              team?.manager_count <= 1 &&
-                              item.role === 'manager'
-                            )
-                              ? 'auto'
-                              : 'none',
+                          color: '#101828',
+                          paddingLeft: '33px',
+                          fontWeight: '500',
                         }}
-                        alt=""
-                      />
-                    </td>
-                   : null }
-                  </tr>
-                ))}
+                      >
+                        {item.user_code || 'N/A'}
+                      </td>
+                      <td style={{ color: '#101828' }}>{item.sale_rep_name}</td>
+                      <td style={{ color: '#101828' }}>
+                        <p
+                          className={
+                            item.role === 'manager' ? 'user-mg' : 'user-namg'
+                          }
+                        >
+                          {item.role}
+                        </p>
+                      </td>
+                      <td style={{ color: '#101828' }}>{item.email_id}</td>
+                      <td style={{ color: '#101828' }}>{item.phone_number}</td>
+                      {role !== TYPE_OF_USER.SALES_REPRESENTATIVE && (
+                        <td
+                          className="zoom-out-help"
+                          style={{
+                            paddingLeft: '30px',
+                            cursor:
+                            (role === TYPE_OF_USER.ADMIN ||
+                              role === TYPE_OF_USER.DEALER_OWNER ||
+                              team?.logged_in_member_role === 'manager')  &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
+                                ? 'pointer'
+                                : 'not-allowed',
+                            opacity:
+                            (role === TYPE_OF_USER.ADMIN ||
+                              role === TYPE_OF_USER.DEALER_OWNER ||
+                              team?.logged_in_member_role === 'manager')  &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
+                                ? '1'
+                                : '0.5',
+                          }}
+                          onClick={(e) => {
+                            if (
+                             (role === TYPE_OF_USER.ADMIN ||
+                              role === TYPE_OF_USER.DEALER_OWNER ||
+                              team?.logged_in_member_role === 'manager') &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                ))
+                             {
+                              handleDelete(item.team_member_id);
+                            }
+                          }}
+                        >
+                          <img
+                            src={ICONS.deleteIcon}
+                            style={{
+                              height: '18px',
+                              width: '16px',
+                              stroke: '0.2',
+                              pointerEvents:
+                                role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
+                                  ? 'auto'
+                                  : 'none',
+                            }}
+                            alt=""
+                          />
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

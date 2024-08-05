@@ -563,10 +563,13 @@ const ProjectStatus = () => {
                       <div className="popup">
                         <p className="pop-head">Adder Details</p>
                         <ol className="order-list">
-                          <li className="order-list-name">Adders</li>
-                          <li className="order-list-name">Sub Adder</li>
-                          <li className="order-list-name">$20 Adder</li>
-                          <li className="order-list-name">$20 Sub Adder</li>
+                          {
+                            // @ts-ignore
+                            projectDetail.adder_breakdown_and_total && Object.keys(projectDetail.adder_breakdown_and_total).map((item,ind)=>{
+                               // @ts-ignore
+                              return  <li key={ind} className="order-list-name"> {item} : {projectDetail.adder_breakdown_and_total[item]} </li>
+                            })
+                          }
                         </ol>
                       </div>
                     )}

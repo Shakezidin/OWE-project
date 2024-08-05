@@ -194,3 +194,9 @@
   padding-bottom: 10px;
   border-radius: 18px;
 }
+.support-icon{
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.support-icon:hover{
+  transform: scale(1.2);
+}
