@@ -317,8 +317,11 @@ const TeamTable: React.FC = () => {
           route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
           linkparaSecond="Team Details"
         />
-
-        {role !== TYPE_OF_USER.SALES_REPRESENTATIVE && open && (
+        {(role === TYPE_OF_USER.ADMIN ||
+            role === TYPE_OF_USER.DEALER_OWNER ||
+            team?.logged_in_member_role === 'manager') ?
+         <>
+        {open && (
           <AddMember
             handleClose={handleClose}
             onSubmitCreateUser={onSubmitCreateUser}
@@ -326,6 +329,8 @@ const TeamTable: React.FC = () => {
             setIsRefresh={setIsRefresh}
           />
         )}
+        </>
+        : null }
 
         {open1 && (
           <MoveMember
