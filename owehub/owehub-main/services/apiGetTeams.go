@@ -51,25 +51,17 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			GROUP BY t.team_id
 			ORDER BY t.team_id;
 		`
-	case "Regional Manager", "Sales Manager":
+	case "Sale Representative", "Regional Manager", "Sales Manager":
 		query = `
-			SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
-			FROM teams t
-			JOIN team_members tm ON tm.team_id = t.team_id
-			WHERE tm.user_id IN (
-				SELECT user_id
-				FROM user_details
-				WHERE email_id = $1
-			)
-			GROUP BY t.team_id
-			ORDER BY t.team_id;
-		`
-	case "Sale Representative":
-		query = `
-						SELECT
+			SELECT
 					t.team_id,
 					t.team_name,
-					COUNT(tm.user_id) AS member_count
+					COUNT(tm.user_id) AS member_count,
+					(SELECT tm_inner.role_in_team
+					FROM team_members tm_inner
+					JOIN user_details ud_inner ON tm_inner.user_id = ud_inner.user_id
+					WHERE ud_inner.email_id = $1 AND tm_inner.team_id = t.team_id
+					LIMIT 1) AS role_in_team
 			FROM
 					user_details ud
 			JOIN
@@ -131,15 +123,21 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		teamID, teamIDOk := item["team_id"].(int64)
 		teamName, teamNameOk := item["team_name"].(string)
 		memberCount, memberCountOk := item["member_count"].(int64)
+		roleInTeam, _ := item["role_in_team"].(string)
 		if !teamIDOk || !teamNameOk || !memberCountOk {
 			log.FuncErrorTrace(0, "Failed to parse data for Item: %+v\n", item)
 			continue
+		}
+
+		if role == "Admin" || role == "Dealer Owner" {
+			roleInTeam = "manager"
 		}
 
 		usersData := models.GetTeam{
 			TeamId:       teamID,
 			TeamName:     teamName,
 			TeamStrength: memberCount,
+			RoleInTeam:   roleInTeam,
 		}
 		usersNameList = append(usersNameList, usersData)
 	}

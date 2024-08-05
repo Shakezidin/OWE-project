@@ -29,7 +29,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data             []map[string]interface{}
 		dealerCode       string
 		loggedMemberRole string
-		teamName string
+		teamName         string
 	)
 
 	log.EnterFn(0, "HandleGetTeamDataRequest")
@@ -70,7 +70,11 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		loggedMemberRole = data[0]["role_in_team"].(string)
+		if len(data) == 0 && role == "Dealer Owner" {
+			loggedMemberRole = "manager"
+		} else {
+			loggedMemberRole = data[0]["role_in_team"].(string)
+		}
 	} else {
 		loggedMemberRole = "manager"
 	}
@@ -152,8 +156,16 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		LoggedInMemberRole: loggedMemberRole,
 	}
 
-	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(TeamResp.SaleRep), usersNameList)
-	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, TeamResp)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TeamId})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	recordCount := len(data)
+
+	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", recordCount, usersNameList)
+	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, TeamResp, int64(recordCount))
 }
 
 /******************************************************************************
@@ -168,7 +180,9 @@ func PrepareTeamsFilters(tableName string, dataFilter models.GetTeamRequest, for
 
 	var filtersBuilder strings.Builder
 
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+	if forDataCount {
+
+	} else if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
 		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}
