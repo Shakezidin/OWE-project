@@ -64,8 +64,10 @@ const AddMember: React.FC<createUserProps> = ({
   };
 
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
-  const [selectedRole, setSelectedRole] = useState<any>(undefined);
-  const [selectedDropdown, setSelectDropdown] = useState<any>([]);
+  const [selectedDropdown, setSelectDropdown] = useState<Option | undefined>(undefined);
+  const [selectedRole, setSelectedRole] = useState<Option | undefined>(undefined);
+   
+  const [errors, setErrors] = useState<{ [key: string]: string }>({}); 
 
   const handleSelectChange = (selectedOption: Option | null) => {
     if (selectedOption) {
@@ -143,6 +145,21 @@ const AddMember: React.FC<createUserProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const validationErrors: { [key: string]: string } = {};
+
+    if (!selectedDropdown) {
+      validationErrors.user = 'User is required.';
+    }
+   
+    
+    if (!selectedRole) {
+      validationErrors.role = 'Role is required.';
+    }
+  
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     try {
       const data = {
@@ -168,6 +185,10 @@ const AddMember: React.FC<createUserProps> = ({
       console.error('There was an error submitting the form:', error);
     }
   };
+
+
+  console.log(errors, "Errors")
+  console.log(selectedDropdown, selectedRole, selectedOptions)
 
   return (
     <div className="transparent-model">
@@ -206,6 +227,16 @@ const AddMember: React.FC<createUserProps> = ({
                       value={selectedDropdown}
                       onChange={handleSelectDropdown}
                     />
+                      {errors.user && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.user}
+                    </span>
+                  )}
                   </div>
                   <div className="tm-create-input-field">
                     <label
@@ -219,6 +250,16 @@ const AddMember: React.FC<createUserProps> = ({
                       value={selectedRole}
                       onChange={handleSelectChange}
                     />
+                     {errors.role && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.role}
+                    </span>
+                  )}
                   </div>
                 </div>
                 <div className="create-input-container"></div>

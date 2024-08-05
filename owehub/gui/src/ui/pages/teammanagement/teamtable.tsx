@@ -57,7 +57,8 @@ const TeamTable: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleClose1 = () => setOpen1(false);
-  const [inputValue, setInputValue] = useState<any>(team?.team_name);
+  const [inputValue, setInputValue] = useState<any>(team?.team_name
+);
   const [isEditing, setIsEditing] = useState(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -159,7 +160,7 @@ const TeamTable: React.FC = () => {
         });
 
         if (response.status > 201) {
-          toast.error('Network response was not ok');
+          toast.error('Failed to Delete Team Member');
         }
 
         if (response.status === 200) {
@@ -187,7 +188,7 @@ const TeamTable: React.FC = () => {
       });
 
       if (response.status > 201) {
-        toast.error('Network response was not ok');
+        toast.error('Failed to Update Team Name');
       }
 
       if (response.status === 200) {
@@ -264,8 +265,8 @@ const TeamTable: React.FC = () => {
                     </div>
                   </div>
                   <p>
-                    {team?.manager_count} Managers, {team?.MemberCount} Sales
-                    Rep
+                    {team?.manager_count} Managers, {team?.MemberCount} Member
+                    
                   </p>
                 </div>
               </div>
