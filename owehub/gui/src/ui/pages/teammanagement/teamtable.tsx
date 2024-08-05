@@ -26,6 +26,7 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { showAlert } from '../../components/alert/ShowAlert';
+import { checkLastPage } from '../../../utiles';
 interface User {
   name: string;
   phoneNumber: string;
@@ -44,7 +45,7 @@ const TeamTable: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
-  const { team, isLoading } = useAppSelector(
+  const { team, isLoading, totalcount } = useAppSelector(
     (state) => state.teamManagmentSlice
   );
 
@@ -61,19 +62,19 @@ const TeamTable: React.FC = () => {
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const count = team?.sale_rep_list?.length;
+  const count = totalcount;
   const itemsPerPage = 10;
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   const goToNextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const totalPages = Math.ceil(count / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
-  const currentPageData =
-    team?.sale_rep_list?.slice(startIndex, endIndex) || [];
+  const currentPageData = team?.sale_rep_list?.slice() || [];
 
   const onSubmitCreateUser = () => {
     console.log('User created');
@@ -91,12 +92,42 @@ const TeamTable: React.FC = () => {
       const data = {
         team_name: teamName,
         team_id: parseInt(id),
-        page_number: 1,
+        page_number: currentPage,
         page_size: 10,
       };
       dispatch(getTeam(data));
     }
-  }, [teamName, id, isRefresh]);
+  }, [teamName, id, isRefresh, currentPage]);
+
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+  console.log(sortKey, '556655');
+  if (sortKey) {
+    currentPageData.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue =
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
+      }
+    });
+  }
 
   const handleMoveMemberClick = (el: any) => {
     console.log(el, 'el');
@@ -113,151 +144,7 @@ const TeamTable: React.FC = () => {
 
   const role = localStorage.getItem('role');
 
-  const users = [
-    {
-      id: 1,
-      name: 'Alex',
-      role: 'Manager',
-      email: 'Alex@gmail.com',
-      phone: '+1 7594594545',
-    },
-    {
-      id: 2,
-      name: 'Jordan',
-      role: 'Member',
-      email: 'Jordan@gmail.com',
-      phone: '+1 1234567890',
-    },
-    {
-      id: 3,
-      name: 'Taylor',
-      role: 'Member',
-      email: 'Taylor@gmail.com',
-      phone: '+1 2345678901',
-    },
-    {
-      id: 4,
-      name: 'Morgan',
-      role: 'Manager',
-      email: 'Morgan@gmail.com',
-      phone: '+1 3456789012',
-    },
-    {
-      id: 5,
-      name: 'Casey',
-      role: 'Member',
-      email: 'Casey@gmail.com',
-      phone: '+1 4567890123',
-    },
-    {
-      id: 6,
-      name: 'Riley',
-      role: 'Manager',
-      email: 'Riley@gmail.com',
-      phone: '+1 5678901234',
-    },
-    {
-      id: 7,
-      name: 'Jamie',
-      role: 'Member',
-      email: 'Jamie@gmail.com',
-      phone: '+1 6789012345',
-    },
-    {
-      id: 8,
-      name: 'Sydney',
-      role: 'Member',
-      email: 'Sydney@gmail.com',
-      phone: '+1 7890123456',
-    },
-    {
-      id: 9,
-      name: 'Alexis',
-      role: 'Manager',
-      email: 'Alexis@gmail.com',
-      phone: '+1 8901234567',
-    },
-    {
-      id: 10,
-      name: 'Blake',
-      role: 'Member',
-      email: 'Blake@gmail.com',
-      phone: '+1 9012345678',
-    },
-    {
-      id: 11,
-      name: 'Quinn',
-      role: 'Manager',
-      email: 'Quinn@gmail.com',
-      phone: '+1 1234567899',
-    },
-    {
-      id: 12,
-      name: 'Parker',
-      role: 'Member',
-      email: 'Parker@gmail.com',
-      phone: '+1 2345678908',
-    },
-    {
-      id: 13,
-      name: 'Drew',
-      role: 'Manager',
-      email: 'Drew@gmail.com',
-      phone: '+1 3456789017',
-    },
-    {
-      id: 14,
-      name: 'Avery',
-      role: 'Member',
-      email: 'Avery@gmail.com',
-      phone: '+1 4567890126',
-    },
-    {
-      id: 15,
-      name: 'Reese',
-      role: 'Manager',
-      email: 'Reese@gmail.com',
-      phone: '+1 5678901235',
-    },
-    {
-      id: 16,
-      name: 'Rowan',
-      role: 'Member',
-      email: 'Rowan@gmail.com',
-      phone: '+1 6789012346',
-    },
-    {
-      id: 17,
-      name: 'Finley',
-      role: 'Member',
-      email: 'Finley@gmail.com',
-      phone: '+1 7890123457',
-    },
-    {
-      id: 18,
-      name: 'Emery',
-      role: 'Manager',
-      email: 'Emery@gmail.com',
-      phone: '+1 8901234568',
-    },
-    {
-      id: 19,
-      name: 'Harper',
-      role: 'Member',
-      email: 'Harper@gmail.com',
-      phone: '+1 9012345679',
-    },
-    {
-      id: 20,
-      name: 'Kennedy',
-      role: 'Manager',
-      email: 'Kennedy@gmail.com',
-      phone: '+1 1234567800',
-    },
-  ];
-
   const handleDelete = async (id: any) => {
-    const data = {};
     const confirmed = await showAlert(
       'Are Your Sure',
       `This action will delete this team member`,
@@ -265,29 +152,34 @@ const TeamTable: React.FC = () => {
       'No'
     );
     if (confirmed) {
-    try {
-      const response = await postCaller('delete_team_member', {
-        team_member_id: id,
-        team_id: team?.team_id,
-      });
+      try {
+        const response = await postCaller('delete_team_member', {
+          team_member_id: id,
+          team_id: team?.team_id,
+        });
 
-      if (response.status > 201) {
-        toast.error('Network response was not ok');
-      }
+        if (response.status > 201) {
+          toast.error('Network response was not ok');
+        }
 
-      if (response.status === 200) {
-        toast.success('Successfully Deleted');
-        setIsRefresh((prev) => !prev);
+        if (response.status === 200) {
+          toast.success('Successfully Deleted');
+          setIsRefresh((prev) => !prev);
+          checkLastPage(
+            currentPage,
+            totalPages,
+            setCurrentPage,
+            1,
+            currentPageData.length
+          );
+        }
+      } catch (error) {
+        console.error('There was an error deleting the team member:', error);
       }
-    
-    } catch (error) {
-      console.error('There was an error deleting the team member:', error);
     }
-  }
   };
 
   const handleUpdateName = async () => {
-    console.log('check');
     try {
       const response = await postCaller('update_team', {
         team_id: team?.team_id,
@@ -317,20 +209,20 @@ const TeamTable: React.FC = () => {
           route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
           linkparaSecond="Team Details"
         />
-        {(role === TYPE_OF_USER.ADMIN ||
-            role === TYPE_OF_USER.DEALER_OWNER ||
-            team?.logged_in_member_role === 'manager') ?
-         <>
-        {open && (
-          <AddMember
-            handleClose={handleClose}
-            onSubmitCreateUser={onSubmitCreateUser}
-            team={team}
-            setIsRefresh={setIsRefresh}
-          />
-        )}
-        </>
-        : null }
+        {role === TYPE_OF_USER.ADMIN ||
+        role === TYPE_OF_USER.DEALER_OWNER ||
+        team?.logged_in_member_role === 'manager' ? (
+          <>
+            {open && (
+              <AddMember
+                handleClose={handleClose}
+                onSubmitCreateUser={onSubmitCreateUser}
+                team={team}
+                setIsRefresh={setIsRefresh}
+              />
+            )}
+          </>
+        ) : null}
 
         {open1 && (
           <MoveMember
@@ -378,7 +270,9 @@ const TeamTable: React.FC = () => {
                 </div>
               </div>
               <div className="team-button-sec">
-                {team?.logged_in_member_role === 'manager' ? (
+                {team?.logged_in_member_role === 'manager' ||
+                role === TYPE_OF_USER.ADMIN ||
+                role === TYPE_OF_USER.DEALER_OWNER ? (
                   <button onClick={handleOpen}>+ Add New Member</button>
                 ) : null}
               </div>
@@ -386,40 +280,91 @@ const TeamTable: React.FC = () => {
             <table>
               <thead>
                 <tr>
-                  <th style={{ paddingLeft: '34px' }}>
+                  <th
+                    style={{ paddingLeft: '34px' }}
+                    onClick={() => handleSort('user_code')}
+                  >
                     <div className="table-header">
                       <p>User Code</p>
-                      <FaArrowDown style={{ color: '#667085' }} />
+                      <FaArrowDown
+                        style={{
+                          color: '#667085',
+                          transform:
+                            sortKey === 'user_code' && sortDirection === 'asc'
+                              ? 'rotate(180deg)'
+                              : undefined,
+                        }}
+                      />
                     </div>
                   </th>
                   <th>
-                    <div className="table-header">
+                    <div
+                      className="table-header"
+                      onClick={() => handleSort('sale_rep_name')}
+                    >
                       <p>Name</p>
-                      <FaArrowDown style={{ color: '#667085' }} />
+                      <FaArrowDown
+                        style={{
+                          color: '#667085',
+                          transform:
+                            sortKey === 'sale_rep_name' &&
+                            sortDirection === 'asc'
+                              ? 'rotate(180deg)'
+                              : undefined,
+                        }}
+                      />
                     </div>
                   </th>
                   <th>
-                    <div className="table-header">
+                    <div
+                      className="table-header"
+                      onClick={() => handleSort('role')}
+                    >
                       <p>Role</p>
-                      <FaArrowDown style={{ color: '#667085' }} />
+                      <FaArrowDown
+                        style={{
+                          color: '#667085',
+                          transform:
+                            sortKey === 'role' && sortDirection === 'asc'
+                              ? 'rotate(180deg)'
+                              : undefined,
+                        }}
+                      />
                     </div>
                   </th>
-                  <th>
+                  <th onClick={() => handleSort('email_id')}>
                     <div
                       className="table-header"
                       style={{ paddingRight: '94px' }}
                     >
                       <p>Email ID</p>
-                      <FaArrowDown style={{ color: '#667085' }} />
+                      <FaArrowDown
+                        style={{
+                          color: '#667085',
+                          transform:
+                            sortKey === 'email_id' && sortDirection === 'asc'
+                              ? 'rotate(180deg)'
+                              : undefined,
+                        }}
+                      />
                     </div>
                   </th>
-                  <th>
+                  <th onClick={() => handleSort('phone_number')}>
                     <div
                       className="table-header"
                       style={{ paddingRight: '34px' }}
                     >
                       <p>Phone Number</p>
-                      <FaArrowDown style={{ color: '#667085' }} />
+                      <FaArrowDown
+                        style={{
+                          color: '#667085',
+                          transform:
+                            sortKey === 'phone_number' &&
+                            sortDirection === 'asc'
+                              ? 'rotate(180deg)'
+                              : undefined,
+                        }}
+                      />
                     </div>
                   </th>
                   <th>
@@ -435,56 +380,26 @@ const TeamTable: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* {currentPageData.length > 0
-                  ? currentPageData.map((el: any, index: any) => (
-                    <tr key={index}>
-                      <td
-                        style={{
-                          color: '101828',
-                          paddingLeft: '33px',
-                          fontWeight: '500',
-                        }}
-                      >
-                        OWE1234
-                      </td>
-                      <td style={{ color: '#101828' }}>Alex</td>
-                      <td style={{ color: '#101828' }}><p className="user-role">Manager</p></td>
-                      <td style={{ color: '#101828' }}>Alex@gmail.com</td>
-                      <td style={{ color: '#101828' }}>+1 7594594545</td>
-                      <td className="zoom-out-help" style={{ paddingLeft: '30px' }}>
-                        <img
-                          src={ICONS.deleteIcon}
-                          style={{
-                            height: '18px',
-                            width: '16px',
-                            stroke: '0.2',
-                          }}
-                          alt=""
-                        />
-                      </td>
-                    </tr>
-                  ))
-                  : <tr style={{ border: 0 }}>
-                    <td colSpan={10}>
-                      <DataNotFound />
-                    </td>
-                  </tr>} */}
                 {isLoading ? (
-                  <div
-                    style={{ width: '100%' }}
-                    className="flex justify-center items-center"
-                  >
-                    <MicroLoader />
-                  </div>
-                ) : !team?.sale_rep_list?.length ? (
-                  <div
-                    style={{ width: '100%' }}
-                    className="flex justify-center items-center"
-                  >
-                    <DataNotFound />
-                  </div>
+                  <td colSpan={5}>
+                    <div
+                      style={{ width: '100%' }}
+                      className="flex justify-center items-center"
+                    >
+                      <MicroLoader />
+                    </div>
+                  </td>
+                ) : !Boolean(currentPageData) ? (
+                  <td colSpan={5}>
+                    <div
+                      style={{ width: '100%' }}
+                      className="flex justify-center items-center"
+                    >
+                      <DataNotFound />
+                    </div>
+                  </td>
                 ) : (
-                  team?.sale_rep_list?.map((item: any, index: number) => (
+                  currentPageData?.map((item: any, index: number) => (
                     <tr key={index}>
                       <td
                         style={{
@@ -513,36 +428,36 @@ const TeamTable: React.FC = () => {
                           style={{
                             paddingLeft: '30px',
                             cursor:
-                            (role === TYPE_OF_USER.ADMIN ||
-                              role === TYPE_OF_USER.DEALER_OWNER ||
-                              team?.logged_in_member_role === 'manager')  &&
-                                !(
-                                  team?.manager_count <= 1 &&
-                                  item.role === 'manager'
-                                )
+                              (role === TYPE_OF_USER.ADMIN ||
+                                role === TYPE_OF_USER.DEALER_OWNER ||
+                                team?.logged_in_member_role === 'manager') &&
+                              !(
+                                team?.manager_count <= 1 &&
+                                item.role === 'manager'
+                              )
                                 ? 'pointer'
                                 : 'not-allowed',
                             opacity:
-                            (role === TYPE_OF_USER.ADMIN ||
-                              role === TYPE_OF_USER.DEALER_OWNER ||
-                              team?.logged_in_member_role === 'manager')  &&
-                                !(
-                                  team?.manager_count <= 1 &&
-                                  item.role === 'manager'
-                                )
+                              (role === TYPE_OF_USER.ADMIN ||
+                                role === TYPE_OF_USER.DEALER_OWNER ||
+                                team?.logged_in_member_role === 'manager') &&
+                              !(
+                                team?.manager_count <= 1 &&
+                                item.role === 'manager'
+                              )
                                 ? '1'
                                 : '0.5',
                           }}
                           onClick={(e) => {
                             if (
-                             (role === TYPE_OF_USER.ADMIN ||
-                              role === TYPE_OF_USER.DEALER_OWNER ||
-                              team?.logged_in_member_role === 'manager') &&
-                                !(
-                                  team?.manager_count <= 1 &&
-                                  item.role === 'manager'
-                                ))
-                             {
+                              (role === TYPE_OF_USER.ADMIN ||
+                                role === TYPE_OF_USER.DEALER_OWNER ||
+                                team?.logged_in_member_role === 'manager') &&
+                              !(
+                                team?.manager_count <= 1 &&
+                                item.role === 'manager'
+                              )
+                            ) {
                               handleDelete(item.team_member_id);
                             }
                           }}
