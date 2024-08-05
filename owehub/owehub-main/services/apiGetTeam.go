@@ -102,7 +102,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		 WHERE
 				 tm.team_id = $1
 	 `
-	filer, _ := PrepareTeamsFilters("", dataReq, true)
+	filer, _ := PrepareTeamsFilters("", dataReq, false)
 	query = query + filer
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TeamId})
 	if err != nil {
@@ -156,6 +156,8 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		LoggedInMemberRole: loggedMemberRole,
 	}
 
+	filer, _ = PrepareTeamsFilters("", dataReq, true)
+	query = query + filer
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TeamId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
@@ -181,10 +183,12 @@ func PrepareTeamsFilters(tableName string, dataFilter models.GetTeamRequest, for
 	var filtersBuilder strings.Builder
 
 	if forDataCount {
-
-	} else if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		filtersBuilder.WriteString(" GROUP BY ud.user_code, t.team_name, tm.role_in_team, ud.name, ud.email_id, tm.team_member_id, ud.mobile_number, vd.dealer_code")
+	} else {
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()
