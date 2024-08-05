@@ -205,6 +205,7 @@ const AddMember: React.FC<createUserProps> = ({
                       options={userOptions}
                       value={selectedDropdown}
                       onChange={handleSelectDropdown}
+                      menuListStyles={{ height: '120px' }}  
                     />
                   </div>
                   <div className="tm-create-input-field">
