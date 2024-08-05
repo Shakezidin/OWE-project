@@ -353,6 +353,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     setSelectAllChecked(false);
                   }}
                   menuWidth="130px"
+                  enableHoverEffect={false}
                 />
               </div>
             </div>

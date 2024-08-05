@@ -88,9 +88,9 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
       
       {(formData?.role_name === 'Sale Representative' || formData?.role_name === "Regional Manager" || formData?.role_name === "Appointment Setter") && (
         <>
-          <div className="create-input-field">
+          <div className="create-input-field" >
             <label className="inputLabel selected-fields-onboard">
-              Report Manager
+            Report Manager
             </label>
             <SelectOption
               options={regionList}
@@ -136,7 +136,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
       )}
       {formData?.role_name === 'Sales Manager'  && (
         <>
-          <div className="create-input-field">
+          <div className="create-input-field" style={{marginTop: "-7px"}}>
             <label className="inputLabel selected-fields-onboard">
               Report Manager
             </label>

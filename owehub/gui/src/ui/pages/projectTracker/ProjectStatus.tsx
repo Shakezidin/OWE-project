@@ -516,6 +516,7 @@ const ProjectStatus = () => {
                         setSelectedProject(val);
                       }
                     }}
+                    width='190px'
                   />
                 </div>
               </div>
@@ -561,6 +562,7 @@ const ProjectStatus = () => {
                     ) : null}
                     {activePopups && i === 1 && (
                       <div className="popup">
+                        
                         <p className="pop-head">Adder Details</p>
                         <ol className="order-list">
                           {
