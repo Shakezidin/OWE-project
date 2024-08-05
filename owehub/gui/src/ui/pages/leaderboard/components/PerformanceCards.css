@@ -27,6 +27,7 @@
 }
 .share-button:hover {
   transform: scale(1.08);
+  background:  #DDEBFF;
 }
 
 .share-button p {

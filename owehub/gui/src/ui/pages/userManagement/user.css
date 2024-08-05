@@ -134,7 +134,15 @@ opacity: 0px;
   color: #344054 !important;
   font-weight: 500;
   border-radius: 0.25rem;
+  transition: transform 0.3s, background-color 0.3s;
 }
+
+.dash-select-user:hover {
+  transform: scale(1.06);
+  background-color: #ababab;
+}
+
+
 
 .user-table {
   display: flex;
@@ -149,4 +157,21 @@ opacity: 0px;
   z-index: 1;
   display: block;
   left: 1px;
+}
+
+.Line-container{
+  cursor: pointer;
+  transition: transform 500ms ease;
+}
+
+.Line-container:hover {
+  transform: scale(1.09);
+}
+.edit-line img{
+  transition: border 500ms ease;
+}
+
+.edit-line img:hover {
+  border-radius: 8px;
+  border: solid 1px rgb(161, 161, 161);
 }

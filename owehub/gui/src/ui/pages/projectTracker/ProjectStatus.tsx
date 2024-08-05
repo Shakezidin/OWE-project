@@ -516,6 +516,7 @@ const ProjectStatus = () => {
                         setSelectedProject(val);
                       }
                     }}
+                    width='190px'
                   />
                 </div>
               </div>
@@ -529,11 +530,11 @@ const ProjectStatus = () => {
                 >
                   <div
                     className="rounded-8"
-                    style={{ padding: 3, border: `1px dashed ${el.bgColor}` }}
+                    style={{ padding: 3, border: `1px dashed ${el.bgColor}`, zIndex: i===1 ? 50: undefined  }}
                   >
                     <div
                       className=" flex items-center rounded-8 justify-center relative"
-                      style={{ background: el.bgColor, height: 83 }}
+                      style={{ background: el.bgColor, height: 83, zIndex: i===1 ? 50: undefined  }}
                     >
                       <div
                         style={{
@@ -561,6 +562,7 @@ const ProjectStatus = () => {
                     ) : null}
                     {activePopups && i === 1 && (
                       <div className="popup">
+                        
                         <p className="pop-head">Adder Details</p>
                         <ol className="order-list">
                           {

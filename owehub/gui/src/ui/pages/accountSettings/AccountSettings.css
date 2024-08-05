@@ -74,6 +74,7 @@
 .tab:not(.active-profile):hover {
   background-color: #e9ebeb;
 }
+
 .tab-content {
   width: 80%;
 }

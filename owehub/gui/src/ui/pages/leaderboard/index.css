@@ -31,6 +31,14 @@
 .leaderboard-data__datepicker-wrapper {
   position: relative;
   line-height: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 11;
+}
+
+.leaderboard-data__datepicker-wrapper:hover {
+  transform: scale(1.07);
+  z-index: 11;
 }
 
 .leaderboard-data__datepicker-content {
@@ -269,6 +277,12 @@
   transition: all 500ms;
 }
 
+.leaderbord-tab-container .tab:not(.activehead):hover {
+  background-color: #f8b08d;
+  color: #fff;
+  transition: all 500ms;
+}
+
 .pointer {
   cursor: pointer;
 }
@@ -288,7 +302,7 @@
   transition: transform 0.3s ease;
 }
 .back-icon-sidebar.back-icon:hover {
-  transform: scale(1.09);
+  transform: scale(1.11);
 }
 
 .user-profile-sidebar-fixed .user-sidebar {
@@ -399,6 +413,7 @@
 
 .exportt:hover {
   transition: all 500ms;
+  transform: scale(1.09);
   background-color: var(--orange-color);
   color: #fff;
 }
