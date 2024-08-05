@@ -87,7 +87,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			st.name AS state_name,
 			ur.role_name,
 			zc.zipcode,
-			vd.dealer_name as dealer,
+			vd.dealer_code as dealer,
 			vd.dealer_logo,
 			vd.bg_colour,
 			ud.tables_permissions

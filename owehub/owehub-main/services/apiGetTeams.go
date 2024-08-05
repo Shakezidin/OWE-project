@@ -64,7 +64,7 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			GROUP BY t.team_id
 			ORDER BY t.team_id;
 		`
-	case "Sales Representative":
+	case "Sale Representative":
 		query = `
 			SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
 			FROM teams t
