@@ -18,12 +18,13 @@ import {
   useLocation,
 } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
-import DataNotFound from '../../components/loader/DataNotFound';
 import { BiEditAlt } from 'react-icons/bi';
 import { MdOutlineDone } from 'react-icons/md';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
 
 interface User {
   name: string;
@@ -43,7 +44,9 @@ const TeamTable: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
 
-  const { team } = useAppSelector((state) => state.teamManagmentSlice);
+  const { team, isLoading } = useAppSelector(
+    (state) => state.teamManagmentSlice
+  );
 
   const getQueryParams = (search: string) => new URLSearchParams(search);
   const queryParams = getQueryParams(location.search);
@@ -361,9 +364,9 @@ const TeamTable: React.FC = () => {
                 </div>
               </div>
               <div className="team-button-sec">
-                { team?.logged_in_member_role === "manager" ? 
-                <button onClick={handleOpen}>+ Add New Member</button>
-                  : null }
+                {team?.logged_in_member_role === 'manager' ? (
+                  <button onClick={handleOpen}>+ Add New Member</button>
+                ) : null}
               </div>
             </div>
             <table>
@@ -452,75 +455,106 @@ const TeamTable: React.FC = () => {
                       <DataNotFound />
                     </td>
                   </tr>} */}
-                {team?.sale_rep_list?.map((item: any, index: number) => (
-                  <tr key={index}>
-                    <td
-                      style={{
-                        color: '#101828',
-                        paddingLeft: '33px',
-                        fontWeight: '500',
-                      }}
-                    >
-                      {item.user_code || 'N/A'}
-                    </td>
-                    <td style={{ color: '#101828' }}>{item.sale_rep_name}</td>
-                    <td style={{ color: '#101828' }}>
-                      <p
-                        className={
-                          item.role === 'manager' ? 'user-mg' : 'user-namg'
-                        }
-                      >
-                        {item.role}
-                      </p>
-                    </td>
-                    <td style={{ color: '#101828' }}>{item.email_id}</td>
-                    <td style={{ color: '#101828' }}>{item.phone_number}</td>
-                    { role !== TYPE_OF_USER.SALES_REPRESENTATIVE ?
-                    <td
-                      className="zoom-out-help"
-                      style={{
-                        paddingLeft: '30px',
-                        cursor:
-                          team?.logged_in_member_role === "manager" &&
-                          !(team?.manager_count <= 1 && item.role === 'manager')
-                            ? 'pointer'
-                            : 'not-allowed',
-                        opacity:
-                          team?.logged_in_member_role === "manager" &&
-                          !(team?.manager_count <= 1 && item.role === 'manager')
-                            ? '1'
-                            : '0.5',
-                      }}
-                      onClick={(e) => {
-                        if (
-                         team?.logged_in_member_role === "manager" &&
-                          !(team?.manager_count <= 1 && item.role === 'manager')
-                        ) {
-                          handleDelete(item.team_member_id);
-                        }
-                      }}
-                    >
-                      <img
-                        src={ICONS.deleteIcon}
+                {isLoading ? (
+                  <div
+                    style={{ width: '100%' }}
+                    className="flex justify-center items-center"
+                  >
+                    <MicroLoader />
+                  </div>
+                ) : !team?.sale_rep_list?.length ? (
+                  <div
+                    style={{ width: '100%' }}
+                    className="flex justify-center items-center"
+                  >
+                    <DataNotFound />
+                  </div>
+                ) : (
+                  team?.sale_rep_list?.map((item: any, index: number) => (
+                    <tr key={index}>
+                      <td
                         style={{
-                          height: '18px',
-                          width: '16px',
-                          stroke: '0.2',
-                          pointerEvents:
-                            role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&
-                            !(
-                              team?.manager_count <= 1 &&
-                              item.role === 'manager'
-                            )
-                              ? 'auto'
-                              : 'none',
+                          color: '#101828',
+                          paddingLeft: '33px',
+                          fontWeight: '500',
                         }}
-                        alt=""
-                      />
-                    </td>
-                   : null }
-                  </tr>
-                ))}
+                      >
+                        {item.user_code || 'N/A'}
+                      </td>
+                      <td style={{ color: '#101828' }}>{item.sale_rep_name}</td>
+                      <td style={{ color: '#101828' }}>
+                        <p
+                          className={
+                            item.role === 'manager' ? 'user-mg' : 'user-namg'
+                          }
+                        >
+                          {item.role}
+                        </p>
+                      </td>
+                      <td style={{ color: '#101828' }}>{item.email_id}</td>
+                      <td style={{ color: '#101828' }}>{item.phone_number}</td>
+                      {role !== TYPE_OF_USER.SALES_REPRESENTATIVE && (
+                        <td
+                          className="zoom-out-help"
+                          style={{
+                            paddingLeft: '30px',
+                            cursor:
+                            (role === TYPE_OF_USER.ADMIN ||
+                              role === TYPE_OF_USER.DEALER_OWNER ||
+                              team?.logged_in_member_role === 'manager')  &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
+                                ? 'pointer'
+                                : 'not-allowed',
+                            opacity:
+                            (role === TYPE_OF_USER.ADMIN ||
+                              role === TYPE_OF_USER.DEALER_OWNER ||
+                              team?.logged_in_member_role === 'manager')  &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
+                                ? '1'
+                                : '0.5',
+                          }}
+                          onClick={(e) => {
+                            if (
+                             (role === TYPE_OF_USER.ADMIN ||
+                              role === TYPE_OF_USER.DEALER_OWNER ||
+                              team?.logged_in_member_role === 'manager') &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                ))
+                             {
+                              handleDelete(item.team_member_id);
+                            }
+                          }}
+                        >
+                          <img
+                            src={ICONS.deleteIcon}
+                            style={{
+                              height: '18px',
+                              width: '16px',
+                              stroke: '0.2',
+                              pointerEvents:
+                                role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
+                                  ? 'auto'
+                                  : 'none',
+                            }}
+                            alt=""
+                          />
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

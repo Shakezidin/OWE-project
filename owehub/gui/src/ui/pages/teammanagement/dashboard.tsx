@@ -19,6 +19,7 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 
+
 interface AccordionSection {
   data: any;
   state: any;
@@ -146,6 +147,8 @@ const TeamManagement: React.FC = () => {
   const roleAdmin = localStorage.getItem('role');
   return (
     <>
+    
+     
       {open2 && (
         <NewTeam
           handleClose2={handleClose2}
@@ -153,6 +156,8 @@ const TeamManagement: React.FC = () => {
           // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
+      
+
       <div className="team-container">
         <div className="team-main">
           <div className="team-main-section">
@@ -177,9 +182,11 @@ const TeamManagement: React.FC = () => {
                           Remove Team
                         </button>
                       )}
+                      { roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ?
                       <button className="create" onClick={handleOpen2}>
                         + Create New Team
                       </button>
+                        : null}
                       {roleAdmin === TYPE_OF_USER.ADMIN && (
                         <DropWithCheck
                           selectedOptions={selectedOptions}
@@ -244,6 +251,7 @@ const TeamManagement: React.FC = () => {
                                       {item.team_name}
                                     </h1>
                                   </div>
+                                  { roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ?
                                   <input
                                     type="checkbox"
                                     className="team-checkbox"
@@ -257,6 +265,7 @@ const TeamManagement: React.FC = () => {
                                       e: React.MouseEvent<HTMLInputElement>
                                     ) => e.stopPropagation()}
                                   />
+                                  : null}
                                 </div>
                                 <div className="team-con-fle">
                                   <div className="teamp-group">

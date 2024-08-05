@@ -50,6 +50,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   const [membersOption, setMembersOption] = useState<Option[]>([]);
   const [newFormData, setNewFormData] = useState<string[]>([]);
   const [managers, setManagers] = useState<any[]>([]);
+ 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
 
   const getnewformData = async () => {
     const tableData = {
@@ -152,6 +154,25 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     let userCode;
     if (roleAdmin === TYPE_OF_USER.SALE_MANAGER) {
       userCode = managers.find((item) => item.email === email);
+    }
+
+    const validationErrors: { [key: string]: string } = {};
+
+    if (formData.first_name.trim() === '') {
+      validationErrors.first_name = 'Team Name is required.';
+    }
+    
+    if (!selectedOption3) {
+      validationErrors.dealer_name = 'Dealer Name is required.';
+    }
+    
+    if (selectedOptions2.length === 0) {
+      validationErrors.managers = 'Please select at least one manager';
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
 
     const data = {
@@ -264,6 +285,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       name="first_name"
                       maxLength={100}
                     />
+                  {errors.first_name && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.first_name}
+                    </span>
+                  )}
                   </div>
 
                   {userRole === 'Admin' && (
@@ -289,6 +320,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                         }
                         onChange={handleSelectChange3}
                       />
+                         {errors.dealer_name && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.dealer_name}
+                    </span>
+                  )}
                     </div>
                   )}
                   <div className="tm-new-create-input-field">
@@ -305,6 +346,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       )}
                       onChange={handleSelectChange2}
                     />
+                      {errors.managers && (
+                    <span
+                      style={{
+                        display: 'block',
+                      }}
+                      className="error"
+                    >
+                      {errors.managers}
+                    </span>
+                  )}
                   </div>
                   <div className="tm-new-create-input-field">
                     <label
