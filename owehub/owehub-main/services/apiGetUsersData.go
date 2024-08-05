@@ -370,7 +370,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.country) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_code) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -380,7 +380,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_name, vd.dealer_logo, vd.bg_colour")
+		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_code, vd.dealer_logo, vd.bg_colour")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

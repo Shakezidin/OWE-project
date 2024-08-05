@@ -66,12 +66,26 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		`
 	case "Sale Representative":
 		query = `
-			SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
-			FROM teams t
-			JOIN team_members tm ON tm.team_id = t.team_id
-			WHERE tm.user_id = (SELECT user_id FROM user_details WHERE email_id = $1)
-			GROUP BY t.team_id
-			ORDER BY t.team_id;
+						SELECT
+					t.team_id,
+					t.team_name,
+					COUNT(tm.user_id) AS member_count
+			FROM
+					user_details ud
+			JOIN
+					team_members tm ON ud.user_id = tm.user_id
+			JOIN
+					teams t ON tm.team_id = t.team_id
+			WHERE
+					t.team_id = (
+							SELECT tm_inner.team_id
+							FROM user_details ud_inner
+							JOIN team_members tm_inner ON ud_inner.user_id = tm_inner.user_id
+							WHERE ud_inner.email_id = $1
+							LIMIT 1
+					)
+			GROUP BY
+					t.team_id, t.team_name;
 		`
 	default:
 		if len(dataReq.DealerNames) > 0 {
