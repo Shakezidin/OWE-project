@@ -380,7 +380,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_code, vd.dealer_logo, vd.bg_colour")
+		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_code, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

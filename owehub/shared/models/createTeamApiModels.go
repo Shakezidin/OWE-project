@@ -23,6 +23,7 @@ type GetTeam struct {
 	TeamId       int64  `json:"team_id"`
 	TeamName     string `json:"team_name"`
 	TeamStrength int64  `json:"team_strength"`
+	RoleInTeam   string `json:"role_in_team"`
 }
 
 type GetTeams struct {
