@@ -57,8 +57,7 @@ const TeamTable: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleClose1 = () => setOpen1(false);
-  const [inputValue, setInputValue] = useState<any>(team?.team_name
-);
+  const [inputValue, setInputValue] = useState<any>(team?.team_name);
   const [isEditing, setIsEditing] = useState(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -255,25 +254,30 @@ const TeamTable: React.FC = () => {
                     <div>
                       {isEditing ? (
                         <div>
-                          <MdOutlineDone className='done-icon' onClick={handleUpdateName} />
+                          <MdOutlineDone
+                            className="done-icon"
+                            onClick={handleUpdateName}
+                          />
                         </div>
                       ) : (
                         <div>
-                          <BiEditAlt className='edit-icon' onClick={handleIconClick} />
+                          <BiEditAlt
+                            className="edit-icon"
+                            onClick={handleIconClick}
+                          />
                         </div>
                       )}
                     </div>
                   </div>
                   <p>
                     {team?.manager_count} Managers, {team?.MemberCount} Member
-                    
                   </p>
                 </div>
               </div>
               <div className="team-button-sec">
                 {team?.logged_in_member_role === 'manager' ||
                 role === TYPE_OF_USER.ADMIN ||
-                role === TYPE_OF_USER.DEALER_OWNER ? (
+                role === TYPE_OF_USER.DEALER_OWNER || role === TYPE_OF_USER.SUB_DEALER_OWNER  ? (
                   <button onClick={handleOpen}>+ Add New Member</button>
                 ) : null}
               </div>
@@ -431,6 +435,7 @@ const TeamTable: React.FC = () => {
                             cursor:
                               (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 team?.logged_in_member_role === 'manager') &&
                               !(
                                 team?.manager_count <= 1 &&
@@ -441,6 +446,7 @@ const TeamTable: React.FC = () => {
                             opacity:
                               (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 team?.logged_in_member_role === 'manager') &&
                               !(
                                 team?.manager_count <= 1 &&
@@ -453,7 +459,8 @@ const TeamTable: React.FC = () => {
                             if (
                               (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
-                                team?.logged_in_member_role === 'manager') &&
+                                team?.logged_in_member_role === 'manager' ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER) &&
                               !(
                                 team?.manager_count <= 1 &&
                                 item.role === 'manager'

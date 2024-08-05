@@ -258,7 +258,9 @@ const TeamManagement: React.FC = () => {
                                   </div>
                                   {roleAdmin === TYPE_OF_USER.ADMIN ||
                                   roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
-                                  data?.role_in_team === 'manager' ? (
+                                  data?.role_in_team === 'manager' ||
+                                  roleAdmin ===
+                                    TYPE_OF_USER.SUB_DEALER_OWNER ? (
                                     <input
                                       type="checkbox"
                                       className="team-checkbox"
