@@ -152,6 +152,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		var projectData models.ProjectResponse
 		mapRowToStruct(item, &projectData)
 		projectData.Epc = math.Round(projectData.Epc*100) / 100
+		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 	}
 
@@ -189,6 +190,41 @@ func mapRowToStruct(item map[string]interface{}, v interface{}) {
 			}
 		}
 	}
+}
+
+/******************************************************************************
+ * FUNCTION:		cleanAdderBreakDownAndTotal
+ * DESCRIPTION: to return cleaned breakdown value
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+ func cleanAdderBreakDownAndTotal(data string) map[string]string {
+	result := make(map[string]string)
+	if len(data) == 0 {
+		return result
+	}
+	components := strings.Split(data, "\n")
+	var finalComp []string
+
+	if len(components) > 0 && components[0] != "" {
+		finalComp = append(finalComp, components[0])
+	}
+	for _, val := range components[1:] {
+		val = strings.TrimSpace(val)
+		if val != "" {
+			finalComp = append(finalComp, val)
+		}
+	}
+	for _, val := range finalComp {
+		cleanedData := strings.ReplaceAll(val, "**", "")
+		parts := strings.SplitN(cleanedData, ":", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			result[key] = value
+		} 
+	}
+	return result
 }
 
 /******************************************************************************
