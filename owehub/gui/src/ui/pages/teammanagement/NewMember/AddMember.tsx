@@ -179,7 +179,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         <div className="modal-body">
           <div className="scroll-user">
             <div className="createProfileInputView">
-              <div className="createProfileTextView">
+              <div className="createProfileTextView" style={{minHeight:"200px"}}>
                 <div className="create-input-container">
 
                 <div className="tm-create-input-field">
