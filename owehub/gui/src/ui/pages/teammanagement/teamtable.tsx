@@ -143,6 +143,7 @@ const TeamTable: React.FC = () => {
   };
 
   const role = localStorage.getItem('role');
+  const UserEmail = localStorage.getItem('email');
 
   const handleDelete = async (id: any) => {
     const confirmed = await showAlert(
@@ -448,9 +449,10 @@ const TeamTable: React.FC = () => {
                           style={{
                             paddingLeft: '30px',
                             cursor:
-                              (role === TYPE_OF_USER.ADMIN ||
+                              UserEmail !== item.email &&(role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
-                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER || 
+                                 (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
                                 team?.logged_in_member_role === 'manager') &&
                               !(
                                 team?.manager_count <= 1 &&
@@ -462,6 +464,7 @@ const TeamTable: React.FC = () => {
                               (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
                                 team?.logged_in_member_role === 'manager') &&
                               !(
                                 team?.manager_count <= 1 &&
@@ -474,6 +477,8 @@ const TeamTable: React.FC = () => {
                             if (
                               (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
                                 team?.logged_in_member_role === 'manager' ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER) &&
                               !(
