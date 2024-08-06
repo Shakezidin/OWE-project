@@ -43,8 +43,8 @@ const (
 )
 
 /* constains api execution information
- *  service names, methods, patterns and
- *  handler function*/
+*  service names, methods, patterns and
+*  handler function*/
 type ServiceApiRoute struct {
 	Method             string
 	Pattern            string
@@ -1603,12 +1603,12 @@ var apiRoutes = ApiRoutes{
 }
 
 /******************************************************************************
- * FUNCTION:        initializelog
- *
- * DESCRIPTION:     This will initialize the logger package with default config
- * INPUT:
- * RETURNS:    VOID
- ******************************************************************************/
+* FUNCTION:        initializelog
+*
+* DESCRIPTION:     This will initialize the logger package with default config
+* INPUT:
+* RETURNS:    VOID
+******************************************************************************/
 func initLogger(svcName log.Nametype, instId log.InstanceIdtype, tnId log.TenantIdtype, level log.LogLeveltype, logenv string, fname string, size int, age int, bkp int) {
 	logCfg := &log.LogHandler{
 		ServiceName: svcName, Instanceid: instId, Tenantid: tnId,
@@ -1631,11 +1631,11 @@ func initLogger(svcName log.Nametype, instId log.InstanceIdtype, tnId log.Tenant
 }
 
 /******************************************************************************
- * FUNCTION:        ValidateRequiredEnv
- * DESCRIPTION:     This function will check if all required ENV are exported
- * INPUT:
- * RETURNS:    		true if provided, else false
- ******************************************************************************/
+* FUNCTION:        ValidateRequiredEnv
+* DESCRIPTION:     This function will check if all required ENV are exported
+* INPUT:
+* RETURNS:    		true if provided, else false
+******************************************************************************/
 func ValidateRequiredEnv() bool {
 	log.EnterFn(0, "ValidateRequiredEnv")
 	defer func() { log.ExitFn(0, "ValidateRequiredEnv", nil) }()
@@ -1644,13 +1644,13 @@ func ValidateRequiredEnv() bool {
 }
 
 /******************************************************************************
- * FUNCTION:        init
- *
- * DESCRIPTION:     This function will be called before main and initialize the
- *					 service
- * INPUT:
- * RETURNS:    VOID
- ******************************************************************************/
+* FUNCTION:        init
+*
+* DESCRIPTION:     This function will be called before main and initialize the
+*					 service
+* INPUT:
+* RETURNS:    VOID
+******************************************************************************/
 func init() {
 	var err error
 	defer func() {
@@ -1729,13 +1729,13 @@ func handleDynamicHttpConf(resp http.ResponseWriter, req *http.Request) {
 }
 
 /******************************************************************************
- * FUNCTION:        InitSrvDefaultConfig
- *
- * DESCRIPTION:    Read the env variables and initialize global variable
- *                  with default configuration
- * INPUT:
- * RETURNS:
- ******************************************************************************/
+* FUNCTION:        InitSrvDefaultConfig
+*
+* DESCRIPTION:    Read the env variables and initialize global variable
+*                  with default configuration
+* INPUT:
+* RETURNS:
+******************************************************************************/
 func InitSrvDefaultConfig() {
 	log.EnterFn(0, "InitSrvDefaultConfig")
 
@@ -1763,12 +1763,12 @@ func InitSrvDefaultConfig() {
 }
 
 /******************************************************************************
- * FUNCTION:        InitConfigFromFiles
- *
- * DESCRIPTION:   function used to read the configuration and initilize services
- * INPUT:        service name to be initialized
- * RETURNS:      error
- ******************************************************************************/
+* FUNCTION:        InitConfigFromFiles
+*
+* DESCRIPTION:   function used to read the configuration and initilize services
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
 func InitConfigFromFiles() (err error) {
 	log.EnterFn(0, "initConfigFromFiles")
 	defer func() { log.ExitFn(0, "initConfigFromFiles", err) }()
@@ -1793,12 +1793,12 @@ func InitConfigFromFiles() (err error) {
 }
 
 /******************************************************************************
- * FUNCTION:        InitCfgPaths
- *
- * DESCRIPTION:   function to init default paths and instance id
- * INPUT:
- * RETURNS:
- ******************************************************************************/
+* FUNCTION:        InitCfgPaths
+*
+* DESCRIPTION:   function to init default paths and instance id
+* INPUT:
+* RETURNS:
+******************************************************************************/
 func InitCfgPaths() {
 	log.EnterFn(0, "InitCfgPaths")
 
@@ -1812,12 +1812,12 @@ func InitCfgPaths() {
 }
 
 /******************************************************************************
- * FUNCTION:        FetchLoggingCfg
- *
- * DESCRIPTION:   function is used to get the logging configuration
- * INPUT:        service name to be initialized
- * RETURNS:      error
- ******************************************************************************/
+* FUNCTION:        FetchLoggingCfg
+*
+* DESCRIPTION:   function is used to get the logging configuration
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
 func FetchLoggingCfg() (err error) {
 	log.EnterFn(0, "FetchLoggingCfg")
 	defer func() { log.ExitFn(0, "FetchLoggingCfg", err) }()
@@ -1841,12 +1841,12 @@ func FetchLoggingCfg() (err error) {
 }
 
 /******************************************************************************
- * FUNCTION:        FetchHttpCfg
- *
- * DESCRIPTION:   function is used to get the HTTP configuration
- * INPUT:        service name to be initialized
- * RETURNS:      error
- ******************************************************************************/
+* FUNCTION:        FetchHttpCfg
+*
+* DESCRIPTION:   function is used to get the HTTP configuration
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
 func FetchHttpCfg() (err error) {
 	log.EnterFn(0, "FetchHttpCfg")
 	defer func() { log.ExitFn(0, "FetchHttpCfg", err) }()
@@ -1871,12 +1871,12 @@ func FetchHttpCfg() (err error) {
 }
 
 /******************************************************************************
- * FUNCTION:        FetchDbCfg
- *
- * DESCRIPTION:   function is used to get the Database configuration
- * INPUT:        service name to be initialized
- * RETURNS:      error
- ******************************************************************************/
+* FUNCTION:        FetchDbCfg
+*
+* DESCRIPTION:   function is used to get the Database configuration
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
 func FetchDbCfg() (err error) {
 	log.EnterFn(0, "FetchDbCfg")
 	defer func() { log.ExitFn(0, "FetchDbCfg", err) }()
@@ -1896,12 +1896,12 @@ func FetchDbCfg() (err error) {
 }
 
 /******************************************************************************
- * FUNCTION:        InitHttpCallbackPath
- *
- * DESCRIPTION:   function used to set the http callback paths for services
- * INPUT:           service name
- * RETURNS:
- ******************************************************************************/
+* FUNCTION:        InitHttpCallbackPath
+*
+* DESCRIPTION:   function used to set the http callback paths for services
+* INPUT:           service name
+* RETURNS:
+******************************************************************************/
 func InitHttpCallbackPath() {
 	log.EnterFn(0, "InitHttpCallbackPath")
 
@@ -1911,12 +1911,12 @@ func InitHttpCallbackPath() {
 }
 
 /******************************************************************************
- * FUNCTION:        PrintSvcGlbConfig
- *
- * DESCRIPTION:   function is used to display the configuration
- * INPUT:
- * RETURNS:
- ******************************************************************************/
+* FUNCTION:        PrintSvcGlbConfig
+*
+* DESCRIPTION:   function is used to display the configuration
+* INPUT:
+* RETURNS:
+******************************************************************************/
 func PrintSvcGlbConfig(cfg models.SvcConfig) {
 	log.EnterFn(0, "PrintSvcGlbConfig")
 	log.SysConfTrace(0, "owehub-main Service Configuration: %+v", cfg)
@@ -1924,12 +1924,12 @@ func PrintSvcGlbConfig(cfg models.SvcConfig) {
 }
 
 /******************************************************************************
- * FUNCTION:        UpdateSrvConfiguration
- *
- * DESCRIPTION:   function is used to update the server config structure
- * INPUT:        N/A
- * RETURNS:      N/A
- ******************************************************************************/
+* FUNCTION:        UpdateSrvConfiguration
+*
+* DESCRIPTION:   function is used to update the server config structure
+* INPUT:        N/A
+* RETURNS:      N/A
+******************************************************************************/
 func UpdateSrvConfiguration() {
 	log.EnterFn(0, "UpdateSrvConfiguration")
 
@@ -1958,13 +1958,13 @@ func UpdateSrvConfiguration() {
 }
 
 /******************************************************************************
- * FUNCTION:       HandleDynamicLoggingConf
- *
- * DESCRIPTION:    function to get handle logging configuration
- *                       recieved at run time through an external entity
- * INPUT:
- * RETURNS:
- ******************************************************************************/
+* FUNCTION:       HandleDynamicLoggingConf
+*
+* DESCRIPTION:    function to get handle logging configuration
+*                       recieved at run time through an external entity
+* INPUT:
+* RETURNS:
+******************************************************************************/
 func HandleDynamicLoggingConf(resp http.ResponseWriter, req *http.Request) models.LoggingCfg {
 	var err error
 	var logCfg models.LoggingCfg

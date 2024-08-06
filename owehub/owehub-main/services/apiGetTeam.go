@@ -49,7 +49,6 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.FuncInfoTrace(0, "%v === %v === %v ", dataReq, dataReq.PageNumber, dataReq.PageSize)
 	role := req.Context().Value("rolename").(string)
 	email := req.Context().Value("emailid").(string)
 	if email == "" {
