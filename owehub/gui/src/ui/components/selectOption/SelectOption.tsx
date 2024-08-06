@@ -45,7 +45,7 @@ const SelectOption: React.FC<Props> = ({
   labelColor,
   placeholder,
   menuWidth,
-  menuPosition = "absolute",
+  menuPosition = "fixed",
   enableHoverEffect = true,
 }) => {
   const scrollRef = useRef(null);
