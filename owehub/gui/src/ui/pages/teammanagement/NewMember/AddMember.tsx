@@ -224,6 +224,7 @@ const AddMember: React.FC<createUserProps> = ({
                     </label>
                     <SelectOption
                       options={userOptions}
+                      menuPosition='fixed'
                       value={selectedDropdown}
                       onChange={handleSelectDropdown}
                     />
@@ -247,6 +248,8 @@ const AddMember: React.FC<createUserProps> = ({
                     </label>
                     <SelectOption
                       options={roles}
+                      menuPosition='fixed'
+
                       value={selectedRole}
                       onChange={handleSelectChange}
                     />

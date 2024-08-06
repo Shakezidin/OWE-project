@@ -467,3 +467,8 @@ br {
     text-align: left;
   }
 }
+.one-line-text{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
