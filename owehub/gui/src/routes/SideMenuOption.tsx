@@ -209,6 +209,14 @@ const mob = {
       },
     },
     {
+      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+
+      sidebarProps: {
+        displayText: 'Team Management',
+        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
       path: ROUTES.USER_MANAEMENT,
 
       sidebarProps: {
@@ -313,9 +321,9 @@ export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
   const remiainingPage: { [key: string]: any[] } = {};
-  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[2] },{ ...mob.mob[3] }, { ...mob.mob[4] }];
+  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] },{ ...mob.mob[4] }, { ...mob.mob[5] }];
   const remiainingPage1: { [key: string]: any[] } = {};
-  remiainingPage1.mob = [{ ...mob.mob[0] }, { ...mob.mob[2] }];
+  remiainingPage1.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }];
   
 
   if (role === TYPE_OF_USER.ADMIN) {
