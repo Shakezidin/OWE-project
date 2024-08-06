@@ -84,6 +84,9 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       ...prevData,
       [name]: value,
     }));
+    const err = { ...errors };
+    delete err['first_name'];
+    setErrors(err);
   };
   const [managerOptions, setManagerOptions] = useState<Option[]>([]);
 
@@ -112,6 +115,12 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         }
         return prevOptions;
       });
+      const err = { ...errors };
+      delete err['managers'];
+      setErrors(err);
+      setManagerOptions((prev) =>
+        prev.filter((opt) => opt.value !== selectedOption.value)
+      );
       setMembersOption((prev) =>
         prev.filter((opt) => opt.value !== selectedOption.value)
       );
@@ -122,6 +131,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     setSelectedOptions2((prevOptions) =>
       prevOptions.filter((option) => option !== optionToRemove)
     );
+    setManagerOptions((prev) => [...prev, { ...optionToRemove }]);
     setMembersOption((prev) => [...prev, { ...optionToRemove }]);
   };
 
@@ -137,6 +147,9 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       setManagerOptions((prev) =>
         prev.filter((opt) => opt.value !== selectedOption.value)
       );
+      setMembersOption((prev) =>
+        prev.filter((opt) => opt.value !== selectedOption.value)
+      );
     }
   };
 
@@ -145,6 +158,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       selectedOptions.filter((option) => option !== optionToRemove)
     );
     setManagerOptions((prev) => [...prev, { ...optionToRemove }]);
+    setMembersOption((prev) => [...prev, { ...optionToRemove }]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {

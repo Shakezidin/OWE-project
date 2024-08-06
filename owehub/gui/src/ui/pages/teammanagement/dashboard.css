@@ -322,12 +322,12 @@
 }
  
 .team-input {
-  width: 50%;
   border: none;
   outline: none;
   background: transparent;
   font-size: 1.5rem;
   font-weight: 600;
+  max-width: 270px;
   cursor: default;
   padding: 0;
   box-shadow: none;

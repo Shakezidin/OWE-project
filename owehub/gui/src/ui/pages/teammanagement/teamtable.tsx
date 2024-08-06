@@ -57,7 +57,7 @@ const TeamTable: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleClose1 = () => setOpen1(false);
-  const [inputValue, setInputValue] = useState<any>(team?.team_name);
+  const [inputValue, setInputValue] = useState<string>(team?.team_name || '');
   const [isEditing, setIsEditing] = useState(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -83,7 +83,7 @@ const TeamTable: React.FC = () => {
 
   useEffect(() => {
     if (team?.team_name) {
-      setInputValue(team?.team_name);
+      setInputValue(team?.team_name || '');
     }
   }, [team?.team_name]);
 
@@ -143,11 +143,12 @@ const TeamTable: React.FC = () => {
   };
 
   const role = localStorage.getItem('role');
+  const UserEmail = localStorage.getItem('email');
 
   const handleDelete = async (id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      `This action will delete this team member`,
+      `This action will delete this user`,
       'Yes',
       'No'
     );
@@ -159,7 +160,7 @@ const TeamTable: React.FC = () => {
         });
 
         if (response.status > 201) {
-          toast.error('Failed to Delete Team Member');
+          toast.error('Failed to delete user');
         }
 
         if (response.status === 200) {
@@ -242,15 +243,29 @@ const TeamTable: React.FC = () => {
               <div className="team-members-top">
                 <div className="team-members">
                   <div className="team-table-container">
-                    <input
-                      type="text"
-                      ref={inputRef}
-                      value={inputValue}
-                      className="team-input"
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                      readOnly={!isEditing}
-                    />
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        ref={inputRef}
+                        value={inputValue}
+                        className="team-input"
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        readOnly={!isEditing}
+                      />
+                    ) : (
+                      <h4
+                        style={{
+                          fontSize: '1.5rem',
+                          color: '#263747',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {inputValue.length > 20
+                          ? inputValue.slice(0, 20).concat('...')
+                          : inputValue}
+                      </h4>
+                    )}
                     <div>
                       {isEditing ? (
                         <div>
@@ -277,7 +292,8 @@ const TeamTable: React.FC = () => {
               <div className="team-button-sec">
                 {team?.logged_in_member_role === 'manager' ||
                 role === TYPE_OF_USER.ADMIN ||
-                role === TYPE_OF_USER.DEALER_OWNER || role === TYPE_OF_USER.SUB_DEALER_OWNER  ? (
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.SUB_DEALER_OWNER ? (
                   <button onClick={handleOpen}>+ Add New Member</button>
                 ) : null}
               </div>
@@ -433,9 +449,10 @@ const TeamTable: React.FC = () => {
                           style={{
                             paddingLeft: '30px',
                             cursor:
-                              (role === TYPE_OF_USER.ADMIN ||
+                              UserEmail !== item.email &&(role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
-                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER || 
+                                 (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
                                 team?.logged_in_member_role === 'manager') &&
                               !(
                                 team?.manager_count <= 1 &&
@@ -447,6 +464,7 @@ const TeamTable: React.FC = () => {
                               (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
                                 team?.logged_in_member_role === 'manager') &&
                               !(
                                 team?.manager_count <= 1 &&
@@ -459,6 +477,8 @@ const TeamTable: React.FC = () => {
                             if (
                               (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
                                 team?.logged_in_member_role === 'manager' ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER) &&
                               !(
