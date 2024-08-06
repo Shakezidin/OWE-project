@@ -75,10 +75,9 @@ const SelectOption: React.FC<Props> = ({
             boxShadow: 'none',
             width: width || baseStyles.width,
             ...controlStyles,
-            transition: 'background-color 0.3s ease, border-color 0.3s ease', // Modify this line
+            transition: 'border-color 0.3s ease', // Modify this line
             '&:hover': enableHoverEffect ? {
-              border: '1px solid #377CF6',
-              backgroundColor: '#DDEBFF',
+              border: '2px solid #0493ce'
             } : {},
           }),
           indicatorSeparator: () => ({
@@ -96,7 +95,7 @@ const SelectOption: React.FC<Props> = ({
           }),
           menu: (base) => ({
             ...base,
-            zIndex: 999,
+            zIndex: 99,
             ...menuStyles,
             width: menuWidth || base.width,
           }),

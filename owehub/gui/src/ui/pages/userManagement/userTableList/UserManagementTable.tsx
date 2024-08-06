@@ -129,7 +129,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     cursor: 'pointer',
   transition: 'transform 0.3s ease, background-color 0.3s ease',
   transform: isHovered ? 'scale(1.09)' : 'scale(1)',
-  backgroundColor: isHovered ? '#0053e7' : '',
+  backgroundColor: isHovered ? '#002970' : '',
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
   };
 
 
@@ -315,10 +321,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         <div className="delete-icon-container items-start mt2">
           <div className="user_user-type">
           <div>{AddBtn}</div>
-            <div className="flex items-end">
+          <div className="flex items-end  user-dropdown hover-effect" onClick={() => setIsOpen(true)}>
               <div className="mr1">
                 <UserIcon />
               </div>
+
               <div className="relative">
                 <span
                   className="select-caret"
@@ -327,11 +334,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 >
                   User
                 </span>
+                
                 <SelectOption
                   options={userDropdownData}
                   value={selectedOption}
-                  menuStyles={{ width: 'fit-content', left: -54 }}
-                  
+                  menuStyles={{ width: 'fit-content', left: -54 }}                
                   controlStyles={{
                     boxShadow: 'none',
                     border: 'none',
@@ -351,10 +358,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     handleSelectChange(data);
                     setSelectedRows(new Set());
                     setSelectAllChecked(false);
+                    
                   }}
                   menuWidth="130px"
                   enableHoverEffect={false}
+                 
                 />
+              
               </div>
             </div>
           </div>
@@ -367,6 +377,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
+
             <svg
               width="24"
               height="24"
