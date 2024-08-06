@@ -321,6 +321,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                         Dealer Name
                       </label>
                       <SelectOption
+                      menuPosition='fixed'
+
                         options={newFormData.map((item) => ({
                           label: item,
                           value: item,
@@ -346,6 +348,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                     </label>
                     <SelectOption
                       options={managerOptions}
+                      menuPosition='fixed'
+
                       value={managerOptions.find(
                         (option) => option.value === selectedOption2
                       )}
@@ -370,6 +374,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       Select Members
                     </label>
                     <SelectOption
+                      menuPosition='fixed'
                       options={membersOption}
                       value={membersOption.find(
                         (option) => option.value === ''
