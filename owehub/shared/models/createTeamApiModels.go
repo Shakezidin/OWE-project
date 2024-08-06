@@ -38,7 +38,7 @@ type GetTeamsRequest struct {
 
 type GetTeamRequest struct {
 	PageNumber int64  `json:"page_number"`
-	PageSize   int64  `jsob:"page_size"`
+	PageSize   int64  `json:"page_size"`
 	TeamName   string `json:"team_name"`
 	TeamId     int64  `json:"team_id"`
 }

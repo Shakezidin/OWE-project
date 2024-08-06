@@ -49,6 +49,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	log.FuncInfoTrace(0, "%v === %v === %v ", dataReq, dataReq.PageNumber, dataReq.PageSize)
 	role := req.Context().Value("rolename").(string)
 	email := req.Context().Value("emailid").(string)
 	if email == "" {
@@ -70,7 +71,7 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if len(data) == 0 && role == "Dealer Owner" {
+		if len(data) == 0 && (role == "Dealer Owner" || role == "SubDealer Owner") {
 			loggedMemberRole = "manager"
 		} else {
 			loggedMemberRole = data[0]["role_in_team"].(string)
@@ -103,8 +104,8 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 				 tm.team_id = $1
 	 `
 	filer, _ := PrepareTeamsFilters("", dataReq, false)
-	query = query + filer
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TeamId})
+	queryFilter := query + filer
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryFilter, []interface{}{dataReq.TeamId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
@@ -157,8 +158,8 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	filer, _ = PrepareTeamsFilters("", dataReq, true)
-	query = query + filer
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dataReq.TeamId})
+	queryFilter = query + filer
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryFilter, []interface{}{dataReq.TeamId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
