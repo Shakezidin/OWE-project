@@ -84,6 +84,9 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       ...prevData,
       [name]: value,
     }));
+    const err = { ...errors };
+    delete err['first_name'];
+    setErrors(err);
   };
   const [managerOptions, setManagerOptions] = useState<Option[]>([]);
 
@@ -112,6 +115,9 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         }
         return prevOptions;
       });
+      const err = { ...errors };
+      delete err['managers'];
+      setErrors(err);
       setMembersOption((prev) =>
         prev.filter((opt) => opt.value !== selectedOption.value)
       );
