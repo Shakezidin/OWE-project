@@ -315,13 +315,14 @@ const ProjectPerformence = () => {
         marginLeftMobile="12px"
       />
       <div className="project-container">
-        <div className="project-heading">
+        <div className="project-heading"  >
           <h2>Performance</h2>
 
-          <div className="per-head-input">
+          {/* <div className="per-head-input" onClick={() => setShowDatePicker(!showDatePicker)}>
             <div
               className="rep-drop_label"
               style={{ backgroundColor: '#C470C7' }}
+              
             >
               <img src={ICONS.includes_icon} alt="" />
             </div>
@@ -389,8 +390,76 @@ const ProjectPerformence = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
 
+          <div style={{zIndex: "1001"}} ref={datePickerRef} >
+          <div className="per-head-input"   onClick={(e) => {
+            if (datePickerRef?.current?.contains(e.target as Node)) {
+              setShowDatePicker(!showDatePicker);
+            }
+          }}>
+            <div className="rep-drop_label" style={{ backgroundColor: '#C470C7' }}>
+              <img src={ICONS.includes_icon} alt="" />
+            </div>
+            <div className="rep-up relative">
+              <label
+                className="inputLabel"
+                style={{
+                  color: '#344054',
+                  position: 'absolute',
+                  left: '12px',
+                  top: '-9px',
+                  whiteSpace: 'nowrap',
+                  zIndex: 99,
+                }}
+              >
+                Date Range
+              </label>
+              <div
+                style={{
+                  position: 'relative',
+                  top: '7px',
+                  backgroundColor: 'white',
+                  marginLeft: '6px',
+                }}
+                
+              >
+                <label
+                  className="per-date-button"
+                  // onClick={(e) => {
+                  //   e.stopPropagation();
+                  //   // setShowDatePicker(!showDatePicker);
+                  // }}
+                  style={{ color: '#292929' }}
+                >
+                  {selectionRange.startDate.toLocaleDateString() !==
+                    selectionRange.endDate.toLocaleDateString()
+                    ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
+                    : 'Select Date'}
+                </label>
+                {showDatePicker && (
+                  <div
+                    className="per-calender-container"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <DateRangePicker
+                      ranges={[selectionRange]}
+                      onChange={handleSelect}
+                      minDate={new Date(new Date().setMonth(new Date().getMonth() - 3))}
+                      maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+                    />
+                    <button className="reset-calender" onClick={handleResetDates}>
+                      Reset
+                    </button>
+                    <button className="apply-calender" onClick={handleToggleDatePicker}>
+                      Apply
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          </div>
 
         </div>
         <div className="flex stats-card-wrapper">

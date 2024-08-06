@@ -508,7 +508,7 @@
   background-color: #377CF6;
   color: white;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   border-radius: 8px;
   border: 1px solid white;
   width: 90px;
@@ -521,6 +521,7 @@
 .proper-select button:hover {
   background-color: #003da7;
   border: 1px solid #377CF6;
+  transform: scale(1.06);
 }
 
 .reset-calender{
@@ -751,9 +752,6 @@
   transition: transform 0.3s ease;
 }
 
-.second-project-card:hover {
-  transform: scale(1.03);
-}
 
 @media (max-width: 1400px) {
   .date-para {
@@ -890,12 +888,26 @@
 }
 
 .per-head-input {
+  height: 50px;
   display: flex;
   background-color: #ffffff;
-  padding: 0 3px 0 3px;
+  padding: 6px 6px 0 3px;
   gap: 0px;
   align-items: center;
   border-radius: 8px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform ease .3s;
+}
+
+.per-head-input:hover {
+  transform: scale(1.06);
+  background: #DDEBFF;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.per-head-input:hover .per-date-button{
+  background-color: #DDEBFF;
 }
 
 
@@ -912,7 +924,7 @@
 
 .per-date-button {
   display: inline-block;
-  border-radius: 0.4rem;
+  /* border-radius: 0.4rem; */
   border: none;
   outline: none;
   background: #ffffff;
@@ -926,10 +938,6 @@
   user-select: none;
   cursor: pointer !important;
   transition: transform 0.3s ease, color 0.3s ease;
-}
-.per-date-button:hover {
-  transform: scale(1.09) !important;
-  color: #377cf6 !important;
 }
 
 

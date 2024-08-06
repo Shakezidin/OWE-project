@@ -17,8 +17,8 @@
   outline: none;
   border: none;
   border-radius: 1.5rem;
-  background: var(--row-bg-color);
-  color: #3b3b3b;
+  background: var(--orange-color);
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 0.3rem;
@@ -27,7 +27,8 @@
 }
 .share-button:hover {
   transform: scale(1.08);
-  background:  #DDEBFF;
+  background:  #ec9d76;
+
 }
 
 .share-button p {

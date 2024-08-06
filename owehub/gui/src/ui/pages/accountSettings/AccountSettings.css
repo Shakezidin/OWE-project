@@ -130,11 +130,11 @@
   border-radius: 8px;
   border: 1px solid #d5d5d5;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 .edit-section:hover {
-  border: 1px solid #3083e5;
-  transform: scale(1.06);
+  background-color: #DDEBFF;
+  transform: scale(1.09);
 }
 .active-edit-section {
   border: none;
@@ -320,17 +320,17 @@
 .create-input-field-profile {
   width: 47%;
 }
-.create-input-field-profile input:hover {
-  border: 1px solid #0493ce;
+/* .create-input-field-profile input:hover {
+  border: 2px solid #0493ce;
   border-radius: 8px;
-}
+} */
 .create-input-field-address {
   width: 30.5%;
 }
-.create-input-field-address input:hover {
-  border: 1px solid #0493ce;
+/* .create-input-field-address input:hover {
+  border: 2px solid #0493ce;
   border-radius: 8px;
-}
+} */
 
 .Personal-container-detail {
   margin-top: 2rem;

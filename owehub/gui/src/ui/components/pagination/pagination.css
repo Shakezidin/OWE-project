@@ -91,6 +91,7 @@
 }
 
 .current-btn:hover{
+  background-color: #DDEBFF !important;
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
