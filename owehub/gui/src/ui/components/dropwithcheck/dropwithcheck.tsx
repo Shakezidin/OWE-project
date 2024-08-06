@@ -59,10 +59,6 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
-    if(isOpen){
-      setSearch("")
-      setDropDownOptions(options);
-    }
   };
   useEffect(() => {
     setDropDownOptions(options);
