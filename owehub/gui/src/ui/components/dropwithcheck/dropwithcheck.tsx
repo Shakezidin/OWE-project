@@ -45,7 +45,7 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
-        setSearch("")
+        setSearch('');
         setDropDownOptions(options);
       }
     };
@@ -59,6 +59,9 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+    if (!isOpen) {
+      setDropDownOptions(options);
+    }
   };
   useEffect(() => {
     setDropDownOptions(options);
@@ -139,7 +142,7 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
               }}
             />
           </div>
-          {dropDownOptions.map((option,ind) => (
+          {dropDownOptions.map((option, ind) => (
             <div key={ind} className="comm-dropdown-item">
               <input
                 type="checkbox"
