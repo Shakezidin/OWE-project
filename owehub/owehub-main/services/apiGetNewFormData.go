@@ -100,6 +100,8 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "loan_type":
 			query = "SELECT product_code as data FROM " + db.TableName_loan_type
 		case "dealer":
+			query = "SELECT dealer_code as data FROM " + db.TableName_v_dealer
+		case "dealer_name":
 			query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer
 		case "rep_type":
 			query = "SELECT rep_type as data FROM " + db.TableName_rep_type
