@@ -252,7 +252,7 @@ const TeamManagement: React.FC = () => {
                               >
                                 <div className="team-checkbox-wrapper">
                                   <div className="team-name-tooltip">
-                                    <h1 className="team-card-heading">
+                                    <h1 className="team-card-heading pr1  one-line-text">
                                       {item.team_name}
                                     </h1>
                                   </div>
@@ -263,6 +263,7 @@ const TeamManagement: React.FC = () => {
                                     TYPE_OF_USER.SUB_DEALER_OWNER ? (
                                     <input
                                       type="checkbox"
+                                      style={{ flexShrink: 0 }}
                                       className="team-checkbox"
                                       checked={isAnyCheckboxChecked.includes(
                                         item.team_id

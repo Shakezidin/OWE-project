@@ -493,9 +493,7 @@ const ProjectStatus = () => {
     }
   }, [selectedProject.value]);
 
-  console.log('options', projectOption, selectedProject);
-  console.log(activePopups, "---------------------------")
-
+ 
   return (
     <div className="">
       <div style={{ padding: '0px' }}>

@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Select, { Options } from 'react-select';
-import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
+
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { FaChevronCircleDown, FaChevronDown } from 'react-icons/fa';
@@ -42,17 +42,27 @@ const Banner: React.FC<BannerProps> = ({
     localStorage.getItem('is_password_change_required') === 'false'
   );
   const tableData = {
-    tableNames: ['dealer'],
+    tableNames: ['dealer_name'],
   };
+
+  const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
+    newFormData?.dealer_name?.map((value: string) => ({
+      value,
+      label: value,
+    }));
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setNewFormData(res.data);
-    setSelectDealer(dealerOption(res.data));
-    setOpts(dealerOption(res.data));
+    setSelectDealer(leaderDealer(res.data));
+    setOpts(leaderDealer(res.data));
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
-    if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN || isShowDropdown) {
+    if (
+      role === 'Admin' ||
+      role === TYPE_OF_USER.FINANCE_ADMIN ||
+      isShowDropdown
+    ) {
       getNewFormData();
     }
   }, [role, isShowDropdown]);
@@ -149,7 +159,7 @@ const Banner: React.FC<BannerProps> = ({
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
-        setOpts(dealerOption(newFormData));
+        setOpts(leaderDealer(newFormData));
         setSearch('');
       }
     };
@@ -175,9 +185,9 @@ const Banner: React.FC<BannerProps> = ({
         <div className="banner-wrap">
           {/* left side  */}
           <button className="edit-button" onClick={() => setShowModal(true)}>
-              <LiaEdit className="edit-svg" />
-              <p>Edit</p>
-            </button>
+            <LiaEdit className="edit-svg" />
+            <p>Edit</p>
+          </button>
           <div className="flex items-center pl4 banner-left">
             {role !== TYPE_OF_USER.FINANCE_ADMIN &&
               role !== TYPE_OF_USER.ADMIN &&
@@ -275,8 +285,6 @@ const Banner: React.FC<BannerProps> = ({
                 alt=""
               />
             </div>
-
-    
           </div>
         </div>
       </div>
@@ -295,10 +303,7 @@ const Banner: React.FC<BannerProps> = ({
           >
             <span>
               {selectDealer?.length}{' '}
-              <span>
-
-              {selectDealer?.length > 1 ? 'Partners' : 'Partner'}
-              </span>
+              <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
             </span>
             <FaChevronDown className="ml1" />
           </div>
@@ -317,7 +322,7 @@ const Banner: React.FC<BannerProps> = ({
                   onChange={(e) => {
                     setSearch(e.target.value);
                     if (e.target.value.trim()) {
-                      const filtered = dealerOption(newFormData).filter(
+                      const filtered = leaderDealer(newFormData).filter(
                         (item) =>
                           item.value
                             .toLocaleLowerCase()
@@ -325,7 +330,7 @@ const Banner: React.FC<BannerProps> = ({
                       );
                       setOpts([...filtered]);
                     } else {
-                      setOpts(dealerOption(newFormData));
+                      setOpts(leaderDealer(newFormData));
                     }
                   }}
                 />
@@ -336,7 +341,7 @@ const Banner: React.FC<BannerProps> = ({
                     type="checkbox"
                     style={{ flexShrink: 0 }}
                     checked={
-                      dealerOption(newFormData).length === selectDealer.length
+                      leaderDealer(newFormData).length === selectDealer.length
                     }
                     onChange={() => {
                       if (opts.length === selectDealer.length) {
@@ -403,7 +408,7 @@ const Banner: React.FC<BannerProps> = ({
                 },
               }),
             }}
-            options={dealerOption(newFormData)}
+            options={leaderDealer(newFormData)}
             onChange={(newValue) => setSelectDealer([...newValue])}
             value={selectDealer}
           /> */}

@@ -14,11 +14,11 @@
   height: 40px;
   text-transform: capitalize;
   width: 150px;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease !important;
 }
 
 .loginButton:hover {
-  background-color: #003591;
+  background-color: #002970 !important;
   transform: scale(1.07);
 }
 
@@ -54,7 +54,7 @@
 
 .add_view_button:hover {
   transform: scale(1.07);
-  background-color: #0053e7;
+  background-color: #002970;
 }
 
 .add_view_button button {
@@ -73,6 +73,6 @@
 
 .iconsSection2 button:hover {
   transform: scale(1.07);
-  background-color: #0042b6;
+  background-color: #002970;
   border-color: rgb(255, 255, 255);
 }

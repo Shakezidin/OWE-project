@@ -42,7 +42,7 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	email := req.Context().Value("emailid").(string)
 
 	switch role {
-	case "Dealer Owner":
+	case "Dealer Owner", "SubDealer Owner":
 		query = `
 			SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
 			FROM teams t
@@ -53,10 +53,19 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		`
 	case "Sale Representative", "Regional Manager", "Sales Manager":
 		query = `
+			WITH member_counts AS (
+				SELECT
+						tm.team_id,
+						COUNT(DISTINCT tm.user_id) AS member_count
+				FROM
+						team_members tm
+				GROUP BY
+						tm.team_id
+			)
 			SELECT
 					t.team_id,
 					t.team_name,
-					COUNT(tm.user_id) AS member_count,
+					mc.member_count,
 					(SELECT tm_inner.role_in_team
 					FROM team_members tm_inner
 					JOIN user_details ud_inner ON tm_inner.user_id = ud_inner.user_id
@@ -68,16 +77,12 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 					team_members tm ON ud.user_id = tm.user_id
 			JOIN
 					teams t ON tm.team_id = t.team_id
+			JOIN
+					member_counts mc ON t.team_id = mc.team_id
 			WHERE
-					t.team_id = (
-							SELECT tm_inner.team_id
-							FROM user_details ud_inner
-							JOIN team_members tm_inner ON ud_inner.user_id = tm_inner.user_id
-							WHERE ud_inner.email_id = $1
-							LIMIT 1
-					)
+					ud.email_id = $1
 			GROUP BY
-					t.team_id, t.team_name;
+					t.team_id, t.team_name, mc.member_count;
 		`
 	default:
 		if len(dataReq.DealerNames) > 0 {
@@ -129,7 +134,7 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		if role == "Admin" || role == "Dealer Owner" {
+		if role == "Admin" || role == "Dealer Owner" || role == "SubDealer Owner" {
 			roleInTeam = "manager"
 		}
 

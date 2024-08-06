@@ -8,7 +8,11 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { getObjectsBeforeMatch, MANAGER_ASSIGN_TO_USER } from '../../../../resources/static_data/Constant';
+import {
+  getObjectsBeforeMatch,
+  MANAGER_ASSIGN_TO_USER,
+  TYPE_OF_USER,
+} from '../../../../resources/static_data/Constant';
 
 interface inputSelectProps {
   onChange: any;
@@ -53,8 +57,12 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
 
   return (
     <>
-       {(formData?.role_name === 'Regional Manager' || formData?.role_name === 'Sales Manager' 
-        || formData?.role_name === 'Sale Representative' || formData?.role_name === 'Dealer Owner' || formData?.role_name === 'Appointment Setter' ) && (
+      {(formData?.role_name === 'Regional Manager' ||
+        formData?.role_name === 'Sales Manager' ||
+        formData?.role_name === 'Sale Representative' ||
+        formData?.role_name === 'Dealer Owner' ||
+        formData?.role_name === 'Appointment Setter' ||
+        formData.role_name === TYPE_OF_USER.SUB_DEALER_OWNER) && (
         <>
           <div className="create-input-field">
             <label className="inputLabel-select select-type-label">
@@ -69,28 +77,35 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
             />
           </div>
 
-         {formData.role_name !== 'Dealer Owner' && (
-           <div className="create-input-field">
-           <label className="inputLabel-select select-type-label">
-             Assign Manager Role
-           </label>
-           <SelectOption
-             options={getObjectsBeforeMatch(MANAGER_ASSIGN_TO_USER, formData.role_name)}
-             onChange={(newValue) => handleChangeAssignManager(newValue, 'assigned_Manager')}
-             value={MANAGER_ASSIGN_TO_USER.find(
-               (option) => option?.value === formData.assigned_Manager
-             )}
-           />
-         </div>
-         )}
+          {formData.role_name !== 'Dealer Owner' && (
+            <div className="create-input-field">
+              <label className="inputLabel-select select-type-label">
+                Assign Manager Role
+              </label>
+              <SelectOption
+                options={getObjectsBeforeMatch(
+                  MANAGER_ASSIGN_TO_USER,
+                  formData.role_name
+                )}
+                onChange={(newValue) =>
+                  handleChangeAssignManager(newValue, 'assigned_Manager')
+                }
+                value={MANAGER_ASSIGN_TO_USER.find(
+                  (option) => option?.value === formData.assigned_Manager
+                )}
+              />
+            </div>
+          )}
         </>
       )}
-      
-      {(formData?.role_name === 'Sale Representative' || formData?.role_name === "Regional Manager" || formData?.role_name === "Appointment Setter") && (
+
+      {(formData?.role_name === 'Sale Representative' ||
+        formData?.role_name === 'Regional Manager' ||
+        formData?.role_name === 'Appointment Setter') && (
         <>
-          <div className="create-input-field" >
+          <div className="create-input-field">
             <label className="inputLabel selected-fields-onboard">
-            Report Manager
+              Report Manager
             </label>
             <SelectOption
               options={regionList}
@@ -101,9 +116,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
                 (option) => option?.value === formData.report_to
               )}
             />
-            {reportError && (
-                      <div className="error-message">{reportError}</div>
-                    )}
+            {reportError && <div className="error-message">{reportError}</div>}
           </div>
           <div className="create-input-field" style={{ marginTop: '4px' }}>
             <label className="inputLabel-select select-type-label">
@@ -122,7 +135,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
         </>
       )}
 
-        {formData?.role_name === 'Regional Manager' && (
+      {formData?.role_name === 'Regional Manager' && (
         <div className="create-input-field">
           <Input
             type={'text'}
@@ -134,9 +147,9 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
           />
         </div>
       )}
-      {formData?.role_name === 'Sales Manager'  && (
+      {formData?.role_name === 'Sales Manager' && (
         <>
-          <div className="create-input-field" style={{marginTop: "-7px"}}>
+          <div className="create-input-field" style={{ marginTop: '-7px' }}>
             <label className="inputLabel selected-fields-onboard">
               Report Manager
             </label>
