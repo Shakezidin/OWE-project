@@ -145,7 +145,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
                           onClickDelete(el);
                         }}
                       >
-                        <img src={ICONS.deleteIcon} alt="" />
+                        <img src={ICONS.deleteIcon} alt="" style={{ marginRight: '15px' }}/>
                       </div>
                       {/* <div
                         className=""
