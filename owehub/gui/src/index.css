@@ -232,7 +232,7 @@ input[type='password']::-ms-clear {
 }
 
 .createUserCrossButton svg:hover {
-  transform: scale(1.3) rotate(90deg);
+  transform: scale(1.4);
 }
 
 .createProfileText {
