@@ -980,25 +980,25 @@ const Table = ({
                 <div className="flex items-center rank-card-statss">
                   <div>
                     <span className="rank-stats-num">
-                      {formatSaleValue(getTotal('sale'))}
+                      {formatSaleValue(totalStats?.total_sale || 0)}
                     </span>
                     <p className="rank-sm-text">Sales</p>
                   </div>
                   <div>
                     <span className="rank-stats-num">
-                      {formatSaleValue(getTotal('ntp'))}
+                      {formatSaleValue(totalStats?.total_ntp || 0)}
                     </span>
                     <p className="rank-sm-text">NTP</p>
                   </div>
                   <div>
                     <span className="rank-stats-num">
-                      {formatSaleValue(getTotal('install'))}
+                      {formatSaleValue(totalStats?.total_install || 0)}
                     </span>
                     <p className="rank-sm-text">Install</p>
                   </div>
                   <div>
                     <span className="rank-stats-num">
-                      {formatSaleValue(getTotal('cancel'))}
+                      {formatSaleValue(totalStats?.total_cancel || 0)}
                     </span>
                     <p className="rank-sm-text">Cancel</p>
                   </div>
@@ -1030,25 +1030,25 @@ const Table = ({
                 <th>
                   Sale
                   <span className="block" style={{ fontSize: 12 }}>
-                    Ʃ {formatSaleValue(totalStats?.total_sale || 0)}
+                    (Ʃ {formatSaleValue(totalStats?.total_sale || 0)})
                   </span>
                 </th>
                 <th>
                   NTP
                   <span className="block" style={{ fontSize: 12 }}>
-                    Ʃ {formatSaleValue(totalStats?.total_ntp || 0)}
+                   ( Ʃ {formatSaleValue(totalStats?.total_ntp || 0)})
                   </span>
                 </th>
                 <th>
                   Install
                   <span className="block" style={{ fontSize: 12 }}>
-                    Ʃ {formatSaleValue(totalStats?.total_install || 0)}
+                    (Ʃ {formatSaleValue(totalStats?.total_install || 0)})
                   </span>
                 </th>
                 <th>
                   Cancel
                   <span className="block" style={{ fontSize: 12 }}>
-                  Ʃ {formatSaleValue(totalStats?.total_cancel || 0)}
+                  (Ʃ {formatSaleValue(totalStats?.total_cancel || 0)})
                   </span>
                 </th>
               </tr>
@@ -1121,7 +1121,7 @@ const Table = ({
                 </tr>
               )}
             </tbody>
-            {/* {!isLoading && !!leaderTable?.length && (
+            {!isLoading && !!leaderTable?.length && (
               <tfoot>
                 <tr>
                   <td></td>
@@ -1142,7 +1142,7 @@ const Table = ({
                   </td>
                 </tr>
               </tfoot>
-            )} */}
+            )}
           </table>
         </div>
       </div>
