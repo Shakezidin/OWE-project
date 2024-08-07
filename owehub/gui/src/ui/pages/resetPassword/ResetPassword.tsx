@@ -101,7 +101,7 @@ const ResetPassword = () => {
               </div> */}
               {/* <span className="loginLogText">Enter Your Email Address</span> */}
 
-              <div className="mt3">
+              <div className="mt3 reset-input-wrap">
                 <Input
                   type={'text'}
                   value={credentials.email_id}
