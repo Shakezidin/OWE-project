@@ -233,14 +233,14 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("vd.is_active = TRUE")
+		filtersBuilder.WriteString("vd.is_deleted = TRUE")
 	} else {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("vd.is_active = FALSE")
+		filtersBuilder.WriteString("vd.is_deleted = FALSE")
 	}
 
 	if forDataCount == true {

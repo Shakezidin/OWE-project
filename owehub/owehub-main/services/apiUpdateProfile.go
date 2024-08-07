@@ -76,6 +76,7 @@ func HandleUpdateProfileRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateProfileReq.Country)
 	queryParameters = append(queryParameters, emailId)
 	queryParameters = append(queryParameters, updateProfileReq.PreferredName)
+	queryParameters = append(queryParameters, updateProfileReq.DealerCode)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateProfileFunction, queryParameters)

@@ -34,6 +34,7 @@ type GetUsersData struct {
 	DealerLogo        string               `json:"dealer_logo"`
 	BgColour          string               `json:"bg_colour"`
 	PreferredName     string               `json:"preferred_name"`
+	DealerCode        string               `json:"dealer_code"`
 	TablePermission   []GetTablePermission `json:"table_permission"`
 }
 

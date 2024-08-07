@@ -122,6 +122,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                   <td>{el.name}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
+                  <td>{el.dealer_owner}</td>
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >
@@ -134,7 +135,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                         style={{ cursor: 'pointer' }}
                         onClick={() => onClickDelete(el)}
                       >
-                        <img src={ICONS.deleteIcon} alt="" />
+                        <img src={ICONS.deleteIcon} alt="" style={{ marginRight: '15px' }}/>
                       </div>
                       {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />

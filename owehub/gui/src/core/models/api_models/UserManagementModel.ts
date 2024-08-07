@@ -47,6 +47,7 @@ export interface UserRoleBasedListModel {
   amount: string;
   region: string;
   team_name: string;
+  dealer:string;
 }
 
 export interface DBTable {

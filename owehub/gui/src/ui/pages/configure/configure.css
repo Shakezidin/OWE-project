@@ -105,7 +105,7 @@
 
 .UserManageTable {
   position: relative;
-  max-height: 60vh;
+  max-height: 170vh;
   background: var(--white-color);
   overflow-y: auto;
   overflow-x: auto;
@@ -265,17 +265,19 @@ table tbody tr td {
   align-items: center;
   gap: 1rem;
   justify-content: flex-end;
-  transition: transform 0.3s ease;
 }
-.action-icon:hover {
-  transform: scale(1.08);
-}
+
 
 .action-icon img {
   width: 14px;
   height: 14px;
   /* object-fit: cover; */
+  transition: transform 0.3s ease;
 }
+.action-icon img:hover {
+  transform: scale(1.16);
+}
+
 
 .arrow-icon-table {
   color: var(--arrow-icon-color) !important;

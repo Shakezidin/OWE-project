@@ -55,8 +55,7 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(createVDealerReq.DealerCode) <= 0) || (len(createVDealerReq.DealerName) <= 0) ||
-		(len(createVDealerReq.Description) <= 0) {
+	if (len(createVDealerReq.DealerCode) <= 0) || (len(createVDealerReq.DealerName) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)

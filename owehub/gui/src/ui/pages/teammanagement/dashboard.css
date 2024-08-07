@@ -337,6 +337,7 @@
 .done-icon, .edit-icon{
   transition: transform 0.3s ease, background-color 0.3s ease;
   cursor: pointer;
+  margin-top: 5px;
 }
 .done-icon:hover, .edit-icon:hover{
   transform: scale(1.07);

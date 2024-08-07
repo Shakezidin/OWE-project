@@ -66,7 +66,8 @@ const AddMember: React.FC<createUserProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const [selectedDropdown, setSelectDropdown] = useState<Option | undefined>(undefined);
   const [selectedRole, setSelectedRole] = useState<Option | undefined>(undefined);
-   
+  const [loadingSubmit, setLoadingSubmit] = useState(false); // Add loadingSubmit state
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); 
 
   const handleSelectChange = (selectedOption: Option | null) => {
@@ -160,7 +161,7 @@ const AddMember: React.FC<createUserProps> = ({
       setErrors(validationErrors);
       return;
     }
-
+    setLoadingSubmit(true); // Start loading
     try {
       const data = {
         team_id: team?.team_id,
@@ -180,9 +181,11 @@ const AddMember: React.FC<createUserProps> = ({
         toast.success('Added in Team Successfully');
         handleClose();
         setIsRefresh((prev) => !prev);
+        setLoadingSubmit(false); // Stop loading
       }
     } catch (error) {
       console.error('There was an error submitting the form:', error);
+      setLoadingSubmit(false); // Stop loading
     }
   };
 
@@ -225,6 +228,7 @@ const AddMember: React.FC<createUserProps> = ({
                     <SelectOption
                       options={userOptions}
                       menuPosition='fixed'
+                     menuListStyles={{height:"150px"}}
                       value={selectedDropdown}
                       onChange={handleSelectDropdown}
                     />
@@ -292,6 +296,7 @@ const AddMember: React.FC<createUserProps> = ({
               textTransform: 'none',
               height: 'unset',
             }}
+            disabled={loadingSubmit} // Disable button when loading
           />
         </div>
       </form>

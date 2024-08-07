@@ -85,7 +85,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : 'asc'}
-                  onClick={() => () => handleSort(item.name)}
+                  onClick={() => handleSort(item.name)}
                 />
               ))}
               <th>
@@ -119,7 +119,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.role_name}</td>
+                  {/* <td>{el.role_name}</td> */}
                   <td>{el.dealer_owner}</td>
                   <td>{el.reporting_manager}</td>
                   <td>{el.email_id}</td>
@@ -136,7 +136,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                         style={{ cursor: 'pointer' }}
                         onClick={() => onClickDelete(el)}
                       >
-                        <img src={ICONS.deleteIcon} alt="" />
+                        <img src={ICONS.deleteIcon} alt="" style={{ marginRight: '15px' }}/>
                       </div>
                       {/* <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />

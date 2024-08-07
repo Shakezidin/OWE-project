@@ -3,8 +3,14 @@
     border: 1px solid #D9D9D9;
     border-radius: 8px;
     width: 180px;
-    
+    transition: border 0.3s ease;
   }
+  .comm-dropdown-container:hover{
+    border: 2px solid #377CF6;
+  }
+
+
+
   
   .comm-dropdown-toggle {
     margin-top: 3px;

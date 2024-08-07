@@ -42,6 +42,7 @@ const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const [tablePermissions, setTablePermissions] = useState({});
@@ -86,19 +87,32 @@ const UserManagement: React.FC = () => {
   useEffect(() => {
     const data = {
       page_number: page,
-      page_size: 10,
+      page_size: 25,
       filters: [
         {
           Column: 'role_name',
           Operation: '=',
           Data: selectedOption.value,
         },
+        {
+          Column: 'name',
+          Operation: 'cont',
+          Data:searchTerm
+        }
       ],
     };
 
     const dataa = {
       page_number: page,
-      page_size: 10,
+      page_size: 25,
+      filters: [
+         
+        {
+          Column: 'dealer_name',
+          Operation: 'cont',
+          Data:searchTerm
+        }
+      ],
      
     };
     const fetchList = async () => {
@@ -116,7 +130,7 @@ const UserManagement: React.FC = () => {
     if(selectedOption.value === 'Partner'){
     fetchDealer();
     }
-  }, [selectedOption, createUserResult, deleteUserResult, page]);
+  }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
@@ -270,7 +284,7 @@ const UserManagement: React.FC = () => {
       );
       const dataa = {
         page_number: page,
-        page_size: 10,
+        page_size: 25,
        
       };
     
@@ -351,6 +365,8 @@ const UserManagement: React.FC = () => {
           selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
           setSelectedRows={setSelectedRows}
+          setSearchTerm={setSearchTerm}
+          searchTerm={searchTerm}
           setSelectAllChecked={setSelectAllChecked}
           userRoleBasedList={userRoleBasedList}
           userDropdownData={ALL_USER_ROLE_LIST}

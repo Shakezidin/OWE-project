@@ -25,6 +25,8 @@ import { RootState } from '../../../redux/store';
 import Loading from '../../components/loader/Loading';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { FormEvent } from '../../../core/models/data_models/typesModel';
+import Lottie from 'lottie-react';
+import PowerAnimation from '../../../resources/assets/power_anime.json';
 
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -152,14 +154,22 @@ export const LoginPage = () => {
       <div className={'overlay'} />
       <div className={'container'}>
         <div className={'loginBox'}>
-          <span id="loginNormalText">
-            {'Our World Revolves'}
+          <object
+            type="image/svg+xml"
+            className="login-logo"
+            data={ICONS.TransparentLogo}
+            aria-label="login-icon"
+            width={300}
+          ></object>
+          <p className="loginTopText">
+            Our World Revolves Around Powering Yours
+          </p>
+          <div className={'hrLine'} />
+          {/* {'Our World Revolves'}
             <br />
             Around
             <span id="loginColorText">{' Powering '}</span>
-            Yours
-          </span>
-          <div className={'hrLine'} />
+            Yours */}
           {/* <span className={'loginNormalTextDescription'}>
             {'YOUR TRUSTED SOLAR EXPERTS'}
           </span> */}
@@ -167,30 +177,28 @@ export const LoginPage = () => {
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleLogin(e)}>
             <div className="loginTextView">
-              <object
+              {/* <object
                 type="image/svg+xml"
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
                 height={60}
-              ></object>
-              <br />
+              ></object> */}
               <div className="loginLogowithText">
                 <LOGO_SMALL />
                 <span className={'loginHeader'}>OWE HUB</span>
               </div>
-              <div className="loginUnderLine">
+              {/* <div className="loginUnderLine">
                 <UNDER_LINE />
-              </div>
-              <span className="loginLogText">Log In</span>
-              <br />
+              </div> */}
+              {/* <span className="loginLogText">Log In</span> */}
 
               <div className="login-input">
                 <Input
                   type={'text'}
                   name={'email_id'}
                   value={credentials.email_id}
-                  placeholder={'Enter Email'}
+                  placeholder={'Email'}
                   autoComplete="email_id"
                   onChange={(e) => {
                     const { name, value } = e.target;
@@ -203,7 +211,7 @@ export const LoginPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={credentials.password}
                   name={'password'}
-                  placeholder={'Enter Password'}
+                  placeholder={'Password'}
                   autoComplete="password"
                   onChange={(e) => {
                     const { name, value } = e.target;
@@ -231,7 +239,6 @@ export const LoginPage = () => {
                 />
               </div>
 
-              <br />
               <div className="loginSwitchView">
                 <div className="loginSwitchInnerView">
                   <label className="switch">
@@ -265,13 +272,21 @@ export const LoginPage = () => {
               >
                 Log In
               </button>
-              <div className="text-center m1 loginRBM "> OR </div>
-
-              <div className="login-buttonn" onClick={handleBattery}>
-                Battery Calculator
-              </div>
             </div>
           </form>
+
+          <div className="battery-calc">
+            <div className="battery-calc-button" onClick={handleBattery}>
+              <Lottie
+                animationData={PowerAnimation}
+                style={{ width: 70, height: 70 }}
+              />
+              <p>Battery Calculator</p>
+            </div>
+          </div>
+        </div>
+        <div className='solar-sun'>
+          <img src={ICONS.SolarSun} alt="sun-image" />
         </div>
         {loading && (
           <div>
