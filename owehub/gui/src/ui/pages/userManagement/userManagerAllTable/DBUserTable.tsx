@@ -137,7 +137,7 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
                   </div>
                 </td>
                 <td>{el.name}</td>
-                <td>{el.role_name}</td>
+                {/* <td>{el.role_name}</td> */}
                 {/* <td>{el.reporting_manager}</td> */}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>

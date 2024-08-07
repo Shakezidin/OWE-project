@@ -120,7 +120,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.role_name}</td>
+                  {/* <td>{el.role_name}</td> */}
                   <td>{el.dealer_owner}</td>
                   <td>{el.region}</td>
                   <td>{el.email_id}</td>

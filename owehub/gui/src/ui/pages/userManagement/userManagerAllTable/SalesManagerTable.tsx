@@ -85,7 +85,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : 'asc'}
-                  onClick={() => () => handleSort(item.name)}
+                  onClick={() => handleSort(item.name)}
                 />
               ))}
               <th>
@@ -119,7 +119,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.role_name}</td>
+                  {/* <td>{el.role_name}</td> */}
                   <td>{el.dealer_owner}</td>
                   <td>{el.reporting_manager}</td>
                   <td>{el.email_id}</td>

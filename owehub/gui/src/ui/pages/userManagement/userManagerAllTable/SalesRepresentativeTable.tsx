@@ -85,7 +85,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : 'asc'}
-                  onClick={() => () => handleSort(item.name)}
+                  onClick={() => handleSort(item.name)}
                 />
               ))}
               <th>
@@ -119,7 +119,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.role_name}</td>
+                  {/* <td>{el.role_name}</td> */}
                   <td>{el.dealer_owner}</td>
                   <td>{el.designation}</td>
                   <td>{el.reporting_manager}</td>

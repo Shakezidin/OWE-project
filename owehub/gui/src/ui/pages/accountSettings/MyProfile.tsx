@@ -28,6 +28,7 @@ const MyProfile = () => {
   const [isEditMode, setIsEditMode] = useState(true);
   const [isEditModee, setIsEditModee] = useState(true);
   const [preferredName, setPreferredName] = useState<any>('')
+  const [dealerCode, setDealerCode] = useState('');
   const [newFormData, setNewFormData] = useState<any>([]);
 
   const role = localStorage.getItem('role');
@@ -61,6 +62,7 @@ const MyProfile = () => {
       // setZipCode(userDetail?.zipcode || '');
       setCountry(userDetail?.country || '');
       setPreferredName(userDetail?.preferred_name || '');
+      setDealerCode(userDetail?.dealer_code || '');
     }
   }, [userDetail]);
 
@@ -88,7 +90,8 @@ const MyProfile = () => {
       country: country,
       city: city,
       state: state,
-      preferred_name:preferredName
+      preferred_name:preferredName,
+      dealer_code:dealerCode
     };
     Promise.resolve(dispatch(updateUser(data))).then(() => {
       toast.success('Successfully Updated');
@@ -366,6 +369,18 @@ const MyProfile = () => {
               <div className="create-input-field-address">
                 <Input
                   type={'text'}
+                  label="Dealer Code"
+                  value={dealerCode}
+                  name=""
+                  placeholder={'Enter'}
+                  onChange={(e) => setDealerCode(e.target.value)}
+                  disabled={isEditMode}
+                />
+                
+              </div>
+              <div className="create-input-field-address">
+                <Input
+                  type={'text'}
                   label="Preferred Name"
                   value={preferredName}
                   name=""
@@ -376,8 +391,9 @@ const MyProfile = () => {
                 
               </div>
             
-            
             </div>
+           
+             
           </div>
           : null }
 
