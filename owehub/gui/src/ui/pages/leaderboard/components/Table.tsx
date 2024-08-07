@@ -519,7 +519,7 @@ const Table = ({
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
-  const [totalStats,setTotalStats] = useState<{[key:string]:number}>({})
+  const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
 
   const [selectedOption, setSelectedOption] = useState<any>('');
   const [exportOption, setExportOption] = useState<any>('');
@@ -1029,25 +1029,27 @@ const Table = ({
                 {showPartner && <th>Partner</th>}
                 <th>
                   Sale
-                    <span className="block" style={{fontSize:12}}>
-                    {formatSaleValue(totalStats?.total_sale || 0)}
-                    </span>
+                  <span className="block" style={{ fontSize: 12 }}>
+                    Ʃ {formatSaleValue(totalStats?.total_sale || 0)}
+                  </span>
                 </th>
-                <th>NTP
-
-                <span className="block" style={{fontSize:12}}>
-                    {formatSaleValue(totalStats?.total_ntp || 0)}
-                    </span>
+                <th>
+                  NTP
+                  <span className="block" style={{ fontSize: 12 }}>
+                    Ʃ {formatSaleValue(totalStats?.total_ntp || 0)}
+                  </span>
                 </th>
-                <th>Install
-                <span className="block" style={{fontSize:12}}>
-                    {formatSaleValue(totalStats?.total_install || 0)}
-                    </span>
+                <th>
+                  Install
+                  <span className="block" style={{ fontSize: 12 }}>
+                    Ʃ {formatSaleValue(totalStats?.total_install || 0)}
+                  </span>
                 </th>
-                <th>Cancel
-                <span className="block" style={{fontSize:12}}>
-                    {formatSaleValue(totalStats?.total_cancel|| 0)}
-                    </span>
+                <th>
+                  Cancel
+                  <span className="block" style={{ fontSize: 12 }}>
+                  Ʃ {formatSaleValue(totalStats?.total_cancel || 0)}
+                  </span>
                 </th>
               </tr>
             </thead>

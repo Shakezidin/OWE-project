@@ -124,13 +124,20 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
+                  <td>{el.team_name ? el.team_name : "NA"}</td>
+                  <td>{el.reporting_manager? el.reporting_manager : "NA"}</td>
+                  <td>{el.email_id? el.email_id : "NA"}</td>
+                  <td>{el.mobile_number ?  el.mobile_number : "NA"}</td>
+                  <td>{el.dealer ? el.dealer : "NA"}</td>
+                  
+    
                   {/* <td>
                       {el.startDate ? el.startDate: 'NA'} 
                     </td>
                     <td >
                       {el.endDate ? el.endDate : 'NA'}
                     </td> */}
-                  <td>{el.amount ? el.amount : 'NA'}</td>
+                   
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >
