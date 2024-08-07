@@ -42,6 +42,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		HighlightName         string
 		HighLightDlrName      string
 		dealerCodes           map[string]string
+		totalNtp              float64
+		totalSale             float64
+		totalInstall          float64
+		totalCancel           float64
 	)
 
 	log.EnterFn(0, "HandleGetLeaderBoardDataRequest")
@@ -229,6 +233,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			if HighLightDlrName == dlrName && HighlightName == Name && (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") {
 				hightlight = true
 			}
+			totalSale += Sale
+			totalNtp += Ntp
+			totalInstall += Install
+			totalCancel += Cancel
 			LeaderBoard := models.GetLeaderBoard{
 				Dealer:    dlrName,
 				Name:      Name,
@@ -272,6 +280,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	if (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
 		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
 	}
+	LeaderBoardList.TotalCancel = totalCancel
+	LeaderBoardList.TotalInstall = totalInstall
+	LeaderBoardList.TotalNtp = totalNtp
+	LeaderBoardList.TotalSale = totalSale
 
 	RecordCount = int64(len(data))
 	log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
