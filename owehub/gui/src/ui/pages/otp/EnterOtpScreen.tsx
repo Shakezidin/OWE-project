@@ -139,14 +139,25 @@ const EnterOtpScreen = () => {
       <div className={'overlay'} />
       <div className={'container'}>
         <div className={'loginBox'}>
-          <span id="loginNormalText">
+          <object
+            type="image/svg+xml"
+            className="login-logo"
+            data={ICONS.TransparentLogo}
+            aria-label="login-icon"
+            width={300}
+          ></object>
+          <p className="loginTopText">
+            Our World Revolves Around Powering Yours
+          </p>
+          <div className={'hrLine'} />
+          {/* <span id="loginNormalText">
             {'Our World Revolves'}
             <br />
             Around
             <span id="loginColorText">{' Powering '}</span>
             Yours
           </span>
-          <div className={'hrLine'}></div>
+          <div className={'hrLine'}></div> */}
           {/* <span className={'loginNormalTextDescription'}>
             {'YOUR TRUSTED SOLAR EXPERTS'}
           </span> */}
@@ -155,22 +166,22 @@ const EnterOtpScreen = () => {
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleOtpSubmit(e)}>
             <div className="loginTextView">
-              <object
+              {/* <object
                 type="image/svg+xml"
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
                 height={60}
-              ></object>
-              <br />
-              <div className="loginLogowithText">
+              ></object> */}
+              {/* <br /> */}
+              <div className="loginLogowithText mb1">
                 <LOGO_SMALL />
                 <span className={'loginHeader'}>OWE HUB</span>
               </div>
-              <div className="loginUnderLine">
+              {/* <div className="loginUnderLine">
                 <UNDER_LINE />
-              </div>
-              <span className="loginLogText">Reset Password</span>
+              </div> */}
+              {/* <span className="loginLogText">Reset Password</span> */}
               <br />
               <Input
                 type={'text'}
@@ -192,6 +203,7 @@ const EnterOtpScreen = () => {
               {email && (
                 <ResendOtpButton isLoading={!!loading} onClick={resendOTP} />
               )}
+              <br />
               <br />
               <PasswordInput
                 value={otpCred.new_password}
@@ -216,6 +228,7 @@ const EnterOtpScreen = () => {
               {error.new_password && (
                 <span className="error">{error.new_password}</span>
               )}
+              <br />
               <br />
               <PasswordInput
                 value={otpCred.confirm_password}
@@ -243,8 +256,8 @@ const EnterOtpScreen = () => {
               {error.confirm_password && (
                 <span className="error">{error.confirm_password}</span>
               )}
-              <br />
               {/* <ActionButton  title="Submit" type="submit" onClick={() => {}} /> */}
+              <br />
               <button
                 className="login-button"
                 title="Submit"
@@ -253,12 +266,19 @@ const EnterOtpScreen = () => {
               >
                 Submit
               </button>
-              <Link to={ROUTES.RESETPASSWORD} className="loginGoBackLink">
+              <Link
+                to={ROUTES.RESETPASSWORD}
+                className="loginGoBackLink"
+                style={{ marginTop: '6rem' }}
+              >
                 <FaArrowLeft />
                 <span>Re-enter email</span>
               </Link>
             </div>
           </form>
+        </div>
+        <div className="solar-sun">
+          <img src={ICONS.SolarSun} alt="sun-image" />
         </div>
         {loading && (
           <div>
