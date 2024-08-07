@@ -183,21 +183,23 @@ const EnterOtpScreen = () => {
               </div> */}
               {/* <span className="loginLogText">Reset Password</span> */}
               <br />
-              <Input
-                type={'text'}
-                name="otp"
-                value={otpCred.otp}
-                placeholder={'Enter OTP'}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  const validValue = value.replace(/[^a-zA-Z0-9]/g, '');
-                  setOtpCred((prevState) => ({
-                    ...prevState,
-                    [name]: validValue,
-                  }));
-                }}
-                maxLength={8}
-              />
+              <div className="otp-input-wrap">
+                <Input
+                  type={'text'}
+                  name="otp"
+                  value={otpCred.otp}
+                  placeholder={'Enter OTP'}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    const validValue = value.replace(/[^a-zA-Z0-9]/g, '');
+                    setOtpCred((prevState) => ({
+                      ...prevState,
+                      [name]: validValue,
+                    }));
+                  }}
+                  maxLength={8}
+                />
+              </div>
 
               {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}
               {email && (
@@ -205,57 +207,63 @@ const EnterOtpScreen = () => {
               )}
               <br />
               <br />
-              <PasswordInput
-                value={otpCred.new_password}
-                name="new_password"
-                placeholder={'New Password'}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  let trimmedValue = value;
-                  if (name === 'new_password') {
-                    trimmedValue = value.replace(/\s/g, '');
-                  }
-                  setOtpCred((prevState) => ({
-                    ...prevState,
-                    [name]: trimmedValue,
-                  }));
-                  setError((prevState) => ({
-                    ...prevState,
-                    [name]: validatePassword(trimmedValue),
-                  }));
-                }}
-              />
-              {error.new_password && (
-                <span className="error">{error.new_password}</span>
-              )}
+              <div className="otp-input-wrap">
+                <PasswordInput
+                  value={otpCred.new_password}
+                  name="new_password"
+                  placeholder={'New Password'}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    let trimmedValue = value;
+                    if (name === 'new_password') {
+                      trimmedValue = value.replace(/\s/g, '');
+                    }
+                    setOtpCred((prevState) => ({
+                      ...prevState,
+                      [name]: trimmedValue,
+                    }));
+                    setError((prevState) => ({
+                      ...prevState,
+                      [name]: validatePassword(trimmedValue),
+                    }));
+                  }}
+                />
+                {error.new_password && (
+                  <span className="error">{error.new_password}</span>
+                )}
+              </div>
+
               <br />
               <br />
-              <PasswordInput
-                value={otpCred.confirm_password}
-                name="confirm_password"
-                placeholder={'Confirm Password'}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  let trimmedValue = value;
-                  if (name === 'confirm_password') {
-                    trimmedValue = value.replace(/\s/g, '');
-                  }
-                  setOtpCred((prevState) => ({
-                    ...prevState,
-                    [name]: trimmedValue,
-                  }));
-                  setError((prevState) => ({
-                    ...prevState,
-                    [name]:
-                      trimmedValue !== otpCred.new_password
-                        ? 'Confirm password does not match with New password'
-                        : '',
-                  }));
-                }}
-              />
-              {error.confirm_password && (
-                <span className="error">{error.confirm_password}</span>
-              )}
+              <div className="otp-input-wrap">
+                <PasswordInput
+                  value={otpCred.confirm_password}
+                  name="confirm_password"
+                  placeholder={'Confirm Password'}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    let trimmedValue = value;
+                    if (name === 'confirm_password') {
+                      trimmedValue = value.replace(/\s/g, '');
+                    }
+                    setOtpCred((prevState) => ({
+                      ...prevState,
+                      [name]: trimmedValue,
+                    }));
+                    setError((prevState) => ({
+                      ...prevState,
+                      [name]:
+                        trimmedValue !== otpCred.new_password
+                          ? 'Confirm password does not match with New password'
+                          : '',
+                    }));
+                  }}
+                />
+                {error.confirm_password && (
+                  <span className="error">{error.confirm_password}</span>
+                )}
+              </div>
+
               {/* <ActionButton  title="Submit" type="submit" onClick={() => {}} /> */}
               <br />
               <button
