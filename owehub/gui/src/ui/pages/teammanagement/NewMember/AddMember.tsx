@@ -225,6 +225,7 @@ const AddMember: React.FC<createUserProps> = ({
                     <SelectOption
                       options={userOptions}
                       menuPosition='fixed'
+                     menuListStyles={{height:"150px"}}
                       value={selectedDropdown}
                       onChange={handleSelectDropdown}
                     />
