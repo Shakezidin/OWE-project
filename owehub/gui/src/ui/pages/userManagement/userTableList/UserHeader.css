@@ -33,9 +33,14 @@ button.trash-btn {
   border-radius: 8px;
 }
 
-
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 767px) {
   .user_user-type {
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 90px;
   }
+
 }
+

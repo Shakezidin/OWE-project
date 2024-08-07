@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState , useCallback} from 'react';
+import React, { SetStateAction, useEffect, useState, useCallback } from 'react';
 import '../../userManagement/user.css';
 import { ICONS } from '../../../icons/Icons';
 import '../../configure/configure.css';
@@ -133,9 +133,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const buttonStyle = {
     cursor: 'pointer',
-  transition: 'transform 0.3s ease, background-color 0.3s ease',
-  transform: isHovered ? 'scale(1.09)' : 'scale(1)',
-  backgroundColor: isHovered ? '#002970' : '',
+    transition: 'transform 0.3s ease, background-color 0.3s ease',
+    transform: isHovered ? 'scale(1.09)' : 'scale(1)',
+    backgroundColor: isHovered ? '#002970' : '',
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -329,19 +329,24 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         <div className="admin-user">
           <h3>{selectedOption.label?.toUpperCase()}</h3>
         </div>
+
         <div className="delete-icon-container items-start mt2">
+
         <div className="userManagementTable__search">
-        <input
-            type="text"
-            placeholder="Search users..."
-            onChange={handleSearchChange}
-          />
+            <input
+              type="text"
+              placeholder="Search users..."
+              onChange={handleSearchChange}
+            />
+
+            <div>{AddBtn}</div>
+
+          </div>
+
          
-        </div>
-           
+
           <div className="user_user-type">
-          <div>{AddBtn}</div>
-          <div className="flex items-end  user-dropdown hover-effect" onClick={() => setIsOpen(true)}>
+            <div className="flex items-end  user-dropdown hover-effect" onClick={() => setIsOpen(true)}>
               <div className="mr1">
                 <UserIcon />
               </div>
@@ -354,11 +359,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 >
                   User
                 </span>
-                
+
                 <SelectOption
                   options={userDropdownData}
                   value={selectedOption}
-                  menuStyles={{ width: 'fit-content', left: -54 }}                
+                  menuStyles={{ width: 'fit-content', left: -54 }}
                   controlStyles={{
                     boxShadow: 'none',
                     border: 'none',
@@ -378,18 +383,16 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     handleSelectChange(data);
                     setSelectedRows(new Set());
                     setSelectAllChecked(false);
-                    
+
                   }}
                   menuWidth="130px"
                   enableHoverEffect={false}
-                 
+
                 />
-              
+
               </div>
             </div>
-          </div>
-
-          <button
+            <button
             onClick={onClickMultiDelete}
             className="trash-btn rounded-8 border-none flex items-center justify-center"
             type="button"
@@ -419,6 +422,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               />
             </svg>
           </button>
+          </div>
+
+          
         </div>
       </div>
 
