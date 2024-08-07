@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState , useCallback} from 'react';
 import '../../userManagement/user.css';
 import { ICONS } from '../../../icons/Icons';
 import '../../configure/configure.css';
@@ -25,6 +25,7 @@ import DBUserTable from '../userManagerAllTable/DBUserTable';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 import { resetOpt } from '../../../../redux/apiSlice/DbManager/dataTableSlice';
 import UserIcon from '../lib/UserIcon';
+import { debounce } from '../../../../utiles/debounce';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -60,7 +61,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
   const [isHovered, setIsHovered] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState('');
 
   const count = useAppSelector((state) => state.userManagement.totalCount);
   const {
@@ -79,6 +80,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           Operation: '=',
           Data: selectedOption.value,
         },
+        {
+          Column: 'name',
+          Operation: 'cont',
+          Data:searchTerm
+        }
       ],
     };
     const dataa = {
@@ -94,7 +100,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     return () => {
       dispatch(resetOpt());
     };
-  }, [dispatch, currentPage1, pageSize1]);
+  }, [dispatch, currentPage1, pageSize1, searchTerm]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
@@ -308,7 +314,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         return null;
     }
   };
-
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 400),
+    []
+  );
   /** render UI */
 
   console.log(selectedOption, "dealerlist")
@@ -319,6 +330,15 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           <h3>{selectedOption.label?.toUpperCase()}</h3>
         </div>
         <div className="delete-icon-container items-start mt2">
+        <div className="userManagementTable__search">
+        <input
+            type="text"
+            placeholder="Search users..."
+            onChange={handleSearchChange}
+          />
+         
+        </div>
+           
           <div className="user_user-type">
           <div>{AddBtn}</div>
           <div className="flex items-end  user-dropdown hover-effect" onClick={() => setIsOpen(true)}>

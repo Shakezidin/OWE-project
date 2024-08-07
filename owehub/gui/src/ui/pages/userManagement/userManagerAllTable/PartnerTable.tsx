@@ -130,10 +130,11 @@ const PartnerTable: React.FC<PartnerProps> = ({
                   >
                     {el.dealer_name}
                   </td>
+                  <td>{el.preferred_name ? el.preferred_name : 'NA'}</td>
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >
-                    {el.description ? el.description : 'NA'}
+                    {el.description ? el.description : 'N/A'}
                   </td>
                   <td>
                     <div className="action-icon">

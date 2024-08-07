@@ -64,11 +64,19 @@ export const UserPatternTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
   {
+    name: 'preferred_name',
+    displayName: 'Preferred Name',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
     name: 'details',
     displayName: 'Details',
     type: 'string',
     isCheckbox: false,
   },
+ 
+ 
 ];
 
 export const UserDealerTableColumn: Column[] = [
