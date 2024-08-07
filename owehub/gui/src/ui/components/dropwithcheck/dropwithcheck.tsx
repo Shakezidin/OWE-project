@@ -55,7 +55,7 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [options]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -98,7 +98,7 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
       }
     });
   };
-
+console.log(options.filter((opt)=>opt.value.toLowerCase()==="untd"))
   return (
     <div className="comm-dropdown-container" ref={dropdownRef}>
       <div className="comm-dropdown-toggle" onClick={toggleDropdown}>
