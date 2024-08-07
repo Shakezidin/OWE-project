@@ -95,6 +95,13 @@ export const UserDealerTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
+    name: 'dealer_owner',
+    displayName: 'Dealer Owner',
+    type: 'string',
+    isCheckbox: false,
+  },
+   
+  {
     name: 'description',
     displayName: 'Description',
     type: 'string',
@@ -111,6 +118,12 @@ export const UserRegionalTableColumn: Column[] = [
     displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
+  },
+  {
+    name:'reporting_manager',
+    displayName:'Reporting Manager',
+    type:'string',
+    isCheckbox:false
   },
   {
     name: 'Region',
@@ -130,6 +143,13 @@ export const UserRegionalTableColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
+  {
+    name: 'team_name',
+    displayName: 'Team Name',
+    type: 'string',
+    isCheckbox: false,
+  },
+
   {
     name: 'description',
     displayName: 'Description',
