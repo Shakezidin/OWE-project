@@ -317,7 +317,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value);
-    }, 400),
+    }, 800),
     []
   );
   /** render UI */
