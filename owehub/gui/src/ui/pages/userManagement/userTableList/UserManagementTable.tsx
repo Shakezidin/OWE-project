@@ -37,6 +37,8 @@ interface UserTableProos {
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onClickMultiDelete: () => void;
   AddBtn?: React.ReactNode;
   currentPage1: number;
@@ -57,11 +59,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   AddBtn,
   setCurrentPage1,
   currentPage1,
+  searchTerm,
+  setSearchTerm,
 }) => {
   const dispatch = useAppDispatch();
-  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  const [pageSize1, setPageSize1] = useState(25); // Set your desired page size here
   const [isHovered, setIsHovered] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+ 
 
   const count = useAppSelector((state) => state.userManagement.totalCount);
   const {
@@ -80,11 +84,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           Operation: '=',
           Data: selectedOption.value,
         },
-        {
-          Column: 'name',
-          Operation: 'cont',
-          Data:searchTerm
-        }
+        
       ],
     };
     const dataa = {
@@ -100,7 +100,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     return () => {
       dispatch(resetOpt());
     };
-  }, [dispatch, currentPage1, pageSize1, searchTerm]);
+  }, [dispatch, currentPage1, pageSize1]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
