@@ -3,7 +3,6 @@ import './ResetPassword.css';
 import { ReactComponent as LOGO_SMALL } from '../../../resources/assets/commisson_small_logo.svg';
 import { ReactComponent as UNDER_LINE } from '../../../resources/assets/BlueAndGreenUnderline.svg';
 import { ICONS } from '../../icons/Icons';
-
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/text_input/Input';
 import { ActionButton } from '../../components/button/ActionButton';
@@ -21,6 +20,7 @@ import {
   FormEvent,
   FormInput,
 } from '../../../core/models/data_models/typesModel';
+import './ResetPassword.css';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -66,14 +66,17 @@ const ResetPassword = () => {
       <div className={'overlay'} />
       <div className={'container'}>
         <div className={'loginBox'}>
-          <span id="loginNormalText">
-            {'Our World Revolves'}
-            <br />
-            Around
-            <span id="loginColorText">{' Powering '}</span>
-            Yours
-          </span>
-          <div className={'hrLine'}></div>
+          <object
+            type="image/svg+xml"
+            className="login-logo"
+            data={ICONS.TransparentLogo}
+            aria-label="login-icon"
+            width={300}
+          ></object>
+          <p className="loginTopText">
+            Our World Revolves Around Powering Yours
+          </p>
+          <div className={'hrLine'} />
           {/* <span className={'loginNormalTextDescription'}>
             {'YOUR TRUSTED SOLAR EXPERTS'}
           </span> */}
@@ -82,46 +85,51 @@ const ResetPassword = () => {
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleEmailSubmit(e)}>
             <div className="loginTextView">
-              <object
+              {/* <object
                 type="image/svg+xml"
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
                 height={60}
-              ></object>
-              <br />
+              ></object> */}
               <div className="loginLogowithText">
                 <LOGO_SMALL />
                 <span className={'loginHeader'}>OWE HUB</span>
               </div>
-              <div className="loginUnderLine">
+              {/* <div className="loginUnderLine">
                 <UNDER_LINE />
-              </div>
-              <span className="loginLogText">Enter Your Email Address</span>
-              <br />
-              <Input
-                type={'text'}
-                value={credentials.email_id}
-                name="email_id"
-                placeholder={'Enter Email'}
-                onChange={handleInputChange}
-              />
+              </div> */}
+              {/* <span className="loginLogText">Enter Your Email Address</span> */}
 
+              <div className="mt3">
+                <Input
+                  type={'text'}
+                  value={credentials.email_id}
+                  name="email_id"
+                  placeholder={'Enter Email'}
+                  onChange={handleInputChange}
+                />
+              </div>
               <br />
-              <button
-                className="login-button"
-                title="Request OTP"
-                type="submit"
-                onClick={() => {}}
-              >
-                Request OTP
-              </button>
-              <Link to={ROUTES.LOGIN} className="loginGoBackLink">
+              <div className="flex mb4">
+                <button
+                  className="login-button"
+                  title="Request OTP"
+                  type="submit"
+                  onClick={() => {}}
+                >
+                  Request OTP
+                </button>
+              </div>
+              <Link to={ROUTES.LOGIN} className="loginGoBackLink" style={{marginTop: "6rem"}}>
                 <FaArrowLeft />
                 <span>Go back to login screen</span>
               </Link>
             </div>
           </form>
+        </div>
+        <div className="solar-sun reset-solar-sun">
+          <img src={ICONS.SolarSun} alt="sun-image" />
         </div>
         {loading && (
           <div>
