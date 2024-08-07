@@ -519,6 +519,7 @@ const Table = ({
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
+  const [totalStats,setTotalStats] = useState<{[key:string]:number}>({})
 
   const [selectedOption, setSelectedOption] = useState<any>('');
   const [exportOption, setExportOption] = useState<any>('');
@@ -590,6 +591,7 @@ const Table = ({
           if (data.data?.ap_ded_list) {
             setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
             setTotalCount(data?.dbRecCount);
+            setTotalStats(data.data);
           }
         } catch (error) {
           console.error(error);
@@ -1025,10 +1027,28 @@ const Table = ({
                 </th>
 
                 {showPartner && <th>Partner</th>}
-                <th>Sale</th>
-                <th>NTP</th>
-                <th>Install</th>
-                <th>Cancel</th>
+                <th>
+                  Sale
+                    <span className="block" style={{fontSize:12}}>
+                    {formatSaleValue(totalStats?.total_sale || 0)}
+                    </span>
+                </th>
+                <th>NTP
+
+                <span className="block" style={{fontSize:12}}>
+                    {formatSaleValue(totalStats?.total_ntp || 0)}
+                    </span>
+                </th>
+                <th>Install
+                <span className="block" style={{fontSize:12}}>
+                    {formatSaleValue(totalStats?.total_install || 0)}
+                    </span>
+                </th>
+                <th>Cancel
+                <span className="block" style={{fontSize:12}}>
+                    {formatSaleValue(totalStats?.total_cancel|| 0)}
+                    </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -1099,7 +1119,7 @@ const Table = ({
                 </tr>
               )}
             </tbody>
-            {!isLoading && !!leaderTable?.length && (
+            {/* {!isLoading && !!leaderTable?.length && (
               <tfoot>
                 <tr>
                   <td></td>
@@ -1120,7 +1140,7 @@ const Table = ({
                   </td>
                 </tr>
               </tfoot>
-            )}
+            )} */}
           </table>
         </div>
       </div>

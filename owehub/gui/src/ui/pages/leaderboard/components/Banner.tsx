@@ -290,87 +290,87 @@ const Banner: React.FC<BannerProps> = ({
       </div>
 
       {(role === 'Admin' ||
-        role === TYPE_OF_USER.FINANCE_ADMIN ||
-        isShowDropdown) && (
-        <div
-          className="dealer-dropdown-filter"
-          style={{ zIndex: 100 }}
-          ref={dropdownRef}
-        >
+        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+        (
           <div
-            onClick={() => setIsOpen(!isOpen)}
-            className="dealer-toggler pointer flex items-center"
+            className="dealer-dropdown-filter"
+            style={{ zIndex: 100 }}
+            ref={dropdownRef}
           >
-            <span>
-              {selectDealer?.length}{' '}
-              <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
-            </span>
-            <FaChevronDown className="ml1" />
-          </div>
-          {isOpen && (
             <div
-              className=" scrollbar dealer-dropdown dropdown-menu "
-              style={{ overflowX: 'clip' }}
+              onClick={() => setIsOpen(!isOpen)}
+              className="dealer-toggler pointer flex items-center"
             >
-              <div className="searchBox">
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="Search Dealers"
-                  style={{ width: '100%' }}
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    if (e.target.value.trim()) {
-                      const filtered = leaderDealer(newFormData).filter(
-                        (item) =>
-                          item.value
-                            .toLocaleLowerCase()
-                            .includes(e.target.value.toLowerCase().trim())
-                      );
-                      setOpts([...filtered]);
-                    } else {
-                      setOpts(leaderDealer(newFormData));
-                    }
-                  }}
-                />
-              </div>
-              {!search.trim() && (
-                <div className="dropdown-item">
+              <span>
+                {selectDealer?.length}{' '}
+                <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
+              </span>
+              <FaChevronDown className="ml1" />
+            </div>
+            {isOpen && (
+              <div
+                className=" scrollbar dealer-dropdown dropdown-menu "
+                style={{ overflowX: 'clip' }}
+              >
+                <div className="searchBox">
                   <input
-                    type="checkbox"
-                    style={{ flexShrink: 0 }}
-                    checked={
-                      leaderDealer(newFormData).length === selectDealer.length
-                    }
-                    onChange={() => {
-                      if (opts.length === selectDealer.length) {
-                        setSelectDealer([]);
+                    type="text"
+                    className="input"
+                    placeholder="Search Dealers"
+                    style={{ width: '100%' }}
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      if (e.target.value.trim()) {
+                        const filtered = leaderDealer(newFormData).filter(
+                          (item) =>
+                            item.value
+                              .toLocaleLowerCase()
+                              .includes(e.target.value.toLowerCase().trim())
+                        );
+                        setOpts([...filtered]);
                       } else {
-                        setSelectDealer([...opts]);
+                        setOpts(leaderDealer(newFormData));
                       }
                     }}
                   />
-                  All
                 </div>
-              )}
-              {opts?.map?.((option, ind) => (
-                <div key={ind} className="dropdown-item">
-                  <input
-                    type="checkbox"
-                    style={{ flexShrink: 0 }}
-                    checked={selectDealer.some(
-                      (item) => item.value === option.value
-                    )}
-                    onChange={() => handleChange(option)}
-                  />
-                  {option.label}
-                </div>
-              ))}
-            </div>
-          )}
+                {!search.trim() && (
+                  <div className="dropdown-item">
+                    <input
+                      type="checkbox"
+                      style={{ flexShrink: 0 }}
+                      checked={
+                        leaderDealer(newFormData).length === selectDealer.length
+                      }
+                      onChange={() => {
+                        if (opts.length === selectDealer.length) {
+                          setSelectDealer([]);
+                        } else {
+                          setSelectDealer([...opts]);
+                        }
+                      }}
+                    />
+                    All
+                  </div>
+                )}
+                {opts?.map?.((option, ind) => (
+                  <div key={ind} className="dropdown-item">
+                    <input
+                      type="checkbox"
+                      style={{ flexShrink: 0 }}
+                      checked={selectDealer.some(
+                        (item) => item.value === option.value
+                      )}
+                      onChange={() => handleChange(option)}
+                    />
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            )}
 
-          {/* <Select
+            {/* <Select
           isMulti
             styles={{
               menuList: (base) => ({
@@ -412,8 +412,8 @@ const Banner: React.FC<BannerProps> = ({
             onChange={(newValue) => setSelectDealer([...newValue])}
             value={selectDealer}
           /> */}
-        </div>
-      )}
+          </div>
+        )}
       {showModal && (
         <EditModal
           onClose={() => setShowModal(false)}
