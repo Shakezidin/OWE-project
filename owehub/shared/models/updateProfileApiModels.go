@@ -13,4 +13,5 @@ type UpdateProfileReq struct {
 	Zipcode       string `json:"zipcode"`
 	Country       string `json:"country"`
 	PreferredName string `json:"preferred_name"`
+	DealerCode    string `json:"dealer_code"`
 }
