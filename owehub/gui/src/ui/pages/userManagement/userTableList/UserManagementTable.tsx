@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState, useCallback } from 'react';
 import '../../userManagement/user.css';
 import { ICONS } from '../../../icons/Icons';
 import '../../configure/configure.css';
@@ -25,6 +25,7 @@ import DBUserTable from '../userManagerAllTable/DBUserTable';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 import { resetOpt } from '../../../../redux/apiSlice/DbManager/dataTableSlice';
 import UserIcon from '../lib/UserIcon';
+import { debounce } from '../../../../utiles/debounce';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -36,6 +37,8 @@ interface UserTableProos {
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onClickMultiDelete: () => void;
   AddBtn?: React.ReactNode;
   currentPage1: number;
@@ -56,11 +59,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   AddBtn,
   setCurrentPage1,
   currentPage1,
+  searchTerm,
+  setSearchTerm,
 }) => {
   const dispatch = useAppDispatch();
-  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  const [pageSize1, setPageSize1] = useState(25); // Set your desired page size here
   const [isHovered, setIsHovered] = useState(false);
-
+ 
 
   const count = useAppSelector((state) => state.userManagement.totalCount);
   const {
@@ -79,6 +84,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           Operation: '=',
           Data: selectedOption.value,
         },
+        
       ],
     };
     const dataa = {
@@ -127,9 +133,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const buttonStyle = {
     cursor: 'pointer',
-  transition: 'transform 0.3s ease, background-color 0.3s ease',
-  transform: isHovered ? 'scale(1.09)' : 'scale(1)',
-  backgroundColor: isHovered ? '#002970' : '',
+    transition: 'transform 0.3s ease, background-color 0.3s ease',
+    transform: isHovered ? 'scale(1.09)' : 'scale(1)',
+    backgroundColor: isHovered ? '#002970' : '',
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -308,7 +314,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         return null;
     }
   };
-
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    }, 800),
+    []
+  );
   /** render UI */
 
   console.log(selectedOption, "dealerlist")
@@ -318,10 +329,24 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         <div className="admin-user">
           <h3>{selectedOption.label?.toUpperCase()}</h3>
         </div>
+
         <div className="delete-icon-container items-start mt2">
+
+        <div className="userManagementTable__search">
+            <input
+              type="text"
+              placeholder="Search users..."
+              onChange={handleSearchChange}
+            />
+
+            <div>{AddBtn}</div>
+
+          </div>
+
+         
+
           <div className="user_user-type">
-          <div>{AddBtn}</div>
-          <div className="flex items-end  user-dropdown hover-effect" onClick={() => setIsOpen(true)}>
+            <div className="flex items-end  user-dropdown hover-effect" onClick={() => setIsOpen(true)}>
               <div className="mr1">
                 <UserIcon />
               </div>
@@ -334,11 +359,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 >
                   User
                 </span>
-                
+
                 <SelectOption
                   options={userDropdownData}
                   value={selectedOption}
-                  menuStyles={{ width: 'fit-content', left: -54 }}                
+                  menuStyles={{ width: 'fit-content', left: -54 }}
                   controlStyles={{
                     boxShadow: 'none',
                     border: 'none',
@@ -358,18 +383,16 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     handleSelectChange(data);
                     setSelectedRows(new Set());
                     setSelectAllChecked(false);
-                    
+
                   }}
                   menuWidth="130px"
                   enableHoverEffect={false}
-                 
+
                 />
-              
+
               </div>
             </div>
-          </div>
-
-          <button
+            <button
             onClick={onClickMultiDelete}
             className="trash-btn rounded-8 border-none flex items-center justify-center"
             type="button"
@@ -399,6 +422,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               />
             </svg>
           </button>
+          </div>
+
+          
         </div>
       </div>
 

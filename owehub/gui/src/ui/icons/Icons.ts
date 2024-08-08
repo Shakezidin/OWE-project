@@ -117,6 +117,8 @@ import GoldOne from '../../resources/assets/goldOne.svg';
 import BrownThree from '../../resources/assets/brownThree.svg';
 import BannerStar from '../../resources/assets/banner-star.svg';
 import OWEBanner from '../../resources/assets/owe-banner.svg';
+import TransparentLogo from '../../resources/assets/owe-white-logo.svg';
+import SolarSun from '../../resources/assets/sun_image.png';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -251,4 +253,6 @@ export const ICONS = {
   BrownThree: BrownThree,
   BannerStar: BannerStar,
   OWEBanner: OWEBanner,
+  TransparentLogo: TransparentLogo,
+  SolarSun: SolarSun,
 };

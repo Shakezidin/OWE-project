@@ -130,10 +130,11 @@ const PartnerTable: React.FC<PartnerProps> = ({
                   >
                     {el.dealer_name}
                   </td>
+                  <td>{el.preferred_name ? el.preferred_name : 'NA'}</td>
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >
-                    {el.description ? el.description : 'NA'}
+                    {el.description ? el.description : 'N/A'}
                   </td>
                   <td>
                     <div className="action-icon">
@@ -142,7 +143,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
                         style={{ cursor: 'pointer' }}
                         onClick={() => onClickDelete(el)}
                       >
-                        <img src={ICONS.deleteIcon} alt="" />
+                        <img src={ICONS.deleteIcon} alt="" style={{ marginRight: '15px' }}/>
                       </div>
                       {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />

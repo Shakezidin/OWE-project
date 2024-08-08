@@ -139,14 +139,25 @@ const EnterOtpScreen = () => {
       <div className={'overlay'} />
       <div className={'container'}>
         <div className={'loginBox'}>
-          <span id="loginNormalText">
+          <object
+            type="image/svg+xml"
+            className="login-logo"
+            data={ICONS.TransparentLogo}
+            aria-label="login-icon"
+            width={300}
+          ></object>
+          <p className="loginTopText">
+            Our World Revolves Around Powering Yours
+          </p>
+          <div className={'hrLine'} />
+          {/* <span id="loginNormalText">
             {'Our World Revolves'}
             <br />
             Around
             <span id="loginColorText">{' Powering '}</span>
             Yours
           </span>
-          <div className={'hrLine'}></div>
+          <div className={'hrLine'}></div> */}
           {/* <span className={'loginNormalTextDescription'}>
             {'YOUR TRUSTED SOLAR EXPERTS'}
           </span> */}
@@ -155,96 +166,106 @@ const EnterOtpScreen = () => {
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleOtpSubmit(e)}>
             <div className="loginTextView">
-              <object
+              {/* <object
                 type="image/svg+xml"
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
                 height={60}
-              ></object>
-              <br />
-              <div className="loginLogowithText">
+              ></object> */}
+              {/* <br /> */}
+              <div className="loginLogowithText mb1">
                 <LOGO_SMALL />
                 <span className={'loginHeader'}>OWE HUB</span>
               </div>
-              <div className="loginUnderLine">
+              {/* <div className="loginUnderLine">
                 <UNDER_LINE />
-              </div>
-              <span className="loginLogText">Reset Password</span>
+              </div> */}
+              {/* <span className="loginLogText">Reset Password</span> */}
               <br />
-              <Input
-                type={'text'}
-                name="otp"
-                value={otpCred.otp}
-                placeholder={'Enter OTP'}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  const validValue = value.replace(/[^a-zA-Z0-9]/g, '');
-                  setOtpCred((prevState) => ({
-                    ...prevState,
-                    [name]: validValue,
-                  }));
-                }}
-                maxLength={8}
-              />
+              <div className="otp-input-wrap">
+                <Input
+                  type={'text'}
+                  name="otp"
+                  value={otpCred.otp}
+                  placeholder={'Enter OTP'}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    const validValue = value.replace(/[^a-zA-Z0-9]/g, '');
+                    setOtpCred((prevState) => ({
+                      ...prevState,
+                      [name]: validValue,
+                    }));
+                  }}
+                  maxLength={8}
+                />
+              </div>
 
               {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}
               {email && (
                 <ResendOtpButton isLoading={!!loading} onClick={resendOTP} />
               )}
               <br />
-              <PasswordInput
-                value={otpCred.new_password}
-                name="new_password"
-                placeholder={'New Password'}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  let trimmedValue = value;
-                  if (name === 'new_password') {
-                    trimmedValue = value.replace(/\s/g, '');
-                  }
-                  setOtpCred((prevState) => ({
-                    ...prevState,
-                    [name]: trimmedValue,
-                  }));
-                  setError((prevState) => ({
-                    ...prevState,
-                    [name]: validatePassword(trimmedValue),
-                  }));
-                }}
-              />
-              {error.new_password && (
-                <span className="error">{error.new_password}</span>
-              )}
               <br />
-              <PasswordInput
-                value={otpCred.confirm_password}
-                name="confirm_password"
-                placeholder={'Confirm Password'}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  let trimmedValue = value;
-                  if (name === 'confirm_password') {
-                    trimmedValue = value.replace(/\s/g, '');
-                  }
-                  setOtpCred((prevState) => ({
-                    ...prevState,
-                    [name]: trimmedValue,
-                  }));
-                  setError((prevState) => ({
-                    ...prevState,
-                    [name]:
-                      trimmedValue !== otpCred.new_password
-                        ? 'Confirm password does not match with New password'
-                        : '',
-                  }));
-                }}
-              />
-              {error.confirm_password && (
-                <span className="error">{error.confirm_password}</span>
-              )}
+              <div className="otp-input-wrap">
+                <PasswordInput
+                  value={otpCred.new_password}
+                  name="new_password"
+                  placeholder={'New Password'}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    let trimmedValue = value;
+                    if (name === 'new_password') {
+                      trimmedValue = value.replace(/\s/g, '');
+                    }
+                    setOtpCred((prevState) => ({
+                      ...prevState,
+                      [name]: trimmedValue,
+                    }));
+                    setError((prevState) => ({
+                      ...prevState,
+                      [name]: validatePassword(trimmedValue),
+                    }));
+                  }}
+                />
+                {error.new_password && (
+                  <span className="error">{error.new_password}</span>
+                )}
+              </div>
+
               <br />
+              <br />
+              <div className="otp-input-wrap">
+                <PasswordInput
+                  value={otpCred.confirm_password}
+                  name="confirm_password"
+                  placeholder={'Confirm Password'}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    let trimmedValue = value;
+                    if (name === 'confirm_password') {
+                      trimmedValue = value.replace(/\s/g, '');
+                    }
+                    setOtpCred((prevState) => ({
+                      ...prevState,
+                      [name]: trimmedValue,
+                    }));
+                    setError((prevState) => ({
+                      ...prevState,
+                      [name]:
+                        trimmedValue !== otpCred.new_password
+                          ? 'Confirm password does not match with New password'
+                          : '',
+                    }));
+                  }}
+                />
+                {error.confirm_password && (
+                  <span className="error">{error.confirm_password}</span>
+                )}
+              </div>
+
               {/* <ActionButton  title="Submit" type="submit" onClick={() => {}} /> */}
+              <br />
               <button
                 className="login-button"
                 title="Submit"
@@ -253,12 +274,19 @@ const EnterOtpScreen = () => {
               >
                 Submit
               </button>
-              <Link to={ROUTES.RESETPASSWORD} className="loginGoBackLink">
+              <Link
+                to={ROUTES.RESETPASSWORD}
+                className="loginGoBackLink"
+                style={{ marginTop: '6rem' }}
+              >
                 <FaArrowLeft />
                 <span>Re-enter email</span>
               </Link>
             </div>
           </form>
+        </div>
+        <div className="solar-sun">
+          <img src={ICONS.SolarSun} alt="sun-image" />
         </div>
         {loading && (
           <div>

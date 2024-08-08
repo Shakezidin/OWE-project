@@ -120,11 +120,13 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                     </div>
                   </td>
                   <td>{el.name}</td>
-                  <td>{el.role_name}</td>
+                  {/* <td>{el.role_name}</td> */}
                   <td>{el.dealer_owner}</td>
+                  <td>{el.reporting_manager}</td>
                   <td>{el.region}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
+                  <td>{el.team_name ? el.team_name : "NA"}</td>
                   <td
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >
@@ -137,7 +139,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                         style={{ cursor: 'pointer' }}
                         onClick={() => onClickDelete(el)}
                       >
-                        <img src={ICONS.deleteIcon} alt="" />
+                        <img src={ICONS.deleteIcon} alt="" style={{ marginRight: '15px' }}/>
                       </div>
                       {/* <div className="" style={{ cursor: "pointer" }}  onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />

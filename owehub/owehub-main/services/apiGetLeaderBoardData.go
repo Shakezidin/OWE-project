@@ -41,6 +41,11 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		dlrName               string
 		HighlightName         string
 		HighLightDlrName      string
+		dealerCodes           map[string]string
+		totalNtp              float64
+		totalSale             float64
+		totalInstall          float64
+		totalCancel           float64
 	)
 
 	log.EnterFn(0, "HandleGetLeaderBoardDataRequest")
@@ -142,26 +147,60 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
 		return
 	}
-	//it is for secondary sales rep, if it is not required, we can remove it later
-	// if dataReq.GroupBy == "primary_sales_rep" {
-	// 	dataReq.GroupBy = "secondary_sales_rep"
-	// 	if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
-	// 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, ", dataReq.GroupBy)
-	// 	} else {
-	// 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
-	// 	}
 
-	// 	filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck, dealerIn)
-	// 	leaderBoardQuery = leaderBoardQuery + filter
+	if dataReq.GroupBy == "dealer" {
+		// Step 1: Extract unique dealer names and prepare query placeholders
+		dealerNames := make([]string, 0, len(data))
+		for _, item := range data {
+			if dealer, ok := item["dealer"].(string); ok {
+				dealerNames = append(dealerNames, dealer)
+			}
+		}
 
-	// 	Secondarydata, err := db.ReteriveFromDB(db.RowDataDBIndex, leaderBoardQuery, whereEleList)
-	// 	if err != nil {
-	// 		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
-	// 		FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
-	// 		return
-	// 	}
-	// 	data = append(data, Secondarydata...)
-	// }
+		if len(dealerNames) > 0 {
+			placeholders := make([]string, len(dealerNames))
+			for i := range placeholders {
+				placeholders[i] = fmt.Sprintf("$%d", i+1)
+			}
+
+			dealerQuery := fmt.Sprintf(
+				"SELECT dealer_name, dealer_code FROM v_dealer WHERE dealer_name IN (%s)",
+				strings.Join(placeholders, ","),
+			)
+
+			args := make([]interface{}, len(dealerNames))
+			for i, dealerName := range dealerNames {
+				args[i] = dealerName
+			}
+
+			// Execute the dealer query and retrieve data
+			dealerData, err := db.ReteriveFromDB(db.OweHubDbIndex, dealerQuery, args)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to get dealer codes from DB err: %v", err)
+				FormAndSendHttpResp(resp, "Failed to fetch dealer codes", http.StatusBadRequest, nil)
+				return
+			}
+
+			// Step 2: Create a map of dealer names to dealer codes
+			dealerCodes = make(map[string]string, len(dealerData))
+			for _, item := range dealerData {
+				if dealerName, ok := item["dealer_name"].(string); ok {
+					if dealerCode, ok := item["dealer_code"].(string); ok {
+						dealerCodes[dealerName] = dealerCode
+					}
+				}
+			}
+
+			// Step 3: Update the data in a single loop
+			for i := range data {
+				if dealerName, ok := data[i]["dealer"].(string); ok {
+					if dealerCode, ok := dealerCodes[dealerName]; ok {
+						data[i]["name"] = dealerCode
+					}
+				}
+			}
+		}
+	}
 
 	LeaderBoardList := models.GetLeaderBoardList{}
 	if len(data) > 0 {
@@ -194,6 +233,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			if HighLightDlrName == dlrName && HighlightName == Name && (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") {
 				hightlight = true
 			}
+			totalSale += Sale
+			totalNtp += Ntp
+			totalInstall += Install
+			totalCancel += Cancel
 			LeaderBoard := models.GetLeaderBoard{
 				Dealer:    dlrName,
 				Name:      Name,
@@ -237,6 +280,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	if (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
 		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
 	}
+	LeaderBoardList.TotalCancel = totalCancel
+	LeaderBoardList.TotalInstall = totalInstall
+	LeaderBoardList.TotalNtp = totalNtp
+	LeaderBoardList.TotalSale = totalSale
 
 	RecordCount = int64(len(data))
 	log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
