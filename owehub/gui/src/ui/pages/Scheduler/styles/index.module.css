@@ -1,0 +1,14 @@
+.pending_review_wrapper {
+  flex-basis: 35%;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.customer_wrapper_list {
+    flex-basis: calc(65% - 22px);
+    border-radius: 8px;
+    background-color: #fff;
+}
+.h_screen{
+    min-height: 100vh;
+}
