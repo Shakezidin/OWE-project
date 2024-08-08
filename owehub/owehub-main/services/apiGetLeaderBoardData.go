@@ -84,7 +84,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if dataReq.Role != "Admin" && dataReq.Role != "Finance Admin" && dataReq.Role != "Dealer Owner" {
+	if dataReq.Role != "Admin" && dataReq.Role != "Finance Admin" && !(dataReq.Role == "Dealer Owner" && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
 			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
@@ -132,7 +132,9 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	dealerIn += ")"
 
-	if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
+	log.FuncErrorTrace(0, "len(delaeraNmae = %v)", len(dataReq.DealerName))
+
+	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "state" && dataReq.GroupBy != "region" {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, ", dataReq.GroupBy)
 	} else {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
@@ -358,7 +360,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 		filtersBuilder.WriteString(dealerIn)
 	}
 
-	if len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0 {
+	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "state" && dataReq.GroupBy != "region" {
 		if dataReq.GroupBy != "dealer" {
 			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v , dealer HAVING", dataReq.GroupBy))
 		} else {
