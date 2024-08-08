@@ -37,7 +37,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   const [newFormData, setNewFormData] = useState<any>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
   const [reportError, setReportError] = useState('');
-  const role = localStorage.getItem('role')
+  const role = localStorage.getItem('role');
 
   const getnewformData = async () => {
     const tableData = {
@@ -63,42 +63,45 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
         formData?.role_name === 'Sale Representative' ||
         formData?.role_name === 'Dealer Owner' ||
         formData?.role_name === 'Appointment Setter' ||
-        formData.role_name === TYPE_OF_USER.SUB_DEALER_OWNER && role!==TYPE_OF_USER.DEALER_OWNER) && (
-        <>
-          <div className="create-input-field">
-            <label className="inputLabel-select select-type-label">
-              Dealer
-            </label>
-            <SelectOption
-              options={dealerNameOption(newFormData)}
-              onChange={(newValue) => handleChangeForRegion(newValue, 'dealer')}
-              value={dealerNameOption(newFormData)?.find(
-                (option) => option?.value === formData.dealer
-              )}
-            />
-          </div>
-
-          {formData.role_name !== 'Dealer Owner' && (
+        formData.role_name === TYPE_OF_USER.SUB_DEALER_OWNER) &&
+        role !== TYPE_OF_USER.DEALER_OWNER && (
+          <>
             <div className="create-input-field">
               <label className="inputLabel-select select-type-label">
-                Assign Manager Role
+                Dealer
               </label>
               <SelectOption
-                options={getObjectsBeforeMatch(
-                  MANAGER_ASSIGN_TO_USER,
-                  formData.role_name
-                )}
+                options={dealerNameOption(newFormData)}
                 onChange={(newValue) =>
-                  handleChangeAssignManager(newValue, 'assigned_Manager')
+                  handleChangeForRegion(newValue, 'dealer')
                 }
-                value={MANAGER_ASSIGN_TO_USER.find(
-                  (option) => option?.value === formData.assigned_Manager
+                value={dealerNameOption(newFormData)?.find(
+                  (option) => option?.value === formData.dealer
                 )}
               />
             </div>
-          )}
-        </>
-      )}
+
+            {formData.role_name !== 'Dealer Owner' && (
+              <div className="create-input-field">
+                <label className="inputLabel-select select-type-label">
+                  Assign Manager Role
+                </label>
+                <SelectOption
+                  options={getObjectsBeforeMatch(
+                    MANAGER_ASSIGN_TO_USER,
+                    formData.role_name
+                  )}
+                  onChange={(newValue) =>
+                    handleChangeAssignManager(newValue, 'assigned_Manager')
+                  }
+                  value={MANAGER_ASSIGN_TO_USER.find(
+                    (option) => option?.value === formData.assigned_Manager
+                  )}
+                />
+              </div>
+            )}
+          </>
+        )}
 
       {(formData?.role_name === 'Sale Representative' ||
         formData?.role_name === 'Regional Manager' ||
