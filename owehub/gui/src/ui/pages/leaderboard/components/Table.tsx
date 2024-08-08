@@ -668,6 +668,9 @@ const Table = ({
   }, []);
 
   const showPartner = useMemo(() => {
+    if (groupBy === 'region' || groupBy === 'state') {
+      return false;
+    }
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
@@ -1030,25 +1033,25 @@ const Table = ({
                 <th>
                   Sale
                   <span className="block" style={{ fontSize: 12 }}>
-                    (Ʃ {formatSaleValue(totalStats?.total_sale || 0)})
+                    ({formatSaleValue(totalStats?.total_sale || 0)})
                   </span>
                 </th>
                 <th>
                   NTP
                   <span className="block" style={{ fontSize: 12 }}>
-                   ( Ʃ {formatSaleValue(totalStats?.total_ntp || 0)})
+                    ({formatSaleValue(totalStats?.total_ntp || 0)})
                   </span>
                 </th>
                 <th>
                   Install
                   <span className="block" style={{ fontSize: 12 }}>
-                    (Ʃ {formatSaleValue(totalStats?.total_install || 0)})
+                    ({formatSaleValue(totalStats?.total_install || 0)})
                   </span>
                 </th>
                 <th>
                   Cancel
                   <span className="block" style={{ fontSize: 12 }}>
-                  (Ʃ {formatSaleValue(totalStats?.total_cancel || 0)})
+                    ({formatSaleValue(totalStats?.total_cancel || 0)})
                   </span>
                 </th>
               </tr>
