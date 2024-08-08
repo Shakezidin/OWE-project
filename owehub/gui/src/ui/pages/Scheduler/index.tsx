@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './styles/index.module.css';
 import CustomersList from './components/CustomersList';
+import PendingReview from './components/PendingReview';
 const Index = () => {
   return (
     <>
@@ -12,7 +13,7 @@ const Index = () => {
           <CustomersList />
         </div>
         <div className={styles.pending_review_wrapper}>
-            
+            <PendingReview/>
         </div>
       </div>
     </>
