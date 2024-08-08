@@ -85,6 +85,6 @@ func HandleUpdateVDealerActiveRequest(resp http.ResponseWriter, req *http.Reques
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "vadder Active updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "vadder Active Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Partner status updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Partner status Updated Successfully", http.StatusOK, nil)
 }
