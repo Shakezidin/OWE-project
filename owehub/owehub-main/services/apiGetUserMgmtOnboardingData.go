@@ -52,7 +52,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 ),
 dealer_data AS (
     SELECT 
-        'Dealer' AS role_name,
+        'Partner' AS role_name,
         COUNT(*) AS user_count,
         NULL AS sales_representatives
     FROM 
