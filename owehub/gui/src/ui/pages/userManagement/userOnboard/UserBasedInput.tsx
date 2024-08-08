@@ -3,7 +3,7 @@ import Input from '../../../components/text_input/Input';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import axios from 'axios';
 import {
-  dealerOption,
+  dealerNameOption,
   teamsOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -40,7 +40,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
 
   const getnewformData = async () => {
     const tableData = {
-      tableNames: ['dealer', 'teams'],
+      tableNames: ['dealer_name', 'teams'],
     };
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setDealer((prev) => ({ ...prev, ...res.data }));
@@ -69,9 +69,9 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
               Dealer
             </label>
             <SelectOption
-              options={dealerOption(newFormData)}
+              options={dealerNameOption(newFormData)}
               onChange={(newValue) => handleChangeForRegion(newValue, 'dealer')}
-              value={dealerOption(newFormData)?.find(
+              value={dealerNameOption(newFormData)?.find(
                 (option) => option?.value === formData.dealer
               )}
             />
