@@ -321,11 +321,13 @@ export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
   const remiainingPage: { [key: string]: any[] } = {};
-  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }, { ...mob.mob[4] }, { ...mob.mob[5] }];
+  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }, { ...mob.mob[4] }, { ...mob.mob[5] },{...other.other[1]}];
   const remiainingPage1: { [key: string]: any[] } = {};
   remiainingPage1.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }];
   const teammanagement: { [key: string]: any[] } = {};
   teammanagement.mob = [{ ...mob.mob[1] }];
+  
+  
 
 
   if (role === TYPE_OF_USER.ADMIN) {
@@ -373,6 +375,7 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(leaderboard);
       sideMenu.push(support);
       sideMenu.push(remiainingPage);
+      // sideMenu.push()
       sideMenu.push(teammanagement);
     } else if (
       role === TYPE_OF_USER.REGIONAL_MANGER ||

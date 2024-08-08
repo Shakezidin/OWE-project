@@ -89,6 +89,12 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to get dealer data from DB", http.StatusBadRequest, nil)
 		return
 	}
+
+	if len(data) <= 0 {
+		log.FuncErrorTrace(0, "Failed to get dealer data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer data from DB", http.StatusBadRequest, nil)
+		return
+	}
 	whereEleList = nil
 
 	performerData.DealerId, _ = data[0]["dealer_id"].(int64)

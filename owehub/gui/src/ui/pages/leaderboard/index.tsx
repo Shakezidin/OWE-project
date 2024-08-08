@@ -88,6 +88,9 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const showPartner = useMemo(() => {
+    if (groupBy === 'region' || groupBy === 'state') {
+      return false;
+    }
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
@@ -255,7 +258,7 @@ const Index = () => {
       { header: 'Cancel', dataKey: 'cancel' },
     ];
 
-    if (showPartner) {
+    if (showPartner  ) {
       columns.splice(2, 0, { header: 'Partner', dataKey: 'dealer' });
     }
 

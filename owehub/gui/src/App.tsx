@@ -78,7 +78,7 @@ import ApPda from './ui/pages/configure/apPda/ApPda';
 import TeamManagement from './ui/pages/teammanagement/dashboard';
 import TeamTable from './ui/pages/teammanagement/teamtable';
 import Leaderboard from './ui/pages/leaderboard';
-
+import Scheduler from './ui/pages/Scheduler';
 function App() {
   const dispatch = useAppDispatch();
 
@@ -245,7 +245,9 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
-          {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
+          {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER) &&
+            configAndUserManagementRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
@@ -282,6 +284,7 @@ function App() {
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
+          <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route
             path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
             element={<TeamManagement />}
@@ -291,6 +294,7 @@ function App() {
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
+
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
       </Routes>
     </BrowserRouter>

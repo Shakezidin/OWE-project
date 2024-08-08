@@ -119,6 +119,11 @@ import BannerStar from '../../resources/assets/banner-star.svg';
 import OWEBanner from '../../resources/assets/owe-banner.svg';
 import TransparentLogo from '../../resources/assets/owe-white-logo.svg';
 import SolarSun from '../../resources/assets/sun_image.png';
+import Sorting from '../../resources/assets/sorting.svg';
+import BellPr from '../../resources/assets/BellIconPr.svg';
+import locationpr from '../../resources/assets/location.svg';
+import Phone from '../../resources/assets/Phone.svg';
+import Techie from '../../resources/assets/techie.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -255,4 +260,9 @@ export const ICONS = {
   OWEBanner: OWEBanner,
   TransparentLogo: TransparentLogo,
   SolarSun: SolarSun,
+  Sorting: Sorting,
+  BellPr:BellPr,
+  locationpr:locationpr,
+  Phone:Phone,
+  Techie:Techie,
 };

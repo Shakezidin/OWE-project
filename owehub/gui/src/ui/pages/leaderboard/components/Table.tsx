@@ -668,6 +668,9 @@ const Table = ({
   }, []);
 
   const showPartner = useMemo(() => {
+    if (groupBy === 'region' || groupBy === 'state') {
+      return false;
+    }
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
@@ -694,13 +697,14 @@ const Table = ({
     const headers = [
       'Rank',
       'Name',
-      'Partner',
       'Sale',
       'NTP',
       'Install',
       'Cancel',
     ];
-
+    if (showPartner ) {
+      headers.splice(2, 0,'Partner');
+    }
     const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
       type: activeHead,
       dealer: selectDealer.map((item) => item.value),
@@ -718,9 +722,7 @@ const Table = ({
     const csvData = getAllLeaders?.data?.ap_ded_list?.map?.((item: any) => [
       item.rank,
       item.rep_name,
-      role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN
-        ? item.dealer
-        : '',
+      showPartner ? item.dealer : '',
       formatSaleValue(item.sale),
       formatSaleValue(item.ntp),
       formatSaleValue(item.install),
@@ -1030,25 +1032,25 @@ const Table = ({
                 <th>
                   Sale
                   <span className="block" style={{ fontSize: 12 }}>
-                    (Ʃ {formatSaleValue(totalStats?.total_sale || 0)})
+                    ({formatSaleValue(totalStats?.total_sale || 0)})
                   </span>
                 </th>
                 <th>
                   NTP
                   <span className="block" style={{ fontSize: 12 }}>
-                   ( Ʃ {formatSaleValue(totalStats?.total_ntp || 0)})
+                    ({formatSaleValue(totalStats?.total_ntp || 0)})
                   </span>
                 </th>
                 <th>
                   Install
                   <span className="block" style={{ fontSize: 12 }}>
-                    (Ʃ {formatSaleValue(totalStats?.total_install || 0)})
+                    ({formatSaleValue(totalStats?.total_install || 0)})
                   </span>
                 </th>
                 <th>
                   Cancel
                   <span className="block" style={{ fontSize: 12 }}>
-                  (Ʃ {formatSaleValue(totalStats?.total_cancel || 0)})
+                    ({formatSaleValue(totalStats?.total_cancel || 0)})
                   </span>
                 </th>
               </tr>
