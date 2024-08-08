@@ -80,6 +80,6 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "New v dealer created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "V Dealer Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New partner created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Partner Created Successfully", http.StatusOK, nil)
 }
