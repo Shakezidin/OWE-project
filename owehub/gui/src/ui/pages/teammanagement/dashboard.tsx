@@ -187,12 +187,12 @@ const TeamManagement: React.FC = () => {
                           Remove Team
                         </button>
                       )}
-                      {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+                      {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE  ? (
                         <button className="create" onClick={handleOpen2}>
                           + Create New Team
                         </button>
                       ) : null}
-                      {roleAdmin === TYPE_OF_USER.ADMIN && (
+                      {roleAdmin === TYPE_OF_USER.ADMIN || roleAdmin === TYPE_OF_USER.FINANCE_ADMIN && (
                         <DropWithCheck
                           selectedOptions={selectedOptions}
                           setSelectedOptions={setSelectedOptions}
@@ -257,7 +257,8 @@ const TeamManagement: React.FC = () => {
                                     </h1>
                                   </div>
                                   {roleAdmin === TYPE_OF_USER.ADMIN ||
-                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
+                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER || 
+                                  roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
                                   data?.role_in_team === 'manager' ||
                                   roleAdmin ===
                                     TYPE_OF_USER.SUB_DEALER_OWNER ? (

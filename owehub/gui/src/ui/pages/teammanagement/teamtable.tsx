@@ -292,6 +292,7 @@ const TeamTable: React.FC = () => {
               <div className="team-button-sec">
                 {team?.logged_in_member_role === 'manager' ||
                 role === TYPE_OF_USER.ADMIN ||
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
                 role === TYPE_OF_USER.DEALER_OWNER ||
                 role === TYPE_OF_USER.SUB_DEALER_OWNER ? (
                   <button onClick={handleOpen}>+ Add New Member</button>
@@ -462,6 +463,7 @@ const TeamTable: React.FC = () => {
                                 : 'not-allowed',
                             opacity:
                               (role === TYPE_OF_USER.ADMIN ||
+                                role === TYPE_OF_USER.FINANCE_ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
@@ -476,6 +478,7 @@ const TeamTable: React.FC = () => {
                           onClick={(e) => {
                             if (
                               (role === TYPE_OF_USER.ADMIN ||
+                                role === TYPE_OF_USER.FINANCE_ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
