@@ -37,7 +37,7 @@
 }
 
 .leaderboard-data__datepicker-wrapper:hover {
-  transform: scale(1.09);
+  /* transform: scale(1.09); */
   z-index: 11;
 }
 
