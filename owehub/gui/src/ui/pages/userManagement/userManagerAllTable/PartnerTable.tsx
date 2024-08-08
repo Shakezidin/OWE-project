@@ -125,7 +125,6 @@ const PartnerTable: React.FC<PartnerProps> = ({
                     style={{
                       color: 'black',
                       paddingLeft: '10px',
-                      fontWeight: '500',
                     }}
                   >
                     {el.dealer_name}
