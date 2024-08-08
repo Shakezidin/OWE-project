@@ -697,13 +697,14 @@ const Table = ({
     const headers = [
       'Rank',
       'Name',
-      'Partner',
       'Sale',
       'NTP',
       'Install',
       'Cancel',
     ];
-
+    if (showPartner ) {
+      headers.splice(2, 0,'Partner');
+    }
     const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
       type: activeHead,
       dealer: selectDealer.map((item) => item.value),
@@ -721,9 +722,7 @@ const Table = ({
     const csvData = getAllLeaders?.data?.ap_ded_list?.map?.((item: any) => [
       item.rank,
       item.rep_name,
-      role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN
-        ? item.dealer
-        : '',
+      showPartner ? item.dealer : '',
       formatSaleValue(item.sale),
       formatSaleValue(item.ntp),
       formatSaleValue(item.install),
