@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -11,13 +17,14 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import { CreateUserModel } from '../../../../core/models/api_models/UserManagementModel';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import Loading from '../../../components/loader/Loading';
-import { ALL_USER_ROLE_LIST } from '../../../../resources/static_data/Constant';
+import { ALL_USER_ROLE_LIST as USERLIST } from '../../../../resources/static_data/Constant';
 import './Userboard.css';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { FaRotateLeft } from 'react-icons/fa6';
 
 interface createUserProps {
   editMode: boolean;
@@ -77,6 +84,21 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     dispatch(updateUserForm({ field: fieldName, value }));
     dispatch(updateUserForm({ field: 'report_to', value: '' }));
   };
+
+  const ALL_USER_ROLE_LIST = useMemo(() => {
+    let role = USERLIST;
+    const userRole = localStorage.getItem('role');
+    if (userRole === TYPE_OF_USER.DEALER_OWNER) {
+      role = role.filter(
+        (role) =>
+          role.value !== TYPE_OF_USER.ADMIN &&
+          role.value !== TYPE_OF_USER.FINANCE_ADMIN &&
+          role.value !== TYPE_OF_USER.DB_USER &&
+          role.value !== TYPE_OF_USER.PARTNER
+      );
+    }
+    return role;
+  }, []);
 
   /**handle change for report */
   const handleChangeForRegion = async (newValue: any, fieldName: string) => {
@@ -175,67 +197,66 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             <div className="createProfileInputView">
               <div className="createProfileTextView">
                 <div className="create-input-container">
-                {formData.role_name !== TYPE_OF_USER.PARTNER ? (
-                  
-                  <div className="create-input-field">
-                    <Input
-                      type={'text'}
-                      label="First Name"
-                      value={formData.first_name}
-                      placeholder={'Enter First Name'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'first_name'}
-                      maxLength={100}
-                    />
-                  </div>
-                ) : null}
-
-               {formData.role_name === TYPE_OF_USER.PARTNER ? (
-                  
-                  <div className="create-input-field">
-                    <Input
-                      type={'text'}
-                      label="Dealer Code"
-                      value={formData.dealer_code}
-                      placeholder={'Enter Dealer Code'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'dealer_code'}
-                      maxLength={100}
-                    />
-                  </div>
-                ) : null}
-
-                {formData.role_name === TYPE_OF_USER.PARTNER ? (
-                  
-                  <div className="create-input-field">
-                    <Input
-                      type={'text'}
-                      label="Dealer Name"
-                      value={formData.dealer}
-                      placeholder={'Enter Dealer Name'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'dealer'}
-                      maxLength={100}
-                    />
-                  </div>
-                ) : null}
-
-                {formData.role_name !== TYPE_OF_USER.PARTNER ? (
-                  <div className="create-input-field">
-                    <Input
-                      type={'text'}
-                      label="Last Name"
-                      value={formData.last_name}
-                      placeholder={'Enter Last Name'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'last_name'}
-                      maxLength={100}
-                    />
-                  </div>
+                  {formData.role_name !== TYPE_OF_USER.PARTNER ? (
+                    <div className="create-input-field">
+                      <Input
+                        type={'text'}
+                        label="First Name"
+                        value={formData.first_name}
+                        placeholder={'Enter First Name'}
+                        onChange={(e) => handleInputChange(e)}
+                        name={'first_name'}
+                        maxLength={100}
+                      />
+                    </div>
                   ) : null}
-                  
-                   
-                  <div className="create-input-field relative" style={{zIndex:10}} >
+
+                  {formData.role_name === TYPE_OF_USER.PARTNER ? (
+                    <div className="create-input-field">
+                      <Input
+                        type={'text'}
+                        label="Dealer Code"
+                        value={formData.dealer_code}
+                        placeholder={'Enter Dealer Code'}
+                        onChange={(e) => handleInputChange(e)}
+                        name={'dealer_code'}
+                        maxLength={100}
+                      />
+                    </div>
+                  ) : null}
+
+                  {formData.role_name === TYPE_OF_USER.PARTNER ? (
+                    <div className="create-input-field">
+                      <Input
+                        type={'text'}
+                        label="Dealer Name"
+                        value={formData.dealer}
+                        placeholder={'Enter Dealer Name'}
+                        onChange={(e) => handleInputChange(e)}
+                        name={'dealer'}
+                        maxLength={100}
+                      />
+                    </div>
+                  ) : null}
+
+                  {formData.role_name !== TYPE_OF_USER.PARTNER ? (
+                    <div className="create-input-field">
+                      <Input
+                        type={'text'}
+                        label="Last Name"
+                        value={formData.last_name}
+                        placeholder={'Enter Last Name'}
+                        onChange={(e) => handleInputChange(e)}
+                        name={'last_name'}
+                        maxLength={100}
+                      />
+                    </div>
+                  ) : null}
+
+                  <div
+                    className="create-input-field relative"
+                    style={{ zIndex: 10 }}
+                  >
                     <label className="inputLabel-select selected-fields-onboard">
                       Role
                     </label>
@@ -272,23 +293,22 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 </div>
 
                 <div className="create-input-container">
-                  
-                {formData.role_name !== TYPE_OF_USER.PARTNER ? (
-                  <div className="create-input-field">
-                    <Input
-                      type={'text'}
-                      label="Email ID"
-                      value={formData.email_id}
-                      placeholder={'email@mymail.com'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'email_id'}
-                      disabled={formData.isEdit}
-                    />
-                    {emailError && (
-                      <div className="error-message">{emailError}</div>
-                    )}
-                  </div>
-                ) : null}
+                  {formData.role_name !== TYPE_OF_USER.PARTNER ? (
+                    <div className="create-input-field">
+                      <Input
+                        type={'text'}
+                        label="Email ID"
+                        value={formData.email_id}
+                        placeholder={'email@mymail.com'}
+                        onChange={(e) => handleInputChange(e)}
+                        name={'email_id'}
+                        disabled={formData.isEdit}
+                      />
+                      {emailError && (
+                        <div className="error-message">{emailError}</div>
+                      )}
+                    </div>
+                  ) : null}
                   {formData.role_name !== TYPE_OF_USER.PARTNER ? (
                     <div
                       className="create-input-field"
@@ -315,7 +335,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </div>
                   ) : null}
                   {formData.role_name === TYPE_OF_USER.PARTNER ? (
-                      <div className="create-input-field">
+                    <div className="create-input-field">
                       <Input
                         type={'text'}
                         label="Preferred Name"
@@ -324,7 +344,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         onChange={(e) => handleInputChange(e)}
                         name={'preferred_name'}
                       />
-                     
                     </div>
                   ) : null}
 

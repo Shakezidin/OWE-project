@@ -37,6 +37,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   const [newFormData, setNewFormData] = useState<any>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
   const [reportError, setReportError] = useState('');
+  const role = localStorage.getItem('role')
 
   const getnewformData = async () => {
     const tableData = {
@@ -62,7 +63,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
         formData?.role_name === 'Sale Representative' ||
         formData?.role_name === 'Dealer Owner' ||
         formData?.role_name === 'Appointment Setter' ||
-        formData.role_name === TYPE_OF_USER.SUB_DEALER_OWNER) && (
+        formData.role_name === TYPE_OF_USER.SUB_DEALER_OWNER && role!==TYPE_OF_USER.DEALER_OWNER) && (
         <>
           <div className="create-input-field">
             <label className="inputLabel-select select-type-label">

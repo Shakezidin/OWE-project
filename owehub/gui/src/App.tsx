@@ -245,7 +245,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
-          {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
+          {role_name === TYPE_OF_USER.ADMIN || role_name===TYPE_OF_USER.DEALER_OWNER && configAndUserManagementRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
