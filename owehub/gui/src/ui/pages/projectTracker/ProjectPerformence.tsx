@@ -352,10 +352,6 @@ const ProjectPerformence = () => {
               >
                 <label
                   className="per-date-button"
-                  // onClick={(e) => {
-                  //   e.stopPropagation();
-                  //   // setShowDatePicker(!showDatePicker);
-                  // }}
                   style={{ color: '#292929' }}
                 >
                   {selectionRange.startDate.toLocaleDateString() !==
