@@ -132,8 +132,6 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	dealerIn += ")"
 
-	log.FuncErrorTrace(0, "len(delaeraNmae = %v)", len(dataReq.DealerName))
-
 	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "state" && dataReq.GroupBy != "region" {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, ", dataReq.GroupBy)
 	} else {
