@@ -321,7 +321,7 @@ export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
   const remiainingPage: { [key: string]: any[] } = {};
-  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }, { ...mob.mob[4] }, { ...mob.mob[5] },{...other.other[1]}];
+  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] },];
   const remiainingPage1: { [key: string]: any[] } = {};
   remiainingPage1.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }];
   const teammanagement: { [key: string]: any[] } = {};
