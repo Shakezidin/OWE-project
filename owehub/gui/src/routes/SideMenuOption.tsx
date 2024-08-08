@@ -224,32 +224,32 @@ const mob = {
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
-    {
-      path: ROUTES.PROJECT_PERFORMANCE,
-      sidebarProps: {
-        displayText: 'Performance',
-        icon: (
-          <GrDocumentPerformance
-            size={20}
-            style={{ marginLeft: '5px' }}
-            className="hover-icon"
-          />
-        ),
-      },
-    },
-    {
-      path: ROUTES.PROJECT_STATUS,
-      sidebarProps: {
-        displayText: 'Project Management',
-        icon: (
-          <AiOutlineProject
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
-        ),
-      },
-    },
+    // {
+    //   path: ROUTES.PROJECT_PERFORMANCE,
+    //   sidebarProps: {
+    //     displayText: 'Performance',
+    //     icon: (
+    //       <GrDocumentPerformance
+    //         size={20}
+    //         style={{ marginLeft: '5px' }}
+    //         className="hover-icon"
+    //       />
+    //     ),
+    //   },
+    // },
+    // {
+    //   path: ROUTES.PROJECT_STATUS,
+    //   sidebarProps: {
+    //     displayText: 'Project Management',
+    //     icon: (
+    //       <AiOutlineProject
+    //         size={20}
+    //         style={{ marginLeft: '3px' }}
+    //         color="black"
+    //       />
+    //     ),
+    //   },
+    // },
     {
       path: ROUTES.TECHNICAL_SUPPORT,
 
