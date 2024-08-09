@@ -18,7 +18,7 @@ interface ActionButtonProps {
 export const AddNewButton = (props: ActionButtonProps) => {
   const { title, onClick } = props;
   return (
-    <div className="iconsSection2">
+    <div className="iconsSection2 iconSection2-mobile">
       <button
         type="button"
         style={{
@@ -32,7 +32,7 @@ export const AddNewButton = (props: ActionButtonProps) => {
           alt=""
           style={{ width: '14px', height: '14px' }}
         />{' '}
-        {title}
+        <span className="mobileTitle">{title}</span>
       </button>
     </div>
   );
