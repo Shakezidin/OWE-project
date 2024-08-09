@@ -201,6 +201,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       case TYPE_OF_USER.SUB_DEALER_OWNER:
         return (
           <UserTable
+selectedValue ={selectedOption.label} 
             data={userRoleBasedList}
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
