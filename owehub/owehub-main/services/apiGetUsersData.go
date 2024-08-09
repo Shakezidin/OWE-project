@@ -394,11 +394,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			case "country":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.country) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-<<<<<<< HEAD
 			case "dealer":
-=======
-			case "dealer_name":
->>>>>>> origin/dev
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
