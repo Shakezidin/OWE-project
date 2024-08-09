@@ -56,12 +56,14 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if role != "Admin" {
+	if role == "Finance Admin" {
+		loggedMemberRole = "manager"
+	} else if role != "Admin" {
 		queryForMember := `
 		select role_in_team from team_members ts
 		JOIN user_details ud on ud.user_id = ts.user_id
 		where ud.email_id = $1
-		and ts.team_id = $2 
+		and ts.team_id = $2
 	`
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForMember, []interface{}{email, dataReq.TeamId})
 		if err != nil {
