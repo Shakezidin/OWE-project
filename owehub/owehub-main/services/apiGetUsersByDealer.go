@@ -56,12 +56,6 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if len(dataReq.DealerName) <= 0 && (role != "Dealer Owner" || role != "SubDealer Owner") {
-		log.FuncErrorTrace(0, "Empty Input Fields in API is Not Allowed")
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-
 	if role == "Dealer Owner" || role == "SubDealer Owner" {
 		queryForDealer := `
 			select vd.dealer_name from user_details ud

@@ -83,12 +83,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
 			return
 		}
-		var filter models.Filter
-		filter.Column = "dealer_name"
-		filter.Operation = "eqs"
-		filter.Data = DealerName
+		dataReq.DealerName = DealerName
+		// var filter models.Filter
+		// filter.Column = "dealer_name"
+		// filter.Operation = "eqs"
+		// filter.Data = DealerName
 
-		dataReq.Filters = append(dataReq.Filters, filter)
+		// dataReq.Filters = append(dataReq.Filters, filter)
 	}
 
 	tableName := db.TableName_users_details
@@ -344,6 +345,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	defer func() { log.ExitFn(0, "PrepareUsersDetailFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	var whereAdder bool
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
@@ -356,6 +358,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			// Determine the operator and value based on the filter operation
 			operator := GetFilterDBMappedOperator(filter.Operation)
 			value := filter.Data
+			whereAdder = true
 
 			// For "stw" and "edw" operations, modify the value with '%'
 			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
@@ -404,6 +407,14 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 		}
 	}
 
+	if len(dataFilter.DealerName) > 0 {
+		if whereAdder {
+			filtersBuilder.WriteString(fmt.Sprintf(" AND vd.dealer_name = $%d", len(whereEleList)+1))
+		} else {
+			filtersBuilder.WriteString(fmt.Sprintf(" WHERE vd.dealer_name = $%d", len(whereEleList)+1))
+		}
+		whereEleList = append(whereEleList, dataFilter.DealerName)
+	}
 	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
 	} else {
