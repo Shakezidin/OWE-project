@@ -107,13 +107,12 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryFilter, []interface{}{dataReq.TeamId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Team Not Found", http.StatusBadRequest, nil)
 		return
 	}
 
 	usersNameList := []models.GetRepResponse{}
-	memberCount := 0
-	managerCount := 0
+	var memberCount, managerCount int64
 	for _, item := range data {
 		userCode, ok1 := item["user_code"].(string)
 		role, ok2 := item["role_in_team"].(string)
@@ -123,6 +122,8 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		teamMemberId, ok6 := item["team_member_id"].(int64)
 		dealerCode, _ = item["dealer_name"].(string)
 		teamName, _ = item["team_name"].(string)
+		memberCount, _ = item["member_count"].(int64)
+		managerCount, _ = item["manager_count"].(int64)
 
 		if !ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6 {
 			log.FuncErrorTrace(0, "Failed to get details for Item: %+v\n", item)
