@@ -1,5 +1,5 @@
 .mainContainer {
-  background-image: url('../../../resources/assets/login_homepage.png');
+  background-image: url('../../../resources/assets/login_bg.png');
   background-position: center;
   width: 100%;
   background-size: cover;
@@ -8,7 +8,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  background-position-y: 50%;
+  /* background-position-y: 50%; */
 }
 .container {
   width: 100%;
@@ -67,7 +67,7 @@
   font-style: normal;
   font-weight: 500;
   line-height: 11.962px;
-  cursor: pointer;
+  cursor: not-allowed;
   height: 60px;
   width: 430px;
   text-transform: capitalize;
@@ -75,11 +75,11 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease;
-  opacity: 0.9;
+  opacity: 0.7;
 }
-.battery-calc-button:hover {
+/* .battery-calc-button:hover {
   transform: scale(1.07);
-}
+} */
 .loginBox {
   background-color: transparent;
   display: flex;
