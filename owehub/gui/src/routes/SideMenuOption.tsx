@@ -198,7 +198,6 @@ const project = {
 //   ],
 // };
 
-
 const mob = {
   mob: [
     {
@@ -314,87 +313,88 @@ const support = {
   ],
 };
 
-
-
-
 export const createSideMenuList = (): any[] => {
   let sideMenu: { [key: string]: any[] }[] = [];
   let role = localStorage.getItem('role');
   const remiainingPage: { [key: string]: any[] } = {};
-  remiainingPage.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }, { ...mob.mob[4] }, { ...mob.mob[5] },{...other.other[1]}];
+  remiainingPage.mob = [
+    { ...mob.mob[0] },
+    { ...mob.mob[3] },
+    { ...mob.mob[4] },
+    { ...mob.mob[5] },
+    { ...other.other[1] },
+  ];
   const remiainingPage1: { [key: string]: any[] } = {};
   remiainingPage1.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }];
   const teammanagement: { [key: string]: any[] } = {};
   teammanagement.mob = [{ ...mob.mob[1] }];
-  
-  
 
-
-  if (role === TYPE_OF_USER.ADMIN) {
-    sideMenu.push(performance);
-    sideMenu.push(commissionMenu);
-    sideMenu.push(repayMenu);
-    sideMenu.push(arMenu);
-    sideMenu.push(DB);
-    sideMenu.push(project);
-    sideMenu.push(other);
-    sideMenu.push(leaderboard);
-    sideMenu.push(support);
-    sideMenu.push(mob);
-  } else {
-    if (
-      role === TYPE_OF_USER.SUB_DEALER_OWNER ||
-      role === TYPE_OF_USER.PARTNER
-    ) {
-      sideMenu.push(performance);
-      sideMenu.push(commissionMenu);
-      sideMenu.push(repayMenu);
-      sideMenu.push(arMenu);
-      sideMenu.push(DB);
-      sideMenu.push(project);
-      sideMenu.push(support);
-      sideMenu.push(remiainingPage);
-      sideMenu.push(teammanagement);
-    } else if (role === TYPE_OF_USER.FINANCE_ADMIN || role === TYPE_OF_USER.APPOINTMENT_SETTER) {
-      sideMenu.push(performance);
-      sideMenu.push(commissionMenu);
-      sideMenu.push(repayMenu);
-      sideMenu.push(arMenu);
-      sideMenu.push(DB);
-      sideMenu.push(project);
-      sideMenu.push(support);
-      sideMenu.push(remiainingPage);
-    }
-    else if (role === TYPE_OF_USER.DEALER_OWNER) {
-      sideMenu.push(performance);
-      sideMenu.push(commissionMenu);
-      sideMenu.push(repayMenu);
-      sideMenu.push(arMenu);
-      sideMenu.push(DB);
-      sideMenu.push(project);
-      sideMenu.push(leaderboard);
-      sideMenu.push(support);
-      sideMenu.push(remiainingPage);
-      // sideMenu.push()
-      sideMenu.push(teammanagement);
-    } else if (
-      role === TYPE_OF_USER.REGIONAL_MANGER ||
-      role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
-      role === TYPE_OF_USER.SALE_MANAGER
-    ) {
-      sideMenu.push(performance);
-      sideMenu.push(repayMenu);
-      sideMenu.push(project);
-      sideMenu.push(leaderboard);
-      sideMenu.push(support);
-      sideMenu.push(remiainingPage);
-      sideMenu.push(teammanagement);
-    } else if (role === TYPE_OF_USER.DB_USER) {
-      sideMenu.push(DB);
-      sideMenu.push(support);
-      sideMenu.push(remiainingPage1);
-    }
-  }
+  sideMenu.push(mob);
+  // if (role === TYPE_OF_USER.ADMIN) {
+  //   sideMenu.push(performance);
+  //   sideMenu.push(commissionMenu);
+  //   sideMenu.push(repayMenu);
+  //   sideMenu.push(arMenu);
+  //   sideMenu.push(DB);
+  //   sideMenu.push(project);
+  //   sideMenu.push(other);
+  //   sideMenu.push(leaderboard);
+  //   sideMenu.push(support);
+  //   sideMenu.push(mob);
+  // } else {
+  //   if (
+  //     role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+  //     role === TYPE_OF_USER.PARTNER
+  //   ) {
+  //     sideMenu.push(performance);
+  //     sideMenu.push(commissionMenu);
+  //     sideMenu.push(repayMenu);
+  //     sideMenu.push(arMenu);
+  //     sideMenu.push(DB);
+  //     sideMenu.push(project);
+  //     sideMenu.push(support);
+  //     sideMenu.push(remiainingPage);
+  //     sideMenu.push(teammanagement);
+  //   } else if (role === TYPE_OF_USER.FINANCE_ADMIN || role === TYPE_OF_USER.APPOINTMENT_SETTER) {
+  //     sideMenu.push(performance);
+  //     sideMenu.push(commissionMenu);
+  //     sideMenu.push(repayMenu);
+  //     sideMenu.push(arMenu);
+  //     sideMenu.push(DB);
+  //     sideMenu.push(project);
+  //     sideMenu.push(support);
+  //     sideMenu.push(remiainingPage);
+  //   }
+  //   else if (role === TYPE_OF_USER.DEALER_OWNER) {
+  //     sideMenu.push(performance);
+  //     sideMenu.push(commissionMenu);
+  //     sideMenu.push(repayMenu);
+  //     sideMenu.push(arMenu);
+  //     sideMenu.push(DB);
+  //     sideMenu.push(project);
+  //     sideMenu.push(leaderboard);
+  //     sideMenu.push(support);
+  //     sideMenu.push(remiainingPage);
+  //     // sideMenu.push()
+  //     sideMenu.push(teammanagement);
+  //   } else if (
+  //     role === TYPE_OF_USER.REGIONAL_MANGER ||
+  //     role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+  //     role === TYPE_OF_USER.SALE_MANAGER
+  //   ) {
+  //     sideMenu.push(performance);
+  //     sideMenu.push(repayMenu);
+  //     sideMenu.push(project);
+  //     sideMenu.push(leaderboard);
+  //     sideMenu.push(support);
+  //     sideMenu.push(remiainingPage);
+  //     sideMenu.push(teammanagement);
+  //   } else if (role === TYPE_OF_USER.DB_USER) {
+  //     sideMenu.push(DB);
+  //     sideMenu.push(support);
+  //     sideMenu.push(remiainingPage1);
+  //   }
+  // }
 
   return sideMenu;
 };

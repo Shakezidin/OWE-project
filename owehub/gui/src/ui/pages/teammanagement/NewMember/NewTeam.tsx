@@ -55,10 +55,10 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
   const getnewformData = async () => {
     const tableData = {
-      tableNames: ['dealer'],
+      tableNames: ['dealer_name'],
     };
     const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setNewFormData(res.data?.dealer as string[]);
+    setNewFormData(res.data?.dealer_name as string[]);
   };
   useEffect(() => {
     getnewformData();

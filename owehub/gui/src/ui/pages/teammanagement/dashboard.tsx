@@ -43,7 +43,7 @@ const TeamManagement: React.FC = () => {
   const [isPending, setIspending] = useState(false);
   const getnewformData = async () => {
     const tableData = {
-      tableNames: ['dealer'],
+      tableNames: ['dealer_name'],
     };
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setDealer((prev) => ({ ...prev, ...res.data }));
@@ -58,7 +58,7 @@ const TeamManagement: React.FC = () => {
       if (roleAdmin === TYPE_OF_USER.ADMIN) {
         setNewFormData((prev: any) => ({ ...prev, ...dealer }));
         setSelectedOptions(
-          (dealer?.dealer ? ['All', ...dealer?.dealer] : []) as string[]
+          (dealer?.dealer_name ? ['All', ...dealer?.dealer_name] : []) as string[]
         );
       }
     }
@@ -90,9 +90,9 @@ const TeamManagement: React.FC = () => {
 
   const dealerOption = useMemo(() => {
     const arr = [{ label: 'All', value: 'All', key: 'all' }];
-    if (newFormData?.dealer) {
+    if (newFormData?.dealer_name) {
       arr.push(
-        ...newFormData?.dealer?.map?.((item: string) => ({
+        ...newFormData?.dealer_name?.map?.((item: string) => ({
           label: item,
           value: item,
           key: item,
@@ -192,7 +192,7 @@ const TeamManagement: React.FC = () => {
                           + Create New Team
                         </button>
                       ) : null}
-                      {roleAdmin === TYPE_OF_USER.ADMIN || roleAdmin === TYPE_OF_USER.FINANCE_ADMIN && (
+                      {(roleAdmin === TYPE_OF_USER.ADMIN || roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) && (
                         <DropWithCheck
                           selectedOptions={selectedOptions}
                           setSelectedOptions={setSelectedOptions}
