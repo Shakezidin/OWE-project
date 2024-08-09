@@ -131,7 +131,7 @@ BEGIN
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
         SELECT id INTO v_dealer_id
         FROM v_dealer
-        WHERE dealer_code = p_dealer_name;
+        WHERE dealer_name = p_dealer_name;
 
         IF NOT FOUND THEN
             RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;

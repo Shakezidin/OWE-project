@@ -128,7 +128,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		query = `
 						 SELECT id 
 						 FROM v_dealer 
-						 WHERE LOWER(dealer_code) = LOWER($1)
+						 WHERE LOWER(dealer_name) = LOWER($1)
 				 `
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
 		if err != nil {
@@ -160,7 +160,6 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to Create Team", http.StatusInternalServerError, nil)
 		return
 	}
-
 
 	FormAndSendHttpResp(resp, fmt.Sprintf("Team Created Successfully"), http.StatusOK, nil)
 }
