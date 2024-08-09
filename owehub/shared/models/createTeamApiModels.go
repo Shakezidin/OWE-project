@@ -56,8 +56,8 @@ type GetTeamResponse struct {
 	TeamName           string           `json:"team_name"`
 	TeamID             int64            `json:"team_id"`
 	SaleRep            []GetRepResponse `json:"sale_rep_list"`
-	MemberCount        int              `jsosn:"member_count"`
-	ManagerCount       int              `json:"manager_count"`
+	MemberCount        int64              `jsosn:"member_count"`
+	ManagerCount       int64             `json:"manager_count"`
 	DealerCode         string           `json:"dealer_name"`
 	LoggedInMemberRole string           `json:"logged_in_member_role"`
 }

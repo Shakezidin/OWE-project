@@ -114,8 +114,9 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	usersNameList := []models.GetRepResponse{}
-	memberCount := 0
-	managerCount := 0
+	// memberCount := 0
+	// managerCount := 0
+	var memberCount, managerCount int64
 	for _, item := range data {
 		userCode, ok1 := item["user_code"].(string)
 		role, ok2 := item["role_in_team"].(string)
@@ -125,17 +126,19 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 		teamMemberId, ok6 := item["team_member_id"].(int64)
 		dealerCode, _ = item["dealer_name"].(string)
 		teamName, _ = item["team_name"].(string)
+		memberCount, _ = item["member_count"].(int64)
+		managerCount, _ = item["manager_count"].(int64)
 
 		if !ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6 {
 			log.FuncErrorTrace(0, "Failed to get details for Item: %+v\n", item)
 			continue
 		}
 
-		if role == "member" {
-			memberCount++
-		} else if role == "manager" {
-			managerCount++
-		}
+		// if role == "member" {
+		// 	memberCount++
+		// } else if role == "manager" {
+		// 	managerCount++
+		// }
 
 		usersData := models.GetRepResponse{
 			UserCode:     userCode,
