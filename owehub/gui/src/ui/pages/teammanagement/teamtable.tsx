@@ -201,6 +201,8 @@ const TeamTable: React.FC = () => {
     }
   };
 
+  console.log(role, "role")
+
   return (
     <>
       <div className="comm">
@@ -289,15 +291,18 @@ const TeamTable: React.FC = () => {
                   </p>
                 </div>
               </div>
+              { role !== TYPE_OF_USER.SALES_REPRESENTATIVE ? 
               <div className="team-button-sec">
                 {team?.logged_in_member_role === 'manager' ||
                 role === TYPE_OF_USER.ADMIN ||
                 role === TYPE_OF_USER.FINANCE_ADMIN ||
                 role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.SUB_DEALER_OWNER ? (
+                role === TYPE_OF_USER.SUB_DEALER_OWNER 
+                ? (
                   <button onClick={handleOpen}>+ Add New Member</button>
                 ) : null}
               </div>
+          : null }
             </div>
             <table>
               <thead>

@@ -174,10 +174,10 @@ const UserManagement: React.FC = () => {
         formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER
       ) {
         console.log(formData);
-        if (value && formData.dealer) {
+        if (value) {
           await dispatch(
             fetchRegionList({
-              dealer_name: formData.dealer,
+              dealer_name: formData.dealer || '',
               role: value,
             })
           );
