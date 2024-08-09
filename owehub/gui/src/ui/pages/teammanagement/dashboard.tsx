@@ -73,9 +73,6 @@ const TeamManagement: React.FC = () => {
     if (isFetched) {
       dispatch(getTeams(selectedOptions));
     }
-    return (()=>{
-      dispatch(resetTeams())
-    })
   }, [refetch, selectedOptions, isFetched]);
 
   const { isSuccess, isFormSubmitting, teams, isLoading } = useAppSelector(
@@ -90,7 +87,7 @@ const TeamManagement: React.FC = () => {
   ];
 
   const [open2, setOpen2] = useState<boolean>(false);
-
+console.log(selectedOptions,"jnefjghjfng")
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
     setOpen2(false);
@@ -151,7 +148,7 @@ const TeamManagement: React.FC = () => {
           toast.error(data.message);
           return;
         }
-        await dispatch(getTeams());
+        setRefetch(prev=>prev+1)
         setIsAnyCheckboxChecked([]);
         setIspending(false);
         toast.success('Teams deleted successfully');
