@@ -131,7 +131,9 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     setSelectedOptions2((prevOptions) =>
       prevOptions.filter((option) => option !== optionToRemove)
     );
+
     setManagerOptions((prev) => [...prev, { ...optionToRemove }]);
+    
     setMembersOption((prev) => [...prev, { ...optionToRemove }]);
   };
 
@@ -157,8 +159,10 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     setSelectedOptions(
       selectedOptions.filter((option) => option !== optionToRemove)
     );
-    setManagerOptions((prev) => [...prev, { ...optionToRemove }]);
     setMembersOption((prev) => [...prev, { ...optionToRemove }]);
+    if (managers.every((item) => item.rep_code !== optionToRemove.value)) {
+      setManagerOptions((prev) => [...prev, { ...optionToRemove }]);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -173,7 +177,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     ) {
       userCode = managers.find((item) => item.email === email);
     }
-
+    console.log(userCode,"user",selectedOptions2,"memeber",selectedOptions,"managers")
     const validationErrors: { [key: string]: string } = {};
 
     if (formData.first_name.trim() === '') {
@@ -191,15 +195,15 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
     const data = {
       team_name: formData.first_name,
-      sale_rep_ids: selectedOptions2.map((option) => option.value),
+      sale_rep_ids: selectedOptions.map((option) => option.value),
       manager_ids:
         roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
         roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
           ? [
               userCode?.rep_code,
-              ...selectedOptions.map((option) => option.value),
+              ...selectedOptions2.map((option) => option.value),
             ]
-          : selectedOptions.map((option) => option.value),
+          : selectedOptions2.map((option) => option.value),
       description: formData.description,
       dealer_name: selectedOption3 || undefined,
     };
@@ -219,13 +223,13 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                   item.user_roles !== TYPE_OF_USER.SALES_REPRESENTATIVE
               )
               .map((item: any) => ({
-                label: `${item.name}-${item.rep_code}`,
+                label: `${item.name}`,
                 value: item.rep_code,
               })) || [];
           setManagers(data?.data?.sale_rep_list || []);
           const members =
             data?.data?.sale_rep_list.map((item: any) => ({
-              label: `${item.name}-${item.rep_code}`,
+              label: `${item.name}`,
               value: item.rep_code,
             })) || [];
           setManagerOptions(managers);
@@ -321,8 +325,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                         Dealer Name
                       </label>
                       <SelectOption
-                      menuPosition='fixed'
-
+                        menuPosition="fixed"
                         options={newFormData.map((item) => ({
                           label: item,
                           value: item,
@@ -348,8 +351,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                     </label>
                     <SelectOption
                       options={managerOptions}
-                      menuPosition='fixed'
-
+                      menuPosition="fixed"
                       value={managerOptions.find(
                         (option) => option.value === selectedOption2
                       )}
@@ -374,7 +376,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                       Select Members
                     </label>
                     <SelectOption
-                      menuPosition='fixed'
+                      menuPosition="fixed"
                       options={membersOption}
                       value={membersOption.find(
                         (option) => option.value === ''
