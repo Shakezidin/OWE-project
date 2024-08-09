@@ -328,7 +328,6 @@ export const createSideMenuList = (): any[] => {
   remiainingPage1.mob = [{ ...mob.mob[0] }, { ...mob.mob[3] }];
   const teammanagement: { [key: string]: any[] } = {};
   teammanagement.mob = [{ ...mob.mob[1] }];
-
   sideMenu.push(mob);
   // if (role === TYPE_OF_USER.ADMIN) {
   //   sideMenu.push(performance);

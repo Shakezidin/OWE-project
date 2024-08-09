@@ -67,27 +67,35 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
 
-  const getSideMenuList = useCallback(createSideMenuList, []);
+  const role = localStorage.getItem('role');
 
   const filteredList = useMemo(() => {
-    const role = localStorage.getItem('role');
-    let list = [...getSideMenuList()];
-    if (role === TYPE_OF_USER.ADMIN || role===TYPE_OF_USER.DEALER_OWNER) {
-      list[0].mob = list[0].mob.filter(
-        (item: any) =>
+    let list = [...createSideMenuList()];
+    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.DEALER_OWNER) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS
-      );
-      return list;
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    } else {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.PROJECT_PERFORMANCE &&
+          item.path !== ROUTES.PROJECT_STATUS
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
     }
-    else{
-      list[0].mob = list[0].mob.filter(
-        (item: any) => item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.PROJECT_PERFORMANCE &&
-        item.path !== ROUTES.PROJECT_STATUS
-      );
-      return list;
-    }
-  }, [getSideMenuList]);
+  }, [createSideMenuList, role]);
 
   const handleMouseover = (
     e: React.MouseEvent<HTMLAnchorElement | MouseEvent>,
