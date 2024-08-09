@@ -135,8 +135,8 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	performerData.TeamStrength, _ = data[0]["team_count"].(float64)
-	performerData.TotalTeams, _ = data[0]["total_team_strength"].(float64)
+	performerData.TeamStrength, _ = data[0]["total_team_strength"].(int64)
+	performerData.TotalTeams, _ = data[0]["total_teams"].(int64)
 
 	// Send the response
 	log.FuncInfoTrace(0, "data fetched for performer data: %v", performerData)
