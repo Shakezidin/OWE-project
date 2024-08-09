@@ -122,6 +122,7 @@
 @media screen and (max-width: 786px) {
   .chart-view {
     flex-direction: column;
+    gap: 1rem;
   }
   .pie-section-1 {
     width: 100%;
@@ -135,5 +136,8 @@
   .pie-chart-container {
     margin-left: -19px;
     width: 240px;
+  }
+  .chart-view, .onboardrow{
+    margin: 10px;
   }
 }

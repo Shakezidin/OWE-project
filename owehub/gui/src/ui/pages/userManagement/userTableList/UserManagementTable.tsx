@@ -331,7 +331,7 @@ selectedValue ={selectedOption.label}
           <h3>{selectedOption.label?.toUpperCase()}</h3>
         </div>
 
-        <div className="delete-icon-container items-start mt2">
+        <div className="delete-icon-container items-start mt2 ">
 
         <div className="userManagementTable__search">
             <input
