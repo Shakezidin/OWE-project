@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import './sidebar.css';
 import { ICONS } from '../../icons/Icons';
 import { Link, useLocation } from 'react-router-dom';
@@ -15,6 +21,8 @@ import { createSideMenuList } from '../../../routes/SideMenuOption';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject } from 'react-icons/ai';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import { ROUTES } from '../../../routes/routes';
 
 interface Child {
   path: string;
@@ -58,6 +66,36 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isTablet = useMatchMedia('(max-width: 1024px)');
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
+
+  const role = localStorage.getItem('role');
+
+  const filteredList = useMemo(() => {
+    let list = [...createSideMenuList()];
+    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.DEALER_OWNER) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          item.path !== ROUTES.PROJECT_PERFORMANCE &&
+          item.path !== ROUTES.PROJECT_STATUS
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    } else {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.PROJECT_PERFORMANCE &&
+          item.path !== ROUTES.PROJECT_STATUS
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    }
+  }, [createSideMenuList, role]);
 
   const handleMouseover = (
     e: React.MouseEvent<HTMLAnchorElement | MouseEvent>,
@@ -112,7 +150,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
-        {createSideMenuList().map((el, i) => (
+        {filteredList.map((el: any, i: number) => (
           <div className="" key={i}>
             {!isMobile && (
               <>

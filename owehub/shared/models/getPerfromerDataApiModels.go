@@ -30,8 +30,8 @@ type GetPerformarData struct {
 	DealerLogo   string  `json:"dealer_logo"`
 	DealerId     int64   `json:"dealer_id"`
 	BgColor      string  `json:"bg_color"`
-	TotalTeams   float64 `json:"total_teams"`
-	TeamStrength float64 `json:"total_strength"`
+	TotalTeams   int64 `json:"total_teams"`
+	TeamStrength int64 `json:"total_strength"`
 }
 
 type GetPerformerAllData struct {

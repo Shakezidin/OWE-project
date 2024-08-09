@@ -470,7 +470,9 @@ br {
     width: 256px;
     text-align: left;
   }
-
+  .modal{
+    margin: 10px;
+  }
   .react-tel-input .country-list * {
     text-align: left;
   }

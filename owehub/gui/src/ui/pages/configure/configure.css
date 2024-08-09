@@ -270,8 +270,7 @@ table tbody tr td {
 
 .action-icon img {
   width: 14px;
-  height: 14px;
-  /* object-fit: cover; */
+  height: 16px;
   transition: transform 0.3s ease;
 }
 .action-icon img:hover {

@@ -91,16 +91,8 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				FROM teams t
 				JOIN team_members tm ON tm.team_id = t.team_id
 				WHERE t.dealer_id IN (
-					SELECT id FROM v_dealer WHERE dealer_code = ANY($1)
+					SELECT id FROM v_dealer WHERE dealer_name = ANY($1)
 				)
-				GROUP BY t.team_id
-				ORDER BY t.team_id;
-			`
-		} else {
-			query = `
-				SELECT t.team_id, t.team_name, COUNT(tm.user_id) AS member_count
-				FROM teams t
-				JOIN team_members tm ON tm.team_id = t.team_id
 				GROUP BY t.team_id
 				ORDER BY t.team_id;
 			`

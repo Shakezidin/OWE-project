@@ -19,6 +19,7 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { showAlert } from '../../components/alert/ShowAlert';
+import { resetTeams } from '../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 
 interface AccordionSection {
   data: any;
@@ -39,36 +40,43 @@ const TeamManagement: React.FC = () => {
   const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = useState<number[]>(
     []
   );
+  const [isFetched, setIsFetched] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [isPending, setIspending] = useState(false);
   const getnewformData = async () => {
     const tableData = {
-      tableNames: ['dealer'],
+      tableNames: ['dealer_name'],
     };
     const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setDealer((prev) => ({ ...prev, ...res.data }));
+    setSelectedOptions(
+      (res?.data?.dealer_name? ['All', ...res?.data?.dealer_name] : []) as string[]
+    );
+    setNewFormData(res?.data as string[]);
+    setIsFetched(true);
   };
   useEffect(() => {
-    getnewformData();
-  }, []);
-
-  useEffect(() => {
-    if (dealer) {
-      const roleAdmin = localStorage.getItem('role');
-      if (roleAdmin === TYPE_OF_USER.ADMIN) {
-        setNewFormData((prev: any) => ({ ...prev, ...dealer }));
-        setSelectedOptions(
-          (dealer?.dealer ? ['All', ...dealer?.dealer] : []) as string[]
-        );
-      }
+    const roleAdmin = localStorage.getItem('role');
+    if (
+      roleAdmin === TYPE_OF_USER.ADMIN ||
+      roleAdmin === TYPE_OF_USER.FINANCE_ADMIN
+    ) {
+      getnewformData();
+    } else {
+      setIsFetched(true);
     }
-  }, [dealer]);
+    
+  }, []);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getTeams(selectedOptions));
-  }, [refetch, selectedOptions]);
+    if (isFetched) {
+      dispatch(getTeams(selectedOptions));
+    }
+    return (()=>{
+      dispatch(resetTeams());
+    })
+  }, [refetch, selectedOptions, isFetched]);
 
   const { isSuccess, isFormSubmitting, teams, isLoading } = useAppSelector(
     (state) => state.teamManagmentSlice
@@ -82,7 +90,7 @@ const TeamManagement: React.FC = () => {
   ];
 
   const [open2, setOpen2] = useState<boolean>(false);
-
+console.log(selectedOptions,"jnefjghjfng")
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
     setOpen2(false);
@@ -90,9 +98,9 @@ const TeamManagement: React.FC = () => {
 
   const dealerOption = useMemo(() => {
     const arr = [{ label: 'All', value: 'All', key: 'all' }];
-    if (newFormData?.dealer) {
+    if (newFormData?.dealer_name) {
       arr.push(
-        ...newFormData?.dealer?.map?.((item: string) => ({
+        ...newFormData?.dealer_name?.map?.((item: string) => ({
           label: item,
           value: item,
           key: item,
@@ -143,7 +151,7 @@ const TeamManagement: React.FC = () => {
           toast.error(data.message);
           return;
         }
-        await dispatch(getTeams());
+        setRefetch(prev=>prev+1)
         setIsAnyCheckboxChecked([]);
         setIspending(false);
         toast.success('Teams deleted successfully');
@@ -187,12 +195,13 @@ const TeamManagement: React.FC = () => {
                           Remove Team
                         </button>
                       )}
-                      {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE  ? (
+                      {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
                         <button className="create" onClick={handleOpen2}>
                           + Create New Team
                         </button>
                       ) : null}
-                      {roleAdmin === TYPE_OF_USER.ADMIN || roleAdmin === TYPE_OF_USER.FINANCE_ADMIN && (
+                      {(roleAdmin === TYPE_OF_USER.ADMIN ||
+                        roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) && (
                         <DropWithCheck
                           selectedOptions={selectedOptions}
                           setSelectedOptions={setSelectedOptions}
@@ -257,7 +266,7 @@ const TeamManagement: React.FC = () => {
                                     </h1>
                                   </div>
                                   {roleAdmin === TYPE_OF_USER.ADMIN ||
-                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER || 
+                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
                                   roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
                                   data?.role_in_team === 'manager' ||
                                   roleAdmin ===

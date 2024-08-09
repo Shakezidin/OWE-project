@@ -201,6 +201,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       case TYPE_OF_USER.SUB_DEALER_OWNER:
         return (
           <UserTable
+selectedValue ={selectedOption.label} 
             data={userRoleBasedList}
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
@@ -330,7 +331,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           <h3>{selectedOption.label?.toUpperCase()}</h3>
         </div>
 
-        <div className="delete-icon-container items-start mt2">
+        <div className="delete-icon-container items-start mt2 ">
 
         <div className="userManagementTable__search">
             <input

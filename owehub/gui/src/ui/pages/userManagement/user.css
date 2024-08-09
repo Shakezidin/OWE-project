@@ -213,13 +213,18 @@ opacity: 0px;
 @media screen and (max-width: 767px) {
   .ManagerUser-container {
     flex-direction: column;
+    margin-top: 1rem;
   }
   .delete-icon-container{
     flex-direction: column !important;
+    position: relative;
   }
   .user_user-type {
     flex-direction: row !important;
     justify-content: space-between;
+  }
+  .userManagementTable__search, .userManagementTable__search input {
+    width: 100%;
   }
 }
 

@@ -95,7 +95,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		query = `
 						 SELECT id 
 						 FROM v_dealer 
-						 WHERE LOWER(dealer_code) = LOWER($1)
+						 WHERE LOWER(dealer_name) = LOWER($1)
 				 `
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
 		if err != nil {

@@ -30,7 +30,7 @@ func SendMailToClient(email string, username string) (err error) {
 	subject := "Welcome to Our World Energy"
 	to := mail.NewEmail("", email)
 
-	plainTextContent := fmt.Sprintf("Dear %s,\n\nWe're thrilled to welcome you to Our World Energy!\n\nYour account has been successfully created.\n\nHere are your account details:\nEmail: %s\nPassword: %s\n\nThank you for choosing us!\nLogin Url: http://155.138.163.236:3000/login \n\nBest regards,\nThe Team", username, email, createUserReqPassword)
+	plainTextContent := fmt.Sprintf("Dear %s,\n\nWe're thrilled to welcome you to Our World Energy!\n\nYour account has been successfully created.\n\nHere are your account details:\nEmail: %s\nPassword: %s\n\nThank you for choosing us!\nLogin Url: http://www.owe-hub.com/login \n\nBest regards,\nThe Team", username, email, createUserReqPassword)
 	htmlContent := ""
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ICONS } from '../../../icons/Icons';
 import { UserRoleBasedListModel } from '../../../../core/models/api_models/UserManagementModel';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
-import { UserManagementTableColumn } from '../../../../resources/static_data/UserManagementColumn';
+import { UserManagementTableColumn as UserColumns } from '../../../../resources/static_data/UserManagementColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
@@ -16,6 +17,7 @@ interface UserTableProps {
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedValue?: string;
 }
 const UserTable: React.FC<UserTableProps> = ({
   data,
@@ -25,6 +27,7 @@ const UserTable: React.FC<UserTableProps> = ({
   selectedRows,
   setSelectedRows,
   setSelectAllChecked,
+  selectedValue,
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -63,6 +66,19 @@ const UserTable: React.FC<UserTableProps> = ({
       }
     });
   }
+
+  const UserManagementTableColumn = useMemo(() => {
+    const col = [...UserColumns];
+    if (selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER) {
+      col.splice(3, 0, {
+        name: 'dealer_owner',
+        displayName: 'Dealer',
+        type: 'string',
+        isCheckbox: false,
+      });
+    }
+    return col;
+  }, [selectedValue, UserColumns]);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem('email');
@@ -132,6 +148,9 @@ const UserTable: React.FC<UserTableProps> = ({
                 <td>{el.name}</td>
                 {/* <td>{el.role_name}</td> */}
                 {/* <td>{el.reporting_manager}</td> */}
+                {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
+                  <td>{el.dealer_owner ? el.dealer_owner : 'NA'}</td>
+                )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
