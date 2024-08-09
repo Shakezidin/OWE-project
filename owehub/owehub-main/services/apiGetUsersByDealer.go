@@ -45,13 +45,6 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
-
-	if len(dataReq.DealerName) <= 0 {
-		log.FuncErrorTrace(0, "Empty Input Fields in API is Not Allowed")
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-
 	role := req.Context().Value("rolename").(string)
 	if role == "" {
 		FormAndSendHttpResp(resp, "error while getting role", http.StatusBadRequest, nil)
@@ -60,6 +53,12 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 	email := req.Context().Value("emailid").(string)
 	if email == "" {
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		return
+	}
+
+	if len(dataReq.DealerName) <= 0 && (role != "Dealer Owner" || role != "SubDealer Owner") {
+		log.FuncErrorTrace(0, "Empty Input Fields in API is Not Allowed")
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
