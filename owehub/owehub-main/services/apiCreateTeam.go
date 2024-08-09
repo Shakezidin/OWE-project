@@ -61,7 +61,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if len(TeamData.TeamName) <= 0 {
-		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
+		err = fmt.Errorf("empty input fields in api is not allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
@@ -74,7 +74,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 
 	for _, managerId := range TeamData.ManagerIds {
 		if _, exists := saleRepSet[managerId]; exists {
-			err = fmt.Errorf("User ID %s cannot be both a Sale Representative and a Manager", managerId)
+			err = fmt.Errorf("user id %s cannot be both a sale representative and a manager", managerId)
 			log.FuncErrorTrace(0, "%v", err)
 			FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
 			return
