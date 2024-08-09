@@ -212,7 +212,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
   useEffect(() => {
     const roleAdmin = localStorage.getItem('role');
-    if (roleAdmin !== TYPE_OF_USER.ADMIN) {
+    if ((roleAdmin !== TYPE_OF_USER.ADMIN || roleAdmin !== TYPE_OF_USER.FINANCE_ADMIN)) {
       (async () => {
         const data: { [key: string]: any } = await getUsersByDealer('');
         if (data?.data?.sale_rep_list) {
@@ -316,7 +316,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                     )}
                   </div>
 
-                  {userRole === 'Admin' && (
+                  {(userRole === 'Admin' || userRole === TYPE_OF_USER.FINANCE_ADMIN) && (
                     <div className="tm-new-create-input-field">
                       <label
                         className="inputLabel-select"
