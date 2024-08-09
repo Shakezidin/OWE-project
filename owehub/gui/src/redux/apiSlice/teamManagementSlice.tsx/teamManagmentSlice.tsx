@@ -46,6 +46,9 @@ const teamManagementSlice = createSlice({
       state.isSuccess = false;
       state.isMove = false;
     },
+    resetTeams:(state)=>{
+      state.teams = []
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -144,6 +147,6 @@ const teamManagementSlice = createSlice({
   },
 });
 
-export const { resetSuccess } = teamManagementSlice.actions;
+export const { resetSuccess,resetTeams } = teamManagementSlice.actions;
 
 export default teamManagementSlice.reducer;

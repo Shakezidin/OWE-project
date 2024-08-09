@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -128,7 +129,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		query = `
 						 SELECT id 
 						 FROM v_dealer 
-						 WHERE LOWER(dealer_code) = LOWER($1)
+						 WHERE LOWER(dealer_name) = LOWER($1)
 				 `
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
 		if err != nil {
@@ -156,11 +157,15 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	// var v_team_id int
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateTeamFunction, queryParameters)
 	if err != nil {
+		if strings.Contains(err.Error(), "duplicate key value") {
+			log.FuncErrorTrace(0, "Team with the same name already exists err: %v", err)
+			FormAndSendHttpResp(resp, "Team with the same name already exists", http.StatusInternalServerError, nil)
+			return
+		}
 		log.FuncErrorTrace(0, "Failed to Add Team in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Team", http.StatusInternalServerError, nil)
 		return
 	}
 
-
-	FormAndSendHttpResp(resp, fmt.Sprintf("Team Created Successfully"), http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Team Created Successfully", http.StatusOK, nil)
 }

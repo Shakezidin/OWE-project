@@ -33,6 +33,11 @@ var (
 			RoleAdmin,
 			RoleDbUser,
 		},
+		GroupAdminDealer: {
+			RoleAdmin,
+			RoleDealerOwner,
+			RoleSubDealerOwner,
+		},
 		GroupDealerFinance: {
 			RoleDealerOwner,
 			RoleFinAdmin,
@@ -52,10 +57,6 @@ var (
 			RoleApptSetter,
 			RoleFinAdmin,
 			RoleDbUser,
-		},
-		GroupAdminDealer: {
-			RoleAdmin,
-			RoleDealerOwner,
 		},
 	}
 )
