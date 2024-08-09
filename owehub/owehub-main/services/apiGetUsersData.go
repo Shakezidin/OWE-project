@@ -66,6 +66,31 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	userEmail := req.Context().Value("emailid").(string)
+	role := req.Context().Value("rolename").(string)
+	if role == "Dealer Owner" {
+		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
+
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		DealerName, dealerNameOk := data[0]["dealer_name"].(string)
+		if !dealerNameOk || DealerName == "" {
+			log.FuncErrorTrace(0, "empty dealer name")
+			FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
+			return
+		}
+		var filter models.Filter
+		filter.Column = "dealer_name"
+		filter.Operation = "eqs"
+		filter.Data = DealerName
+
+		dataReq.Filters = append(dataReq.Filters, filter)
+	}
+
 	tableName := db.TableName_users_details
 	query = `
 			SELECT ud.user_id AS record_id, ud.name AS name, 
@@ -369,8 +394,8 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			case "country":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.country) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_code) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "dealer_name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.%s) %s LOWER(ud.$%d)", column, operator, len(whereEleList)+1))
