@@ -73,6 +73,9 @@ const TeamManagement: React.FC = () => {
     if (isFetched) {
       dispatch(getTeams(selectedOptions));
     }
+    return (()=>{
+      dispatch(resetTeams());
+    })
   }, [refetch, selectedOptions, isFetched]);
 
   const { isSuccess, isFormSubmitting, teams, isLoading } = useAppSelector(
