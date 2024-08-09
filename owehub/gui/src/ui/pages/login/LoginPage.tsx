@@ -276,12 +276,16 @@ export const LoginPage = () => {
           </form>
 
           <div className="battery-calc">
-            <div className="battery-calc-button" onClick={handleBattery}>
+            <div className="battery-calc-button"
+            //  onClick={handleBattery}
+            // onClick={() => toast.info("Battery calculator is coming soon!")}
+             >
               <Lottie
                 animationData={PowerAnimation}
+                loop={false}
                 style={{ width: 70, height: 70 }}
               />
-              <p>Battery Calculator</p>
+              <p>Battery Calculator is Coming Soon!</p>
             </div>
           </div>
         </div>
