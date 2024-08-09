@@ -192,7 +192,7 @@ const TeamManagement: React.FC = () => {
                           + Create New Team
                         </button>
                       ) : null}
-                      {roleAdmin === TYPE_OF_USER.ADMIN || roleAdmin === TYPE_OF_USER.FINANCE_ADMIN && (
+                      {(roleAdmin === TYPE_OF_USER.ADMIN || roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) && (
                         <DropWithCheck
                           selectedOptions={selectedOptions}
                           setSelectedOptions={setSelectedOptions}
