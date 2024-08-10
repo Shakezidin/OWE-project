@@ -5,11 +5,8 @@ import EditModal from './EditModal';
 import { useState, useEffect, useRef, SetStateAction } from 'react';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
-import Select, { Options } from 'react-select';
-
-import SelectOption from '../../components/selectOption/SelectOption';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
-import { FaChevronCircleDown, FaChevronDown } from 'react-icons/fa';
+import { FaChevronDown } from 'react-icons/fa';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 
 interface BannerProps {
@@ -26,8 +23,6 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({
   selectDealer,
   setSelectDealer,
-  bannerDetails,
-  groupBy,
   isShowDropdown,
   setIsFetched,
 }) => {
@@ -46,7 +41,8 @@ const Banner: React.FC<BannerProps> = ({
   const tableData = {
     tableNames: ['dealer_name'],
   };
-
+  const role = localStorage.getItem('role');
+  
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
       value,
@@ -54,15 +50,15 @@ const Banner: React.FC<BannerProps> = ({
     }));
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
-    if(res.status>200){
-      return 
+    if (res.status > 200) {
+      return;
     }
     setNewFormData(res.data);
     setSelectDealer(leaderDealer(res.data));
     setOpts(leaderDealer(res.data));
     setIsFetched(true);
   };
-  const role = localStorage.getItem('role');
+
   useEffect(() => {
     if (
       role === 'Admin' ||
