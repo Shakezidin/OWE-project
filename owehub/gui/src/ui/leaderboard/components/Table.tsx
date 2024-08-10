@@ -492,6 +492,7 @@ const Table = ({
   isExporting,
   count,
   resetDealer,
+  isFetched
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -508,6 +509,7 @@ const Table = ({
   isExporting: boolean;
   count: number;
   resetDealer: (value: string) => void;
+  isFetched:boolean
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -520,56 +522,13 @@ const Table = ({
     setExportShow((prev) => !prev);
   };
   const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
-
-  const [selectedOption, setSelectedOption] = useState<any>('');
-  const [exportOption, setExportOption] = useState<any>('');
   const itemsPerPage = 25;
   const [isAuthenticated] = useState(
     localStorage.getItem('is_password_change_required') === 'false'
   );
-  // const handleGeneratePdf = async () => {
-  //   const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
-  //     type: activeHead,
-  //     dealer: selectDealer.map((item) => item.value),
-  //     page_size: count,
-  //     page_number: 1,
-  //     start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-  //     end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-  //     sort_by: active,
-  //     group_by: groupBy,
-  //   });
-  //   const doc = new jsPDF();
-  //   const columns = [
-  //     { header: 'Rank', dataKey: 'rank' },
-  //     { header: 'Name', dataKey: 'rep_name' },
-  //     { header: 'Partner', dataKey: 'dealer' },
-  //     { header: 'Sale', dataKey: 'sale' },
-  //     { header: 'NTP', dataKey: 'ntp' },
-  //     { header: 'Install', dataKey: 'install' },
-  //     { header: 'Cancel', dataKey: 'cancel' },
-  //   ];
-
-  //   const data = getAllLeaders?.data?.ap_ded_list.map((item: any) => ({
-  //     rank: item.rank,
-  //     rep_name: item.rep_name,
-  //     dealer: item.dealer,
-  //     sale: item.sale,
-  //     ntp: item.ntp,
-  //     install: item.install,
-  //     cancel: item.cancel,
-  //   }));
-
-  //   // @ts-ignore
-  //   doc.autoTable({
-  //     columns: columns,
-  //     body: data,
-  //     margin: { top: 20 },
-  //   });
-  //   doc.save('leaderboard.pdf');
-  // };
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isFetched) {
       (async () => {
         try {
           setIsLoading(true);
@@ -609,6 +568,7 @@ const Table = ({
     selectDealer,
     groupBy,
     isAuthenticated,
+    isFetched
   ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;

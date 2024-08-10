@@ -1,4 +1,3 @@
-import { el } from 'date-fns/locale';
 import React, { SetStateAction, useEffect, useState } from 'react';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import { PiCircle } from 'react-icons/pi';
@@ -28,7 +27,6 @@ const CategoryPopup = ({
   isSelected,
   setBattery,
   battery,
-  lightHouseAmpSize,
 }: IPopPupProps) => {
   const categories = [
     { name: 'Microwave', ampere: 6 },
