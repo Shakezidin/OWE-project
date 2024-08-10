@@ -432,10 +432,10 @@
 
 @media screen and (max-width: 767px) {
   .team-card-heading {
-       font-size: 12px;
+       font-size: 14px;
   }
   .team-pay-card{
-    width: 154px;
+    width: 214px;
   }
   .teamdash-header{
     flex-direction: column;
