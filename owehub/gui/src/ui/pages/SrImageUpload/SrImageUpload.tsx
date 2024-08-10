@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  ChangeEvent,
-  useEffect,
-} from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import './srImageUpload.css';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import axios from 'axios';
