@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useRef, SetStateAction } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
 import './DropdownWithCheckboxes.css';
-import {
-  handleChange as filterChange,
-  toggleAllDropdown,
-  toggleOffDropdowns,
-} from '../../../../redux/apiSlice/repPaySlice/repPaySlice';
 import { useAppDispatch } from '../../../../redux/hooks';
 
 interface Option {

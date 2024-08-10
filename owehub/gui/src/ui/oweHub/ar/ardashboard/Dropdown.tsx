@@ -5,16 +5,8 @@ import React, {
   Dispatch,
   SetStateAction,
 } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
 import './ArDropdownWithCheckboxes.css';
 import { useAppDispatch } from '../../../../redux/hooks';
-import {
-  handleChange as filterChange,
-  toggleAllDropdown,
-  toggleOffDropdowns,
-} from '../../../../redux/apiSlice/AR/ArDataSlice';
-import { FaChevronDown } from 'react-icons/fa6';
-import { TbChevronDown } from 'react-icons/tb';
 interface Option {
   label: string;
   value: string;
@@ -52,7 +44,6 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

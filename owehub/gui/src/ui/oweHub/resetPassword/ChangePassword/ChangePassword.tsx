@@ -6,9 +6,7 @@ import { useAppDispatch } from '../../../../redux/hooks';
 import { changePasswordAction } from '../../../../redux/apiActions/auth/authActions';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
-import { ICONS } from '../../../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa6';
 import { logout } from '../../../../redux/apiSlice/authSlice/authSlice';
 
 interface ChangePasswordProps {
@@ -38,34 +36,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-
-  //     if (currentPassword.length === 0){
-  //         toast.info('Please enter current password.')
-  //     }else if (newPassword.length === 0){
-  //         toast.info('Please enter new password.')
-  //     }
-  //     else if (confirmPassword.length === 0){
-  //         toast.info('Please enter confirm password.')
-  //     }else if (confirmPassword !== newPassword){
-  //         toast.info('Confirm password does not matched with New password.')
-  //     }else{
-
-  //         const actionResult = await dispatch(changePasswordAction({ new_password: newPassword, current_password: currentPassword }));
-  //         const result = unwrapResult(actionResult);
-  //         if (result.status === HTTP_STATUS.OK) {
-  //            toast.success(result.message);
-  //            localStorage.setItem('is_password_change_required','false')
-  //            window.location.reload()
-
-  //         }else{
-  //           toast.error(result.message);
-  //         }
-  //     }
-  // };
-
+  
   const validatePassword = (password: string) => {
     const minLength = 8;
     const hasUppercase = /[A-Z]/.test(password);

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import './dbManagerDash.css';
-import { BiChevronDown } from 'react-icons/bi';
 import DashBarLineChart from './DashBarLineChart';
 import PieChartWithPaddingAngle from './PieChartWithPaddingAngle';
 import { useNavigate } from 'react-router-dom';

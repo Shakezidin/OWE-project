@@ -11,35 +11,7 @@ const DashboardTotal: React.FC = () => {
   useEffect(() => {
     dispatch(getDealerPayTileData({ dealer: 'dealer' }));
   }, [dispatch]);
-  console.log(tileData, 'tile data');
-
-  // const data1 = [
-  //   {
-  //     doller: '$120,450',
-  //     paid: 'Amount Prepaid',
-  //     img: ICONS.rep1,
-  //     border: '1px solid #63BC51',
-  //     boxBorder: '0.5px solid #63BC51',
-  //     background: ICONS.tot1
-  //   },
-  //   {
-  //     doller: '$100,320',
-  //     paid: 'Pipeline Remaining',
-  //     img: ICONS.rep2,
-  //     border: '1px solid #D768A8',
-  //     boxBorder: '0.5px solid #D768A8',
-  //     background: ICONS.tot2
-  //   },
-  //   {
-  //     doller: '$100,320',
-  //     paid: 'Current Due',
-  //     img: ICONS.rep3,
-  //     border: '1px solid #3993D0',
-  //     boxBorder: '0.5px solid #3993D0',
-  //     background: ICONS.tot3
-  //   },
-  // ];
-
+  
   const data1 = [
     {
       doller: '$' + tileData?.amount_prepaid?.toFixed(2),

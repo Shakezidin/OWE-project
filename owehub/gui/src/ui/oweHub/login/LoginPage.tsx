@@ -9,11 +9,9 @@
 import React, { useEffect, useState } from 'react';
 import './LoginPage.css';
 import { ICONS } from '../../../resources/icons/Icons';
-import { Link, Routes, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as LOGO_SMALL } from '../../../resources/assets/commisson_small_logo.svg';
-import { ReactComponent as UNDER_LINE } from '../../../resources/assets/BlueAndGreenUnderline.svg';
 import Input from '../../components/text_input/Input';
-import { ActionButton } from '../../components/button/ActionButton';
 import { Credentials } from '../../../core/models/api_models/AuthModel';
 import { ROUTES } from '../../../routes/routes';
 import { toast } from 'react-toastify';

@@ -24,7 +24,6 @@ import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { FaRotateLeft } from 'react-icons/fa6';
 
 interface createUserProps {
   editMode: boolean;
@@ -75,14 +74,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     onChangeRole('Role', value);
     setTablePermissions({});
     dispatch(updateUserForm({ field: fieldName, value }));
-  };
-
-  /**handle change for dealer */
-  const handleChangeForDealer = (newValue: any, fieldName: string) => {
-    const { value } = newValue;
-    onChangeRole('Dealer', value);
-    dispatch(updateUserForm({ field: fieldName, value }));
-    dispatch(updateUserForm({ field: 'report_to', value: '' }));
   };
 
   const ALL_USER_ROLE_LIST = useMemo(() => {

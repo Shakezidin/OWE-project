@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import './ResetPassword.css';
 import { ReactComponent as LOGO_SMALL } from '../../../resources/assets/commisson_small_logo.svg';
-import { ReactComponent as UNDER_LINE } from '../../../resources/assets/BlueAndGreenUnderline.svg';
 import { ICONS } from '../../../resources/icons/Icons';
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/text_input/Input';
-import { ActionButton } from '../../components/button/ActionButton';
 import { resetPassword } from '../../../core/models/api_models/AuthModel';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { generateOTP } from '../../../redux/apiActions/auth/authActions';

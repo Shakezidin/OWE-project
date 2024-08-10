@@ -4,7 +4,6 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import axios from 'axios';
 import {
   dealerNameOption,
-  teamsOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
