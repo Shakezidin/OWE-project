@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { memo, useState } from 'react';
 import styles from '../styles/index.module.css';
-import { PiSortAscendingLight } from 'react-icons/pi';
 import Customer from './Customer';
+import SortingDropDown from './SortingDropdown/SortingDropDown';
 const CustomersList = () => {
+  const [active, setActive] = useState<'priority' | 'travel' | 'regular'>(
+    'priority'
+  );
   return (
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div
             role="button"
-            className={`${styles.schedule_tab} ${styles.active} items-center flex `}
+            className={`${styles.schedule_tab} ${active === 'priority' ? styles.active : ''} items-center flex `}
+            onClick={() => setActive('priority')}
           >
             <div
-              className={`${styles.schedule_stats} flex items-center justify-center`}
+              className={`${styles.schedule_stats}  flex items-center justify-center`}
             >
               14
             </div>
@@ -21,7 +25,8 @@ const CustomersList = () => {
 
           <div
             role="button"
-            className={`${styles.schedule_tab} flex items-center`}
+            className={`${styles.schedule_tab} ${active === 'travel' ? styles.active : ''} flex items-center`}
+            onClick={() => setActive('travel')}
           >
             <div
               className={`${styles.schedule_stats} flex items-center justify-center`}
@@ -33,7 +38,8 @@ const CustomersList = () => {
 
           <div
             role="button"
-            className={`${styles.schedule_tab} flex items-center`}
+            className={`${styles.schedule_tab} ${active === 'regular' ? styles.active : ''} flex items-center`}
+            onClick={() => setActive('regular')}
           >
             <div
               className={`${styles.schedule_stats} flex items-center justify-center`}
@@ -43,19 +49,35 @@ const CustomersList = () => {
             <span>Regular</span>
           </div>
         </div>
-
-        <button
-          className={`flex items-center justify-center  ${styles.sort_btn}`}
-        >
-          <PiSortAscendingLight size={26} />
-        </button>
+<SortingDropDown/>
+        
       </div>
 
       <div style={{ marginTop: 15 }}>
-        <Customer />
+        {active === 'priority' ? (
+          <>
+            <Customer />
+            <Customer />
+            <Customer />
+            <Customer />
+            <Customer />
+            <Customer />
+            <Customer />
+          </>
+        ) : (
+          <>
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
+          </>
+        )}
       </div>
     </>
   );
 };
 
-export default CustomersList;
+export default memo(CustomersList);
