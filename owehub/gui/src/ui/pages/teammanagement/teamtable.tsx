@@ -201,7 +201,7 @@ const TeamTable: React.FC = () => {
     }
   };
 
-  console.log(role, "role")
+  console.log(role, 'role');
 
   return (
     <>
@@ -291,18 +291,17 @@ const TeamTable: React.FC = () => {
                   </p>
                 </div>
               </div>
-              { role !== TYPE_OF_USER.SALES_REPRESENTATIVE ? 
-              <div className="team-button-sec">
-                {team?.logged_in_member_role === 'manager' ||
-                role === TYPE_OF_USER.ADMIN ||
-                role === TYPE_OF_USER.FINANCE_ADMIN ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.SUB_DEALER_OWNER 
-                ? (
-                  <button onClick={handleOpen}>+ Add New Member</button>
-                ) : null}
-              </div>
-          : null }
+              {role !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+                <div className="team-button-sec">
+                  {team?.logged_in_member_role === 'manager' ||
+                  role === TYPE_OF_USER.ADMIN ||
+                  role === TYPE_OF_USER.FINANCE_ADMIN ||
+                  role === TYPE_OF_USER.DEALER_OWNER ||
+                  role === TYPE_OF_USER.SUB_DEALER_OWNER ? (
+                    <button onClick={handleOpen}>+ Add New Member</button>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
             <table>
               <thead>
@@ -455,11 +454,15 @@ const TeamTable: React.FC = () => {
                           style={{
                             paddingLeft: '30px',
                             cursor:
-                              UserEmail !== item.email &&(role === TYPE_OF_USER.ADMIN ||
+                              UserEmail !== item.email &&
+                              (role === TYPE_OF_USER.ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
-                                role === TYPE_OF_USER.SUB_DEALER_OWNER || 
-                                 (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
-                                team?.logged_in_member_role === 'manager') &&
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                ((role === TYPE_OF_USER.SALE_MANAGER ||
+                                role === TYPE_OF_USER.REGIONAL_MANGER
+                                  ? UserEmail !== item.email_id
+                                  : true) &&
+                                  team?.logged_in_member_role === 'manager')) &&
                               !(
                                 team?.manager_count <= 1 &&
                                 item.role === 'manager'
@@ -471,8 +474,11 @@ const TeamTable: React.FC = () => {
                                 role === TYPE_OF_USER.FINANCE_ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
-                                (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
-                                team?.logged_in_member_role === 'manager') &&
+                                ((role === TYPE_OF_USER.SALE_MANAGER ||
+                                role === TYPE_OF_USER.REGIONAL_MANGER
+                                  ? UserEmail !== item.email_id
+                                  : true) &&
+                                  team?.logged_in_member_role === 'manager')) &&
                               !(
                                 team?.manager_count <= 1 &&
                                 item.role === 'manager'
@@ -486,8 +492,11 @@ const TeamTable: React.FC = () => {
                                 role === TYPE_OF_USER.FINANCE_ADMIN ||
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
-                                (role === TYPE_OF_USER.SALE_MANAGER || role === TYPE_OF_USER.REGIONAL_MANGER ? UserEmail !== item.email_id : true) &&
-                                team?.logged_in_member_role === 'manager' ||
+                                ((role === TYPE_OF_USER.SALE_MANAGER ||
+                                role === TYPE_OF_USER.REGIONAL_MANGER
+                                  ? UserEmail !== item.email_id
+                                  : true) &&
+                                  team?.logged_in_member_role === 'manager') ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER) &&
                               !(
                                 team?.manager_count <= 1 &&

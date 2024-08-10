@@ -258,7 +258,7 @@ const Index = () => {
       { header: 'Cancel', dataKey: 'cancel' },
     ];
 
-    if (showPartner  ) {
+    if (showPartner) {
       columns.splice(2, 0, { header: 'Partner', dataKey: 'dealer' });
     }
 

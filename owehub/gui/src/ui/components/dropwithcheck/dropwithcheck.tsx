@@ -98,7 +98,7 @@ const DropWithCheck: React.FC<DropWithCheckProps> = ({
       }
     });
   };
-console.log(options.filter((opt)=>opt.value.toLowerCase()==="untd"))
+  console.log(options.filter((opt) => opt.value.toLowerCase() === 'untd'));
   return (
     <div className="comm-dropdown-container" ref={dropdownRef}>
       <div className="comm-dropdown-toggle" onClick={toggleDropdown}>

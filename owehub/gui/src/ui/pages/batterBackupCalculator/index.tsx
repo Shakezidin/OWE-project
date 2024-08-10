@@ -209,7 +209,7 @@ OWE Battery Calc
           ...battery,
           ampere: battery.amp.includes('70')
             ? parseFloat(battery.amp.split('+')[0])
-              : parseFloat(battery.amp.split(' ')[0]),
+            : parseFloat(battery.amp.split(' ')[0]),
         })),
       });
       await shareImage();

@@ -49,7 +49,9 @@ const TeamManagement: React.FC = () => {
     };
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setSelectedOptions(
-      (res?.data?.dealer_name? ['All', ...res?.data?.dealer_name] : []) as string[]
+      (res?.data?.dealer_name
+        ? ['All', ...res?.data?.dealer_name]
+        : []) as string[]
     );
     setNewFormData(res?.data as string[]);
     setIsFetched(true);
@@ -64,7 +66,6 @@ const TeamManagement: React.FC = () => {
     } else {
       setIsFetched(true);
     }
-    
   }, []);
 
   const dispatch = useAppDispatch();
@@ -73,9 +74,9 @@ const TeamManagement: React.FC = () => {
     if (isFetched) {
       dispatch(getTeams(selectedOptions));
     }
-    return (()=>{
+    return () => {
       dispatch(resetTeams());
-    })
+    };
   }, [refetch, selectedOptions, isFetched]);
 
   const { isSuccess, isFormSubmitting, teams, isLoading } = useAppSelector(
@@ -90,7 +91,7 @@ const TeamManagement: React.FC = () => {
   ];
 
   const [open2, setOpen2] = useState<boolean>(false);
-console.log(selectedOptions,"jnefjghjfng")
+  console.log(selectedOptions, 'jnefjghjfng');
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
     setOpen2(false);
@@ -151,7 +152,7 @@ console.log(selectedOptions,"jnefjghjfng")
           toast.error(data.message);
           return;
         }
-        setRefetch(prev=>prev+1)
+        setRefetch((prev) => prev + 1);
         setIsAnyCheckboxChecked([]);
         setIspending(false);
         toast.success('Teams deleted successfully');

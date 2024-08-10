@@ -13,7 +13,7 @@ const Index = () => {
           <CustomersList />
         </div>
         <div className={styles.pending_review_wrapper}>
-            <PendingReview/>
+          <PendingReview />
         </div>
       </div>
     </>

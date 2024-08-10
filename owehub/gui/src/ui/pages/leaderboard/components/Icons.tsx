@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export const FirstAwardIcon = ({
   width = 23,
@@ -350,7 +350,13 @@ export const Calendar = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <rect width="30" height="30" rx="7.5" fill={fillColor} style={{ transition: 'fill 0.3s ease-in-out' }}/>
+      <rect
+        width="30"
+        height="30"
+        rx="7.5"
+        fill={fillColor}
+        style={{ transition: 'fill 0.3s ease-in-out' }}
+      />
       <path
         d="M18.9592 7.96797V6.66797C18.9592 6.3263 18.6758 6.04297 18.3342 6.04297C17.9925 6.04297 17.7092 6.3263 17.7092 6.66797V7.91797H12.2925V6.66797C12.2925 6.3263 12.0092 6.04297 11.6675 6.04297C11.3258 6.04297 11.0425 6.3263 11.0425 6.66797V7.96797C8.79251 8.1763 7.70084 9.51797 7.53418 11.5096C7.51751 11.7513 7.71751 11.9513 7.95084 11.9513H22.0508C22.2925 11.9513 22.4925 11.743 22.4675 11.5096C22.3008 9.51797 21.2092 8.1763 18.9592 7.96797Z"
         fill="white"

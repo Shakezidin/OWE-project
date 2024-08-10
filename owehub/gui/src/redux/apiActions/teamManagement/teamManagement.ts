@@ -1,13 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
-export const getTeams = createAsyncThunk('fetchteams/get_teams', async (data?:string[]) => {
-  const response = await postCaller('get_teams', {dealer_names:data});
-  return {
-    list: response.data,
-    count: response.dbRecCount,
-  };
-});
+export const getTeams = createAsyncThunk(
+  'fetchteams/get_teams',
+  async (data?: string[]) => {
+    const response = await postCaller('get_teams', { dealer_names: data });
+    return {
+      list: response.data,
+      count: response.dbRecCount,
+    };
+  }
+);
 
 export const getTeam = createAsyncThunk(
   'fetchteam/get_team',
@@ -84,7 +87,6 @@ export const manageTeam = createAsyncThunk(
   }
 );
 
-
 export const getTeamMemberDropdown = createAsyncThunk(
   'getManageDropdown/Member_dropdown',
   async (params: any, { rejectWithValue, dispatch }) => {
@@ -94,7 +96,6 @@ export const getTeamMemberDropdown = createAsyncThunk(
         return rejectWithValue((data as Error).message);
       }
       return data.data.sale_rep_list;
-      ;
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }

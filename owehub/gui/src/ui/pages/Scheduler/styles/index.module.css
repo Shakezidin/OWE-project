@@ -28,20 +28,20 @@
   cursor: pointer;
   transition: all 500ms;
 }
-.schedule_tab:first-child{
-    margin-left: 0;
+.schedule_tab:first-child {
+  margin-left: 0;
 }
-.sort_btn{
-  background-color: #4372E9;
+.sort_btn {
+  background-color: #4372e9;
   border: none;
   border-radius: 8px;
   padding: 5px;
   color: #fff;
   cursor: pointer;
 }
-.schedule_tab span{
-    margin-left: 8px;
-    font-size: 14px;
+.schedule_tab span {
+  margin-left: 8px;
+  font-size: 14px;
 }
 .schedule_stats {
   width: 28px;
@@ -56,7 +56,6 @@
   transition: all 500ms;
 }
 
-
 .schedule_tab.active .schedule_stats {
   background-color: #759bfe;
   color: #fff;
@@ -66,4 +65,3 @@
   background-color: #eaeaea;
   color: #858585;
 }
-

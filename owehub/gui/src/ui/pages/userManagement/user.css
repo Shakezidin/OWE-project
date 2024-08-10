@@ -1,4 +1,3 @@
-
 .userManagementTable__search {
   display: flex;
   align-items: center;
@@ -28,8 +27,6 @@
   display: flex;
   align-items: center;
 }
-
-
 
 .management-section {
   display: flex;
@@ -167,15 +164,15 @@ opacity: 0px;
   color: #344054 !important;
   font-weight: 500;
   border-radius: 0.25rem;
-  transition: transform 0.3s, background-color 0.3s;
+  transition:
+    transform 0.3s,
+    background-color 0.3s;
 }
 
 .dash-select-user:hover {
   transform: scale(1.06);
   background-color: #ababab;
 }
-
-
 
 .user-table {
   display: flex;
@@ -192,7 +189,7 @@ opacity: 0px;
   left: 1px;
 }
 
-.Line-container{
+.Line-container {
   cursor: pointer;
   transition: transform 500ms ease;
 }
@@ -200,7 +197,7 @@ opacity: 0px;
 .Line-container:hover {
   transform: scale(1.09);
 }
-.edit-line img{
+.edit-line img {
   transition: border 500ms ease;
 }
 
@@ -209,13 +206,12 @@ opacity: 0px;
   border: solid 1px rgb(161, 161, 161);
 }
 
-
 @media screen and (max-width: 767px) {
   .ManagerUser-container {
     flex-direction: column;
     margin-top: 1rem;
   }
-  .delete-icon-container{
+  .delete-icon-container {
     flex-direction: column !important;
     position: relative;
   }
@@ -223,8 +219,8 @@ opacity: 0px;
     flex-direction: row !important;
     justify-content: space-between;
   }
-  .userManagementTable__search, .userManagementTable__search input {
+  .userManagementTable__search,
+  .userManagementTable__search input {
     width: 100%;
   }
 }
-

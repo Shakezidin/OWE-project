@@ -188,7 +188,10 @@ const Sidebar = ({
               <div className="flex items-center justify-between">
                 <div>
                   <span className="card-label block">Team name</span>
-                  <h6 className="card-value"> {data?.team_name || 'Unassigned'} </h6>
+                  <h6 className="card-value">
+                    {' '}
+                    {data?.team_name || 'Unassigned'}{' '}
+                  </h6>
                 </div>
                 <div>
                   <span className="card-label block">Contact number</span>

@@ -221,7 +221,7 @@ const BatteryAmp = () => {
     const remainingAmps = ampCapacity - selectedAmp;
     const percentage = (remainingAmps / ampCapacity) * 100;
     return { percentage, remainingAmps };
-  }, [requiredBattery, batteryPower,lightHouseAmpSize]);
+  }, [requiredBattery, batteryPower, lightHouseAmpSize]);
 
   const required = useMemo(() => {
     return initial;

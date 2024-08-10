@@ -135,7 +135,11 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                         style={{ cursor: 'pointer' }}
                         onClick={() => onClickDelete(el)}
                       >
-                        <img src={ICONS.deleteIcon} alt="" style={{ marginRight: '15px' }}/>
+                        <img
+                          src={ICONS.deleteIcon}
+                          alt=""
+                          style={{ marginRight: '15px' }}
+                        />
                       </div>
                       {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />

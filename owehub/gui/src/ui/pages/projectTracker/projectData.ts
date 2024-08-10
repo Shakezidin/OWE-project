@@ -1,6 +1,5 @@
 import { ICONS } from '../../icons/Icons';
 
-
 // export const cardData = [
 //   {
 //     name: 'NTP',
@@ -37,7 +36,6 @@ import { ICONS } from '../../icons/Icons';
 //   },
 // ];
 
-
 export const cardData = [
   {
     name: 'Total Sales',
@@ -72,7 +70,6 @@ export const cardData = [
     color: `var(--white-color)`,
     type: 'cancelled_date',
   },
-  
 ];
 
 export const projectDashData = [

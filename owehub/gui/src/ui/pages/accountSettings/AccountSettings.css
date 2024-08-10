@@ -130,10 +130,12 @@
   border-radius: 8px;
   border: 1px solid #d5d5d5;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
 }
 .edit-section:hover {
-  background-color: #DDEBFF;
+  background-color: #ddebff;
   transform: scale(1.09);
 }
 .active-edit-section {

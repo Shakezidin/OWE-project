@@ -276,10 +276,11 @@ export const LoginPage = () => {
           </form>
 
           <div className="battery-calc">
-            <div className="battery-calc-button"
-            //  onClick={handleBattery}
-            // onClick={() => toast.info("Battery calculator is coming soon!")}
-             >
+            <div
+              className="battery-calc-button"
+              //  onClick={handleBattery}
+              // onClick={() => toast.info("Battery calculator is coming soon!")}
+            >
               <Lottie
                 animationData={PowerAnimation}
                 loop={false}
@@ -289,7 +290,7 @@ export const LoginPage = () => {
             </div>
           </div>
         </div>
-        <div className='solar-sun'>
+        <div className="solar-sun">
           <img src={ICONS.SolarSun} alt="sun-image" />
         </div>
         {loading && (

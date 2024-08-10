@@ -158,7 +158,11 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
                         }
                       }}
                     >
-                      <img src={ICONS.deleteIcon} alt="" style={{ marginRight: '15px' }}/>
+                      <img
+                        src={ICONS.deleteIcon}
+                        alt=""
+                        style={{ marginRight: '15px' }}
+                      />
                     </div>
                   </div>
                 </td>

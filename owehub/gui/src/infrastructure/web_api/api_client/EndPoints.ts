@@ -147,7 +147,7 @@ export const EndPoints: Endpoints = {
   Get_User_onboarding_list: 'get_users_onboarding',
   Get_User_list_based_on_Role: 'get_users',
   get_user_by_role: 'get_users_by_role',
-  get_users_by_dealer:'get_users_by_dealer',
+  get_users_by_dealer: 'get_users_by_dealer',
   create_user: 'create_user',
   delete_users: 'delete_users',
   table_permission: 'table_permission',

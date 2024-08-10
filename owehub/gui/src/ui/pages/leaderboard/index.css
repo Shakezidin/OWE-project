@@ -133,7 +133,7 @@
   color: var(--white-color);
   transition: all 500ms ease;
 }
-.leaderboard-data__btn--active:hover{
+.leaderboard-data__btn--active:hover {
   background-color: #ec9d76;
 }
 
@@ -595,7 +595,7 @@
     width: 100%;
   }
 }
-.banner-main .edit-button{
+.banner-main .edit-button {
   z-index: 115;
 }
 @media (max-width: 576px) {

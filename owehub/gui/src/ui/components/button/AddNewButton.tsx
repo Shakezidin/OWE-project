@@ -21,9 +21,7 @@ export const AddNewButton = (props: ActionButtonProps) => {
     <div className="iconsSection2 iconSection2-mobile">
       <button
         type="button"
-        style={{
-          
-        }}
+        style={{}}
         // className="hover-btn"
         onClick={onClick}
       >

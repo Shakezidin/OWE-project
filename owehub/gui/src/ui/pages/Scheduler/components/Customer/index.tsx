@@ -5,7 +5,7 @@ import { BiPhone } from 'react-icons/bi';
 import { TbChevronDown } from 'react-icons/tb';
 import { LuClock } from 'react-icons/lu';
 import { EmailIcon } from '../../icons';
-import { IoClose } from "react-icons/io5";
+import { IoClose } from 'react-icons/io5';
 const Index = () => {
   return (
     <div className={styles.customer_wrapper}>
@@ -85,32 +85,50 @@ const Index = () => {
           <div className="mt3">
             <h4>History</h4>
             <div className={styles.appointment_status_wrapper}>
-              <div className={`flex items-start mb3 ${styles.appointment_status_container}`}>
+              <div
+                className={`flex items-start mb3 ${styles.appointment_status_container}`}
+              >
                 <div
-                style={{width:30,height:30}}
+                  style={{ width: 30, height: 30 }}
                   className={` flex items-center justify-center ${styles.bg_stone} ${styles.avatar_circle}`}
                 >
-                  <EmailIcon/>
+                  <EmailIcon />
                 </div>
                 <div className="ml1">
-                  <h3 className={styles.customer_name}>Appointment Sent on : 24 July 2024</h3>
-                  <p className={styles.sm_text} style={{fontSize:12}}>Invitation sent to owner by email </p>
+                  <h3 className={styles.customer_name}>
+                    Appointment Sent on : 24 July 2024
+                  </h3>
+                  <p className={styles.sm_text} style={{ fontSize: 12 }}>
+                    Invitation sent to owner by email{' '}
+                  </p>
                 </div>
               </div>
 
-              <div className={`flex items-start mb3 ${styles.appointment_status_container}`}>
-                <div style={{width:30,height:30,borderRadius:"50%"}} className=" flex items-center justify-center">
-
+              <div
+                className={`flex items-start mb3 ${styles.appointment_status_container}`}
+              >
                 <div
-                style={{width:22,height:22,backgroundColor:"#F3F3F3"}}
-                  className={` flex items-center justify-center ${styles.bg_stone} ${styles.avatar_circle}`}
+                  style={{ width: 30, height: 30, borderRadius: '50%' }}
+                  className=" flex items-center justify-center"
                 >
-                  <IoClose size={12}/>
-                </div>
+                  <div
+                    style={{
+                      width: 22,
+                      height: 22,
+                      backgroundColor: '#F3F3F3',
+                    }}
+                    className={` flex items-center justify-center ${styles.bg_stone} ${styles.avatar_circle}`}
+                  >
+                    <IoClose size={12} />
+                  </div>
                 </div>
                 <div className="ml1">
-                  <h3 className={styles.customer_name}>Appointment Declined : 26 July 2024</h3>
-                  <p className={styles.sm_text} style={{fontSize:12}}>Scheduled Cancel By Owner</p>
+                  <h3 className={styles.customer_name}>
+                    Appointment Declined : 26 July 2024
+                  </h3>
+                  <p className={styles.sm_text} style={{ fontSize: 12 }}>
+                    Scheduled Cancel By Owner
+                  </p>
                 </div>
               </div>
             </div>

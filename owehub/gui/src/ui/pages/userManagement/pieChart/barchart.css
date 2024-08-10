@@ -1,4 +1,3 @@
-
 .recharts-pie-sector:focus {
   outline: none;
 }
@@ -137,7 +136,8 @@
     margin-left: -19px;
     width: 240px;
   }
-  .chart-view, .onboardrow{
+  .chart-view,
+  .onboardrow {
     margin: 10px;
   }
 }

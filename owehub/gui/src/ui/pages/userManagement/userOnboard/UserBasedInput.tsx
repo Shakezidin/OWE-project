@@ -80,24 +80,32 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
                 )}
               />
             </div>
-
-             
-            
-           
           </>
         )}
-              {['Regional Manager', 'Sales Manager', 'Sale Representative', 'Appointment Setter'].includes(formData?.role_name) && (
-  <div className="create-input-field">
-    <label className="inputLabel-select select-type-label">
-      Assign Manager Role
-    </label>
-    <SelectOption
-      options={getObjectsBeforeMatch(MANAGER_ASSIGN_TO_USER, formData.role_name)}
-      onChange={(newValue) => handleChangeAssignManager(newValue, 'assigned_Manager')}
-      value={MANAGER_ASSIGN_TO_USER.find((option) => option?.value === formData.assigned_Manager)}
-    />
-  </div>
-)}
+      {[
+        'Regional Manager',
+        'Sales Manager',
+        'Sale Representative',
+        'Appointment Setter',
+      ].includes(formData?.role_name) && (
+        <div className="create-input-field">
+          <label className="inputLabel-select select-type-label">
+            Assign Manager Role
+          </label>
+          <SelectOption
+            options={getObjectsBeforeMatch(
+              MANAGER_ASSIGN_TO_USER,
+              formData.role_name
+            )}
+            onChange={(newValue) =>
+              handleChangeAssignManager(newValue, 'assigned_Manager')
+            }
+            value={MANAGER_ASSIGN_TO_USER.find(
+              (option) => option?.value === formData.assigned_Manager
+            )}
+          />
+        </div>
+      )}
 
       {(formData?.role_name === 'Sale Representative' ||
         formData?.role_name === 'Regional Manager' ||

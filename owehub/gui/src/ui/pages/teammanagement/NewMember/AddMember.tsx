@@ -64,11 +64,15 @@ const AddMember: React.FC<createUserProps> = ({
   };
 
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
-  const [selectedDropdown, setSelectDropdown] = useState<Option | undefined>(undefined);
-  const [selectedRole, setSelectedRole] = useState<Option | undefined>(undefined);
+  const [selectedDropdown, setSelectDropdown] = useState<Option | undefined>(
+    undefined
+  );
+  const [selectedRole, setSelectedRole] = useState<Option | undefined>(
+    undefined
+  );
   const [loadingSubmit, setLoadingSubmit] = useState(false); // Add loadingSubmit state
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({}); 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleSelectChange = (selectedOption: Option | null) => {
     if (selectedOption) {
@@ -127,7 +131,7 @@ const AddMember: React.FC<createUserProps> = ({
       const isSalesRep = team_dropdown.find(
         (item: any) => item.rep_code === selectedDropdown.value
       );
-      setSelectedRole(undefined)
+      setSelectedRole(undefined);
       if (isSalesRep.user_roles === TYPE_OF_USER.SALES_REPRESENTATIVE) {
         setRoles((prev) =>
           prev.filter(
@@ -151,12 +155,11 @@ const AddMember: React.FC<createUserProps> = ({
     if (!selectedDropdown) {
       validationErrors.user = 'User is required.';
     }
-   
-    
+
     if (!selectedRole) {
       validationErrors.role = 'Role is required.';
     }
-  
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -189,9 +192,8 @@ const AddMember: React.FC<createUserProps> = ({
     }
   };
 
-
-  console.log(errors, "Errors")
-  console.log(selectedDropdown, selectedRole, selectedOptions)
+  console.log(errors, 'Errors');
+  console.log(selectedDropdown, selectedRole, selectedOptions);
 
   return (
     <div className="transparent-model">
@@ -227,21 +229,21 @@ const AddMember: React.FC<createUserProps> = ({
                     </label>
                     <SelectOption
                       options={userOptions}
-                      menuPosition='fixed'
-                     menuListStyles={{height:"150px"}}
+                      menuPosition="fixed"
+                      menuListStyles={{ height: '150px' }}
                       value={selectedDropdown}
                       onChange={handleSelectDropdown}
                     />
-                      {errors.user && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.user}
-                    </span>
-                  )}
+                    {errors.user && (
+                      <span
+                        style={{
+                          display: 'block',
+                        }}
+                        className="error"
+                      >
+                        {errors.user}
+                      </span>
+                    )}
                   </div>
                   <div className="tm-create-input-field">
                     <label
@@ -252,21 +254,20 @@ const AddMember: React.FC<createUserProps> = ({
                     </label>
                     <SelectOption
                       options={roles}
-                      menuPosition='fixed'
-
+                      menuPosition="fixed"
                       value={selectedRole}
                       onChange={handleSelectChange}
                     />
-                     {errors.role && (
-                    <span
-                      style={{
-                        display: 'block',
-                      }}
-                      className="error"
-                    >
-                      {errors.role}
-                    </span>
-                  )}
+                    {errors.role && (
+                      <span
+                        style={{
+                          display: 'block',
+                        }}
+                        className="error"
+                      >
+                        {errors.role}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="create-input-container"></div>

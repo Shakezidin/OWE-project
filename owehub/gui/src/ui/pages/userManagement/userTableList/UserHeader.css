@@ -21,7 +21,7 @@ button.trash-btn {
   gap: 1rem;
 }
 
-.user-dropdown.hover-effect{
+.user-dropdown.hover-effect {
   z-index: 100;
   padding: 1px 4px 0;
   transition: all 0.3s ease;
@@ -41,9 +41,8 @@ button.trash-btn {
     align-items: center;
     width: 100%;
   }
-  .delete-icon-container{
+  .delete-icon-container {
     gap: 1.2rem;
     width: 100%;
   }
 }
-

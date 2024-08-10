@@ -27,7 +27,7 @@ const MyProfile = () => {
   const userName = userDetail?.name;
   const [isEditMode, setIsEditMode] = useState(true);
   const [isEditModee, setIsEditModee] = useState(true);
-  const [preferredName, setPreferredName] = useState<any>('')
+  const [preferredName, setPreferredName] = useState<any>('');
   const [dealerCode, setDealerCode] = useState('');
   const [newFormData, setNewFormData] = useState<any>([]);
 
@@ -90,16 +90,15 @@ const MyProfile = () => {
       country: country,
       city: city,
       state: state,
-      preferred_name:preferredName,
-      dealer_code:dealerCode
+      preferred_name: preferredName,
+      dealer_code: dealerCode,
     };
     Promise.resolve(dispatch(updateUser(data))).then(() => {
       toast.success('Successfully Updated');
       setIsEditMode(!isEditMode);
-      if(role === TYPE_OF_USER.DEALER_OWNER){
+      if (role === TYPE_OF_USER.DEALER_OWNER) {
         setIsEditModee(!isEditModee);
       }
-
     });
   };
 
@@ -109,10 +108,9 @@ const MyProfile = () => {
     // setZipCode('');
     setCountry(userDetail.country);
     setState(userDetail.state);
-    if(role === TYPE_OF_USER.DEALER_OWNER){
-    setPreferredName(userDetail.preferred_name)
+    if (role === TYPE_OF_USER.DEALER_OWNER) {
+      setPreferredName(userDetail.preferred_name);
     }
-    
   };
 
   const handleStreetChange = (e: any) => {
@@ -172,7 +170,6 @@ const MyProfile = () => {
     city: '',
     state: '',
   });
- 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -258,7 +255,6 @@ const MyProfile = () => {
               </div>
             </div>
           </div>
-        
 
           <div className="Personal-container-detail">
             <div className="personal-section">
@@ -345,57 +341,52 @@ const MyProfile = () => {
               </div>
             </div>
           </div>
-          
-          {role === TYPE_OF_USER.DEALER_OWNER ?
-          <div className="Personal-container-detail">
-            <div className="personal-section">
-              <div className="">
-                <p>Other Details</p>
+
+          {role === TYPE_OF_USER.DEALER_OWNER ? (
+            <div className="Personal-container-detail">
+              <div className="personal-section">
+                <div className="">
+                  <p>Other Details</p>
+                </div>
+                <div
+                  className={`edit-section ${!isEditMode ? 'active-edit-section' : ''}`}
+                  onClick={() => {
+                    setIsEditMode(!isEditMode);
+                  }}
+                >
+                  <img src={ICONS.editIcon} alt="" />
+                  <p>Edit</p>
+                </div>
               </div>
               <div
-                className={`edit-section ${!isEditMode ? 'active-edit-section' : ''}`}
-                onClick={() => {
-                  setIsEditMode(!isEditMode);
-                }}
+                className="create-input-container"
+                style={{ padding: '0.5rem', marginLeft: '1rem' }}
               >
-                <img src={ICONS.editIcon} alt="" />
-                <p>Edit</p>
+                <div className="create-input-field-address">
+                  <Input
+                    type={'text'}
+                    label="Dealer Code"
+                    value={dealerCode}
+                    name=""
+                    placeholder={'Enter'}
+                    onChange={(e) => setDealerCode(e.target.value)}
+                    disabled={isEditMode}
+                  />
+                </div>
+                <div className="create-input-field-address">
+                  <Input
+                    type={'text'}
+                    label="Preferred Name"
+                    value={preferredName}
+                    name=""
+                    placeholder={'Enter'}
+                    onChange={(e) => setPreferredName(e.target.value)}
+                    disabled={isEditMode}
+                  />
+                </div>
               </div>
             </div>
-            <div
-              className="create-input-container"
-              style={{ padding: '0.5rem', marginLeft: '1rem' }}
-            >
-              <div className="create-input-field-address">
-                <Input
-                  type={'text'}
-                  label="Dealer Code"
-                  value={dealerCode}
-                  name=""
-                  placeholder={'Enter'}
-                  onChange={(e) => setDealerCode(e.target.value)}
-                  disabled={isEditMode}
-                />
-                
-              </div>
-              <div className="create-input-field-address">
-                <Input
-                  type={'text'}
-                  label="Preferred Name"
-                  value={preferredName}
-                  name=""
-                  placeholder={'Enter'}
-                  onChange={(e) => setPreferredName(e.target.value)}
-                  disabled={isEditMode}
-                />
-                
-              </div>
-            
-            </div>
-           
-             
-          </div>
-          : null }
+          ) : null}
 
           <div className="">
             <div className="profile-reset">

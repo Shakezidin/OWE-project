@@ -261,8 +261,8 @@ export const ICONS = {
   TransparentLogo: TransparentLogo,
   SolarSun: SolarSun,
   Sorting: Sorting,
-  BellPr:BellPr,
-  locationpr:locationpr,
-  Phone:Phone,
-  Techie:Techie,
+  BellPr: BellPr,
+  locationpr: locationpr,
+  Phone: Phone,
+  Techie: Techie,
 };

@@ -76,7 +76,6 @@
   margin-top: 1rem;
 } */
 
-
 .project-card-container-1 {
   display: grid;
   grid-template-columns: repeat(2, minmax(200px, 1fr));
@@ -102,8 +101,6 @@
 .project-card-container-1 .project-card:hover::after {
   opacity: 1;
 }
-
-
 
 .project-card-container-2 {
   margin-top: 1rem;
@@ -132,15 +129,9 @@
   opacity: 1;
 }
 
-
-
-
-
-
 .rounded-8 {
   position: relative;
   transition: transform 0.3s ease;
- 
 }
 
 .rounded-8:hover {
@@ -152,7 +143,6 @@
 .rounded-8:hover::after {
   border-radius: 0 0 8px 8px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
- 
 }
 
 .rounded-8:hover::after {
@@ -174,11 +164,6 @@
 .rounded-8:hover .popup {
   z-index: 10;
 }
-
-
-
-
-
 
 .project-card {
   padding: 1rem;
@@ -360,9 +345,6 @@
   font-weight: normal;
 }
 
-
-
-
 .pop-head {
   font-size: 16px;
   font-weight: 600;
@@ -492,7 +474,6 @@
 .proper-top {
   display: flex;
   justify-content: space-between;
-
 }
 
 .proper-select {
@@ -505,7 +486,7 @@
 }
 
 .proper-select button {
-  background-color: #377CF6;
+  background-color: #377cf6;
   color: white;
   font-size: 14px;
   font-weight: 500;
@@ -520,29 +501,25 @@
 
 .proper-select button:hover {
   background-color: #003da7;
-  border: 1px solid #377CF6;
+  border: 1px solid #377cf6;
   transform: scale(1.06);
 }
 
-.reset-calender{
+.reset-calender {
   transition: transform 0.3s ease;
 }
-.reset-calender:hover{
+.reset-calender:hover {
   transform: scale(1.07);
   background-color: #003da7;
 }
 
-.apply-calender{
+.apply-calender {
   transition: transform 0.3s ease;
 }
-.apply-calender:hover{
+.apply-calender:hover {
   transform: scale(1.07);
   background-color: #003da7;
 }
-
-
-
-
 
 .status-number {
   width: 25px;
@@ -752,7 +729,6 @@
   transition: transform 0.3s ease;
 }
 
-
 @media (max-width: 1400px) {
   .date-para {
     font-size: 11px;
@@ -897,11 +873,14 @@
   border-radius: 8px;
   cursor: pointer;
   z-index: 1000;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding-left 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    padding-left 0.3s ease;
 }
 
 .per-head-input:hover {
-  background-color: #DDEBFF;
+  background-color: #ddebff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   padding-left: 8px;
 }
@@ -911,11 +890,8 @@
 }
 
 .per-head-input:hover .per-date-button {
-  background-color: #DDEBFF;
+  background-color: #ddebff;
 }
-
-
-
 
 .per-calender-container {
   position: absolute;
@@ -942,14 +918,10 @@
   line-height: 14.5px;
   user-select: none;
   cursor: pointer !important;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
 }
-
-
-
-
-
-
 
 @media (max-width: 767px) {
   .project-card-container-1 {
@@ -1004,11 +976,9 @@
     margin: 10px;
   }
 
-
   .proper-top {
     display: flex;
     flex-direction: column;
-
   }
 
   .proper-select {
@@ -1016,5 +986,4 @@
     gap: 5px;
     margin-bottom: 16px;
   }
-
 }

@@ -694,16 +694,9 @@ const Table = ({
     // Define the headers for the CSV
 
     setIsExporting(true);
-    const headers = [
-      'Rank',
-      'Name',
-      'Sale',
-      'NTP',
-      'Install',
-      'Cancel',
-    ];
-    if (showPartner ) {
-      headers.splice(2, 0,'Partner');
+    const headers = ['Rank', 'Name', 'Sale', 'NTP', 'Install', 'Cancel'];
+    if (showPartner) {
+      headers.splice(2, 0, 'Partner');
     }
     const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
       type: activeHead,

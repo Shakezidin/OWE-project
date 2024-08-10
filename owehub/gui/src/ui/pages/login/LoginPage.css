@@ -23,13 +23,13 @@
   background: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.9));
   background-color: rgba(0, 0, 0, 0.3);
 } */
-.solar-sun{
-    position: absolute;
-    bottom: 45%;
-    right: -35%;
-    /* z-index: 10; */
+.solar-sun {
+  position: absolute;
+  bottom: 45%;
+  right: -35%;
+  /* z-index: 10; */
 }
-.solar-sun img{
+.solar-sun img {
   width: 70%;
 }
 .login-input {
@@ -39,7 +39,7 @@
   margin: 2rem 0;
 }
 .login-button {
-  background-color: #0094CD;
+  background-color: #0094cd;
   border: none;
   border-radius: 0.7rem;
   color: #fff;
@@ -58,11 +58,11 @@
   transform: scale(1.07);
 }
 .battery-calc-button {
-  background-color: #F9F8F7;
+  background-color: #f9f8f7;
   border: none;
-  border: 1px solid #8ECC00;
+  border: 1px solid #8ecc00;
   border-radius: 1rem;
-  color: #1A1A1A;
+  color: #1a1a1a;
   font-size: 1rem;
   font-style: normal;
   font-weight: 500;
@@ -88,11 +88,11 @@
   justify-content: flex-start;
   flex-direction: column;
   z-index: 4;
-  padding: 3rem
+  padding: 3rem;
 }
 
 .reset-password {
-  color: #3FAED9;
+  color: #3faed9;
   border: none;
   outline: none;
   font-size: 13px;
@@ -139,7 +139,7 @@
 }
 
 input:checked + .slider {
-  background-color: #0094CD;
+  background-color: #0094cd;
 }
 
 input:focus + .slider {
@@ -189,7 +189,7 @@ input:checked + .slider:before {
   border: 1px solid var(--white-color);
 }
 
-.loginTopText{
+.loginTopText {
   color: #fff;
 }
 
@@ -227,11 +227,11 @@ input:checked + .slider:before {
   padding: 3rem;
   width: 430px;
   /* height: 500px; */
-  border: 1px solid #8ECC00;
+  border: 1px solid #8ecc00;
 }
 
 .loginHeader {
-  color: #1A1A1A;
+  color: #1a1a1a;
   font-size: 2rem;
   font-style: normal;
   font-weight: 500;
@@ -249,7 +249,7 @@ input:checked + .slider:before {
   justify-content: center;
   align-items: center;
 }
-.loginLogowithText svg{
+.loginLogowithText svg {
   width: 40px;
   height: 40px;
 }
@@ -271,17 +271,17 @@ input:checked + .slider:before {
   line-height: 40px; /* 166.667% */
 }
 
-.login-input .input-inner-view{
+.login-input .input-inner-view {
   border: none;
   border-bottom: 1px solid #d0d5dd;
   border-radius: unset !important;
 }
-.login-input .input-inner-view svg{
+.login-input .input-inner-view svg {
   height: 1rem;
   width: 1rem;
 }
-.login-input .input-inner-view .input{
-  color: #1A1A1A;
+.login-input .input-inner-view .input {
+  color: #1a1a1a;
   font-size: 1rem;
   font-weight: 300;
 }
@@ -383,21 +383,21 @@ p.loginResendOtp {
     flex: 0 0;
     align-items: center;
   }
-  .loginBox2{
+  .loginBox2 {
     padding: unset;
   }
-  .solar-sun{
+  .solar-sun {
     position: relative;
     bottom: 140%;
     right: -50%;
   }
-  .solar-sun img{
+  .solar-sun img {
     width: 100%;
   }
   .mainContainer {
     background-position: 25%;
   }
-  .container{
+  .container {
     overflow: hidden;
   }
 }
@@ -410,41 +410,41 @@ p.loginResendOtp {
   #loginNormalText {
     font-size: 30px;
   }
-  .loginSwitchView{
+  .loginSwitchView {
     flex-direction: column;
     gap: 2rem;
     margin-bottom: 1rem;
   }
-  .solar-sun{
+  .solar-sun {
     display: none;
   }
-  .loginGoBackLink{
+  .loginGoBackLink {
     margin-top: 2rem;
   }
-  .loginBox{
+  .loginBox {
     padding: 1rem 0;
     font-size: 14px;
   }
-  .loginBox object{
+  .loginBox object {
     width: 250px;
   }
-  .loginTopText{
+  .loginTopText {
     margin-top: 10px;
   }
-  .hrLine{
+  .hrLine {
     width: 19rem;
   }
-  .loginBox2{
+  .loginBox2 {
     align-items: unset;
     margin: 1rem;
   }
   #loginNormalText1 {
     font-size: 14px;
   }
-  .battery-calc-button{
+  .battery-calc-button {
     width: 100%;
   }
-  .container{
+  .container {
     gap: unset;
     overflow: auto;
   }

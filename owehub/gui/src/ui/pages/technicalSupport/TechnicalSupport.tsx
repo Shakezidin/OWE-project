@@ -267,7 +267,10 @@ const TechnicalSupport: React.FC = () => {
               <p>Get In Touch with us for more Information</p>
             </div>
 
-            <div className="create-input-container-support" style={{marginTop: "0px"}}>
+            <div
+              className="create-input-container-support"
+              style={{ marginTop: '0px' }}
+            >
               <div className="create-input-field-support hide">
                 <Input
                   type={'text'}
@@ -340,9 +343,7 @@ const TechnicalSupport: React.FC = () => {
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
 
-              <div
-                className="create-input-field-support hide"
-              >
+              <div className="create-input-field-support hide">
                 <label className="inputLabel">Phone Number</label>
                 <PhoneInput
                   countryCodeEditable={false}
@@ -366,7 +367,10 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
 
-            <div className="create-input-container-support" style={{ marginBottom: "1rem", marginTop: "0px" }}>
+            <div
+              className="create-input-container-support"
+              style={{ marginBottom: '1rem', marginTop: '0px' }}
+            >
               <div className="create-input-field-support">
                 <label
                   className="inputLabel-select select-type-label"

@@ -47,8 +47,6 @@
     visibility 0s linear;
 }
 
-
-
 .team-card-heading {
   font-size: 16px;
   font-weight: 600;
@@ -59,21 +57,6 @@
   word-wrap: break-word;
   hyphens: auto;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .team-card-p {
   font-size: 11px;
@@ -256,9 +239,11 @@
   margin-top: 14px;
   margin-right: 12px;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
 }
-.team-button-sec button:hover{
+.team-button-sec button:hover {
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
@@ -281,7 +266,7 @@
   font-weight: 600;
   line-height: 30px;
 }
-.user-mg{
+.user-mg {
   border-radius: 2rem;
   text-align: center;
   padding: 5px 10px;
@@ -291,13 +276,13 @@
   text-transform: capitalize;
   font-weight: 500;
 }
-.user-namg{
+.user-namg {
   border-radius: 2rem;
   text-align: center;
   padding: 5px 10px;
   background: #ffe6da;
   width: 90px;
-  color: #EE824D;
+  color: #ee824d;
   text-transform: capitalize;
   font-weight: 500;
 }
@@ -307,20 +292,20 @@
   cursor: pointer;
   padding-top: 5px;
 }
- 
-.team-members p{
+
+.team-members p {
   font-size: 13px;
   font-weight: 500;
   color: #263747;
   margin-top: 7px;
 }
- 
-.team-table-container{
+
+.team-table-container {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
- 
+
 .team-input {
   border: none;
   outline: none;
@@ -334,12 +319,16 @@
   color: #263747;
 }
 
-.done-icon, .edit-icon{
-  transition: transform 0.3s ease, background-color 0.3s ease;
+.done-icon,
+.edit-icon {
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
   cursor: pointer;
   margin-top: 5px;
 }
-.done-icon:hover, .edit-icon:hover{
+.done-icon:hover,
+.edit-icon:hover {
   transform: scale(1.07);
 }
 
@@ -347,16 +336,13 @@
   .team-cards {
     gap: 16px;
   }
- 
 }
- 
 
 @media screen and (max-width: 1024px) {
   .team-cards {
     gap: 16px;
   }
 }
-
 
 .teamdash-header {
   display: flex;
@@ -365,15 +351,15 @@
   margin-top: 5px;
   margin-bottom: 15px;
 }
-.teamdash-header h1{
+.teamdash-header h1 {
   font-weight: 600;
   font-size: 28px;
 }
 .dash-newteam .create {
   background-color: #ffffff;
-  color: #377CF6;
+  color: #377cf6;
   padding: 6.33px, 8.13px, 6.33px, 8.13px;
-  border: 1px solid #377CF6;
+  border: 1px solid #377cf6;
   border-radius: 8px;
   height: 38px;
   width: 180px;
@@ -400,22 +386,16 @@
   transform: scale(1.07);
 }
 
-
-.dash-newteam{
+.dash-newteam {
   display: flex;
   flex-direction: row;
   gap: 10px;
 }
 
-
-
-
-.team-checkbox-wrapper{
+.team-checkbox-wrapper {
   display: flex;
   justify-content: space-between;
 }
-
-
 
 .team-checkbox {
   appearance: none;
@@ -442,4 +422,3 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-

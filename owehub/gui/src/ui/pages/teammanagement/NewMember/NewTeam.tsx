@@ -133,7 +133,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     );
 
     setManagerOptions((prev) => [...prev, { ...optionToRemove }]);
-    
+
     setMembersOption((prev) => [...prev, { ...optionToRemove }]);
   };
 
@@ -177,7 +177,14 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     ) {
       userCode = managers.find((item) => item.email === email);
     }
-    console.log(userCode,"user",selectedOptions2,"memeber",selectedOptions,"managers")
+    console.log(
+      userCode,
+      'user',
+      selectedOptions2,
+      'memeber',
+      selectedOptions,
+      'managers'
+    );
     const validationErrors: { [key: string]: string } = {};
 
     if (formData.first_name.trim() === '') {
@@ -212,7 +219,10 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
   useEffect(() => {
     const roleAdmin = localStorage.getItem('role');
-    if ((roleAdmin !== TYPE_OF_USER.ADMIN || roleAdmin !== TYPE_OF_USER.FINANCE_ADMIN)) {
+    if (
+      roleAdmin !== TYPE_OF_USER.ADMIN ||
+      roleAdmin !== TYPE_OF_USER.FINANCE_ADMIN
+    ) {
       (async () => {
         const data: { [key: string]: any } = await getUsersByDealer('');
         if (data?.data?.sale_rep_list) {
@@ -316,7 +326,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                     )}
                   </div>
 
-                  {(userRole === 'Admin' || userRole === TYPE_OF_USER.FINANCE_ADMIN) && (
+                  {(userRole === 'Admin' ||
+                    userRole === TYPE_OF_USER.FINANCE_ADMIN) && (
                     <div className="tm-new-create-input-field">
                       <label
                         className="inputLabel-select"

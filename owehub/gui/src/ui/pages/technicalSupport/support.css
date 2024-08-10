@@ -78,7 +78,6 @@
 }
 .reset-Update-support:hover {
   transform: scale(1.03);
-  
 }
 .reset-Update-support button {
   width: 280px;
@@ -97,7 +96,7 @@
   border-radius: 8px;
   transition: background-color 0.3s ease;
 }
-.reset-Update-support button:hover{
+.reset-Update-support button:hover {
   background-color: #0644af;
 }
 
@@ -113,11 +112,11 @@
   transition: background-color 0.3s ease;
 }
 .file-input-container:hover {
-  background-color: #DDEBFF;
+  background-color: #ddebff;
 }
 
 .file-input-container:hover .custom-button {
-  background-color: #DDEBFF;
+  background-color: #ddebff;
 }
 
 .file-input {
@@ -244,7 +243,7 @@
   .support-container {
     width: 100%;
   }
-  .touch-container{
+  .touch-container {
     width: 100%;
   }
 }

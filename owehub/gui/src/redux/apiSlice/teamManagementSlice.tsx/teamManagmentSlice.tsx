@@ -7,7 +7,7 @@ import {
   getsaleRepList,
   createTeam,
   manageTeam,
-  getTeamMemberDropdown
+  getTeamMemberDropdown,
 } from '../../apiActions/teamManagement/teamManagement';
 
 interface IState {
@@ -21,7 +21,7 @@ interface IState {
   isSuccess: boolean;
   isMove: boolean;
   totalcount: number;
-  team_dropdown:any[];
+  team_dropdown: any[];
 }
 
 const initialState: IState = {
@@ -35,7 +35,7 @@ const initialState: IState = {
   isSuccess: false,
   isMove: false,
   totalcount: 0,
-  team_dropdown:[],
+  team_dropdown: [],
 };
 
 const teamManagementSlice = createSlice({
@@ -46,9 +46,9 @@ const teamManagementSlice = createSlice({
       state.isSuccess = false;
       state.isMove = false;
     },
-    resetTeams:(state)=>{
-      state.teams = []
-    }
+    resetTeams: (state) => {
+      state.teams = [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -70,7 +70,7 @@ const teamManagementSlice = createSlice({
       .addCase(getTeam.fulfilled, (state, action) => {
         state.isLoading = false;
         state.team = action.payload.data;
-        state.totalcount = action.payload.dbRecCount
+        state.totalcount = action.payload.dbRecCount;
       })
       .addCase(getTeam.rejected, (state, action) => {
         state.isLoading = false;
@@ -135,9 +135,8 @@ const teamManagementSlice = createSlice({
       })
       .addCase(getTeamMemberDropdown.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
-        state.team_dropdown= action.payload;
+        state.team_dropdown = action.payload;
         state.error = '';
-      
       })
       .addCase(getTeamMemberDropdown.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -147,6 +146,6 @@ const teamManagementSlice = createSlice({
   },
 });
 
-export const { resetSuccess,resetTeams } = teamManagementSlice.actions;
+export const { resetSuccess, resetTeams } = teamManagementSlice.actions;
 
 export default teamManagementSlice.reducer;

@@ -121,7 +121,11 @@ const ResetPassword = () => {
                   Request OTP
                 </button>
               </div>
-              <Link to={ROUTES.LOGIN} className="loginGoBackLink" style={{marginTop: "6rem"}}>
+              <Link
+                to={ROUTES.LOGIN}
+                className="loginGoBackLink"
+                style={{ marginTop: '6rem' }}
+              >
                 <FaArrowLeft />
                 <span>Go back to login screen</span>
               </Link>
