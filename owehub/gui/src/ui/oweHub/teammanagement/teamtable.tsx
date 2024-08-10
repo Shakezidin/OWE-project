@@ -27,6 +27,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { showAlert } from '../../components/alert/ShowAlert';
 import { checkLastPage } from '../../../utiles';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 interface User {
   name: string;
   phoneNumber: string;
@@ -202,6 +203,7 @@ const TeamTable: React.FC = () => {
   };
 
   console.log(role, 'role');
+  const isMobile = useMatchMedia('(max-width: 767px)');
 
   return (
     <>
@@ -211,10 +213,11 @@ const TeamTable: React.FC = () => {
           linkPara="Team Management"
           route={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
           linkparaSecond="Team Details"
+          marginLeftMobile="10px"
         />
         {role === TYPE_OF_USER.ADMIN ||
-        role === TYPE_OF_USER.DEALER_OWNER ||
-        team?.logged_in_member_role === 'manager' ? (
+          role === TYPE_OF_USER.DEALER_OWNER ||
+          team?.logged_in_member_role === 'manager' ? (
           <>
             {open && (
               <AddMember
@@ -237,72 +240,79 @@ const TeamTable: React.FC = () => {
           />
         )}
         <div className="dashBoard-container">
-          <div
-            className="TableContainer"
-            style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '85vh' }}
-          >
-            <div className="team-table-top">
-              <div className="team-members-top">
-                <div className="team-members">
-                  <div className="team-table-container">
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        ref={inputRef}
-                        value={inputValue}
-                        className="team-input"
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onClick={(e) => e.stopPropagation()}
-                        readOnly={!isEditing}
-                      />
-                    ) : (
-                      <h4
-                        style={{
-                          fontSize: '1.5rem',
-                          color: '#263747',
-                          fontWeight: 600,
-                        }}
-                      >
-                        {inputValue.length > 20
+          <div className="team-table-top">
+            <div className="team-members-top">
+              <div className="team-members">
+                <div className="team-table-container">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      ref={inputRef}
+                      value={inputValue}
+                      className="team-input"
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      readOnly={!isEditing}
+                      style={{ width: isMobile ? '200px' : 'auto' }}
+                    />
+                  ) : (
+                    <h4
+                      style={{
+                        fontSize: isMobile ? '1.2rem' : '1.5rem',
+                        color: '#263747',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {isMobile
+                        ? inputValue.length > 15
+                          ? inputValue.slice(0, 15).concat('...')
+                          : inputValue
+                        : inputValue.length > 20
                           ? inputValue.slice(0, 20).concat('...')
                           : inputValue}
-                      </h4>
+                    </h4>
+                  )}
+                  <div>
+                    {isEditing ? (
+                      <div>
+                        <MdOutlineDone
+                          className="done-icon"
+                          onClick={handleUpdateName}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <BiEditAlt
+                          className="edit-icon"
+                          onClick={handleIconClick}
+                        />
+                      </div>
                     )}
-                    <div>
-                      {isEditing ? (
-                        <div>
-                          <MdOutlineDone
-                            className="done-icon"
-                            onClick={handleUpdateName}
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <BiEditAlt
-                            className="edit-icon"
-                            onClick={handleIconClick}
-                          />
-                        </div>
-                      )}
-                    </div>
                   </div>
-                  <p>
-                    {team?.manager_count} Managers, {team?.MemberCount} Member
-                  </p>
                 </div>
+                <p>
+                  {team?.manager_count} Managers, {team?.MemberCount} Member
+                </p>
               </div>
-              {role !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
-                <div className="team-button-sec">
-                  {team?.logged_in_member_role === 'manager' ||
+            </div>
+
+            {role !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+              <div className="team-button-sec">
+                {team?.logged_in_member_role === 'manager' ||
                   role === TYPE_OF_USER.ADMIN ||
                   role === TYPE_OF_USER.FINANCE_ADMIN ||
                   role === TYPE_OF_USER.DEALER_OWNER ||
                   role === TYPE_OF_USER.SUB_DEALER_OWNER ? (
-                    <button onClick={handleOpen}>+ Add New Member</button>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
+                  <button onClick={handleOpen}>+ <span>Add New Member</span></button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+          <div
+            className="TableContainer"
+            style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '85vh' }}
+          >
+
             <table>
               <thead>
                 <tr>
@@ -334,7 +344,7 @@ const TeamTable: React.FC = () => {
                           color: '#667085',
                           transform:
                             sortKey === 'sale_rep_name' &&
-                            sortDirection === 'asc'
+                              sortDirection === 'asc'
                               ? 'rotate(180deg)'
                               : undefined,
                         }}
@@ -386,7 +396,7 @@ const TeamTable: React.FC = () => {
                           color: '#667085',
                           transform:
                             sortKey === 'phone_number' &&
-                            sortDirection === 'asc'
+                              sortDirection === 'asc'
                               ? 'rotate(180deg)'
                               : undefined,
                         }}
@@ -455,18 +465,18 @@ const TeamTable: React.FC = () => {
                             paddingLeft: '30px',
                             cursor:
                               UserEmail !== item.email &&
-                              (role === TYPE_OF_USER.ADMIN ||
-                                role === TYPE_OF_USER.DEALER_OWNER ||
-                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
-                                ((role === TYPE_OF_USER.SALE_MANAGER ||
-                                role === TYPE_OF_USER.REGIONAL_MANGER
-                                  ? UserEmail !== item.email_id
-                                  : true) &&
-                                  team?.logged_in_member_role === 'manager')) &&
-                              !(
-                                team?.manager_count <= 1 &&
-                                item.role === 'manager'
-                              )
+                                (role === TYPE_OF_USER.ADMIN ||
+                                  role === TYPE_OF_USER.DEALER_OWNER ||
+                                  role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                  ((role === TYPE_OF_USER.SALE_MANAGER ||
+                                    role === TYPE_OF_USER.REGIONAL_MANGER
+                                    ? UserEmail !== item.email_id
+                                    : true) &&
+                                    team?.logged_in_member_role === 'manager')) &&
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
                                 ? 'pointer'
                                 : 'not-allowed',
                             opacity:
@@ -475,14 +485,14 @@ const TeamTable: React.FC = () => {
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 ((role === TYPE_OF_USER.SALE_MANAGER ||
-                                role === TYPE_OF_USER.REGIONAL_MANGER
+                                  role === TYPE_OF_USER.REGIONAL_MANGER
                                   ? UserEmail !== item.email_id
                                   : true) &&
                                   team?.logged_in_member_role === 'manager')) &&
-                              !(
-                                team?.manager_count <= 1 &&
-                                item.role === 'manager'
-                              )
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
                                 ? '1'
                                 : '0.5',
                           }}
@@ -493,7 +503,7 @@ const TeamTable: React.FC = () => {
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 ((role === TYPE_OF_USER.SALE_MANAGER ||
-                                role === TYPE_OF_USER.REGIONAL_MANGER
+                                  role === TYPE_OF_USER.REGIONAL_MANGER
                                   ? UserEmail !== item.email_id
                                   : true) &&
                                   team?.logged_in_member_role === 'manager') ||
@@ -515,10 +525,10 @@ const TeamTable: React.FC = () => {
                               stroke: '0.2',
                               pointerEvents:
                                 role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&
-                                !(
-                                  team?.manager_count <= 1 &&
-                                  item.role === 'manager'
-                                )
+                                  !(
+                                    team?.manager_count <= 1 &&
+                                    item.role === 'manager'
+                                  )
                                   ? 'auto'
                                   : 'none',
                             }}
