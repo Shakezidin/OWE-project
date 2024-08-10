@@ -250,7 +250,11 @@ const TeamTable: React.FC = () => {
                       ref={inputRef}
                       value={inputValue}
                       className="team-input"
-                      onChange={(e) => setInputValue(e.target.value)}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 200) {
+                          setInputValue(e.target.value);
+                        }
+                      }}
                       onClick={(e) => e.stopPropagation()}
                       readOnly={!isEditing}
                       style={{ width: isMobile ? '200px' : 'auto' }}
