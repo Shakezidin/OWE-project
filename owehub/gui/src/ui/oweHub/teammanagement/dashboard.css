@@ -468,3 +468,10 @@
     width: 155px;
   }
 }
+
+.team-members .error-message{
+  color: red !important;
+  font-size: 12px !important;
+  margin-top: 5px !important;
+  line-height: 2px;
+}
