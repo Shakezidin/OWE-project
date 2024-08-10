@@ -1,5 +1,5 @@
 /**
- * Created by satishazad on 17/01/24
+ * Created by Ankit Chuahan on 17/01/24
  * File Name: ActionButton
  * Product Name: WebStorm
  * Project Name: commission_app
@@ -8,7 +8,7 @@
 
 import React from 'react';
 import './ActionButton.css';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 
 interface ActionButtonProps {
   title: string;

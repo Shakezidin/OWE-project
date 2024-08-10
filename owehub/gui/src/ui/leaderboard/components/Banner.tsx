@@ -1,5 +1,5 @@
 import './Banner.css';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import { LiaEdit } from 'react-icons/lia';
 import EditModal from './EditModal';
 import { useState, useEffect, useRef } from 'react';

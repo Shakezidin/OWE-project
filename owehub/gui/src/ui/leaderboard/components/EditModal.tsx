@@ -1,5 +1,5 @@
 import './Modal.css';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import { GoUpload } from 'react-icons/go';
 import {
   Dispatch,

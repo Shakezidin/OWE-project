@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../styles/pendrev.css';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 
 const PendingReview = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

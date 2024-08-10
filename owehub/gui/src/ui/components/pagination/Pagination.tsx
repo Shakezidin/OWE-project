@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import '../pagination/pagination.css';
 
 import { MdArrowForwardIos, MdArrowBackIos } from 'react-icons/md';
