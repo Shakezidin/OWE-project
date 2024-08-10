@@ -2,7 +2,7 @@ import './Banner.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import { LiaEdit } from 'react-icons/lia';
 import EditModal from './EditModal';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, SetStateAction } from 'react';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Select, { Options } from 'react-select';
@@ -20,6 +20,7 @@ interface BannerProps {
   bannerDetails: any;
   groupBy: string;
   isShowDropdown: boolean;
+  setIsFetched: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const Banner: React.FC<BannerProps> = ({
@@ -28,6 +29,7 @@ const Banner: React.FC<BannerProps> = ({
   bannerDetails,
   groupBy,
   isShowDropdown,
+  setIsFetched,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
@@ -52,9 +54,13 @@ const Banner: React.FC<BannerProps> = ({
     }));
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
+    if(res.status>200){
+      return 
+    }
     setNewFormData(res.data);
     setSelectDealer(leaderDealer(res.data));
     setOpts(leaderDealer(res.data));
+    setIsFetched(true);
   };
   const role = localStorage.getItem('role');
   useEffect(() => {
