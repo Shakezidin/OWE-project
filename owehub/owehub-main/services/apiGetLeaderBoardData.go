@@ -84,6 +84,15 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+
+	if dataReq.Role == "Admin" || dataReq.Role == "Finance Admin" {
+		if len(dataReq.DealerName) == 0 {
+			log.FuncErrorTrace(0, "no dealer name selected")
+			FormAndSendHttpResp(resp, "No Dealer Name selected", http.StatusBadRequest, data)
+			return
+		}
+	}
+
 	if dataReq.Role != "Admin" && dataReq.Role != "Finance Admin" && !(dataReq.Role == "Dealer Owner" && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
