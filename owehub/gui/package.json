@@ -69,12 +69,6 @@
     "build:stage": "env-cmd -f .env.staging react-scripts build",
     "build:prod": "env-cmd -f .env.production react-scripts build"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

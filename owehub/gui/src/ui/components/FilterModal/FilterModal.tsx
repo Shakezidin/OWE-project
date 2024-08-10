@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import OperationSelect from './OperationSelect';
 import { useAppDispatch } from '../../../redux/hooks';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import SelectOption from '../selectOption/SelectOption';
 import Input from '../text_input/Input';
 import { ActionButton } from '../button/ActionButton';
