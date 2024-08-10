@@ -11,7 +11,7 @@ const DashboardTotal: React.FC = () => {
   useEffect(() => {
     dispatch(getDealerPayTileData({ dealer: 'dealer' }));
   }, [dispatch]);
-  
+
   const data1 = [
     {
       doller: '$' + tileData?.amount_prepaid?.toFixed(2),

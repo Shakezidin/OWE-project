@@ -137,7 +137,7 @@ const ArDashBoardTable = ({
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
- 
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -219,7 +219,7 @@ const ArDashBoardTable = ({
   if (error) {
     return <div>{error}</div>;
   }
- 
+
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
 

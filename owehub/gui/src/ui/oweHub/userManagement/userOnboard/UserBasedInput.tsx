@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Input from '../../../components/text_input/Input';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import axios from 'axios';
-import {
-  dealerNameOption,
-} from '../../../../core/models/data_models/SelectDataModel';
+import { dealerNameOption } from '../../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import {

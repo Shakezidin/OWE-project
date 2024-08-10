@@ -4,18 +4,7 @@ import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Select from 'react-select';
-import {
-  installerOption,
-  partnerOption,
-  repTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { respTypeData } from '../../../../resources/static_data/StaticData';
-import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerCreditSlice';
 import {
   createDealerCredit,
@@ -39,9 +28,6 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
   handleClose,
   editMode,
   editData,
-  setViewArchived,
-  page_number,
-  page_size,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -68,22 +54,6 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
   useEffect(() => {
     getNewFormData();
   }, []);
-
-  // const handleValidation = () => {
-  //   const error: typeof dealerCredit = {} as typeof dealerCredit;
-
-  //   for (const key in dealerCredit) {
-  //     if (!dealerCredit[key as keyof typeof dealerCredit]) {
-  //       // Capitalize the first letter of the key'
-  //       const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-  //       // Assign an error message with the capitalized key
-  //       error[key as keyof typeof dealerCredit] = `${capitalizedKey} is required`;
-  //     }
-  //   }
-
-  //   setErrors({ ...error });
-  //   return Object.keys(error).length ? false : true;
-  // };
 
   const handleValidation = () => {
     const error: typeof dealerCredit = {} as typeof dealerCredit;

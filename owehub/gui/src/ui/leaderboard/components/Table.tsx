@@ -492,7 +492,7 @@ const Table = ({
   isExporting,
   count,
   resetDealer,
-  isFetched
+  isFetched,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
@@ -509,7 +509,7 @@ const Table = ({
   isExporting: boolean;
   count: number;
   resetDealer: (value: string) => void;
-  isFetched:boolean
+  isFetched: boolean;
 }) => {
   const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
   const [page, setPage] = useState(1);
@@ -568,7 +568,7 @@ const Table = ({
     selectDealer,
     groupBy,
     isAuthenticated,
-    isFetched
+    isFetched,
   ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;

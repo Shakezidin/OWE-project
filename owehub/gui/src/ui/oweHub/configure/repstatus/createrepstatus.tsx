@@ -9,10 +9,6 @@ import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repstatusSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import {
-  createRepCredit,
-  updateRepCredit,
-} from '../../../../redux/apiActions/config/repCreditAction';
-import {
   createRepStatus,
   updateRepStatus,
 } from '../../../../redux/apiActions/config/repstatusAction';

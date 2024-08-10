@@ -36,7 +36,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const validatePassword = (password: string) => {
     const minLength = 8;
     const hasUppercase = /[A-Z]/.test(password);

@@ -14,9 +14,7 @@ import Loading from '../../components/loader/Loading';
 import { ROUTES } from '../../../routes/routes';
 import { FaArrowLeft } from 'react-icons/fa';
 import ResendOtpButton from './ResendOtpButton';
-import {
-  FormEvent,
-} from '../../../core/models/data_models/typesModel';
+import { FormEvent } from '../../../core/models/data_models/typesModel';
 
 const PasswordInput = (props: {
   placeholder: string;
