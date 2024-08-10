@@ -3,7 +3,6 @@ import './dasboard.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import Input from '../../components/text_input/Input';
 import { ActionButton } from '../../components/button/ActionButton';
-import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 
 interface ButtonProps {
   handleClose: () => void;

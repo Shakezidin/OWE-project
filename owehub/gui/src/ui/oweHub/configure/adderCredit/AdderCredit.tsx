@@ -2,25 +2,19 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchTimeLineSla } from '../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice';
 // import CreateTimeLine from "./CreateTimeLine";
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { AdderCreditsColumn } from '../../../../resources/static_data/configureHeaderData/adderCreditsColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import CreateAdderCredit from './CreateAdderCredit';
 import { fetchAdderCredit } from '../../../../redux/apiActions/config/adderCreditAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import Loading from '../../../components/loader/Loading';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -51,6 +45,7 @@ const AdderCredit = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,

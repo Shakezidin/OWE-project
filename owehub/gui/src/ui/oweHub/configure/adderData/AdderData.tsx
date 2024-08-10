@@ -8,18 +8,13 @@ import {
 } from '../../../../redux/apiActions/config/arAdderDataAction';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { AdderDataColumn } from '../../../../resources/static_data/configureHeaderData/adderDataColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import CreateArAdderData from './CreateArAdderData';
-import Loading from '../../../components/loader/Loading';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -27,6 +22,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const AdderData = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);

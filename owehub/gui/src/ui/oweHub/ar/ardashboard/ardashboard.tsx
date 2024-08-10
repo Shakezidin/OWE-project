@@ -68,6 +68,7 @@ export const ARDashboardPage: React.FC = () => {
   const { filters } = useAppSelector((state) => state.ardata);
   const { isActive } = useAppSelector((state) => state.filterSlice);
   const { pathname } = useLocation();
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -88,17 +89,6 @@ export const ARDashboardPage: React.FC = () => {
   const [selectedOption3, setSelectedOption3] = useState<string>(
     options[0].label
   );
-  const handleSelectChange3 = (
-    selectedOption3: { value: string; label: string } | null
-  ) => {
-    setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
-  };
-  const [selectedOption4, setSelectedOption4] = useState<string>(
-    options3[0].label
-  );
-
-  const [open, setOpen] = useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
 
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));

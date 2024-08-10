@@ -1,10 +1,8 @@
 import React from 'react';
 import './commonConfigure.css';
-import { useState } from 'react';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { CiEdit } from 'react-icons/ci';
 const CommonConfigure: React.FC = () => {
-  // const [activeCard,setActiveCard] = useState(0)
   return (
     <div className="">
       <div className="common-card">

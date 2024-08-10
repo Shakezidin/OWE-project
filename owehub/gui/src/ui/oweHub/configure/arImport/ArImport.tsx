@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
-import { ICONS } from '../../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchTimeLineSla } from '../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice';
-
-import CheckBox from '../../../components/chekbox/CheckBox';
-import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
@@ -15,6 +11,7 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ARImportColumns } from '../../../../resources/static_data/configureHeaderData/ARImportColumn';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
+
 const ArImport = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -27,8 +24,6 @@ const ArImport = () => {
   const timelinesla_list = useAppSelector(
     (state) => state.timelineSla.timelinesla_list
   );
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
-  const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);

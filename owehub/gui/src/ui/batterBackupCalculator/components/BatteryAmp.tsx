@@ -1,15 +1,10 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import on from '../lib/on_switch.png';
 import off from '../lib/off_switch.png';
 import screw from '../lib/construction.svg';
 import { GoCheckCircleFill } from 'react-icons/go';
 import { PiWarningCircleLight } from 'react-icons/pi';
-import {  FaPlus } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa6';
 import { FaMinus } from 'react-icons/fa';
 import jsPDF from 'jspdf';
 import {

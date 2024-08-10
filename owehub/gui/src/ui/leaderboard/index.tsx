@@ -90,10 +90,7 @@ const Index = () => {
 
   useEffect(() => {
     const role = localStorage.getItem('role');
-    if (
-      role !== TYPE_OF_USER.FINANCE_ADMIN &&
-      role !== TYPE_OF_USER.ADMIN
-    ) {
+    if (role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ADMIN) {
       setIsFetched(true);
     }
   }, []);

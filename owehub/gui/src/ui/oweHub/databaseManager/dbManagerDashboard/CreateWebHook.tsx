@@ -6,21 +6,16 @@ import { DealerModel } from '../../../../core/models/configuration/create/Dealer
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import DataTableHeader from '../../../components/tableHeader/DataTableHeader';
 import { FaArrowDown } from 'react-icons/fa6';
-// import CreateDealer from "./CreateDealer";
 
 const CreateWebHook: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [columns, setColumns] = useState<string[]>([]);
 
@@ -46,13 +41,7 @@ const CreateWebHook: React.FC = () => {
     setFilterOpen(true);
     getColumnNames();
   };
-  const handleEditDealer = (dealerData: DealerModel) => {
-    setEditMode(true);
-    // setEditDealer(dealerData);
-    handleOpen();
-  };
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
+
   if (loading) {
     return <div>Loading...</div>;
   }

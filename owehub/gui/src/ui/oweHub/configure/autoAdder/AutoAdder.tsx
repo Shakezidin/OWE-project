@@ -1,39 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import '../configure.css';
-// import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../../resources/icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
-import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
-
-// import FilterCommission from "./FilterCommission";
-
 import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
-import Pagination from '../../../components/pagination/Pagination';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import CreateAutoAdder from './CreateAutoAdder';
 import Loading from '../../../components/loader/Loading';
 import { ROUTES } from '../../../../routes/routes';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { AutoAdderColumn } from '../../../../resources/static_data/configureHeaderData/AutoAdderColumn';
 import { fetchAutoAdder } from '../../../../redux/apiActions/config/AutoAdderAction';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import MicroLoader from '../../../components/loader/MicroLoader';
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
 
 const AutoAdder: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { ActionButton } from '../../../components/button/ActionButton';
 import Input from '../../../components/text_input/Input';
 import SelectOption from '../../../components/selectOption/SelectOption';
@@ -11,7 +11,6 @@ import {
   repTypeOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { respTypeData } from '../../../../resources/static_data/StaticData';
 import {
   FormEvent,
   FormInput,

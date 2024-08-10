@@ -1,17 +1,13 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
-import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { updateUserForm } from '../../../../redux/apiSlice/userManagementSlice/createUserSlice';
-import { CreateUserModel } from '../../../../core/models/api_models/UserManagementModel';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import Loading from '../../../components/loader/Loading';
 import './AddNew.css';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { ICONS } from '../../../../resources/icons/Icons';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { getTeamMemberDropdown } from '../../../../redux/apiActions/teamManagement/teamManagement';
 import { toast } from 'react-toastify';

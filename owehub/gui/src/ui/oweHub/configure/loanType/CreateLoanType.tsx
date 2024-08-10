@@ -5,12 +5,11 @@ import { ActionButton } from '../../../components/button/ActionButton';
 import { updateLoanTypeForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createLoanTypeSlice';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { useDispatch } from 'react-redux';
 import { LoanTypeModel } from '../../../../core/models/configuration/create/LoanTypeModel';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { fetchLoanType } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice';
-import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
+import { errorSwal } from '../../../components/alert/ShowAlert';
 import {
   FormEvent,
   FormInput,

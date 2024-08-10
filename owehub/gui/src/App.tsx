@@ -65,7 +65,7 @@ import AdderData from './ui/oweHub/configure/adderData/AdderData';
 import ApRep from './ui/oweHub/configure/apRep/ApRep';
 import BatteryBackup from './ui/batterBackupCalculator';
 import BatteryAmp from './ui/batterBackupCalculator/components/BatteryAmp';
-import SrImageUpload from './ui/oweHub/SrImageUpload/SrImageUpload';
+import SrImageUpload from './ui/batterBackupCalculator/SrImageUpload/SrImageUpload';
 import Dba from './ui/oweHub/configure/dba/dba';
 import RepCredit from './ui/oweHub/configure/REP CREDIT/repcredit';
 import RepStatus from './ui/oweHub/configure/repstatus/repstatus';

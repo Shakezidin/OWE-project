@@ -42,7 +42,7 @@ const Banner: React.FC<BannerProps> = ({
     tableNames: ['dealer_name'],
   };
   const role = localStorage.getItem('role');
-  
+
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
       value,

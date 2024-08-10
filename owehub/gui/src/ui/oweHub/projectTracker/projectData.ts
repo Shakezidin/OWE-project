@@ -1,41 +1,5 @@
 import { ICONS } from '../../../resources/icons/Icons';
 
-// export const cardData = [
-//   {
-//     name: 'NTP',
-//     bgColor: `var(--orange-color)`,
-//     iconBgColor: `var(--white-color)`,
-//     icon: ICONS.ntp_per,
-//     color: `var(--white-color)`,
-//     type: 'ntp_date',
-//   },
-//   {
-//     name: 'Cancelled',
-//     bgColor: `var(--purpink-color)`,
-//     iconBgColor: `var(--white-color)`,
-//     icon: ICONS.cancelled_per,
-//     color: `var(--white-color)`,
-//     type: 'cancelled_date',
-//   },
-//   {
-//     name: 'Installed',
-//     bgColor: `var(--secondary-color)`,
-//     iconBgColor: `var(--white-color)`,
-//     icon: ICONS.installed_per,
-//     color: `var(--white-color)`,
-//     type: 'pv_install_completed_date',
-//   },
-//   {
-//     name: 'Total Sales',
-//     bgColor: `var(--teritary-color)`,
-//     iconBgColor: `#fff`,
-//     color: '#fff',
-//     icon: ICONS.sales_per,
-//     type: 'contract_date',
-//     key: '',
-//   },
-// ];
-
 export const cardData = [
   {
     name: 'Total Sales',

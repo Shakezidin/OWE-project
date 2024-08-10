@@ -8,7 +8,6 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import CommissionForm from './CommissionForm';
-import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import {
   FormEvent,
   FormInput,
