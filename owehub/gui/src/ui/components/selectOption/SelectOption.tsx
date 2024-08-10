@@ -31,14 +31,14 @@ interface Props {
   menuWidth?: string;
   menuPosition?: MenuPosition | undefined;
   enableHoverEffect?: boolean;
-  lazyRender?:boolean
+  lazyRender?: boolean;
 }
-
 
 const MenuList = ({ options, children, maxHeight, getValue }: any) => {
   const [value] = getValue();
   const initialOffset = options.indexOf(value) * 36;
-  if (!children?.length) return <span className='text-center block py2'> No Data Found </span>;
+  if (!children?.length)
+    return <span className="text-center block py2"> No Data Found </span>;
 
   return (
     <List
@@ -61,7 +61,6 @@ const MenuList = ({ options, children, maxHeight, getValue }: any) => {
   );
 };
 
-
 const SelectOption: React.FC<Props> = ({
   options,
   value,
@@ -78,8 +77,8 @@ const SelectOption: React.FC<Props> = ({
   labelColor,
   placeholder,
   menuWidth,
-  menuPosition = "absolute",
-  enableHoverEffect = true, 
+  menuPosition = 'absolute',
+  enableHoverEffect = true,
   lazyRender = false,
 }) => {
   const scrollRef = useRef(null);
@@ -114,9 +113,11 @@ const SelectOption: React.FC<Props> = ({
             width: width || baseStyles.width,
             ...controlStyles,
             transition: 'border-color 0.3s ease', // Modify this line
-            '&:hover': enableHoverEffect ? {
-              border: '2px solid #0493ce'
-            } : {},
+            '&:hover': enableHoverEffect
+              ? {
+                  border: '2px solid #0493ce',
+                }
+              : {},
           }),
           indicatorSeparator: () => ({
             display: 'none',

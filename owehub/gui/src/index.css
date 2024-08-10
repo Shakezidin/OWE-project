@@ -470,14 +470,14 @@ br {
     width: 256px;
     text-align: left;
   }
-  .modal{
+  .modal {
     margin: 10px;
   }
   .react-tel-input .country-list * {
     text-align: left;
   }
 }
-.one-line-text{
+.one-line-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

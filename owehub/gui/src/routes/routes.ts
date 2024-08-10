@@ -68,5 +68,5 @@ export const ROUTES = {
   SR_IMAGE_UPLOAD: '/sr-image-upload',
   LEADERBOARD: '/leaderboard',
   NOT_FOUND: '*',
-  SCHEDULER:"/scheduler"
+  SCHEDULER: '/scheduler',
 };

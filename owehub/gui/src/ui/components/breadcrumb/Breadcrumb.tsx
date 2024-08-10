@@ -43,7 +43,6 @@ const Breadcrumb: React.FC<textProps> = ({
       </div>
     </div>
   );
-
 };
 
 export default Breadcrumb;

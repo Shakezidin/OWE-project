@@ -39,10 +39,7 @@ export const fetchDealerOwner = createAsyncThunk(
 export const fetchRegionList = createAsyncThunk(
   'user/get_region',
   async (data: ReportTo) => {
-    const response = await postCaller(
-      EndPoints.get_users_by_dealer,
-      data
-    );
+    const response = await postCaller(EndPoints.get_users_by_dealer, data);
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error(response.message);
     }
@@ -51,7 +48,7 @@ export const fetchRegionList = createAsyncThunk(
 
     if (users_name_list) {
       const mapList: UserDropdownModel[] = users_name_list.map(
-        (el: { name: string, user_code:string }) => {
+        (el: { name: string; user_code: string }) => {
           return {
             label: el.name,
             value: el.user_code,
@@ -78,7 +75,6 @@ export const createUserOnboarding = createAsyncThunk(
   }
 );
 
-
 export const createDealer = createAsyncThunk(
   'user/create_dealer',
   async (data: any, { rejectWithValue }): Promise<any> => {
@@ -91,7 +87,6 @@ export const createDealer = createAsyncThunk(
     }
   }
 );
-
 
 /** delete user */
 export const deleteUserOnboarding = createAsyncThunk(
@@ -106,7 +101,6 @@ export const deleteUserOnboarding = createAsyncThunk(
     }
   }
 );
-
 
 /** delete user */
 export const deleteUserDealer = createAsyncThunk(

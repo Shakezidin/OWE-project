@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import './sidebar.css';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import { Link, useLocation } from 'react-router-dom';
 import { MdOutlinePayment } from 'react-icons/md';
 import { FiLayers } from 'react-icons/fi';
