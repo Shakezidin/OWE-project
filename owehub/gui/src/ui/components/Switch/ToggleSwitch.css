@@ -41,5 +41,5 @@
 
 .switch input:checked + .slider:before {
   transform: translateX(13px);
-  background-color: #a0ef00;
+  background-color: #fff;
 }
