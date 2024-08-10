@@ -31,11 +31,11 @@ import {
 } from '../icons';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { IoCloseCircle } from 'react-icons/io5';
-import ToggleSwitch from '../../../components/Switch';
+import ToggleSwitch from '../../components/Switch';
 import WarningPopup from './WarningPopup';
-import Input from '../../../components/text_input/Input';
+import Input from '../../components/text_input/Input';
 import { ca } from 'date-fns/locale';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { toCanvas } from 'html-to-image';

@@ -4,7 +4,7 @@ import { IoCheckmarkCircle } from 'react-icons/io5';
 import { EvCharger, PoolPump, WellPump, Spa } from '../icons';
 import { IPrimary, ISecondary } from '..';
 import { CgClose } from 'react-icons/cg';
-import Input from '../../../components/text_input/Input';
+import Input from '../../components/text_input/Input';
 interface IPopPupProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;

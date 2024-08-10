@@ -1,12 +1,12 @@
 import './PerformanceCards.css';
-import { ICONS } from '../../../icons/Icons';
+import { ICONS } from '../../icons/Icons';
 import { MdOutlineIosShare } from 'react-icons/md';
 import { MdContentCopy } from 'react-icons/md';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-import artboard from '../../../../resources/assets/artboard.svg';
+import artboard from '../../../resources/assets/artboard.svg';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
-import MicroLoader from '../../../components/loader/MicroLoader';
+import MicroLoader from '../../components/loader/MicroLoader';
 
 interface performance {
   details: any;

@@ -1,7 +1,7 @@
 import { toCanvas } from 'html-to-image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import Banner from './components/Banner';
 import {
   format,
@@ -16,9 +16,9 @@ import PerformanceCards from './components/PerformanceCards';
 import Sidebar from './components/Sidebar';
 import Table from './components/Table';
 import './index.css';
-import { useAppSelector } from '../../../redux/hooks';
+import { useAppSelector } from '../../redux/hooks';
 import jsPDF from 'jspdf';
-import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 import { PDFDocument } from 'pdf-lib';
 import 'jspdf-autotable';
 export type DateRangeWithLabel = {

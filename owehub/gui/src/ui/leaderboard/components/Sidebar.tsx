@@ -8,7 +8,7 @@ import React, {
 import { ArrowForward, Growth, ServiceIcon, SuccessIcon } from './Icons';
 import { FaShareSquare } from 'react-icons/fa';
 import Select from 'react-select';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
 import axios from 'axios';
@@ -21,7 +21,7 @@ import {
   ThirdAwardIcon,
 } from './Icons';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
-import { useAppSelector } from '../../../../redux/hooks';
+import { useAppSelector } from '../../../redux/hooks';
 interface IDealer {
   dealer?: string;
   rep_name?: string;

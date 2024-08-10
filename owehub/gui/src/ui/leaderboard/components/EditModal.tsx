@@ -1,5 +1,5 @@
 import './Modal.css';
-import { ICONS } from '../../../icons/Icons';
+import { ICONS } from '../../icons/Icons';
 import { GoUpload } from 'react-icons/go';
 import {
   Dispatch,
@@ -13,9 +13,9 @@ import { ColorpickerIcon } from './Icons';
 import { MdCheck } from 'react-icons/md';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
-import PLaceholderImg from '../../../../resources/assets/placeholder_img.svg';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import PLaceholderImg from '../../../resources/assets/placeholder_img.svg';
 interface EditModalProps {
   onClose: () => void;
   vdealer: any;

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import dummy from './lib/dummy_img.png';
-import Input from '../../components/text_input/Input';
+import Input from '../components/text_input/Input';
 import jsPDF from 'jspdf';
 import { TbMinus, TbPlus } from 'react-icons/tb';
 import { TfiTrash } from 'react-icons/tfi';
 import { useHref, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Carousel from 'react-multi-carousel';
 import type { ButtonGroupProps } from 'react-multi-carousel';
@@ -15,7 +15,7 @@ import emailjs from '@emailjs/browser';
 import CategoryPopup from './components/CategoryPopup';
 import { LuChevronRight } from 'react-icons/lu';
 import AppliancePopup from './components/AppliancePopup';
-import { sendMail } from '../../../utiles';
+import { sendMail } from '../../utiles';
 import ImagePopup from './components/ImagePopup';
 
 const responsive = {

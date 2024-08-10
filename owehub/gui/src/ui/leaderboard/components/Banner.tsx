@@ -1,16 +1,16 @@
 import './Banner.css';
-import { ICONS } from '../../../icons/Icons';
+import { ICONS } from '../../icons/Icons';
 import { LiaEdit } from 'react-icons/lia';
 import EditModal from './EditModal';
 import { useState, useEffect, useRef } from 'react';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import Select, { Options } from 'react-select';
 
-import SelectOption from '../../../components/selectOption/SelectOption';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import SelectOption from '../../components/selectOption/SelectOption';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { FaChevronCircleDown, FaChevronDown } from 'react-icons/fa';
-import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 
 interface BannerProps {
   selectDealer: { label: string; value: string }[];

@@ -20,11 +20,11 @@ import {
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import award from '../../../../resources/assets/award_icon.png';
-import DataNotFound from '../../../components/loader/DataNotFound';
-import MicroLoader from '../../../components/loader/MicroLoader';
-import Pagination from '../../../components/pagination/Pagination';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import award from '../../../resources/assets/award_icon.png';
+import DataNotFound from '../../components/loader/DataNotFound';
+import MicroLoader from '../../components/loader/MicroLoader';
+import Pagination from '../../components/pagination/Pagination';
 import Papa from 'papaparse';
 import { DateRangeWithLabel } from '../index';
 import {
@@ -34,8 +34,8 @@ import {
   ThirdAwardIcon,
 } from './Icons';
 import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
-import { useAppSelector } from '../../../../redux/hooks';
-import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import { useAppSelector } from '../../../redux/hooks';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import jsPDF from 'jspdf';
 // import 'jspdf-autotable';
 interface ILeaderBordUser {

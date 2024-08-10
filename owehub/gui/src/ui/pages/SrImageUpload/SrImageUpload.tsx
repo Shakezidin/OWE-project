@@ -1,19 +1,11 @@
 import React, {
   useState,
-  useCallback,
-  useRef,
   ChangeEvent,
   useEffect,
 } from 'react';
 import './srImageUpload.css';
-import camera from './lib/camera 1.svg';
-import plus from './lib/+.svg';
-import { FaArrowRight } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import Webcam from 'react-webcam';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import axios from 'axios';
-import emailjs from '@emailjs/browser';
 import { PiCircle } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 import { IoCheckmarkCircle } from 'react-icons/io5';
@@ -22,12 +14,10 @@ import {
   PoolPump,
   Spa,
   WellPump,
-} from '../batterBackupCalculator/icons';
-import { FaPlus } from 'react-icons/fa';
+} from '../../batterBackupCalculator/icons';
 import { GoPlus } from 'react-icons/go';
 import { errorSwal } from '../../components/alert/ShowAlert';
-import { AiFillCloseCircle } from 'react-icons/ai';
-import { RiCloseCircleFill, RiCloseLine } from 'react-icons/ri';
+import { RiCloseLine } from 'react-icons/ri';
 import { sendMail } from '../../../utiles';
 
 const primaryApplicances = [
@@ -45,7 +35,6 @@ const secondaryApplicances = [
 const FormComponent: React.FC = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [useBackCamera, setUseBackCamera] = useState<boolean>(false);
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [primaryApplicance, setPrimaryApplicance] = useState(() =>
     primaryApplicances.map((item) => ({ ...item, isSelected: '' }))

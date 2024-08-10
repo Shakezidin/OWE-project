@@ -63,13 +63,13 @@ import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
 import AdderData from './ui/pages/configure/adderData/AdderData';
 import ApRep from './ui/pages/configure/apRep/ApRep';
-import BatteryBackup from './ui/pages/batterBackupCalculator';
-import BatteryAmp from './ui/pages/batterBackupCalculator/components/BatteryAmp';
+import BatteryBackup from './ui/batterBackupCalculator';
+import BatteryAmp from './ui/batterBackupCalculator/components/BatteryAmp';
 import SrImageUpload from './ui/pages/SrImageUpload/SrImageUpload';
 import Dba from './ui/pages/configure/dba/dba';
 import RepCredit from './ui/pages/configure/REP CREDIT/repcredit';
 import RepStatus from './ui/pages/configure/repstatus/repstatus';
-import NotFound from './ui/pages/NotFound/NotFound';
+import NotFound from './ui/pages/noRecordFound/NotFound';
 import RepIncent from './ui/pages/configure/repIncent/RepIncent';
 import ApAdv from './ui/pages/configure/apAdv/ApAdv';
 import ApDed from './ui/pages/configure/apDed/ApDed';
@@ -77,8 +77,8 @@ import ApOth from './ui/pages/configure/apOth/ApOth';
 import ApPda from './ui/pages/configure/apPda/ApPda';
 import TeamManagement from './ui/pages/teammanagement/dashboard';
 import TeamTable from './ui/pages/teammanagement/teamtable';
-import Leaderboard from './ui/pages/leaderboard';
-import Scheduler from './ui/pages/Scheduler';
+import Leaderboard from './ui/leaderboard';
+import Scheduler from './ui/scheduler';
 function App() {
   const dispatch = useAppDispatch();
 
