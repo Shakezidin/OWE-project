@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import UserPieChart from './pieChart/UserPieChart';
 import UserOnboardingCreation from './userOnboard/UserOnboardCreation';
