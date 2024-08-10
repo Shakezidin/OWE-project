@@ -1,18 +1,13 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { FaPlus, FaMinus } from 'react-icons/fa6';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ROUTES } from '../../../routes/routes';
 import { RiArrowRightLine } from 'react-icons/ri';
 import './dashboard.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import NewTeam from './NewMember/NewTeam';
 import { getTeams } from '../../../redux/apiActions/teamManagement/teamManagement';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import Select from 'react-select';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
-import { dealerOption } from '../../../core/models/data_models/SelectDataModel';
-import ArDropdownWithCheckboxes from '../ar/ardashboard/Dropdown';
 import DropWithCheck from '../../components/dropwithcheck/dropwithcheck';
 import { toast } from 'react-toastify';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
@@ -20,6 +15,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { showAlert } from '../../components/alert/ShowAlert';
 import { resetTeams } from '../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 
 interface AccordionSection {
   data: any;
@@ -162,13 +158,15 @@ const TeamManagement: React.FC = () => {
     }
   };
   const roleAdmin = localStorage.getItem('role');
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
   return (
     <>
       {open2 && (
         <NewTeam
           handleClose2={handleClose2}
           setRefetch={setRefetch}
-          // onSubmitCreateUser={onSubmitCreateTeam}
+        // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
 
@@ -181,7 +179,7 @@ const TeamManagement: React.FC = () => {
               return (
                 <div
                   key={index}
-                  // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
+                // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
                   <div className="teamdash-header">
                     <h1>Total Teams: {teams?.length}</h1>
@@ -196,19 +194,22 @@ const TeamManagement: React.FC = () => {
                           Remove Team
                         </button>
                       )}
-                      {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
-                        <button className="create" onClick={handleOpen2}>
-                          + Create New Team
-                        </button>
-                      ) : null}
-                      {(roleAdmin === TYPE_OF_USER.ADMIN ||
-                        roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) && (
-                        <DropWithCheck
-                          selectedOptions={selectedOptions}
-                          setSelectedOptions={setSelectedOptions}
-                          options={dealerOption}
-                        />
-                      )}
+                      <div className='creat-drop'>
+                        {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+                          <button className="create" onClick={handleOpen2}>
+                            + Create New Team
+                          </button>
+                        ) : null}
+                        {(roleAdmin === TYPE_OF_USER.ADMIN ||
+                          roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) && (
+                            <DropWithCheck
+                              selectedOptions={selectedOptions}
+                              setSelectedOptions={setSelectedOptions}
+                              options={dealerOption}
+                            />
+                          )}
+                      </div>
+
                     </div>
                   </div>
                   <div className={`team-cards ${isOpen ? 'open' : ''}`}>
@@ -263,14 +264,18 @@ const TeamManagement: React.FC = () => {
                                 <div className="team-checkbox-wrapper">
                                   <div className="team-name-tooltip">
                                     <h1 className="team-card-heading pr1  one-line-text">
-                                      {item.team_name}
+                                      <h1 className="team-card-heading pr1 one-line-text">
+                                        {isMobile && item.team_name.length > 10
+                                          ? `${item.team_name.slice(0, 11)}...`
+                                          : item.team_name}
+                                      </h1>
                                     </h1>
                                   </div>
                                   {roleAdmin === TYPE_OF_USER.ADMIN ||
-                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
-                                  roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
-                                  data?.role_in_team === 'manager' ||
-                                  roleAdmin ===
+                                    roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
+                                    roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
+                                    data?.role_in_team === 'manager' ||
+                                    roleAdmin ===
                                     TYPE_OF_USER.SUB_DEALER_OWNER ? (
                                     <input
                                       type="checkbox"

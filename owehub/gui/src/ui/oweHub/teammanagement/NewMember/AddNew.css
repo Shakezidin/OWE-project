@@ -214,3 +214,19 @@
     height: 432px;
   }
 }
+
+@media screen and (max-width: 767px) {
+  .tm-new-create-input-field {
+    position: relative;
+    width: 47%;
+  }  
+  .new-tm-modal {
+    max-width: 370px;
+    height: 500px;
+}
+
+.tm-modal{
+  max-width: 380px;
+}
+}
+

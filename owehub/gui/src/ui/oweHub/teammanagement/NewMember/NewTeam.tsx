@@ -7,15 +7,12 @@ import './AddNew.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
-  getSalesManagerList,
-  getsaleRepList,
   createTeam,
 } from '../../../../redux/apiActions/teamManagement/teamManagement';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { resetSuccess } from '../../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 
 interface CreateUserProps {
