@@ -245,6 +245,7 @@ const TeamTable: React.FC = () => {
               <div className="team-members">
                 <div className="team-table-container">
                   {isEditing ? (
+                    <>
                     <input
                       type="text"
                       ref={inputRef}
@@ -259,6 +260,7 @@ const TeamTable: React.FC = () => {
                       readOnly={!isEditing}
                       style={{ width: isMobile ? '200px' : 'auto' }}
                     />
+                    </>
                   ) : (
                     <h4
                       style={{
@@ -294,6 +296,11 @@ const TeamTable: React.FC = () => {
                     )}
                   </div>
                 </div>
+                {inputValue.length === 200 && (
+                      <span className="error-message">
+                        Team Name cannot exceed 200 characters.
+                      </span>
+                    )}
                 <p>
                   {team?.manager_count} Managers, {team?.MemberCount} Member
                 </p>
