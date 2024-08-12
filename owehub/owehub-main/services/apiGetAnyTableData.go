@@ -82,10 +82,10 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		SelectedTableName = "next_steps_schema"
 	case "sales_metrics_schema":
 		SelectedTableName = "sales_metrics_schema"
-	case "consolidated_data_view":
-		SelectedTableName = "consolidated_data_view"
-	case "ops_analysis_timelines_view":
-		SelectedTableName = "ops_analysis_timelines_view"
+	case "ntp_schema":
+		SelectedTableName = "ntp_schema"
+	case "customers_prospects_schema":
+		SelectedTableName = "customers_prospects_schema"
 	}
 
 	query = fmt.Sprintf("select * from %s", SelectedTableName)
@@ -93,7 +93,6 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if filter != "" {
 		queryWithFiler = query + filter
 	}
-
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get any table data from DB err: %v", err)
@@ -108,7 +107,6 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
 		return
 	}
-
 	countValue, ok := countData[0]["record_count"].(int64)
 	if !ok {
 		// Handle the case where the type assertion fails
@@ -116,6 +114,7 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
 		return
 	}
+
 	RecordCount = countValue
 	response := Response{
 		Message:     fmt.Sprintf("%s Table Data", SelectedTableName),
@@ -156,4 +155,24 @@ func PrepareGetAnyTableDataFilters(tableName string, dataFilter models.DataReque
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+/******************************************************************************
+ * FUNCTION:		PrepareAnyTableDataFilters
+ * DESCRIPTION:     handler for prepare filter
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func paginateData(data []map[string]interface{}, dataReq models.DataRequestBody) []map[string]interface{} {
+	startIndex := (dataReq.PageNumber - 1) * dataReq.PageSize
+	endIndex := startIndex + dataReq.PageSize
+
+	if startIndex > len(data) {
+		return []map[string]interface{}{}
+	}
+	if endIndex > len(data) {
+		endIndex = len(data)
+	}
+
+	return data[startIndex:endIndex]
 }

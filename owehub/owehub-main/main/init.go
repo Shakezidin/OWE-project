@@ -683,7 +683,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/delete_users",
 		apiHandler.HandleDeleteUsersRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupAdminDealer},
 	},
 	{
 		strings.ToUpper("POST"),
