@@ -294,14 +294,10 @@ const TeamManagement: React.FC = () => {
                                 </div>
                                 <div className="team-con-fle">
                                   <div className="teamp-group">
-                                    <picture>
                                       <img
                                         src={ICONS.teamgroup}
-                                        loading="lazy"
-                                        decoding="async"
                                         alt="team-group"
                                       />
-                                    </picture>
                                     <h4>{item.team_strength} members</h4>
                                   </div>
                                   <Link
