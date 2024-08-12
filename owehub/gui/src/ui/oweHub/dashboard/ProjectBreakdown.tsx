@@ -39,11 +39,7 @@ const BreakdownAccordion = () => {
   );
 };
 
-const ProjectBreakdown: React.FC<ButtonProps> = ({
-  editMode,
-  handleClose,
-  commission,
-}) => {
+const ProjectBreakdown: React.FC<ButtonProps> = ({ handleClose }) => {
   const [toggleOpen, setToggleOpen] = useState(false);
 
   return (

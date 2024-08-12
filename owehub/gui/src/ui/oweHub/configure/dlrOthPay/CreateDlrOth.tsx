@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-import { useDispatch } from 'react-redux';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/dlrOth';
@@ -16,7 +15,6 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
-import { addDays, format } from 'date-fns';
 import { firstCapitalize } from '../../../../utiles';
 
 interface ButtonProps {

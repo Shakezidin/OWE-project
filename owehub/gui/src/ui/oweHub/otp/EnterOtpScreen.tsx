@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import './EnterOtpScreen.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import { ReactComponent as LOGO_SMALL } from '../../../resources/assets/commisson_small_logo.svg';
-import { ReactComponent as UNDER_LINE } from '../../../resources/assets/BlueAndGreenUnderline.svg';
 import Input from '../../components/text_input/Input';
-import { ActionButton } from '../../components/button/ActionButton';
 import { otpModel } from '../../../core/models/api_models/AuthModel';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
@@ -16,10 +14,7 @@ import Loading from '../../components/loader/Loading';
 import { ROUTES } from '../../../routes/routes';
 import { FaArrowLeft } from 'react-icons/fa';
 import ResendOtpButton from './ResendOtpButton';
-import {
-  FormEvent,
-  FormInput,
-} from '../../../core/models/data_models/typesModel';
+import { FormEvent } from '../../../core/models/data_models/typesModel';
 
 const PasswordInput = (props: {
   placeholder: string;
@@ -87,7 +82,6 @@ const EnterOtpScreen = () => {
     return '';
   };
 
-  console.log('email', email);
   const [otpCred, setOtpCred] = useState<otpModel>({
     email_id: '',
     otp: '',

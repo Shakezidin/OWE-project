@@ -1,8 +1,6 @@
 import { IoAddSharp } from 'react-icons/io5';
-// import "../commissionRate/Filter.css";
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-
 import { useAppDispatch } from '../../../../redux/hooks';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import { ICONS } from '../../../../resources/icons/Icons';

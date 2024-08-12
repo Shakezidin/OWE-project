@@ -31,14 +31,6 @@
 .schedule_tab:first-child {
   margin-left: 0;
 }
-.sort_btn {
-  background-color: #4372e9;
-  border: none;
-  border-radius: 8px;
-  padding: 5px;
-  color: #fff;
-  cursor: pointer;
-}
 .schedule_tab span {
   margin-left: 8px;
   font-size: 14px;

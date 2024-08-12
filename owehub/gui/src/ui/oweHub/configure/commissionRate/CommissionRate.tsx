@@ -12,7 +12,6 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { ROUTES } from '../../../../routes/routes';
-import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import {
   errorSwal,
   showAlert,
@@ -36,8 +35,6 @@ const CommissionRate: React.FC = () => {
   const commissionList = useAppSelector(
     (state: any) => state.comm.commissionsList
   );
-  const loading = useAppSelector((state: any) => state.comm.loading);
-  const error = useAppSelector((state: any) => state.comm.error);
   const dbCount = useAppSelector((state: any) => state.comm.dbCount);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);

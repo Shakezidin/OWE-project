@@ -10,9 +10,6 @@ import {
   createRebateData,
   updateRebateData,
 } from '../../../../redux/apiActions/config/rebateDataAction';
-import SelectOption from '../../../components/selectOption/SelectOption';
-import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
-import { dateFormat } from '../../../../utiles/formatDate';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;

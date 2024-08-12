@@ -35,6 +35,7 @@ type GetUsersData struct {
 	BgColour          string               `json:"bg_colour"`
 	PreferredName     string               `json:"preferred_name"`
 	DealerCode        string               `json:"dealer_code"`
+	DBUsername        string               `json:"db_username"`
 	TablePermission   []GetTablePermission `json:"table_permission"`
 }
 

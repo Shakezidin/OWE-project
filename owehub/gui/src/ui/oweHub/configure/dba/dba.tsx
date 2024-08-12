@@ -3,7 +3,6 @@ import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchDBAList } from '../../../../redux/apiActions/config/dbaaction';
-// import CreateTimeLine from "./CreateTimeLine";
 import CreateAr from './createdba';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';

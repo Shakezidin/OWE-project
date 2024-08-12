@@ -12,7 +12,6 @@ import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import Pagination from '../../../components/pagination/Pagination';
 import { MarketingFeesColumn } from '../../../../resources/static_data/configureHeaderData/MarketingFeeColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';

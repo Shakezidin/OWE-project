@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import '../../configure/configure.css';
-
 import './hooktable.css';
-
 import { FaArrowDown } from 'react-icons/fa6';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
@@ -11,11 +9,6 @@ import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/pagin
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import DataTableHeader from '../../../components/tableHeader/DataTableHeader';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 
 const Webhook: React.FC = () => {
@@ -23,15 +16,10 @@ const Webhook: React.FC = () => {
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState(false);
   const [columns, setColumns] = useState<string[]>([]);
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
@@ -68,13 +56,7 @@ const Webhook: React.FC = () => {
     setFilterOpen(true);
     getColumnNames();
   };
-  const handleEditDealer = (dealerData: DealerModel) => {
-    setEditMode(true);
-    // setEditDealer(dealerData);
-    handleOpen();
-  };
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
+
   if (loading) {
     return <div>Loading...</div>;
   }

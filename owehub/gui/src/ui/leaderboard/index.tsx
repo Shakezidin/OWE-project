@@ -75,6 +75,7 @@ const Index = () => {
   const [isOpenShare, setIsOpenShare] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isShowDropdown, setIsShowDropdown] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
   const [selectedRangeDate, setSelectedRangeDate] =
     useState<DateRangeWithLabel>({
       label: 'Last Week',
@@ -86,6 +87,13 @@ const Index = () => {
     localStorage.getItem('is_password_change_required') === 'false'
   );
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const role = localStorage.getItem('role');
+    if (role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ADMIN) {
+      setIsFetched(true);
+    }
+  }, []);
 
   const showPartner = useMemo(() => {
     if (groupBy === 'region' || groupBy === 'state') {
@@ -111,7 +119,7 @@ const Index = () => {
   }, [groupBy, role]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isFetched) {
       (async () => {
         setIsLoading(true);
         try {
@@ -146,6 +154,7 @@ const Index = () => {
     selectDealer,
     groupBy,
     isAuthenticated,
+    isFetched,
   ]);
   const shareImage = () => {
     if (topCards.current) {
@@ -301,6 +310,7 @@ const Index = () => {
           setSelectDealer={setSelectDealer}
           groupBy={groupBy}
           isShowDropdown={isShowDropdown}
+          setIsFetched={setIsFetched}
           bannerDetails={bannerDetails}
         />
         <PerformanceCards
@@ -315,6 +325,7 @@ const Index = () => {
         />
       </div>
       <Table
+        isFetched={isFetched}
         count={count}
         exportPdf={exportPdf}
         setIsOpen={setIsOpen}

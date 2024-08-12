@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CiEdit } from 'react-icons/ci';
 import '../configure.css';
-import { RiDeleteBin5Line } from 'react-icons/ri';
-// import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../../resources/icons/Icons';
@@ -11,8 +8,6 @@ import {
   IRowDLR,
   getDlrOth,
 } from '../../../../redux/apiActions/config/dlrAction';
-import FilterModal from '../../../components/FilterModal/FilterModal';
-// import FilterCommission from "./FilterCommission";
 
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';

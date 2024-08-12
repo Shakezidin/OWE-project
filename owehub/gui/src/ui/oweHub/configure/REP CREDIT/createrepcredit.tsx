@@ -2,15 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
-
 import { ActionButton } from '../../../components/button/ActionButton';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {
-  createDBA,
-  updateDBA,
-} from '../../../../redux/apiActions/config/dbaaction';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repcreditSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';

@@ -6,10 +6,8 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { updateTierLoanForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createTierLoanFeeSlice';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useDispatch } from 'react-redux';
-import Select from 'react-select';
 import {
   installerOption,
-  oweCostOption,
   stateOption,
   loanOption,
   dealertierOption,

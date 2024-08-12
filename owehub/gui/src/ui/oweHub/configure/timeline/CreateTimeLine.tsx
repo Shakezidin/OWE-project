@@ -6,7 +6,6 @@ import { updateTimeLineForm } from '../../../../redux/apiSlice/configSlice/confi
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useDispatch } from 'react-redux';
-import Select from 'react-select';
 import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
 import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import SelectOption from '../../../components/selectOption/SelectOption';

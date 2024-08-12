@@ -4,7 +4,6 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { format } from 'date-fns';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderDataSlice';
 import {
   createarAdderData,
@@ -111,6 +110,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
       dispatch(resetSuccess());
     }
   }, [isSuccess]);
+
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>

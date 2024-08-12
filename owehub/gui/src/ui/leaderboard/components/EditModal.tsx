@@ -4,7 +4,6 @@ import { GoUpload } from 'react-icons/go';
 import {
   Dispatch,
   SetStateAction,
-  useEffect,
   useRef,
   useState,
   ChangeEventHandler,

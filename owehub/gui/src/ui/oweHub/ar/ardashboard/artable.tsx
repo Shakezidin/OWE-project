@@ -11,6 +11,7 @@ import ArHelp from './ArHelp';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+
 export const Commissioncolumns = [
   {
     name: 'unique_id',
@@ -136,11 +137,7 @@ const ArDashBoardTable = ({
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  // const options = [
-  //   { value: 'All', label: 'All', key: 'all' },
-  //   { value: 'QC/Permit/NTP', label: 'QC/Permit/NTP', key: 'permits' },
-  //   { value: 'SOLD', label: 'SOLD', key: 'sold' },
-  // ];
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -222,9 +219,6 @@ const ArDashBoardTable = ({
   if (error) {
     return <div>{error}</div>;
   }
-  // if (loading) {
-  //   return <div>Loading... {loading}</div>;
-  // }
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);

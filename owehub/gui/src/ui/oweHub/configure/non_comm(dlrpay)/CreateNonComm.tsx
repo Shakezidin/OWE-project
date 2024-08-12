@@ -2,32 +2,19 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-import { useDispatch } from 'react-redux';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Select from 'react-select';
-import {
-  dealerOption,
-  dbaOption,
-} from '../../../../core/models/data_models/SelectDataModel';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/nonComm';
-import {
-  IRowDLR,
-  createDlrOth,
-  updateDlrOth,
-} from '../../../../redux/apiActions/config/dlrAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   INonCommRowDLR,
   createNonComm,
   updateNoncom,
 } from '../../../../redux/apiActions/config/nocCommAction';
-import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
-import { addDays, format } from 'date-fns';
 import { firstCapitalize } from '../../../../utiles';
 interface ButtonProps {
   editMode: boolean;

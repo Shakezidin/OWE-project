@@ -1,99 +1,29 @@
-import React, {
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import on from '../lib/on_switch.png';
 import off from '../lib/off_switch.png';
 import screw from '../lib/construction.svg';
 import { GoCheckCircleFill } from 'react-icons/go';
-import { MdCancel } from 'react-icons/md';
-import { PiCircle, PiWarningCircleLight } from 'react-icons/pi';
-import { FaCircleCheck, FaPlus } from 'react-icons/fa6';
+import { PiWarningCircleLight } from 'react-icons/pi';
+import { FaPlus } from 'react-icons/fa6';
 import { FaMinus } from 'react-icons/fa';
-import { IoIosArrowRoundBack } from 'react-icons/io';
-import Select from 'react-select';
 import jsPDF from 'jspdf';
 import {
   AirConditioner,
-  Clock,
   Dishwasher,
   ElectricOven,
   EvCharger,
   PoolPump,
-  ThunderBolt,
-  Timer,
   VaccumCleaner,
   WashingMachine,
   WellPump,
 } from '../icons';
-import { IoIosCheckmarkCircle } from 'react-icons/io';
-import { IoCloseCircle } from 'react-icons/io5';
-import ToggleSwitch from '../../components/Switch';
 import WarningPopup from './WarningPopup';
 import Input from '../../components/text_input/Input';
-import { ca } from 'date-fns/locale';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { toCanvas } from 'html-to-image';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
-const appliance = [
-  {
-    name: 'Air Conditioner',
-    quantity: 1,
-    icon: (color: string) => <AirConditioner color={color} />,
-    isOn: false,
-  },
-  {
-    name: 'Washing Machine',
-    quantity: 1,
-    icon: (color: string) => <WashingMachine color={color} />,
-    isOn: false,
-  },
-
-  {
-    name: 'Electric Oven',
-    quantity: 1,
-    icon: (color: string) => <ElectricOven color={color} />,
-    isOn: false,
-  },
-
-  {
-    name: 'Vacuum Cleaner',
-    quantity: 1,
-    icon: (color: string) => <VaccumCleaner color={color} />,
-    isOn: false,
-  },
-
-  {
-    name: 'Well Pump',
-    quantity: 1,
-    icon: (color: string) => <WellPump color={color} />,
-    isOn: false,
-  },
-  {
-    name: 'Dishwasher',
-    quantity: 1,
-    icon: (color: string) => <Dishwasher color={color} />,
-    isOn: false,
-  },
-  {
-    name: 'Pool Pump',
-    quantity: 1,
-    icon: (color: string) => <PoolPump color={color} />,
-    isOn: false,
-  },
-  {
-    name: 'EV Charger',
-    quantity: 1,
-    icon: (color: string) => <EvCharger color={color} />,
-    isOn: false,
-  },
-];
-
 export interface Ibattery {
   amp: number;
   note: string;
@@ -110,10 +40,6 @@ const BatteryAmp = () => {
     SysSize?: number;
   }>({});
   const [requiredBattery, setRequiredBattery] = useState(0);
-  const [selectedMonth, setSelectedMonth] = useState({
-    label: 'June',
-    value: 'June',
-  });
   const [initial, setInitial] = useState(0);
 
   const { id } = useParams();
