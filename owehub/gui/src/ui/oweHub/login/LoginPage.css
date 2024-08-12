@@ -427,6 +427,7 @@ p.loginResendOtp {
   }
   .loginBox object {
     width: 250px;
+    margin-left: -18px;
   }
   .loginTopText {
     margin-top: 10px;
