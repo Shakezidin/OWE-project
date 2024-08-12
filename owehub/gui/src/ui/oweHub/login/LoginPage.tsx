@@ -152,13 +152,7 @@ export const LoginPage = () => {
       <div className={'overlay'} />
       <div className={'container'}>
         <div className={'loginBox'}>
-          <object
-            type="image/svg+xml"
-            className="login-logo"
-            data={ICONS.TransparentLogo}
-            aria-label="login-icon"
-            width={300}
-          ></object>
+          <img src={ICONS.TransparentLogo} alt="login-transparent" width={300} />
           <p className="loginTopText">
             Our World Revolves Around Powering Yours
           </p>

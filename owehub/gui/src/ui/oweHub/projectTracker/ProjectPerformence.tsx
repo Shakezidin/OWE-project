@@ -3,11 +3,7 @@ import { cardData } from './projectData';
 import { ICONS } from '../../../resources/icons/Icons';
 import './projectTracker.css';
 import { IoMdInformationCircleOutline } from 'react-icons/io';
-import {
-  CircularProgressbar,
-  CircularProgressbarWithChildren,
-  buildStyles,
-} from 'react-circular-progressbar';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -30,6 +26,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import SelectOption from '../../components/selectOption/SelectOption';
+import ReactApexChart from 'react-apexcharts';
 
 interface Option {
   value: string;
@@ -151,18 +148,6 @@ const ProjectPerformence = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-
-  // useEffect(() => {
-  //   if (projectOption.length) {
-  //     const val = {
-  //       label: projectOption[0].label || '',
-  //       value: projectOption[0].value || '',
-  //     };
-  //     console.log('val86786876', uniqueId);
-  //     setUniqueId(projectOption[0]?.value);
-  //     console.log(selectedProject, "hjghgfghfhgf")
-  //   }
-  // }, [selectedProject.value]);
 
   useEffect(() => {
     dispatch(getProjects());
@@ -299,6 +284,42 @@ const ProjectPerformence = () => {
   }, [isAuthenticated, resDatePicker.startdate, resDatePicker.enddate]);
 
   const isMobile = useMatchMedia('(max-width: 767px)');
+
+  const getSeries = (item: any) => [item.percent];
+  const getOptions = (item: any) => ({
+    chart: {
+      type: 'radialBar',
+    },
+    plotOptions: {
+      radialBar: {
+        startAngle: -90,
+        endAngle: 90,
+        hollow: {
+          size: '60%',
+        },
+        track: {
+          background: '#F2F4F6',
+        },
+        dataLabels: {
+          name: {
+           show: false,
+          },
+          value: {
+            show: false,
+            offsetY: 0,
+          },
+        },
+      },
+    },
+    fill: {
+      colors: [item.percentColor],
+    },
+    stroke: {
+      lineCap: 'round',
+      width: 10,
+    },
+  });
+
   return (
     <div className="">
       <Breadcrumb
@@ -450,29 +471,19 @@ const ProjectPerformence = () => {
                 <div
                   className="performance-bars"
                   style={{
-                    height: isMobile ? '160px' : '130px',
-                    width: '200px',
+                    // height: isMobile ? '160px' : '130px',
                   }}
                 >
-                  <CircularProgressbarWithChildren
-                    className="my-custom-progressbar"
-                    circleRatio={0.5}
-                    value={item.percent}
-                    strokeWidth={10}
-                    styles={buildStyles({
-                      pathColor: item.percentColor,
-                      textSize: '10px',
-                      textColor: '#0C0B18',
-                      rotation: 0.75,
-                      trailColor: '#F2F4F6',
-                    })}
-                  >
-                    <div
-                      className="flex flex-column items-center flex-center gap-20"
-                      style={{
-                        gap: '4px',
-                        ...(isMobile && { marginTop: '-30px' }),
-                      }}
+                  <div id="chart">
+                    <ReactApexChart
+                      //@ts-ignore
+                      options={getOptions(item)}
+                      series={getSeries(item)}
+                      type="radialBar"
+                    />
+                  </div>
+                  <div
+                      className="cards-description"
                     >
                       <p
                         style={{
@@ -492,48 +503,9 @@ const ProjectPerformence = () => {
                         {item.ruppes}
                       </p>
                     </div>
-                  </CircularProgressbarWithChildren>
                 </div>
               </div>
             ))}
-            {/* {projectDashData.map((item, i) => (
-            <div className="project-ruppes-card" key={i}>
-              <div className="project-ruppes-body">
-                <div
-                  className="project-icon-img"
-                  style={{ background: item.iconBgColor }}
-                >
-                  <img
-                    src={item.icon}
-                    alt=""
-                    style={{ height: '24px', width: '24px' }}
-                  />
-                </div>
-                <div className="doller-head">
-                  <h2>
-                    {
-                      commisionMetrics[
-                        item.key as keyof typeof commisionMetrics
-                      ]
-                    }
-                  </h2>
-                  <p>{item.para}</p>
-                </div>
-              </div>
-              <div className="project-ruppes-body">
-                <div className="project-img-curve">
-                  <img src={item.curveImg} alt="" />
-                </div>
-                <div
-                  className="percent"
-                  style={{ background: item.iconBgColor }}
-                >
-                  <img src={item.arrow} alt="" />
-                  <p style={{ color: item.percentColor }}>40%</p>
-                </div>
-              </div>
-            </div>
-          ))} */}
           </div>
         </div>
       </div>
@@ -963,3 +935,47 @@ const ProjectPerformence = () => {
 };
 
 export default ProjectPerformence;
+
+{
+  /* <CircularProgressbarWithChildren
+                    className="my-custom-progressbar"
+                    circleRatio={0.5}
+                    value={item.percent}
+                    strokeWidth={10}
+                    styles={buildStyles({
+                      pathColor: item.percentColor,
+                      textSize: '10px',
+                      textColor: '#0C0B18',
+                      rotation: 0.75,
+                      trailColor: '#F2F4F6',
+                    })}
+                  >
+                  </CircularProgressbarWithChildren> */
+}
+{
+  /* <div
+                      className="flex flex-column items-center flex-center gap-20"
+                      style={{
+                        gap: '4px',
+                        ...(isMobile && { marginTop: '-30px' }),
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: isMobile ? '16px' : '12px',
+                          color: '#646464',
+                          fontWeight: '300',
+                        }}
+                      >
+                        {item.para}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: isMobile ? '18px' : '16px',
+                          color: '#0C0B18',
+                        }}
+                      >
+                        {item.ruppes}
+                      </p>
+                    </div> */
+}
