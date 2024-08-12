@@ -166,7 +166,7 @@ const TeamManagement: React.FC = () => {
         <NewTeam
           handleClose2={handleClose2}
           setRefetch={setRefetch}
-        // onSubmitCreateUser={onSubmitCreateTeam}
+          // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
 
@@ -179,7 +179,7 @@ const TeamManagement: React.FC = () => {
               return (
                 <div
                   key={index}
-                // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
+                  // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
                   <div className="teamdash-header">
                     <h1>Total Teams: {teams?.length}</h1>
@@ -194,7 +194,7 @@ const TeamManagement: React.FC = () => {
                           Remove Team
                         </button>
                       )}
-                      <div className='creat-drop'>
+                      <div className="creat-drop">
                         {roleAdmin !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
                           <button className="create" onClick={handleOpen2}>
                             + Create New Team
@@ -202,14 +202,13 @@ const TeamManagement: React.FC = () => {
                         ) : null}
                         {(roleAdmin === TYPE_OF_USER.ADMIN ||
                           roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) && (
-                            <DropWithCheck
-                              selectedOptions={selectedOptions}
-                              setSelectedOptions={setSelectedOptions}
-                              options={dealerOption}
-                            />
-                          )}
+                          <DropWithCheck
+                            selectedOptions={selectedOptions}
+                            setSelectedOptions={setSelectedOptions}
+                            options={dealerOption}
+                          />
+                        )}
                       </div>
-
                     </div>
                   </div>
                   <div className={`team-cards ${isOpen ? 'open' : ''}`}>
@@ -272,10 +271,10 @@ const TeamManagement: React.FC = () => {
                                     </h1>
                                   </div>
                                   {roleAdmin === TYPE_OF_USER.ADMIN ||
-                                    roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
-                                    roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
-                                    data?.role_in_team === 'manager' ||
-                                    roleAdmin ===
+                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
+                                  roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
+                                  data?.role_in_team === 'manager' ||
+                                  roleAdmin ===
                                     TYPE_OF_USER.SUB_DEALER_OWNER ? (
                                     <input
                                       type="checkbox"
@@ -295,7 +294,14 @@ const TeamManagement: React.FC = () => {
                                 </div>
                                 <div className="team-con-fle">
                                   <div className="teamp-group">
-                                    <img src={ICONS.teamgroup} alt="" />
+                                    <picture>
+                                      <img
+                                        src={ICONS.teamgroup}
+                                        loading="lazy"
+                                        decoding="async"
+                                        alt="team-group"
+                                      />
+                                    </picture>
                                     <h4>{item.team_strength} members</h4>
                                   </div>
                                   <Link
