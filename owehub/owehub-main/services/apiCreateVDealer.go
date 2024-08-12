@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -73,6 +74,17 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateVDealerFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
+		if strings.Contains(err.Error(), "duplicate") {
+			if strings.Contains(err.Error(), "dealer_name") {
+				log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
+				FormAndSendHttpResp(resp, "V Dealer with Dealer Name Already Exists", http.StatusInternalServerError, nil)
+				return
+			} else if strings.Contains(err.Error(), "dealer_code") {
+				log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
+				FormAndSendHttpResp(resp, "V Dealer with Dealer Code Already Exists", http.StatusInternalServerError, nil)
+				return
+			}
+		}
 		log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create V dealer", http.StatusInternalServerError, nil)
 		return
