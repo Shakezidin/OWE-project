@@ -71,7 +71,7 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 			{TableName: "next_steps_schema"},
 			{TableName: "sales_metrics_schema"},
 			{TableName: "ntp_schema"},
-			{TableName: "customers_prospects_schema new tables"},
+			{TableName: "customers_prospects_schema"},
 		}
 
 		// Append the new tables to the tableList
