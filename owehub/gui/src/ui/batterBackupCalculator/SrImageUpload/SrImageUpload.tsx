@@ -5,12 +5,7 @@ import axios from 'axios';
 import { PiCircle } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-import {
-  EvCharger,
-  PoolPump,
-  Spa,
-  WellPump,
-} from '../../batterBackupCalculator/icons';
+import { EvCharger, PoolPump, Spa, WellPump } from '../icons';
 import { GoPlus } from 'react-icons/go';
 import { errorSwal } from '../../components/alert/ShowAlert';
 import { RiCloseLine } from 'react-icons/ri';

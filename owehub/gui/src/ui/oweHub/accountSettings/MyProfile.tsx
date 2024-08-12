@@ -16,7 +16,6 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 
 const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
-  const [selectedState, setSelectedState] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const { userDetail, userUpdate, isFormSubmitting } = useAppSelector(
     (state) => state.userSlice
@@ -45,13 +44,6 @@ const MyProfile = () => {
 
   useEffect(() => {
     dispatch(getUser({ page_number: 1, page_size: 10 }));
-    fetchStateOptions()
-      .then((options) => {
-        setStateOptions(options);
-      })
-      .catch((error) => {
-        console.error('Error fetching state options:', error);
-      });
   }, []);
 
   useEffect(() => {
@@ -59,7 +51,6 @@ const MyProfile = () => {
       setStreet(userDetail?.street_address || '');
       setState(userDetail?.state || '');
       setCity(userDetail?.city || '');
-      // setZipCode(userDetail?.zipcode || '');
       setCountry(userDetail?.country || '');
       setPreferredName(userDetail?.preferred_name || '');
       setDealerCode(userDetail?.dealer_code || '');
@@ -105,7 +96,6 @@ const MyProfile = () => {
   const handleReset = () => {
     setCity(userDetail.city);
     setStreet(userDetail.street_address);
-    // setZipCode('');
     setCountry(userDetail.country);
     setState(userDetail.state);
     if (role === TYPE_OF_USER.DEALER_OWNER) {
@@ -148,19 +138,8 @@ const MyProfile = () => {
     }
   };
 
-  const fetchStateOptions = async () => {
-    const response = await fetch('https://api.example.com/states');
-    const data = await response.json();
-    return data.map((state: string) => ({ value: state, label: state }));
-  };
-
-  const handleStateChange = (selectedOption: any) => {
-    setSelectedState(selectedOption.value);
-  };
-
   const [city, setCity] = useState(userDetail?.city || '');
   const [street, setStreet] = useState(userDetail?.street_address || '');
-  // const [zipCode, setZipCode] = useState(userDetail?.zipcode || '');
   const [country, setCountry] = useState(userDetail?.country || '');
   const [state, setState] = useState(userDetail?.state || '');
 

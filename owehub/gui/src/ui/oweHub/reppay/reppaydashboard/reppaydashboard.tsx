@@ -2,19 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import './repdasboard.css';
 import Select from 'react-select';
 import { ICONS } from '../../../../resources/icons/Icons';
-import {
-  comissionValueData,
-  payRollData,
-} from '../../../../resources/static_data/StaticData';
+import { comissionValueData } from '../../../../resources/static_data/StaticData';
 import RepDashBoardTable from './RepDashboardTable';
 import RepDashBoardChart from './RepDashboardChart';
 import RepPayDashboardTotal from './RepPayDashboardTotal';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import DropdownWithCheckboxes from './DropdownCheck';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
-import moment from 'moment';
 import { handleChange as filterChange } from '../../../../redux/apiSlice/repPaySlice/repPaySlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
@@ -52,7 +47,6 @@ export const RepPayDashboardPage: React.FC = () => {
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].value
   );
-  const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const { isActive } = useAppSelector((state) => state.filterSlice);
   const { pathname } = useLocation();
@@ -63,14 +57,9 @@ export const RepPayDashboardPage: React.FC = () => {
       if (data.status > 201) {
         toast.error(data?.message);
       }
-      console.log(data, 'dataaaa');
     })();
   }, []);
-  const handleSelectChange2 = (
-    selectedOption2: { value: string; label: string } | null
-  ) => {
-    setSelectedOption2(selectedOption2 ? selectedOption2.value : '');
-  };
+
   const filterClose = () => {
     setFilterModal(false);
   };
@@ -90,17 +79,6 @@ export const RepPayDashboardPage: React.FC = () => {
     });
   };
 
-  // const includeData = [
-  //   { value: 'All', label: 'All' },
-  //   { value: 'AP-DTH', label: 'AP-DTH' },
-  //   { value: 'AP-PDA', label: 'AP-PDA' },
-  //   { value: 'AP-ADV', label: 'AP-ADV' },
-  //   { value: 'AP-DED', label: 'AP-DED' },
-  //   { value: 'REP-COMM', label: 'REP-COMM' },
-  //   { value: 'REP BONUS', label: 'REP BONUS' },
-  //   { value: 'LEADER', label: 'LEADER' },
-  // ];
-
   const reportData = [
     { value: 'All', label: 'All' },
     { value: 'STANDARD', label: 'STANDARD' },
@@ -112,24 +90,6 @@ export const RepPayDashboardPage: React.FC = () => {
     { value: 'YES', label: 'YES' },
     { value: 'NO', label: 'NO' },
   ];
-
-  const [selectedOption3, setSelectedOption3] = useState<string>(
-    cutOff[0].label
-  );
-  const handleSelectChange3 = (
-    selectedOption3: { value: string; label: string } | null
-  ) => {
-    setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
-  };
-
-  const [selectedOption4, setSelectedOption4] = useState<string>(
-    reportData[0].label
-  );
-  const handleSelectChange4 = (
-    selectedOption4: { value: string; label: string } | null
-  ) => {
-    setSelectedOption4(selectedOption4 ? selectedOption4.value : '');
-  };
 
   // used for close date click outside anywhere
   const datePickerRef = useRef<HTMLDivElement>(null);

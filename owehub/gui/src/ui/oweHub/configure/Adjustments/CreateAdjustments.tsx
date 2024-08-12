@@ -11,14 +11,7 @@ import {
   updateAdjustments,
   IRateRow,
 } from '../../../../redux/apiActions/config/arAdjustmentsAction';
-import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
 import { format } from 'date-fns';
-import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arAdjusments';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { firstCapitalize } from '../../../../utiles';

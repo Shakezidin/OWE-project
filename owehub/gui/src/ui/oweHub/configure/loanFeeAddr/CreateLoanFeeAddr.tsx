@@ -4,7 +4,6 @@ import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { useDispatch } from 'react-redux';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Select from 'react-select';
 import {
   installerOption,
   partnerOption,
@@ -12,7 +11,6 @@ import {
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { respTypeData } from '../../../../resources/static_data/StaticData';
 import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../../components/selectOption/SelectOption';

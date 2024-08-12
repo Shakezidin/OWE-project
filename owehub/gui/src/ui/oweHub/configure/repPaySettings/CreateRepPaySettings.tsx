@@ -2,19 +2,9 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { useDispatch } from 'react-redux';
-import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
-import { repPaySettingModel } from '../../../../core/models/configuration/create/repPaySettingModel';
+import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { addDays, format } from 'date-fns';
 import {
@@ -27,7 +17,6 @@ import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { firstCapitalize } from '../../../../utiles';
 import { IPayScale } from './types';
-import Switch from '../../../components/Switch';
 interface createRepPayProps {
   handleClose: () => void;
   editMode: boolean;
@@ -45,9 +34,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.repaySettings);
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [newFormData, setNewFormData] = useState<any>([]);
-  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const [createRePayData, setCreatePayData] = useState({
     name: editData?.name || '',

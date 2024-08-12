@@ -6,7 +6,6 @@ import { ActionButton } from '../../../components/button/ActionButton';
 import { updateDealerTierForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createDealerTierSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { useDispatch } from 'react-redux';
 import {
   dealertierOption,
   dealerOption,
@@ -16,7 +15,7 @@ import { DealerTierModel } from '../../../../core/models/configuration/create/De
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { fetchDealerTier } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice';
-import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
+import { errorSwal } from '../../../components/alert/ShowAlert';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { addDays, format } from 'date-fns';
 import {

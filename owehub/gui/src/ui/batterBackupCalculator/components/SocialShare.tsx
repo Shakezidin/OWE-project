@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import { CSSObjectWithLabel } from 'react-select';
 import {
   WhatsappShareButton,
   WhatsappIcon,

@@ -1,14 +1,41 @@
-import React from 'react';
+import React, { memo, useState } from 'react';
 import styles from './customer.module.css';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
 import { TbChevronDown } from 'react-icons/tb';
 import { LuClock } from 'react-icons/lu';
-import { EmailIcon } from '../../icons';
-import { IoClose } from 'react-icons/io5';
-const Index = () => {
+import GoogleMapReact from 'google-map-react';
+import { IoLocationOutline } from 'react-icons/io5';
+import roofIcon from '../../../../resources/assets/roof_top.svg';
+import { CSSObjectWithLabel } from 'react-select';
+const Marker = ({
+  text,
+  lat,
+  lng,
+}: {
+  text: string;
+  lat: number;
+  lng: number;
+}) => <div>{text}</div>;
+interface propTypes {
+  withSecondaryBtn?: boolean;
+  mapStyles?: CSSObjectWithLabel;
+}
+const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const defaultProps = {
+    center: {
+      lat: 10.99835602,
+      lng: 77.01502627,
+    },
+    zoom: 11,
+  };
+
   return (
-    <div className={styles.customer_wrapper}>
+    <div
+      className={styles.customer_wrapper}
+      style={{ maxHeight: isOpen ? 700 : 62 }}
+    >
       <div className={`${styles.customer_grid}`}>
         <div className="flex items-center">
           <div
@@ -45,100 +72,111 @@ const Index = () => {
           </div>
         </div>
 
-        <button className={styles.accordian_btn}>
-          <TbChevronDown size={22} />
+        <button
+          onClick={() => setIsOpen((prev) => !prev)}
+          className={styles.accordian_btn}
+        >
+          <TbChevronDown
+            size={22}
+            style={{ transform: isOpen ? 'rotate(180deg)' : undefined,transition:"all 500ms" }}
+          />
         </button>
       </div>
       <div className="mt2">
-        <div className="flex items-center">
-          <div
-            className={`${styles.avatar_circle} ${styles.bg_time} flex items-center justify-center`}
-          >
-            <LuClock />
+        <div className={styles.other_info_grid}>
+          <div className="flex items-start">
+            <div
+              className={` flex items-center justify-center ${styles.bg_phone} ${styles.avatar_circle}`}
+            >
+              <LuClock />
+            </div>
+            <div style={{ marginLeft: 6 }}>
+              <h4
+                style={{ fontSize: 14, fontWeight: 600, lineHeight: 'normal' }}
+              >
+                System Size
+              </h4>
+              <p className={styles.sm_text} style={{ fontSize: 12 }}>
+                11
+              </p>
+            </div>
           </div>
-          <div style={{ marginLeft: 6 }}>
-            <h4 style={{ fontSize: 14, fontWeight: 600, lineHeight: 'normal' }}>
-              9:00AM - 12:00 PM, 29 July, Monday
-            </h4>
-            <p className={styles.sm_text} style={{ fontSize: 12 }}>
-              Customer preferred time
-            </p>
+
+          <div className="flex items-start">
+            <div
+              className={` flex items-center justify-center ${styles.bg_green} ${styles.avatar_circle}`}
+            >
+              <img src={roofIcon} alt="" />
+            </div>
+            <div className="ml1">
+              <h3 className={styles.customer_name}>Roof Type</h3>
+              <p className={styles.sm_text}>Jacob Martin322@gmail.com</p>
+            </div>
           </div>
         </div>
-        <div className="mt2">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 style={{ color: '#AFAFAF', fontSize: 14, fontWeight: 600 }}>
+
+        <div className="flex mt1  justify-between">
+          <div
+            style={{ flexBasis: 250 }}
+            className=" flex justify-between flex-column"
+          >
+            <div className="mt3">
+              <h4
+                style={{
+                  color: '#AFAFAF',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  marginBottom: 11,
+                }}
+              >
                 Previous Appointment
               </h4>
-
-              <h5
-                className={styles.appointment_status}
-                style={{ marginTop: 4 }}
+              <h5 className={styles.appointment_status}>30 july 2024</h5>
+              <span
+                className="block"
+                style={{ color: '#E54040', fontSize: 12 }}
               >
-                30 july 2024 :{' '}
-                <span style={{ color: '#E54040' }}>Cancelled</span>{' '}
-              </h5>
+                Cancelled
+              </span>{' '}
+            </div>
+            <div className="flex items-center ">
+              <button
+                className={`${styles.primary_btn}  ${styles.schedule_btn}`}
+              >
+                Schedule
+              </button>
+              {withSecondaryBtn && (
+                <button
+                  style={{ marginLeft: 16 }}
+                  className={`${styles.secondary_btn}  ${styles.schedule_btn}`}
+                >
+                  Escalate
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="mt3">
-            <h4>History</h4>
-            <div className={styles.appointment_status_wrapper}>
-              <div
-                className={`flex items-start mb3 ${styles.appointment_status_container}`}
+          <div>
+            <div className={styles.map_wrapper} style={mapStyles}>
+              <GoogleMapReact
+                bootstrapURLKeys={{ key: '' }}
+                defaultCenter={defaultProps.center}
+                defaultZoom={defaultProps.zoom}
               >
-                <div
-                  style={{ width: 30, height: 30 }}
-                  className={` flex items-center justify-center ${styles.bg_stone} ${styles.avatar_circle}`}
-                >
-                  <EmailIcon />
-                </div>
-                <div className="ml1">
-                  <h3 className={styles.customer_name}>
-                    Appointment Sent on : 24 July 2024
-                  </h3>
-                  <p className={styles.sm_text} style={{ fontSize: 12 }}>
-                    Invitation sent to owner by email{' '}
-                  </p>
-                </div>
-              </div>
-
-              <div
-                className={`flex items-start mb3 ${styles.appointment_status_container}`}
-              >
-                <div
-                  style={{ width: 30, height: 30, borderRadius: '50%' }}
-                  className=" flex items-center justify-center"
-                >
-                  <div
-                    style={{
-                      width: 22,
-                      height: 22,
-                      backgroundColor: '#F3F3F3',
-                    }}
-                    className={` flex items-center justify-center ${styles.bg_stone} ${styles.avatar_circle}`}
-                  >
-                    <IoClose size={12} />
-                  </div>
-                </div>
-                <div className="ml1">
-                  <h3 className={styles.customer_name}>
-                    Appointment Declined : 26 July 2024
-                  </h3>
-                  <p className={styles.sm_text} style={{ fontSize: 12 }}>
-                    Scheduled Cancel By Owner
-                  </p>
-                </div>
-              </div>
+                <Marker lat={59.955413} lng={30.337844} text="My Marker" />
+              </GoogleMapReact>
+            </div>
+            <div className="flex items-center mt1">
+              <IoLocationOutline className="mr1" />
+              <p className={styles.map_location}>
+                103 backstreet, churchline, arizona,12544
+              </p>
             </div>
           </div>
-
-          <button className={styles.schedule_btn}>Schedule</button>
         </div>
       </div>
     </div>
   );
 };
 
-export default Index;
+export default memo(Index);

@@ -5,7 +5,6 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
 import './pojpie.css';
 import DataNotFound from '../../../components/loader/DataNotFound';
-import { Tooltip } from 'react-tooltip';
 
 interface ChartDataItem {
   name: string;

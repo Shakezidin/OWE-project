@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-
 import {
   IRateRow,
   getAdjustments,
 } from '../../../../redux/apiActions/config/arAdjustmentsAction';
-
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
@@ -25,6 +23,7 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { dateFormat } from '../../../../utiles/formatDate';
+
 const Adjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);

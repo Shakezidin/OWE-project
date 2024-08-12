@@ -15,16 +15,12 @@ import {
   salesTypeOption,
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
-import { useAppSelector } from '../../../../redux/hooks';
-import { errorSwal } from '../../../components/alert/ShowAlert';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { firstCapitalize } from '../../../../utiles';

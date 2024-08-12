@@ -12,7 +12,6 @@ import {
   updateInstallCost,
 } from '../../../../redux/apiActions/config/installCostAction';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
-import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;

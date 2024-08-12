@@ -3,15 +3,12 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { updateUserForm } from '../../../../redux/apiSlice/userManagementSlice/createUserSlice';
-import { CreateUserModel } from '../../../../core/models/api_models/UserManagementModel';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import Loading from '../../../components/loader/Loading';
 import './AddNew.css';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import Select from 'react-select';
 import {
   getTeams,
   manageTeam,

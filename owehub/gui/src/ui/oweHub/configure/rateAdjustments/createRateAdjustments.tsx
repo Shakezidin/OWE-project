@@ -4,20 +4,7 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 
 import { ActionButton } from '../../../components/button/ActionButton';
-import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
-import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { useDispatch } from 'react-redux';
-import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { rateAdjustmentModel } from '../../../../core/models/configuration/create/RateAdjustmentModel';
-import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createRateAdjustments,
   updateRateAdjustment,

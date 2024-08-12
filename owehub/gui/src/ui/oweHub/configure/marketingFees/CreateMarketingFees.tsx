@@ -17,7 +17,6 @@ import { fetchmarketingFees } from '../../../../redux/apiSlice/configSlice/confi
 import { FormEvent } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
-import { dateFormat } from '../../../../utiles/formatDate';
 interface marketingProps {
   handleClose: () => void;
   editMode: boolean;
