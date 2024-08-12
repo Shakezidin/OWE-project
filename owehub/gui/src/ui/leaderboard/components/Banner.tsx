@@ -265,7 +265,9 @@ const Banner: React.FC<BannerProps> = ({
                   : 'user-trophy'
               }
             >
-              <img src={ICONS.BannerTrophy} alt="login-icon" />
+              <picture>
+              <img src={ICONS.BannerTrophy} loading='lazy' decoding='async' alt="banner-trophy-image" />
+              </picture>
             </div>
             <div className="banner-stars">
               <img
