@@ -243,8 +243,9 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 		filtersBuilder.WriteString("vd.is_deleted = FALSE")
 	}
 
-	if forDataCount == true {
+	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY vd.id, vd.dealer_code, vd.dealer_name, vd.description")
+	} else if len(dataFilter.Filters) > 0 {
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
