@@ -339,7 +339,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	defer func() { log.ExitFn(0, "PrepareUsersDetailFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	var whereAdder bool
+	var whereAdder, nameSearch bool
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
@@ -352,6 +352,10 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			// Determine the operator and value based on the filter operation
 			operator := GetFilterDBMappedOperator(filter.Operation)
 			value := filter.Data
+			if column == "name" && value != "" {
+				nameSearch = true
+			}
+
 			whereAdder = true
 
 			// For "stw" and "edw" operations, modify the value with '%'
@@ -412,7 +416,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 
 	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
-	} else if len(dataFilter.Filters) > 0 {
+	} else if nameSearch {
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

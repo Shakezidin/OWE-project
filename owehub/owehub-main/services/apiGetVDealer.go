@@ -175,6 +175,7 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 
 	var filtersBuilder strings.Builder
 	whereAdded := false // Flag to track if WHERE clause has been added
+	var nameSearch bool
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
@@ -192,6 +193,9 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 			// Determine the operator and value based on the filter operation
 			operator := GetFilterDBMappedOperator(filter.Operation)
 			value := filter.Data
+			if column == "dealer_name" && value != ""{
+				nameSearch = true
+			}
 
 			// For "stw" and "edw" operations, modify the value with '%'
 			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
@@ -245,7 +249,7 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 
 	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY vd.id, vd.dealer_code, vd.dealer_name, vd.description")
-	} else if len(dataFilter.Filters) > 0 {
+	} else if nameSearch {
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
