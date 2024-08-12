@@ -425,7 +425,7 @@ p.loginResendOtp {
     padding: 1rem 0;
     font-size: 14px;
   }
-  .loginBox object {
+  .loginBox img {
     width: 250px;
     margin-left: -18px;
   }

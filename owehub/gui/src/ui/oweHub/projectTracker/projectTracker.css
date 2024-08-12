@@ -31,6 +31,19 @@
   color: rgb(0, 141, 218);
 }
 
+
+#chart{
+  width: 400px;
+}
+
+.cards-description{
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  transform: translateX(-50%);
+}
+
 .performance-project-name {
   font-size: 12px;
   font-weight: 500;
