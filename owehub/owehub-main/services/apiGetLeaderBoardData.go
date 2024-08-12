@@ -84,7 +84,6 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-
 	if dataReq.Role == "Admin" || dataReq.Role == "Finance Admin" {
 		if len(dataReq.DealerName) == 0 {
 			log.FuncErrorTrace(0, "no dealer name selected")
