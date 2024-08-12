@@ -90,6 +90,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	query = `
 			SELECT ud.user_id AS record_id, ud.name AS name, 
 			ud.user_code, 
+			ud.db_username,
 			ud.mobile_number, 
 			ud.email_id, 
 			ud.password_change_required, 
@@ -269,7 +270,10 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if !bgcolouroOk || BgColour == "" {
 			BgColour = ""
 		}
-
+		DBUsername, ok := item["db_username"].(string)
+		if !ok {
+			DBUsername = ""
+		}
 		// tablesPermissions
 		tablesPermissionsJSON, Ok := item["tables_permissions"].([]byte)
 		if !Ok || tablesPermissionsJSON == nil {
@@ -283,6 +287,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		usersData := models.GetUsersData{
+			DBUsername:        DBUsername,
 			RecordId:          Record_Id,
 			Name:              Name,
 			EmailId:           EmailID,
@@ -398,6 +403,9 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			case "dealer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "db_username":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.db_username) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.%s) %s LOWER(ud.$%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -415,7 +423,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount {
-		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
+		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.db_username, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
 	} else if nameSearch {
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
