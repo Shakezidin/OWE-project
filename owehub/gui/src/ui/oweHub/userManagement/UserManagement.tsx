@@ -365,25 +365,23 @@ const UserManagement: React.FC = () => {
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
           onClickDelete={(item: any) => {
-            if (selectedOption.value === 'Partner') {
-              deleteDealerRequest(item);
-            } else {
-              deleteUserRequest(
-                [item.user_code],
-                [item.db_username]
-              );
-            }
+            selectedOption.value === 'Partner'
+              ? deleteDealerRequest(item)
+              : deleteUserRequest(
+                  [item.user_code],
+                  item.role_name === "DB User"
+                    ? [item.db_username]
+                    : [item.name.split(' ').join('_')]
+                );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(
               (index) => userRoleBasedList[index].user_code
             );
-            const usernames = Array.from(selectedRows)
-              .map((index) => {
-                const user = userRoleBasedList[index];
-                return user.db_username;
-              })
-              .filter((username) => username !== "");
+            const usernames = Array.from(selectedRows).map((index) => {
+              const user = userRoleBasedList[index];
+              return user.role_name === "DB User" ? user.db_username : user.name.split(' ').join('_');
+            });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);
             } else {
