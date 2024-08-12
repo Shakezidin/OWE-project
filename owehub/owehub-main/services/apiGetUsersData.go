@@ -84,12 +84,6 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 		dataReq.DealerName = DealerName
-		// var filter models.Filter
-		// filter.Column = "dealer_name"
-		// filter.Operation = "eqs"
-		// filter.Data = DealerName
-
-		// dataReq.Filters = append(dataReq.Filters, filter)
 	}
 
 	tableName := db.TableName_users_details
@@ -415,11 +409,11 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 		}
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
-	
+
 	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
+	} else if len(dataFilter.Filters) > 0 {
 	} else {
-		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
 			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
