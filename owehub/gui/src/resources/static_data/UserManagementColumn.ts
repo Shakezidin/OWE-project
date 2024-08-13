@@ -124,7 +124,7 @@ export const UserDealerTableColumn: Column[] = [
   },
   {
     name: 'dealer_owner',
-    displayName: 'Dealer Owner',
+    displayName: 'Dealer',
     type: 'string',
     isCheckbox: false,
   },

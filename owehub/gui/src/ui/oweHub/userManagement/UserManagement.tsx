@@ -369,16 +369,19 @@ const UserManagement: React.FC = () => {
               ? deleteDealerRequest(item)
               : deleteUserRequest(
                   [item.user_code],
-                  [item.name.split(' ').join('_')]
+                  item.role_name === "DB User"
+                    ? [item.db_username]
+                    : [item.name.split(' ').join('_')]
                 );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(
               (index) => userRoleBasedList[index].user_code
             );
-            const usernames = Array.from(selectedRows).map((index) =>
-              userRoleBasedList[index].name.split(' ').join('_')
-            );
+            const usernames = Array.from(selectedRows).map((index) => {
+              const user = userRoleBasedList[index];
+              return user.role_name === "DB User" ? user.db_username : user.name.split(' ').join('_');
+            });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);
             } else {
