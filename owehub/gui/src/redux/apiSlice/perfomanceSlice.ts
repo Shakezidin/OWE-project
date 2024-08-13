@@ -10,6 +10,7 @@ export interface IPerfomanceSale {
 export interface IProjectStatus {
   unqiue_id: string;
   contract_date: string;
+  customer: string;
   permit_approved_date: string;
   install_completed_date: string;
   pto_date: string;

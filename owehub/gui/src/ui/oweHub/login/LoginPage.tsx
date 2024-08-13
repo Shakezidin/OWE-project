@@ -255,7 +255,7 @@ export const LoginPage = () => {
                 loop={false}
                 style={{ width: 70, height: 70 }}
               />
-              <p>Battery Calculator is Coming Soon!</p>
+              <p className="coming-soon">Battery Calculator is Coming Soon!</p>
             </div>
           </div>
         </div>
