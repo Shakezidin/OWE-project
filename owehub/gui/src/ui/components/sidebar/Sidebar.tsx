@@ -82,6 +82,19 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }
       });
       return newArr;
+    } else if (role === TYPE_OF_USER.APPOINTMENT_SETTER) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.PROJECT_PERFORMANCE &&
+          item.path !== ROUTES.PROJECT_STATUS
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
     } else {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {

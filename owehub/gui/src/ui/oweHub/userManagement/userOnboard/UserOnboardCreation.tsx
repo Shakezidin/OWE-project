@@ -100,6 +100,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     if (fieldName !== 'report_to' && fieldName !== 'team_name') {
       onChangeRole('Dealer', value);
     }
+    if (fieldName === 'dealer') {
+      await dispatch(updateUserForm({ field: 'assigned_Manager', value: '' }));
+    }
   };
 
   const handleChangeAssignManager = async (
