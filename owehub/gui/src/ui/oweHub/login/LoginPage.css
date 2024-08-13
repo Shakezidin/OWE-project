@@ -88,7 +88,11 @@
   z-index: 4;
   padding: 3rem;
 }
-
+.coming-soon{
+  line-height: 20px;
+  margin-right: 1rem;
+  user-select: none;
+}
 .reset-password {
   color: #3faed9;
   border: none;

@@ -20,10 +20,18 @@
 .install-update {
   font-size: 12px;
   font-weight: 500;
-  width: 110px;
+  width: 83px;
   margin-right: 10px;
   cursor: pointer;
   color: #222222;
+}
+
+.project-customer{
+  width: 120px;
+  margin-right: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .install-update:hover {
@@ -91,9 +99,11 @@
 
 .project-card-container-1 {
   display: grid;
-  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  /* grid-template-columns: repeat(2, minmax(200px, 1fr)); */
   gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   margin-top: 1rem;
+  width: 100%;
 }
 
 .project-card-container-1 .project-card {
@@ -102,7 +112,7 @@
 }
 
 .project-card-container-1 .project-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
 }
 
@@ -184,6 +194,7 @@
   flex-direction: column;
   justify-content: center;
   border-radius: 8px;
+  height: 120px;
 }
 
 .project-icon-img {

@@ -465,7 +465,7 @@ const ProjectPerformence = () => {
               );
             })}
           </div>
-          <div className="project-card-container-2 flex-auto">
+          {/*<div className="project-card-container-2 flex-auto">
             {projectDashData.map((item, i) => (
               <div className="project-ruppes-card" key={i}>
                 <div
@@ -506,7 +506,7 @@ const ProjectPerformence = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div>}*/}
         </div>
       </div>
 
@@ -567,7 +567,8 @@ const ProjectPerformence = () => {
                 <tr>
                   <th style={{ padding: '0px' }}>
                     <div className="milestone-header">
-                      <p>Project Name</p>
+                      <p>Project Id</p>
+                      <p>Customer Name</p>
                       <p>Milestone</p>
                     </div>
                   </th>
@@ -614,6 +615,11 @@ const ProjectPerformence = () => {
                                   {project.unqiue_id}
                                 </p>
                               </Link>
+                              <div>
+                              <p className="project-customer">
+                                  {project.customer}
+                                </p>
+                              </div>
                               <div
                                 className="milestone-strips"
                                 style={getColorStyle(project.contract_date)}
