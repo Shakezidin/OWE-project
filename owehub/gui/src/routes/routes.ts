@@ -69,4 +69,5 @@ export const ROUTES = {
   LEADERBOARD: '/leaderboard',
   NOT_FOUND: '*',
   SCHEDULER: '/scheduler',
+  SCHEDULE_DETAIL: '/schedule-detail/:id',
 };
