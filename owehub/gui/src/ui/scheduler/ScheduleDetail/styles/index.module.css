@@ -1,0 +1,97 @@
+.detail_heading {
+  font-size: 20px;
+  color: #263747;
+  font-weight: 600;
+}
+
+.primary_heading {
+  color: #04a5e8;
+  font-weight: 500;
+}
+
+.refresh_btn {
+  width: 42px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1px solid #d1d5db;
+}
+.available_slot_wrapper {
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  padding: 4px 7px;
+  background-color: #fff;
+  overflow: hidden;
+}
+.bg_available_progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 35%;
+  background-color: #e0ebff;
+}
+.top_overlay {
+  position: relative;
+  z-index: 5;
+}
+
+.top_overlay {
+  font-size: 16px;
+}
+.top_overlay:last-child {
+  font-size: 14px;
+}
+.survery_users_container {
+  border-radius: 12px;
+  background-color: #fff;
+  min-height: 500px;
+  border: 1px solid #d1d5db;
+}
+.suvery_grid_wrapper {
+  display: grid;
+  grid-template-columns: 160px auto;
+}
+.date_grid_container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.active_date {
+  background-color: #377cf6;
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 11px;
+  transition: all 500ms;
+}
+
+.surver_filter {
+  border-right: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+  padding-bottom: 14px;
+}
+.filter_btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #377cf6;
+}
+.date_wrapper {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.time_slot_wrapper {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+}
+
+.survey_progress_container {
+  display: grid;
+  grid-template-columns: 160px auto;
+  border-bottom: 1px solid #EFEFEF;
+}
