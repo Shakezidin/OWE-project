@@ -343,8 +343,8 @@ export const Calendar = () => {
   return (
     <svg
       width="30"
-      height="30"
-      viewBox="0 0 30 30"
+      height="33" // Increased height
+      viewBox="0 0 30 33" // Updated viewBox to match the new height
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       onMouseEnter={handleMouseEnter}
@@ -352,7 +352,7 @@ export const Calendar = () => {
     >
       <rect
         width="30"
-        height="30"
+        height="33" // Increased height
         rx="7.5"
         fill={fillColor}
         style={{ transition: 'fill 0.3s ease-in-out' }}

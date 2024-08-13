@@ -162,9 +162,69 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   console.log('jdkfgh');
+  //   e.preventDefault();
+  //   const roleAdmin = localStorage.getItem('role');
+  //   const email = localStorage.getItem('email');
+  //   let userCode;
+  //   if (
+  //     roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
+  //     roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
+  //   ) {
+  //     userCode = managers.find((item) => item.email === email);
+  //   }
+  //   console.log(
+  //     userCode,
+  //     'user',
+  //     selectedOptions2,
+  //     'memeber',
+  //     selectedOptions,
+  //     'managers'
+  //   );
+  //   const validationErrors: { [key: string]: string } = {};
+
+  //   if (formData.first_name.trim() === '') {
+  //     validationErrors.first_name = 'Team Name is required.';
+  //   }
+
+  //   if (selectedOptions2.length === 0) {
+  //     validationErrors.managers = 'Please select at least one manager';
+  //   }
+
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return;
+  //   }
+
+  //   const data = {
+  //     team_name: formData.first_name,
+  //     sale_rep_ids: selectedOptions.map((option) => option.value),
+  //     manager_ids:
+  //       roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
+  //       roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
+  //         ? [
+  //             userCode?.rep_code,
+  //             ...selectedOptions2.map((option) => option.value),
+  //           ]
+  //         : selectedOptions2.map((option) => option.value),
+  //     description: formData.description,
+  //     dealer_name: selectedOption3 || undefined,
+  //   };
+  //   dispatch(createTeam(data));
+  // };
+
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     console.log('jdkfgh');
     e.preventDefault();
+  
+    if (isSubmitting) return; // Prevent multiple form submissions
+  
+    setIsSubmitting(true); // Set submitting state to true
+  
     const roleAdmin = localStorage.getItem('role');
     const email = localStorage.getItem('email');
     let userCode;
@@ -183,20 +243,21 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       'managers'
     );
     const validationErrors: { [key: string]: string } = {};
-
+  
     if (formData.first_name.trim() === '') {
       validationErrors.first_name = 'Team Name is required.';
     }
-
+  
     if (selectedOptions2.length === 0) {
       validationErrors.managers = 'Please select at least one manager';
     }
-
+  
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setIsSubmitting(false); // Set submitting state back to false
       return;
     }
-
+  
     const data = {
       team_name: formData.first_name,
       sale_rep_ids: selectedOptions.map((option) => option.value),
@@ -211,8 +272,19 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       description: formData.description,
       dealer_name: selectedOption3 || undefined,
     };
-    dispatch(createTeam(data));
+  
+    try {
+      await dispatch(createTeam(data));
+      handleClose();
+    } catch (error) {
+      console.error('Error creating team:', error);
+    }
+  
+    setIsSubmitting(false); // Set submitting state back to false
   };
+  
+
+
 
   useEffect(() => {
     const roleAdmin = localStorage.getItem('role');
@@ -473,7 +545,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         </div>
         <div className="tm-createUserActionButton">
           <ActionButton title="Cancel" onClick={handleClose2} type="button" />
-          <ActionButton title="Create" type="submit" onClick={handleClose} />
+          <ActionButton title="Create" type="submit" onClick={handleClose} disabled={isSubmitting}/>
         </div>
       </form>
     </div>
