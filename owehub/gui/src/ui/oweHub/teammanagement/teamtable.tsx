@@ -76,6 +76,7 @@ const TeamTable: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
   const currentPageData = team?.sale_rep_list?.slice() || [];
+  const [updating, setUpdating] = useState(false);
 
   const onSubmitCreateUser = () => {
     console.log('User created');
@@ -182,6 +183,9 @@ const TeamTable: React.FC = () => {
   };
 
   const handleUpdateName = async () => {
+    if (updating) return; // Prevent multiple runs if already loading
+
+    setUpdating(true); // Set loading state to true
     try {
       const response = await postCaller('update_team', {
         team_id: team?.team_id,
@@ -200,6 +204,7 @@ const TeamTable: React.FC = () => {
     } catch (error) {
       console.error('There was an error updating the team name:', error);
     }
+    setUpdating(false);
   };
 
   console.log(role, 'role');
@@ -246,20 +251,20 @@ const TeamTable: React.FC = () => {
                 <div className="team-table-container">
                   {isEditing ? (
                     <>
-                    <input
-                      type="text"
-                      ref={inputRef}
-                      value={inputValue}
-                      className="team-input"
-                      onChange={(e) => {
-                        if (e.target.value.length <= 200) {
-                          setInputValue(e.target.value);
-                        }
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                      readOnly={!isEditing}
-                      style={{ width: isMobile ? '200px' : 'auto' }}
-                    />
+                      <input
+                        type="text"
+                        ref={inputRef}
+                        value={inputValue}
+                        className="team-input"
+                        onChange={(e) => {
+                          if (e.target.value.length <= 200) {
+                            setInputValue(e.target.value);
+                          }
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        readOnly={!isEditing}
+                        style={{ width: isMobile ? '200px' : 'auto' }}
+                      />
                     </>
                   ) : (
                     <h4
@@ -283,7 +288,8 @@ const TeamTable: React.FC = () => {
                       <div>
                         <MdOutlineDone
                           className="done-icon"
-                          onClick={handleUpdateName}
+                          onClick={updating ? undefined : handleUpdateName}
+                          style={{ pointerEvents: updating ? 'none' : 'auto' }}
                         />
                       </div>
                     ) : (
@@ -297,10 +303,10 @@ const TeamTable: React.FC = () => {
                   </div>
                 </div>
                 {inputValue.length === 200 && (
-                      <span className="error-message">
-                        Team Name cannot exceed 200 characters.
-                      </span>
-                    )}
+                  <span className="error-message">
+                    Team Name cannot exceed 200 characters.
+                  </span>
+                )}
                 <p>
                   {team?.manager_count} Managers, {team?.MemberCount} Member
                 </p>

@@ -153,6 +153,7 @@
 }
 
 .edit-button {
+  height: 33px;
   position: absolute;
   right: 0.8rem;
   bottom: 0.8rem;
@@ -182,6 +183,14 @@
   transition: all 300ms ease-in-out;
   background-color: #ddebff;
   transform: scale(1.05);
+}
+
+.dealer-dropdown-filter .dealer-toggler.open .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.fa-chevron-down {
+  transition: transform 300ms ease-in-out;
 }
 
 .edit-svg {
