@@ -296,6 +296,7 @@ const UserManagement: React.FC = () => {
         setSelectAllChecked(false);
         toast.success(result.message);
         dispatch(fetchDealerList(dataa));
+        dispatch(fetchUserOnboarding());
       } else {
         toast.warning(result.message);
       }
