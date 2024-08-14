@@ -59,39 +59,42 @@ const ProjectStatus = () => {
       (item) => projectDetail[item as keyof typeof projectDetail]
     );
   };
-  const newStatusData = [
-    {
-      name: 'Sales',
-      number: <FaCheck />,
-      color: 'white',
-      numColor: '#0493CE',
-      bgColor: '#4191C9',
-      childStatusData: [
-        {
-          name: '10 Apr',
-          process: 'Completed',
-          bgColor: projectDetail.sales_completed ? '#63ACA3' : '#EBEBEB',
-          color: projectDetail.sales_completed ? 'white' : '#858585',
-          borderColor: projectDetail.sales_completed ? 'white' : '#A5AAB2',
-          key: 'sales_completed',
-        },
-      ],
-    },
+  const filtered = [
+    // {
+    //   name: 'Sales',
+    //   number: <FaCheck />,
+    //   color: 'white',
+    //   numColor: '#0493CE',
+    //   bgColor: '#4191C9',
+    //   childStatusData: [
+    //     {
+    //       name: '10 Apr',
+    //       process: 'Completed',
+    //       bgColor: projectDetail.sales_completed ? '#63ACA3' : '#EBEBEB',
+    //       color: projectDetail.sales_completed ? 'white' : '#858585',
+    //       borderColor: projectDetail.sales_completed ? 'white' : '#A5AAB2',
+    //       key: 'sales_completed',
+    //     },
+    //   ],
+    // },
+    
+     
     {
       name: 'NTP',
-      number: '2',
+      number: '1',
       color: 'white',
       numColor: '#0493CE',
       bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
-          process: 'Pending',
-          data: projectDetail.ntp_pending ? '' : 'Data not available',
-          borderColor: projectDetail.ntp_pending ? 'white' : '#A5AAB2',
-          key: 'ntp_pending',
-          bgColor: projectDetail.ntp_pending ? '#63ACA3' : '#EBEBEB',
-          color: projectDetail.ntp_pending ? 'white' : '#858585',
+          process: 'Sale Date',
+          data: projectDetail.sales_completed ? '' : 'Data not available',
+          borderColor: projectDetail.sales_completed ? 'white' : '#A5AAB2',
+          key: 'sales_completed',
+          bgColor: projectDetail.sales_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.sales_completed ? 'white' : '#858585',
+          
         },
         {
           name: '10 Apr',
@@ -106,7 +109,7 @@ const ProjectStatus = () => {
     },
     {
       name: 'Site Survey',
-      number: '3',
+      number: '2',
       bgColor: '#4191C9',
       color: 'white',
       numColor: '#0493CE',
@@ -153,7 +156,7 @@ const ProjectStatus = () => {
     },
     {
       name: 'Roofing',
-      number: '4',
+      number: '3',
       color: 'white',
       numColor: '#0493CE',
       bgColor: '#4191C9',
@@ -189,7 +192,7 @@ const ProjectStatus = () => {
     },
     {
       name: 'Electrical',
-      number: '5',
+      number: '4',
       color: 'white',
       numColor: '#0493CE',
       bgColor: '#4191C9',
@@ -225,7 +228,7 @@ const ProjectStatus = () => {
     },
     {
       name: 'PV Permit ',
-      number: '6',
+      number: '5',
       bgColor: '#4191C9',
       color: 'white',
       numColor: '#0493CE',
@@ -261,7 +264,7 @@ const ProjectStatus = () => {
     },
     {
       name: 'IC Permit Submitted',
-      number: '7',
+      number: '6',
       color: 'white',
       numColor: '#0493CE',
       bgColor: '#4191C9',
@@ -298,7 +301,7 @@ const ProjectStatus = () => {
     {
       name: 'Install',
       bgColor: '#4191C9',
-      number: '8',
+      number: '7',
       color: 'white',
       numColor: '#0493CE',
       childStatusData: [
@@ -344,7 +347,7 @@ const ProjectStatus = () => {
     },
     {
       name: 'Final Inspection',
-      number: '9',
+      number: '8',
       color: 'white',
       numColor: '#0493CE',
       bgColor: '#4191C9',
@@ -381,7 +384,7 @@ const ProjectStatus = () => {
     },
     {
       name: 'PTO',
-      number: '10',
+      number: '9',
       color: 'white',
       numColor: '#0493CE',
       bgColor: '#4191C9',
@@ -417,6 +420,27 @@ const ProjectStatus = () => {
       ],
     },
   ];
+
+
+  const filteredStatusData = filtered.filter(status => {
+    if (status.name === 'Roofing') {
+      return (
+        projectDetail.roofing_pending ||
+        projectDetail.roofing_scheduled ||
+        projectDetail.roofing_completed
+      );
+    }
+    if (status.name === 'Electrical') {
+      return (
+        projectDetail.electrical_pending ||
+        projectDetail.electrical_scheduled ||
+        projectDetail.electrical_completed
+      );
+    }
+    return true; // Keep all other status objects
+  });
+
+  console.log(filteredStatusData, "Check");
 
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
@@ -685,7 +709,7 @@ const ProjectStatus = () => {
                           </div>
                         </td>
                       ) : (
-                        newStatusData.map((item: any, i: any) => (
+                        filteredStatusData.map((item: any, i: any) => (
                           <>
                             <div className="project-status-table">
                               <div
@@ -831,7 +855,7 @@ const ProjectStatus = () => {
                                 )
                               )}
                             </div>
-                            {i === 9 ? null : (
+                            {i === 6 ? null : (
                               <div className="dotted-border"></div>
                             )}
                           </>
