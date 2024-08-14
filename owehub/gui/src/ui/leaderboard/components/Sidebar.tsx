@@ -6,12 +6,10 @@ import React, {
   useState,
 } from 'react';
 import { ArrowForward, Growth, ServiceIcon, SuccessIcon } from './Icons';
-import { FaShareSquare } from 'react-icons/fa';
-import Select from 'react-select';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
-import axios from 'axios';
+import { HiDownload } from "react-icons/hi";
 import { toCanvas } from 'html-to-image';
 import {
   Calendar,
@@ -126,6 +124,9 @@ const Sidebar = ({
       const element = topCards.current;
       const scrollHeight = element.scrollHeight;
       setGenerating(true);
+      setTimeout(() => {
+        setGenerating(false);
+      }, 100);
       toCanvas(element, {
         height: scrollHeight,
       }).then((canvas) => {
@@ -153,6 +154,20 @@ const Sidebar = ({
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
 
+  //close the modal on press on esc
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsOpen(-1); 
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <div
       className="user-profile-sidebar-fixed scrollbar flex items-center justify-end"
@@ -162,6 +177,7 @@ const Sidebar = ({
         <span
           onClick={() => setIsOpen(-1)}
           className="absolute back-icon-sidebar back-icon block"
+          style={{display: isGenerating ? 'none' : 'block'}}
         >
           <ArrowForward />
         </span>
@@ -190,14 +206,14 @@ const Sidebar = ({
                   <span className="card-label block">Team name</span>
                   <h6 className="card-value">
                     {' '}
-                    {data?.team_name || 'Unassigned'}{' '}
+                    {data?.team_name || 'N/A'}{' '}
                   </h6>
                 </div>
                 <div>
                   <span className="card-label block">Contact number</span>
                   <h6 className="card-value">
                     {' '}
-                    {data?.contact_number || 'N/A'}{' '}
+                    {data?.contact_number ? `+${data.contact_number}` : 'N/A'}
                   </h6>
                 </div>
               </div>
@@ -370,8 +386,8 @@ const Sidebar = ({
                     className="leader-stats-share-btn"
                     disabled={isGenerating}
                   >
-                    <FaShareSquare size={17} color="#fff" className="mr1" />
-                    <span> {isGenerating ? 'Downloading' : 'Share'} </span>
+                    <HiDownload size={16} color="#fff" className="mr1" />
+                    <span> Download </span>
                   </button>
 
                   {isShareOpen && (
