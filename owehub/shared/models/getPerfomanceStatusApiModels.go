@@ -22,14 +22,18 @@ type PerfomanceStatusReq struct {
 }
 
 type PerfomanceResponse struct {
-	UniqueId               string `json:"unqiue_id"`
-	Customer               string `json:"customer"`
-	ContractDate           string `json:"contract_date"`
-	PermitApprovedDate     string `json:"permit_approved_date"`
-	PvInstallCompletedDate string `json:"install_completed_date"`
-	PtoDate                string `json:"pto_date"`
-	SiteSurveyCompleteDate string `json:"site_survey_complete_date"`
-	InstallReadyDate       string `json:"install_ready_date"`
+	UniqueId                     string `json:"unqiue_id"`
+	Customer                     string `json:"customer"`
+	ContractDate                 string `json:"contract_date"`
+	PermitApprovedDate           string `json:"permit_approved_date"`
+	PvInstallCompletedDate       string `json:"install_completed_date"`
+	PtoDate                      string `json:"pto_date"`
+	SiteSurveyCompleteDate       string `json:"site_survey_complete_date"`
+	InstallReadyDate             string `json:"install_ready_date"`
+	CadCompleteDate              string `json:"cad_complete_date"`
+	RoofingCompleteDate          string `json:"roofing_complete_date"`
+	ElectricalPermitApprovedDate string `json:"electrical_permit_approved_date"`
+	ActiveDate                   string `json:"active_date"`
 }
 
 type PerfomanceListResponse struct {
