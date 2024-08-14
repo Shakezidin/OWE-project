@@ -337,12 +337,14 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString(` WHERE intOpsMetSchema.unique_id IS NOT NULL
 			 AND intOpsMetSchema.unique_id <> ''
 			 AND intOpsMetSchema.system_size IS NOT NULL
-			 AND intOpsMetSchema.system_size > 0 `)
+			 AND intOpsMetSchema.system_size > 0 
+			 salmetschema.project_status NOT IN ('CANCEL','PTO''d')`)
 	} else {
 		filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
 			 AND intOpsMetSchema.unique_id <> ''
 			 AND intOpsMetSchema.system_size IS NOT NULL
-			 AND intOpsMetSchema.system_size > 0 `)
+			 AND intOpsMetSchema.system_size > 0 
+			 salmetschema.project_status NOT IN ('CANCEL','PTO''d')`)
 	}
 
 	filters = filtersBuilder.String()
@@ -432,12 +434,14 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		filtersBuilder.WriteString(` WHERE intOpsMetSchema.unique_id IS NOT NULL
 			 AND intOpsMetSchema.unique_id <> ''
 			 AND intOpsMetSchema.system_size IS NOT NULL
-			 AND intOpsMetSchema.system_size > 0 `)
+			 AND intOpsMetSchema.system_size > 0 
+			 salmetschema.project_status NOT IN ('CANCEL','PTO''d')`)
 	} else {
 		filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
 			 AND intOpsMetSchema.unique_id <> ''
 			 AND intOpsMetSchema.system_size IS NOT NULL
-			 AND intOpsMetSchema.system_size > 0 `)
+			 AND intOpsMetSchema.system_size > 0 
+			 salmetschema.project_status NOT IN ('CANCEL','PTO''d')`)
 	}
 
 	filters = filtersBuilder.String()
