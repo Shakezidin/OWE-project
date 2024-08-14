@@ -66,6 +66,9 @@ var ColumnToFields = map[string]string{
 
 type ProjectListResponse struct {
 	ProjectList []ProjectResponse `json:"project_response_list"`
+	CADLink     string            `json:"cad_link"`
+	DATLink     string            `json:"dat_link"`
+	PodioLink   string            `json:"podio_link"`
 }
 
 type ProjectResponse struct {

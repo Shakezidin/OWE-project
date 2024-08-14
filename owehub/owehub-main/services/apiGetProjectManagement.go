@@ -156,6 +156,21 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 	}
 
+	// query := `select cad_link,dat_link,podio_link from consolidated_data_view`
+	// data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+	// 	FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+	// 	return
+	// }
+	// projectList.CADLink = data[0]["cad_link"].(string)
+	// projectList.DATLink = data[0]["dat_link"].(string)
+	// projectList.PodioLink = data[0]["podio_link"].(string)
+
+	projectList.CADLink = "http.cad_link.com"
+	projectList.DATLink = "http.dat_link.com"
+	projectList.PodioLink = "http.podio.com"
+
 	// Send the response
 	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
@@ -198,7 +213,7 @@ func mapRowToStruct(item map[string]interface{}, v interface{}) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
- func cleanAdderBreakDownAndTotal(data string) map[string]string {
+func cleanAdderBreakDownAndTotal(data string) map[string]string {
 	result := make(map[string]string)
 	if len(data) == 0 {
 		return result
@@ -222,7 +237,7 @@ func mapRowToStruct(item map[string]interface{}, v interface{}) {
 			key := strings.TrimSpace(parts[0])
 			value := strings.TrimSpace(parts[1])
 			result[key] = value
-		} 
+		}
 	}
 	return result
 }
