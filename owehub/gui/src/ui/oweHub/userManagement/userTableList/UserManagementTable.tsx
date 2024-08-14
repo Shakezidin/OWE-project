@@ -135,6 +135,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   };
 
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -330,7 +331,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             <input
               type="text"
               placeholder="Search users..."
-              onChange={handleSearchChange}
+              value={search}
+              onChange={(e) => {
+                handleSearchChange(e);
+                setSearch(e.target.value);
+              }}
             />
 
             <div>{AddBtn}</div>
@@ -375,6 +380,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   valueContainerStyles={{ paddingInline: 0, marginInline: 0 }}
                   onChange={(data: any) => {
                     handleSelectChange(data);
+                    setSearch('');
                     setSelectedRows(new Set());
                     setSelectAllChecked(false);
                   }}

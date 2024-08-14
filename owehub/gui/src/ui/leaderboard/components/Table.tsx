@@ -269,7 +269,7 @@ const SelectableFilter = ({
             }),
             menu: (baseStyles) => ({
               ...baseStyles,
-              marginTop: '-4px',
+              marginTop: '1px',
               width: '92px',
               zIndex: 10,
             }),

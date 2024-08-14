@@ -454,7 +454,7 @@
 .export-opt {
   position: absolute;
   top: 35px;
-  right: 0px;
+  right: 9px;
   background-color: #f6f6f6;
   padding: 0.5rem 0;
   box-shadow: 5px 5px 18px rgba(0, 0, 0, 0.07);
@@ -626,7 +626,7 @@
     scroll-behavior: smooth;
   }
   .dealer-dropdown-filter {
-    right: 20px;
+    right: 13px;
   }
 
   .leaderboard-table-container::-webkit-scrollbar {
