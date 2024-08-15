@@ -370,7 +370,7 @@ const UserManagement: React.FC = () => {
               ? deleteDealerRequest(item)
               : deleteUserRequest(
                   [item.user_code],
-                  item.role_name === "DB User"
+                  item.role_name === 'DB User'
                     ? [item.db_username]
                     : [item.name.split(' ').join('_')]
                 );
@@ -381,7 +381,9 @@ const UserManagement: React.FC = () => {
             );
             const usernames = Array.from(selectedRows).map((index) => {
               const user = userRoleBasedList[index];
-              return user.role_name === "DB User" ? user.db_username : user.name.split(' ').join('_');
+              return user.role_name === 'DB User'
+                ? user.db_username
+                : user.name.split(' ').join('_');
             });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);

@@ -27,7 +27,6 @@
 }
 
 .pr-namesec {
-
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -57,11 +56,9 @@
   margin-top: 23px;
 }
 
-.pen-rev-bot{
+.pen-rev-bot {
   padding: 19px 11px;
 }
-
-
 
 .notific {
   height: 18px;

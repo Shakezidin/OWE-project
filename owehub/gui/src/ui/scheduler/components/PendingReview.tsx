@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import '../styles/pendrev.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import SortingDropDown from './SortingDropdown/SortingDropDown';
-import PendingSurvey from "./PendingSurvey"
+import PendingSurvey from './PendingSurvey';
 const PendingReview = () => {
   return (
     <div className="pen-rev">
@@ -22,11 +22,11 @@ const PendingReview = () => {
       <hr className="figma-line" />
 
       <div className="pen-rev-bot">
-        <PendingSurvey/>
-        <PendingSurvey/>
-        <PendingSurvey/>
-        <PendingSurvey/>
-        <PendingSurvey/>
+        <PendingSurvey />
+        <PendingSurvey />
+        <PendingSurvey />
+        <PendingSurvey />
+        <PendingSurvey />
       </div>
     </div>
   );

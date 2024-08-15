@@ -9,7 +9,7 @@ import { ArrowForward, Growth, ServiceIcon, SuccessIcon } from './Icons';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
-import { HiDownload } from "react-icons/hi";
+import { HiDownload } from 'react-icons/hi';
 import { toCanvas } from 'html-to-image';
 import {
   Calendar,
@@ -157,7 +157,7 @@ const Sidebar = ({
   //close the modal on press on esc
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
-      setIsOpen(-1); 
+      setIsOpen(-1);
     }
   };
 
@@ -177,7 +177,7 @@ const Sidebar = ({
         <span
           onClick={() => setIsOpen(-1)}
           className="absolute back-icon-sidebar back-icon block"
-          style={{display: isGenerating ? 'none' : 'block'}}
+          style={{ display: isGenerating ? 'none' : 'block' }}
         >
           <ArrowForward />
         </span>
@@ -204,10 +204,7 @@ const Sidebar = ({
               <div className="flex items-center justify-between">
                 <div>
                   <span className="card-label block">Team name</span>
-                  <h6 className="card-value">
-                    {' '}
-                    {data?.team_name || 'N/A'}{' '}
-                  </h6>
+                  <h6 className="card-value"> {data?.team_name || 'N/A'} </h6>
                 </div>
                 <div>
                   <span className="card-label block">Contact number</span>
@@ -367,14 +364,18 @@ const Sidebar = ({
               <div className="px2">
                 <div className="grey-weekly-stats justify-center flex items-center">
                   <div className="bg-white text-center leader-board-stats-wrapper py1">
-                    <span className="block" style={{ fontWeight: 400 }}>Weekly sales</span>
+                    <span className="block" style={{ fontWeight: 400 }}>
+                      Weekly sales
+                    </span>
                     <span className="block" style={{ fontWeight: 600 }}>
                       {formatSaleValue(data?.weekly_sale)}
                     </span>
                   </div>
 
                   <div className="text-center leader-board-stats-wrapper py1">
-                    <span className="block" style={{ fontWeight: 400 }}>Total sales</span>
+                    <span className="block" style={{ fontWeight: 400 }}>
+                      Total sales
+                    </span>
                     <span className="block" style={{ fontWeight: 600 }}>
                       {formatSaleValue(data?.total_sales)}
                     </span>

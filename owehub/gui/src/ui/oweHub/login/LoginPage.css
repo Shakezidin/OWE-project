@@ -88,7 +88,7 @@
   z-index: 4;
   padding: 3rem;
 }
-.coming-soon{
+.coming-soon {
   line-height: 20px;
   margin-right: 1rem;
   user-select: none;
@@ -202,7 +202,7 @@ input:checked + .slider:before {
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
-  line-height: 24px; 
+  line-height: 24px;
   margin-top: 2rem;
 }
 
@@ -268,7 +268,7 @@ input:checked + .slider:before {
   font-size: 24px;
   font-style: normal;
   font-weight: 400;
-  line-height: 40px; 
+  line-height: 40px;
 }
 
 .login-input .input-inner-view {
@@ -306,7 +306,7 @@ input:checked + .slider:before {
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
-  line-height: 20px; 
+  line-height: 20px;
 }
 
 .loginRecoverPwd :hover {
@@ -319,7 +319,7 @@ input:checked + .slider:before {
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
-  line-height: 20px; 
+  line-height: 20px;
 }
 
 .loginGoBackLink {

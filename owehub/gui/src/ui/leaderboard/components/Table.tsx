@@ -443,7 +443,7 @@ const DateFilter = ({
         <span
           role="button"
           onClick={() => setShowCalendar((prev) => !prev)}
-          style={{ lineHeight: 0}}
+          style={{ lineHeight: 0 }}
         >
           <Calendar />
         </span>

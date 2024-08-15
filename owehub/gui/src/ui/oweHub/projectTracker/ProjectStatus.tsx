@@ -77,8 +77,7 @@ const ProjectStatus = () => {
     //     },
     //   ],
     // },
-    
-     
+
     {
       name: 'NTP',
       number: '1',
@@ -94,7 +93,6 @@ const ProjectStatus = () => {
           key: 'sales_completed',
           bgColor: projectDetail.sales_completed ? '#63ACA3' : '#EBEBEB',
           color: projectDetail.sales_completed ? 'white' : '#858585',
-          
         },
         {
           name: '10 Apr',
@@ -421,8 +419,7 @@ const ProjectStatus = () => {
     },
   ];
 
-
-  const filteredStatusData = filtered.filter(status => {
+  const filteredStatusData = filtered.filter((status) => {
     if (status.name === 'Roofing') {
       return (
         projectDetail.roofing_pending ||
@@ -440,7 +437,7 @@ const ProjectStatus = () => {
     return true; // Keep all other status objects
   });
 
-  console.log(filteredStatusData, "Check");
+  console.log(filteredStatusData, 'Check');
 
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);

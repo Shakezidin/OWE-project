@@ -6,9 +6,7 @@ import Loading from '../../../components/loader/Loading';
 import './AddNew.css';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {
-  createTeam,
-} from '../../../../redux/apiActions/teamManagement/teamManagement';
+import { createTeam } from '../../../../redux/apiActions/teamManagement/teamManagement';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { resetSuccess } from '../../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -214,17 +212,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   //   dispatch(createTeam(data));
   // };
 
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     console.log('jdkfgh');
     e.preventDefault();
-  
+
     if (isSubmitting) return; // Prevent multiple form submissions
-  
+
     setIsSubmitting(true); // Set submitting state to true
-  
+
     const roleAdmin = localStorage.getItem('role');
     const email = localStorage.getItem('email');
     let userCode;
@@ -243,21 +240,21 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       'managers'
     );
     const validationErrors: { [key: string]: string } = {};
-  
+
     if (formData.first_name.trim() === '') {
       validationErrors.first_name = 'Team Name is required.';
     }
-  
+
     if (selectedOptions2.length === 0) {
       validationErrors.managers = 'Please select at least one manager';
     }
-  
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setIsSubmitting(false); // Set submitting state back to false
       return;
     }
-  
+
     const data = {
       team_name: formData.first_name,
       sale_rep_ids: selectedOptions.map((option) => option.value),
@@ -272,19 +269,16 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       description: formData.description,
       dealer_name: selectedOption3 || undefined,
     };
-  
+
     try {
       await dispatch(createTeam(data));
       handleClose();
     } catch (error) {
       console.error('Error creating team:', error);
     }
-  
+
     setIsSubmitting(false); // Set submitting state back to false
   };
-  
-
-
 
   useEffect(() => {
     const roleAdmin = localStorage.getItem('role');
@@ -545,7 +539,12 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
         </div>
         <div className="tm-createUserActionButton">
           <ActionButton title="Cancel" onClick={handleClose2} type="button" />
-          <ActionButton title="Create" type="submit" onClick={handleClose} disabled={isSubmitting}/>
+          <ActionButton
+            title="Create"
+            type="submit"
+            onClick={handleClose}
+            disabled={isSubmitting}
+          />
         </div>
       </form>
     </div>

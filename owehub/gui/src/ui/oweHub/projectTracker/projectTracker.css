@@ -26,7 +26,7 @@
   color: #222222;
 }
 
-.project-customer{
+.project-customer {
   width: 120px;
   margin-right: 20px;
   white-space: nowrap;
@@ -39,12 +39,11 @@
   color: rgb(0, 141, 218);
 }
 
-
-#chart{
+#chart {
   width: 400px;
 }
 
-.cards-description{
+.cards-description {
   text-align: center;
   position: absolute;
   left: 50%;

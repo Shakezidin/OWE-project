@@ -32,7 +32,7 @@ interface Props {
   menuPosition?: MenuPosition | undefined;
   enableHoverEffect?: boolean;
   lazyRender?: boolean;
-  optionStyles?:CSSObjectWithLabel
+  optionStyles?: CSSObjectWithLabel;
 }
 
 const MenuList = ({ options, children, maxHeight, getValue }: any) => {
@@ -81,7 +81,7 @@ const SelectOption: React.FC<Props> = ({
   menuPosition = 'absolute',
   enableHoverEffect = true,
   lazyRender = false,
-  optionStyles
+  optionStyles,
 }) => {
   const scrollRef = useRef(null);
 
@@ -133,14 +133,13 @@ const SelectOption: React.FC<Props> = ({
             '&:hover': {
               background: state.isSelected ? '#377CF6' : '#DDEBFF',
             },
-            ...optionStyles
+            ...optionStyles,
           }),
           menu: (base) => ({
             ...base,
             zIndex: 99,
             ...menuStyles,
             width: menuWidth || base.width,
-            
           }),
           menuList: (base) => ({
             ...base,

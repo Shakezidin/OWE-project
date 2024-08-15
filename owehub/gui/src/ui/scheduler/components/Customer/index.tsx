@@ -78,7 +78,10 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
         >
           <TbChevronDown
             size={22}
-            style={{ transform: isOpen ? 'rotate(180deg)' : undefined,transition:"all 500ms" }}
+            style={{
+              transform: isOpen ? 'rotate(180deg)' : undefined,
+              transition: 'all 500ms',
+            }}
           />
         </button>
       </div>
