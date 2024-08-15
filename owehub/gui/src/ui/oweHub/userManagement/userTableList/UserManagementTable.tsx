@@ -107,10 +107,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     setCurrentPage1(1); // Reset to the first page when changing items per page
   };
 
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
-
   const totalPages = Math.ceil(count! / pageSize1);
 
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
@@ -133,12 +129,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  console.log(totalPages1, 'totalpages');
-  console.log(dealerCount, 'chnage');
   const renderComponent = () => {
     switch (selectedOption.label) {
       case TYPE_OF_USER.ADMIN:
@@ -313,8 +303,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     []
   );
   /** render UI */
-
-  console.log(selectedOption, 'dealerlist');
   return (
     <>
       <div className="ManagerUser-container">
@@ -377,6 +365,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   onChange={(data: any) => {
                     handleSelectChange(data);
                     setSearch('');
+                    setSearchTerm('');
                     setSelectedRows(new Set());
                     setSelectAllChecked(false);
                   }}

@@ -151,8 +151,6 @@ const UserManagement: React.FC = () => {
     [selectedOption]
   );
 
-  // Memoize the subRole value
-
   /** check role  */
   const onChangeRole = async (role: string, value: string) => {
     console.log('working on first change');
@@ -172,7 +170,6 @@ const UserManagement: React.FC = () => {
         formData.role_name === TYPE_OF_USER.REGIONAL_MANGER ||
         formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER
       ) {
-        console.log(formData);
         if (value) {
           await dispatch(
             fetchRegionList({
