@@ -1,6 +1,5 @@
 import React, { SetStateAction, useEffect, useState, useCallback } from 'react';
 import '../user.css';
-import { ICONS } from '../../../../resources/icons/Icons';
 import '../../configure/configure.css';
 import UserTable from '../userManagerAllTable/UserTable';
 import AppointmentSetterTable from '../userManagerAllTable/AppointmentSetterTable';
@@ -10,9 +9,7 @@ import SalesRepresentativeTable from '../userManagerAllTable/SalesRepresentative
 import DealerOwnerTable from '../userManagerAllTable/DealerOwnerTable';
 import RegionalManagerTable from '../userManagerAllTable/RegionalManagerTable';
 import './UserHeader.css';
-import Pagination from '../../../components/pagination/Pagination';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   UserDropdownModel,
@@ -25,7 +22,6 @@ import {
   fetchUserListBasedOnRole,
 } from '../../../../redux/apiActions/userManagement/userManagementActions';
 import DBUserTable from '../userManagerAllTable/DBUserTable';
-import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 import { resetOpt } from '../../../../redux/apiSlice/DbManager/dataTableSlice';
 import UserIcon from '../lib/UserIcon';
 import { debounce } from '../../../../utiles/debounce';

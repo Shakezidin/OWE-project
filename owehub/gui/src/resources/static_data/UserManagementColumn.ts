@@ -36,7 +36,7 @@ export const UserAppointmentTableColumn: Column[] = [
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },
   {
     name: 'team_name',
-    displayName: 'Team Name',
+    displayName: 'Designation',
     type: 'string',
     isCheckbox: false,
   },
@@ -173,7 +173,7 @@ export const UserRegionalTableColumn: Column[] = [
   },
   {
     name: 'team_name',
-    displayName: 'Team Name',
+    displayName: 'Designation',
     type: 'string',
     isCheckbox: false,
   },
@@ -234,7 +234,7 @@ export const UserSaleRepresentTableColumn: Column[] = [
   },
   {
     name: 'team_name',
-    displayName: 'Team Name',
+    displayName: 'Designation',
     type: 'string',
     isCheckbox: false,
   },
