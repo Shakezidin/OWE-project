@@ -124,6 +124,8 @@ import BellPr from '../../resources/assets/BellIconPr.svg';
 import locationpr from '../../resources/assets/location.svg';
 import Phone from '../../resources/assets/Phone.svg';
 import Techie from '../../resources/assets/techie.svg';
+import complete from '../../resources/assets/Completed.png';
+import pending from '../../resources/assets/Pending.png';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -265,4 +267,6 @@ export const ICONS = {
   locationpr: locationpr,
   Phone: Phone,
   Techie: Techie,
+  complete:complete,
+  pending:pending
 };
