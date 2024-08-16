@@ -1010,3 +1010,21 @@
     margin-bottom: 16px;
   }
 }
+
+
+.progress-qc button{
+  width: 56px;
+  height: 32px;
+  background-color: #ffffff;
+  border: 1px solid #AFAFAF;
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.progress-qc button:hover{
+  background-color: #377CF6;
+  color: white;
+}
