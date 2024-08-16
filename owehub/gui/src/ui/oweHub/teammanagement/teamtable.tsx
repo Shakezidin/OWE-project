@@ -36,11 +36,10 @@ interface User {
 }
 
 const TeamTable: React.FC = () => {
-  const [editedCommission] = useState<CommissionModel | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedMember, setSelectedMember] = useState<any>(null);
-  const [refetch, setRefetch] = useState(1);
+  const [selectedMember] = useState<any>(null);
+  const [, setRefetch] = useState(1);
   const [open1, setOpen1] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
@@ -53,7 +52,6 @@ const TeamTable: React.FC = () => {
   const getQueryParams = (search: string) => new URLSearchParams(search);
   const queryParams = getQueryParams(location.search);
   const teamName = queryParams.get('team-name');
-  const managerName = queryParams.get('team-manager');
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -109,7 +107,6 @@ const TeamTable: React.FC = () => {
       setSortDirection('asc');
     }
   };
-  console.log(sortKey, '556655');
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
@@ -130,12 +127,6 @@ const TeamTable: React.FC = () => {
       }
     });
   }
-
-  const handleMoveMemberClick = (el: any) => {
-    console.log(el, 'el');
-    setSelectedMember(el);
-    setOpen1(true);
-  };
 
   const handleIconClick = () => {
     if (inputRef.current) {
@@ -207,7 +198,6 @@ const TeamTable: React.FC = () => {
     setUpdating(false);
   };
 
-  console.log(role, 'role');
   const isMobile = useMatchMedia('(max-width: 767px)');
 
   return (

@@ -31,8 +31,7 @@ const TeamManagement: React.FC = () => {
   const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const [refetch, setRefetch] = useState(1);
   const [newFormData, setNewFormData] = useState<any>([]);
-  const [dealer, setDealer] = useState<{ [key: string]: any }>({});
-  const [selectedDealer, setSelectedDealer] = useState(null);
+  const [, setSelectedDealer] = useState(null);
   const [isAnyCheckboxChecked, setIsAnyCheckboxChecked] = useState<number[]>(
     []
   );
@@ -75,7 +74,7 @@ const TeamManagement: React.FC = () => {
     };
   }, [refetch, selectedOptions, isFetched]);
 
-  const { isSuccess, isFormSubmitting, teams, isLoading } = useAppSelector(
+  const { teams, isLoading } = useAppSelector(
     (state) => state.teamManagmentSlice
   );
 
@@ -110,23 +109,7 @@ const TeamManagement: React.FC = () => {
 
   let prevColorIndex = -1;
 
-  // const handleRedirect = (id: number) => {
-  //   history.push(`/team/${id}`);
-  // };
-
-  const handleChange = (selectedOption: any) => {
-    setSelectedDealer(selectedOption);
-  };
-
   const handleCheckboxChange = (id: number) => {
-    // const isChecked = e.target.checked;
-
-    // if (isChecked) {
-    //   setIsAnyCheckboxChecked(true);
-    // } else {
-    //   const anyOtherChecked = document.querySelectorAll('.team-checkbox:checked').length > 0;
-    //   setIsAnyCheckboxChecked(anyOtherChecked);
-    // }
     setIsAnyCheckboxChecked((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
