@@ -302,7 +302,7 @@ const ProjectPerformence = () => {
         },
         dataLabels: {
           name: {
-           show: false,
+            show: false,
           },
           value: {
             show: false,
@@ -616,7 +616,7 @@ const ProjectPerformence = () => {
                                 </p>
                               </Link>
                               <div>
-                              <p className="project-customer">
+                                <p className="project-customer">
                                   {project.customer}
                                 </p>
                               </div>

@@ -151,8 +151,6 @@ const UserManagement: React.FC = () => {
     [selectedOption]
   );
 
-  // Memoize the subRole value
-
   /** check role  */
   const onChangeRole = async (role: string, value: string) => {
     console.log('working on first change');
@@ -172,7 +170,6 @@ const UserManagement: React.FC = () => {
         formData.role_name === TYPE_OF_USER.REGIONAL_MANGER ||
         formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER
       ) {
-        console.log(formData);
         if (value) {
           await dispatch(
             fetchRegionList({
@@ -370,7 +367,7 @@ const UserManagement: React.FC = () => {
               ? deleteDealerRequest(item)
               : deleteUserRequest(
                   [item.user_code],
-                  item.role_name === "DB User"
+                  item.role_name === 'DB User'
                     ? [item.db_username]
                     : [item.name.split(' ').join('_')]
                 );
@@ -381,7 +378,9 @@ const UserManagement: React.FC = () => {
             );
             const usernames = Array.from(selectedRows).map((index) => {
               const user = userRoleBasedList[index];
-              return user.role_name === "DB User" ? user.db_username : user.name.split(' ').join('_');
+              return user.role_name === 'DB User'
+                ? user.db_username
+                : user.name.split(' ').join('_');
             });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);

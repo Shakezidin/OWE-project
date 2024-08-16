@@ -44,8 +44,12 @@ func SalesMetricsRetrieveQueryFunc() string {
             intOpsMetSchema.pv_install_completed_date,
             intOpsMetSchema.pto_date,
             intOpsMetSchema.site_survey_completed_date,
+            intOpsMetSchema.cad_complete_date,
             fieldOpsSchema.install_ready_date,
+            fieldOpsSchema.roofing_completed_date,
+            intopsmetschema.electrical_permit_approved_date,
             salMetSchema.dealer,
+            salMetSchema.active_date,
             salMetSchema.primary_sales_rep
         FROM
             internal_ops_metrics_schema AS intOpsMetSchema
@@ -104,7 +108,7 @@ func ProjectMngmntRetrieveQueryFunc() string {
         mpu_created_date, mpu_scheduled_date, mpu_complete_date,
         derate_created_date, derate_scheduled_date, derate_completed_date,
         trenching_ws_open, trenching_scheduled, trenching_completed,
-        adder_breakdown_and_total, adders_total
+        adder_breakdown_and_total, adders_total,cad_complete_date,active_date
         FROM consolidated_data_view
     `
 	return ProjectMngmntRetrieveQuery

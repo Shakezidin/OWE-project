@@ -215,8 +215,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   className="h4"
                   style={{ fontWeight: '500', lineHeight: '20px' }}
                 >
-                  Active Sales Rep 
-                  
+                  Active Sales Rep
                 </h3>
               </div>
 

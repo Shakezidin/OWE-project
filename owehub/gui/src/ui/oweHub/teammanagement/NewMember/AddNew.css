@@ -219,14 +219,13 @@
   .tm-new-create-input-field {
     position: relative;
     width: 47%;
-  }  
+  }
   .new-tm-modal {
     max-width: 370px;
     height: 500px;
-}
+  }
 
-.tm-modal{
-  max-width: 380px;
+  .tm-modal {
+    max-width: 380px;
+  }
 }
-}
-

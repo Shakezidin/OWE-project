@@ -221,8 +221,8 @@ const TeamTable: React.FC = () => {
           marginLeftMobile="10px"
         />
         {role === TYPE_OF_USER.ADMIN ||
-          role === TYPE_OF_USER.DEALER_OWNER ||
-          team?.logged_in_member_role === 'manager' ? (
+        role === TYPE_OF_USER.DEALER_OWNER ||
+        team?.logged_in_member_role === 'manager' ? (
           <>
             {open && (
               <AddMember
@@ -316,11 +316,13 @@ const TeamTable: React.FC = () => {
             {role !== TYPE_OF_USER.SALES_REPRESENTATIVE ? (
               <div className="team-button-sec">
                 {team?.logged_in_member_role === 'manager' ||
-                  role === TYPE_OF_USER.ADMIN ||
-                  role === TYPE_OF_USER.FINANCE_ADMIN ||
-                  role === TYPE_OF_USER.DEALER_OWNER ||
-                  role === TYPE_OF_USER.SUB_DEALER_OWNER ? (
-                  <button onClick={handleOpen}>+ <span>Add New Member</span></button>
+                role === TYPE_OF_USER.ADMIN ||
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.SUB_DEALER_OWNER ? (
+                  <button onClick={handleOpen}>
+                    + <span>Add New Member</span>
+                  </button>
                 ) : null}
               </div>
             ) : null}
@@ -329,7 +331,6 @@ const TeamTable: React.FC = () => {
             className="TableContainer"
             style={{ overflowX: 'auto', whiteSpace: 'nowrap', height: '85vh' }}
           >
-
             <table>
               <thead>
                 <tr>
@@ -361,7 +362,7 @@ const TeamTable: React.FC = () => {
                           color: '#667085',
                           transform:
                             sortKey === 'sale_rep_name' &&
-                              sortDirection === 'asc'
+                            sortDirection === 'asc'
                               ? 'rotate(180deg)'
                               : undefined,
                         }}
@@ -413,7 +414,7 @@ const TeamTable: React.FC = () => {
                           color: '#667085',
                           transform:
                             sortKey === 'phone_number' &&
-                              sortDirection === 'asc'
+                            sortDirection === 'asc'
                               ? 'rotate(180deg)'
                               : undefined,
                         }}
@@ -482,18 +483,18 @@ const TeamTable: React.FC = () => {
                             paddingLeft: '30px',
                             cursor:
                               UserEmail !== item.email &&
-                                (role === TYPE_OF_USER.ADMIN ||
-                                  role === TYPE_OF_USER.DEALER_OWNER ||
-                                  role === TYPE_OF_USER.SUB_DEALER_OWNER ||
-                                  ((role === TYPE_OF_USER.SALE_MANAGER ||
-                                    role === TYPE_OF_USER.REGIONAL_MANGER
-                                    ? UserEmail !== item.email_id
-                                    : true) &&
-                                    team?.logged_in_member_role === 'manager')) &&
-                                !(
-                                  team?.manager_count <= 1 &&
-                                  item.role === 'manager'
-                                )
+                              (role === TYPE_OF_USER.ADMIN ||
+                                role === TYPE_OF_USER.DEALER_OWNER ||
+                                role === TYPE_OF_USER.SUB_DEALER_OWNER ||
+                                ((role === TYPE_OF_USER.SALE_MANAGER ||
+                                role === TYPE_OF_USER.REGIONAL_MANGER
+                                  ? UserEmail !== item.email_id
+                                  : true) &&
+                                  team?.logged_in_member_role === 'manager')) &&
+                              !(
+                                team?.manager_count <= 1 &&
+                                item.role === 'manager'
+                              )
                                 ? 'pointer'
                                 : 'not-allowed',
                             opacity:
@@ -502,14 +503,14 @@ const TeamTable: React.FC = () => {
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 ((role === TYPE_OF_USER.SALE_MANAGER ||
-                                  role === TYPE_OF_USER.REGIONAL_MANGER
+                                role === TYPE_OF_USER.REGIONAL_MANGER
                                   ? UserEmail !== item.email_id
                                   : true) &&
                                   team?.logged_in_member_role === 'manager')) &&
-                                !(
-                                  team?.manager_count <= 1 &&
-                                  item.role === 'manager'
-                                )
+                              !(
+                                team?.manager_count <= 1 &&
+                                item.role === 'manager'
+                              )
                                 ? '1'
                                 : '0.5',
                           }}
@@ -520,7 +521,7 @@ const TeamTable: React.FC = () => {
                                 role === TYPE_OF_USER.DEALER_OWNER ||
                                 role === TYPE_OF_USER.SUB_DEALER_OWNER ||
                                 ((role === TYPE_OF_USER.SALE_MANAGER ||
-                                  role === TYPE_OF_USER.REGIONAL_MANGER
+                                role === TYPE_OF_USER.REGIONAL_MANGER
                                   ? UserEmail !== item.email_id
                                   : true) &&
                                   team?.logged_in_member_role === 'manager') ||
@@ -542,10 +543,10 @@ const TeamTable: React.FC = () => {
                               stroke: '0.2',
                               pointerEvents:
                                 role !== TYPE_OF_USER.SALES_REPRESENTATIVE &&
-                                  !(
-                                    team?.manager_count <= 1 &&
-                                    item.role === 'manager'
-                                  )
+                                !(
+                                  team?.manager_count <= 1 &&
+                                  item.role === 'manager'
+                                )
                                   ? 'auto'
                                   : 'none',
                             }}

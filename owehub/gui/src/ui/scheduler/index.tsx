@@ -11,7 +11,10 @@ const Index = () => {
           <h5 style={{ fontSize: 12 }} className={styles.primary_heading}>
             Customer Queue {`>`}{' '}
           </h5>
-          <span className='ml1' style={{ fontSize: 12 }}> Schedule </span>
+          <span className="ml1" style={{ fontSize: 12 }}>
+            {' '}
+            Schedule{' '}
+          </span>
         </div>
       </div>
       <div className={`flex justify-between mt2 ${styles.h_screen}`}>

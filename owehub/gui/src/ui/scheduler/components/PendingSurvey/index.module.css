@@ -4,7 +4,7 @@
   padding-inline: 12px;
   margin-bottom: 16px;
 }
-.survey_wrapper:last-child{
+.survey_wrapper:last-child {
   margin-bottom: 0;
 }
 
@@ -20,7 +20,7 @@
   grid-template-columns: repeat(2, 1fr);
   row-gap: 11px;
   overflow: hidden;
-  transition:all 500ms;
+  transition: all 500ms;
 }
 .bg_orange {
   background-color: #ffece2;

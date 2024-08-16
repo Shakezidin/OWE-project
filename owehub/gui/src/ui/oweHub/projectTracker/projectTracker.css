@@ -26,7 +26,7 @@
   color: #222222;
 }
 
-.project-customer{
+.project-customer {
   width: 120px;
   margin-right: 20px;
   white-space: nowrap;
@@ -39,12 +39,11 @@
   color: rgb(0, 141, 218);
 }
 
-
-#chart{
+#chart {
   width: 400px;
 }
 
-.cards-description{
+.cards-description {
   text-align: center;
   position: absolute;
   left: 50%;
@@ -1010,4 +1009,22 @@
     gap: 5px;
     margin-bottom: 16px;
   }
+}
+
+
+.progress-qc button{
+  width: 56px;
+  height: 32px;
+  background-color: #ffffff;
+  border: 1px solid #AFAFAF;
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.progress-qc button:hover{
+  background-color: #377CF6;
+  color: white;
 }

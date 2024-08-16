@@ -32,10 +32,15 @@ const Index = () => {
           </div>
           <button
             className={sharedStyles.accordian_btn}
-            
             onClick={() => setIsOpen((prev) => !prev)}
           >
-            <TbChevronDown size={22} style={{ transform: isOpen ? 'rotate(180deg)' : undefined ,transition:"all 500ms"}} />
+            <TbChevronDown
+              size={22}
+              style={{
+                transform: isOpen ? 'rotate(180deg)' : undefined,
+                transition: 'all 500ms',
+              }}
+            />
           </button>
         </div>
 

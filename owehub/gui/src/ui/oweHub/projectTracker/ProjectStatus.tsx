@@ -17,6 +17,11 @@ import { toast } from 'react-toastify';
 import Proj_pie_chart from './lib/proj_pie_chart';
 import { ICONS } from '../../../resources/icons/Icons';
 
+import PodDropdown from './PodioDropdown';
+import QCModal from './PopUp';
+
+
+
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -77,8 +82,7 @@ const ProjectStatus = () => {
     //     },
     //   ],
     // },
-    
-     
+
     {
       name: 'NTP',
       number: '1',
@@ -94,7 +98,6 @@ const ProjectStatus = () => {
           key: 'sales_completed',
           bgColor: projectDetail.sales_completed ? '#63ACA3' : '#EBEBEB',
           color: projectDetail.sales_completed ? 'white' : '#858585',
-          
         },
         {
           name: '10 Apr',
@@ -421,8 +424,7 @@ const ProjectStatus = () => {
     },
   ];
 
-
-  const filteredStatusData = filtered.filter(status => {
+  const filteredStatusData = filtered.filter((status) => {
     if (status.name === 'Roofing') {
       return (
         projectDetail.roofing_pending ||
@@ -440,7 +442,7 @@ const ProjectStatus = () => {
     return true; // Keep all other status objects
   });
 
-  console.log(filteredStatusData, "Check");
+  console.log(filteredStatusData, 'Check');
 
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
@@ -517,7 +519,36 @@ const ProjectStatus = () => {
     }
   }, [selectedProject.value]);
 
+  const options = [
+    { id: 1, content: 'Podio' },
+    { id: 2, content: 'Active CAD' },
+    { id: 3, content: 'DAT' },
+  ];
+  
+  const handleButton1Click = (optionId: number) => {
+    console.log('Button 1 clicked for option:', optionId);
+  };
+  
+  const handleButton2Click = (optionId: number) => {
+    console.log('Button 2 clicked for option:', optionId);
+  };
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
+  const filterClose = () => setFilterOpen(false);
+
+  const filter = () => {
+    setFilterOpen(true);
+  };
+
+
+
   return (
+    <>
+    <QCModal
+       isOpen={filterOPen}
+       handleClose={filterClose} 
+    />
+
     <div className="">
       <div style={{ padding: '0px' }}>
         <div className="flex mt1 top-project-cards">
@@ -683,6 +714,26 @@ const ProjectStatus = () => {
                 </div>
               </div>
             </div>
+
+            <div className=" flex items-center project-status-table-title ">
+             
+              <div className="progress-box-container ml3">
+                <div className="progress-qc mt0" onClick={filter}>
+                   <button >QC</button>
+                </div>
+                <div className="progress-qc mt0">
+                   <button>NTP</button>
+                </div>
+                <div className="progress-box-body mt0">
+                   <PodDropdown
+                   options={options}
+                   onButton1Click={handleButton1Click}
+                   onButton2Click={handleButton2Click}
+                   />
+                </div>
+              </div>
+            </div>
+
           </div>
           <div className="project-management-table ">
             <table>
@@ -870,6 +921,7 @@ const ProjectStatus = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

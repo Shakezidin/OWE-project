@@ -12,7 +12,7 @@
   grid-template-columns: repeat(3, 1fr) auto;
   align-items: center;
 }
- .avatar_circle {
+.avatar_circle {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -35,7 +35,7 @@
   color: #8e81e0;
   background-color: #eeebff;
 }
- .customer_name {
+.customer_name {
   font-size: 14px;
   font-weight: 600;
 
@@ -71,7 +71,7 @@
 }
 .schedule_btn {
   border: none;
- 
+
   font-size: 16px;
   width: 100%;
   max-width: 115px;
@@ -83,21 +83,21 @@
   transition: all 500ms;
   cursor: pointer;
 }
-.primary_btn{
+.primary_btn {
   background-color: #4372e9;
   color: #fff;
 }
-.secondary_btn{
+.secondary_btn {
   color: #4372e9;
-  border: 1px solid #4372e9 ;
+  border: 1px solid #4372e9;
   background-color: transparent;
 }
 .schedule_btn:hover {
   transition: all 500ms;
   font-size: 18px;
-  box-shadow: 0 12px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 12px 12px rgba(0, 0, 0, 0.12);
 }
-.other_info_grid{
+.other_info_grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 32px;
 }

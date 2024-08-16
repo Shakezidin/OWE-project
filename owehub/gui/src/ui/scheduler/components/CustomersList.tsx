@@ -49,8 +49,7 @@ const CustomersList = () => {
             <span>Regular</span>
           </div>
         </div>
-<SortingDropDown/>
-        
+        <SortingDropDown />
       </div>
 
       <div style={{ marginTop: 15 }}>

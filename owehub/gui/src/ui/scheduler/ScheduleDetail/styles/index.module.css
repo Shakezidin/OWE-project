@@ -93,5 +93,5 @@
 .survey_progress_container {
   display: grid;
   grid-template-columns: 160px auto;
-  border-bottom: 1px solid #EFEFEF;
+  border-bottom: 1px solid #efefef;
 }

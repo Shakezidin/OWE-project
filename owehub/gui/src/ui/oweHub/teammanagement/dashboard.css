@@ -248,7 +248,6 @@
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-
 .team-members-top {
   margin-left: 22px;
   display: flex;
@@ -427,12 +426,11 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.creat-drop{
+.creat-drop {
   display: flex;
   flex-direction: row;
   gap: 9px;
 }
-
 
 @media screen and (max-width: 767px) {
   .team-main{
@@ -450,9 +448,13 @@
     bottom: 10px;
   }
   .team-card-heading {
+<<<<<<< HEAD
     font-size: 1rem;
+=======
+    font-size: 14px;
+>>>>>>> 9677cab43b6689af8931427a6cff03b1b46a2cfd
   }
-  .team-pay-card{
+  .team-pay-card {
     width: 214px;
     min-height: unset;
   }
@@ -492,7 +494,7 @@
   .btxt-none{
     display: none;
   }
-  .dash-newteam{
+  .dash-newteam {
     margin-top: 10px;
     display: block;
     position: relative;
@@ -506,23 +508,32 @@
     gap: 2rem;
     padding: 0 10px;
   }
+<<<<<<< HEAD
   .team-cards{
     display: flex;
     flex-direction: column;
     gap: 1rem;
     margin-top: 3.5rem;
+=======
+  .team-cards {
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 1px;
+>>>>>>> 9677cab43b6689af8931427a6cff03b1b46a2cfd
   }
-  .team-members{
+  .team-members {
     margin-left: -20px;
   }
-  .team-button-sec button{
+  .team-button-sec button {
     width: 40px;
     font-size: 24px;
     font-weight: 500;
   }
-  .team-button-sec button span{
+  .team-button-sec button span {
     display: none;
   }
+<<<<<<< HEAD
   .dash-newteam .create{
     width: 40px;
   }
@@ -534,6 +545,14 @@
   }
 }
 .team-members .error-message{
+=======
+  .dash-newteam .create {
+    width: 155px;
+  }
+}
+
+.team-members .error-message {
+>>>>>>> 9677cab43b6689af8931427a6cff03b1b46a2cfd
   color: red !important;
   font-size: 12px !important;
   margin-top: 5px !important;

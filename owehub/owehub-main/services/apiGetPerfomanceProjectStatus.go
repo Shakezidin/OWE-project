@@ -46,6 +46,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
+		CadDate            string
+		RoofingDate        string
+		ElectricalDate     string
+		ActiveDte          string
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -218,6 +222,14 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			SiteD = SiteSurveyCompleteDate.Format("2006-01-02")
 		}
 
+		CadCompleteDate, ok := item["cad_complete_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get cad complete date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			CadDate = ""
+		} else {
+			CadDate = CadCompleteDate.Format("2006-01-02")
+		}
+
 		InstallReadyDate, ok := item["install_ready_date"].(time.Time)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get InstallReadyDate for Unique ID %v. Item: %+v\n", UniqueId, item)
@@ -226,15 +238,43 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			InstallD = InstallReadyDate.Format("2006-01-02")
 		}
 
+		RoofingCompleteDate, ok := item["roofing_completed_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get roofing complete date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			RoofingDate = ""
+		} else {
+			RoofingDate = RoofingCompleteDate.Format("2006-01-02")
+		}
+
+		ElectricalPermitApprovedDate, ok := item["electrical_permit_approved_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get electrical permit approved date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			ElectricalDate = ""
+		} else {
+			ElectricalDate = ElectricalPermitApprovedDate.Format("2006-01-02")
+		}
+
+		ActiveDate, ok := item["active_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			ActiveDte = ""
+		} else {
+			ActiveDte = ActiveDate.Format("2006-01-02")
+		}
+
 		perfomanceResponse := models.PerfomanceResponse{
-			UniqueId:               UniqueId,
-			Customer:               Customer,
-			ContractDate:           ContractD,
-			PermitApprovedDate:     PermitD,
-			PvInstallCompletedDate: PvInstallCompleteD,
-			PtoDate:                PtoD,
-			SiteSurveyCompleteDate: SiteD,
-			InstallReadyDate:       InstallD,
+			UniqueId:                     UniqueId,
+			Customer:                     Customer,
+			ContractDate:                 ContractD,
+			PermitApprovedDate:           PermitD,
+			PvInstallCompletedDate:       PvInstallCompleteD,
+			PtoDate:                      PtoD,
+			SiteSurveyCompleteDate:       SiteD,
+			InstallReadyDate:             InstallD,
+			CadCompleteDate:              CadDate,
+			RoofingCompleteDate:          RoofingDate,
+			ElectricalPermitApprovedDate: ElectricalDate,
+			ActiveDate:                   ActiveDte,
 		}
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}

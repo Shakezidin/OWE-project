@@ -45,7 +45,7 @@ const Index = () => {
     }
   };
   // const filteredTime = timeSlots.filter((item) => !item.value.includes(':30'));
- 
+
   return (
     <>
       <div className="flex items-end justify-between">
@@ -167,12 +167,9 @@ const Index = () => {
               </div>
             </div>
           </div>
-<div>
-
-          <div className={styles.survey_progress_container}>
-
+          <div>
+            <div className={styles.survey_progress_container}></div>
           </div>
-</div>
         </div>
       </div>
     </>
