@@ -448,11 +448,7 @@
     bottom: 10px;
   }
   .team-card-heading {
-<<<<<<< HEAD
     font-size: 1rem;
-=======
-    font-size: 14px;
->>>>>>> 9677cab43b6689af8931427a6cff03b1b46a2cfd
   }
   .team-pay-card {
     width: 214px;
@@ -508,19 +504,11 @@
     gap: 2rem;
     padding: 0 10px;
   }
-<<<<<<< HEAD
   .team-cards{
     display: flex;
     flex-direction: column;
     gap: 1rem;
     margin-top: 3.5rem;
-=======
-  .team-cards {
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 1px;
->>>>>>> 9677cab43b6689af8931427a6cff03b1b46a2cfd
   }
   .team-members {
     margin-left: -20px;
@@ -533,7 +521,6 @@
   .team-button-sec button span {
     display: none;
   }
-<<<<<<< HEAD
   .dash-newteam .create{
     width: 40px;
   }
@@ -545,14 +532,6 @@
   }
 }
 .team-members .error-message{
-=======
-  .dash-newteam .create {
-    width: 155px;
-  }
-}
-
-.team-members .error-message {
->>>>>>> 9677cab43b6689af8931427a6cff03b1b46a2cfd
   color: red !important;
   font-size: 12px !important;
   margin-top: 5px !important;
