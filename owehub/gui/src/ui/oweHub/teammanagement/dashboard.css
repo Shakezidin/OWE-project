@@ -320,6 +320,10 @@
   color: #263747;
 }
 
+.team-cancel{
+  display: none;
+}
+
 .done-icon,
 .edit-icon {
   transition:
@@ -431,27 +435,82 @@
 
 
 @media screen and (max-width: 767px) {
+  .team-main{
+    margin: 10px;
+    max-height: 91vh;
+  }
+  .teamp-group img{
+    display: none;
+  }
+  .teamp-group h4{
+    font-weight: 400;
+  }
+  .team-arrow-wrapper{
+    position: relative;
+    bottom: 10px;
+  }
   .team-card-heading {
-       font-size: 14px;
+    font-size: 1rem;
   }
   .team-pay-card{
     width: 214px;
+    min-height: unset;
+  }
+  .team-pay-card:hover{
+    transform: scale(1.02);
+  }
+  .team-checkbox-wrapper{
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  .teamp-group{
+    margin-left: 2.5rem;
+  }
+  .team-checkbox{
+    top: 10px;
+    width: 23px;
+    height: 24px;
   }
   .teamdash-header{
-    flex-direction: column;
+    position: relative;
+    display: block;
+  }
+  .teamdash-header h1{
+    position: absolute;
+    font-weight: 700px;
+    top: 70px;
+    left: 10px;
+    font-size: 1rem;
+  }
+  .creat-drop{
+    flex-direction: row-reverse;
+  }
+  .sm-hide{
+    display: none;
+  }
+  .btxt-none{
+    display: none;
   }
   .dash-newteam{
     margin-top: 10px;
-    flex-direction: column;
+    display: block;
+    position: relative;
+  }
+  .team-cancel{
+    display: block;
+  }
+  .dash-newteam .remove-section-oncheck{
+    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 15px;
+    gap: 2rem;
+    padding: 0 10px;
   }
   .team-cards{
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 3.5rem;
   }
   .team-members{
     margin-left: -20px;
@@ -465,10 +524,15 @@
     display: none;
   }
   .dash-newteam .create{
-    width: 155px;
+    width: 40px;
+  }
+  .create-add-btn{
+    font-size: 1.5rem;
+  }
+  .pay-card-wrapper-sm{
+    height: 75px;
   }
 }
-
 .team-members .error-message{
   color: red !important;
   font-size: 12px !important;
