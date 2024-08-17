@@ -84,6 +84,7 @@ const groupByOptions = [
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
   { label: 'Region', value: 'region' },
+  { label: 'Setter', value: 'setter' },
 ];
 
 export const RankColumn = ({ rank }: { rank: number }) => {
