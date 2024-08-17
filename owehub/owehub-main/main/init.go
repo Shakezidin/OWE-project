@@ -1556,14 +1556,6 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	{
-		strings.ToUpper("GET"),
-		"/owe-commisions-service/v1/get_scheduledata",
-		apiHandler.HandleGetScheduleDataRequest,
-		// true,
-		false,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
