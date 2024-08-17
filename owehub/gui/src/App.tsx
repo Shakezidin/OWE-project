@@ -80,6 +80,8 @@ import TeamTable from './ui/oweHub/teammanagement/teamtable';
 import Leaderboard from './ui/leaderboard';
 import Scheduler from './ui/scheduler';
 import ScheduleDetail from './ui/scheduler/ScheduleDetail';
+import CustomersList from './ui/scheduler/SalesRepScheduler/CustomersList';
+import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 function App() {
   const dispatch = useAppDispatch();
 
@@ -287,6 +289,8 @@ function App() {
           />
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
+          <Route path={ROUTES.SALES_REP_SCHEDULER} element={<CustomersList />} />
+          <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
           <Route
             path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
             element={<TeamManagement />}

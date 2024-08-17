@@ -70,4 +70,6 @@ export const ROUTES = {
   NOT_FOUND: '*',
   SCHEDULER: '/scheduler',
   SCHEDULE_DETAIL: '/schedule-detail/:id',
+  SALES_REP_SCHEDULER: '/salesrep-schedule',
+  ADD_NEW_SALES:'/add-new-salesrep-schedule',
 };

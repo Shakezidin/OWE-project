@@ -1,0 +1,28 @@
+.h_screen {
+    min-height: 100vh;
+  }
+
+  .customer_wrapper_list {
+    flex-basis: calc(100%);
+    border-radius: 8px;
+    background-color: #fff;
+    padding-top: 15px;
+    padding-inline: 20px;
+    max-width: 950px;
+  }
+  
+  .srs_new_create {
+    position: relative;
+    width: 44%;
+  }
+
+  .salrep_input_container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .react-tel-input .form-control {
+    background-color: #F3F3F3 !important;
+  }

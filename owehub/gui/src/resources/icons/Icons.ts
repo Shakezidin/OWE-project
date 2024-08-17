@@ -126,6 +126,9 @@ import Phone from '../../resources/assets/Phone.svg';
 import Techie from '../../resources/assets/techie.svg';
 import complete from '../../resources/assets/Completed.png';
 import pending from '../../resources/assets/Pending.png';
+import AddIconSr from '../../resources/assets/AddNewSr.svg';
+import SystemSize from '../../resources/assets/SystemSize.svg';
+import RoofType from '../../resources/assets/rooftype.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -268,5 +271,8 @@ export const ICONS = {
   Phone: Phone,
   Techie: Techie,
   complete:complete,
-  pending:pending
+  pending:pending,
+  AddIconSr:AddIconSr,
+  SystemSize:SystemSize,
+  RoofType: RoofType,
 };
