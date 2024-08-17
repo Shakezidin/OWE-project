@@ -111,35 +111,36 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			and granting privileges
 	 	**/
 	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
-		// validate that phone number doesnt exist in `user_details` table inside db.OweHubDB
-		// because we're using mobile_number as db_username for db_user and admin
-		mobileNoCheck, mobileNoCheckErr := db.ReteriveFromDB(
-			db.OweHubDbIndex,
-			"SELECT count(*) FROM user_details WHERE mobile_number = $1",
-			[]interface{}{createUserReq.MobileNumber},
+
+		// retrieve db username from mobile number
+		username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
+
+		// make sure that user with username doesnt already exist
+		dbUserCheck, err := db.ReteriveFromDB(
+			db.RowDataDBIndex,
+			"SELECT count(*) FROM PG_USER WHERE USENAME = $1",
+			[]interface{}{username},
 		)
 
-		if mobileNoCheckErr != nil {
-			log.FuncErrorTrace(0, "Failed to get user count by mobile number from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to validate mobile number", http.StatusInternalServerError, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get user name count from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
 			return
 		}
 
-		mobileNumberCount, mobileNumberCountOk := mobileNoCheck[0]["count"].(int64)
-		if !mobileNumberCountOk {
-			log.FuncErrorTrace(0, "Failed to assert mobile number count from type: %T", mobileNoCheck[0]["count"])
-			FormAndSendHttpResp(resp, "Failed to validate mobile number", http.StatusInternalServerError, nil)
+		dbUserCount, dbUserCountOk := dbUserCheck[0]["count"].(int64)
+		if !dbUserCountOk {
+			log.FuncErrorTrace(0, "Failed to assert db user count from type: %T", dbUserCheck[0]["count"])
+			FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
 			return
 		}
 
-		if mobileNumberCount != 0 {
+		if dbUserCount != 0 {
 			err = fmt.Errorf("duplicate mobile number provided")
 			log.FuncErrorTrace(0, "%v", err)
 			FormAndSendHttpResp(resp, "Mobile number already taken", http.StatusBadRequest, nil)
 			return
 		}
-
-		username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
 		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
@@ -147,7 +148,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-			FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
+			FormAndSendHttpResp(resp, "Failed, User already existsp in db user", http.StatusInternalServerError, nil)
 			return
 		}
 
