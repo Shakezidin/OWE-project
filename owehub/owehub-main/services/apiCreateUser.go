@@ -10,7 +10,6 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"strconv"
 	"strings"
 
 	"encoding/json"
@@ -32,8 +31,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		queryParameters       []interface{}
 		tablesPermissionsJSON []byte
 		username              string
-		usernamePrefix        string
-		nameAssignedCheck     bool
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -114,46 +111,35 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			and granting privileges
 	 	**/
 	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
-		// this takes the name of the user entered
-		nameParts := strings.Fields(createUserReq.Name)
-		if len(nameParts) >= 2 {
-			// this joins the different names using '_'
-			usernamePrefix = strings.Join(nameParts[0:2], "_")
-		} else {
-			usernamePrefix = nameParts[0]
-		}
+		// validate that phone number doesnt exist in `user_details` table inside db.OweHubDB
+		// because we're using mobile_number as db_username for db_user and admin
+		mobileNoCheck, mobileNoCheckErr := db.ReteriveFromDB(
+			db.OweHubDbIndex,
+			"SELECT count(*) FROM user_details WHERE mobile_number = $1",
+			[]interface{}{createUserReq.MobileNumber},
+		)
 
-		// this fetches the db username
-		dbQuery := `select * from pg_user order by usename desc`
-		data, err := db.ReteriveFromDB(db.RowDataDBIndex, dbQuery, nil)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
+		if mobileNoCheckErr != nil {
+			log.FuncErrorTrace(0, "Failed to get user count by mobile number from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to validate mobile number", http.StatusInternalServerError, nil)
 			return
 		}
 
-		for _, item := range data {
-			Nam, ok := item["usename"].([]byte)
-			if !ok {
-				continue
-			}
-			Name := string(Nam)
-			dbName := getNameWithoutNumber(Name)
-
-			usernamePrefix = strings.ToLower(usernamePrefix)
-			if dbName == usernamePrefix {
-				no, _ := getNumberAfterSecondUnderscore(Name)
-				username = fmt.Sprintf("%s_%d", usernamePrefix, no+1)
-				username = strings.ToLower(username)
-				nameAssignedCheck = true
-				break
-			}
+		mobileNumberCount, mobileNumberCountOk := mobileNoCheck[0]["count"].(int64)
+		if !mobileNumberCountOk {
+			log.FuncErrorTrace(0, "Failed to assert mobile number count from type: %T", mobileNoCheck[0]["count"])
+			FormAndSendHttpResp(resp, "Failed to validate mobile number", http.StatusInternalServerError, nil)
+			return
 		}
 
-		if !nameAssignedCheck {
-			username = fmt.Sprintf("%s_%d", usernamePrefix, 1)
-			username = strings.ToLower(username)
+		if mobileNumberCount != 0 {
+			err = fmt.Errorf("duplicate mobile number provided")
+			log.FuncErrorTrace(0, "%v", err)
+			FormAndSendHttpResp(resp, "Mobile number already taken", http.StatusBadRequest, nil)
+			return
 		}
+
+		username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
 		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
@@ -220,15 +206,17 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the stored procedure or function to create the user
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
-		// dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM '%s';", username))
-		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
-		if dropErr != nil {
-			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
-			// Handle the error as needed, such as logging or returning an HTTP response
-		} else {
-			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", username)
-			// Optionally, you can log a success message or perform additional actions
+
+		//  Drop roles from db.RowDataDBIndex if created (incase of DB User & Admin)
+		if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
+			dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
+			if dropErr != nil {
+				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
+			} else {
+				log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", username)
+			}
 		}
+
 		// Handle the error
 		if strings.Contains(err.Error(), "User with email") {
 			// Handle the case where provided user data violates unique constraint
@@ -250,25 +238,4 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send HTTP response
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
-}
-
-func getNumberAfterSecondUnderscore(s string) (int, error) {
-	parts := strings.Split(s, "_")
-	if len(parts) < 3 {
-		return 0, fmt.Errorf("string doesn't contain at least two underscores")
-	}
-	numStr := parts[2]
-	num, err := strconv.Atoi(numStr)
-	if err != nil {
-		return 0, err
-	}
-	return num, nil
-}
-
-func getNameWithoutNumber(s string) string {
-	parts := strings.Split(s, "_")
-	if len(parts) < 3 {
-		return s // Return original string if it doesn't contain at least two underscores
-	}
-	return strings.Join(parts[:2], "_")
 }
