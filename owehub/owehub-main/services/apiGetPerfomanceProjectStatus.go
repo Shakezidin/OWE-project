@@ -21,11 +21,11 @@ import (
 )
 
 /******************************************************************************
-* FUNCTION:		HandleGetPerfomanceProjectStatusRequest
-* DESCRIPTION:     handler for get InstallCost data request
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
+ * FUNCTION:		HandleGetPerfomanceProjectStatusRequest
+ * DESCRIPTION:     handler for get InstallCost data request
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                error
@@ -465,13 +465,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareAdminDlrFilters
-* DESCRIPTION:
-		PaginateData function paginates data directly from the returned data itself
-		without setting any offset value. For large data sizes, using an offset
-		was creating performance issues. This approach manages to keep the response
-		time under 2 seconds.
-******************************************************************************/
+ * FUNCTION:		PrepareAdminDlrFilters
+ * DESCRIPTION:
+		 PaginateData function paginates data directly from the returned data itself
+		 without setting any offset value. For large data sizes, using an offset
+		 was creating performance issues. This approach manages to keep the response
+		 time under 2 seconds.
+ ******************************************************************************/
 
 func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq) []models.PerfomanceResponse {
 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
@@ -488,11 +488,11 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareAdminDlrFilters
-* DESCRIPTION:     handler for prepare filter
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
+ * FUNCTION:		PrepareAdminDlrFilters
+ * DESCRIPTION:     handler for prepare filter
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
 
 func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
@@ -569,11 +569,11 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareInstallCostFilters
-* DESCRIPTION:     handler for prepare filter
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
+ * FUNCTION:		PrepareInstallCostFilters
+ * DESCRIPTION:     handler for prepare filter
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
 func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
