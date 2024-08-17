@@ -22,22 +22,52 @@ type PerfomanceStatusReq struct {
 }
 
 type PerfomanceResponse struct {
-	UniqueId                     string `json:"unqiue_id"`
-	Customer                     string `json:"customer"`
-	ContractDate                 string `json:"contract_date"`
-	PermitApprovedDate           string `json:"permit_approved_date"`
-	PvInstallCompletedDate       string `json:"install_completed_date"`
-	PtoDate                      string `json:"pto_date"`
-	SiteSurveyCompleteDate       string `json:"site_survey_complete_date"`
-	InstallReadyDate             string `json:"install_ready_date"`
-	CadCompleteDate              string `json:"cad_complete_date"`
-	RoofingCompleteDate          string `json:"roofing_complete_date"`
-	ElectricalPermitApprovedDate string `json:"electrical_permit_approved_date"`
-	ActiveDate                   string `json:"active_date"`
+	UniqueId                 string `json:"unqiue_id"`
+	Customer                 string `json:"customer"`
+	SiteSurevyRescheduleDate string `json:"site_survey_scheduled_date"`
+	SiteSurveyCompletedDate  string `json:"site_survey_completed_date"`
+	CadReady                 string `json:"cad_ready"`
+	CadCompleteDate          string `json:"cad_complete_date"`
+	PermitSubmittedDate      string `json:"permit_submitted_date"`
+	IcSubmittedDate          string `json:"ic_submitted_date"`
+	PermitApprovedDate       string `json:"permit_approved_date"`
+	IcAPprovedDate           string `json:"ic_approved_date"`
+	RoofingCratedDate        string `json:"roofing_created_date"`
+	RoofingCompleteDate      string `json:"roofing_completed_date"`
+	BatteryScheduleDate      string `json:"battery_scheduled_date"`
+	BatteryCompleteDate      string `json:"battery_complete_date"`
+	PvInstallCompletedDate   string `json:"pv_install_completed_date"`
+	MpuCreateDate            string `json:"mpu_created_date"`
+	DerateCreateDate         string `json:"derate_created_date"`
+	TrenchingWSOpenDate      string `json:"trenching_ws_open"`
+	DerateCompleteDate       string `json:"derate_completed_date"`
+	MPUCompleteDate          string `json:"mpu_complete_date"`
+	TrenchingCompleteDate    string `json:"trenching_completed"`
+	FinCreatedDate           string `json:"fin_created_date"`
+	FinPassdate              string `json:"fin_pass_date"`
+	PtoSubmittedDate         string `json:"pto_submitted_date"`
+	PTODate                  string `json:"pto_date"`
+	PVInstallCreatedDate     string `json:"pv_install_created_date"`
+	SiteSurveyColour         string `json:"site_survey_colour"`
+	CADDesignColour          string `json:"cad_design_colour"`
+	PermittingColour         string `json:"permitting_colour"`
+	RoofingColour            string `json:"roofing_colour"`
+	InstallColour            string `json:"install_colour"`
+	ElectricalColour         string `json:"electrical_colour"`
+	InspectionsColour        string `json:"inspectionsColour"`
+	ActivationColour         string `json:"activation_colour"`
 }
 
 type PerfomanceListResponse struct {
-	PerfomanceList []PerfomanceResponse `json:"perfomance_response_list"`
+	PerfomanceList   []PerfomanceResponse `json:"perfomance_response_list"`
+	SiteSurveyCount  int64                `json:"site_survey_count"`
+	CadDesignCount   int64                `json:"cad_design_count"`
+	PerimittingCount int64                `json:"permitting_count"`
+	RoofingCount     int64                `json:"roofing_count"`
+	InstallCount     int64                `json:"isntall_count"`
+	ElectricalCount  int64                `json:"electrical_count"`
+	InspectionCount  int64                `json:"inspection_count"`
+	ActivationCount  int64                `json:"activation_count"`
 }
 
 // shift the below struct to project
