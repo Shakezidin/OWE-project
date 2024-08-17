@@ -126,6 +126,11 @@ import Phone from '../../resources/assets/Phone.svg';
 import Techie from '../../resources/assets/techie.svg';
 import complete from '../../resources/assets/Completed.png';
 import pending from '../../resources/assets/Pending.png';
+import AddIconSr from '../../resources/assets/AddNewSr.svg';
+import SystemSize from '../../resources/assets/SystemSize.svg';
+import RoofType from '../../resources/assets/rooftype.svg';
+import PM_LINK from '../../resources/assets/PM-Link.svg';
+import PM_SHARE from '../../resources/assets/pm-share.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -268,5 +273,10 @@ export const ICONS = {
   Phone: Phone,
   Techie: Techie,
   complete:complete,
-  pending:pending
+  pending:pending,
+  AddIconSr:AddIconSr,
+  SystemSize:SystemSize,
+  RoofType: RoofType,
+  PM_LINK:PM_LINK,
+  PM_SHARE:PM_SHARE,
 };

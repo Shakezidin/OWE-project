@@ -1,0 +1,221 @@
+.schedule_detail {
+    font-size: 20px;
+    color: #263747;
+    font-size: 600;
+  }
+  .primary_heading {
+    color: #04a5e8;
+    font-weight: 500;
+  }
+
+  
+  .h_screen {
+    min-height: 100vh;
+  }
+
+  .customer_wrapper_list {
+    flex-basis: calc(100%);
+    border-radius: 8px;
+    background-color: #fff;
+    padding-top: 15px;
+    padding-inline: 20px;
+  }
+
+  .sr_top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .pending{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    
+  }
+  .pending h3{
+    font-weight: 500;
+    font-size: 14px;
+    color: #377CF6;
+  }
+  .notification{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5px 10px 5px 10px;
+    border-radius: 50%;
+    background-color: #377CF6;
+    color: #ffff;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .filter{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+  .filtericon{
+    align-items: center;
+   text-align: center;
+    height: 40px;
+    width: 42px;
+    border-radius: 50%;
+    background-color: #377CF6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .filtericon:hover{
+    background-color: #005eff;
+    transform: scale(1.03);
+  }
+  .filtericon img{
+    margin-top: 11px;
+    height: 19px;
+    width: 19px;
+  }
+
+  .customer_details {
+    width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 16px 18px 16px;
+    gap: 23px;
+    max-height: 72px;
+    transition: max-height 0.7s ease;
+    overflow: hidden;
+  }
+  
+  .customer_details.open {
+    max-height: 700px;
+  }
+  .cust_det_top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .name_icon{
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .name_icon span{
+    font-size: 12px;
+    font-weight: 600;
+    color: #F55B5B;
+  }
+  .name{
+    font-size: 14px;
+    font-weight: 600;
+
+  }
+  .cust_name{
+    display: flex;
+    justify-content: center;
+    /* text-align: center; */
+    align-items: center;
+    gap: 11px;
+  }
+
+  .cust_det_list{
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    margin-top: 30px;
+  }
+
+  .head_det{
+    display: flex;
+    flex-direction: column;
+    
+    
+  }
+  .head_det h2{
+   
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .head_det span{
+    font-size: 10px;
+    color: #AFAFAF;
+    font-weight: 500;
+  }
+
+  .accordian_btn {
+    border: none;
+    border-radius: 5px;
+    background-color: #eaecf0;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 500ms;
+  }
+  .accordian_btn:focus-within {
+    outline: none;
+  }
+  .accordian_btn:hover {
+    background-color: #dde9ff;
+    transition: all 500ms;
+    color: #4372e9;
+  }
+
+  .map_wrapper {
+    width: 40%;
+    height: 170px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .cust_det_bot{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    transition: all 500ms;
+  }
+
+  .cust_det_map_sec{
+    width: 80%;
+    gap: 20px;
+    display: flex;
+  }
+
+  .map_location {
+    font-size: 12px;
+  }
+
+  .cust_det_button{
+    width: 114px;
+    height: 42px;
+    background-color: #4372E9;
+    color: #ffff;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 6px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 55px;
+    cursor: pointer;
+  }
+
+  .cust_det_button span{
+    transition: all 0.3s ease;
+  }
+
+  .cust_det_button:hover span{
+    transform: scale(1.07);
+  }
