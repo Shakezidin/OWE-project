@@ -1014,6 +1014,7 @@
 
   .progress-box-body p {
     font-size: 10px;
+    white-space: nowrap;
   }
 
   .project-card-container-1 {
@@ -1061,19 +1062,50 @@
 }
 
 
-.progress-qc button {
+.progress-qc button{
   width: 56px;
   height: 32px;
-  background-color: #ffffff;
-  border: 1px solid #AFAFAF;
+  background-color: #F2F7FF;
+  border: 1px solid #377CF6;
   font-weight: 500;
   font-size: 12px;
+  color: #377CF6;
   cursor: pointer;
   border-radius: 4px;
+  z-index: 1;
   transition: all 0.3s ease;
 }
 
-.progress-qc button:hover {
+.progress-qc button:hover{
   background-color: #377CF6;
   color: white;
+}
+.progress-qc-acre{
+  margin-left: -7px;
+  margin-top: -24px;
+  z-index: 2;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background-color: #E30F0F;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-qc-acre span{
+  font-size: 10px;
+  font-weight: 600;
+  color: #FFFF;
+}
+
+
+@media (max-width: 767px) {
+  .progress-qc-acre{
+    margin-left: 160px;
+    margin-top: -48px;
+  }
+  .project-status-table-title{
+    margin-top: 13px;
+  }
 }

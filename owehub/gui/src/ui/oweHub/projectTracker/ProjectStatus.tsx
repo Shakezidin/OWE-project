@@ -16,8 +16,6 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import { toast } from 'react-toastify';
 import Proj_pie_chart from './lib/proj_pie_chart';
 import { ICONS } from '../../../resources/icons/Icons';
-
-import PodDropdown from './PodioDropdown';
 import QCModal from './PopUp';
 
 
@@ -628,6 +626,7 @@ const ProjectStatus = () => {
                               // @ts-ignore
                               projectDetail.adder_breakdown_and_total &&
                                 Object.keys(
+                                  // @ts-ignore
                                   projectDetail.adder_breakdown_and_total
                                 ).map((item, ind) => {
                                   // @ts-ignore
@@ -636,6 +635,7 @@ const ProjectStatus = () => {
                                       {' '}
                                       {item} :{' '}
                                       {
+                                        // @ts-ignore
                                         projectDetail.adder_breakdown_and_total[
                                           item
                                         ]
@@ -655,12 +655,12 @@ const ProjectStatus = () => {
           </div>
           <div className="pl2 flex-auto second-project-card">
             <div
-              className="bg-white rounded-16 flex items-center justify-center"
+              className="bg-white rounded-16 flex"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
                 height: '100%',
-                alignItems: 'center',
+                // alignItems: 'center',
               }}
             >
               <Proj_pie_chart />
@@ -724,14 +724,11 @@ const ProjectStatus = () => {
                 <div className="progress-qc mt0">
                    <button>NTP</button>
                 </div>
-                <div className="progress-box-body mt0">
-                   <PodDropdown
-                   options={options}
-                   onButton1Click={handleButton1Click}
-                   onButton2Click={handleButton2Click}
-                   />
-                </div>
+                
               </div>
+              <div className='progress-qc-acre'>
+                  <span>2</span>
+                </div>
             </div>
 
           </div>

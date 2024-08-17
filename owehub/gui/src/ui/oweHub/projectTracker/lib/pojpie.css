@@ -1,6 +1,74 @@
-.proj-pie {
+
+.pc-links{
+  padding-left: 14px;
+  padding-right: 17px;
+  padding-top: 22px;
+  padding-bottom: 19px;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+}
+.pc-link{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+.link-head{
+  display: flex;
+  flex-direction: column;
+}
+.link-head h3{
+  
+  font-size: 14px;
+  font-weight: 600;
+}
+.link-head span{
+  margin-top: -4px;
+  font-size: 10px;
+  font-weight: 400;
+  color: #8C8C8C;
+}
+.link-url{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.link-tab{
+  height: 32px;
+  width: 32px;
+  border: 1.5px solid #377CF6;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  text-align: center;
+  cursor: pointer;
+  color: #377CF6;
+  transition: all 0.3s ease;
+}
+
+.link-tab:hover{
+  background-color: #377CF6;
+  color: white;
+}
+
+.link-tab img{
+  height: 18px;
+  width: 18px;
+}
+
+.link-tab svg {
+  transition: transform 0.3s ease;
+}
+
+.link-tab:hover svg {
+  transform: scale(1.2);
+}
+.pm-doc-heading{
+  padding-top: 25px;
+  padding-left: 13px;
+  font-size: 16px;
+  font-weight: 700;
 }
