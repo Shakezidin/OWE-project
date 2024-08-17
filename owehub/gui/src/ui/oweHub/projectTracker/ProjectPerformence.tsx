@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { cardData } from './projectData';
-import { ICONS } from '../../../resources/icons/Icons';
+// import { cardData } from './projectData';
+// import { ICONS } from '../../../resources/icons/Icons';
 import './projectTracker.css';
 import { IoMdInformationCircleOutline } from 'react-icons/io';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { DateRangePicker } from 'react-date-range';
+// import { DateRangePicker } from 'react-date-range';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
@@ -26,7 +26,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import SelectOption from '../../components/selectOption/SelectOption';
-import ReactApexChart from 'react-apexcharts';
+// import ReactApexChart from 'react-apexcharts';
+import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+import Input from '../../components/text_input/Input';
+import { IoIosSearch } from "react-icons/io";
 
 interface Option {
   value: string;
@@ -121,14 +124,30 @@ const ProjectPerformence = () => {
 
   const perPage = 10;
   const getColorStyle = (date: string | null) => {
+    let backgroundColor;
+    let textColor;
+    let boxShadowColor;
+
     if (!date) {
-      return { backgroundColor: '#F2F4F6', color: '#7D7D7D' };
+        backgroundColor = '#EBEBEB';
+        textColor = '#000';
+        boxShadowColor = 'rgba(0, 0, 0, 0.1)';
     } else if (new Date(date) <= new Date()) {
-      return { backgroundColor: '#63ACA3', color: 'white' };
+        backgroundColor = '#63ACA3';
+        textColor = 'white';
+        boxShadowColor = 'rgba(99, 172, 163, 0.3)'; 
     } else {
-      return { backgroundColor: '#008DDA', color: 'white' };
+        backgroundColor = '#008DDA';
+        textColor = 'white';
+        boxShadowColor = 'rgba(0, 141, 218, 0.3)'; 
     }
-  };
+
+    return {
+        backgroundColor,
+        color: textColor,
+        boxShadow: `0px 4px 12px ${boxShadowColor}`, 
+    };
+};
 
   const projectOption: Option[] = projects?.map?.(
     (item: (typeof projects)[0]) => ({
@@ -257,6 +276,19 @@ const ProjectPerformence = () => {
     },
   ];
 
+  const topCardsData = [
+    { id: 1, title: "Site Survey", value: 28645 },
+    { id: 2, title: "CAD Design", value: 28645 },
+    { id: 3, title: "Permitting", value: 28645 },
+    { id: 4, title: "Roofing", value: 28645 },
+    { id: 5, title: "Install", value: 28645 },
+    { id: 6, title: "Electrical", value: 28645 },
+    { id: 7, title: "Inspection", value: 28645 },
+    { id: 8, title: "Activation", value: 28645 }
+  ]
+
+  const cardColors = ["#57B3F1", "#EE824D", "#63ACA3", "#6761DA", "#C470C7"]
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -331,93 +363,11 @@ const ProjectPerformence = () => {
       />
       <div className="project-container">
         <div className="project-heading">
-          <h2>Performance</h2>
-
-          <div style={{ zIndex: '1001' }} ref={datePickerRef}>
-            <div
-              className="per-head-input"
-              onClick={(e) => {
-                if (datePickerRef?.current?.contains(e.target as Node)) {
-                  setShowDatePicker(!showDatePicker);
-                }
-              }}
-            >
-              <div
-                className="rep-drop_label"
-                style={{ backgroundColor: '#C470C7' }}
-              >
-                <img src={ICONS.includes_icon} alt="" />
-              </div>
-              <div className="rep-up relative">
-                <label
-                  className="inputLabel"
-                  style={{
-                    color: '#344054',
-                    position: 'absolute',
-                    left: '12px',
-                    top: '-9px',
-                    whiteSpace: 'nowrap',
-                    zIndex: 99,
-                  }}
-                >
-                  Date Range
-                </label>
-                <div
-                  style={{
-                    position: 'relative',
-                    top: '7px',
-                    backgroundColor: 'white',
-                    marginLeft: '6px',
-                  }}
-                >
-                  <label
-                    className="per-date-button"
-                    style={{ color: '#292929' }}
-                  >
-                    {selectionRange.startDate.toLocaleDateString() !==
-                    selectionRange.endDate.toLocaleDateString()
-                      ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
-                      : 'Select Date'}
-                  </label>
-                  {showDatePicker && (
-                    <div
-                      className="per-calender-container"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <DateRangePicker
-                        ranges={[selectionRange]}
-                        onChange={handleSelect}
-                        minDate={
-                          new Date(
-                            new Date().setMonth(new Date().getMonth() - 3)
-                          )
-                        }
-                        maxDate={
-                          new Date(new Date().setDate(new Date().getDate() - 1))
-                        }
-                      />
-                      <button
-                        className="reset-calender"
-                        onClick={handleResetDates}
-                      >
-                        Reset
-                      </button>
-                      <button
-                        className="apply-calender"
-                        onClick={handleToggleDatePicker}
-                      >
-                        Apply
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <h2>Total Count</h2>
         </div>
-        <div className="flex stats-card-wrapper">
+        {/* <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
-            {cardData.map((el, i) => {
+            {topCardsData.map((el, i) => {
               const findSale = perfomaceSale.find(
                 (s: (typeof perfomaceSale)[0]) => s.type === el.type
               );
@@ -507,6 +457,38 @@ const ProjectPerformence = () => {
               </div>
             ))}
           </div>}*/}
+        {/* </div> */}
+
+        <div className='flex stats-card-wrapper'>
+          <div className="project-card-container-1">
+            {topCardsData.map((card, index) => {
+              const cardColor = cardColors[index % cardColors.length];
+              return (
+                <div className='flex items-center' style={{ marginRight: "-20px" }}>
+                  <div
+                    key={card.id}
+                    className="project-card"
+                    style={{
+                      backgroundColor: cardColor,
+                      outline: `1px dotted ${cardColor}`,
+                    }}
+                  >
+                    <span className='stages-numbers' style={{ color: cardColor, borderColor: cardColor }}>
+                      {card.id}
+                    </span>
+                    <p>{card.title}</p>
+                    <h2>{card.value}</h2>
+                  </div>
+                  {index < topCardsData.length - 1 && (
+                    <div className='flex' style={{ padding: "0 5px" }}>
+                      <MdOutlineKeyboardDoubleArrowRight style={{ width: "1.5rem", height: "1.5rem", color: cardColor }} />
+                      <MdOutlineKeyboardDoubleArrowRight style={{ marginLeft: "-10px", height: "1.5rem", width: "1.5rem", color: cardColors[(index + 1) % cardColors.length] }} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -517,48 +499,57 @@ const ProjectPerformence = () => {
         <div className="performance-table-heading">
           <div className="proper-top">
             <div className="performance-project">
-              <h2>Projects</h2>
-              <div className="progress-box-container">
+              <div className="proper-select">
+                {/* <SelectOption
+                  options={projectOption}
+                  value={selectedProject.value ? selectedProject : undefined}
+                  onChange={(val) => {
+                    if (val) {
+                      setSelectedProject({ ...val });
+                    }
+                  }}
+                  placeholder="Select Project Id"
+                  menuWidth="300px"
+                  width="190px"
+                /> */}
+
+                <IoIosSearch className='search-icon' />
+
+                <Input
+                  type={'text'}
+                  placeholder={'Search for Unique ID or Name'}
+                  value={'Search for Unique ID or Name'}
+                  name={'Search for Unique ID or Name'}
+                  onChange={()=>{}}
+                />
+
+              </div>
+              <div className="performance-box-container">
+                <p className='status-indicator'>Status indicators</p>
                 <div className="progress-box-body">
                   <div
                     className="progress-box"
-                    style={{ background: '#377CF6' }}
+                    style={{ background: '#377CF6', borderRadius: "2px" }}
                   ></div>
-                  <p>In Progress</p>
+                  <p>Scheduled</p>
                 </div>
                 <div className="progress-box-body">
                   <div
                     className="progress-box"
-                    style={{ background: '#63ACA3' }}
+                    style={{ background: '#63ACA3', borderRadius: "2px" }}
                   ></div>
-                  <p>Active</p>
+                  <p>Completed</p>
                 </div>
                 <div className="progress-box-body">
                   <div
                     className="progress-box"
-                    style={{ background: '#E9E9E9' }}
+                    style={{ background: '#E9E9E9', borderRadius: "2px" }}
                   ></div>
                   <p>Not Started</p>
                 </div>
               </div>
             </div>
 
-            <div className="proper-select">
-              <SelectOption
-                options={projectOption}
-                value={selectedProject.value ? selectedProject : undefined}
-                onChange={(val) => {
-                  if (val) {
-                    setSelectedProject({ ...val });
-                  }
-                }}
-                placeholder="Select Project Id"
-                menuWidth="300px"
-                width="190px"
-              />
-
-              <button onClick={handleCancel}>Cancel</button>
-            </div>
           </div>
 
           <div className="performance-milestone-table">
@@ -567,9 +558,12 @@ const ProjectPerformence = () => {
                 <tr>
                   <th style={{ padding: '0px' }}>
                     <div className="milestone-header">
-                      <p>Project Id</p>
-                      <p>Customer Name</p>
-                      <p>Milestone</p>
+                      <div className='project-info'>
+                        <p>Project Info</p>
+                      </div>
+                      <div className='header-milestone'>
+                        <p>Milestones</p>
+                      </div>
                     </div>
                   </th>
                 </tr>
@@ -611,295 +605,135 @@ const ProjectPerformence = () => {
                               <Link
                                 to={`/project-management?project_id=${project.unqiue_id}`}
                               >
-                                <p className="install-update">
-                                  {project.unqiue_id}
-                                </p>
+                                <div className='project-info-details'>
+                                  <h3>
+                                    {project.customer}
+                                  </h3>
+                                  <p className="install-update">
+                                    {project.unqiue_id}
+                                  </p>
+                                </div>
                               </Link>
-                              <div>
-                                <p className="project-customer">
-                                  {project.customer}
-                                </p>
-                              </div>
-                              <div
-                                className="milestone-strips"
-                                style={getColorStyle(project.contract_date)}
-                              >
-                                <div className="strip-title">
-                                  <p>
-                                    {project.contract_date
-                                      ? format(
-                                          new Date(project.contract_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'No Data'}
-                                  </p>
-                                  <p>
-                                    {project.contract_date
-                                      ? format(
-                                          new Date(project.contract_date),
-                                          'yyyy'
-                                        )
-                                      : ''}
-                                  </p>
+
+                              <div className='strips-wrapper'>
+                                <div
+                                  className="milestone-strips"
+                                  style={getColorStyle(project.contract_date)}
+                                >
+                                  <p className='strips-data'>site survey</p>
+                                  <div className="strip-title">
+                                    <p>
+                                      {project.contract_date
+                                        ? `${format(new Date(project.contract_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.contract_date), 'yyyy')}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
                                 </div>
                                 <div
-                                  className="strip-line"
-                                  style={{
-                                    borderColor: project.contract_date
-                                      ? '#fff'
-                                      : '#d6d6d6',
-                                  }}
-                                ></div>
-                                <div className="strip-des">
-                                  <p>
-                                    Sales{' '}
-                                    <IoMdInformationCircleOutline
-                                      style={{ cursor: 'pointer' }}
-                                    />
-                                  </p>
+                                  className="notch-strip"
+                                  style={getColorStyle(
+                                    project.site_survey_complete_date
+                                  )}
+                                >
+                                  <p className='strips-data'>cad design</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.site_survey_complete_date
+                                        ? `${format(new Date(project.site_survey_complete_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.site_survey_complete_date), 'yyyy')}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <div
-                                className="notch-strip"
-                                style={getColorStyle(
-                                  project.site_survey_complete_date
-                                )}
-                              >
-                                <div className="notch-strip-title">
-                                  <p>
-                                    {project.site_survey_complete_date
-                                      ? format(
-                                          new Date(
-                                            project.site_survey_complete_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'No Data'}
-                                  </p>
 
-                                  <p>
-                                    {project.site_survey_complete_date
-                                      ? format(
-                                          new Date(
-                                            project.site_survey_complete_date
-                                          ),
-                                          'yyyy'
-                                        )
-                                      : ''}
-                                  </p>
+                                <div
+                                  className="notch-strip"
+                                  style={getColorStyle(
+                                    project.permit_approved_date
+                                  )}
+                                >
+                                  <p className='strips-data'>permitting</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.permit_approved_date
+                                        ? `${format(new Date(project.permit_approved_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.permit_approved_date), 'yyyy')}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div
+                                  className="notch-strip"
+                                  style={getColorStyle(
+                                    project.install_ready_date
+                                  )}
+                                >
+                                  <p className='strips-data'>roofing</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.install_ready_date
+                                        ? `${format(new Date(project.install_ready_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.install_ready_date), 'yyyy')}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div
+                                  className="notch-strip"
+                                  style={getColorStyle(
+                                    project.install_completed_date
+                                  )}
+                                >
+                                  <p className='strips-data'>install</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.install_completed_date
+                                        ? `${format(new Date(project.install_completed_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.install_completed_date), 'yyyy')}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div
+                                  className="notch-strip"
+                                  style={getColorStyle(project.pto_date)}
+                                >
+                                  <p className='strips-data'>electrical</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.pto_date
+                                        ? `${format(new Date(project.pto_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.pto_date), 'yyyy').slice(0, 4)}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
                                 </div>
                                 <div
-                                  className="strip-line"
-                                  style={{
-                                    borderColor:
-                                      project.site_survey_complete_date
-                                        ? '#fff'
-                                        : '#d6d6d6',
-                                  }}
-                                ></div>
-                                <div className="notch-strip-des">
-                                  <p>Site Survey</p>
-                                  <IoMdInformationCircleOutline
-                                    style={{ cursor: 'pointer' }}
-                                  />
-                                </div>
-                                <div className="child-notch"></div>
-                              </div>
-
-                              <div
-                                className="notch-strip"
-                                style={getColorStyle(
-                                  project.permit_approved_date
-                                )}
-                              >
-                                <div className="notch-strip-title">
-                                  <p>
-                                    {project.permit_approved_date
-                                      ? format(
-                                          new Date(
-                                            project.permit_approved_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'No Data'}
-                                  </p>
-
-                                  <p>
-                                    {project.permit_approved_date
-                                      ? format(
-                                          new Date(
-                                            project.permit_approved_date
-                                          ),
-                                          'yyyy'
-                                        )
-                                      : ''}
-                                  </p>
+                                  className="notch-strip"
+                                  style={getColorStyle(project.pto_date)}
+                                >
+                                  <p className='strips-data'>inspection</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.pto_date
+                                        ? `${format(new Date(project.pto_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.pto_date), 'yyyy').slice(0, 4)}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
                                 </div>
                                 <div
-                                  className="strip-line"
-                                  style={{
-                                    borderColor: project.permit_approved_date
-                                      ? '#fff'
-                                      : '#d6d6d6',
-                                  }}
-                                ></div>
-                                <div className="notch-strip-des">
-                                  <p>Permit Submitted </p>
-                                  <IoMdInformationCircleOutline
-                                    style={{ cursor: 'pointer' }}
-                                  />
+                                  className="notch-strip"
+                                  style={getColorStyle(project.pto_date)}
+                                >
+                                  <p className='strips-data'>activation</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.pto_date
+                                        ? `${format(new Date(project.pto_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.pto_date), 'yyyy').slice(0, 4)}`
+                                        : 'No Data'}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="child-notch"></div>
                               </div>
 
-                              <div
-                                className="notch-strip"
-                                style={getColorStyle(
-                                  project.install_ready_date
-                                )}
-                              >
-                                <div className="notch-strip-title">
-                                  <p>
-                                    {project.install_ready_date
-                                      ? format(
-                                          new Date(project.install_ready_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'No Data'}
-                                  </p>
-
-                                  <p>
-                                    {project.install_ready_date
-                                      ? format(
-                                          new Date(project.install_ready_date),
-                                          'yyyy'
-                                        )
-                                      : ''}
-                                  </p>
-                                </div>
-                                <div
-                                  className="strip-line"
-                                  style={{
-                                    borderColor: project.install_ready_date
-                                      ? '#fff'
-                                      : '#d6d6d6',
-                                  }}
-                                ></div>
-                                <div className="notch-strip-des">
-                                  <p>Install Ready</p>
-                                  <IoMdInformationCircleOutline
-                                    style={{ cursor: 'pointer' }}
-                                  />
-                                </div>
-                                <div className="child-notch"></div>
-                              </div>
-
-                              <div
-                                className="notch-strip"
-                                style={getColorStyle(
-                                  project.install_completed_date
-                                )}
-                              >
-                                <div className="notch-strip-title">
-                                  <p>
-                                    {project.install_completed_date
-                                      ? format(
-                                          new Date(
-                                            project.install_completed_date
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'No Data'}
-                                  </p>
-                                  <p>
-                                    {project.install_completed_date
-                                      ? format(
-                                          new Date(
-                                            project.install_completed_date
-                                          ),
-                                          'yyyy'
-                                        ).slice(0, 6)
-                                      : ''}
-                                  </p>
-                                </div>
-                                <div
-                                  className="strip-line"
-                                  style={{
-                                    borderColor: project.install_completed_date
-                                      ? '#fff'
-                                      : '#d6d6d6',
-                                  }}
-                                ></div>
-                                <div className="notch-strip-des">
-                                  <p>Install Completed</p>
-                                  <IoMdInformationCircleOutline
-                                    style={{ cursor: 'pointer' }}
-                                  />
-                                </div>
-                                <div className="child-notch"></div>
-                              </div>
-
-                              <div
-                                className="notch-strip"
-                                style={getColorStyle(project.pto_date)}
-                              >
-                                <div className="notch-strip-title">
-                                  <p>
-                                    {project.pto_date
-                                      ? format(
-                                          new Date(project.pto_date),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'No Data'}
-                                  </p>
-                                  <p>
-                                    {project.pto_date
-                                      ? format(
-                                          new Date(project.pto_date),
-                                          'yyyy'
-                                        ).slice(0, 6)
-                                      : ''}
-                                  </p>
-                                </div>
-                                <div
-                                  className="strip-line"
-                                  style={{
-                                    borderColor: project.pto_date
-                                      ? '#fff'
-                                      : '#d6d6d6',
-                                  }}
-                                ></div>
-                                <div className="notch-strip-des">
-                                  <p>PTO</p>
-                                  <IoMdInformationCircleOutline
-                                    style={{ cursor: 'pointer' }}
-                                  />
-                                </div>
-                                <div className="child-notch"></div>
-                              </div>
-                              <div className="vertical-wrap">
-                                <div className="vertical-line"></div>
-                              </div>
-
-                              <div className="all-progress">
-                                <div style={{ width: '25px' }}>
-                                  <CircularProgressbar
-                                    styles={buildStyles({
-                                      pathColor: '#63ACA3',
-                                    })}
-                                    strokeWidth={10}
-                                    value={parseInt(
-                                      calculateCompletionPercentage(newObj)
-                                    )}
-                                  />
-                                </div>
-                                <div>
-                                  <p className="progress">
-                                    {calculateCompletionPercentage(newObj)}%
-                                  </p>
-                                  <p>Overall Progress</p>
-                                </div>
-                              </div>
                             </div>
                           </td>
                         </tr>
