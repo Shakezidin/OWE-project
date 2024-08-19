@@ -27,9 +27,9 @@ import { RootState } from '../../../redux/store';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import SelectOption from '../../components/selectOption/SelectOption';
 // import ReactApexChart from 'react-apexcharts';
-import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
 import Input from '../../components/text_input/Input';
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch } from 'react-icons/io';
 
 interface Option {
   value: string;
@@ -123,31 +123,21 @@ const ProjectPerformence = () => {
   };
 
   const perPage = 10;
-  const getColorStyle = (date: string | null) => {
+  const getColorStyle = (color: any | null) => {
     let backgroundColor;
     let textColor;
     let boxShadowColor;
 
-    if (!date) {
-        backgroundColor = '#EBEBEB';
-        textColor = '#000';
-        boxShadowColor = 'rgba(0, 0, 0, 0.1)';
-    } else if (new Date(date) <= new Date()) {
-        backgroundColor = '#63ACA3';
-        textColor = 'white';
-        boxShadowColor = 'rgba(99, 172, 163, 0.3)'; 
-    } else {
-        backgroundColor = '#008DDA';
-        textColor = 'white';
-        boxShadowColor = 'rgba(0, 141, 218, 0.3)'; 
-    }
+    backgroundColor = color;
+    textColor = 'white';
+    boxShadowColor = 'rgba(0, 141, 218, 0.3)';
 
     return {
-        backgroundColor,
-        color: textColor,
-        boxShadow: `0px 4px 12px ${boxShadowColor}`, 
+      backgroundColor,
+      color: textColor,
+      boxShadow: `0px 4px 12px ${boxShadowColor}`,
     };
-};
+  };
 
   const projectOption: Option[] = projects?.map?.(
     (item: (typeof projects)[0]) => ({
@@ -161,6 +151,7 @@ const ProjectPerformence = () => {
     commisionMetrics,
     projectStatus,
     projectsCount,
+    datacount,
     isLoading,
   } = useAppSelector((state) => state.perfomanceSlice);
   const { sessionTimeout } = useAppSelector((state) => state.auth);
@@ -277,17 +268,17 @@ const ProjectPerformence = () => {
   ];
 
   const topCardsData = [
-    { id: 1, title: "Site Survey", value: 28645 },
-    { id: 2, title: "CAD Design", value: 28645 },
-    { id: 3, title: "Permitting", value: 28645 },
-    { id: 4, title: "Roofing", value: 28645 },
-    { id: 5, title: "Install", value: 28645 },
-    { id: 6, title: "Electrical", value: 28645 },
-    { id: 7, title: "Inspection", value: 28645 },
-    { id: 8, title: "Activation", value: 28645 }
-  ]
+    { id: 1, title: 'Site Survey', value: datacount.site_survey_count },
+    { id: 2, title: 'CAD Design', value: datacount.cad_design_count },
+    { id: 3, title: 'Permitting', value: datacount.permitting_count },
+    { id: 4, title: 'Roofing', value: datacount.roofing_count },
+    { id: 5, title: 'Install', value: datacount.isntall_count },
+    { id: 6, title: 'Electrical', value: datacount.electrical_count },
+    { id: 7, title: 'Inspection', value: datacount.inspection_count },
+    { id: 8, title: 'Activation', value: datacount.activation_count },
+  ];
 
-  const cardColors = ["#57B3F1", "#EE824D", "#63ACA3", "#6761DA", "#C470C7"]
+  const cardColors = ['#57B3F1', '#EE824D', '#63ACA3', '#6761DA', '#C470C7'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -351,7 +342,7 @@ const ProjectPerformence = () => {
       width: 10,
     },
   });
-
+  console.log(projectStatus, datacount, 'projectStatus');
   return (
     <div className="">
       <Breadcrumb
@@ -459,12 +450,15 @@ const ProjectPerformence = () => {
           </div>}*/}
         {/* </div> */}
 
-        <div className='flex stats-card-wrapper'>
+        <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
             {topCardsData.map((card, index) => {
               const cardColor = cardColors[index % cardColors.length];
               return (
-                <div className='flex items-center' style={{ marginRight: "-20px" }}>
+                <div
+                  className="flex items-center"
+                  style={{ marginRight: '-20px' }}
+                >
                   <div
                     key={card.id}
                     className="project-card"
@@ -473,16 +467,32 @@ const ProjectPerformence = () => {
                       outline: `1px dotted ${cardColor}`,
                     }}
                   >
-                    <span className='stages-numbers' style={{ color: cardColor, borderColor: cardColor }}>
+                    <span
+                      className="stages-numbers"
+                      style={{ color: cardColor, borderColor: cardColor }}
+                    >
                       {card.id}
                     </span>
                     <p>{card.title}</p>
                     <h2>{card.value}</h2>
                   </div>
                   {index < topCardsData.length - 1 && (
-                    <div className='flex' style={{ padding: "0 5px" }}>
-                      <MdOutlineKeyboardDoubleArrowRight style={{ width: "1.5rem", height: "1.5rem", color: cardColor }} />
-                      <MdOutlineKeyboardDoubleArrowRight style={{ marginLeft: "-10px", height: "1.5rem", width: "1.5rem", color: cardColors[(index + 1) % cardColors.length] }} />
+                    <div className="flex" style={{ padding: '0 5px' }}>
+                      <MdOutlineKeyboardDoubleArrowRight
+                        style={{
+                          width: '1.5rem',
+                          height: '1.5rem',
+                          color: cardColor,
+                        }}
+                      />
+                      <MdOutlineKeyboardDoubleArrowRight
+                        style={{
+                          marginLeft: '-10px',
+                          height: '1.5rem',
+                          width: '1.5rem',
+                          color: cardColors[(index + 1) % cardColors.length],
+                        }}
+                      />
                     </div>
                   )}
                 </div>
@@ -513,43 +523,41 @@ const ProjectPerformence = () => {
                   width="190px"
                 /> */}
 
-                <IoIosSearch className='search-icon' />
+                <IoIosSearch className="search-icon" />
 
                 <Input
                   type={'text'}
                   placeholder={'Search for Unique ID or Name'}
                   value={'Search for Unique ID or Name'}
                   name={'Search for Unique ID or Name'}
-                  onChange={()=>{}}
+                  onChange={() => {}}
                 />
-
               </div>
               <div className="performance-box-container">
-                <p className='status-indicator'>Status indicators</p>
+                <p className="status-indicator">Status indicators</p>
                 <div className="progress-box-body">
                   <div
                     className="progress-box"
-                    style={{ background: '#377CF6', borderRadius: "2px" }}
+                    style={{ background: '#377CF6', borderRadius: '2px' }}
                   ></div>
                   <p>Scheduled</p>
                 </div>
                 <div className="progress-box-body">
                   <div
                     className="progress-box"
-                    style={{ background: '#63ACA3', borderRadius: "2px" }}
+                    style={{ background: '#63ACA3', borderRadius: '2px' }}
                   ></div>
                   <p>Completed</p>
                 </div>
                 <div className="progress-box-body">
                   <div
                     className="progress-box"
-                    style={{ background: '#E9E9E9', borderRadius: "2px" }}
+                    style={{ background: '#E9E9E9', borderRadius: '2px' }}
                   ></div>
                   <p>Not Started</p>
                 </div>
               </div>
             </div>
-
           </div>
 
           <div className="performance-milestone-table">
@@ -558,10 +566,10 @@ const ProjectPerformence = () => {
                 <tr>
                   <th style={{ padding: '0px' }}>
                     <div className="milestone-header">
-                      <div className='project-info'>
+                      <div className="project-info">
                         <p>Project Info</p>
                       </div>
-                      <div className='header-milestone'>
+                      <div className="header-milestone">
                         <p>Milestones</p>
                       </div>
                     </div>
@@ -605,42 +613,58 @@ const ProjectPerformence = () => {
                               <Link
                                 to={`/project-management?project_id=${project.unqiue_id}`}
                               >
-                                <div className='project-info-details'>
-                                  <h3>
-                                    {project.customer}
-                                  </h3>
+                                <div className="project-info-details">
+                                  <h3>{project.customer}</h3>
                                   <p className="install-update">
                                     {project.unqiue_id}
                                   </p>
                                 </div>
                               </Link>
 
-                              <div className='strips-wrapper'>
+                              <div className="strips-wrapper">
                                 <div
                                   className="milestone-strips"
-                                  style={getColorStyle(project.contract_date)}
+                                  style={getColorStyle(
+                                    project.site_survey_colour
+                                  )}
                                 >
-                                  <p className='strips-data'>site survey</p>
+                                  <p className="strips-data">site survey</p>
                                   <div className="strip-title">
                                     <p>
-                                      {project.contract_date
-                                        ? `${format(new Date(project.contract_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.contract_date), 'yyyy')}`
-                                        : 'No Data'}
+                                      {project.site_survey_completed_date
+                                        ? `${format(new Date(project.site_survey_completed_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.site_survey_completed_date), 'yyyy')}`
+                                        : project.site_survey_scheduled_date
+                                          ? `${format(new Date(project.site_survey_scheduled_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.site_survey_scheduled_date), 'yyyy')}`
+                                          : 'No Data'}
                                     </p>
                                   </div>
                                 </div>
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
-                                    project.site_survey_complete_date
+                                    project.cad_design_colour
                                   )}
                                 >
-                                  <p className='strips-data'>cad design</p>
+                                  <p className="strips-data">cad design</p>
                                   <div className="notch-title">
                                     <p>
-                                      {project.site_survey_complete_date
-                                        ? `${format(new Date(project.site_survey_complete_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.site_survey_complete_date), 'yyyy')}`
-                                        : 'No Data'}
+                                      {project.cad_complete_date
+                                        ? `${format(
+                                            new Date(project.cad_complete_date),
+                                            'dd MMMM'
+                                          ).slice(0, 6)} ${format(
+                                            new Date(project.cad_complete_date),
+                                            'yyyy'
+                                          )}`
+                                        : project.cad_ready
+                                          ? `${format(
+                                              new Date(project.cad_ready),
+                                              'dd MMMM'
+                                            ).slice(0, 6)} ${format(
+                                              new Date(project.cad_ready),
+                                              'yyyy'
+                                            )}`
+                                          : 'No Data'}
                                     </p>
                                   </div>
                                 </div>
@@ -648,15 +672,81 @@ const ProjectPerformence = () => {
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
-                                    project.permit_approved_date
+                                    project.permitting_colour
                                   )}
                                 >
-                                  <p className='strips-data'>permitting</p>
+                                  <p className="strips-data">permitting</p>
                                   <div className="notch-title">
                                     <p>
                                       {project.permit_approved_date
-                                        ? `${format(new Date(project.permit_approved_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.permit_approved_date), 'yyyy')}`
-                                        : 'No Data'}
+                                        ? `${format(
+                                            new Date(
+                                              project.permit_approved_date
+                                            ),
+                                            'dd MMMM'
+                                          ).slice(
+                                            0,
+                                            6
+                                          )} ${format(new Date(project.permit_approved_date), 'yyyy')}`
+                                        : project.permit_submitted_date
+                                          ? `${format(new Date(project.permit_submitted_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.permit_submitted_date), 'yyyy')}`
+                                          : 'No Data'}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {project.roofing_colour ? (
+                                  <div
+                                    className="notch-strip"
+                                    style={getColorStyle(
+                                      project.roofing_colour
+                                    )}
+                                  >
+                                    <p className="strips-data">roofing</p>
+                                    <div className="notch-title">
+                                      <p>
+                                        {project.roofing_completed_date
+                                          ? `${format(new Date(project.roofing_completed_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.roofing_completed_date), 'yyyy')}`
+                                          : project.roofing_created_date
+                                            ? `${format(
+                                                new Date(
+                                                  project.roofing_created_date
+                                                ),
+                                                'dd MMMM'
+                                              ).slice(0, 6)} ${format(
+                                                new Date(
+                                                  project.roofing_created_date
+                                                ),
+                                                'yyyy'
+                                              )}`
+                                            : 'No Data'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ) : null}
+
+                                <div
+                                  className="notch-strip"
+                                  style={getColorStyle(project.install_colour)}
+                                >
+                                  <p className="strips-data">install</p>
+                                  <div className="notch-title">
+                                    <p>
+                                      {project.pv_install_completed_date
+                                        ? `${format(new Date(project.pv_install_completed_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.pv_install_completed_date), 'yyyy')}`
+                                        : project.pv_install_created_date
+                                          ? `${format(
+                                              new Date(
+                                                project.pv_install_created_date
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)} ${format(
+                                              new Date(
+                                                project.pv_install_created_date
+                                              ),
+                                              'yyyy'
+                                            )}`
+                                          : 'No Data'}
                                     </p>
                                   </div>
                                 </div>
@@ -664,76 +754,76 @@ const ProjectPerformence = () => {
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
-                                    project.install_ready_date
+                                    project.electrical_colour
                                   )}
                                 >
-                                  <p className='strips-data'>roofing</p>
-                                  <div className="notch-title">
-                                    <p>
-                                      {project.install_ready_date
-                                        ? `${format(new Date(project.install_ready_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.install_ready_date), 'yyyy')}`
-                                        : 'No Data'}
-                                    </p>
-                                  </div>
+                                  <p className="strips-data">electrical</p>
+                                  <div className="notch-title"></div>
                                 </div>
-
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
-                                    project.install_completed_date
+                                    project.inspectionsColour
                                   )}
                                 >
-                                  <p className='strips-data'>install</p>
+                                  <p className="strips-data">inspection</p>
                                   <div className="notch-title">
-                                    <p>
-                                      {project.install_completed_date
-                                        ? `${format(new Date(project.install_completed_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.install_completed_date), 'yyyy')}`
-                                        : 'No Data'}
-                                    </p>
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="notch-strip"
-                                  style={getColorStyle(project.pto_date)}
-                                >
-                                  <p className='strips-data'>electrical</p>
-                                  <div className="notch-title">
-                                    <p>
-                                      {project.pto_date
-                                        ? `${format(new Date(project.pto_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.pto_date), 'yyyy').slice(0, 4)}`
-                                        : 'No Data'}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div
-                                  className="notch-strip"
-                                  style={getColorStyle(project.pto_date)}
-                                >
-                                  <p className='strips-data'>inspection</p>
-                                  <div className="notch-title">
-                                    <p>
-                                      {project.pto_date
-                                        ? `${format(new Date(project.pto_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.pto_date), 'yyyy').slice(0, 4)}`
-                                        : 'No Data'}
+                                  <p>
+                                      {project.fin_pass_date
+                                        ? `${format(new Date(project.fin_pass_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.fin_pass_date), 'yyyy')}`
+                                        : project.fin_created_date
+                                        
+                                          ? `${format(
+                                              new Date(
+                                                project.fin_created_date
+                                                
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)} ${format(
+                                              new Date(
+                                                project.fin_created_date
+                                                
+                                              ),
+                                              'yyyy'
+                                            )}`
+                                          : 'No Data'}
                                     </p>
                                   </div>
                                 </div>
                                 <div
                                   className="notch-strip"
-                                  style={getColorStyle(project.pto_date)}
+                                  style={getColorStyle(
+                                    project.activation_colour
+                                  )}
                                 >
-                                  <p className='strips-data'>activation</p>
+                                  <p className="strips-data">activation</p>
                                   <div className="notch-title">
                                     <p>
                                       {project.pto_date
-                                        ? `${format(new Date(project.pto_date), 'dd MMMM').slice(0, 6)} ${format(new Date(project.pto_date), 'yyyy').slice(0, 4)}`
-                                        : 'No Data'}
+                                        ? `${format(
+                                            new Date(project.pto_date),
+                                            'dd MMMM'
+                                          ).slice(0, 6)} ${format(
+                                            new Date(project.pto_date),
+                                            'yyyy'
+                                          )}`
+                                        : project.pto_submitted_date
+                                          ? `${format(
+                                              new Date(
+                                                project.pto_submitted_date
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)} ${format(
+                                              new Date(
+                                                project.pto_submitted_date
+                                              ),
+                                              'yyyy'
+                                            )}`
+                                          : 'No Data'}
                                     </p>
                                   </div>
                                 </div>
                               </div>
-
                             </div>
                           </td>
                         </tr>

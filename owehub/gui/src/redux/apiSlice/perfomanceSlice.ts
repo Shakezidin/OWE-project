@@ -16,6 +16,7 @@ export interface IProjectStatus {
   pto_date: string;
   site_survey_complete_date: string;
   install_ready_date: string;
+  
 }
 
 export interface ICommision {
@@ -89,10 +90,11 @@ export const getPerfomanceStatus = createAsyncThunk(
         return rejectWithValue((data as Error).message);
       }
 
+      const datacount = data.data;
       const list = (data.data.perfomance_response_list ||
         []) as IProjectStatus[];
 
-      return { list, count: data.dbRecCount };
+      return { list, count: data.dbRecCount,datacount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
@@ -105,8 +107,9 @@ interface IState {
   isLoading: boolean;
   isSuccess: number;
   commisionMetrics: ICommision;
-  projectStatus: IProjectStatus[];
+  projectStatus: any;
   projectsCount: number;
+  datacount:any;
 }
 
 const initialState: IState = {
@@ -117,6 +120,7 @@ const initialState: IState = {
   commisionMetrics: {} as ICommision,
   projectStatus: [],
   projectsCount: 0,
+  datacount: {},
 };
 
 const perfomanceSlice = createSlice({
@@ -154,6 +158,7 @@ const perfomanceSlice = createSlice({
         state.isLoading = false;
         state.projectStatus = action.payload.list;
         state.projectsCount = action.payload.count;
+        state.datacount = action.payload.datacount;
       })
       .addCase(getPerfomanceStatus.rejected, (state, action) => {
         state.isLoading = false;
