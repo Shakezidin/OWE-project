@@ -26,7 +26,7 @@ const QCModal: React.FC<TableProps> = ({
         <div className="qc-modal">
           <div className="qchead-section">
 
-            <h3 className="createProfileText" style={{ margin: 0 }}>
+            <h3 className="createQCText" style={{ margin: 0 }}>
               Qualified Customers
             </h3>
 
