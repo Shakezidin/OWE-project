@@ -71,6 +71,31 @@
   transform: translateX(-50%);
 }
 
+.leaderboard-data__btn--active.performance-btn{
+  background-color: #377CF6;
+  border: 1px solid #377CF6;
+
+}
+.leaderboard-data__btn--active.performance-btn:hover{
+  background-color: #377CF6;
+  border: 1px solid #377CF6;
+
+}
+
+.leaderboard-data__btn.inactive-btn{
+  
+  border: 1px solid #377CF6;
+  color:#377CF6
+}
+
+.leaderboard-data__btn.inactive-btn:hover{
+  background-color: #377CF6;
+  color:#FFF;
+}
+
+
+ 
+
 .performance-project-name {
   font-size: 12px;
   font-weight: 500;
