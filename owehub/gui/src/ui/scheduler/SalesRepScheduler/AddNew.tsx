@@ -333,7 +333,7 @@ const AddNew = () => {
                 </div>
               </div>
             </div>
-            <div className="tm-createUserActionButton">
+            <div className={styles.srActionButton}>
               <button className={styles.submitbut}>Submit</button>
             </div>
           </form>
