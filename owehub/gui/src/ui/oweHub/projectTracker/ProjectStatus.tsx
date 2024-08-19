@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import Proj_pie_chart from './lib/proj_pie_chart';
 import { ICONS } from '../../../resources/icons/Icons';
 import QCModal from './PopUp';
+import NtpModal from './NtpPopUp';
 
 
 
@@ -522,11 +523,11 @@ const ProjectStatus = () => {
     { id: 2, content: 'Active CAD' },
     { id: 3, content: 'DAT' },
   ];
-  
+
   const handleButton1Click = (optionId: number) => {
     console.log('Button 1 clicked for option:', optionId);
   };
-  
+
   const handleButton2Click = (optionId: number) => {
     console.log('Button 2 clicked for option:', optionId);
   };
@@ -538,93 +539,106 @@ const ProjectStatus = () => {
     setFilterOpen(true);
   };
 
+  const [ntpOPen, setNtpOPen] = React.useState<boolean>(false);
+
+  const ntpClose = () => setNtpOPen(false);
+
+  const ntpAction = () => {
+    setNtpOPen(true);
+  };
+
 
 
   return (
     <>
-    <QCModal
-       isOpen={filterOPen}
-       handleClose={filterClose} 
-    />
+      <QCModal
+        isOpen={filterOPen}
+        handleClose={filterClose}
+      />
 
-    <div className="">
-      <div style={{ padding: '0px' }}>
-        <div className="flex mt1 top-project-cards">
-          <div
-            className="px1 project-card-wrapper  bg-white rounded-16"
-            style={{ paddingInline: 16, paddingBottom: 16 }}
-          >
-            <div className="project-heading project-status-heading mb3">
-              <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
-              <div className="pro-status-dropdown" style={{ minWidth: 200 }}>
-                <div className="">
-                  <SelectOption
-                    options={projectOption}
-                    value={selectedProject}
-                    onChange={(val) => {
-                      if (val) {
-                        setSelectedProject(val);
-                      }
-                    }}
-                    width="190px"
-                  />
+      <NtpModal
+        isOpen={ntpOPen}
+        handleClose={ntpClose}
+      />
+
+      <div className="">
+        <div style={{ padding: '0px' }}>
+          <div className="flex mt1 top-project-cards">
+            <div
+              className="px1 project-card-wrapper  bg-white rounded-16"
+              style={{ paddingInline: 16, paddingBottom: 16 }}
+            >
+              <div className="project-heading project-status-heading mb3">
+                <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
+                <div className="pro-status-dropdown" style={{ minWidth: 200 }}>
+                  <div className="">
+                    <SelectOption
+                      options={projectOption}
+                      value={selectedProject}
+                      onChange={(val) => {
+                        if (val) {
+                          setSelectedProject(val);
+                        }
+                      }}
+                      width="190px"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex items-center flex-wrap mxn1">
-              {projectStatusHeadData.map((el, i) => (
-                <div
-                  key={i}
-                  className={` ${isTablet ? 'col-6' : ' lg-col-3'} px1`}
-                  style={{ marginBottom: 10 }}
-                >
+              <div className="flex items-center flex-wrap mxn1">
+                {projectStatusHeadData.map((el, i) => (
                   <div
-                    className="rounded-8"
-                    style={{
-                      padding: 3,
-                      border: `1px dashed ${el.bgColor}`,
-                      zIndex: i === 1 ? 50 : undefined,
-                    }}
+                    key={i}
+                    className={` ${isTablet ? 'col-6' : ' lg-col-3'} px1`}
+                    style={{ marginBottom: 10 }}
                   >
                     <div
-                      className=" flex items-center rounded-8 justify-center relative"
+                      className="rounded-8"
                       style={{
-                        background: el.bgColor,
-                        height: 83,
+                        padding: 3,
+                        border: `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
                       }}
                     >
                       <div
+                        className=" flex items-center rounded-8 justify-center relative"
                         style={{
-                          width: '100%',
-                          textAlign: 'center',
-                          color: '#fff',
+                          background: el.bgColor,
+                          height: 83,
+                          zIndex: i === 1 ? 50 : undefined,
                         }}
                       >
-                        <p className="para-head text-white-color">{el.name}</p>
-                        <span className="span-para">
-                          {projectDetail[
-                            el.key as keyof typeof projectDetail
-                          ] || 'N/A'}
-                        </span>
-                      </div>
-                      {el.viewButton ? (
                         <div
-                          className="view-flex"
-                          ref={refBtn}
-                          onClick={() => setActivePopups((prev) => !prev)}
+                          style={{
+                            width: '100%',
+                            textAlign: 'center',
+                            color: '#fff',
+                          }}
                         >
-                          <p>View</p>
-                          <img src={ICONS.arrowDown} alt="" />
+                          <p className="para-head text-white-color">{el.name}</p>
+                          <span className="span-para">
+                            {projectDetail[
+                              el.key as keyof typeof projectDetail
+                            ] || 'N/A'}
+                          </span>
                         </div>
-                      ) : null}
-                      {activePopups && i === 1 && (
-                        <div className="popup">
-                          <p className="pop-head">Adder Details</p>
-                          <ol className="order-list">
-                            {
-                              // @ts-ignore
-                              projectDetail.adder_breakdown_and_total &&
+                        {el.viewButton ? (
+                          <div
+                            className="view-flex"
+                            ref={refBtn}
+                            onClick={() => setActivePopups((prev) => !prev)}
+                          >
+                            <p>View</p>
+                            <img src={ICONS.arrowDown} alt="" />
+                          </div>
+                        ) : null}
+                        {activePopups && i === 1 && (
+                          <div className="popup">
+                            <p className="pop-head">Adder Details</p>
+                            <ol className="order-list">
+                              {
+                                // @ts-ignore
+                                projectDetail.adder_breakdown_and_total &&
                                 Object.keys(
                                   // @ts-ignore
                                   projectDetail.adder_breakdown_and_total
@@ -637,287 +651,287 @@ const ProjectStatus = () => {
                                       {
                                         // @ts-ignore
                                         projectDetail.adder_breakdown_and_total[
-                                          item
+                                        item
                                         ]
                                       }{' '}
                                     </li>
                                   );
                                 })
-                            }
-                          </ol>
-                        </div>
-                      )}
+                              }
+                            </ol>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+            <div className="pl2 flex-auto second-project-card">
+              <div
+                className="bg-white rounded-16 flex"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                  // alignItems: 'center',
+                }}
+              >
+                <Proj_pie_chart />
+              </div>
             </div>
           </div>
-          <div className="pl2 flex-auto second-project-card">
+
+          <div className="bg-white rounded-16 project-table-wrapper">
             <div
-              className="bg-white rounded-16 flex"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                // alignItems: 'center',
-              }}
+              className="project-heading project-status-heading mt2"
+              style={{ padding: '22px' }}
             >
-              <Proj_pie_chart />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-16 project-table-wrapper">
-          <div
-            className="project-heading project-status-heading mt2"
-            style={{ padding: '22px' }}
-          >
-            <div className=" flex items-center project-status-table-title ">
-              <h3>Project Stages</h3>
-              <div className="progress-box-container ml3">
-                <div className="progress-box-body mt0">
-                  <div
-                    className="progress-box"
-                    style={{
-                      background: '#4191C9',
-                      borderRadius: 0,
-                      width: 14,
-                      height: 14,
-                    }}
-                  ></div>
-                  <p>Stages</p>
-                </div>
-                <div className="progress-box-body mt0">
-                  <div
-                    className="progress-box"
-                    style={{
-                      background: '#63ACA3',
-                      borderRadius: 0,
-                      width: 14,
-                      height: 14,
-                    }}
-                  ></div>
-                  <p>Completed</p>
-                </div>
-                <div className="progress-box-body mt0">
-                  <div
-                    className="progress-box"
-                    style={{
-                      background: '#E9E9E9',
-                      borderRadius: 0,
-                      width: 14,
-                      height: 14,
-                    }}
-                  ></div>
-                  <p>Not Started yet</p>
+              <div className=" flex items-center project-status-table-title ">
+                <h3>Project Stages</h3>
+                <div className="progress-box-container ml3">
+                  <div className="progress-box-body mt0">
+                    <div
+                      className="progress-box"
+                      style={{
+                        background: '#4191C9',
+                        borderRadius: 0,
+                        width: 14,
+                        height: 14,
+                      }}
+                    ></div>
+                    <p>Stages</p>
+                  </div>
+                  <div className="progress-box-body mt0">
+                    <div
+                      className="progress-box"
+                      style={{
+                        background: '#63ACA3',
+                        borderRadius: 0,
+                        width: 14,
+                        height: 14,
+                      }}
+                    ></div>
+                    <p>Completed</p>
+                  </div>
+                  <div className="progress-box-body mt0">
+                    <div
+                      className="progress-box"
+                      style={{
+                        background: '#E9E9E9',
+                        borderRadius: 0,
+                        width: 14,
+                        height: 14,
+                      }}
+                    ></div>
+                    <p>Not Started yet</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className=" flex items-center project-status-table-title ">
-             
-              <div className="progress-box-container ml3">
-                <div className="progress-qc mt0" onClick={filter}>
-                   <button >QC</button>
+              <div className=" flex items-center project-status-table-title ">
+
+                <div className="progress-box-container ml3">
+                  <div className="progress-qc mt0" onClick={filter}>
+                    <button >QC</button>
+                  </div>
+                  <div className="progress-qc mt0" onClick={ntpAction}>
+                    <button>NTP</button>
+                  </div>
+
                 </div>
-                <div className="progress-qc mt0">
-                   <button>NTP</button>
-                </div>
-                
-              </div>
-              <div className='progress-qc-acre'>
+                <div className='progress-qc-acre'>
                   <span>2</span>
                 </div>
-            </div>
+              </div>
 
-          </div>
-          <div className="project-management-table ">
-            <table>
-              <tbody>
-                <tr style={{ borderBottom: 'none' }}>
-                  <td style={{ padding: '0px' }}>
-                    <div className="project-staus-progress-container">
-                      {isLoading ? (
-                        <div
-                          style={{ display: 'flex', justifyContent: 'center' }}
-                        >
-                          <MicroLoader />
-                        </div>
-                      ) : !isLoading &&
-                        Object.keys(projectDetail).length < 1 ? (
-                        <td colSpan={7} style={{ textAlign: 'center' }}>
+            </div>
+            <div className="project-management-table ">
+              <table>
+                <tbody>
+                  <tr style={{ borderBottom: 'none' }}>
+                    <td style={{ padding: '0px' }}>
+                      <div className="project-staus-progress-container">
+                        {isLoading ? (
                           <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                            }}
+                            style={{ display: 'flex', justifyContent: 'center' }}
                           >
-                            <DataNotFound />
+                            <MicroLoader />
                           </div>
-                        </td>
-                      ) : (
-                        filteredStatusData.map((item: any, i: any) => (
-                          <>
-                            <div className="project-status-table">
-                              <div
-                                className="project-status-card"
-                                style={{
-                                  marginTop: '0',
-                                  background: item.bgColor,
-                                }}
-                              >
+                        ) : !isLoading &&
+                          Object.keys(projectDetail).length < 1 ? (
+                          <td colSpan={7} style={{ textAlign: 'center' }}>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <DataNotFound />
+                            </div>
+                          </td>
+                        ) : (
+                          filteredStatusData.map((item: any, i: any) => (
+                            <>
+                              <div className="project-status-table">
                                 <div
-                                  className="status-number"
+                                  className="project-status-card"
                                   style={{
-                                    background: '#FFFFF',
-                                    color: item.numColor,
+                                    marginTop: '0',
+                                    background: item.bgColor,
                                   }}
                                 >
-                                  {getStatus(
-                                    item.childStatusData.map(
-                                      (item: any) => item.key
-                                    )
-                                  ) ? (
-                                    <FaCheck />
-                                  ) : (
-                                    i + 1
-                                  )}
-                                </div>
-                                <p
-                                  className="stage-1-para"
-                                  style={{ color: item.color }}
-                                >
-                                  {item.name}
-                                </p>
-                              </div>
-                              {item.childStatusData.map(
-                                (el: any, index: any) => (
                                   <div
-                                    className="notch-corner"
+                                    className="status-number"
                                     style={{
-                                      background: el.bgColor,
-                                      color: '#858585',
+                                      background: '#FFFFF',
+                                      color: item.numColor,
                                     }}
                                   >
-                                    <div className="child-corner"></div>
+                                    {getStatus(
+                                      item.childStatusData.map(
+                                        (item: any) => item.key
+                                      )
+                                    ) ? (
+                                      <FaCheck />
+                                    ) : (
+                                      i + 1
+                                    )}
+                                  </div>
+                                  <p
+                                    className="stage-1-para"
+                                    style={{ color: item.color }}
+                                  >
+                                    {item.name}
+                                  </p>
+                                </div>
+                                {item.childStatusData.map(
+                                  (el: any, index: any) => (
                                     <div
-                                      className=""
+                                      className="notch-corner"
                                       style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        width: '35px',
+                                        background: el.bgColor,
+                                        color: '#858585',
                                       }}
                                     >
-                                      {!(
-                                        el.key &&
-                                        projectDetail[
+                                      <div className="child-corner"></div>
+                                      <div
+                                        className=""
+                                        style={{
+                                          display: 'flex',
+                                          flexDirection: 'column',
+                                          alignItems: 'center',
+                                          width: '35px',
+                                        }}
+                                      >
+                                        {!(
+                                          el.key &&
+                                          projectDetail[
                                           el.key as keyof typeof projectDetail
-                                        ]
-                                      ) && (
-                                        <span
-                                          className="date-para"
+                                          ]
+                                        ) && (
+                                            <span
+                                              className="date-para"
+                                              style={{
+                                                color: el.color,
+                                                fontSize: '9px',
+                                              }}
+                                            >
+                                              ETA
+                                            </span>
+                                          )}
+                                        <p
                                           style={{
                                             color: el.color,
                                             fontSize: '9px',
                                           }}
                                         >
-                                          ETA
-                                        </span>
-                                      )}
-                                      <p
-                                        style={{
-                                          color: el.color,
-                                          fontSize: '9px',
-                                        }}
-                                      >
-                                        {el.key &&
-                                        projectDetail[
-                                          el.key as keyof typeof projectDetail
-                                        ]
-                                          ? format(
+                                          {el.key &&
+                                            projectDetail[
+                                            el.key as keyof typeof projectDetail
+                                            ]
+                                            ? format(
                                               new Date(
                                                 projectDetail[
-                                                  el.key as keyof typeof projectDetail
+                                                el.key as keyof typeof projectDetail
                                                 ]
                                               ),
                                               'dd MMMM'
                                             ).slice(0, 6)
-                                          : 'N/A'}
-                                      </p>
-                                      {el.key &&
-                                        projectDetail[
+                                            : 'N/A'}
+                                        </p>
+                                        {el.key &&
+                                          projectDetail[
                                           el.key as keyof typeof projectDetail
-                                        ] && (
-                                          <p
-                                            className="stage-1-para"
-                                            style={{
-                                              color: el.color,
-                                              fontSize: '10px',
-                                            }}
-                                          >
-                                            {' '}
-                                            {format(
-                                              new Date(
-                                                projectDetail[
+                                          ] && (
+                                            <p
+                                              className="stage-1-para"
+                                              style={{
+                                                color: el.color,
+                                                fontSize: '10px',
+                                              }}
+                                            >
+                                              {' '}
+                                              {format(
+                                                new Date(
+                                                  projectDetail[
                                                   el.key as keyof typeof projectDetail
-                                                ]
-                                              ),
-                                              'yyyy'
-                                            )}
-                                          </p>
-                                        )}
-                                    </div>
-                                    <div
-                                      className="border-notch"
-                                      style={{
-                                        border: '0.5px solid ',
-                                        borderColor: el.borderColor,
-                                      }}
-                                    ></div>
-                                    <div
-                                      className=""
-                                      style={{ width: '115px' }}
-                                    >
-                                      <p
-                                        className="stage-1-para"
+                                                  ]
+                                                ),
+                                                'yyyy'
+                                              )}
+                                            </p>
+                                          )}
+                                      </div>
+                                      <div
+                                        className="border-notch"
                                         style={{
-                                          color: el.color,
-                                          fontSize: '12px',
+                                          border: '0.5px solid ',
+                                          borderColor: el.borderColor,
                                         }}
-                                      >
-                                        {el.process}
-                                      </p>
-                                      <p
+                                      ></div>
+                                      <div
                                         className=""
-                                        style={{
-                                          color: el.color,
-                                          fontSize: '11px',
-                                        }}
+                                        style={{ width: '115px' }}
                                       >
-                                        {el.data}
-                                      </p>
+                                        <p
+                                          className="stage-1-para"
+                                          style={{
+                                            color: el.color,
+                                            fontSize: '12px',
+                                          }}
+                                        >
+                                          {el.process}
+                                        </p>
+                                        <p
+                                          className=""
+                                          style={{
+                                            color: el.color,
+                                            fontSize: '11px',
+                                          }}
+                                        >
+                                          {el.data}
+                                        </p>
+                                      </div>
                                     </div>
-                                  </div>
-                                )
+                                  )
+                                )}
+                              </div>
+                              {i === 6 ? null : (
+                                <div className="dotted-border"></div>
                               )}
-                            </div>
-                            {i === 6 ? null : (
-                              <div className="dotted-border"></div>
-                            )}
-                          </>
-                        ))
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                            </>
+                          ))
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

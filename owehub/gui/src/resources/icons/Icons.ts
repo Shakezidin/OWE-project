@@ -131,6 +131,10 @@ import SystemSize from '../../resources/assets/SystemSize.svg';
 import RoofType from '../../resources/assets/rooftype.svg';
 import PM_LINK from '../../resources/assets/PM-Link.svg';
 import PM_SHARE from '../../resources/assets/pm-share.svg';
+import up from '../../resources/assets/Polygon 14.svg';
+import down from '../../resources/assets/Polygon 15.svg';
+import QCTICK from '../../resources/assets/qctick.svg';
+import QCLine from '../../resources/assets/QCLine.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -279,4 +283,8 @@ export const ICONS = {
   RoofType: RoofType,
   PM_LINK:PM_LINK,
   PM_SHARE:PM_SHARE,
+  UP:up,
+  DOWN: down,
+  QCTICK: QCTICK,
+  QCLine:QCLine,
 };
