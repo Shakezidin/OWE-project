@@ -1,0 +1,33 @@
+.popup_background{
+  background-color: rgb(110, 110, 110,0.87);
+  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+}
+
+.popup_card_wrapper{
+  width: 100%;
+  max-width: 726px;
+  border-radius: 12px;
+  background-color: #fff;
+  padding-block: 37px;
+}
+
+.popup_title{
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.success_btn{
+  background-color: #4372E9;
+  padding: 16px 54px;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  margin-inline: auto;
+  display: block;
+  margin-top: 4rem;
+}

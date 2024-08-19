@@ -14,6 +14,8 @@ import { RxCalendar } from "react-icons/rx";
 import { LuClock } from "react-icons/lu";
 import { MdOutlineEmail } from "react-icons/md";
 import { PiPhone } from "react-icons/pi";
+import Pagination from '../../components/pagination/Pagination';
+import SuccessPopup from './components/Popup/SuccessPopup';
 const current = new Date();
 interface IOptions {
   label: string;
@@ -34,30 +36,25 @@ const timeSlots = generateTimeArray('8:00 AM', '6:00 PM').map((item) => ({
   value: item,
 }));
 
-const mockedData = [{
-  id: 3,
-  name: "John Doe",
-  busySlot: [ { startTime: "3:00 PM", endTime: "4:00 PM", id: "!3331ff" }],
-  availableSlot: [{ startTime: "8:00 AM", endTime: "1:00 PM", id: "!vfvfe" },{ startTime: "1:00 PM", endTime: "2:30 PM", id: "!13d1ff" }, { startTime: "5:00 PM", endTime: "6:00 PM", id: "!333a1ff" }]
-},
-{
-  id: 5,
-  name: "Peter Doe",
-  busySlot: [{ startTime: "8:00 AM", endTime: "1:00 PM", id: "!33131ff" }, { startTime: "3:00 PM", endTime: "4:00 PM", id: "!3331eff" }, { startTime: "5:00 PM", endTime: "6:00 PM", id: "!33331ff" }],
-  availableSlot: [{ startTime: "1:00 PM", endTime: "2:30 PM", id: "!142d1ff" }]
-},
-{
-  id: 9,
-  name: "Sandra Bullock ",
-  busySlot: [{ startTime: "3:00 PM", endTime: "4:00 PM", id: "23" }, { startTime: "5:00 PM", endTime: "6:00 PM", id: "!rufdvds" }],
-  availableSlot: [{ startTime: "1:00 PM", endTime: "2:30 PM", id: "!3u3" }, { startTime: "8:00 AM", endTime: "1:00 PM", id: "!dfdc" }]
-},
-{
-  id: 9,
-  name: "Sandra Bullock ",
-  busySlot: [{ startTime: "3:00 PM", endTime: "4:00 PM", id: "23" }, { startTime: "5:00 PM", endTime: "6:00 PM", id: "!rufdvds" }],
-  availableSlot: [{ startTime: "1:00 PM", endTime: "2:30 PM", id: "!3u3" }, { startTime: "8:00 AM", endTime: "1:00 PM", id: "!dfdc" }]
-},
+const mockedData = [
+  {
+    id: 3,
+    name: "John Doe",
+    busySlot: [{ startTime: "3:00 PM", endTime: "4:00 PM", id: "!3331ff" }],
+    availableSlot: [{ startTime: "8:00 AM", endTime: "1:00 PM", id: "!2444" }, { startTime: "1:00 PM", endTime: "2:30 PM", id: "!13d1ff" }, { startTime: "5:00 PM", endTime: "6:00 PM", id: "!333a1ff" }]
+  },
+  {
+    id: 5,
+    name: "Peter Doe",
+    busySlot: [{ startTime: "8:00 AM", endTime: "1:00 PM", id: "!32ff" }, { startTime: "3:00 PM", endTime: "4:00 PM", id: "!2rf1eff" }, { startTime: "5:00 PM", endTime: "6:00 PM", id: "!3feeff" }],
+    availableSlot: [{ startTime: "1:00 PM", endTime: "2:30 PM", id: "!221" }]
+  },
+  {
+    id: 9,
+    name: "Sandra Doe",
+    busySlot: [{ startTime: "3:00 PM", endTime: "4:00 PM", id: "54638" }],
+    availableSlot: [{ startTime: "8:00 AM", endTime: "1:00 PM", id: "28383" }, { startTime: "1:00 PM", endTime: "2:30 PM", id: "38385" }, { startTime: "5:00 PM", endTime: "6:00 PM", id: "3788284" }]
+  }
 ]
 
 const Index = () => {
@@ -124,9 +121,9 @@ const Index = () => {
     if (findElm) {
       const ids: string[] = []
       let current: HTMLDivElement | null = null
-      let foundElm : HTMLDivElement | null = null
-      findElm.forEach((item)=>{
-        console.log(item.parentElement?.parentElement,"","found parent ")
+      let foundElm: HTMLDivElement | null = null
+      findElm.forEach((item) => {
+        console.log(item.parentElement?.parentElement, "", "found parent ")
         if (item.parentElement?.dataset.parentId) {
           foundElm = item
           current = item
@@ -138,12 +135,11 @@ const Index = () => {
         current = current.offsetParent as HTMLDivElement | null
       }
       setDividerCords(prev => ({ ...prev, [type]: totalOffset - 1 }))
-      
-      const dataset = (foundElm as HTMLDivElement|null)?.parentElement?.dataset
-      console.log(dataset,"element with id");
+
+      const dataset = (foundElm as HTMLDivElement | null)?.parentElement?.dataset
       findElm.forEach((item) => {
         if (item.parentElement?.dataset.parentId) {
-  
+
           ids.push(item.parentElement.dataset.parentId)
         }
       })
@@ -168,7 +164,7 @@ const Index = () => {
       offsetLeft = left - cardWidth
     }
 
-    if ((top + cardHeight) > windowHeight) {
+    if ((top + cardHeight + 30) > windowHeight) {
       offsetTop = top - cardHeight;
     }
     const id = setTimeout(() => {
@@ -190,7 +186,7 @@ const Index = () => {
       })
     })
   }, [timeOutIds])
-console.log(scheduleBtnCord,"btn cords")
+  console.log(scheduleBtnCord, "btn cords")
 
   return (
     <>
@@ -260,7 +256,7 @@ console.log(scheduleBtnCord,"btn cords")
       </div>
 
       <div className="mt3">
-        <div className={styles.survery_users_container}>
+        <div className={` flex flex-column ${styles.survery_users_container}`}>
           <div className={`${styles.suvery_grid_wrapper}`}>
             <div
               className={` flex items-end justify-center  ${styles.surver_filter}`}
@@ -313,86 +309,112 @@ console.log(scheduleBtnCord,"btn cords")
               </div>
             </div>
           </div>
-          <div className='relative survey_wrapper'>
+          <div className="flex flex-column flex-auto justify-between">
 
-            {
-              (startTime && endTime && (startTime.value !== "8:00 AM" || endTime.value !== "6:00 PM")) &&
-              <>
+            <div className='relative survey_wrapper'>
 
-                <div className={styles.absolute_vertical_line} style={{ left: dividerCords.start }} />
-                <div className={styles.absolute_vertical_line} style={{ left: dividerCords.end }} />
-              </>
-            }
-            {
-              mockedData.map((person) => {
-                return <div key={person.id} data-time-parent={person.id} className={styles.survey_progress_container}>
-                  <div className={styles.surveyor_name}>
-                    {person.name}
-                  </div>
-                  <div className={styles.progress_wrapper}>
-                    <div className={styles.progress_bar}>
-                      {
-                        person.availableSlot.map((avail, index) => {
-                          const startPoint = getTimeIndex(avail.startTime)
-                          const endPoint = getTimeIndex(avail.endTime)
-                          const col = timeDifference(avail.startTime, avail.endTime)
-                          const halfhourSpans = generateTimeArray(avail.startTime, avail.endTime)
+              {
+                (startTime && endTime && (startTime.value !== "8:00 AM" || endTime.value !== "6:00 PM")) &&
+                <>
 
-                          return <div key={avail.id} style={{ gridColumn: `${startPoint + 1}/${endPoint + 1}`, gridTemplateColumns: `repeat(${(col * 2)},1fr)` }} className={` relative ${styles.bg_available_slot}`}>
-                            {
-                              halfhourSpans.map((item, ind) => {
-                                const isInterecting = isBetween(item)
-                                return <div key={ind * index + 1} className={`relative ${styles.half_hour_span_wrapper}  ${isInterecting ? styles.masked_img : ""}`} data-cord-id={ind + 1} data-parent-id={avail.id}  >
-                                  <div data-time-id={item} className={(ind + 1) % 2 === 0 ? styles.half_hour_span : ind ? styles.full_hour_span : ""} />
+                  <div className={styles.absolute_vertical_line} style={{ left: dividerCords.start }} />
+                  <div className={styles.absolute_vertical_line} style={{ left: dividerCords.end }} />
+                </>
+              }
+              {
+                mockedData.map((person) => {
+                  return <div key={person.id} data-time-parent={person.id} className={styles.survey_progress_container}>
+                    <div className={styles.surveyor_name}>
+                      {person.name}
+                    </div>
+                    <div className={styles.progress_wrapper}>
+                      <div className={styles.progress_bar}>
+                        {
+                          person.availableSlot.map((avail, index) => {
+                            const startPoint = getTimeIndex(avail.startTime)
+                            const endPoint = getTimeIndex(avail.endTime)
+                            const col = timeDifference(avail.startTime, avail.endTime)
+                            const halfhourSpans = generateTimeArray(avail.startTime, avail.endTime)
+
+                            return <div key={avail.id} style={{ gridColumn: `${startPoint + 1}/${endPoint + 1}`, gridTemplateColumns: `repeat(${(col * 2)},1fr)` }} className={` relative ${styles.bg_available_slot}`}>
+                              {
+                                halfhourSpans.map((item, ind) => {
+                                  const isInterecting = isBetween(item)
+                                  return <div key={ind * index + 1} className={`relative ${styles.half_hour_span_wrapper}  ${isInterecting ? styles.masked_img : ""}`} data-cord-id={ind + 1} data-parent-id={avail.id}  >
+                                    <div data-time-id={item} className={(ind + 1) % 2 === 0 ? styles.half_hour_span : ind ? styles.full_hour_span : ""} />
+                                  </div>
+                                })
+                              }
+
+                              {scheduleBtnCord.parentId.includes(avail.id) && <div style={{ gridColumn: `${scheduleBtnCord.start}/${scheduleBtnCord.end}` }} className={styles.schdule_btn_wrapper}>
+                                <div role='button' onClick={(e) => getScheduledInfo(e, "form")} className={` ${styles.available_btn}`}>
+                                  <FaPlus size={18} />
                                 </div>
-                              })
-                            }
-
-                            {scheduleBtnCord.parentId.includes(avail.id) && <div style={{ gridColumn: `${scheduleBtnCord.start}/${scheduleBtnCord.end}` }} className={styles.schdule_btn_wrapper}>
-                              <div role='button' onClick={(e) => getScheduledInfo(e, "form")} className={` ${styles.available_btn}`}>
-                                <FaPlus size={18} />
-                              </div>
-                            </div>}
-                          </div>
-                        })
-                      }
-                      {
-                        person.busySlot.map((avail, ind) => {
-                          const startPoint = getTimeIndex(avail.startTime)
-                          const endPoint = getTimeIndex(avail.endTime)
-                          const col = timeDifference(avail.startTime, avail.endTime)
-                          const halfhourSpans = generateTimeArray(avail.startTime, avail.endTime)
-
-                          return <div key={avail.id} style={{ gridColumn: `${startPoint + 1}/${endPoint + 1}`, gridTemplateColumns: `repeat(${(col * 2)},1fr)`, gridAutoFlow: "column" }} className={styles.bg_busy_slot}   >
-                            <div role='button' onClick={(e) => getScheduledInfo(e, "schedule")} className={styles.progress_btn}>
-                              <span>
-                                View
-                              </span>
-                              <IoIosArrowRoundForward size={18} className='ml1' />
+                              </div>}
                             </div>
+                          })
+                        }
+                        {
+                          person.busySlot.map((avail, ind) => {
+                            const startPoint = getTimeIndex(avail.startTime)
+                            const endPoint = getTimeIndex(avail.endTime)
+                            const col = timeDifference(avail.startTime, avail.endTime)
+                            const halfhourSpans = generateTimeArray(avail.startTime, avail.endTime)
+
+                            return <div key={avail.id} style={{ gridColumn: `${startPoint + 1}/${endPoint + 1}`, gridTemplateColumns: `repeat(${(col * 2)},1fr)`, gridAutoFlow: "column" }} className={styles.bg_busy_slot}   >
+                              <div role='button' onClick={(e) => getScheduledInfo(e, "schedule")} className={styles.progress_btn}>
+                                <span>
+                                  View
+                                </span>
+                                <IoIosArrowRoundForward size={18} className='ml1' />
+                              </div>
 
 
-                            {
-                              halfhourSpans.map((item, ind) => {
-                                return <div key={ind} className={` ${styles.half_hour_span_wrapper}`} >
-                                  <div data-time-id={item} className={(ind + 1) % 2 === 0 ? styles.half_hour_span : ind ? styles.full_hour_span : ""} />
-                                </div>
-                              })
-                            }
-                          </div>
-                        })
-                      }
+                              {
+                                halfhourSpans.map((item, ind) => {
+                                  return <div key={ind} className={` ${styles.half_hour_span_wrapper}`} >
+                                    <div data-time-id={item} className={(ind + 1) % 2 === 0 ? styles.half_hour_span : ind ? styles.full_hour_span : ""} />
+                                  </div>
+                                })
+                              }
+                            </div>
+                          })
+                        }
 
+                      </div>
                     </div>
                   </div>
-                </div>
-              })
-            }
+                })
+              }
 
+            </div>
+
+
+
+
+
+
+            <div className="page-heading-container">
+
+              <p className="page-heading">
+                1 - 10 of 50
+                item
+              </p>
+
+
+
+              <Pagination
+                currentPage={1}
+                totalPages={12} // You need to calculate total pages
+                paginate={(num) => num}
+                currentPageData={[]}
+                goToNextPage={() => 0}
+                goToPrevPage={() => 0}
+                perPage={10}
+              />
+
+            </div>
           </div>
-
-
-
           <div ref={infoCardRef} style={{ top: infoCardCords.top, left: (infoCardCords.left), opacity: infoCardCords.opacity }} className={styles.scheduled_info_container}>
             <div className={styles.close_btn} onClick={() => setInfoCardCors(prev => ({ ...prev, opacity: 0 }))}>
               <IoCloseOutline color='#F3B7BE' size={20} />
@@ -469,8 +491,15 @@ console.log(scheduleBtnCord,"btn cords")
             </div>
           </div>
 
+
+
+
         </div>
+
+
       </div>
+
+      {/* <SuccessPopup/> */}
     </>
   );
 };
