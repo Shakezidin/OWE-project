@@ -148,7 +148,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-			FormAndSendHttpResp(resp, "Failed, User already existsp in db user", http.StatusInternalServerError, nil)
+			FormAndSendHttpResp(resp, "Failed, User already exists in db user", http.StatusInternalServerError, nil)
 			return
 		}
 
@@ -210,7 +210,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 		//  Drop roles from db.RowDataDBIndex if created (incase of DB User & Admin)
 		if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
-			dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
+			query := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
+			dropErr := db.ExecQueryDB(db.RowDataDBIndex, query)
 			if dropErr != nil {
 				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
 			} else {
