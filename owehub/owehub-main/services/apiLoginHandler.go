@@ -98,6 +98,6 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	loginResp.AccessToken = tokenString
 	loginResp.TimeToExpire = logginSessionTimeMin
 
-	log.FuncInfoTrace(0, "Login Successful for User : %v", creds.EmailId)
-	FormAndSendHttpResp(resp, "Login Successful", http.StatusOK, loginResp)
+	log.FuncInfoTrace(0, "Login Successful for the User : %v", creds.EmailId)
+	FormAndSendHttpResp(resp, "Login is Successful", http.StatusOK, loginResp)
 }
