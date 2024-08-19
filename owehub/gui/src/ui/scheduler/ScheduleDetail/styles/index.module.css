@@ -19,6 +19,7 @@
   cursor: pointer;
   border: 1px solid #d1d5db;
 }
+
 .available_slot_wrapper {
   border: 1px solid #d1d5db;
   border-radius: 7px;
@@ -26,6 +27,7 @@
   background-color: #fff;
   overflow: hidden;
 }
+
 .bg_available_progress {
   position: absolute;
   left: 0;
@@ -35,6 +37,7 @@
   width: 35%;
   background-color: #e0ebff;
 }
+
 .top_overlay {
   position: relative;
   z-index: 5;
@@ -43,29 +46,104 @@
 .top_overlay {
   font-size: 16px;
 }
+
 .top_overlay:last-child {
   font-size: 14px;
 }
+
 .survery_users_container {
   border-radius: 12px;
   background-color: #fff;
   min-height: 500px;
   border: 1px solid #d1d5db;
 }
+
 .suvery_grid_wrapper {
   display: grid;
   grid-template-columns: 160px auto;
 }
+
 .date_grid_container {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
 }
+
 .active_date {
   background-color: #377cf6;
   color: #fff;
   border-radius: 6px;
   padding: 6px 11px;
-  transition: all 500ms;
+  transition: background 500ms;
+}
+
+.schedule_form_wrapper {
+  position: fixed;
+  background-color: #fff;
+  border-radius: 8px;
+  padding-block: 17px;
+  padding-inline: 17px;
+  box-shadow: 3px 3px 16px rgba(0, 0, 0, 0.14);
+  padding-bottom: 11px;
+  width: 100%;
+  max-width: 438px;
+  z-index: 10;
+  /* left: 50%;
+  top: 40%; */
+  transition: background 500ms;
+}
+
+.form_schedule_heading {
+  font-size: 16px;
+  color: rgb(48, 48, 48);
+  font-weight: 400;
+}
+
+.survey_detail_wrapper {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background-color: #F8F8F8;
+}
+
+.secondary_schdeule_btn {
+  padding: 4px 12px;
+  font-size: 14px;
+  color: #363636;
+  border: 1px solid #EAECF0;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.primary_schdeule_btn {
+  padding: 4px 12px;
+  font-size: 14px;
+  border: 1px solid #EAECF0;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  margin-left: 12px;
+  background-color: #4372E9;
+}
+
+.text_sm {
+  font-size: 14px;
+  color: #303030;
+}
+
+.schedule_input {
+  border: 1px solid #F1F1F1;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.schedule_input:focus {
+  outline: none;
+}
+
+.schedule_input::placeholder {
+  font-size: 14px;
+  color: #ACACAC;
 }
 
 .surver_filter {
@@ -73,15 +151,18 @@
   border-bottom: 1px solid #d1d5db;
   padding-bottom: 14px;
 }
+
 .filter_btn {
   width: 24px;
   height: 24px;
   border-radius: 8px;
   background-color: #fff;
   border: 1px solid #377cf6;
+  cursor: pointer;
 }
+
 .date_wrapper {
-  padding-bottom: 10px;
+  padding-bottom: 20px;
   border-bottom: 1px solid #d1d5db;
 }
 
@@ -93,5 +174,206 @@
 .survey_progress_container {
   display: grid;
   grid-template-columns: 160px auto;
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.surveyor_name {
+  font-size: 14px;
+  border-right: 1px solid #D1D5DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: 25px;
+}
+
+.progress_wrapper {
+  padding: 14px 24px;
+  position: relative;
+}
+
+.progress_bar {
+  height: 36px;
+  display: grid;
+  grid-template-columns: repeat(22, 1fr);
+  grid-auto-flow: column;
+}
+
+.bg_available_slot {
+  background: #8CE38A;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  grid-auto-flow: column;
+  overflow: hidden;
+}
+
+.masked_img {
+  background: url(../../../../resources/assets/masked_group.png) !important;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.bg_busy_slot {
+  background-color: #E44C4C;
+  height: 100%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.text_primary {
+  color: #377CF6;
+}
+
+.scheduled_info_container {
+  width: 100%;
+  max-width: 210px;
+  min-height: 263px;
+  border-radius: 8px;
+  background-color: #E66F7D;
+  position: fixed;
+  transition: opacity 500ms;
+  padding: 10px 4px;
+  z-index: 5;
+}
+
+.schdule_btn_wrapper {
+  position: absolute;
+  display: grid;
+}
+
+.accepted_btn {
+  font-size: 12px;
+  color: #D15A69;
+  padding: 5px 9px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+}
+
+.circular_check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  margin-right: 5px;
+  place-items: center;
+  background-color: #D15A69;
+}
+
+.info_card_heading {
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.close_btn {
+  position: absolute;
+  top: 10px;
+  cursor: pointer;
+  right: 10px;
+}
+
+.customer_info_wrapper {
+  padding-block: 12px;
+  padding-left: 11px;
+  background-color: #FF8593;
+  padding-right: 4px;
+  margin-top: 19px;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 12px;
+}
+
+.progress_btn {
+  background-color: rgba(255, 255, 255, 0.44);
+  padding: 4px 8px;
+  border-radius: 11.5px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #fff;
+  opacity: 0;
+  transition: all 500ms;
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.available_btn {
+  background-color: #fff;
+  color: #8CE38A;
+  padding: 0;
+  width: 24px;
+  display: grid;
+  place-items: center;
+  height: 24px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 500ms;
+  cursor: pointer;
+}
+
+.bg_busy_slot:hover .progress_btn {
+  opacity: 1;
+  transition: all 500ms;
+}
+
+.bg_available_slot:hover .available_btn {
+  opacity: 1;
+  transition: all 500ms;
+}
+
+.half_hour_span_wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: end;
+}
+
+.striped_bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: repeating-linear-gradient(-80deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px);
+}
+
+.half_hour_span {
+  height: 17px;
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.4);
+  /* transform: translateX(-5px); */
+}
+
+.full_hour_span {
+  height: 36px;
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.absolute_vertical_line {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  top: 0;
+  background-color: #377CF6;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.absolute_vertical_line::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: -17px;
+  left: -10px;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-top: 18px solid #377CF6;
 }
