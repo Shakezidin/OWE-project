@@ -664,86 +664,86 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 
 func getSurveyColor(scheduledDate, completedDate string) (string, int64) {
 	if completedDate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	} else if scheduledDate != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
-	return "grey", 0
+	return "#E9E9E9", 0
 }
 
 func getCadColor(createdDate, completedDate string) (string, int64) {
 	if completedDate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	} else if createdDate != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
-	return "grey", 0
+	return "#E9E9E9", 0
 }
 
 func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64) {
 	if permitApprovedDate != "" && IcApprovedDate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	} else if permitSubmittedDate != "" && IcSubmittedDate != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
-	return "grey", 0
+	return "#E9E9E9", 0
 }
 
 func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64) {
 	if roofingCompleteDate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	} else if roofingCreateDate != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
 	return "", 0
 }
 
 func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64) {
 	if batteryScheduleDate != "" && batteryCompleted != "" && PvInstallcompletedDate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	} else if pvInstallCreatedate != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
-	return "grey", 0
+	return "#E9E9E9", 0
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64) {
 	if derateCreateDate != "" {
 		if derateCompleteDate != "" {
-			return "green", 1
+			return "#63ACA3", 1
 		}
 	} else if mpuCompletedDate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	}
 
 	if TrenchingWSOpen != "" {
 		if TrenchingCompleted != "" {
-			return "green", 1
+			return "#63ACA3", 1
 		}
-		return "blue", 0
+		return "#377CF6", 0
 	}
 
 	if mpuCreateDate != "" || derateCreateDate != "" || TrenchingWSOpen != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
 
-	return "grey", 0
+	return "#E9E9E9", 0
 }
 
 func InspectionColor(finCreateddate, finPassdate string) (string, int64) {
 	if finPassdate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	} else if finCreateddate != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
-	return "grey", 0
+	return "#E9E9E9", 0
 }
 
 func activationColor(ptoSubmittedDate, ptodate string) (string, int64) {
 	if ptodate != "" {
-		return "green", 1
+		return "#63ACA3", 1
 	} else if ptoSubmittedDate != "" {
-		return "blue", 0
+		return "#377CF6", 0
 	}
-	return "grey", 0
+	return "#E9E9E9", 0
 }
