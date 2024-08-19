@@ -510,7 +510,7 @@ const ProjectPerformence = () => {
           <div className="proper-top">
             <div className="performance-project">
               <div className="proper-select">
-                {/* <SelectOption
+                <SelectOption
                   options={projectOption}
                   value={selectedProject.value ? selectedProject : undefined}
                   onChange={(val) => {
@@ -518,20 +518,21 @@ const ProjectPerformence = () => {
                       setSelectedProject({ ...val });
                     }
                   }}
-                  placeholder="Select Project Id"
+                  placeholder="Search Project Id or Name"
+                  lazyRender
                   menuWidth="300px"
                   width="190px"
-                /> */}
+                />
 
-                <IoIosSearch className="search-icon" />
+                {/* <IoIosSearch className="search-icon" /> */}
 
-                <Input
+                {/* <Input
                   type={'text'}
                   placeholder={'Search for Unique ID or Name'}
                   value={'Search for Unique ID or Name'}
                   name={'Search for Unique ID or Name'}
                   onChange={() => {}}
-                />
+                /> */}
               </div>
               <div className="performance-box-container">
                 <p className="status-indicator">Status indicators</p>
