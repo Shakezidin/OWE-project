@@ -456,7 +456,7 @@ const ProjectPerformence = () => {
               const cardColor = cardColors[index % cardColors.length];
               return (
                 <div
-                  className="flex items-center"
+                  className="flex items-center arrow-wrap"
                   style={{ marginRight: '-20px' }}
                 >
                   <div
@@ -473,11 +473,11 @@ const ProjectPerformence = () => {
                     >
                       {card.id}
                     </span>
-                    <p>{card.title}</p>
-                    <h2>{card.value}</h2>
+                    <p>{card.title || "N/A"}</p>
+                    <h2>{card.value || "N/A"}</h2>
                   </div>
                   {index < topCardsData.length - 1 && (
-                    <div className="flex" style={{ padding: '0 5px' }}>
+                    <div className="flex arrow-dir" style={{ padding: '0 5px' }}>
                       <MdOutlineKeyboardDoubleArrowRight
                         style={{
                           width: '1.5rem',
@@ -520,7 +520,6 @@ const ProjectPerformence = () => {
                   }}
                   placeholder="Search Project Id or Name"
                   lazyRender
-                  menuWidth="300px"
                   width="190px"
                 />
 
