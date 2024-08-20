@@ -39,11 +39,11 @@ export const dealerOption = (newFormData: any): Option[] =>
     value,
     label: value,
   }));
-  export const dealerNameOption = (newFormData: any): Option[] =>
-    newFormData?.dealer_name?.map((value: string) => ({
-      value,
-      label: value,
-    }));
+export const dealerNameOption = (newFormData: any): Option[] =>
+  newFormData?.dealer_name?.map((value: string) => ({
+    value,
+    label: value,
+  }));
 export const adderTypeOption = (newFormData: any): Option[] =>
   newFormData?.adder_type?.map((value: string) => ({
     value,

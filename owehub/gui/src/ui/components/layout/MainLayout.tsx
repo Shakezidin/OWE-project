@@ -12,7 +12,7 @@ import {
   logout,
 } from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
-import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassword';
+import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePassword';
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';

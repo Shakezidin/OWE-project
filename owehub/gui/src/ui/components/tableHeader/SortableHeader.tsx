@@ -1,5 +1,5 @@
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa6';
-import '../../pages/configure/configure.css';
+import '../../oweHub/configure/configure.css';
 import { toggleAllRows } from '../chekbox/checkHelper';
 import CheckBox from '../chekbox/CheckBox';
 interface SortableHeaderProps {

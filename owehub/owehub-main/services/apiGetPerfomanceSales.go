@@ -32,12 +32,8 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		data             []map[string]interface{}
 		whereEleList     []interface{}
 		query            string
-		queryWithFiler   string
 		filter           string
-		firstFilter      string
-		dates            []string
 		rgnSalesMgrCheck bool
-		intervalCount    string
 		SaleRepList      []interface{}
 	)
 
@@ -65,25 +61,46 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	perfomanceData := models.PerfomanceMetricsResp{}
-	// this will give zero value and will be modified once the rep pay calculations are done
-	perfomanceData.PerfomanceCommissionMetrics.CancellationPeriod = 0
-	perfomanceData.PerfomanceCommissionMetrics.InstallationPeriod = 0
-	perfomanceData.PerfomanceCommissionMetrics.SalesPeriod = 0
+	// this will give zero value and will be modified once the rep pay calculations are don
 
 	// query = `
 	// SELECT SUM(system_size) AS sales_kw, COUNT(system_size) AS sales  FROM consolidated_data_view`
 
 	query = `
-	SELECT 
-    sm.system_size
-	FROM 
-			sales_metrics_schema sm
-	JOIN 
-			internal_ops_metrics_schema intOpsMetSchema 
-	ON 
-			sm.unique_id = intOpsMetSchema.unique_id
-	`
+	SELECT
+    COUNT(intOpsMetSchema.site_survey_scheduled_date) AS site_survey_scheduled_count,
+    COUNT(intOpsMetSchema.site_survey_completed_date) AS site_survey_completed_count,
+    COUNT(intOpsMetSchema.cad_ready) AS cad_ready_count,
+    COUNT(intOpsMetSchema.cad_complete_date) AS cad_complete_count,
+	COUNT(intOpsMetSchema.permit_submitted_date) AS permit_submitted_date,
+    COUNT(intOpsMetSchema.pv_install_created_date) AS pv_install_created_count,
+    COUNT(intOpsMetSchema.ic_submitted_date) AS ic_submitted_count,
+    COUNT(intOpsMetSchema.permit_approved_date) AS permit_approved_count,
+    COUNT(intOpsMetSchema.ic_approved_date) AS ic_approved_count,
+    COUNT(fieldOpsSchema.roofing_created_date) AS roofing_created_count,
+    COUNT(fieldOpsSchema.roofing_completed_date) AS roofing_completed_count,
+    COUNT(fieldOpsSchema.battery_scheduled_date) AS battery_scheduled_count,
+    COUNT(fieldOpsSchema.battery_complete_date) AS battery_complete_count,
+    COUNT(intOpsMetSchema.pv_install_completed_date) AS pv_install_completed_count,
+    COUNT(fieldOpsSchema.mpu_created_date) AS mpu_created_count,
+    COUNT(fieldOpsSchema.derate_created_date) AS derate_created_count,
+    COUNT(secondFieldOpsSchema.trenching_ws_open) AS trenching_ws_open_count,
+    COUNT(fieldOpsSchema.derate_completed_date) AS derate_completed_count,
+    COUNT(fieldOpsSchema.mpu_complete_date) AS mpu_complete_count,
+    COUNT(secondFieldOpsSchema.trenching_completed) AS trenching_completed_count,
+    COUNT(fieldOpsSchema.fin_created_date) AS fin_created_count,
+    COUNT(fieldOpsSchema.fin_pass_date) AS fin_pass_count,
+    COUNT(intOpsMetSchema.pto_submitted_date) AS pto_submitted_count,
+    COUNT(intOpsMetSchema.pto_date) AS pto_date_count
+	FROM
+    internal_ops_metrics_schema AS intOpsMetSchema
+LEFT JOIN sales_metrics_schema AS salMetSchema 
+    ON intOpsMetSchema.unique_id = salMetSchema.unique_id
+LEFT JOIN field_ops_metrics_schema AS fieldOpsSchema 
+    ON intOpsMetSchema.unique_id = fieldOpsSchema.unique_id
+LEFT JOIN second_field_ops_metrics_schema AS secondFieldOpsSchema 
+    ON intOpsMetSchema.unique_id = secondFieldOpsSchema.unique_id
+`
 
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
@@ -94,7 +111,6 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
 	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
-	// intervalCount = "90" // this sets the date interval bracket to query data
 
 	whereEleList = append(whereEleList, dataReq.Email)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
@@ -129,13 +145,8 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 
 		// This is thrown if no sale rep are available and for other user roles
 		if len(data) == 0 {
-			perfomanceData.PerfomanceSalesMetrics = append(perfomanceData.PerfomanceSalesMetrics, models.PerfomanceSales{
-				Type:    "",
-				Sales:   0,
-				SalesKw: 0,
-			})
 			log.FuncErrorTrace(0, "No sale representative available %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, perfomanceData)
+			FormAndSendHttpResp(resp, "Failed to get perfomance sales , err: %v", http.StatusBadRequest, data)
 			return
 		}
 
@@ -154,57 +165,19 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		filter, whereEleList = PrepareSaleRepPerfFilters(tableName, dataReq, SaleRepList)
 	}
 
-	startDate, _ := time.Parse("02-01-2006", dataReq.StartDate)
-	endDate, _ := time.Parse("02-01-2006", dataReq.EndDate)
-
-	endDate = endDate.Add(24*time.Hour - time.Second)
-
-	whereEleList = append(whereEleList,
-		startDate.Format("02-01-2006 00:00:00"),
-		endDate.Format("02-01-2006 15:04:05"),
-	)
-
-	allDatas := make(map[string][]map[string]interface{}, 0)
-	// whereEleList = append(whereEleList, intervalCount)
-	dates = append(dates, "contract_date", "ntp_date", "cancelled_date", "pv_install_completed_date")
-	for _, date := range dates {
-		firstFilter = PrepareDateFilters(date, intervalCount, len(whereEleList))
-		queryWithFiler = query + firstFilter + filter
-
-		data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get perfomance sales from DB for %v err: %v", date, err)
-			FormAndSendHttpResp(resp, "Failed to get perfomance sales %v", http.StatusBadRequest, date)
-			return
-		}
-		allDatas[date] = data
+	if filter != "" {
+		query = query + filter
 	}
 
-	for date, data := range allDatas {
-		var SalesKw float64
-		for _, item := range data {
-			SystemSize, ok := item["system_size"].(float64)
-			if !ok {
-				log.FuncErrorTrace(0, "Failed to get total sales count data for %+v\n: %+v\n", date, data[0])
-				SystemSize = 0.0
-			}
-			SalesKw += SystemSize
-		}
-		perfomanceData.PerfomanceSalesMetrics = append(perfomanceData.PerfomanceSalesMetrics, models.PerfomanceSales{
-			Type:    date,
-			Sales:   int64(len(data)),
-			SalesKw: SalesKw,
-		})
-
-		// SalesKw, ok := data[0]["sales_kw"].(float64)
-		// if !ok {
-		// 	log.FuncErrorTrace(0, "Failed to get total sales kw count data for %+v\n: %+v\n", date, data[0])
-		// 	SalesKw = 0.0
-		// }
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get perfomance sales from DB for with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get perfomance sales , err: %v", http.StatusBadRequest, err)
+		return
 	}
 
-	log.FuncInfoTrace(0, "total perfomance report list %+v", len(perfomanceData.PerfomanceSalesMetrics))
-	FormAndSendHttpResp(resp, "perfomance report", http.StatusOK, perfomanceData)
+	log.FuncInfoTrace(0, "total perfomance report list %+v", len(data))
+	FormAndSendHttpResp(resp, "perfomance report", http.StatusOK, data)
 }
 
 /******************************************************************************
@@ -219,29 +192,38 @@ func PreparePerfomanceAdminDlrFilters(columnName string, dataFilter models.GetPe
 	defer func() { log.ExitFn(0, "PreparePerfomanceAdminDlrFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := true
 
-	if !adminCheck {
-		if !whereAdded {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		} else {
-			filtersBuilder.WriteString(" AND ")
-		}
-		filtersBuilder.WriteString(fmt.Sprintf("dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
+	// Check if StartDate and EndDate are provided
+	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+		endDate = endDate.Add(24*time.Hour - time.Second)
+
+		whereEleList = append(whereEleList,
+			startDate.Format("02-01-2006 00:00:00"),
+			endDate.Format("02-01-2006 15:04:05"),
+		)
+
+		// Start building the WHERE clause with the date range filter
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')",
+			len(whereEleList)-1, len(whereEleList)))
+	} else {
+		// Start building the WHERE clause without the date range filter
+		filtersBuilder.WriteString(" WHERE 1=1")
 	}
 
-	if !whereAdded {
-		filtersBuilder.WriteString(` WHERE intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
-	} else {
-		filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	// Add the remaining filters
+	filtersBuilder.WriteString(`
+		AND intOpsMetSchema.unique_id IS NOT NULL
+		AND intOpsMetSchema.unique_id <> ''
+		AND intOpsMetSchema.system_size IS NOT NULL
+		AND intOpsMetSchema.system_size > 0
+		AND salMetSchema.project_status NOT IN ('CANCEL', 'PTO''d')`)
+
+	// Add dealer filter if adminCheck is false
+	if !adminCheck {
+		filtersBuilder.WriteString(fmt.Sprintf(" AND dealer = $%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
 	filters = filtersBuilder.String()
@@ -263,38 +245,49 @@ func PrepareSaleRepPerfFilters(tableName string, dataFilter models.GetPerfomance
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := true
 
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
+	// Check if StartDate and EndDate are provided
+	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+		endDate = endDate.Add(24*time.Hour - time.Second)
+
+		whereEleList = append(whereEleList,
+			startDate.Format("02-01-2006 00:00:00"),
+			endDate.Format("02-01-2006 15:04:05"),
+		)
+
+		// Add the date range condition to the WHERE clause
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')",
+			len(whereEleList)-1, len(whereEleList)))
 	} else {
-		filtersBuilder.WriteString(" WHERE ")
+		// Start the WHERE clause without the date range filter
+		filtersBuilder.WriteString(" WHERE 1=1")
 	}
 
-	filtersBuilder.WriteString(" primary_sales_rep IN (")
-	for i, sale := range saleRepList {
+	// Add conditions for unique_id, system_size, and project_status
+	filtersBuilder.WriteString(`
+		AND intOpsMetSchema.unique_id IS NOT NULL
+		AND intOpsMetSchema.unique_id <> ''
+		AND intOpsMetSchema.system_size IS NOT NULL
+		AND intOpsMetSchema.system_size > 0
+		AND salMetSchema.project_status NOT IN ('CANCEL', 'PTO''d')`)
+
+	// Add the primary_sales_rep IN condition
+	filtersBuilder.WriteString(" AND primary_sales_rep IN (")
+	for i, saleRep := range saleRepList {
 		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, sale)
+		whereEleList = append(whereEleList, saleRep)
 
 		if i < len(saleRepList)-1 {
 			filtersBuilder.WriteString(", ")
 		}
 	}
+	filtersBuilder.WriteString(")")
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d", len(whereEleList)+1))
+	// Add the dealer condition
+	filtersBuilder.WriteString(fmt.Sprintf(" AND dealer = $%d", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
-
-	if !whereAdded {
-		filtersBuilder.WriteString(` WHERE intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
-	} else {
-		filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
-	}
 
 	filters = filtersBuilder.String()
 
@@ -302,31 +295,31 @@ func PrepareSaleRepPerfFilters(tableName string, dataFilter models.GetPerfomance
 	return filters, whereEleList
 }
 
-/******************************************************************************
-* FUNCTION:		PrepareDateFilters
-* DESCRIPTION:     handler for prepare primary filter
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
+// /******************************************************************************
+// * FUNCTION:		PrepareDateFilters
+// * DESCRIPTION:     handler for prepare primary filter
+// * INPUT:			resp, req
+// * RETURNS:    		void
+// ******************************************************************************/
 
-func PrepareDateFilters(columnName string, intervalCount string, whereListLength int) (filters string) {
-	log.EnterFn(0, "PrepareDateFilters")
-	defer func() { log.ExitFn(0, "PrepareDateFilters", nil) }()
+// func PrepareDateFilters(columnName string, intervalCount string, whereListLength int) (filters string) {
+// 	log.EnterFn(0, "PrepareDateFilters")
+// 	defer func() { log.ExitFn(0, "PrepareDateFilters", nil) }()
 
-	var filtersBuilder strings.Builder
-	filtersBuilder.WriteString(" WHERE ")
+// 	var filtersBuilder strings.Builder
+// 	filtersBuilder.WriteString(" WHERE ")
 
-	// sm is
-	switch columnName {
-	case "contract_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" sm.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
-	case "ntp_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" sm.ntp_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
-	case "cancelled_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" sm.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
-	case "pv_install_completed_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" intOpsMetSchema.pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
-	}
-	filters = filtersBuilder.String()
-	return filters
-}
+// 	// sm is
+// 	switch columnName {
+// 	case "contract_date":
+// 		filtersBuilder.WriteString(fmt.Sprintf(" sm.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
+// 	case "ntp_date":
+// 		filtersBuilder.WriteString(fmt.Sprintf(" sm.ntp_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
+// 	case "cancelled_date":
+// 		filtersBuilder.WriteString(fmt.Sprintf(" sm.cancelled_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
+// 	case "pv_install_completed_date":
+// 		filtersBuilder.WriteString(fmt.Sprintf(" intOpsMetSchema.pv_install_completed_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') ", whereListLength-1, whereListLength))
+// 	}
+// 	filters = filtersBuilder.String()
+// 	return filters
+// }

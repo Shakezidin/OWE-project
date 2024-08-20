@@ -87,11 +87,13 @@
   font-size: 0.7rem;
   /* text-align: center; */
   border-radius: 0.25rem;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
 }
 
-.current-btn:hover{
-  background-color: #DDEBFF !important;
+.current-btn:hover {
+  background-color: #ddebff !important;
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }

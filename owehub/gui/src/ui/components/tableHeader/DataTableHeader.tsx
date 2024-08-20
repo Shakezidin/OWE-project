@@ -1,6 +1,6 @@
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import { IoAddSharp } from 'react-icons/io5';
-import '../../pages/configure/configure.css';
+import '../../oweHub/configure/configure.css';
 import React, { useEffect } from 'react';
 import { BiSearch, BiChevronDown } from 'react-icons/bi';
 import '../tableHeader/dataTableHeader.css';

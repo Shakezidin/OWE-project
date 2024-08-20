@@ -36,10 +36,10 @@
 }
 
 .switch input:checked + .slider {
-  background-color: #0094CD;
+  background-color: #0094cd;
 }
 
 .switch input:checked + .slider:before {
   transform: translateX(13px);
-  background-color: #A0EF00;
+  background-color: #fff;
 }

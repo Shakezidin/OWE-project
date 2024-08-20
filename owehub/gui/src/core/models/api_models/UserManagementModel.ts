@@ -47,7 +47,8 @@ export interface UserRoleBasedListModel {
   amount: string;
   region: string;
   team_name: string;
-  dealer:string;
+  dealer: string;
+  db_username: string;
 }
 
 export interface DBTable {
@@ -72,7 +73,7 @@ export interface CreateUserModel {
   dealer: string;
   assigned_Manager: string;
   preferred_name: string;
-  dealer_code:string;
+  dealer_code: string;
 }
 
 export interface CreateUserParamModel {

@@ -68,5 +68,8 @@ export const ROUTES = {
   SR_IMAGE_UPLOAD: '/sr-image-upload',
   LEADERBOARD: '/leaderboard',
   NOT_FOUND: '*',
-  SCHEDULER:"/scheduler"
+  SCHEDULER: '/scheduler',
+  SCHEDULE_DETAIL: '/schedule-detail/:id',
+  SALES_REP_SCHEDULER: '/salesrep-schedule',
+  ADD_NEW_SALES: '/add-new-salesrep-schedule',
 };
