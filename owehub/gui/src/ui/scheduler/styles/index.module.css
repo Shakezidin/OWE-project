@@ -10,13 +10,9 @@
   background-color: #fff;
   padding-top: 27px;
   padding-inline: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
 }
-.h_screen {
-  min-height: 100vh;
-}
+
 
 .schedule_tab {
   padding-block: 6px;

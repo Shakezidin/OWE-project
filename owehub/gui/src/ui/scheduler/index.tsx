@@ -18,8 +18,9 @@ const Index = () => {
           </span>
         </div>
       </div>
-      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+      <div className={`flex justify-between mt2 items-start`}>
         <div className={styles.customer_wrapper_list}>
+          
           <CustomersList />
 
           <div className="page-heading-container px0">

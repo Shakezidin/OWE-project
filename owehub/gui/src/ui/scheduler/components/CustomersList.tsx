@@ -62,10 +62,16 @@ const CustomersList = () => {
             <Customer />
             <Customer />
             <Customer />
+            <Customer />
+            <Customer />
+            <Customer />
           </>
         ) : (
           <>
             <Customer withSecondaryBtn mapStyles={{ height:100 }} />
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn />
             <Customer withSecondaryBtn />
             <Customer withSecondaryBtn />
             <Customer withSecondaryBtn />
