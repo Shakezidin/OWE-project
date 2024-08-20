@@ -156,20 +156,35 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 	}
 
-	// query := `select cad_link,dat_link,podio_link from consolidated_data_view`
-	// data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
-	// 	FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
-	// 	return
-	// }
-	// projectList.CADLink = data[0]["cad_link"].(string)
-	// projectList.DATLink = data[0]["dat_link"].(string)
-	// projectList.PodioLink = data[0]["podio_link"].(string)
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(fmt.Sprintf("select current_live_cad,system_sold_er,podio_link from customers_customers_schema where unique_id = '%s'", dataReq.UniqueId))
+	// Check if there are filters
+	if len(dataReq.UniqueIds) > 0 {
 
-	projectList.CADLink = "http.cad_link.com"
-	projectList.DATLink = "http.dat_link.com"
-	projectList.PodioLink = "http.podio.com"
+		filtersBuilder.WriteString(" AND ")
+		filtersBuilder.WriteString(" unique_id IN (")
+
+		for i, filter := range dataReq.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, filter)
+
+			if i < len(dataReq.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(") ")
+	}
+	linkQuery := filtersBuilder.String()
+	whereEleList = append(whereEleList, dataReq.UniqueId)
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	projectList.CADLink = data[0]["current_live_cad"].(string)
+	projectList.DATLink = data[0]["system_sold_er"].(string)
+	projectList.PodioLink = data[0]["podio_link"].(string)
 
 	// Send the response
 	recordLen := len(data)
