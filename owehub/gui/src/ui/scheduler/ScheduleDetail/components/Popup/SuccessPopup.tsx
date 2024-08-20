@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { SetStateAction } from 'react'
 import styles from "./styles/index.module.css"
 import email from "../../../../../resources/assets/sucess_email.png"
-const SuccessPopup = () => {
+const SuccessPopup = ({setIsOpen}:{setIsOpen:React.Dispatch<SetStateAction<boolean>>}) => {
   return (
     <div className={styles.popup_background} >
       <div className={styles.popup_card_wrapper}>
@@ -19,7 +19,7 @@ const SuccessPopup = () => {
             to confirm their availability.
           </p>
 
-          <button className={styles.success_btn}>Great</button>
+          <button className={styles.success_btn} onClick={()=>setIsOpen(prev=>!prev)}>Great</button>
         </div>
       </div>
     </div>

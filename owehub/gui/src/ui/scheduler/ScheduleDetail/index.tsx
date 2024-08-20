@@ -76,6 +76,7 @@ const Index = () => {
   const infoCardRef = useRef<HTMLDivElement>(null);
   const scheduleRef = useRef<HTMLDivElement>(null);
   const timeOutIds = useRef<NodeJS.Timeout[]>([])
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const isBetween = useCallback((time: string) => {
     const current = parse(time, "h:mm aa", new Date())
@@ -196,7 +197,7 @@ const Index = () => {
           <h4 className={styles.detail_heading}>Schedule</h4>
           <div className="flex items-center">
             <Link to="/scheduler" style={{ fontSize: 12 }} className={styles.primary_heading}>
-            Availability {`>`}{' '}
+              Availability {`>`}{' '}
             </Link>
             <span className="ml1" style={{ fontSize: 12 }}>
               {' '}
@@ -264,8 +265,8 @@ const Index = () => {
             >
               <div className="flex items-center">
                 <h5 style={{ color: '#377CF6' }}>Surveyor</h5>
-               
-                <FilterDropDown/>
+
+                <FilterDropDown />
               </div>
             </div>
 
@@ -323,7 +324,7 @@ const Index = () => {
                 mockedData.map((person) => {
                   return <div key={person.id} data-time-parent={person.id} className={styles.survey_progress_container}>
                     <div className={styles.surveyor_name}>
-                     
+
                       {person.name}
                     </div>
                     <div className={styles.progress_wrapper}>
@@ -485,14 +486,14 @@ const Index = () => {
 
               <div className="flex mt2 justify-center items-center">
                 <button onClick={() => setSubmitFormCords(prev => ({ ...prev, opacity: 0 }))} className={styles.secondary_schdeule_btn}>Cancel</button>
-                <button className={styles.primary_schdeule_btn}>Schedule</button>
+                <button className={styles.primary_schdeule_btn} onClick={() => setIsSuccess(true)}>Schedule</button>
               </div>
             </div>
           </div>
 
         </div>
       </div>
-      {/* <SuccessPopup/> */}
+      {isSuccess && <SuccessPopup setIsOpen={setIsSuccess} />}
     </>
   );
 };

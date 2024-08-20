@@ -23,11 +23,19 @@
 
 .success_btn{
   background-color: #4372E9;
-  padding: 16px 54px;
+  padding: 12px 54px;
   border: none;
   color: #fff;
   border-radius: 6px;
   margin-inline: auto;
+  cursor: pointer;
   display: block;
   margin-top: 4rem;
+  transition: all 500ms;
+transform-origin: top left;
+}
+
+.success_btn:hover{
+  transform: scale(1.1);
+  transition: all 500ms;
 }
