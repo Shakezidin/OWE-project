@@ -57,6 +57,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// setup user info logging
+	logUserQuery, logUserEnd := startUserApiLogging(req, fmt.Sprintf("INPUT: %v", createUserReq))
+	defer func() { logUserEnd(err) }()
+
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Designation) <= 0) ||
 		(len(createUserReq.RoleName) <= 0) {
@@ -88,13 +92,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	role := req.Context().Value("rolename").(string)
 	if role == "Dealer Owner" {
 		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
-
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
 			return
 		}
+		logUserQuery(query, nil)
+
 		DealerName, dealerNameOk := data[0]["dealer_name"].(string)
 		if !dealerNameOk || DealerName == "" {
 			log.FuncErrorTrace(0, "empty dealer name")
@@ -116,17 +121,17 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
 
 		// make sure that user with username doesnt already exist
-		dbUserCheck, err := db.ReteriveFromDB(
-			db.RowDataDBIndex,
-			"SELECT count(*) FROM PG_USER WHERE USENAME = $1",
-			[]interface{}{username},
-		)
+		dbUserCheckQuery := "SELECT count(*) FROM PG_USER WHERE USENAME = $1"
+		dbUserCheckParams := []interface{}{username}
+		dbUserCheck, err := db.ReteriveFromDB(db.RowDataDBIndex, dbUserCheckQuery, dbUserCheckParams)
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get user name count from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
 			return
 		}
+
+		logUserQuery(dbUserCheckQuery, dbUserCheckParams)
 
 		dbUserCount, dbUserCountOk := dbUserCheck[0]["count"].(int64)
 		if !dbUserCountOk {
@@ -151,6 +156,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed, User already exists in db user", http.StatusInternalServerError, nil)
 			return
 		}
+		logUserQuery(sqlStatement, nil)
 
 		log.FuncErrorTrace(0, "createUserReq.TablesPermissions %+v", createUserReq.TablesPermissions)
 		for _, item := range createUserReq.TablesPermissions {
@@ -170,6 +176,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
 				dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
+				logUserQuery(dropQuery, nil)
+
 				if dropErr != nil {
 					log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
 					FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)
@@ -211,8 +219,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 		//  Drop roles from db.RowDataDBIndex if created (incase of DB User & Admin)
 		if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
-			query := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
-			dropErr := db.ExecQueryDB(db.RowDataDBIndex, query)
+			dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
+			dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
+			logUserQuery(dropQuery, nil)
+
 			if dropErr != nil {
 				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
 			} else {

@@ -119,6 +119,7 @@ func BytesToStringArray(raw []byte) []string {
 	return strArray
 }
 
+// Log details in user related apis: create, update & delete user apis
 func startUserApiLogging(req *http.Request, initialMsg string) (
 	logQuery func(string, []interface{}), logEnd func(error),
 ) {

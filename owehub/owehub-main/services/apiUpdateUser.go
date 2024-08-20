@@ -66,6 +66,10 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// setup user info logging
+	logUserQuery, logUserEnd := startUserApiLogging(req, fmt.Sprintf("INPUT: %v", updateUserReq))
+	defer func() { logUserEnd(err) }()
+
 	emailId := req.Context().Value("emailid").(string)
 	updateUserReq.EmailId = emailId
 
@@ -115,6 +119,8 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		logUserQuery(query, nil)
+
 		tablepermissions, ok := data[0]["tables_permissions"].([]byte)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get tables_permissions for email ID %v. Item: %+v\n", updateUserReq.EmailId, data)
@@ -149,6 +155,8 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		} else {
 			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", oldusername)
 			// Optionally, you can log a success message or perform additional actions
+			logUserQuery(sqlStatement, nil)
+
 		}
 
 		log.FuncErrorTrace(0, "updateUserReq.TablesPermissions %+v", updateUserReq.TablesPermissions)
@@ -174,6 +182,8 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 					log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
 					// Handle the error as needed, such as logging or returning an HTTP response
 				}
+				logUserQuery(sqlStatement, nil)
+
 				for _, item := range tablepermissionsModel {
 					switch item.PrivilegeType {
 					case "View":
@@ -191,11 +201,15 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 						log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
 						// Handle the error as needed, such as logging or returning an HTTP response
 					}
+					logUserQuery(sqlStatement, nil)
+
 				}
 				log.FuncErrorTrace(0, "Failed to update user with err: %v", err)
 				FormAndSendHttpResp(resp, "Failed to update the user db privilages", http.StatusInternalServerError, nil)
 				return
 			}
+
+			logUserQuery(sqlStatement, nil)
 		}
 	}
 
@@ -232,6 +246,8 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
 			// Handle the error as needed, such as logging or returning an HTTP response
 		}
+		logUserQuery(sqlStatement, nil)
+
 		for _, item := range tablepermissionsModel {
 			switch item.PrivilegeType {
 			case "View":
@@ -249,6 +265,8 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
 				// Handle the error as needed, such as logging or returning an HTTP response
 			}
+			logUserQuery(sqlStatement, nil)
+
 		}
 		log.FuncErrorTrace(0, "Failed to Update User in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
