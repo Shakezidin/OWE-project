@@ -450,7 +450,7 @@ const ProjectPerformence = () => {
             }}
           />
         </div>
-        <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper">
+        <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper calender-wrapper">
           <span
             role="button"
             onClick={() => setShowCalendar((prev) => !prev)}

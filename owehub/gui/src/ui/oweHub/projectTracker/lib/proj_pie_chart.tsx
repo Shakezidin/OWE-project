@@ -22,7 +22,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
   console.log(projectDetail, 'projectDetails');
   return (
     <>
-      <div className="pm-doc-heading">Documents Links</div>
+      <div className="pm-doc-heading">Resources</div>
 
       <div className="pc-links">
         <div className="pc-link">
@@ -62,13 +62,13 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
           <div className="link-url">
             <div
               className="link-tab"
-              onClick={() => handleCopyLink(projectDetail?.cad_link)}
+              // onClick={() => handleCopyLink(projectDetail?.cad_link)}
             >
               <FiLink />
             </div>
-            <div className="link-tab">
+            <div className={`link-tab ${projectDetail?.cad_link ? '' : 'disable-btn'}`}>
               <a
-                href={projectDetail?.cad_link}
+                // href={projectDetail?.cad_link}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -90,13 +90,13 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
           <div className="link-url">
             <div
               className="link-tab"
-              onClick={() => handleCopyLink(projectDetail?.dat_link)}
+              // onClick={() => handleCopyLink(projectDetail?.dat_link)}
             >
               <FiLink />
             </div>
             <div className="link-tab">
               <a
-                href={projectDetail?.dat_link}
+                // href={projectDetail?.dat_link}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -111,20 +111,20 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
 
         <div className="pc-link">
           <div className="link-head">
-            <h3>Include Contract</h3>
+            <h3>Contract</h3>
             <span>Go to Document for more info</span>
           </div>
 
           <div className="link-url">
             <div
               className="link-tab"
-              onClick={() => handleCopyLink(projectDetail?.includeContractUrl)}
+              // onClick={() => handleCopyLink(projectDetail?.includeContractUrl)}
             >
               <FiLink />
             </div>
             <div className="link-tab">
               <a
-                href={projectDetail?.includeContractUrl}
+                // href={projectDetail?.includeContractUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
