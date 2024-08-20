@@ -59,6 +59,10 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// setup user info logging
+	logUserQuery, logUserEnd := startUserApiLogging(req, fmt.Sprintf("INPUT EMAILS: %v", deleteUsersReq.EmailIds))
+	defer func() { logUserEnd(err) }()
+
 	//
 	// NEW LOGIC: Delete By Email
 	//
@@ -67,9 +71,8 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		// 1. Revoke provileges & Drop users from RowDataDB
 
 		// fetch Admins & DB Users' db_usernames
-		usersWithDbUsername, err := db.ReteriveFromDB(
-			db.OweHubDbIndex,
-			`SELECT
+		usersWithDbUsernameQuery := `
+			SELECT
 				user_details.db_username,
 				user_details.email_id
 			FROM 
@@ -77,7 +80,11 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 			INNER JOIN user_roles ON user_roles.role_id = user_details.role_id
 			WHERE 
 				user_roles.role_name IN ('Admin', 'DB User') 
-				AND user_details.email_id = ANY($1)`,
+				AND user_details.email_id = ANY($1)`
+
+		usersWithDbUsername, err := db.ReteriveFromDB(
+			db.OweHubDbIndex,
+			usersWithDbUsernameQuery,
 			[]interface{}{pq.Array(deleteUsersReq.EmailIds)},
 		)
 
@@ -86,6 +93,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to delete users Data from DB", http.StatusInternalServerError, nil)
 			return
 		}
+		logUserQuery(usersWithDbUsernameQuery, []interface{}{deleteUsersReq.EmailIds})
 
 		// store emails for users which couldnt be deleted from db.RowDataDB
 		failedDeleteEmailIds := make([]string, 0)
@@ -103,17 +111,17 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user with email: %s : %v", dbUsername, err)
 				failedDeleteEmailIds = append(failedDeleteEmailIds, emailId)
 			}
+			logUserQuery(sqlStatement, nil)
+
 		}
 
 		// 2. Delete users from OweHubDb
 
 		emailIdsToBeDeleted := make([]string, 0) // = deleteUsersReq.EmailIds minus failedDeleteEmailIds
-		authenticatedEmail := req.Context().Value("emailid").(string)
 
 		for _, emailId := range deleteUsersReq.EmailIds {
 			if !Contains(failedDeleteEmailIds, emailId) {
 				emailIdsToBeDeleted = append(emailIdsToBeDeleted, emailId)
-				log.FuncInfoTrace(0, "User %s is attempting to delete user %s", authenticatedEmail, emailId)
 			}
 		}
 
@@ -134,6 +142,8 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to delete users Data from DB", http.StatusInternalServerError, nil)
 			return
 		}
+
+		logUserQuery(query, []interface{}{emailIdsToBeDeleted})
 
 		if rowsAffected == 0 {
 			log.DBTransDebugTrace(0, "No User(s) deleted with emails: %v", emailIdsToBeDeleted)

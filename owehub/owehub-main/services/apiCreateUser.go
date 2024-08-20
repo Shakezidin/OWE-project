@@ -168,7 +168,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 			if err != nil {
-				dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
+				dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
+				dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
 				if dropErr != nil {
 					log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
 					FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)

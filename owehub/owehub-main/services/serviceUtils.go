@@ -118,3 +118,41 @@ func BytesToStringArray(raw []byte) []string {
 	}
 	return strArray
 }
+
+func startUserApiLogging(req *http.Request, initialMsg string) (
+	logQuery func(string, []interface{}), logEnd func(error),
+) {
+	var (
+		urlParts           []string
+		apiName            string
+		authenticatedEmail string
+		seperatorStr       string
+	)
+
+	urlParts = strings.Split(req.URL.Path, "/")
+	apiName = urlParts[len(urlParts)-1]
+	authenticatedEmail = req.Context().Value("emailid").(string)
+	seperatorStr = strings.Repeat("*", 40)
+	startTime := time.Now().Format("2006-01-02T15:04:05.999Z")
+
+	log.FuncBriefTrace(0, seperatorStr)
+	log.FuncBriefTrace(0, "[%s] %s called \"%s\" API\n%s", startTime, authenticatedEmail, apiName, initialMsg)
+
+	logQuery = func(query string, params []interface{}) {
+		log.FuncBriefTrace(0, "[QUERY]: %s, [PARAMS]: %v", query, params)
+	}
+
+	logEnd = func(err error) {
+		resultMsg := "SUCCESS"
+
+		if err != nil {
+			resultMsg = "FAILURE"
+		}
+
+		endTime := time.Now().Format("2006-01-02T15:04:05.999Z")
+		log.FuncBriefTrace(0, "[%s] %s called \"%s\" API; RESULT: %s", endTime, authenticatedEmail, apiName, resultMsg)
+		log.FuncBriefTrace(0, seperatorStr)
+	}
+
+	return logQuery, logEnd
+}
