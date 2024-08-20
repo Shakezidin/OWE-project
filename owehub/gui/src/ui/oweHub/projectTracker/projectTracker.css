@@ -93,7 +93,9 @@
   color:#FFF;
 }
 
-
+.leaderboard-data__selected-dates.performance-date{
+color:#377CF6
+}
  
 
 .performance-project-name {

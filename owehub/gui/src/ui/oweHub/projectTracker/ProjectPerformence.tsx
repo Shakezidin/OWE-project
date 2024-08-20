@@ -41,8 +41,8 @@ interface Option {
 
 export type DateRangeWithLabel = {
   label?: string;
-  start: Date;
-  end: Date;
+  start: any;
+  end: any;
 };
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
@@ -159,8 +159,8 @@ const ProjectPerformence = () => {
     const current = format(new Date(), 'yyyy-MM-dd');
     dispatch(
       getPerfomance({
-        startdate: format(selectedRangeDate.start,'dd-MM-yyyy'),
-        enddate: format(selectedRangeDate.end, 'dd-MM-yyyy')
+        startdate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
+        enddate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
       })
     );
     return () => {
@@ -192,9 +192,9 @@ const ProjectPerformence = () => {
 
   const periodFilterOptions: any = [
     {
-      label: 'Three Months',
-      start: subMonths(new Date(), 3),
-      end: subDays(new Date(), 1),
+      label: 'All',
+      start: null,
+      end: null,
     },
     {
       label: 'This Week',
@@ -222,7 +222,7 @@ const ProjectPerformence = () => {
       end: today,
     },
   ];
- 
+  
 
   useEffect(() => {
     dispatch(
@@ -345,8 +345,8 @@ const ProjectPerformence = () => {
     };
 
     const onReset = () => {
-      const defaultOption = periodFilterOptions[0];
-      setSelected(periodFilterOptions[0]);
+      const defaultOption = periodFilterOptions[5];
+      setSelected(periodFilterOptions[5]);
       setSelectedRanges([
         {
           startDate: defaultOption.start,
@@ -391,6 +391,7 @@ const ProjectPerformence = () => {
     return (
       <div className="flex items-center justify-end">
         <div className="leaderborder_filter-slect-wrapper mr1">
+          
           <Select
             options={periodFilterOptions}
             value={selected}
@@ -485,6 +486,9 @@ const ProjectPerformence = () => {
                     setSelectedRanges([
                       { startDate, endDate, key: 'selection' },
                     ]);
+                  } else {
+                    // Handle the case when no dates are selected
+                    setSelectedRanges([]);
                   }
                 }}
                 moveRangeOnFirstSelection={false}
@@ -520,7 +524,15 @@ const ProjectPerformence = () => {
           <li key={item.label}>
             <button
               onClick={() => {
-                setPeriod(item);
+                if (item.label === 'All') {
+                  setPeriod({
+                    label: 'All',
+                    start: null,
+                    end: null,
+                  });
+                } else {
+                  setPeriod(item);
+                }
                 resetPage();
               }}
               className={
@@ -537,6 +549,7 @@ const ProjectPerformence = () => {
       </ul>
     );
   };
+  
 
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
@@ -550,9 +563,19 @@ const ProjectPerformence = () => {
         marginLeftMobile="12px"
       />
       <div className="project-container">
+      <div className="leaderboard-data__selected-dates performance-date">
+          { selectedRangeDate.start && selectedRangeDate.end ?
+          <>
+              {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
+              {format(selectedRangeDate.end, 'dd MMM yyyy')}
+              </> 
+          : null}     
+            </div>
         <div className="project-heading">
           <h2>Total Count</h2>
+          
           <div className="flex items-center justify-end">
+            
             <PeriodFilter
               resetPage={resetPage}
               period={selectedRangeDate}
