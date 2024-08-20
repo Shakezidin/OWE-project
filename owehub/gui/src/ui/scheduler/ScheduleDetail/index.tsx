@@ -415,7 +415,7 @@ const Index = () => {
 
             </div>
           </div>
-          <div ref={infoCardRef} style={{ top: infoCardCords.top, left: (infoCardCords.left), opacity: infoCardCords.opacity }} className={styles.scheduled_info_container}>
+          <div ref={infoCardRef} style={{ top: infoCardCords.top, left: (infoCardCords.left), opacity: infoCardCords.opacity,pointerEvents:infoCardCords.opacity?"all":"none" }} className={styles.scheduled_info_container}>
             <div className={styles.close_btn} onClick={() => setInfoCardCors(prev => ({ ...prev, opacity: 0 }))}>
               <IoCloseOutline color='#F3B7BE' size={20} />
             </div>
@@ -443,7 +443,7 @@ const Index = () => {
             </div>
           </div>
 
-          <div style={{ top: submitFormCords.top, left: (submitFormCords.left), opacity: submitFormCords.opacity }} ref={scheduleRef} className={styles.schedule_form_wrapper}>
+          <div style={{ top: submitFormCords.top, left: (submitFormCords.left), opacity: submitFormCords.opacity,pointerEvents:submitFormCords.opacity?"all":"none" }} ref={scheduleRef} className={styles.schedule_form_wrapper}>
             <h4 className={styles.form_schedule_heading}>Add Schedule</h4>
             <div className='mt1'>
               <div className="input-wrapper">
