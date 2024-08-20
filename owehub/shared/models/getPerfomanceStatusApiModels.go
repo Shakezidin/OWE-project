@@ -124,6 +124,10 @@ type ProjectResponse struct {
 	PtoInProcess                 string            `json:"pto_in_process"`
 	PtoSubmitted                 string            `json:"pto_submitted"`
 	PtoCompleted                 string            `json:"pto_completed"`
+	CadReady                     string            `json:"cad_ready"`
+	BatteryScheduleDate          string            `json:"battery_scheduled_date"`
+	BatteryCompleteDate          string            `json:"battery_complete_date"`
+	FinCreatedDate               string            `json:"fin_created_date"`
 	SystemSize                   float64           `json:"system_size"`
 	AddersTotal                  string            `json:"adders_total"`
 	AdderBreakDownAndTotalString string            `json:"adder_breakdown_and_total_string"`
@@ -172,6 +176,10 @@ var ColumnToField = map[string]string{
 	"pto_created_date":             "PtoInProcess",
 	"pto_submitted_date":           "PtoSubmitted",
 	"pto_date":                     "PtoCompleted",
+	"cad_ready":                    "CadReady",
+	"battery_scheduled_date":       "BatteryScheduleDate",
+	"battery_complete_date":        "BatteryCompleteDate",
+	"fin_created_date":             "FinCreatedDate",
 	"system_size":                  "SystemSize",
 	"adders_total":                 "AddersTotal",
 	"adder_breakdown_and_total":    "AdderBreakDownAndTotalString",

@@ -122,7 +122,8 @@ func ProjectMngmntRetrieveQueryFunc() string {
         mpu_created_date, mpu_scheduled_date, mpu_complete_date,
         derate_created_date, derate_scheduled_date, derate_completed_date,
         trenching_ws_open, trenching_scheduled, trenching_completed,
-        adder_breakdown_and_total, adders_total,cad_complete_date,active_date
+        adder_breakdown_and_total, adders_total,cad_complete_date,active_date,cad_ready,
+        battery_scheduled_date,battery_complete_date,fin_created_date
         FROM consolidated_data_view
     `
 	return ProjectMngmntRetrieveQuery
