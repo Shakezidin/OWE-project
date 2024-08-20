@@ -67,6 +67,7 @@ import BatteryBackup from './ui/pages/batterBackupCalculator';
 import BatteryAmp from './ui/pages/batterBackupCalculator/components/BatteryAmp';
 import SrImageUpload from './ui/pages/SrImageUpload/SrImageUpload';
 import Dba from './ui/pages/configure/dba/dba';
+import Slack from './ui/pages/configure/slack/slack';
 import RepCredit from './ui/pages/configure/REP CREDIT/repcredit';
 import RepStatus from './ui/pages/configure/repstatus/repstatus';
 import NotFound from './ui/pages/NotFound/NotFound';
@@ -150,6 +151,7 @@ function App() {
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
         <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
         <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
+        <Route path={ROUTES.CONFIG_SLACK} element={<Slack />} />
         <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit />} />
         <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus />} />
         <Route path={ROUTES.CONFIG_REPINCENT} element={<RepIncent />} />

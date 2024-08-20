@@ -16,7 +16,7 @@ import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassw
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
-import { ROUTES } from '../../../routes/routes';
+import ChatSupport from './ChatSupport';
 
 function useWindowWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -107,6 +107,7 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
+      {/* <ChatSupport /> */}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
