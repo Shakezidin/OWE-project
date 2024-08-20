@@ -14,6 +14,21 @@
   justify-content: space-between;
 }
 
+.copy-message {
+  color: #28a745; /* Green color for success */
+  font-size: 0.9rem;
+  margin-top: 5px;
+  animation: fadeOut 2s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 
 .link-head{
   display: flex;

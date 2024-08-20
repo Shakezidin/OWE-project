@@ -52,7 +52,7 @@ const data = [
 ];
 
 const ProjectStatus = () => {
-  const { projects, projectDetail, isLoading } = useAppSelector(
+  const { projects, projectDetail, isLoading, otherlinks } = useAppSelector(
     (state) => state.projectManagement
   );
   const location = useLocation();
@@ -677,7 +677,7 @@ const ProjectStatus = () => {
                   // alignItems: 'center',
                 }}
               >
-                <Proj_pie_chart />
+                <Proj_pie_chart projectDetail={otherlinks}/>
               </div>
             </div>
           </div>
