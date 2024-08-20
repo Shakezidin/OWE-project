@@ -664,15 +664,6 @@ func getCadColor(createdDate, completedDate string) (string, int64, string) {
 	return "#E9E9E9", 0, ""
 }
 
-func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64, string) {
-	if permitApprovedDate != "" && IcApprovedDate != "" {
-		return "#63ACA3", 1, permitApprovedDate
-	} else if permitSubmittedDate != "" && IcSubmittedDate != "" {
-		return "#377CF6", 0, permitSubmittedDate
-	}
-	return "#E9E9E9", 0, ""
-}
-
 func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64, string) {
 	if roofingCompleteDate != "" {
 		return "#63ACA3", 1, roofingCompleteDate
@@ -680,38 +671,6 @@ func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64,
 		return "#377CF6", 0, roofingCreateDate
 	}
 	return "", 0, ""
-}
-
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64, string) {
-	if batteryScheduleDate != "" && batteryCompleted != "" && PvInstallcompletedDate != "" {
-		return "#63ACA3", 1, batteryCompleted
-	} else if pvInstallCreatedate != "" {
-		return "#377CF6", 0, pvInstallCreatedate
-	}
-	return "#E9E9E9", 0, ""
-}
-
-func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
-	if derateCreateDate != "" {
-		if derateCompleteDate != "" {
-			return "#63ACA3", 1, derateCompleteDate
-		}
-	} else if mpuCompletedDate != "" {
-		return "#63ACA3", 1, mpuCompletedDate
-	}
-
-	if TrenchingWSOpen != "" {
-		if TrenchingCompleted != "" {
-			return "#63ACA3", 1, TrenchingCompleted
-		}
-		return "#377CF6", 0, TrenchingWSOpen
-	}
-
-	if mpuCreateDate != "" || derateCreateDate != "" || TrenchingWSOpen != "" {
-		return "#377CF6", 0, mpuCreateDate
-	}
-
-	return "#E9E9E9", 0, ""
 }
 
 func InspectionColor(finCreateddate, finPassdate string) (string, int64, string) {
@@ -729,5 +688,146 @@ func activationColor(ptoSubmittedDate, ptodate string) (string, int64, string) {
 	} else if ptoSubmittedDate != "" {
 		return "#377CF6", 0, ptoSubmittedDate
 	}
+	return "#E9E9E9", 0, ""
+}
+
+// func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64, string) {
+// 	if permitApprovedDate != "" && IcApprovedDate != "" {
+// 		return "#63ACA3", 1, permitApprovedDate
+// 	} else if permitSubmittedDate != "" && IcSubmittedDate != "" {
+// 		return "#377CF6", 0, permitSubmittedDate
+// 	}
+// 	return "#E9E9E9", 0, ""
+// }
+
+// func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64, string) {
+// 	if batteryScheduleDate != "" && batteryCompleted != "" && PvInstallcompletedDate != "" {
+// 		return "#63ACA3", 1, batteryCompleted
+// 	} else if pvInstallCreatedate != "" {
+// 		return "#377CF6", 0, pvInstallCreatedate
+// 	}
+// 	return "#E9E9E9", 0, ""
+// }
+
+// func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
+// 	if derateCreateDate != "" {
+// 		if derateCompleteDate != "" {
+// 			return "#63ACA3", 1, derateCompleteDate
+// 		}
+// 	} else if mpuCompletedDate != "" {
+// 		return "#63ACA3", 1, mpuCompletedDate
+// 	}
+
+// 	if TrenchingWSOpen != "" {
+// 		if TrenchingCompleted != "" {
+// 			return "#63ACA3", 1, TrenchingCompleted
+// 		}
+// 		return "#377CF6", 0, TrenchingWSOpen
+// 	}
+
+// 	if mpuCreateDate != "" || derateCreateDate != "" || TrenchingWSOpen != "" {
+// 		return "#377CF6", 0, mpuCreateDate
+// 	}
+
+// 	return "#E9E9E9", 0, ""
+// }
+
+func parseDate(dateStr string) time.Time {
+	layout := "2006-01-02" // Adjust layout as needed, e.g., "2006-01-02 15:04:05" for full datetime
+	t, err := time.Parse(layout, dateStr)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error parsing date:", err)
+		return time.Time{}
+	}
+	return t
+}
+
+func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64, string) {
+	permitApprovedDateParsed := parseDate(permitApprovedDate)
+	IcApprovedDateParsed := parseDate(IcApprovedDate)
+	permitSubmittedDateParsed := parseDate(permitSubmittedDate)
+	IcSubmittedDateParsed := parseDate(IcSubmittedDate)
+
+	if !permitApprovedDateParsed.IsZero() && !IcApprovedDateParsed.IsZero() {
+		latestApprovedDate := permitApprovedDate
+		if IcApprovedDateParsed.After(permitApprovedDateParsed) {
+			latestApprovedDate = IcApprovedDate
+		}
+		return "#63ACA3", 1, latestApprovedDate
+	} else if !permitSubmittedDateParsed.IsZero() && !IcSubmittedDateParsed.IsZero() {
+		latestSubmittedDate := permitSubmittedDate
+		if IcSubmittedDateParsed.After(permitSubmittedDateParsed) {
+			latestSubmittedDate = IcSubmittedDate
+		}
+		return "#377CF6", 0, latestSubmittedDate
+	}
+	return "#E9E9E9", 0, ""
+}
+
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64, string) {
+	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
+	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
+	batteryCompletedParsed := parseDate(batteryCompleted)
+	PvInstallcompletedDateParsed := parseDate(PvInstallcompletedDate)
+
+	if !batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !PvInstallcompletedDateParsed.IsZero() {
+		latestCompletedDate := batteryCompleted
+		if PvInstallcompletedDateParsed.After(batteryCompletedParsed) {
+			latestCompletedDate = PvInstallcompletedDate
+		}
+		return "#63ACA3", 1, latestCompletedDate
+	} else if !pvInstallCreatedateParsed.IsZero() {
+		return "#377CF6", 0, pvInstallCreatedate
+	}
+	return "#E9E9E9", 0, ""
+}
+
+func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
+	mpuCreateDateParsed := parseDate(mpuCreateDate)
+	derateCreateDateParsed := parseDate(derateCreateDate)
+	TrenchingWSOpenParsed := parseDate(TrenchingWSOpen)
+	derateCompleteDateParsed := parseDate(derateCompleteDate)
+	mpuCompletedDateParsed := parseDate(mpuCompletedDate)
+	TrenchingCompletedParsed := parseDate(TrenchingCompleted)
+
+	var latestCreateDate, latestCompleteDate time.Time
+
+	// Check for green (complete dates must be present for all created dates)
+	if !mpuCreateDateParsed.IsZero() && !mpuCompletedDateParsed.IsZero() {
+		latestCompleteDate = mpuCompletedDateParsed
+	}
+	if !derateCreateDateParsed.IsZero() && !derateCompleteDateParsed.IsZero() {
+		if derateCompleteDateParsed.After(latestCompleteDate) {
+			latestCompleteDate = derateCompleteDateParsed
+		}
+	}
+	if !TrenchingWSOpenParsed.IsZero() && !TrenchingCompletedParsed.IsZero() {
+		if TrenchingCompletedParsed.After(latestCompleteDate) {
+			latestCompleteDate = TrenchingCompletedParsed
+		}
+	}
+
+	if latestCompleteDate.After(time.Time{}) {
+		// All required complete dates are present, return green
+		return "#63ACA3", 1, latestCompleteDate.Format("2006-01-02")
+	}
+
+	// Check for blue (at least one create date is present)
+	latestCreateDate = time.Time{}
+	if !mpuCreateDateParsed.IsZero() {
+		latestCreateDate = mpuCreateDateParsed
+	}
+	if !derateCreateDateParsed.IsZero() && derateCreateDateParsed.After(latestCreateDate) {
+		latestCreateDate = derateCreateDateParsed
+	}
+	if !TrenchingWSOpenParsed.IsZero() && TrenchingWSOpenParsed.After(latestCreateDate) {
+		latestCreateDate = TrenchingWSOpenParsed
+	}
+
+	if latestCreateDate.After(time.Time{}) {
+		// Return blue for the latest create date
+		return "#377CF6", 0, latestCreateDate.Format("2006-01-02")
+	}
+
 	return "#E9E9E9", 0, ""
 }

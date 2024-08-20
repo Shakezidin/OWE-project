@@ -157,6 +157,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	var filtersBuilder strings.Builder
+	whereEleList = nil
 	filtersBuilder.WriteString(fmt.Sprintf("select current_live_cad,system_sold_er,podio_link from customers_customers_schema where unique_id = '%s'", dataReq.UniqueId))
 	// Check if there are filters
 	if len(dataReq.UniqueIds) > 0 {
@@ -175,7 +176,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		filtersBuilder.WriteString(") ")
 	}
 	linkQuery := filtersBuilder.String()
-	whereEleList = append(whereEleList, dataReq.UniqueId)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
