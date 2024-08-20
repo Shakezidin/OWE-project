@@ -1,28 +1,133 @@
 .h_screen {
-    min-height: 100vh;
-  }
+  min-height: 100vh;
+}
 
-  .customer_wrapper_list {
-    flex-basis: calc(100%);
-    border-radius: 8px;
-    background-color: #fff;
-    padding-top: 15px;
-    padding-inline: 20px;
-    max-width: 950px;
-  }
-  
-  .srs_new_create {
-    position: relative;
-    width: 44%;
-  }
+.customer_wrapper_list {
+  flex-basis: calc(100%);
+  border-radius: 8px;
+  background-color: #fff;
+  padding-top: 15px;
+  padding-inline: 20px;
+  max-width: 950px;
+  height: 575px;
+}
 
-  .salrep_input_container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 10px;
-  }
+.customer_wrapper_list::-webkit-scrollbar {
+  display: none;
+}
 
-  .react-tel-input .form-control {
-    background-color: #F3F3F3 !important;
-  }
+/* Hide scrollbar for IE, Edge and Firefox */
+.customer_wrapper_list {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.srs_new_create {
+  position: relative;
+  width: 44%;
+  display: inline-block;
+}
+
+.salrep_input_container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.react-tel-input .form-control {
+  background-color: #F3F3F3 !important;
+}
+
+.an_head {
+  margin-left: 33px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333333;
+  margin-top: 4px;
+}
+
+.an_top {
+  font-size: 18px;
+  font-weight: 600;
+
+}
+
+.submitbut {
+  width: 230px;
+  height: 48px;
+  background-color: #377CF6;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submitbut:hover {
+  background-color: #0053e3;
+  transform: scale(1.04);
+}
+
+
+
+
+.tenst_inp {
+  padding-left: 10px;
+  width: 94px;
+  height: 38px;
+  border-radius: 8px;
+  background-color: #F3F3F3;
+  border: none;
+  margin-top: 22px;
+}
+.tenst_inp:focus {
+  outline: none;
+}
+
+.tentaclesicons {
+  position: absolute;
+  top: 65%;
+  /* right: 5px; */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  padding-left: 77px;
+  /* Prevents clicking on the icons from affecting the input */
+}
+
+.tentaclesicons img {
+  width: 12px;
+  /* Adjust the size of the icons as needed */
+  height: 12px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.3s ease;
+}
+.tentaclesicons img:hover {
+  transform: scale(1.2);
+  /* Apply scale transformation on hover */
+}
+
+
+.tentaclesicons img:first-child {
+  margin-bottom: 2px;
+  /* Adjust the spacing between the icons */
+}
+
+.srActionButton {
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0 24px 0;
+  gap: 1rem;
+  /* border-top: 1px solid #d0d5dd; */
+}

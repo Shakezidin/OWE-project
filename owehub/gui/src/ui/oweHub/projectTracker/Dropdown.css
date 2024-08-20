@@ -1,154 +1,150 @@
-.pro-dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .pro-dropdown-toggle {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff;
-    height: 32px;
+.qc-modal {
+  background-color: #fefefe;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  height: 450px;
+  overflow: hidden;
+}
+
+.ntp-modal {
+  background-color: #fefefe;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  height: 679px;
+  overflow: hidden;
+}
+
+.qchead-section {
+  border: 1px solid #d0d5dd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 28px;
+  padding-right: 6px;
+}
+
+.createQualCust {
+  margin-top: 26px;
+  padding-left: 36px;
+  padding-right: 46px;
+  display: flex;
+  flex-direction: column;
+  gap: 37px;
+}
+
+.qc-modal-body {
+  height: 100%;
+  /* Adjust the height for the body content */
+  overflow-y: auto;
+}
+
+.qc-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.qc-content span {
+  font-weight: 500;
+  font-size: 14px;
+  width: 87%;
+}
+
+.qc-stat-comp {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: left;
+  width: 50%;
+}
+
+.qc-stat-comp img {
+  width: 24px;
+  height: 25px;
+}
+
+.qc-status {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qc-status img {
+  width: 12px;
+  height: 8px;
+}
+
+.status.completed {
+  color: #2EAF71;
+}
+
+.status.pending {
+  color: #EBA900;
+}
+
+.status.action {
+  color: #E14514;
+}
+
+.createQCText {
+  font-size: 24px;
+  margin-left: 36px;
+  font-weight: 600;
+}
+
+
+
+
+
+@media screen and (max-width: 767px) {
+  .qc-content span {
     font-size: 12px;
-    font-weight: 600;
-    border-radius: 4px;
-    border: 1px solid #AFAFAF;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .pro-dropdown-toggle:hover{
-    border: 2px solid #377CF6;
-  }
-  
-  .pro-dropdown-menu {
-    position: absolute;
-    top: 103%;
-    right: 1px;
-    z-index: 1;
-    width: 170px;
-    background-color: #fff;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 63%;
   }
 
-  .pro-dropdown-option span{
-    font-size: 12px;
-    color: #377CF6;
+  .createQCText {
+    font-size: 18px;
     font-weight: 500;
-  }
-  
-  .pro-dropdown-option {
-    padding: 8px;
-    gap: 15px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: all 0.3s ease;
-  }
-  
-  .pro-dropdown-option:hover {
-    background-color: #ddebff;
-  }
+}
 
-  
-  .pro-dropdown-buttons {
-    display: none;
-    gap: 5px;
-    transition: all 0.3s ease;
-  }
+.qc-modal {
+  height: 81%;
+}
+.createQualCust{
+  gap: 21px;
+}
+.ntp-modal{
+  height: 562px;
+}
 
-  .pro-dropdown-option:hover .pro-dropdown-buttons{
-    display: flex;
-  }
+.qc-modal-body::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.qc-modal-body::-webkit-scrollbar {
+  display: initial;
+}
 
-  .pro-dropdown-buttons button:hover{
-    background-color: #ffffff;
-    border-radius: 4px;
-  }
-  
-  .pro-dropdown-buttons button {
-    color: #377CF6;
-    font-size: 12px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    transition: all 0.3s ease;
-  }
-  
-  .pro-dropdown-buttons .button-link svg {
-    width: 18px;
-    height: 18px;
-    fill: #007bff;
-  }
-  
-  .pro-dropdown-buttons .button-link:hover svg {
-    fill: #0056b3;
-  }
-  
-  .pro-dropdown-buttons .button-external-link svg {
-    width: 22px;
-    height: 14px;
-    fill: #007bff;
-  }
-  
-  .pro-dropdown-buttons .button-external-link:hover svg {
-    fill: #0056b3;
-  }
+.qc-modal-body::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.qc-modal-body::-webkit-scrollbar-button {
+  display: initial;
+}
+.qc-modal-body::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.qc-modal-body::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
 
-
-  .pro-dropdown-toggle svg {
-    margin-top: 5px;
-    height: 30px;
-    width: 28px;
-    fill: #333;
-  }
-  
-  .pro-dropdown-toggle:hover svg {
-    fill: #000;
-  }
-
-  .createQualCust{
-    margin-top: 30px;
-    padding-left: 36px;
-    padding-right: 46px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-  }
-
-  .qc-modal-body {
-  
-    height: calc(100% - 150px); /* Adjust the height for the body content */
-    overflow-y: auto;
-  }
-
-  .qc-content{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  .qc-stat-comp{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: center;
-  }
-  .qc-stat-comp img{
-    width: 24px;
-    height: 25px;
-  }
+}
