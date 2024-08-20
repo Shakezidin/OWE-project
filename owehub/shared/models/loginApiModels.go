@@ -18,4 +18,5 @@ type LoginResp struct {
 	IsPasswordChangeRequired bool   `json:"is_password_change_required"`
 	AccessToken              string `json:"access_token"`
 	TimeToExpire             int    `json:"time_to_expire_minutes"`
+	DealerName               string `json:"dealer_name"`
 }
