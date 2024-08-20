@@ -98,7 +98,7 @@ const Index = () => {
               <div
                 className={` flex items-center justify-center ${sharedStyles.bg_phone} ${sharedStyles.avatar_circle}`}
               >
-                <LuClock />
+                <img src={ICONS.SystemSize} alt="" />
               </div>
               <div className="ml1">
                 <p style={{ fontSize: 12, color: '#525252' }}>200</p>

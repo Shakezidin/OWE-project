@@ -9,21 +9,21 @@
   border-radius: 16px;
   padding: 20px;
 }
-.project-info{
+.project-info {
   padding: 15px 30px;
   width: 300px;
   background: #ebf3ff;
 }
-.project-info-details{
+.project-info-details {
   width: 240px;
 }
-.project-info-details h3{
+.project-info-details h3 {
   width: 180px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.header-milestone{
+.header-milestone {
   padding: 15px 20px;
   text-align: center;
   width: 100%;
@@ -35,7 +35,7 @@
   padding: 30px;
   background-color: var(--white-color);
 }
-.strips-wrapper{
+.strips-wrapper {
   display: flex;
   gap: 1rem;
   margin-bottom: -20px;
@@ -51,10 +51,6 @@
 
 .project-customer {
   width: 120px;
-}
-
-.calender-wrapper:hover{
-  transform: scale(1.09);
 }
 
 .install-update:hover {
@@ -74,30 +70,28 @@
   transform: translateX(-50%);
 }
 
-.leaderboard-data__btn--active.performance-btn{
-  background-color: #377CF6;
-  border: 1px solid #377CF6;
-
+.leaderboard-data__btn--active.performance-btn {
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
 }
-.leaderboard-data__btn--active.performance-btn:hover{
-  background-color: #377CF6;
-  border: 1px solid #377CF6;
-
+.leaderboard-data__btn--active.performance-btn:hover {
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
 }
 
-.leaderboard-data__btn.inactive-btn{
-  
-  border: 1px solid #377CF6;
-  color:#377CF6
+.leaderboard-data__btn.inactive-btn {
+  border: 1px solid #377cf6;
+  color: #377cf6;
 }
 
-.leaderboard-data__btn.inactive-btn:hover{
-  background-color: #377CF6;
-  color:#FFF;
+.leaderboard-data__btn.inactive-btn:hover {
+  background-color: #377cf6;
+  color: #fff;
 }
 
-
- 
+.leaderboard-data__selected-dates.performance-date {
+  color: #377cf6;
+}
 
 .performance-project-name {
   font-size: 12px;
@@ -116,7 +110,7 @@
   scroll-behavior: smooth;
 }
 
-.performance-milestone-table table thead tr{
+.performance-milestone-table table thead tr {
   background-color: unset;
 }
 
@@ -141,7 +135,6 @@
   font-weight: 550;
   color: var(--page-heading-color);
 }
-
 
 .project-card-container-1 {
   display: flex;
@@ -169,7 +162,7 @@
 .project-card-container-1 .project-card:hover::after {
   opacity: 1;
 }
-.stages-numbers{
+.stages-numbers {
   background: white;
   width: 26px;
   height: 26px;
@@ -257,7 +250,8 @@
   outline-offset: 3px;
   width: 145px;
 }
-.project-card h2, .project-card p{
+.project-card h2,
+.project-card p {
   color: #fff;
   font-weight: 500;
   width: 100px;
@@ -592,21 +586,23 @@
   position: relative;
   margin-top: -2px;
 }
-.proper-select .css-nls0j1-control, .proper-select .css-1aue19k-control{
+.proper-select .css-nls0j1-control,
+.proper-select .css-1aue19k-control {
   height: 3rem;
   width: 100%;
 }
-.proper-select  .css-1n894bm-control, .proper-select .css-xego5g-control{
+.proper-select .css-1n894bm-control,
+.proper-select .css-xego5g-control {
   margin-top: 0;
   height: 3rem;
   width: 100%;
 }
 
-.proper-select .input{
+.proper-select .input {
   height: 50px;
   /* width: 250px;   */
 }
-.search-icon{
+.search-icon {
   position: absolute;
   right: 18px;
   top: 23px;
@@ -702,7 +698,8 @@
   margin: 0 10px;
 }
 
-.milestone-strips, .notch-strip{
+.milestone-strips,
+.notch-strip {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -711,11 +708,11 @@
   height: 50px;
   border-radius: 5px;
   position: relative;
-  transform: skewX(-20deg); 
+  transform: skewX(-20deg);
   transform-origin: bottom left;
 }
 
-.strips-data{
+.strips-data {
   position: absolute;
   margin-bottom: 80px;
   text-transform: uppercase;
@@ -724,7 +721,8 @@
   transform: skewX(20deg);
 }
 
-.strip-title p, .notch-title p{
+.strip-title p,
+.notch-title p {
   transform: skewX(20deg);
   font-weight: 500;
 }
@@ -827,18 +825,18 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #F7F7F7;
+  background: #f7f7f7;
   border-radius: 8px;
 }
 
-.progress-box-container{
+.progress-box-container {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
 .status-indicator {
-  color: #8C8C8C;
+  color: #8c8c8c;
   font-size: 14px;
 }
 
@@ -945,8 +943,8 @@
   }
 }
 
-@media (max-width: 844px){
-  .performance-box-container{
+@media (max-width: 844px) {
+  .performance-box-container {
     width: 100%;
   }
 }
@@ -1018,12 +1016,12 @@
     top: 75px;
   }
 
-  .status-indicator{
+  .status-indicator {
     width: 100%;
     text-align: center;
   }
 
-  .performance-box-container{
+  .performance-box-container {
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -1129,12 +1127,12 @@
     gap: 10px;
   }
 
-  .arrow-wrap{
+  .arrow-wrap {
     margin-right: unset !important;
     flex-direction: column;
   }
 
-  .arrow-dir{
+  .arrow-dir {
     transform: rotate(90deg);
     margin-top: 10px;
   }
@@ -1173,16 +1171,16 @@
     width: 100%;
   }
 
-  .proper-select .select-container{
+  .proper-select .select-container {
     width: 100%;
   }
 
-  .proper-select  .css-1n894bm-control{
+  .proper-select .css-1n894bm-control {
     margin-top: 0;
     width: unset;
   }
 
-  .proper-select .css-xego5g-control{
+  .proper-select .css-xego5g-control {
     margin-top: 0;
     width: 100%;
   }
@@ -1193,51 +1191,49 @@
   }
 }
 
-
-.progress-qc button{
+.progress-qc button {
   width: 56px;
   height: 32px;
-  background-color: #F2F7FF;
-  border: 1px solid #377CF6;
+  background-color: #f2f7ff;
+  border: 1px solid #377cf6;
   font-weight: 500;
   font-size: 12px;
-  color: #377CF6;
+  color: #377cf6;
   cursor: pointer;
   border-radius: 4px;
   z-index: 1;
   transition: all 0.3s ease;
 }
 
-.progress-qc button:hover{
-  background-color: #377CF6;
+.progress-qc button:hover {
+  background-color: #377cf6;
   color: white;
 }
-.progress-qc-acre{
+.progress-qc-acre {
   margin-left: -7px;
   margin-top: -24px;
   z-index: 2;
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  background-color: #E30F0F;
+  background-color: #e30f0f;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.progress-qc-acre span{
+.progress-qc-acre span {
   font-size: 10px;
   font-weight: 600;
-  color: #FFFF;
+  color: #ffff;
 }
 
-
 @media (max-width: 768px) {
-  .progress-qc-acre{
+  .progress-qc-acre {
     margin-left: 160px;
     margin-top: -48px;
   }
-  .project-status-table-title{
+  .project-status-table-title {
     margin-top: 13px;
   }
   .progress-box{

@@ -67,6 +67,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
+  padding-top: 19px;
 }
 
 .active_date {
@@ -102,14 +103,14 @@
 .survey_detail_wrapper {
   padding: 8px 16px;
   border-radius: 6px;
-  background-color: #F8F8F8;
+  background-color: #f8f8f8;
 }
 
 .secondary_schdeule_btn {
   padding: 4px 12px;
   font-size: 14px;
   color: #363636;
-  border: 1px solid #EAECF0;
+  border: 1px solid #eaecf0;
   cursor: pointer;
   background-color: #fff;
   border-radius: 6px;
@@ -118,12 +119,12 @@
 .primary_schdeule_btn {
   padding: 4px 12px;
   font-size: 14px;
-  border: 1px solid #EAECF0;
+  border: 1px solid #eaecf0;
   border-radius: 6px;
   cursor: pointer;
   color: #fff;
   margin-left: 12px;
-  background-color: #4372E9;
+  background-color: #4372e9;
 }
 
 .text_sm {
@@ -132,7 +133,7 @@
 }
 
 .schedule_input {
-  border: 1px solid #F1F1F1;
+  border: 1px solid #f1f1f1;
   border-radius: 6px;
   padding: 8px 12px;
 }
@@ -143,7 +144,7 @@
 
 .schedule_input::placeholder {
   font-size: 14px;
-  color: #ACACAC;
+  color: #acacac;
 }
 
 .surver_filter {
@@ -152,17 +153,8 @@
   padding-bottom: 14px;
 }
 
-.filter_btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  background-color: #fff;
-  border: 1px solid #377cf6;
-  cursor: pointer;
-}
-
 .date_wrapper {
-  padding-bottom: 20px;
+  padding-bottom: 14px;
   border-bottom: 1px solid #d1d5db;
 }
 
@@ -174,15 +166,15 @@
 .survey_progress_container {
   display: grid;
   grid-template-columns: 160px auto;
-  border-bottom: 1px solid #EFEFEF;
+  border-bottom: 1px solid #efefef;
 }
 
 .surveyor_name {
   font-size: 14px;
-  border-right: 1px solid #D1D5DB;
+  border-right: 1px solid #d1d5db;
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding-left: 28px;
   padding-block: 25px;
 }
 
@@ -199,7 +191,7 @@
 }
 
 .bg_available_slot {
-  background: #8CE38A;
+  background: #8ce38a;
   height: 100%;
   display: grid;
   place-items: center;
@@ -214,7 +206,7 @@
 }
 
 .bg_busy_slot {
-  background-color: #E44C4C;
+  background-color: #e44c4c;
   height: 100%;
   cursor: pointer;
   display: grid;
@@ -223,7 +215,7 @@
 }
 
 .text_primary {
-  color: #377CF6;
+  color: #377cf6;
 }
 
 .scheduled_info_container {
@@ -231,7 +223,7 @@
   max-width: 210px;
   min-height: 263px;
   border-radius: 8px;
-  background-color: #E66F7D;
+  background-color: #e66f7d;
   position: fixed;
   transition: opacity 500ms;
   padding: 10px 4px;
@@ -245,7 +237,7 @@
 
 .accepted_btn {
   font-size: 12px;
-  color: #D15A69;
+  color: #d15a69;
   padding: 5px 9px;
   background-color: rgba(255, 255, 255, 0.5);
   border: none;
@@ -261,7 +253,7 @@
   display: grid;
   margin-right: 5px;
   place-items: center;
-  background-color: #D15A69;
+  background-color: #d15a69;
 }
 
 .info_card_heading {
@@ -280,7 +272,7 @@
 .customer_info_wrapper {
   padding-block: 12px;
   padding-left: 11px;
-  background-color: #FF8593;
+  background-color: #ff8593;
   padding-right: 4px;
   margin-top: 19px;
   color: #fff;
@@ -307,7 +299,7 @@
 
 .available_btn {
   background-color: #fff;
-  color: #8CE38A;
+  color: #8ce38a;
   padding: 0;
   width: 24px;
   display: grid;
@@ -340,7 +332,13 @@
   position: absolute;
   left: 0;
   right: 0;
-  background: repeating-linear-gradient(-80deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px);
+  background: repeating-linear-gradient(
+    -80deg,
+    #606dbc,
+    #606dbc 10px,
+    #465298 10px,
+    #465298 20px
+  );
 }
 
 .half_hour_span {
@@ -361,13 +359,13 @@
   width: 2px;
   height: 100%;
   top: 0;
-  background-color: #377CF6;
+  background-color: #377cf6;
   pointer-events: none;
   z-index: 1;
 }
 
 .absolute_vertical_line::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 0;
   height: 0;
@@ -375,5 +373,5 @@
   left: -10px;
   border-left: 11px solid transparent;
   border-right: 11px solid transparent;
-  border-top: 18px solid #377CF6;
+  border-top: 18px solid #377cf6;
 }

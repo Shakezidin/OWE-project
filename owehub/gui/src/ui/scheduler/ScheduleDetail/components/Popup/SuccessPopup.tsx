@@ -1,29 +1,38 @@
-import React from 'react'
-import styles from "./styles/index.module.css"
-import email from "../../../../../resources/assets/sucess_email.png"
-const SuccessPopup = () => {
+import React, { SetStateAction } from 'react';
+import styles from './styles/index.module.css';
+import email from '../../../../../resources/assets/sucess_email.png';
+const SuccessPopup = ({
+  setIsOpen,
+}: {
+  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+}) => {
   return (
-    <div className={styles.popup_background} >
+    <div className={styles.popup_background}>
       <div className={styles.popup_card_wrapper}>
-        <img width={395} src={email} className='block mx-auto' alt="" />
+        <img width={395} src={email} className="block mx-auto" alt="" />
         <div className="mt3">
-          <h2 className={`text-center ${styles.popup_title}`}>Email Confirmation</h2>
-          <p style={{ maxWidth: 548 }} className='mx-auto text-center mt2'>
+          <h2 className={`text-center ${styles.popup_title}`}>
+            Email Confirmation
+          </h2>
+          <p style={{ maxWidth: 548 }} className="mx-auto text-center mt2">
             Appointment successfully scheduled for site survey with
-
-            <span className='ml1' style={{ color: "#4372E9" }}>
+            <span className="ml1" style={{ color: '#4372E9' }}>
               Alex Simon
-            </span>  .   
-            
-            We have sent email to aronchiban2345@gmail.com
-            to confirm their availability.
+            </span>{' '}
+            . We have sent email to aronchiban2345@gmail.com to confirm their
+            availability.
           </p>
 
-          <button className={styles.success_btn}>Great</button>
+          <button
+            className={styles.success_btn}
+            onClick={() => setIsOpen((prev) => !prev)}
+          >
+            Great
+          </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SuccessPopup
+export default SuccessPopup;

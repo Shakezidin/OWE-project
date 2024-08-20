@@ -26,6 +26,12 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
+const (
+	green = "#63ACA3"
+	blue  = "#377CF6"
+	grey  = "#E9E9E9"
+)
+
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                error
@@ -123,7 +129,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		dataReq.DealerName = dealerName
 
 		switch role {
-		case "Admin":
+		case "Admin", "Finance Admin":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
 		case "Dealer Owner":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
@@ -648,47 +654,47 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 
 func getSurveyColor(scheduledDate, completedDate string) (string, int64, string) {
 	if completedDate != "" {
-		return "#63ACA3", 1, completedDate
+		return green, 0, completedDate
 	} else if scheduledDate != "" {
-		return "#377CF6", 0, scheduledDate
+		return blue, 1, scheduledDate
 	}
-	return "#E9E9E9", 0, ""
+	return grey, 1, ""
 }
 
 func getCadColor(createdDate, completedDate string) (string, int64, string) {
 	if completedDate != "" {
-		return "#63ACA3", 1, completedDate
+		return green, 0, completedDate
 	} else if createdDate != "" {
-		return "#377CF6", 0, createdDate
+		return blue, 1, createdDate
 	}
-	return "#E9E9E9", 0, ""
+	return grey, 1, ""
 }
 
 func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64, string) {
 	if roofingCompleteDate != "" {
-		return "#63ACA3", 1, roofingCompleteDate
+		return green, 0, roofingCompleteDate
 	} else if roofingCreateDate != "" {
-		return "#377CF6", 0, roofingCreateDate
+		return blue, 1, roofingCreateDate
 	}
-	return "", 0, ""
+	return "", 1, ""
 }
 
 func InspectionColor(finCreateddate, finPassdate string) (string, int64, string) {
 	if finPassdate != "" {
-		return "#63ACA3", 1, finPassdate
+		return green, 0, finPassdate
 	} else if finCreateddate != "" {
-		return "#377CF6", 0, finCreateddate
+		return blue, 1, finCreateddate
 	}
-	return "#E9E9E9", 0, ""
+	return grey, 1, ""
 }
 
 func activationColor(ptoSubmittedDate, ptodate string) (string, int64, string) {
 	if ptodate != "" {
-		return "#63ACA3", 1, ptodate
+		return green, 0, ptodate
 	} else if ptoSubmittedDate != "" {
-		return "#377CF6", 0, ptoSubmittedDate
+		return blue, 1, ptoSubmittedDate
 	}
-	return "#E9E9E9", 0, ""
+	return grey, 1, ""
 }
 
 // func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64, string) {
@@ -753,15 +759,15 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 		if IcApprovedDateParsed.After(permitApprovedDateParsed) {
 			latestApprovedDate = IcApprovedDate
 		}
-		return "#63ACA3", 1, latestApprovedDate
+		return green, 0, latestApprovedDate
 	} else if !permitSubmittedDateParsed.IsZero() && !IcSubmittedDateParsed.IsZero() {
 		latestSubmittedDate := permitSubmittedDate
 		if IcSubmittedDateParsed.After(permitSubmittedDateParsed) {
 			latestSubmittedDate = IcSubmittedDate
 		}
-		return "#377CF6", 0, latestSubmittedDate
+		return blue, 1, latestSubmittedDate
 	}
-	return "#E9E9E9", 0, ""
+	return grey, 1, ""
 }
 
 func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64, string) {
@@ -775,11 +781,11 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, Pv
 		if PvInstallcompletedDateParsed.After(batteryCompletedParsed) {
 			latestCompletedDate = PvInstallcompletedDate
 		}
-		return "#63ACA3", 1, latestCompletedDate
+		return green, 0, latestCompletedDate
 	} else if !pvInstallCreatedateParsed.IsZero() {
-		return "#377CF6", 0, pvInstallCreatedate
+		return blue, 1, pvInstallCreatedate
 	}
-	return "#E9E9E9", 0, ""
+	return grey, 1, ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
@@ -809,7 +815,7 @@ func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCom
 
 	if latestCompleteDate.After(time.Time{}) {
 		// All required complete dates are present, return green
-		return "#63ACA3", 1, latestCompleteDate.Format("2006-01-02")
+		return green, 0, latestCompleteDate.Format("2006-01-02")
 	}
 
 	// Check for blue (at least one create date is present)
@@ -826,8 +832,8 @@ func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCom
 
 	if latestCreateDate.After(time.Time{}) {
 		// Return blue for the latest create date
-		return "#377CF6", 0, latestCreateDate.Format("2006-01-02")
+		return blue, 1, latestCreateDate.Format("2006-01-02")
 	}
 
-	return "#E9E9E9", 0, ""
+	return grey, 1, ""
 }
