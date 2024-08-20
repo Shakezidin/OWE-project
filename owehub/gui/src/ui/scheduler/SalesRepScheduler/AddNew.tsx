@@ -8,6 +8,9 @@ import SelectOption from '../../components/selectOption/SelectOption';
 import CheckboxSlider from './components/Checkbox';
 import { validateEmail } from '../../../utiles/Validation';
 import { ICONS } from '../../../resources/icons/Icons';
+import { useNavigate } from 'react-router-dom';
+import SalesRepSchedulePage from './SuccessSales';
+
 
 interface FormInput
   extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
@@ -24,6 +27,7 @@ const AddNew = () => {
     house: '',
     size: ''
   });
+  const navigate = useNavigate();
   const options1 = [
     { value: 'today', label: 'Table 1 Data' },
     { value: 'this_week', label: 'Table 2 Data' },
@@ -81,13 +85,31 @@ const AddNew = () => {
       setErrors(err);
     }
   };
+
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
+  const filterClose = () => setFilterOpen(false);
+
+  const filter = () => {
+    setFilterOpen(true);
+  };
+
+  const handleSubmit = (e:any) => {
+    e.preventDefault();
+    filter();
+  };
+
   return (
     <>
+    <SalesRepSchedulePage
+        isOpen={filterOPen}
+        handleClose={filterClose}
+      />
       <div className={styles.an_top}>Add New Project</div>
       <div className={`flex justify-between mt2 ${styles.h_screen}`}>
 
         <div className={styles.customer_wrapper_list}>
-          <form>
+        <form onSubmit={handleSubmit}>
             <div className="modal-body">
               <div className={styles.an_head}>Enter Customer Information</div>
               <div className="scroll-user">
