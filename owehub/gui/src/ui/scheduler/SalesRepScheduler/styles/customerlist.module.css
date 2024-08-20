@@ -61,8 +61,9 @@
     align-items: center;
   }
   .filtericon{
+    display: flex;
+    justify-content: center;
     align-items: center;
-   text-align: center;
     height: 40px;
     width: 42px;
     border-radius: 50%;
@@ -72,10 +73,9 @@
   }
   .filtericon:hover{
     background-color: #005eff;
-    transform: scale(1.03);
+    transform: scale(1.04);
   }
   .filtericon img{
-    margin-top: 11px;
     height: 19px;
     width: 19px;
   }
