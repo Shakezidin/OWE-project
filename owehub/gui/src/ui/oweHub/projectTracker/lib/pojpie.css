@@ -13,6 +13,16 @@
   justify-content: space-between;
 }
 
+.disable-btn{
+  cursor: not-allowed !important;
+  opacity: 0.5;
+}
+.disable-btn:hover{
+  background-color: #fff !important;
+  color: #377cf6 !important;
+  transform: unset;
+}
+
 .copy-message {
   color: #28a745; /* Green color for success */
   font-size: 0.9rem;
