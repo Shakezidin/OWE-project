@@ -155,22 +155,7 @@ const ProjectPerformence = () => {
     return () => toast.dismiss();
   }, []);
 
-  useEffect(() => {
-    const current = format(new Date(), 'yyyy-MM-dd');
-    dispatch(
-      getPerfomance({
-        startdate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
-        enddate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
-      })
-    );
-    return () => {
-      const expirationTime = localStorage.getItem('expirationTime');
-      const currentTime = Date.now();
-      if (expirationTime && currentTime < parseInt(expirationTime, 10)) {
-        toast.dismiss();
-      }
-    };
-  }, [selectedRangeDate.start, selectedRangeDate.end]);
+ 
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -223,14 +208,13 @@ const ProjectPerformence = () => {
     },
   ];
   
-
   useEffect(() => {
     dispatch(
       getPerfomanceStatus({
         page,
         perPage,
-        startDate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
-        endDate: selectedRangeDate.end ? format(selectedRangeDate.end, 'dd-MM-yyyy') : '',
+        startDate: selectedProject?.value ? '' : selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
+        endDate: selectedProject?.value ? '' : selectedRangeDate.end ? format(selectedRangeDate.end, 'dd-MM-yyyy') : '',
         uniqueId: selectedProject?.value || '',
       })
     );
