@@ -123,7 +123,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		dataReq.DealerName = dealerName
 
 		switch role {
-		case "Admin":
+		case "Admin", "Finance Admin":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
 		case "Dealer Owner":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
