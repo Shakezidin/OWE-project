@@ -82,15 +82,15 @@
 }
 
 .status.completed {
-  color: #2EAF71;
+  color: #2eaf71;
 }
 
 .status.pending {
-  color: #EBA900;
+  color: #eba900;
 }
 
 .status.action {
-  color: #E14514;
+  color: #e14514;
 }
 
 .createQCText {
@@ -98,10 +98,6 @@
   margin-left: 36px;
   font-weight: 600;
 }
-
-
-
-
 
 @media screen and (max-width: 767px) {
   .qc-content span {
@@ -112,39 +108,38 @@
   .createQCText {
     font-size: 18px;
     font-weight: 500;
-}
+  }
 
-.qc-modal {
-  height: 81%;
-}
-.createQualCust{
-  gap: 21px;
-}
-.ntp-modal{
-  height: 562px;
-}
+  .qc-modal {
+    height: 81%;
+  }
+  .createQualCust {
+    gap: 21px;
+  }
+  .ntp-modal {
+    height: 562px;
+  }
 
-.qc-modal-body::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-.qc-modal-body::-webkit-scrollbar {
-  display: initial;
-}
+  .qc-modal-body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .qc-modal-body::-webkit-scrollbar {
+    display: initial;
+  }
 
-.qc-modal-body::-webkit-scrollbar-thumb {
-  background-color: rgb(173, 173, 173);
-  border-radius: 30px;
-}
-.qc-modal-body::-webkit-scrollbar-button {
-  display: initial;
-}
-.qc-modal-body::-webkit-scrollbar {
-  -ms-overflow-style: initial;
-  scrollbar-width: thin;
-}
-.qc-modal-body::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
+  .qc-modal-body::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+  .qc-modal-body::-webkit-scrollbar-button {
+    display: initial;
+  }
+  .qc-modal-body::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  .qc-modal-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
 }

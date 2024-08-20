@@ -10,11 +10,7 @@ const CheckboxSlider = () => {
 
   return (
     <label className="checkbox-slider">
-      <input
-        type="checkbox"
-        checked={isChecked}
-        onChange={handleToggle}
-      />
+      <input type="checkbox" checked={isChecked} onChange={handleToggle} />
       <span className="check-slider"></span>
     </label>
   );

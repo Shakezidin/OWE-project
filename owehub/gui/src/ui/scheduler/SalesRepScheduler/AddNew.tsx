@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import Input from '../../components/text_input/Input'
-import { ActionButton } from '../../components/button/ActionButton'
+import React, { useState } from 'react';
+import Input from '../../components/text_input/Input';
+import { ActionButton } from '../../components/button/ActionButton';
 import styles from './styles/addnew.module.css';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -11,10 +11,8 @@ import { ICONS } from '../../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import SalesRepSchedulePage from './SuccessSales';
 
-
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
-
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
 const AddNew = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +23,7 @@ const AddNew = () => {
     mobile_number: '',
     address: '',
     house: '',
-    size: ''
+    size: '',
   });
   const navigate = useNavigate();
   const options1 = [
@@ -39,8 +37,8 @@ const AddNew = () => {
   const [emailError, setEmailError] = useState('');
   const [count, setCount] = useState(0);
 
-  const handleIncrement = () => { 
-      setCount(count + 1);
+  const handleIncrement = () => {
+    setCount(count + 1);
   };
 
   const handleDecrement = () => {
@@ -94,29 +92,23 @@ const AddNew = () => {
     setFilterOpen(true);
   };
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     filter();
   };
 
   return (
     <>
-    <SalesRepSchedulePage
-        isOpen={filterOPen}
-        handleClose={filterClose}
-      />
+      <SalesRepSchedulePage isOpen={filterOPen} handleClose={filterClose} />
       <div className={styles.an_top}>Add New Project</div>
       <div className={`flex justify-between mt2 ${styles.h_screen}`}>
-
         <div className={styles.customer_wrapper_list}>
-        <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="modal-body">
               <div className={styles.an_head}>Enter Customer Information</div>
               <div className="scroll-user">
                 <div className="createProfileInputView">
                   <div className="createProfileTextView">
-
-
                     <div className={styles.salrep_input_container}>
                       <div className={styles.srs_new_create}>
                         <Input
@@ -189,7 +181,10 @@ const AddNew = () => {
                         )}
                       </div>
 
-                      <div className={styles.srs_new_create} style={{ marginTop: "-4px" }}>
+                      <div
+                        className={styles.srs_new_create}
+                        style={{ marginTop: '-4px' }}
+                      >
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
                           countryCodeEditable={false}
@@ -206,7 +201,6 @@ const AddNew = () => {
                           <p className="error-message">{phoneNumberError}</p>
                         )}
                       </div>
-
                     </div>
 
                     <div className={styles.salrep_input_container}>
@@ -233,7 +227,10 @@ const AddNew = () => {
                         )}
                       </div>
 
-                      <div className={styles.srs_new_create} style={{ marginTop: "-4px" }}>
+                      <div
+                        className={styles.srs_new_create}
+                        style={{ marginTop: '-4px' }}
+                      >
                         <label className="inputLabel-select selected-fields-onboard">
                           Roof Type
                         </label>
@@ -242,27 +239,25 @@ const AddNew = () => {
                           options={options1}
                           value={selectedOption}
                           onChange={(data: any) => {
-                            console.log(data)
+                            console.log(data);
                           }}
                           singleValueStyles={{
                             color: '#292929',
                             fontWeight: '500',
-
                           }}
                           controlStyles={{
-                            backgroundColor: "#F3F3F3", // Add the desired background color here
+                            backgroundColor: '#F3F3F3', // Add the desired background color here
                           }}
-
                           enableHoverEffect={false}
                         />
-
                       </div>
-
                     </div>
 
                     <div className={styles.salrep_input_container}>
-
-                      <div className={styles.srs_new_create} style={{marginTop:"4px"}}>
+                      <div
+                        className={styles.srs_new_create}
+                        style={{ marginTop: '4px' }}
+                      >
                         <label className="inputLabel-select selected-fields-onboard">
                           Stories in House
                         </label>
@@ -277,11 +272,17 @@ const AddNew = () => {
                           onChange={(e) => setCount(Number(e.target.value))}
                         />
                         <div className={styles.tentaclesicons}>
-                          <img src={ICONS.UP} alt="img" onClick={handleIncrement} />
-                          <img src={ICONS.DOWN} alt="img" onClick={handleDecrement} />
-
+                          <img
+                            src={ICONS.UP}
+                            alt="img"
+                            onClick={handleIncrement}
+                          />
+                          <img
+                            src={ICONS.DOWN}
+                            alt="img"
+                            onClick={handleDecrement}
+                          />
                         </div>
-
                       </div>
 
                       <div className={styles.srs_new_create}>
@@ -306,22 +307,19 @@ const AddNew = () => {
                           </span>
                         )}
                       </div>
-
-
-
                     </div>
 
                     <div className={styles.salrep_input_container}>
-
-                      <div className={styles.srs_new_create} style={{marginTop:"4px"}}>
+                      <div
+                        className={styles.srs_new_create}
+                        style={{ marginTop: '4px' }}
+                      >
                         <label className="inputLabel-select selected-fields-onboard">
                           Enable if there is battery installed
                         </label>
-                        <span><CheckboxSlider /></span>
-
-
-
-
+                        <span>
+                          <CheckboxSlider />
+                        </span>
                       </div>
 
                       <div className={styles.srs_new_create}>
@@ -346,11 +344,7 @@ const AddNew = () => {
                           </span>
                         )}
                       </div>
-
-
-
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -361,10 +355,8 @@ const AddNew = () => {
           </form>
         </div>
       </div>
-
     </>
+  );
+};
 
-  )
-}
-
-export default AddNew
+export default AddNew;

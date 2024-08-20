@@ -16,7 +16,6 @@ export interface IProjectStatus {
   pto_date: string;
   site_survey_complete_date: string;
   install_ready_date: string;
-  
 }
 
 export interface ICommision {
@@ -94,7 +93,7 @@ export const getPerfomanceStatus = createAsyncThunk(
       const list = (data.data.perfomance_response_list ||
         []) as IProjectStatus[];
 
-      return { list, count: data.dbRecCount,datacount };
+      return { list, count: data.dbRecCount, datacount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
@@ -109,7 +108,7 @@ interface IState {
   commisionMetrics: ICommision;
   projectStatus: any;
   projectsCount: number;
-  datacount:any;
+  datacount: any;
 }
 
 const initialState: IState = {

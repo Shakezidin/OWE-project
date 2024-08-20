@@ -24,7 +24,6 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { ROUTES } from '../../../routes/routes';
 
-
 interface Child {
   path: string;
   sidebarProps: {
@@ -75,7 +74,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.DEALER_OWNER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-          newArr[0].mob.push(item);
+        newArr[0].mob.push(item);
       });
       return newArr;
     } else if (role === TYPE_OF_USER.APPOINTMENT_SETTER) {
@@ -154,14 +153,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       className={`side-bar-container ${toggleOpen ? 'side-bar-active hidden' : 'show'}`}
     >
       <div
-        className={`side-bar-content ${toggleOpen ? 'side-bar-content-active' : ''
-          }`}
+        className={`side-bar-content ${
+          toggleOpen ? 'side-bar-content-active' : ''
+        }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
         {filteredList.map((el: any, i: number) => (
           <div className="" key={i}>
-           
-
             {isMobile && (
               <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
                 {el.mob?.map((oth: any, index: number) => (
@@ -185,10 +183,11 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
                       }, 500);
                     }}
-                    className={`side-icon-container ${location.pathname === oth.path
+                    className={`side-icon-container ${
+                      location.pathname === oth.path
                         ? 'active-link-bg'
                         : 'not-active-link'
-                      }`}
+                    }`}
                   >
                     <div
                       className={

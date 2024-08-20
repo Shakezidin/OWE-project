@@ -31,8 +31,8 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
     },
     zoom: 11,
   };
-  const key = process.env.REACT_APP_GOOGLE_KEY
-  console.log(key, "key google")
+  const key = process.env.REACT_APP_GOOGLE_KEY;
+  console.log(key, 'key google');
   return (
     <div
       className={styles.customer_wrapper}
@@ -120,14 +120,14 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
           </div>
         </div>
 
-        <div className={`flex  justify-between ${withSecondaryBtn ? "items-end " : "mt1"}`}>
+        <div
+          className={`flex  justify-between ${withSecondaryBtn ? 'items-end ' : 'mt1'}`}
+        >
           <div
             style={{ flexBasis: 250 }}
             className=" flex justify-between flex-column"
           >
-            {
-
-              !withSecondaryBtn &&
+            {!withSecondaryBtn && (
               <div className="mt3">
                 <h4
                   style={{
@@ -147,9 +147,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
                   Cancelled
                 </span>{' '}
               </div>
-
-
-            }
+            )}
             <div className="flex items-center ">
               <button
                 className={`${styles.primary_btn}  ${styles.schedule_btn}`}
@@ -170,7 +168,9 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
           <div>
             <div className={styles.map_wrapper} style={mapStyles}>
               <GoogleMapReact
-                bootstrapURLKeys={{ key: 'AIzaSyARz_js0ZPhw2zRvfcsj6SRc0NR19jWvmc' }}
+                bootstrapURLKeys={{
+                  key: 'AIzaSyARz_js0ZPhw2zRvfcsj6SRc0NR19jWvmc',
+                }}
                 defaultCenter={defaultProps.center}
                 defaultZoom={defaultProps.zoom}
                 yesIWantToUseGoogleMapApiInternals

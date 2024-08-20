@@ -100,8 +100,6 @@ const ProjectPerformence = () => {
     key: 'selection',
   });
 
-
-
   const [tileData, setTileData] = useState<any>({});
 
   const [selectedRangeDate, setSelectedRangeDate] = useState<any>({
@@ -138,12 +136,9 @@ const ProjectPerformence = () => {
     })
   );
 
-  const {
-    projectStatus,
-    projectsCount,
-    datacount,
-    isLoading,
-  } = useAppSelector((state) => state.perfomanceSlice);
+  const { projectStatus, projectsCount, datacount, isLoading } = useAppSelector(
+    (state) => state.perfomanceSlice
+  );
   const { sessionTimeout } = useAppSelector((state) => state.auth);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -159,8 +154,12 @@ const ProjectPerformence = () => {
     const current = format(new Date(), 'yyyy-MM-dd');
     dispatch(
       getPerfomance({
-        startdate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
-        enddate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
+        startdate: selectedRangeDate.start
+          ? format(selectedRangeDate.start, 'dd-MM-yyyy')
+          : '',
+        enddate: selectedRangeDate.start
+          ? format(selectedRangeDate.start, 'dd-MM-yyyy')
+          : '',
       })
     );
     return () => {
@@ -188,7 +187,6 @@ const ProjectPerformence = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
 
   const periodFilterOptions: any = [
     {
@@ -222,15 +220,18 @@ const ProjectPerformence = () => {
       end: today,
     },
   ];
-  
 
   useEffect(() => {
     dispatch(
       getPerfomanceStatus({
         page,
         perPage,
-        startDate: selectedRangeDate.start ? format(selectedRangeDate.start, 'dd-MM-yyyy') : '',
-        endDate: selectedRangeDate.end ? format(selectedRangeDate.end, 'dd-MM-yyyy') : '',
+        startDate: selectedRangeDate.start
+          ? format(selectedRangeDate.start, 'dd-MM-yyyy')
+          : '',
+        endDate: selectedRangeDate.end
+          ? format(selectedRangeDate.end, 'dd-MM-yyyy')
+          : '',
         uniqueId: selectedProject?.value || '',
       })
     );
@@ -391,7 +392,6 @@ const ProjectPerformence = () => {
     return (
       <div className="flex items-center justify-end">
         <div className="leaderborder_filter-slect-wrapper mr1">
-          
           <Select
             options={periodFilterOptions}
             value={selected}
@@ -549,7 +549,6 @@ const ProjectPerformence = () => {
       </ul>
     );
   };
-  
 
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
@@ -563,19 +562,18 @@ const ProjectPerformence = () => {
         marginLeftMobile="12px"
       />
       <div className="project-container">
-      <div className="leaderboard-data__selected-dates performance-date">
-          { selectedRangeDate.start && selectedRangeDate.end ?
-          <>
+        <div className="leaderboard-data__selected-dates performance-date">
+          {selectedRangeDate.start && selectedRangeDate.end ? (
+            <>
               {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
               {format(selectedRangeDate.end, 'dd MMM yyyy')}
-              </> 
-          : null}     
-            </div>
+            </>
+          ) : null}
+        </div>
         <div className="project-heading">
           <h2>Total Count</h2>
-          
+
           <div className="flex items-center justify-end">
-            
             <PeriodFilter
               resetPage={resetPage}
               period={selectedRangeDate}
@@ -612,11 +610,14 @@ const ProjectPerformence = () => {
                     >
                       {card.id}
                     </span>
-                    <p>{card.title || "N/A"}</p>
-                    <h2>{card.value || "N/A"}</h2>
+                    <p>{card.title || 'N/A'}</p>
+                    <h2>{card.value || 'N/A'}</h2>
                   </div>
                   {index < topCardsData.length - 1 && (
-                    <div className="flex arrow-dir" style={{ padding: '0 5px' }}>
+                    <div
+                      className="flex arrow-dir"
+                      style={{ padding: '0 5px' }}
+                    >
                       <MdOutlineKeyboardDoubleArrowRight
                         style={{
                           width: '1.5rem',
@@ -662,7 +663,6 @@ const ProjectPerformence = () => {
                   width="190px"
                   controlStyles={{ marginTop: 0 }}
                 />
-
               </div>
               <div className="performance-box-container">
                 <p className="status-indicator">Status indicators</p>
@@ -764,7 +764,11 @@ const ProjectPerformence = () => {
                                     {project.site_survey_date ? (
                                       <p>{project?.site_survey_date}</p>
                                     ) : (
-                                      <p className={`${project.site_survey_colour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                      <p
+                                        className={`${project.site_survey_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                      >
+                                        {'No Data'}
+                                      </p>
                                     )}
                                   </div>
                                 </div>
@@ -779,7 +783,11 @@ const ProjectPerformence = () => {
                                     {project.cad_design_date ? (
                                       <p>{project?.cad_design_date}</p>
                                     ) : (
-                                      <p className={`${project.cad_design_colour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                      <p
+                                        className={`${project.cad_design_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                      >
+                                        {'No Data'}
+                                      </p>
                                     )}
                                   </div>
                                 </div>
@@ -795,7 +803,11 @@ const ProjectPerformence = () => {
                                     {project.permitting_date ? (
                                       <p>{project?.permitting_date}</p>
                                     ) : (
-                                      <p className={`${project.permitting_colour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                      <p
+                                        className={`${project.permitting_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                      >
+                                        {'No Data'}
+                                      </p>
                                     )}
                                   </div>
                                 </div>
@@ -812,7 +824,11 @@ const ProjectPerformence = () => {
                                       {project.roofing_date ? (
                                         <p>{project?.roofing_date}</p>
                                       ) : (
-                                        <p className={`${project.roofing_colour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                        <p
+                                          className={`${project.roofing_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
+                                          {'No Data'}
+                                        </p>
                                       )}
                                     </div>
                                   </div>
@@ -827,7 +843,11 @@ const ProjectPerformence = () => {
                                     {project.install_date ? (
                                       <p>{project?.install_date}</p>
                                     ) : (
-                                      <p className={`${project.install_colour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                      <p
+                                        className={`${project.install_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                      >
+                                        {'No Data'}
+                                      </p>
                                     )}
                                   </div>
                                 </div>
@@ -843,7 +863,11 @@ const ProjectPerformence = () => {
                                     {project.electrical_date ? (
                                       <p>{project?.electrical_date}</p>
                                     ) : (
-                                      <p className={`${project.electrical_colour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                      <p
+                                        className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                      >
+                                        {'No Data'}
+                                      </p>
                                     )}
                                   </div>
                                 </div>
@@ -858,7 +882,11 @@ const ProjectPerformence = () => {
                                     {project.inspection_date ? (
                                       <p>{project?.inspection_date}</p>
                                     ) : (
-                                      <p className={`${project.inspectionsColour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                      <p
+                                        className={`${project.inspectionsColour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                      >
+                                        {'No Data'}
+                                      </p>
                                     )}
                                   </div>
                                 </div>
@@ -873,7 +901,11 @@ const ProjectPerformence = () => {
                                     {project.activation_date ? (
                                       <p>{project?.activation_date}</p>
                                     ) : (
-                                      <p className={`${project.activation_colour === "#E9E9E9" ? "text-dark" : "text-white"}`}>{'No Data'}</p>
+                                      <p
+                                        className={`${project.activation_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                      >
+                                        {'No Data'}
+                                      </p>
                                     )}
                                   </div>
                                 </div>

@@ -20,16 +20,10 @@ const Index = () => {
       </div>
       <div className={`flex justify-between mt2 items-start`}>
         <div className={styles.customer_wrapper_list}>
-          
           <CustomersList />
 
           <div className="page-heading-container px0">
-            <p className="page-heading">
-              1 - 10 of 50
-              item
-            </p>
-
-
+            <p className="page-heading">1 - 10 of 50 item</p>
 
             <Pagination
               currentPage={1}
@@ -40,7 +34,6 @@ const Index = () => {
               goToPrevPage={() => 0}
               perPage={10}
             />
-
           </div>
         </div>
         <div className={styles.pending_review_wrapper}>

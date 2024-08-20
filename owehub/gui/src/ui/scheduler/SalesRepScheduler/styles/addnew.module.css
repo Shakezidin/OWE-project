@@ -38,7 +38,7 @@
 }
 
 .react-tel-input .form-control {
-  background-color: #F3F3F3 !important;
+  background-color: #f3f3f3 !important;
 }
 
 .an_head {
@@ -52,13 +52,12 @@
 .an_top {
   font-size: 18px;
   font-weight: 600;
-
 }
 
 .submitbut {
   width: 230px;
   height: 48px;
-  background-color: #377CF6;
+  background-color: #377cf6;
   border-radius: 8px;
   color: #fff;
   font-size: 14px;
@@ -73,15 +72,12 @@
   transform: scale(1.04);
 }
 
-
-
-
 .tenst_inp {
   padding-left: 10px;
   width: 94px;
   height: 38px;
   border-radius: 8px;
-  background-color: #F3F3F3;
+  background-color: #f3f3f3;
   border: none;
   margin-top: 22px;
 }
@@ -115,7 +111,6 @@
   transform: scale(1.2);
   /* Apply scale transformation on hover */
 }
-
 
 .tentaclesicons img:first-child {
   margin-bottom: 2px;
