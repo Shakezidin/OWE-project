@@ -23,3 +23,9 @@
     margin-top: 10px;
   }
 }
+
+@media screen and (max-width: 990px) {
+  .breadcrumb-container{
+    margin-left: 15px;
+  }
+}

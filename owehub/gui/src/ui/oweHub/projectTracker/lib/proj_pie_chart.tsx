@@ -10,7 +10,7 @@ const proj_pie_chart = () => {
   return (
     <>
     <div className='pm-doc-heading'>
-       Documents Links
+       Resources
     </div>
 
     <div className='pc-links'>
@@ -67,7 +67,7 @@ const proj_pie_chart = () => {
 
       <div className='pc-link'>
         <div className='link-head'>
-          <h3>Include Contract</h3>
+          <h3>Contract</h3>
           <span>Got to Document for more info</span>
         </div>
 

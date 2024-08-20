@@ -106,45 +106,60 @@
 @media screen and (max-width: 767px) {
   .qc-content span {
     font-size: 12px;
-    width: 63%;
+    width: 70%;
   }
 
   .createQCText {
     font-size: 18px;
     font-weight: 500;
-}
+  }
 
-.qc-modal {
-  height: 81%;
-}
-.createQualCust{
-  gap: 21px;
-}
-.ntp-modal{
-  height: 562px;
-}
+  .qc-stat-comp{
+    margin-left: 1rem;
+  }
 
-.qc-modal-body::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-.qc-modal-body::-webkit-scrollbar {
-  display: initial;
-}
+  .qc-modal {
+    margin: 10px;
+  }
 
-.qc-modal-body::-webkit-scrollbar-thumb {
-  background-color: rgb(173, 173, 173);
-  border-radius: 30px;
-}
-.qc-modal-body::-webkit-scrollbar-button {
-  display: initial;
-}
-.qc-modal-body::-webkit-scrollbar {
-  -ms-overflow-style: initial;
-  scrollbar-width: thin;
-}
-.qc-modal-body::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
+  .createQualCust {
+    gap: 21px;
+  }
+
+  .ntp-modal {
+    margin: 10px;
+    height: 640px;
+  }
+
+  .createQualCust{
+    padding-right: unset;
+  }
+
+  .qc-modal-body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .qc-modal-body::-webkit-scrollbar {
+    display: initial;
+  }
+
+  .qc-modal-body::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+
+  .qc-modal-body::-webkit-scrollbar-button {
+    display: initial;
+  }
+
+  .qc-modal-body::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+
+  .qc-modal-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
 
 }

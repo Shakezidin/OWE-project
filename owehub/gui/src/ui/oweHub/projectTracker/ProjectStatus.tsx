@@ -568,10 +568,11 @@ const ProjectStatus = () => {
               className="px1 project-card-wrapper  bg-white rounded-16"
               style={{ paddingInline: 16, paddingBottom: 16 }}
             >
-              <div className="project-heading project-status-heading mb3">
+              <div className="project-heading project-status-heading">
                 <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
-                <div className="pro-status-dropdown" style={{ minWidth: 200 }}>
-                  <div className="">
+                <div className="pro-status-dropdown">
+                  <div className="status-cust-name">
+                    <span>Customer name:<pre>  Andrew Parker</pre></span>
                     <SelectOption
                       options={projectOption}
                       value={selectedProject}
@@ -589,7 +590,7 @@ const ProjectStatus = () => {
                 {projectStatusHeadData.map((el, i) => (
                   <div
                     key={i}
-                    className={` ${isTablet ? 'col-6' : ' lg-col-3'} px1`}
+                    className={`status-card ${isTablet ? 'col-6' : ' lg-col-3'} px1`}
                     style={{ marginBottom: 10 }}
                   >
                     <div
@@ -689,7 +690,7 @@ const ProjectStatus = () => {
             >
               <div className=" flex items-center project-status-table-title ">
                 <h3>Project Stages</h3>
-                <div className="progress-box-container ml3">
+                <div className="progress-box-container status-boxes ml3">
                   <div className="progress-box-body mt0">
                     <div
                       className="progress-box"
@@ -731,7 +732,7 @@ const ProjectStatus = () => {
 
               <div className=" flex items-center project-status-table-title ">
 
-                <div className="progress-box-container ml3">
+                <div className="progress-box-container status-buttons ml3">
                   <div className="progress-qc mt0" onClick={filter}>
                     <button >QC</button>
                   </div>
