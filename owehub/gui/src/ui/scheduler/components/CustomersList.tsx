@@ -65,7 +65,7 @@ const CustomersList = () => {
           </>
         ) : (
           <>
-            <Customer withSecondaryBtn />
+            <Customer withSecondaryBtn mapStyles={{ height:100 }} />
             <Customer withSecondaryBtn />
             <Customer withSecondaryBtn />
             <Customer withSecondaryBtn />

@@ -4,7 +4,6 @@ import styles from './styles/index.module.css';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { addDays, format, parse, isEqual, isValid } from 'date-fns';
-import { RiFilterLine } from 'react-icons/ri';
 import { generateTimeArray, timeDifference } from '../../../utiles';
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
@@ -16,6 +15,8 @@ import { MdOutlineEmail } from "react-icons/md";
 import { PiPhone } from "react-icons/pi";
 import Pagination from '../../components/pagination/Pagination';
 import SuccessPopup from './components/Popup/SuccessPopup';
+import { Link } from "react-router-dom"
+import FilterDropDown from './components/FilterDropdown/FilterDropDown';
 const current = new Date();
 interface IOptions {
   label: string;
@@ -186,7 +187,7 @@ const Index = () => {
       })
     })
   }, [timeOutIds])
-  console.log(scheduleBtnCord, "btn cords")
+
 
   return (
     <>
@@ -194,9 +195,9 @@ const Index = () => {
         <div className="">
           <h4 className={styles.detail_heading}>Schedule</h4>
           <div className="flex items-center">
-            <h5 style={{ fontSize: 12 }} className={styles.primary_heading}>
-              Customer Queue {`>`}{' '}
-            </h5>
+            <Link to="/scheduler" style={{ fontSize: 12 }} className={styles.primary_heading}>
+            Availability {`>`}{' '}
+            </Link>
             <span className="ml1" style={{ fontSize: 12 }}>
               {' '}
               Schedule{' '}
@@ -263,17 +264,13 @@ const Index = () => {
             >
               <div className="flex items-center">
                 <h5 style={{ color: '#377CF6' }}>Surveyor</h5>
-                <button
-                  className={` flex ml2 items-center justify-center ${styles.filter_btn}`}
-                >
-                  {' '}
-                  <RiFilterLine color="#377CF6" size={16} />{' '}
-                </button>
+               
+                <FilterDropDown/>
               </div>
             </div>
 
             <div className={styles.date_wrapper}>
-              <div className={`px3 py1 ${styles.date_grid_container}`}>
+              <div className={`px3  ${styles.date_grid_container}`}>
                 {arr.map((item, ind) => {
                   return (
                     <div className="date_container" key={ind}>
@@ -321,10 +318,12 @@ const Index = () => {
                   <div className={styles.absolute_vertical_line} style={{ left: dividerCords.end }} />
                 </>
               }
+
               {
                 mockedData.map((person) => {
                   return <div key={person.id} data-time-parent={person.id} className={styles.survey_progress_container}>
                     <div className={styles.surveyor_name}>
+                     
                       {person.name}
                     </div>
                     <div className={styles.progress_wrapper}>
@@ -415,7 +414,7 @@ const Index = () => {
 
             </div>
           </div>
-          <div ref={infoCardRef} style={{ top: infoCardCords.top, left: (infoCardCords.left), opacity: infoCardCords.opacity,pointerEvents:infoCardCords.opacity?"all":"none" }} className={styles.scheduled_info_container}>
+          <div ref={infoCardRef} style={{ top: infoCardCords.top, left: (infoCardCords.left), opacity: infoCardCords.opacity, pointerEvents: infoCardCords.opacity ? "all" : "none" }} className={styles.scheduled_info_container}>
             <div className={styles.close_btn} onClick={() => setInfoCardCors(prev => ({ ...prev, opacity: 0 }))}>
               <IoCloseOutline color='#F3B7BE' size={20} />
             </div>
@@ -443,7 +442,7 @@ const Index = () => {
             </div>
           </div>
 
-          <div style={{ top: submitFormCords.top, left: (submitFormCords.left), opacity: submitFormCords.opacity,pointerEvents:submitFormCords.opacity?"all":"none" }} ref={scheduleRef} className={styles.schedule_form_wrapper}>
+          <div style={{ top: submitFormCords.top, left: (submitFormCords.left), opacity: submitFormCords.opacity, pointerEvents: submitFormCords.opacity ? "all" : "none" }} ref={scheduleRef} className={styles.schedule_form_wrapper}>
             <h4 className={styles.form_schedule_heading}>Add Schedule</h4>
             <div className='mt1'>
               <div className="input-wrapper">
@@ -484,21 +483,15 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="flex mt2 justify-end items-center">
+              <div className="flex mt2 justify-center items-center">
                 <button onClick={() => setSubmitFormCords(prev => ({ ...prev, opacity: 0 }))} className={styles.secondary_schdeule_btn}>Cancel</button>
                 <button className={styles.primary_schdeule_btn}>Schedule</button>
               </div>
             </div>
           </div>
 
-
-
-
         </div>
-
-
       </div>
-
       {/* <SuccessPopup/> */}
     </>
   );

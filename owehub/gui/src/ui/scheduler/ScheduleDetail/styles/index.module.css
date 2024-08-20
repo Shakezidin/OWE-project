@@ -67,6 +67,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
+  padding-top: 19px;
 }
 
 .active_date {
@@ -152,17 +153,10 @@
   padding-bottom: 14px;
 }
 
-.filter_btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  background-color: #fff;
-  border: 1px solid #377cf6;
-  cursor: pointer;
-}
+
 
 .date_wrapper {
-  padding-bottom: 20px;
+  padding-bottom: 14px;
   border-bottom: 1px solid #d1d5db;
 }
 
@@ -182,7 +176,7 @@
   border-right: 1px solid #D1D5DB;
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding-left: 28px;
   padding-block: 25px;
 }
 
