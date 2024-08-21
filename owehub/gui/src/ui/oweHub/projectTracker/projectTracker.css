@@ -44,7 +44,7 @@
 }
 .strips-wrapper {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   margin-bottom: -20px;
 }
 
@@ -145,10 +145,43 @@
 
 .project-card-container-1 {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1.5rem;
   width: 100%;
-  padding: 10px;
+  overflow-x: scroll;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+
+.last-card{
+  margin-right: 12px;
+}
+
+.project-card-container-1::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.project-card-container-1::-webkit-scrollbar {
+  display: initial;
+}
+
+.project-card-container-1::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+
+.project-card-container-1::-webkit-scrollbar-button {
+  display: initial;
+}
+
+.project-card-container-1::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+
+.project-card-container-1::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
 
 .project-card-container-1 .project-card {
@@ -255,7 +288,7 @@
   gap: 5px;
   border-radius: 8px;
   outline-offset: 3px;
-  width: 145px;
+  width: 140px;
 }
 .project-card h2,
 .project-card p {
@@ -717,6 +750,13 @@
   position: relative;
   transform: skewX(-20deg);
   transform-origin: bottom left;
+}
+
+.strip-arrow{
+  position: absolute;
+  right: -24px;
+  color: #000;
+  transform: skewX(20deg);
 }
 
 .strips-data {

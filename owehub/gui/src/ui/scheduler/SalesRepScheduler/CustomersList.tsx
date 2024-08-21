@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './styles/customerlist.module.css';
 import SortingDropDown from '../components/SortingDropdown/SortingDropDown';
 import { ICONS } from '../../../resources/icons/Icons';
@@ -9,6 +9,8 @@ import GoogleMapReact from 'google-map-react';
 import { CSSObjectWithLabel } from 'react-select';
 import { IoLocationOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
 
 const Marker = ({
   text,
@@ -23,10 +25,66 @@ const Marker = ({
 interface propTypes {
   mapStyles?: CSSObjectWithLabel;
 }
-
+export interface ICustomer {
+  roof_type: string;
+  home_owner: string;
+  customer_email: string;
+  customer_phone_number: string;
+  system_size: number;
+  address: string;
+}
+const customers = [
+  {
+    "roof_type": "John Doe",
+    "home_owner": "John Doe",
+    "customer_email": "john.doe@example.com",
+    "customer_phone_number": "123-456-7890",
+    "system_size": 4.5,
+    "address": "123 Solar St."
+  },
+  {
+    "roof_type": "John Doe",
+    "home_owner": "John Doe",
+    "customer_email": "john.doe@example.com",
+    "customer_phone_number": "123-456-7890",
+    "system_size": 4.5,
+    "address": "123 Solar St."
+  },
+  {
+    "roof_type": "John Doe",
+    "home_owner": "John Doe",
+    "customer_email": "john.doe@example.com",
+    "customer_phone_number": "123-456-7890",
+    "system_size": 4.5,
+    "address": "123 Solar St."
+  }
+];
 const CustomersList = ({ mapStyles = {} }) => {
   const navigate = useNavigate();
   const [openStates, setOpenStates] = useState<{ [key: number]: boolean }>({});
+  const [customer, setCustomers] = useState<ICustomer[]>(customers)
+  const [isPending, setIsPending] = useState(true)
+
+  const getCustomers = async () => {
+    try {
+      setIsPending(true)
+      const data = await postCaller("scheduling_home", {})
+      if (data.status > 201) {
+        setIsPending(false)
+        toast.error((data as Error).message as string)
+        return
+      }
+      setCustomers(data?.ap_ded_list || customers)
+      setIsPending(false)
+    } catch (error) {
+      setIsPending(false)
+      toast.error((error as Error).message as string)
+    }
+  }
+
+  useEffect(() => {
+    getCustomers()
+  }, [])
 
   const toggleOpen = (index: number) => {
     setOpenStates((prevStates) => ({
@@ -39,50 +97,7 @@ const CustomersList = ({ mapStyles = {} }) => {
     navigate('/add-new-salesrep-schedule');
   };
 
-  const customers = [
-    {
-      id: 1,
-      name: 'Ashton Sager',
-      email: 'abc@gmail.com',
-      phone: '9289126745',
-    },
-    {
-      id: 2,
-      name: 'Santon Sager',
-      email: 'abc@gmail.com',
-      phone: '9289126745',
-    },
-    {
-      id: 3,
-      name: 'Ramsto Eager',
-      email: 'abc@gmail.com',
-      phone: '9289126745',
-    },
-    {
-      id: 4,
-      name: 'Tagton Sager',
-      email: 'abc@gmail.com',
-      phone: '9289126745',
-    },
-    {
-      id: 5,
-      name: 'Ashton Sager',
-      email: 'abc@gmail.com',
-      phone: '9289126745',
-    },
-    {
-      id: 6,
-      name: 'Ashton Sager',
-      email: 'abc@gmail.com',
-      phone: '9289126745',
-    },
-    {
-      id: 7,
-      name: 'Ashton Sager',
-      email: 'abc@gmail.com',
-      phone: '9289126745',
-    },
-  ];
+  
 
   const defaultProps = {
     center: {
@@ -129,9 +144,9 @@ const CustomersList = ({ mapStyles = {} }) => {
           </div>
 
           <div className={styles.cust_det_list}>
-            {customers.map((customer, index) => (
+            {customer.map((customer, index) => (
               <div
-                key={customer.id}
+                key={index}
                 className={`${styles.customer_details} ${openStates[index] ? styles.open : ''}`}
               >
                 <div className={styles.cust_det_top}>
@@ -140,9 +155,9 @@ const CustomersList = ({ mapStyles = {} }) => {
                       style={{ backgroundColor: '#FFEAEA' }}
                       className={styles.name_icon}
                     >
-                      <span>{customer.name.slice(0, 2).toUpperCase()}</span>
+                      <span>{customer.home_owner.slice(0, 2).toUpperCase()}</span>
                     </div>
-                    <div className={styles.name}>{customer.name}</div>
+                    <div className={styles.name}>{customer.home_owner}</div>
                   </div>
                   <div className={styles.cust_name}>
                     <div
@@ -153,7 +168,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                     </div>
                     <div className={styles.head_det}>
                       <h2>Email</h2>
-                      <span>{customer.email}</span>
+                      <span>{customer.customer_email}</span>
                     </div>
                   </div>
 
@@ -166,7 +181,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                     </div>
                     <div className={styles.head_det}>
                       <h2>Phone Number</h2>
-                      <span>{customer.phone}</span>
+                      <span>{customer.customer_phone_number}</span>
                     </div>
                   </div>
 
@@ -179,7 +194,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                     </div>
                     <div className={styles.head_det}>
                       <h2>System Size</h2>
-                      <span>11</span>
+                      <span> {customer.system_size} </span>
                     </div>
                   </div>
 
@@ -192,7 +207,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                     </div>
                     <div className={styles.head_det}>
                       <h2>Roof Type</h2>
-                      <span>xyz</span>
+                      <span> {customer.roof_type} </span>
                     </div>
 
                     <TbChevronDown

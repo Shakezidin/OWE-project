@@ -164,6 +164,7 @@ type ProjectResponse struct {
 	ContractAmount               float64           `json:"contract_amount"`
 	FinancePartner               string            `json:"finance_partner"`
 	NetEPC                       float64           `json:"net_epc"`
+	HomeOwner                    string            `json:"home_owner"`
 }
 
 // first is db column name  // second is struct name
@@ -215,4 +216,5 @@ var ColumnToField = map[string]string{
 	"contract_total":               "ContractAmount",
 	"finance_company":              "FinancePartner",
 	"net_epc":                      "NetEPC",
+	"home_owner":                   "HomeOwner",
 }
