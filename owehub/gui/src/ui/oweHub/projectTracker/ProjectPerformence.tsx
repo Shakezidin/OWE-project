@@ -54,6 +54,7 @@ const ProjectPerformence = () => {
   const refBtn = useRef<null | HTMLDivElement>(null);
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const { projects } = useAppSelector((state) => state.projectManagement);
+  const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState(
     ''
   );
@@ -218,12 +219,12 @@ const ProjectPerformence = () => {
       getPerfomanceStatus({
         page,
         perPage,
-        startDate: selectedProject?.value
+        startDate: searchValue
           ? ''
           : selectedRangeDate.start
             ? format(selectedRangeDate.start, 'dd-MM-yyyy')
             : '',
-        endDate: selectedProject?.value
+        endDate: searchValue
           ? ''
           : selectedRangeDate.end
             ? format(selectedRangeDate.end, 'dd-MM-yyyy')
@@ -658,11 +659,11 @@ const ProjectPerformence = () => {
                 <Input
                   type="text"
                   placeholder="Search for Unique ID or Name"
-                  value={searchValue}
+                  value={search}
                   name="Search for Unique ID or Name"
                   onChange={(e) => {
                     handleSearchChange(e);
-                    setSearchValue(e.target.value);
+                    setSearch(e.target.value);
                   }}
                 />
               </div>
@@ -854,7 +855,8 @@ const ProjectPerformence = () => {
                                     )}
                                   </div>
                                 </div>
-
+                               
+                               {project?.electrical_date ?
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
@@ -874,6 +876,7 @@ const ProjectPerformence = () => {
                                     )}
                                   </div>
                                 </div>
+                               : null }
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
