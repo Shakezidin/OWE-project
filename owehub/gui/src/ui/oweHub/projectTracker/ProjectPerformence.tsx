@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './projectTracker.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-date-range/dist/styles.css'; // main style file
@@ -34,6 +34,9 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import { debounce } from '../../../utiles/debounce';
+import Input from '../../components/text_input/Input';
+import { IoIosSearch } from 'react-icons/io';
 interface Option {
   value: string;
   label: string;
@@ -51,6 +54,9 @@ const ProjectPerformence = () => {
   const refBtn = useRef<null | HTMLDivElement>(null);
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const { projects } = useAppSelector((state) => state.projectManagement);
+  const [searchValue, setSearchValue] = useState(
+    ''
+  );
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -200,6 +206,13 @@ const ProjectPerformence = () => {
     },
   ];
 
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(e.target.value);
+    }, 800),
+    []
+  );
+
   useEffect(() => {
     dispatch(
       getPerfomanceStatus({
@@ -215,7 +228,7 @@ const ProjectPerformence = () => {
           : selectedRangeDate.end
             ? format(selectedRangeDate.end, 'dd-MM-yyyy')
             : '',
-        uniqueId: selectedProject?.value || '',
+        uniqueId: searchValue ? searchValue : '',
       })
     );
   }, [
@@ -223,6 +236,7 @@ const ProjectPerformence = () => {
     selectedRangeDate.start,
     selectedRangeDate.end,
     selectedProject.value,
+    searchValue
   ]);
 
   const calculateCompletionPercentage = (
@@ -450,7 +464,10 @@ const ProjectPerformence = () => {
             }}
           />
         </div>
-        <div ref={wrapperRef} className="leaderboard-data__datepicker-wrapper calender-wrapper">
+        <div
+          ref={wrapperRef}
+          className="leaderboard-data__datepicker-wrapper calender-wrapper"
+        >
           <span
             role="button"
             onClick={() => setShowCalendar((prev) => !prev)}
@@ -533,6 +550,7 @@ const ProjectPerformence = () => {
     );
   };
 
+ 
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
@@ -554,7 +572,7 @@ const ProjectPerformence = () => {
           ) : null}
         </div>
         <div className="project-heading">
-          <h2>Total Count</h2>
+          <h2>Pending Queue</h2>
 
           <div className="flex items-center justify-end">
             <PeriodFilter
@@ -633,20 +651,22 @@ const ProjectPerformence = () => {
           <div className="proper-top">
             <div className="performance-project">
               <div className="proper-select">
-                <SelectOption
-                  options={projectOption}
-                  value={selectedProject.value ? selectedProject : undefined}
-                  onChange={(val) => {
-                    if (val) {
-                      setSelectedProject({ ...val });
-                    }
+                
+
+                {/* <IoIosSearch className="search-icon" /> */}
+
+                <Input
+                  type="text"
+                  placeholder="Search for Unique ID or Name"
+                  value={searchValue}
+                  name="Search for Unique ID or Name"
+                  onChange={(e) => {
+                    handleSearchChange(e);
+                    setSearchValue(e.target.value);
                   }}
-                  placeholder="Search Project Id or Name"
-                  lazyRender
-                  width="190px"
-                  controlStyles={{ marginTop: 0 }}
                 />
               </div>
+
               <div className="performance-box-container">
                 <p className="status-indicator">Status indicators</p>
                 <div className="progress-box-body">
