@@ -576,7 +576,7 @@ const ProjectStatus = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center flex-wrap mxn1">
+              <div className="flex status-card-parent items-center flex-wrap mxn1">
                 {projectStatusHeadData.map((el, i) => (
                   <div
                     key={i}
@@ -722,7 +722,7 @@ const ProjectStatus = () => {
               </div>
 
               <div className=" flex items-center project-status-table-title ">
-                <div className="progress-box-container ml3">
+                <div className="progress-box-container status-btn ml3">
                   <div className="progress-qc mt0" onClick={filter}>
                     <button>QC</button>
                   </div>
