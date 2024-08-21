@@ -470,7 +470,7 @@ const ProjectStatus = () => {
     }
   };
 
-  
+
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
@@ -533,11 +533,11 @@ const ProjectStatus = () => {
   }, [searchValue]);
 
   useEffect(() => {
-    if(projectId){
+    if (projectId) {
       setSearch(projectId)
       setSearchValue(projectId)
     }
-  },[projectId])
+  }, [projectId])
 
   const options = [
     { id: 1, content: 'Podio' },
@@ -570,9 +570,10 @@ const ProjectStatus = () => {
 
   return (
     <>
-      <QCModal isOpen={filterOPen} handleClose={filterClose} />
+      <QCModal projectDetail={otherlinks} isOpen={filterOPen} handleClose={filterClose} />
 
-      <NtpModal isOpen={ntpOPen} handleClose={ntpClose} />
+      <NtpModal projectDetail={otherlinks} isOpen={ntpOPen} handleClose={ntpClose} />
+
 
       <div className="">
         <div style={{ padding: '0px' }}>
@@ -596,16 +597,16 @@ const ProjectStatus = () => {
                       }}
                       width="190px"
                     /> */}
-                     <Input
-                  type="text"
-                  placeholder="Search for Unique ID or Name"
-                  value={search}
-                  name="Search for Unique ID or Name"
-                  onChange={(e) => {
-                    handleSearchChange(e);
-                    setSearch(e.target.value);
-                  }}
-                />
+                    <Input
+                      type="text"
+                      placeholder="Search for Unique ID or Name"
+                      value={search}
+                      name="Search for Unique ID or Name"
+                      onChange={(e) => {
+                        handleSearchChange(e);
+                        setSearch(e.target.value);
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -665,23 +666,23 @@ const ProjectStatus = () => {
                               {
                                 // @ts-ignore
                                 projectDetail.adder_breakdown_and_total &&
-                                  Object.keys(
-                                    // @ts-ignore
-                                    projectDetail.adder_breakdown_and_total
-                                  ).map((item, ind) => {
-                                    // @ts-ignore
-                                    return (
-                                      <li key={ind} className="order-list-name">
-                                        {' '}
-                                        {item} :{' '}
-                                        {
-                                          // @ts-ignore
-                                          projectDetail
-                                            .adder_breakdown_and_total[item]
-                                        }{' '}
-                                      </li>
-                                    );
-                                  })
+                                Object.keys(
+                                  // @ts-ignore
+                                  projectDetail.adder_breakdown_and_total
+                                ).map((item, ind) => {
+                                  // @ts-ignore
+                                  return (
+                                    <li key={ind} className="order-list-name">
+                                      {' '}
+                                      {item} :{' '}
+                                      {
+                                        // @ts-ignore
+                                        projectDetail
+                                          .adder_breakdown_and_total[item]
+                                      }{' '}
+                                    </li>
+                                  );
+                                })
                               }
                             </ol>
                           </div>
@@ -852,19 +853,19 @@ const ProjectStatus = () => {
                                         {!(
                                           el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ]
                                         ) && (
-                                          <span
-                                            className="date-para"
-                                            style={{
-                                              color: el.color,
-                                              fontSize: '9px',
-                                            }}
-                                          >
-                                            ETA
-                                          </span>
-                                        )}
+                                            <span
+                                              className="date-para"
+                                              style={{
+                                                color: el.color,
+                                                fontSize: '9px',
+                                              }}
+                                            >
+                                              ETA
+                                            </span>
+                                          )}
                                         <p
                                           style={{
                                             color: el.color,
@@ -872,22 +873,22 @@ const ProjectStatus = () => {
                                           }}
                                         >
                                           {el.key &&
-                                          projectDetail[
+                                            projectDetail[
                                             el.key as keyof typeof projectDetail
-                                          ]
+                                            ]
                                             ? format(
-                                                new Date(
-                                                  projectDetail[
-                                                    el.key as keyof typeof projectDetail
-                                                  ]
-                                                ),
-                                                'dd MMMM'
-                                              ).slice(0, 6)
+                                              new Date(
+                                                projectDetail[
+                                                el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)
                                             : 'N/A'}
                                         </p>
                                         {el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ] && (
                                             <p
                                               className="stage-1-para"
@@ -900,7 +901,7 @@ const ProjectStatus = () => {
                                               {format(
                                                 new Date(
                                                   projectDetail[
-                                                    el.key as keyof typeof projectDetail
+                                                  el.key as keyof typeof projectDetail
                                                   ]
                                                 ),
                                                 'yyyy'

@@ -6,13 +6,56 @@ import { ICONS } from '../../../resources/icons/Icons';
 interface TableProps {
   handleClose: () => void;
   isOpen?: boolean;
+  projectDetail:any
 }
 
 // Filter component
-const NtpModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
+const NtpModal: React.FC<TableProps> = ({projectDetail, handleClose, isOpen = false }) => {
   const handleCloseModal = () => {
     handleClose();
   };
+
+  const renderNTPContent = (title: string, status: string) => {
+    let backgroundColor = '';
+    let icon = '';
+    let statusText = '';
+
+    switch (status) {
+      case 'completed':
+        backgroundColor = '#2EAF71';
+        icon = ICONS.QCTICK;
+        statusText = 'Completed';
+        break;
+      case 'pending':
+        backgroundColor = '#EBA900';
+        icon = ICONS.QCLine;
+        statusText = 'Pending';
+        break;
+        case 'action':
+        backgroundColor = '#E14514';
+        icon = ICONS.QCLine;
+        statusText = 'Pending (action needed)';
+        break;
+      default:
+        backgroundColor = '#EBA900';
+        icon = ICONS.QCLine;
+        statusText = 'Pending';
+    }return (
+      <div className="qc-content">
+        <span>{title}</span>
+        <div className="qc-stat-comp">
+          <div className="qc-status" style={{ backgroundColor }}>
+            <img src={icon} alt={statusText} />
+          </div>
+          <span className={`status ${status}`}>{statusText}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const ntpData = projectDetail.ntp;
+
+  
   return (
     <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
       <div className="transparent-model">
@@ -112,7 +155,8 @@ const NtpModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
               </div>
 
               <div className="qc-content">
-                <span>Finance Credit Approval (Loan or Lease)</span>
+                <span>Utility Acknowledgement and
+                Disclaimer Uploaded</span>
                 <div className="qc-stat-comp">
                   <div
                     className="qc-status"
@@ -125,7 +169,7 @@ const NtpModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
               </div>
 
               <div className="qc-content">
-                <span>Finance Agreement Completed (Loan or Lease)</span>
+                <span>ACH Waiver (Cash Customers Only) Uploaded</span>
                 <div className="qc-stat-comp">
                   <div
                     className="qc-status"
@@ -138,7 +182,7 @@ const NtpModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
               </div>
 
               <div className="qc-content">
-                <span>OWE Documents Completed</span>
+                <span>Finance NTP of project</span>
                 <div className="qc-stat-comp">
                   <div
                     className="qc-status"
@@ -151,7 +195,60 @@ const NtpModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
               </div>
 
               <div className="qc-content">
-                <span>OWE Documents Completed</span>
+                <span>F.NTP Approved</span>
+                <div className="qc-stat-comp">
+                  <div
+                    className="qc-status"
+                    style={{ backgroundColor: '#2EAF71' }}
+                  >
+                    <img src={ICONS.QCTICK} alt="complete" />
+                  </div>
+                  <span className="status completed">Completed</span>
+                </div>
+              </div>
+
+              <div className="qc-content">
+                <span>Utility bill Uploaded</span>
+                <div className="qc-stat-comp">
+                  <div
+                    className="qc-status"
+                    style={{ backgroundColor: '#2EAF71' }}
+                  >
+                    <img src={ICONS.QCTICK} alt="complete" />
+                  </div>
+                  <span className="status completed">Completed</span>
+                </div>
+              </div>
+
+              <div className="qc-content">
+                <span>⁠PowerClerk Signatures
+                Complete</span>
+                <div className="qc-stat-comp">
+                  <div
+                    className="qc-status"
+                    style={{ backgroundColor: '#2EAF71' }}
+                  >
+                    <img src={ICONS.QCTICK} alt="complete" />
+                  </div>
+                  <span className="status completed">Completed</span>
+                </div>
+              </div>
+
+              <div className="qc-content">
+                <span>Over Net $3.6/w?</span>
+                <div className="qc-stat-comp">
+                  <div
+                    className="qc-status"
+                    style={{ backgroundColor: '#2EAF71' }}
+                  >
+                    <img src={ICONS.QCTICK} alt="complete" />
+                  </div>
+                  <span className="status completed">Completed</span>
+                </div>
+              </div>
+
+              <div className="qc-content">
+                <span>⁠Premium Pane Adder? (.10c)</span>
                 <div className="qc-stat-comp">
                   <div
                     className="qc-status"
@@ -170,3 +267,4 @@ const NtpModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
   );
 };
 export default NtpModal;
+
