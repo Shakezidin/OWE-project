@@ -30,6 +30,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		createUserReq         models.CreateUserReq
 		queryParameters       []interface{}
 		tablesPermissionsJSON []byte
+		dbUserCheck           []map[string]interface{}
 		username              string
 	)
 
@@ -58,8 +59,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// setup user info logging
-	logUserQuery, logUserEnd := startUserApiLogging(req, fmt.Sprintf("INPUT: %v", createUserReq))
-	defer func() { logUserEnd(err) }()
+	logUserApi, closeUserLog := initUserApiLogging(req)
+	defer func() { closeUserLog(err) }()
 
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Designation) <= 0) ||
@@ -98,7 +99,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
 			return
 		}
-		logUserQuery(query, nil)
 
 		DealerName, dealerNameOk := data[0]["dealer_name"].(string)
 		if !dealerNameOk || DealerName == "" {
@@ -123,7 +123,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		// make sure that user with username doesnt already exist
 		dbUserCheckQuery := "SELECT count(*) FROM PG_USER WHERE USENAME = $1"
 		dbUserCheckParams := []interface{}{username}
-		dbUserCheck, err := db.ReteriveFromDB(db.RowDataDBIndex, dbUserCheckQuery, dbUserCheckParams)
+		dbUserCheck, err = db.ReteriveFromDB(db.RowDataDBIndex, dbUserCheckQuery, dbUserCheckParams)
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get user name count from DB err: %v", err)
@@ -131,11 +131,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		logUserQuery(dbUserCheckQuery, dbUserCheckParams)
-
 		dbUserCount, dbUserCountOk := dbUserCheck[0]["count"].(int64)
 		if !dbUserCountOk {
-			log.FuncErrorTrace(0, "Failed to assert db user count from type: %T", dbUserCheck[0]["count"])
+			err = fmt.Errorf("Failed to assert db user count from type: %T", dbUserCheck[0]["count"])
+			log.FuncErrorTrace(0, "%v", err)
 			FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
 			return
 		}
@@ -156,7 +155,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed, User already exists in db user", http.StatusInternalServerError, nil)
 			return
 		}
-		logUserQuery(sqlStatement, nil)
 
 		log.FuncErrorTrace(0, "createUserReq.TablesPermissions %+v", createUserReq.TablesPermissions)
 		for _, item := range createUserReq.TablesPermissions {
@@ -176,7 +174,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
 				dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
-				logUserQuery(dropQuery, nil)
 
 				if dropErr != nil {
 					log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
@@ -221,7 +218,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
 			dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
 			dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
-			logUserQuery(dropQuery, nil)
 
 			if dropErr != nil {
 				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
@@ -242,6 +238,31 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to Create User in Database due to internal error.", http.StatusInternalServerError, nil)
 		return
 	}
+
+	// records inserted user in user logs
+	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
+		tablePermissionStringParts := make([]string, len(createUserReq.TablesPermissions))
+		for i, perm := range createUserReq.TablesPermissions {
+			tablePermissionStringParts[i] = fmt.Sprintf("%s(%s)", perm.TableName, strings.ToLower(perm.PrivilegeType))
+		}
+
+		details := map[string]string{
+			"email_id":          createUserReq.EmailId,
+			"name":              createUserReq.Name,
+			"mobile_number":     createUserReq.MobileNumber,
+			"table_permissions": strings.Join(tablePermissionStringParts, ", "),
+			"db_username":       username,
+		}
+		logUserApi(fmt.Sprintf("Created user %s in owehubdb and owedb - %+v", createUserReq.EmailId, details))
+	} else {
+		details := map[string]string{
+			"email_id":      createUserReq.EmailId,
+			"name":          createUserReq.Name,
+			"mobile_number": createUserReq.MobileNumber,
+		}
+		logUserApi(fmt.Sprintf("Created user %s in owehubdb - %+v", createUserReq.EmailId, details))
+	}
+
 	// Send email to client
 	err = SendMailToClient(createUserReq.EmailId, createUserReq.Name)
 	if err != nil {

@@ -37,6 +37,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		updateUserReq         models.UpdateUserReq
 		queryParameters       []interface{}
 		result                []interface{}
+		userInfoResult        []map[string]interface{}
 		tablepermissionsModel []TablePermission
 		tablesPermissionsJSON []byte
 		userName              string
@@ -65,10 +66,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to unmarshal update User request", http.StatusBadRequest, nil)
 		return
 	}
-
-	// setup user info logging
-	logUserQuery, logUserEnd := startUserApiLogging(req, fmt.Sprintf("INPUT: %v", updateUserReq))
-	defer func() { logUserEnd(err) }()
 
 	emailId := req.Context().Value("emailid").(string)
 	updateUserReq.EmailId = emailId
@@ -108,6 +105,10 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	// setup user info logging
+	logUserApi, closeUserLog := initUserApiLogging(req)
+	defer func() { closeUserLog(err) }()
+
 	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
 		// Join selected parts with underscores
 
@@ -118,8 +119,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
 			return
 		}
-
-		logUserQuery(query, nil)
 
 		tablepermissions, ok := data[0]["tables_permissions"].([]byte)
 		if !ok {
@@ -155,8 +154,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		} else {
 			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", oldusername)
 			// Optionally, you can log a success message or perform additional actions
-			logUserQuery(sqlStatement, nil)
-
 		}
 
 		log.FuncErrorTrace(0, "updateUserReq.TablesPermissions %+v", updateUserReq.TablesPermissions)
@@ -182,7 +179,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 					log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
 					// Handle the error as needed, such as logging or returning an HTTP response
 				}
-				logUserQuery(sqlStatement, nil)
 
 				for _, item := range tablepermissionsModel {
 					switch item.PrivilegeType {
@@ -201,7 +197,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 						log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
 						// Handle the error as needed, such as logging or returning an HTTP response
 					}
-					logUserQuery(sqlStatement, nil)
 
 				}
 				log.FuncErrorTrace(0, "Failed to update user with err: %v", err)
@@ -209,7 +204,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 				return
 			}
 
-			logUserQuery(sqlStatement, nil)
 		}
 	}
 
@@ -246,7 +240,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
 			// Handle the error as needed, such as logging or returning an HTTP response
 		}
-		logUserQuery(sqlStatement, nil)
 
 		for _, item := range tablepermissionsModel {
 			switch item.PrivilegeType {
@@ -265,7 +258,6 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
 				// Handle the error as needed, such as logging or returning an HTTP response
 			}
-			logUserQuery(sqlStatement, nil)
 
 		}
 		log.FuncErrorTrace(0, "Failed to Update User in DB with err: %v", err)
@@ -273,8 +265,45 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	data := result[0].(map[string]interface{})
+	// records updated user in user logs
+	userInfoResult, err = db.ReteriveFromDB(db.OweHubDbIndex, "SELECT mobile_number, db_username FROM user_details WHERE email_id = $1", []interface{}{updateUserReq.EmailId})
 
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to Retrieve User Details from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
+		return
+	}
+
+	if len(userInfoResult) == 0 {
+		err = fmt.Errorf("Failed to Retrieve User Details from DB")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
+		return
+	}
+
+	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
+		tablePermissionStringParts := make([]string, len(tablepermissionsModel))
+		for i, perm := range tablepermissionsModel {
+			tablePermissionStringParts[i] = fmt.Sprintf("%s(%s)", perm.TableName, strings.ToLower(perm.PrivilegeType))
+		}
+
+		details := map[string]string{
+			"name":              updateUserReq.Name,
+			"table_permissions": strings.Join(tablePermissionStringParts, ", "),
+			"mobile_number":     userInfoResult[0]["mobile_number"].(string),
+			"db_username":       userInfoResult[0]["db_username"].(string),
+		}
+		logUserApi(fmt.Sprintf("Updated user %s in owehubdb and owedb with data - %+v", updateUserReq.EmailId, details))
+	} else {
+		details := map[string]string{
+			"name":          updateUserReq.Name,
+			"mobile_number": userInfoResult[0]["mobile_number"].(string),
+		}
+		logUserApi(fmt.Sprintf("Updated user %s in owehubdb with data - %+v", updateUserReq.EmailId, details))
+	}
+
+	data := result[0].(map[string]interface{})
 	log.DBTransDebugTrace(0, "User updated with Id: %+v", data["result"])
+
 	FormAndSendHttpResp(resp, "User Updated Successfully", http.StatusOK, nil)
 }

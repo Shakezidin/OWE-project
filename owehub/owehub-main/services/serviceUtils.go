@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"math/rand"
@@ -120,40 +121,74 @@ func BytesToStringArray(raw []byte) []string {
 }
 
 // Log details in user related apis: create, update & delete user apis
-func startUserApiLogging(req *http.Request, initialMsg string) (
-	logQuery func(string, []interface{}), logEnd func(error),
+func initUserApiLogging(req *http.Request) (
+	logUserApi func(string), closeUserLog func(error),
 ) {
 	var (
 		urlParts           []string
 		apiName            string
+		logBuilder         strings.Builder
 		authenticatedEmail string
-		seperatorStr       string
+		startTime          string
+		logFile            *os.File
+		logFileOpenErr     error
 	)
+
+	log.EnterFn(0, "startUserApiLogging")
+	defer func() { log.ExitFn(0, "startUserApiLogging", logFileOpenErr) }()
+
+	// initialize log parameters for the api call
 
 	urlParts = strings.Split(req.URL.Path, "/")
 	apiName = urlParts[len(urlParts)-1]
 	authenticatedEmail = req.Context().Value("emailid").(string)
-	seperatorStr = strings.Repeat("*", 40)
-	startTime := time.Now().Format("2006-01-02T15:04:05.999Z")
+	startTime = time.Now().Format("2006-01-02T15:04:05.999Z")
 
-	log.FuncBriefTrace(0, seperatorStr)
-	log.FuncBriefTrace(0, "[%s] %s called \"%s\" API\n%s", startTime, authenticatedEmail, apiName, initialMsg)
+	logFile, logFileOpenErr = os.OpenFile("/var/log/owe/owe-users.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 
-	logQuery = func(query string, params []interface{}) {
-		log.FuncBriefTrace(0, "[QUERY]: %s, [PARAMS]: %v", query, params)
+	// initial logs for the api call
+	if logFileOpenErr != nil {
+		log.FuncErrorTrace(0, "Cannot open user log file err: %v", logFileOpenErr)
+	} else {
+		// write authenticatedEmail and apiName
+		_, err := logBuilder.WriteString(fmt.Sprintf("\n[%s] %s invoked by user %s\n", startTime, apiName, authenticatedEmail))
+		if err != nil {
+			log.FuncErrorTrace(0, "Cannot write to user log builder err: %v", err)
+		}
 	}
 
-	logEnd = func(err error) {
-		resultMsg := "SUCCESS"
-
+	logUserApi = func(message string) {
+		if logFileOpenErr != nil {
+			return
+		}
+		_, err := logBuilder.WriteString(fmt.Sprintf("%s\n", message))
 		if err != nil {
-			resultMsg = "FAILURE"
+			log.FuncErrorTrace(0, "Cannot write to user log builder err: %v", err)
+		}
+	}
+
+	// Record end of api call (Call this in a deferred func)
+	closeUserLog = func(err error) {
+
+		if logFileOpenErr != nil {
+			return
 		}
 
-		endTime := time.Now().Format("2006-01-02T15:04:05.999Z")
-		log.FuncBriefTrace(0, "[%s] %s called \"%s\" API; RESULT: %s", endTime, authenticatedEmail, apiName, resultMsg)
-		log.FuncBriefTrace(0, seperatorStr)
+		// only write log on api success
+		if err != nil {
+			return
+		}
+
+		_, err = logFile.WriteString(logBuilder.String())
+		if err != nil {
+			log.FuncErrorTrace(0, "Cannot write to user log file err: %v", err)
+		}
+
+		err = logFile.Close()
+		if err != nil {
+			log.FuncErrorTrace(0, "Cannot close log file: %v", err)
+		}
 	}
 
-	return logQuery, logEnd
+	return logUserApi, closeUserLog
 }
