@@ -33,14 +33,37 @@
   padding-right: 46px;
   display: flex;
   flex-direction: column;
-  gap: 37px;
+  gap: 32px;
 }
 
 .qc-modal-body {
-  height: 100%;
-  /* Adjust the height for the body content */
+  max-height: 590px;
   overflow-y: auto;
 }
+
+.qc-modal-body::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.qc-modal-body::-webkit-scrollbar {
+  display: initial;
+}
+
+.qc-modal-body::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.qc-modal-body::-webkit-scrollbar-button {
+  display: initial;
+}
+.qc-modal-body::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.qc-modal-body::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
 
 .qc-content {
   display: flex;

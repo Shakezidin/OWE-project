@@ -6,13 +6,39 @@ import { ICONS } from '../../../resources/icons/Icons';
 interface TableProps {
   handleClose: () => void;
   isOpen?: boolean;
+  projectDetail:any
 }
 
 // Filter component
-const QCModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
+const QCModal: React.FC<TableProps> = ({projectDetail, handleClose, isOpen = false }) => {
   const handleCloseModal = () => {
     handleClose();
   };
+
+
+  const renderQCContent = (title: string, status: string) => {
+    const isCompleted = status === 'completed';
+    const backgroundColor = isCompleted ? '#2EAF71' : '#EBA900';
+    const icon = isCompleted ? ICONS.QCTICK : ICONS.QCLine;
+    const statusText = isCompleted ? 'Completed' : 'Pending';
+
+    return (
+      <div className="qc-content">
+        <span>{title}</span>
+        <div className="qc-stat-comp">
+          <div className="qc-status" style={{ backgroundColor }}>
+            <img src={icon} alt={statusText} />
+          </div>
+          <span className={`status ${statusText.toLowerCase()}`}>{statusText}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const qcData = projectDetail?.qc;
+  
+
+
   return (
     <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
       <div className="transparent-model">
@@ -32,84 +58,25 @@ const QCModal: React.FC<TableProps> = ({ handleClose, isOpen = false }) => {
           </div>
           <div className="qc-modal-body">
             <div className="createQualCust">
-              <div className="qc-content">
-                <span>PowerClerk Sent(AZ)</span>
-                <div className="qc-stat-comp">
-                  <div
-                    className="qc-status"
-                    style={{ backgroundColor: '#2EAF71' }}
-                  >
-                    <img src={ICONS.QCTICK} alt="complete" />
-                  </div>
-
-                  <span className="status completed">Completed</span>
-                </div>
-              </div>
-
-              <div className="qc-content">
-                <span>ACH Waiver (Sent and Signed) (Cash Only)</span>
-                <div className="qc-stat-comp">
-                  <div
-                    className="qc-status"
-                    style={{ backgroundColor: '#EBA900' }}
-                  >
-                    <img src={ICONS.QCLine} alt="complete" />
-                  </div>
-                  <span className="status pending">Pending</span>
-                </div>
-              </div>
-
-              <div className="qc-content">
-                <span>Green Area (NM Only)</span>
-                <div className="qc-stat-comp">
-                  <div
-                    className="qc-status"
-                    style={{ backgroundColor: '#2EAF71' }}
-                  >
-                    <img src={ICONS.QCTICK} alt="complete" />
-                  </div>
-                  <span className="status completed">Completed</span>
-                </div>
-              </div>
-
-              <div className="qc-content">
-                <span>Finance Credit Approval (Loan or Lease)</span>
-                <div className="qc-stat-comp">
-                  <div
-                    className="qc-status"
-                    style={{ backgroundColor: '#2EAF71' }}
-                  >
-                    <img src={ICONS.QCTICK} alt="complete" />
-                  </div>
-                  <span className="status completed">Completed</span>
-                </div>
-              </div>
-
-              <div className="qc-content">
-                <span>Finance Agreement Completed (Loan or Lease)</span>
-                <div className="qc-stat-comp">
-                  <div
-                    className="qc-status"
-                    style={{ backgroundColor: '#2EAF71' }}
-                  >
-                    <img src={ICONS.QCTICK} alt="complete" />
-                  </div>
-                  <span className="status completed">Completed</span>
-                </div>
-              </div>
-
-              <div className="qc-content">
-                <span>OWE Documents Completed</span>
-                <div className="qc-stat-comp">
-                  <div
-                    className="qc-status"
-                    style={{ backgroundColor: '#2EAF71' }}
-                  >
-                    <img src={ICONS.QCTICK} alt="complete" />
-                  </div>
-                  <span className="status completed">Completed</span>
-                </div>
-              </div>
+            {qcData && (
+                <>
+                  {renderQCContent('PowerClerk Sent(AZ)', qcData.powerclerk_sent)}
+                  {renderQCContent(
+                    'ACH Waiver (Sent and Signed) (Cash Only)',
+                    qcData['ACH_waiver(sent_and_signed)(cash_only)']
+                  )}
+                  {renderQCContent('Green Area (NM Only)', qcData['green_area(nm_only)'])}
+                  {renderQCContent(
+                    'Finance Credit Approval (Loan or Lease)',
+                    qcData['finance_credit_approval(loan_or_lease)']
+                  )}
+                  {renderQCContent(
+                    'Finance Agreement Completed (Loan or Lease)',
+                    qcData['finance_agreement_completed(loan_or_lease)']
+                  )}
+                  {renderQCContent('OWE Documents Completed', qcData.OWE_documents_completed)}
+                </>
+              )}
             </div>
           </div>
         </div>

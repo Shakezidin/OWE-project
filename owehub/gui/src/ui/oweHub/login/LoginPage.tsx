@@ -101,6 +101,7 @@ export const LoginPage = () => {
             email_id,
             user_name,
             role_name,
+            dealer_name,
             access_token,
             time_to_expire_minutes,
             is_password_change_required,
@@ -110,6 +111,7 @@ export const LoginPage = () => {
           localStorage.setItem('role', role_name);
           localStorage.setItem('token', access_token);
           localStorage.setItem('password', credentials.password);
+          localStorage.setItem('dealer', dealer_name);
           localStorage.setItem('expirationTimeInMin', time_to_expire_minutes);
           localStorage.setItem(
             'expirationTime',
