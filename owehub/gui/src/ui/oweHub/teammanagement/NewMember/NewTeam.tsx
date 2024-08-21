@@ -350,7 +350,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       }
     }
   };
-  const slectedDealer = newFormData.find(
+  const selectedDealer = newFormData.find(
     (option) => option === selectedOption3
   );
 
@@ -405,15 +405,25 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
                           value: item,
                         }))}
                         value={
-                          slectedDealer
+                          selectedDealer
                             ? {
-                                label: slectedDealer,
-                                value: slectedDealer,
+                                label: selectedDealer,
+                                value: selectedDealer,
                               }
                             : undefined
                         }
                         onChange={handleSelectChange3}
                       />
+                      {errors.dealer && (
+                        <span
+                          style={{
+                            display: 'block',
+                          }}
+                          className="error"
+                        >
+                          {errors.dealer}
+                        </span>
+                      )}
                     </div>
                   )}
                   <div className="tm-new-create-input-field">

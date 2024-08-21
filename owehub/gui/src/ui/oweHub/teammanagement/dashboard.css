@@ -319,7 +319,7 @@
   color: #263747;
 }
 
-.team-cancel{
+.team-cancel {
   display: none;
 }
 
@@ -433,17 +433,17 @@
 }
 
 @media screen and (max-width: 767px) {
-  .team-main{
+  .team-main {
     margin: 10px;
     max-height: 91vh;
   }
-  .teamp-group img{
+  .teamp-group img {
     display: none;
   }
-  .teamp-group h4{
+  .teamp-group h4 {
     font-weight: 400;
   }
-  .team-arrow-wrapper{
+  .team-arrow-wrapper {
     position: relative;
     bottom: 10px;
   }
@@ -454,40 +454,40 @@
     width: 214px;
     min-height: unset;
   }
-  .team-pay-card:hover{
+  .team-pay-card:hover {
     transform: scale(1.02);
   }
-  .team-checkbox-wrapper{
+  .team-checkbox-wrapper {
     flex-direction: row-reverse;
     justify-content: flex-end;
     gap: 1rem;
   }
-  .teamp-group{
+  .teamp-group {
     margin-left: 2.5rem;
   }
-  .team-checkbox{
+  .team-checkbox {
     top: 10px;
     width: 23px;
     height: 24px;
   }
-  .teamdash-header{
+  .teamdash-header {
     position: relative;
     display: block;
   }
-  .teamdash-header h1{
+  .teamdash-header h1 {
     position: absolute;
     font-weight: 700px;
     top: 70px;
     left: 10px;
     font-size: 1rem;
   }
-  .creat-drop{
+  .creat-drop {
     flex-direction: row-reverse;
   }
-  .sm-hide{
+  .sm-hide {
     display: none;
   }
-  .btxt-none{
+  .btxt-none {
     display: none;
   }
   .dash-newteam {
@@ -495,16 +495,16 @@
     display: block;
     position: relative;
   }
-  .team-cancel{
+  .team-cancel {
     display: block;
   }
-  .dash-newteam .remove-section-oncheck{
+  .dash-newteam .remove-section-oncheck {
     display: flex;
     align-items: center;
     gap: 2rem;
     padding: 0 10px;
   }
-  .team-cards{
+  .team-cards {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -521,17 +521,17 @@
   .team-button-sec button span {
     display: none;
   }
-  .dash-newteam .create{
+  .dash-newteam .create {
     width: 40px;
   }
-  .create-add-btn{
+  .create-add-btn {
     font-size: 1.5rem;
   }
-  .pay-card-wrapper-sm{
+  .pay-card-wrapper-sm {
     height: 75px;
   }
 }
-.team-members .error-message{
+.team-members .error-message {
   color: red !important;
   font-size: 12px !important;
   margin-top: 5px !important;

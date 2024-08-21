@@ -26,6 +26,12 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
+const (
+	green = "#63ACA3"
+	blue  = "#377CF6"
+	grey  = "#E9E9E9"
+)
+
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                error
@@ -70,6 +76,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		ElectricalCount    int64
 		InspectionCount    int64
 		ActivationCount    int64
+		contractD          string
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -123,7 +130,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		dataReq.DealerName = dealerName
 
 		switch role {
-		case "Admin":
+		case "Admin", "Finance Admin":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
 		case "Dealer Owner":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
@@ -393,58 +400,49 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			PTOD = PtoDate.Format("2006-01-02")
 		}
 
-		surveyColor, SiteSurveyCountT := getSurveyColor(SiteSurveyD, SiteSurveyComD)
+		ContractDate, ok := item["contract_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
+			contractD = ""
+		} else {
+			contractD = ContractDate.Format("2006-01-02")
+		}
+		surveyColor, SiteSurveyCountT, SiteSurevyDate := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
-		cadColor, CadDesignCountT := getCadColor(CadD, CadCompleteD)
+		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
-		permitColor, PerimittingCountT := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD)
+		permitColor, PerimittingCountT, PermittingDate := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, CadCompleteD)
 		PerimittingCount += PerimittingCountT
-		roofingColor, RoofingCountT := roofingColor(RoofingCreatedD, RoofingCompleteD)
+		roofingColor, RoofingCountT, RoofingDate := roofingColor(RoofingCreatedD, RoofingCompleteD)
 		RoofingCount += RoofingCountT
-		installColor, InstallCountT := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD)
+		installColor, InstallCountT, InstallDate := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
-		electricColor, electricCountT := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
+		electricColor, electricCountT, ElectricalDate := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
 		ElectricalCount += electricCountT
-		inspectionColor, InspectionCountT := InspectionColor(FinCreateD, FinPassD)
+		inspectionColor, InspectionCountT, InspectionDate := InspectionColor(FinCreateD, FinPassD, PvInstallCompleteD)
 		InspectionCount += InspectionCountT
-		activationColor, actiovationCountT := activationColor(PTOSubmitD, PTOD)
+		activationColor, actiovationCountT, ActivationDate := activationColor(PTOSubmitD, PTOD, FinPassD)
 		ActivationCount += actiovationCountT
 
 		perfomanceResponse := models.PerfomanceResponse{
-			UniqueId:                 UniqueId,
-			Customer:                 Customer,
-			SiteSurevyRescheduleDate: SiteSurveyD,
-			SiteSurveyCompletedDate:  SiteSurveyComD,
-			CadReady:                 CadD,
-			CadCompleteDate:          CadCompleteD,
-			PermitSubmittedDate:      permitSubmittedD,
-			IcSubmittedDate:          IcSubmitD,
-			PermitApprovedDate:       PermitApprovedD,
-			IcAPprovedDate:           IcaprvdD,
-			RoofingCratedDate:        RoofingCreatedD,
-			RoofingCompleteDate:      RoofingCompleteD,
-			BatteryScheduleDate:      BatteryScheduleD,
-			BatteryCompleteDate:      BatteryCompleteD,
-			PvInstallCompletedDate:   PvInstallCompleteD,
-			MpuCreateDate:            MpuCreateD,
-			DerateCreateDate:         DerateCreateD,
-			TrenchingWSOpenDate:      TrechingWSOpenD,
-			DerateCompleteDate:       DerateCompleteD,
-			MPUCompleteDate:          MpucompleteD,
-			TrenchingCompleteDate:    TrenchingComD,
-			FinCreatedDate:           FinCreateD,
-			FinPassdate:              FinPassD,
-			PtoSubmittedDate:         PTOSubmitD,
-			PTODate:                  PTOD,
-			PVInstallCreatedDate:     PvInstallCreateD,
-			SiteSurveyColour:         surveyColor,
-			CADDesignColour:          cadColor,
-			PermittingColour:         permitColor,
-			RoofingColour:            roofingColor,
-			InstallColour:            installColor,
-			ElectricalColour:         electricColor,
-			InspectionsColour:        inspectionColor,
-			ActivationColour:         activationColor,
+			UniqueId:          UniqueId,
+			Customer:          Customer,
+			SiteSurevyDate:    SiteSurevyDate,
+			CadDesignDate:     CadDesignDate,
+			PermittingDate:    PermittingDate,
+			RoofingDate:       RoofingDate,
+			InstallDate:       InstallDate,
+			ElectricalDate:    ElectricalDate,
+			InspectionDate:    InspectionDate,
+			ActivationDate:    ActivationDate,
+			SiteSurveyColour:  surveyColor,
+			CADDesignColour:   cadColor,
+			PermittingColour:  permitColor,
+			RoofingColour:     roofingColor,
+			InstallColour:     installColor,
+			ElectricalColour:  electricColor,
+			InspectionsColour: inspectionColor,
+			ActivationColour:  activationColor,
 		}
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
@@ -662,88 +660,185 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
-func getSurveyColor(scheduledDate, completedDate string) (string, int64) {
+func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string) {
+	var count int64
+	if contract_date != "" && completedDate == "" {
+		count = 1
+	}
 	if completedDate != "" {
-		return "#63ACA3", 1
+		return green, count, completedDate
 	} else if scheduledDate != "" {
-		return "#377CF6", 0
+		return blue, count, scheduledDate
 	}
-	return "#E9E9E9", 0
+	return grey, count, ""
 }
 
-func getCadColor(createdDate, completedDate string) (string, int64) {
+func getCadColor(createdDate, completedDate, site_survey_completed_date string) (string, int64, string) {
+	var count int64
+	if site_survey_completed_date != "" && completedDate == "" {
+		count = 1
+	}
 	if completedDate != "" {
-		return "#63ACA3", 1
+		return green, count, completedDate
 	} else if createdDate != "" {
-		return "#377CF6", 0
+		return blue, count, createdDate
 	}
-	return "#E9E9E9", 0
+	return grey, count, ""
 }
 
-func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64) {
-	if permitApprovedDate != "" && IcApprovedDate != "" {
-		return "#63ACA3", 1
-	} else if permitSubmittedDate != "" && IcSubmittedDate != "" {
-		return "#377CF6", 0
+func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64, string) {
+	var count int64
+	if roofingCreateDate != "" && roofingCompleteDate == "" {
+		count = 1
 	}
-	return "#E9E9E9", 0
-}
-
-func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64) {
 	if roofingCompleteDate != "" {
-		return "#63ACA3", 1
+		return green, count, roofingCompleteDate
 	} else if roofingCreateDate != "" {
-		return "#377CF6", 0
+		return blue, count, roofingCreateDate
 	}
-	return "", 0
+	return "", count, ""
 }
 
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64) {
-	if batteryScheduleDate != "" && batteryCompleted != "" && PvInstallcompletedDate != "" {
-		return "#63ACA3", 1
-	} else if pvInstallCreatedate != "" {
-		return "#377CF6", 0
+func InspectionColor(finCreatedDate, finPassDate, pv_install_completed_date string) (string, int64, string) {
+	var count int64
+
+	// Increment count if FIN created date is present and FIN pass date is not
+	if pv_install_completed_date != "" && finPassDate == "" {
+		count = 1
 	}
-	return "#E9E9E9", 0
+
+	// Return colors based on the status of FIN pass and created dates
+	if finPassDate != "" {
+		return "green", count, finPassDate
+	} else if finCreatedDate != "" {
+		return "blue", count, finCreatedDate
+	}
+
+	// Default color if no dates are set
+	return "grey", count, ""
 }
 
-func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64) {
-	if derateCreateDate != "" {
-		if derateCompleteDate != "" {
-			return "#63ACA3", 1
-		}
-	} else if mpuCompletedDate != "" {
-		return "#63ACA3", 1
+func activationColor(ptoSubmittedDate, ptodate, finPassDate string) (string, int64, string) {
+	var count int64
+	if finPassDate != "" && ptodate == "" {
+		count = 1
 	}
-
-	if TrenchingWSOpen != "" {
-		if TrenchingCompleted != "" {
-			return "#63ACA3", 1
-		}
-		return "#377CF6", 0
-	}
-
-	if mpuCreateDate != "" || derateCreateDate != "" || TrenchingWSOpen != "" {
-		return "#377CF6", 0
-	}
-
-	return "#E9E9E9", 0
-}
-
-func InspectionColor(finCreateddate, finPassdate string) (string, int64) {
-	if finPassdate != "" {
-		return "#63ACA3", 1
-	} else if finCreateddate != "" {
-		return "#377CF6", 0
-	}
-	return "#E9E9E9", 0
-}
-
-func activationColor(ptoSubmittedDate, ptodate string) (string, int64) {
 	if ptodate != "" {
-		return "#63ACA3", 1
+		return green, count, ptodate
 	} else if ptoSubmittedDate != "" {
-		return "#377CF6", 0
+		return blue, count, ptoSubmittedDate
 	}
-	return "#E9E9E9", 0
+	return grey, count, ""
+}
+
+func parseDate(dateStr string) time.Time {
+	layout := "2006-01-02" // Adjust layout as needed, e.g., "2006-01-02 15:04:05" for full datetime
+	t, err := time.Parse(layout, dateStr)
+	if err != nil {
+		log.FuncErrorTrace(0, "Error parsing date:", err)
+		return time.Time{}
+	}
+	return t
+}
+
+func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
+	var count int64
+	if CadCompleteDate != "" && permitApprovedDate == "" && IcApprovedDate == "" {
+		count = 1
+	}
+
+	permitApprovedDateParsed := parseDate(permitApprovedDate)
+	IcApprovedDateParsed := parseDate(IcApprovedDate)
+	permitSubmittedDateParsed := parseDate(permitSubmittedDate)
+	IcSubmittedDateParsed := parseDate(IcSubmittedDate)
+
+	if !permitApprovedDateParsed.IsZero() && !IcApprovedDateParsed.IsZero() {
+		latestApprovedDate := permitApprovedDate
+		if IcApprovedDateParsed.After(permitApprovedDateParsed) {
+			latestApprovedDate = IcApprovedDate
+		}
+		return green, count, latestApprovedDate
+	} else if !permitSubmittedDateParsed.IsZero() && !IcSubmittedDateParsed.IsZero() {
+		latestSubmittedDate := permitSubmittedDate
+		if IcSubmittedDateParsed.After(permitSubmittedDateParsed) {
+			latestSubmittedDate = IcSubmittedDate
+		}
+		return blue, count, latestSubmittedDate
+	}
+	return grey, count, ""
+}
+
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string) {
+	var count int64
+	if permittedcompletedDate != "" && iccompletedDate != "" && PvInstallcompletedDate == "" {
+		count = 1
+	}
+	if batteryScheduleDate != "" && batteryCompleted == "" {
+		count = 0
+	}
+	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
+	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
+	batteryCompletedParsed := parseDate(batteryCompleted)
+	PvInstallcompletedDateParsed := parseDate(PvInstallcompletedDate)
+
+	if !batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !PvInstallcompletedDateParsed.IsZero() {
+		latestCompletedDate := batteryCompleted
+		if PvInstallcompletedDateParsed.After(batteryCompletedParsed) {
+			latestCompletedDate = PvInstallcompletedDate
+		}
+		return green, count, latestCompletedDate
+	} else if !pvInstallCreatedateParsed.IsZero() {
+		return blue, count, pvInstallCreatedate
+	}
+	return grey, count, ""
+}
+
+func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
+	mpuCreateDateParsed := parseDate(mpuCreateDate)
+	derateCreateDateParsed := parseDate(derateCreateDate)
+	TrenchingWSOpenParsed := parseDate(TrenchingWSOpen)
+	derateCompleteDateParsed := parseDate(derateCompleteDate)
+	mpuCompletedDateParsed := parseDate(mpuCompletedDate)
+	TrenchingCompletedParsed := parseDate(TrenchingCompleted)
+
+	var latestCreateDate, latestCompleteDate time.Time
+
+	// Check for green (complete dates must be present for all created dates)
+	if !mpuCreateDateParsed.IsZero() && !mpuCompletedDateParsed.IsZero() {
+		latestCompleteDate = mpuCompletedDateParsed
+	}
+	if !derateCreateDateParsed.IsZero() && !derateCompleteDateParsed.IsZero() {
+		if derateCompleteDateParsed.After(latestCompleteDate) {
+			latestCompleteDate = derateCompleteDateParsed
+		}
+	}
+	if !TrenchingWSOpenParsed.IsZero() && !TrenchingCompletedParsed.IsZero() {
+		if TrenchingCompletedParsed.After(latestCompleteDate) {
+			latestCompleteDate = TrenchingCompletedParsed
+		}
+	}
+
+	if latestCompleteDate.After(time.Time{}) {
+		// All required complete dates are present, return green
+		return green, 0, latestCompleteDate.Format("2006-01-02")
+	}
+
+	// Check for blue (at least one create date is present)
+	latestCreateDate = time.Time{}
+	if !mpuCreateDateParsed.IsZero() {
+		latestCreateDate = mpuCreateDateParsed
+	}
+	if !derateCreateDateParsed.IsZero() && derateCreateDateParsed.After(latestCreateDate) {
+		latestCreateDate = derateCreateDateParsed
+	}
+	if !TrenchingWSOpenParsed.IsZero() && TrenchingWSOpenParsed.After(latestCreateDate) {
+		latestCreateDate = TrenchingWSOpenParsed
+	}
+
+	if latestCreateDate.After(time.Time{}) {
+		// Return blue for the latest create date
+		return blue, 1, latestCreateDate.Format("2006-01-02")
+	}
+
+	return grey, 1, ""
 }

@@ -124,13 +124,17 @@ import BellPr from '../../resources/assets/BellIconPr.svg';
 import locationpr from '../../resources/assets/location.svg';
 import Phone from '../../resources/assets/Phone.svg';
 import Techie from '../../resources/assets/techie.svg';
-import complete from '../../resources/assets/Completed.png';
+import complete from '../../resources/assets/COmpleted.png';
 import pending from '../../resources/assets/Pending.png';
 import AddIconSr from '../../resources/assets/AddNewSr.svg';
 import SystemSize from '../../resources/assets/SystemSize.svg';
 import RoofType from '../../resources/assets/rooftype.svg';
 import PM_LINK from '../../resources/assets/PM-Link.svg';
 import PM_SHARE from '../../resources/assets/pm-share.svg';
+import up from '../../resources/assets/Polygon 14.svg';
+import down from '../../resources/assets/Polygon 15.svg';
+import QCTICK from '../../resources/assets/qctick.svg';
+import QCLine from '../../resources/assets/QCLine.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -272,11 +276,15 @@ export const ICONS = {
   locationpr: locationpr,
   Phone: Phone,
   Techie: Techie,
-  complete:complete,
-  pending:pending,
-  AddIconSr:AddIconSr,
-  SystemSize:SystemSize,
+  complete: complete,
+  pending: pending,
+  AddIconSr: AddIconSr,
+  SystemSize: SystemSize,
   RoofType: RoofType,
-  PM_LINK:PM_LINK,
-  PM_SHARE:PM_SHARE,
+  PM_LINK: PM_LINK,
+  PM_SHARE: PM_SHARE,
+  UP: up,
+  DOWN: down,
+  QCTICK: QCTICK,
+  QCLine: QCLine,
 };

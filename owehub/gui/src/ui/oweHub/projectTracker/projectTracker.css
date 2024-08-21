@@ -9,21 +9,21 @@
   border-radius: 16px;
   padding: 20px;
 }
-.project-info{
+.project-info {
   padding: 15px 30px;
   width: 300px;
   background: #ebf3ff;
 }
-.project-info-details{
+.project-info-details {
   width: 240px;
 }
-.project-info-details h3{
+.project-info-details h3 {
   width: 180px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.header-milestone{
+.header-milestone {
   padding: 15px 20px;
   text-align: center;
   width: 100%;
@@ -35,7 +35,7 @@
   padding: 30px;
   background-color: var(--white-color);
 }
-.strips-wrapper{
+.strips-wrapper {
   display: flex;
   gap: 1rem;
   margin-bottom: -20px;
@@ -51,7 +51,6 @@
 
 .project-customer {
   width: 120px;
-
 }
 
 .install-update:hover {
@@ -71,6 +70,29 @@
   transform: translateX(-50%);
 }
 
+.leaderboard-data__btn--active.performance-btn {
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+}
+.leaderboard-data__btn--active.performance-btn:hover {
+  background-color: #377cf6;
+  border: 1px solid #377cf6;
+}
+
+.leaderboard-data__btn.inactive-btn {
+  border: 1px solid #377cf6;
+  color: #377cf6;
+}
+
+.leaderboard-data__btn.inactive-btn:hover {
+  background-color: #377cf6;
+  color: #fff;
+}
+
+.leaderboard-data__selected-dates.performance-date {
+  color: #377cf6;
+}
+
 .performance-project-name {
   font-size: 12px;
   font-weight: 500;
@@ -88,7 +110,7 @@
   scroll-behavior: smooth;
 }
 
-.performance-milestone-table table thead tr{
+.performance-milestone-table table thead tr {
   background-color: unset;
 }
 
@@ -103,6 +125,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px 10px 20px 10px;
+  width: 100%;
 }
 
 .project-heading h2,
@@ -112,12 +136,10 @@
   color: var(--page-heading-color);
 }
 
-
 .project-card-container-1 {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin-top: 1rem;
   width: 100%;
   padding: 10px;
 }
@@ -140,7 +162,7 @@
 .project-card-container-1 .project-card:hover::after {
   opacity: 1;
 }
-.stages-numbers{
+.stages-numbers {
   background: white;
   width: 26px;
   height: 26px;
@@ -217,19 +239,25 @@
 }
 
 .project-card {
-  padding: 1.5rem;
+  height: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   justify-content: center;
   gap: 5px;
   border-radius: 8px;
   outline-offset: 3px;
-  width: 180px;
+  width: 145px;
 }
-.project-card h2, .project-card p{
+.project-card h2,
+.project-card p {
   color: #fff;
   font-weight: 500;
+  width: 100px;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .project-icon-img {
   width: 34px;
@@ -333,6 +361,23 @@
   padding: 22px;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
+}
+
+.status-cust-name{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.status-cust-name span{
+  display: flex;
+  margin-top: 1.5rem;
+  color: #9D9D9D;
+  font-weight: 500;
+  font-size: 14px;
+}
+.status-cust-name pre{
+  color: #000;
+  font-weight: 600;
 }
 
 .project-status-body {
@@ -537,15 +582,27 @@
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  margin-top: -5px;
   margin-right: 12px;
   position: relative;
+  margin-top: -2px;
 }
-.proper-select .input{
-  height: 48px;
-  width: 250px;
+.proper-select .css-nls0j1-control,
+.proper-select .css-1aue19k-control {
+  height: 3rem;
+  width: 100%;
 }
-.search-icon{
+.proper-select .css-1n894bm-control,
+.proper-select .css-xego5g-control {
+  margin-top: 0;
+  height: 3rem;
+  width: 100%;
+}
+
+.proper-select .input {
+  height: 50px;
+  /* width: 250px;   */
+}
+.search-icon {
   position: absolute;
   right: 18px;
   top: 23px;
@@ -641,7 +698,8 @@
   margin: 0 10px;
 }
 
-.milestone-strips, .notch-strip{
+.milestone-strips,
+.notch-strip {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -650,11 +708,11 @@
   height: 50px;
   border-radius: 5px;
   position: relative;
-  transform: skewX(-20deg); 
+  transform: skewX(-20deg);
   transform-origin: bottom left;
 }
 
-.strips-data{
+.strips-data {
   position: absolute;
   margin-bottom: 80px;
   text-transform: uppercase;
@@ -663,7 +721,8 @@
   transform: skewX(20deg);
 }
 
-.strip-title p, .notch-title p{
+.strip-title p,
+.notch-title p {
   transform: skewX(20deg);
   font-weight: 500;
 }
@@ -766,18 +825,18 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #F7F7F7;
+  background: #f7f7f7;
   border-radius: 8px;
 }
 
-.progress-box-container{
+.progress-box-container {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
 .status-indicator {
-  color: #8C8C8C;
+  color: #8c8c8c;
   font-size: 14px;
 }
 
@@ -884,6 +943,12 @@
   }
 }
 
+@media (max-width: 844px) {
+  .performance-box-container {
+    width: 100%;
+  }
+}
+
 @media (max-width: 890px) {
   .performance-bars {
     width: unset !important;
@@ -894,7 +959,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .top-project-cards {
     flex-direction: column;
     gap: 10px;
@@ -916,23 +981,62 @@
   .project-status-table-title {
     flex-direction: column;
     gap: 10px;
-  }
-
-  .project-heading {
-    flex-direction: column;
-    margin-top: unset !important;
-    align-items: unset;
-    margin-bottom: 1.5rem !important;
+    align-items: flex-start !important;
   }
 
   .pro-status-dropdown {
     margin-top: -1rem;
+    min-width: unset;
   }
 
   .project-status-heading {
     gap: 0 !important;
     align-items: unset !important;
+    margin-bottom: unset !important;
+    position: relative;
+    padding: unset;
+    padding: 20px 0;
+    padding-bottom: 3rem;
   }
+
+  .status-cust-name span{
+   position: absolute;
+   top: 55px;
+   left: 0;
+  }
+
+  .status-buttons{
+    position: absolute;
+    right: 15px;
+  }
+
+  .progress-qc-acre{
+    position: absolute;
+    right: 10px;
+    top: 75px;
+  }
+
+  .status-indicator {
+    width: 100%;
+    text-align: center;
+  }
+
+  .performance-box-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .status-card{
+    width: 100% !important;
+  }
+
+  .status-boxes{
+    margin-left: unset !important;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
 }
 
 .per-head-input {
@@ -995,7 +1099,7 @@
     color 0.3s ease;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .project-card-container-1 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1013,13 +1117,24 @@
   }
 
   .progress-box-body p {
-    font-size: 10px;
     white-space: nowrap;
   }
 
   .project-card-container-1 {
-    margin-top: 20px;
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .arrow-wrap {
+    margin-right: unset !important;
+    flex-direction: column;
+  }
+
+  .arrow-dir {
+    transform: rotate(90deg);
+    margin-top: 10px;
   }
 
   .rep-drop_label {
@@ -1029,16 +1144,9 @@
   .performance-project {
     display: flex;
     align-items: center;
-    padding: 18px;
+    padding: 0px;
     gap: 15px;
     flex-direction: column;
-  }
-
-  .project-heading {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    margin-bottom: 20px;
   }
 
   .project-heading h2 {
@@ -1052,60 +1160,83 @@
   .proper-top {
     display: flex;
     flex-direction: column;
+    padding: 10px;
   }
 
   .proper-select {
     flex-direction: column;
     gap: 5px;
-    margin-bottom: 16px;
+    margin-top: 10px;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .proper-select .select-container {
+    width: 100%;
+  }
+
+  .proper-select .css-1n894bm-control {
+    margin-top: 0;
+    width: unset;
+  }
+
+  .proper-select .css-xego5g-control {
+    margin-top: 0;
+    width: 100%;
+  }
+
+  .project-card {
+    width: 100%;
+    padding: 1rem;
   }
 }
 
-
-.progress-qc button{
+.progress-qc button {
   width: 56px;
   height: 32px;
-  background-color: #F2F7FF;
-  border: 1px solid #377CF6;
+  background-color: #f2f7ff;
+  border: 1px solid #377cf6;
   font-weight: 500;
   font-size: 12px;
-  color: #377CF6;
+  color: #377cf6;
   cursor: pointer;
   border-radius: 4px;
   z-index: 1;
   transition: all 0.3s ease;
 }
 
-.progress-qc button:hover{
-  background-color: #377CF6;
+.progress-qc button:hover {
+  background-color: #377cf6;
   color: white;
 }
-.progress-qc-acre{
+.progress-qc-acre {
   margin-left: -7px;
   margin-top: -24px;
   z-index: 2;
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  background-color: #E30F0F;
+  background-color: #e30f0f;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.progress-qc-acre span{
+.progress-qc-acre span {
   font-size: 10px;
   font-weight: 600;
-  color: #FFFF;
+  color: #ffff;
 }
 
-
-@media (max-width: 767px) {
-  .progress-qc-acre{
+@media (max-width: 768px) {
+  .progress-qc-acre {
     margin-left: 160px;
     margin-top: -48px;
   }
-  .project-status-table-title{
+  .project-status-table-title {
     margin-top: 13px;
+  }
+  .progress-box{
+    border-radius: 4px !important;
   }
 }
