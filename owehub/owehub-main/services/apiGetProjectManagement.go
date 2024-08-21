@@ -158,7 +158,12 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 	var filtersBuilder strings.Builder
 	whereEleList = nil
-	filtersBuilder.WriteString(fmt.Sprintf("select current_live_cad,system_sold_er,podio_link from customers_customers_schema where unique_id = '%s'", dataReq.UniqueId))
+	filtersBuilder.WriteString(fmt.Sprintf(
+		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, n.sunpixel, n.lease_agreement_uploaded, "+
+			"n.light_reach_design_verification, n.owe_agreement_uploaded, n.hof_uploaded, n.finance_credit_approvedm, n.finance_agreement_completed, n.owe_agreement_completed "+
+			"FROM customers_customers_schema c "+
+			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
+			"WHERE c.unique_id = '%s'", dataReq.UniqueId))
 	// Check if there are filters
 	if len(dataReq.UniqueIds) > 0 {
 
