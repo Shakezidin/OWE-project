@@ -14,7 +14,7 @@ import { MdOutlineEmail } from 'react-icons/md';
 import { PiPhone } from 'react-icons/pi';
 import Pagination from '../../components/pagination/Pagination';
 import SuccessPopup from './components/Popup/SuccessPopup';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import FilterDropDown from './components/FilterDropdown/FilterDropDown';
 const current = new Date();
 interface IOptions {
@@ -40,10 +40,9 @@ const mockedData = [
   {
     id: 3,
     name: 'John Doe',
-    busySlot: [{ startTime: '3:00 PM', endTime: '4:00 PM', id: '!3331ff' }],
+    busySlot: [{ startTime: '8:00 AM', endTime: '12:00 PM', id: '!3331ff' }],
     availableSlot: [
-      { startTime: '8:00 AM', endTime: '1:00 PM', id: '!2444' },
-      { startTime: '1:00 PM', endTime: '2:30 PM', id: '!13d1ff' },
+      { startTime: '12:00 PM', endTime: '1:30 PM', id: '!2444' },
       { startTime: '5:00 PM', endTime: '6:00 PM', id: '!333a1ff' },
     ],
   },
@@ -62,8 +61,7 @@ const mockedData = [
     name: 'Sandra Doe',
     busySlot: [{ startTime: '3:00 PM', endTime: '4:00 PM', id: '54638' }],
     availableSlot: [
-      { startTime: '8:00 AM', endTime: '1:00 PM', id: '28383' },
-      { startTime: '1:00 PM', endTime: '2:30 PM', id: '38385' },
+      { startTime: '8:00 AM', endTime: '2:00 PM', id: '28383' },
       { startTime: '5:00 PM', endTime: '6:00 PM', id: '3788284' },
     ],
   },
@@ -78,10 +76,10 @@ const Index = () => {
     timeSlots[timeSlots.length - 1]
   );
   const [scheduleBtnCord, setScheduleBtnCord] = useState<{
-    start: number;
-    end: number;
+    start: { ind: 0, pos: string }[];
+    end: { ind: 0, pos: string }[];
     parentId: string[];
-  }>({ start: 0, end: 0, parentId: [] });
+  }>({ start: [], end: [], parentId: [] });
   const [infoCardCords, setInfoCardCors] = useState({
     top: 0,
     left: 0,
@@ -96,6 +94,13 @@ const Index = () => {
   const scheduleRef = useRef<HTMLDivElement>(null);
   const timeOutIds = useRef<NodeJS.Timeout[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [searchParams] = useSearchParams()
+  const isEditing = searchParams.get("isEditing")
+  const showBookBtn = (index: number) => {
+    const person = mockedData[index]
+    return true
+    return startTime.value && person.busySlot.every((item) => parse(item.startTime, 'h:mm aa', new Date()) >= parse(startTime.value, 'h:mm aa', new Date()))
+  }
 
   const isBetween = useCallback(
     (time: string) => {
@@ -154,7 +159,6 @@ const Index = () => {
       let current: HTMLDivElement | null = null;
       let foundElm: HTMLDivElement | null = null;
       findElm.forEach((item) => {
-        console.log(item.parentElement?.parentElement, '', 'found parent ');
         if (item.parentElement?.dataset.parentId) {
           foundElm = item;
           current = item;
@@ -166,21 +170,21 @@ const Index = () => {
         current = current.offsetParent as HTMLDivElement | null;
       }
       setDividerCords((prev) => ({ ...prev, [type]: totalOffset - 1 }));
+      console.log(findElm, "element found");
 
-      const dataset = (foundElm as HTMLDivElement | null)?.parentElement
-        ?.dataset;
-      findElm.forEach((item) => {
+      const cordIds: { ind: number, pos: string }[] = []
+      findElm.forEach((item, ind) => {
         if (item.parentElement?.dataset.parentId) {
           ids.push(item.parentElement.dataset.parentId);
+          cordIds.push({ ind: parseInt(item.id), pos: item.parentElement.dataset.cordId as string })
         }
       });
-      if (dataset?.cordId) {
-        setScheduleBtnCord((prev) => ({
-          ...prev,
-          [type]: parseInt(dataset.cordId as string),
-          parentId: ids,
-        }));
-      }
+      setScheduleBtnCord((prev) => ({
+        ...prev,
+        [type]: cordIds,
+        parentId: ids,
+      }));
+
     }
   };
   const getScheduledInfo = (
@@ -225,6 +229,7 @@ const Index = () => {
       });
     };
   }, [timeOutIds]);
+  console.log(scheduleBtnCord, "cordssss");
 
   return (
     <>
@@ -367,18 +372,18 @@ const Index = () => {
                 (startTime.value !== '8:00 AM' ||
                   endTime.value !== '6:00 PM') && (
                   <>
-                    <div
+                    {!!dividerCords.start && <div
                       className={styles.absolute_vertical_line}
                       style={{ left: dividerCords.start }}
-                    />
-                    <div
+                    />}
+                    {!!dividerCords.end && <div
                       className={styles.absolute_vertical_line}
                       style={{ left: dividerCords.end }}
-                    />
+                    />}
                   </>
                 )}
 
-              {mockedData.map((person) => {
+              {mockedData.map((person, idx) => {
                 return (
                   <div
                     key={person.id}
@@ -399,7 +404,8 @@ const Index = () => {
                             avail.startTime,
                             avail.endTime
                           );
-
+                          const start = scheduleBtnCord.start.find(item => item.ind === idx)?.pos
+                          const end = scheduleBtnCord.end.find(item => item.ind === idx)?.pos
                           return (
                             <div
                               key={avail.id}
@@ -414,12 +420,13 @@ const Index = () => {
                                 return (
                                   <div
                                     key={ind * index + 1}
-                                    className={`relative ${styles.half_hour_span_wrapper}  ${isInterecting ? styles.masked_img : ''}`}
+                                    className={`relative ${styles.half_hour_span_wrapper}  ${(isInterecting) ? styles.masked_img : ''}`}
                                     data-cord-id={ind + 1}
                                     data-parent-id={avail.id}
                                   >
                                     <div
                                       data-time-id={item}
+                                      id={idx.toString()}
                                       className={
                                         (ind + 1) % 2 === 0
                                           ? styles.half_hour_span
@@ -432,10 +439,10 @@ const Index = () => {
                                 );
                               })}
 
-                              {scheduleBtnCord.parentId.includes(avail.id) && (
+                              {(scheduleBtnCord.parentId.includes(avail.id) && start) && (
                                 <div
                                   style={{
-                                    gridColumn: `${scheduleBtnCord.start}/${scheduleBtnCord.end}`,
+                                    gridColumn: `${start}/${end}`,
                                   }}
                                   className={styles.schdule_btn_wrapper}
                                 >
@@ -490,6 +497,7 @@ const Index = () => {
                                   <div
                                     key={ind}
                                     className={` ${styles.half_hour_span_wrapper}`}
+                                    data-parent-id={avail.id}
                                   >
                                     <div
                                       data-time-id={item}
