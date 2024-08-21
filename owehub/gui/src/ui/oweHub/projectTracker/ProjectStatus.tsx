@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './projectTracker.css';
 import { projectStatusHeadData } from './projectData';
 import SelectOption from '../../components/selectOption/SelectOption';
@@ -18,6 +18,8 @@ import Proj_pie_chart from './lib/proj_pie_chart';
 import { ICONS } from '../../../resources/icons/Icons';
 import QCModal from './PopUp';
 import NtpModal from './NtpPopUp';
+import Input from '../../components/text_input/Input';
+import { debounce } from '../../../utiles/debounce';
 
 interface ActivePopups {
   [key: number]: number | null;
@@ -55,12 +57,17 @@ const ProjectStatus = () => {
   );
   const location = useLocation();
   const projectId = new URLSearchParams(location.search).get('project_id');
+  const projectName = new URLSearchParams(location.search).get('customer-name')
 
   const getStatus = (arr: string[]) => {
     return arr.every(
       (item) => projectDetail[item as keyof typeof projectDetail]
     );
   };
+  const [search, setSearch] = useState('OUR22645');
+  const [searchValue, setSearchValue] = useState(
+    'OUR22645'
+  );
   const filtered = [
     // {
     //   name: 'Sales',
@@ -463,6 +470,15 @@ const ProjectStatus = () => {
     }
   };
 
+  
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(e.target.value);
+    }, 800),
+    []
+  );
+
+
   useEffect(() => {
     if (activePopups) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -511,10 +527,17 @@ const ProjectStatus = () => {
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
-    if (selectedProject.value) {
-      dispatch(getProjectDetail(selectedProject.value));
+    if (searchValue) {
+      dispatch(getProjectDetail(searchValue));
     }
-  }, [selectedProject.value]);
+  }, [searchValue]);
+
+  useEffect(() => {
+    if(projectId){
+      setSearch(projectId)
+      setSearchValue(projectId)
+    }
+  },[projectId])
 
   const options = [
     { id: 1, content: 'Podio' },
@@ -562,8 +585,8 @@ const ProjectStatus = () => {
                 <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
-                    <span>Customer name:<pre>  Andrew Parker</pre></span>
-                    <SelectOption
+                    <span className='cust-name'>Customer name:<pre> {projectDetail.home_owner}</pre></span>
+                    {/* <SelectOption
                       options={projectOption}
                       value={selectedProject}
                       onChange={(val) => {
@@ -572,7 +595,17 @@ const ProjectStatus = () => {
                         }
                       }}
                       width="190px"
-                    />
+                    /> */}
+                     <Input
+                  type="text"
+                  placeholder="Search for Unique ID or Name"
+                  value={search}
+                  name="Search for Unique ID or Name"
+                  onChange={(e) => {
+                    handleSearchChange(e);
+                    setSearch(e.target.value);
+                  }}
+                />
                   </div>
                 </div>
               </div>

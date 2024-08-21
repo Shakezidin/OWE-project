@@ -83,6 +83,7 @@ interface IProject {
   contract_amount: number;
   finance_partner: string;
   net_epc: number;
+  home_owner:string
 }
 
 export interface IProjects {

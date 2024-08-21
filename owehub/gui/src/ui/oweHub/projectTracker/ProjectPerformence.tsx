@@ -746,7 +746,7 @@ const ProjectPerformence = () => {
                           <td style={{ padding: '0px' }}>
                             <div className="milestone-data">
                               <Link
-                                to={`/project-management?project_id=${project.unqiue_id}`}
+                                to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
                               >
                                 <div className="project-info-details">
                                   <h3>{project.customer}</h3>
