@@ -73,7 +73,6 @@ const Input: FC<InputProps> = ({
     <div className="input-wrapper">
       {label && <label className="inputLabel">{label}</label>}
       <div className="input-inner-view">
-
         <input
           type={type}
           name={name}

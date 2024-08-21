@@ -73,7 +73,6 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease;
-   
 }
 /* .battery-calc-button:hover {
   transform: scale(1.07);
@@ -88,7 +87,7 @@
   z-index: 4;
   padding: 3rem;
 }
- 
+
 .reset-password {
   color: #3faed9;
   border: none;

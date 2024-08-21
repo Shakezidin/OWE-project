@@ -153,17 +153,18 @@ const MyProfile = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isEditMode) {
-      const newErrors = {
-        city: city ? '' : 'City is required',
-        street: street ? '' : 'Street is required',
-        country: country ? '' : 'Country is required',
-        state: state ? '' : 'State is required',
-      };
-      setErrors(newErrors);
+      // const newErrors = {
+      //   city: city ? '' : 'City is required',
+      //   street: street ? '' : 'Street is required',
+      //   country: country ? '' : 'Country is required',
+      //   state: state ? '' : 'State is required',
+      // };
+      // setErrors(newErrors);
       // @ts-ignore
-      if (Object.keys(newErrors).every((it) => !newErrors[it])) {
-        updateSubmit();
-      }
+      // if (Object.keys(newErrors).every((it) => !newErrors[it])) {
+      //   updateSubmit();
+      // }
+      updateSubmit();
     }
   };
   return (

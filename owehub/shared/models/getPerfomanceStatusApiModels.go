@@ -22,40 +22,24 @@ type PerfomanceStatusReq struct {
 }
 
 type PerfomanceResponse struct {
-	UniqueId                 string `json:"unqiue_id"`
-	Customer                 string `json:"customer"`
-	SiteSurevyRescheduleDate string `json:"site_survey_scheduled_date"`
-	SiteSurveyCompletedDate  string `json:"site_survey_completed_date"`
-	CadReady                 string `json:"cad_ready"`
-	CadCompleteDate          string `json:"cad_complete_date"`
-	PermitSubmittedDate      string `json:"permit_submitted_date"`
-	IcSubmittedDate          string `json:"ic_submitted_date"`
-	PermitApprovedDate       string `json:"permit_approved_date"`
-	IcAPprovedDate           string `json:"ic_approved_date"`
-	RoofingCratedDate        string `json:"roofing_created_date"`
-	RoofingCompleteDate      string `json:"roofing_completed_date"`
-	BatteryScheduleDate      string `json:"battery_scheduled_date"`
-	BatteryCompleteDate      string `json:"battery_complete_date"`
-	PvInstallCompletedDate   string `json:"pv_install_completed_date"`
-	MpuCreateDate            string `json:"mpu_created_date"`
-	DerateCreateDate         string `json:"derate_created_date"`
-	TrenchingWSOpenDate      string `json:"trenching_ws_open"`
-	DerateCompleteDate       string `json:"derate_completed_date"`
-	MPUCompleteDate          string `json:"mpu_complete_date"`
-	TrenchingCompleteDate    string `json:"trenching_completed"`
-	FinCreatedDate           string `json:"fin_created_date"`
-	FinPassdate              string `json:"fin_pass_date"`
-	PtoSubmittedDate         string `json:"pto_submitted_date"`
-	PTODate                  string `json:"pto_date"`
-	PVInstallCreatedDate     string `json:"pv_install_created_date"`
-	SiteSurveyColour         string `json:"site_survey_colour"`
-	CADDesignColour          string `json:"cad_design_colour"`
-	PermittingColour         string `json:"permitting_colour"`
-	RoofingColour            string `json:"roofing_colour"`
-	InstallColour            string `json:"install_colour"`
-	ElectricalColour         string `json:"electrical_colour"`
-	InspectionsColour        string `json:"inspectionsColour"`
-	ActivationColour         string `json:"activation_colour"`
+	UniqueId          string `json:"unqiue_id"`
+	Customer          string `json:"customer"`
+	SiteSurevyDate    string `json:"site_survey_date"`
+	CadDesignDate     string `json:"cad_design_date"`
+	PermittingDate    string `json:"permitting_date"`
+	RoofingDate       string `json:"roofing_date"`
+	InstallDate       string `json:"install_date"`
+	ElectricalDate    string `json:"electrical_date"`
+	InspectionDate    string `json:"inspection_date"`
+	ActivationDate    string `json:"activation_date"`
+	SiteSurveyColour  string `json:"site_survey_colour"`
+	CADDesignColour   string `json:"cad_design_colour"`
+	PermittingColour  string `json:"permitting_colour"`
+	RoofingColour     string `json:"roofing_colour"`
+	InstallColour     string `json:"install_colour"`
+	ElectricalColour  string `json:"electrical_colour"`
+	InspectionsColour string `json:"inspectionsColour"`
+	ActivationColour  string `json:"activation_colour"`
 }
 
 type PerfomanceListResponse struct {
@@ -103,6 +87,32 @@ type ProjectListResponse struct {
 	CADLink     string            `json:"cad_link"`
 	DATLink     string            `json:"dat_link"`
 	PodioLink   string            `json:"podio_link"`
+	Ntp         NTP               `json:"ntp"`
+	Qc          QC                `json:"qc"`
+}
+
+type QC struct {
+	PowerClerk                           string `json:"powerclerk_sent"`
+	ACHWaiveSendandSignedCashOnly        string `json:"ACH_waiver(sent_and_signed)(cash_only)"`
+	GreenAreaNMOnly                      string `json:"green_area(nm_only)"`
+	FinanceCreditApprovalLoanorLease     string `json:"finance_credit_approval(loan_or_lease)"`
+	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement_completed(loan_or_lease)"`
+	OWEDocumentsCompleted                string `json:"OWE_documents_completed"`
+}
+
+type NTP struct {
+	ProductionDiscrepancy                       string `json:"production_discrepancy"`
+	Sunpixel                                    string `json:"sunpixel"`
+	LeaseAgreementUploaded                      string `json:"lease_agreement_uploaded"`
+	LightReachDesignVerification                string `json:"light_reach_design_verification"`
+	OWEAgreementUploaded                        string `json:"OWE_agreement_uploaded"`
+	HOFUploaded                                 string `json:"HOF_uploaded"`
+	UtilityAcknowledgementAndDisclaimerUploaded string `json:"utility_acknowledgement_and_disclaimer_uploaded"`
+	ACHWaiverCashCustomerOnlyUploaded           string `json:"ACH_waiver_cash_customer_only_uploaded"`
+	FinanceNTPOfProject                         string `json:"finance_ntp_of_project"`
+	FinanceCreditApproval                       string `json:"finance_credit_approval"`
+	FinanceAgreementCompleted                   string `json:"finance_agreement_completed"`
+	OWEDocumentsCompleted                       string `json:"OWE_documents_completed"`
 }
 
 type ProjectResponse struct {
@@ -140,6 +150,10 @@ type ProjectResponse struct {
 	PtoInProcess                 string            `json:"pto_in_process"`
 	PtoSubmitted                 string            `json:"pto_submitted"`
 	PtoCompleted                 string            `json:"pto_completed"`
+	CadReady                     string            `json:"cad_ready"`
+	BatteryScheduleDate          string            `json:"battery_scheduled_date"`
+	BatteryCompleteDate          string            `json:"battery_complete_date"`
+	FinCreatedDate               string            `json:"fin_created_date"`
 	SystemSize                   float64           `json:"system_size"`
 	AddersTotal                  string            `json:"adders_total"`
 	AdderBreakDownAndTotalString string            `json:"adder_breakdown_and_total_string"`
@@ -188,6 +202,10 @@ var ColumnToField = map[string]string{
 	"pto_created_date":             "PtoInProcess",
 	"pto_submitted_date":           "PtoSubmitted",
 	"pto_date":                     "PtoCompleted",
+	"cad_ready":                    "CadReady",
+	"battery_scheduled_date":       "BatteryScheduleDate",
+	"battery_complete_date":        "BatteryCompleteDate",
+	"fin_created_date":             "FinCreatedDate",
 	"system_size":                  "SystemSize",
 	"adders_total":                 "AddersTotal",
 	"adder_breakdown_and_total":    "AdderBreakDownAndTotalString",

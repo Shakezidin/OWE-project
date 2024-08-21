@@ -289,7 +289,10 @@ function App() {
           />
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
-          <Route path={ROUTES.SALES_REP_SCHEDULER} element={<CustomersList />} />
+          <Route
+            path={ROUTES.SALES_REP_SCHEDULER}
+            element={<CustomersList />}
+          />
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
           <Route
             path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}

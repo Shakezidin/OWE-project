@@ -19,7 +19,6 @@ const PaginationComponent: React.FC<PaginationProps> = ({
   itemsPerPage,
   handleItemsPerPageChange,
 }) => {
-
   return (
     <div className="pagination-container">
       <ReactPaginate
