@@ -69,7 +69,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
 
   const role = localStorage.getItem('role');
 
-  const dealer = localStorage.getItem('dealer_name');
+  const dealer = localStorage.getItem('dealer');
   console.log(dealer, "sidebar dealer")
 
   const filteredList = useMemo(() => {
@@ -189,6 +189,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   // const isMobile = width < 768;
   const isMobile = true;
 
+
+  console.log(dealer, "dealer")
   return (
     <div
       style={{ zIndex: '30' }}
