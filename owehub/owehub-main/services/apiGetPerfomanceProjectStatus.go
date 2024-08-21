@@ -536,6 +536,27 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString(") ")
 	}
 
+	if len(dataFilter.UniqueIds) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" OR ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+	}
+
 	// Add dealer filter if not adminCheck and not filterCheck
 	if !adminCheck && !filterCheck {
 		if whereAdded {
@@ -709,13 +730,13 @@ func InspectionColor(finCreatedDate, finPassDate, pv_install_completed_date stri
 
 	// Return colors based on the status of FIN pass and created dates
 	if finPassDate != "" {
-		return "green", count, finPassDate
+		return green, count, finPassDate
 	} else if finCreatedDate != "" {
-		return "blue", count, finCreatedDate
+		return blue, count, finCreatedDate
 	}
 
 	// Default color if no dates are set
-	return "grey", count, ""
+	return grey, count, ""
 }
 
 func activationColor(ptoSubmittedDate, ptodate, finPassDate string) (string, int64, string) {
@@ -735,7 +756,7 @@ func parseDate(dateStr string) time.Time {
 	layout := "2006-01-02" // Adjust layout as needed, e.g., "2006-01-02 15:04:05" for full datetime
 	t, err := time.Parse(layout, dateStr)
 	if err != nil {
-		log.FuncErrorTrace(0, "Error parsing date:", err)
+		// log.FuncErrorTrace(0, "Error parsing date:", err)
 		return time.Time{}
 	}
 	return t

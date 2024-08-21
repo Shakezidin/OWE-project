@@ -316,6 +316,27 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 		filtersBuilder.WriteString(") ")
 	}
 
+	if len(dataFilter.UniqueIds) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" OR ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+	}
+
 	if !adminCheck {
 		if !whereAdded {
 			filtersBuilder.WriteString(" WHERE ")
@@ -366,6 +387,27 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 			}
 		}
 		filtersBuilder.WriteString(") ")
+	}
+
+	if len(dataFilter.UniqueIds) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" OR ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
 	}
 
 	if whereAdded {
