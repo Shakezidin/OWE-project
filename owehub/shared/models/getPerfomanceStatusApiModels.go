@@ -87,6 +87,32 @@ type ProjectListResponse struct {
 	CADLink     string            `json:"cad_link"`
 	DATLink     string            `json:"dat_link"`
 	PodioLink   string            `json:"podio_link"`
+	Ntp         NTP               `json:"ntp"`
+	Qc          QC                `json:"qc"`
+}
+
+type QC struct {
+	PowerClerk                           string `json:"powerclerk_sent"`
+	ACHWaiveSendandSignedCashOnly        string `json:"ACH_waiver(sent_and_signed)(cash_only)"`
+	GreenAreaNMOnly                      string `json:"green_area(nm_only)"`
+	FinanceCreditApprovalLoanorLease     string `json:"finance_credit_approval(loan_or_lease)"`
+	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement_completed(loan_or_lease)"`
+	OWEDocumentsCompleted                string `json:"OWE_documents_completed"`
+}
+
+type NTP struct {
+	ProductionDiscrepancy                       string `json:"production_discrepancy"`
+	Sunpixel                                    string `json:"sunpixel"`
+	LeaseAgreementUploaded                      string `json:"lease_agreement_uploaded"`
+	LightReachDesignVerification                string `json:"light_reach_design_verification"`
+	OWEAgreementUploaded                        string `json:"OWE_agreement_uploaded"`
+	HOFUploaded                                 string `json:"HOF_uploaded"`
+	UtilityAcknowledgementAndDisclaimerUploaded string `json:"utility_acknowledgement_and_disclaimer_uploaded"`
+	ACHWaiverCashCustomerOnlyUploaded           string `json:"ACH_waiver_cash_customer_only_uploaded"`
+	FinanceNTPOfProject                         string `json:"finance_ntp_of_project"`
+	FinanceCreditApproval                       string `json:"finance_credit_approval"`
+	FinanceAgreementCompleted                   string `json:"finance_agreement_completed"`
+	OWEDocumentsCompleted                       string `json:"OWE_documents_completed"`
 }
 
 type ProjectResponse struct {

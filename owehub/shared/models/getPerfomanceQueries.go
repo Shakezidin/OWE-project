@@ -63,6 +63,7 @@ func SalesMetricsRetrieveQueryFunc() string {
             fieldOpsSchema.fin_pass_date,
             intOpsMetSchema.pto_submitted_date,
             intOpsMetSchema.pto_date,
+            salMetSchema.contract_date,
             salMetSchema.dealer,
             salMetSchema.primary_sales_rep
         FROM

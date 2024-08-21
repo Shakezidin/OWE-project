@@ -76,6 +76,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		ElectricalCount    int64
 		InspectionCount    int64
 		ActivationCount    int64
+		contractD          string
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -399,21 +400,28 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			PTOD = PtoDate.Format("2006-01-02")
 		}
 
-		surveyColor, SiteSurveyCountT, SiteSurevyDate := getSurveyColor(SiteSurveyD, SiteSurveyComD)
+		ContractDate, ok := item["contract_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
+			contractD = ""
+		} else {
+			contractD = ContractDate.Format("2006-01-02")
+		}
+		surveyColor, SiteSurveyCountT, SiteSurevyDate := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
-		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD)
+		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
-		permitColor, PerimittingCountT, PermittingDate := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD)
+		permitColor, PerimittingCountT, PermittingDate := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, CadCompleteD)
 		PerimittingCount += PerimittingCountT
 		roofingColor, RoofingCountT, RoofingDate := roofingColor(RoofingCreatedD, RoofingCompleteD)
 		RoofingCount += RoofingCountT
-		installColor, InstallCountT, InstallDate := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD)
+		installColor, InstallCountT, InstallDate := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
 		electricColor, electricCountT, ElectricalDate := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
 		ElectricalCount += electricCountT
-		inspectionColor, InspectionCountT, InspectionDate := InspectionColor(FinCreateD, FinPassD)
+		inspectionColor, InspectionCountT, InspectionDate := InspectionColor(FinCreateD, FinPassD, PvInstallCompleteD)
 		InspectionCount += InspectionCountT
-		activationColor, actiovationCountT, ActivationDate := activationColor(PTOSubmitD, PTOD)
+		activationColor, actiovationCountT, ActivationDate := activationColor(PTOSubmitD, PTOD, FinPassD)
 		ActivationCount += actiovationCountT
 
 		perfomanceResponse := models.PerfomanceResponse{
@@ -652,91 +660,76 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
-func getSurveyColor(scheduledDate, completedDate string) (string, int64, string) {
-	if completedDate != "" {
-		return green, 0, completedDate
-	} else if scheduledDate != "" {
-		return blue, 1, scheduledDate
+func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string) {
+	var count int64
+	if contract_date != "" && completedDate == "" {
+		count = 1
 	}
-	return grey, 1, ""
+	if completedDate != "" {
+		return green, count, completedDate
+	} else if scheduledDate != "" {
+		return blue, count, scheduledDate
+	}
+	return grey, count, ""
 }
 
-func getCadColor(createdDate, completedDate string) (string, int64, string) {
-	if completedDate != "" {
-		return green, 0, completedDate
-	} else if createdDate != "" {
-		return blue, 1, createdDate
+func getCadColor(createdDate, completedDate, site_survey_completed_date string) (string, int64, string) {
+	var count int64
+	if site_survey_completed_date != "" && completedDate == "" {
+		count = 1
 	}
-	return grey, 1, ""
+	if completedDate != "" {
+		return green, count, completedDate
+	} else if createdDate != "" {
+		return blue, count, createdDate
+	}
+	return grey, count, ""
 }
 
 func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64, string) {
+	var count int64
+	if roofingCreateDate != "" && roofingCompleteDate == "" {
+		count = 1
+	}
 	if roofingCompleteDate != "" {
-		return green, 0, roofingCompleteDate
+		return green, count, roofingCompleteDate
 	} else if roofingCreateDate != "" {
-		return blue, 1, roofingCreateDate
+		return blue, count, roofingCreateDate
 	}
-	return "", 1, ""
+	return "", count, ""
 }
 
-func InspectionColor(finCreateddate, finPassdate string) (string, int64, string) {
-	if finPassdate != "" {
-		return green, 0, finPassdate
-	} else if finCreateddate != "" {
-		return blue, 1, finCreateddate
+func InspectionColor(finCreatedDate, finPassDate, pv_install_completed_date string) (string, int64, string) {
+	var count int64
+
+	// Increment count if FIN created date is present and FIN pass date is not
+	if pv_install_completed_date != "" && finPassDate == "" {
+		count = 1
 	}
-	return grey, 1, ""
+
+	// Return colors based on the status of FIN pass and created dates
+	if finPassDate != "" {
+		return "green", count, finPassDate
+	} else if finCreatedDate != "" {
+		return "blue", count, finCreatedDate
+	}
+
+	// Default color if no dates are set
+	return "grey", count, ""
 }
 
-func activationColor(ptoSubmittedDate, ptodate string) (string, int64, string) {
+func activationColor(ptoSubmittedDate, ptodate, finPassDate string) (string, int64, string) {
+	var count int64
+	if finPassDate != "" && ptodate == "" {
+		count = 1
+	}
 	if ptodate != "" {
-		return green, 0, ptodate
+		return green, count, ptodate
 	} else if ptoSubmittedDate != "" {
-		return blue, 1, ptoSubmittedDate
+		return blue, count, ptoSubmittedDate
 	}
-	return grey, 1, ""
+	return grey, count, ""
 }
-
-// func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64, string) {
-// 	if permitApprovedDate != "" && IcApprovedDate != "" {
-// 		return "#63ACA3", 1, permitApprovedDate
-// 	} else if permitSubmittedDate != "" && IcSubmittedDate != "" {
-// 		return "#377CF6", 0, permitSubmittedDate
-// 	}
-// 	return "#E9E9E9", 0, ""
-// }
-
-// func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64, string) {
-// 	if batteryScheduleDate != "" && batteryCompleted != "" && PvInstallcompletedDate != "" {
-// 		return "#63ACA3", 1, batteryCompleted
-// 	} else if pvInstallCreatedate != "" {
-// 		return "#377CF6", 0, pvInstallCreatedate
-// 	}
-// 	return "#E9E9E9", 0, ""
-// }
-
-// func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
-// 	if derateCreateDate != "" {
-// 		if derateCompleteDate != "" {
-// 			return "#63ACA3", 1, derateCompleteDate
-// 		}
-// 	} else if mpuCompletedDate != "" {
-// 		return "#63ACA3", 1, mpuCompletedDate
-// 	}
-
-// 	if TrenchingWSOpen != "" {
-// 		if TrenchingCompleted != "" {
-// 			return "#63ACA3", 1, TrenchingCompleted
-// 		}
-// 		return "#377CF6", 0, TrenchingWSOpen
-// 	}
-
-// 	if mpuCreateDate != "" || derateCreateDate != "" || TrenchingWSOpen != "" {
-// 		return "#377CF6", 0, mpuCreateDate
-// 	}
-
-// 	return "#E9E9E9", 0, ""
-// }
 
 func parseDate(dateStr string) time.Time {
 	layout := "2006-01-02" // Adjust layout as needed, e.g., "2006-01-02 15:04:05" for full datetime
@@ -748,7 +741,12 @@ func parseDate(dateStr string) time.Time {
 	return t
 }
 
-func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate string) (string, int64, string) {
+func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
+	var count int64
+	if CadCompleteDate != "" && permitApprovedDate == "" && IcApprovedDate == "" {
+		count = 1
+	}
+
 	permitApprovedDateParsed := parseDate(permitApprovedDate)
 	IcApprovedDateParsed := parseDate(IcApprovedDate)
 	permitSubmittedDateParsed := parseDate(permitSubmittedDate)
@@ -759,18 +757,25 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 		if IcApprovedDateParsed.After(permitApprovedDateParsed) {
 			latestApprovedDate = IcApprovedDate
 		}
-		return green, 0, latestApprovedDate
+		return green, count, latestApprovedDate
 	} else if !permitSubmittedDateParsed.IsZero() && !IcSubmittedDateParsed.IsZero() {
 		latestSubmittedDate := permitSubmittedDate
 		if IcSubmittedDateParsed.After(permitSubmittedDateParsed) {
 			latestSubmittedDate = IcSubmittedDate
 		}
-		return blue, 1, latestSubmittedDate
+		return blue, count, latestSubmittedDate
 	}
-	return grey, 1, ""
+	return grey, count, ""
 }
 
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate string) (string, int64, string) {
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string) {
+	var count int64
+	if permittedcompletedDate != "" && iccompletedDate != "" && PvInstallcompletedDate == "" {
+		count = 1
+	}
+	if batteryScheduleDate != "" && batteryCompleted == "" {
+		count = 0
+	}
 	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
 	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
 	batteryCompletedParsed := parseDate(batteryCompleted)
@@ -781,11 +786,11 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, Pv
 		if PvInstallcompletedDateParsed.After(batteryCompletedParsed) {
 			latestCompletedDate = PvInstallcompletedDate
 		}
-		return green, 0, latestCompletedDate
+		return green, count, latestCompletedDate
 	} else if !pvInstallCreatedateParsed.IsZero() {
-		return blue, 1, pvInstallCreatedate
+		return blue, count, pvInstallCreatedate
 	}
-	return grey, 1, ""
+	return grey, count, ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
