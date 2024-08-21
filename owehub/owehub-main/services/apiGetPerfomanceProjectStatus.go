@@ -794,9 +794,6 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, Pv
 	if permittedcompletedDate != "" && iccompletedDate != "" && PvInstallcompletedDate == "" {
 		count = 1
 	}
-	if batteryScheduleDate != "" && batteryCompleted == "" {
-		count = 0
-	}
 	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
 	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
 	batteryCompletedParsed := parseDate(batteryCompleted)
