@@ -307,12 +307,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-            {
-              startDate: selected.start,
-              endDate: selected.end,
-              key: 'selection',
-            },
-          ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
         : []
     );
 
@@ -554,7 +554,7 @@ const ProjectPerformence = () => {
           ) : null}
         </div>
         <div className="project-heading">
-          <h2>Total Count</h2>
+          <h2>Pending Queue</h2>
 
           <div className="flex items-center justify-end">
             <PeriodFilter
@@ -581,7 +581,7 @@ const ProjectPerformence = () => {
                 >
                   <div
                     key={card.id}
-                    className="project-card"
+                    className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''}`}
                     style={{
                       backgroundColor: cardColor,
                       outline: `1px dotted ${cardColor}`,
@@ -754,6 +754,15 @@ const ProjectPerformence = () => {
                                       </p>
                                     )}
                                   </div>
+                                  <div className='strip-arrow'>
+                                    <MdOutlineKeyboardDoubleArrowRight
+                                      style={{
+                                        width: '1.2rem',
+                                        height: '1.2rem',
+                                        color: project.site_survey_colour
+                                      }}
+                                    />
+                                  </div>
                                 </div>
                                 <div
                                   className="notch-strip"
@@ -773,8 +782,16 @@ const ProjectPerformence = () => {
                                       </p>
                                     )}
                                   </div>
+                                  <div className='strip-arrow'>
+                                    <MdOutlineKeyboardDoubleArrowRight
+                                      style={{
+                                        width: '1.2rem',
+                                        height: '1.2rem',
+                                        color: project.cad_design_colour
+                                      }}
+                                    />
+                                  </div>
                                 </div>
-
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
@@ -792,6 +809,15 @@ const ProjectPerformence = () => {
                                         {'No Data'}
                                       </p>
                                     )}
+                                  </div>
+                                  <div className='strip-arrow'>
+                                    <MdOutlineKeyboardDoubleArrowRight
+                                      style={{
+                                        width: '1.2rem',
+                                        height: '1.2rem',
+                                        color: project.permitting_colour
+                                      }}
+                                    />
                                   </div>
                                 </div>
 
@@ -814,6 +840,15 @@ const ProjectPerformence = () => {
                                         </p>
                                       )}
                                     </div>
+                                    <div className='strip-arrow'>
+                                      <MdOutlineKeyboardDoubleArrowRight
+                                        style={{
+                                          width: '1.2rem',
+                                          height: '1.2rem',
+                                          color: project.roofing_colour
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 ) : null}
 
@@ -832,6 +867,15 @@ const ProjectPerformence = () => {
                                         {'No Data'}
                                       </p>
                                     )}
+                                  </div>
+                                  <div className='strip-arrow'>
+                                    <MdOutlineKeyboardDoubleArrowRight
+                                      style={{
+                                        width: '1.2rem',
+                                        height: '1.2rem',
+                                        color: project.install_colour
+                                      }}
+                                    />
                                   </div>
                                 </div>
 
@@ -853,6 +897,15 @@ const ProjectPerformence = () => {
                                       </p>
                                     )}
                                   </div>
+                                  <div className='strip-arrow'>
+                                    <MdOutlineKeyboardDoubleArrowRight
+                                      style={{
+                                        width: '1.2rem',
+                                        height: '1.2rem',
+                                        color: project.electrical_colour
+                                      }}
+                                    />
+                                  </div>
                                 </div>
                                 <div
                                   className="notch-strip"
@@ -872,6 +925,15 @@ const ProjectPerformence = () => {
                                       </p>
                                     )}
                                   </div>
+                                  <div className='strip-arrow'>
+                                    <MdOutlineKeyboardDoubleArrowRight
+                                      style={{
+                                        width: '1.2rem',
+                                        height: '1.2rem',
+                                        color: project.inspectionsColour
+                                      }}
+                                    />
+                                  </div>
                                 </div>
                                 <div
                                   className="notch-strip"
@@ -890,6 +952,15 @@ const ProjectPerformence = () => {
                                         {'No Data'}
                                       </p>
                                     )}
+                                  </div>
+                                  <div>
+                                    <MdOutlineKeyboardDoubleArrowRight
+                                      style={{
+                                        width: '1.2rem',
+                                        height: '1.2rem',
+                                        color: project.activation_colour
+                                      }}
+                                    />
                                   </div>
                                 </div>
                               </div>
