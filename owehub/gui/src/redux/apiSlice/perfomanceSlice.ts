@@ -8,7 +8,7 @@ export interface IPerfomanceSale {
 }
 
 export interface IProjectStatus {
-  unqiue_id: string;
+  unqiue_id: any;
   contract_date: string;
   customer: string;
   permit_approved_date: string;
@@ -72,7 +72,7 @@ export const getPerfomanceStatus = createAsyncThunk(
       perPage: number;
       startDate: string;
       endDate: string;
-      uniqueId?: string;
+      uniqueId?: any;
     },
     { rejectWithValue }
   ) => {

@@ -23,6 +23,13 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+
+.project-info-details:hover{
+  text-decoration: underline;
+  color: rgb(0, 141, 218);
+  
+}
 .header-milestone {
   padding: 15px 20px;
   text-align: center;
