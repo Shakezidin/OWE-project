@@ -182,6 +182,30 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
+	var ntp models.NTP
+	ntp.ACHWaiverCashCustomerOnlyUploaded = "Pendig"
+	ntp.ProductionDiscrepancy = "pending"
+	ntp.Sunpixel = "pending"
+	ntp.LeaseAgreementUploaded = "pending"
+	ntp.LightReachDesignVerification = "pending"
+	ntp.OWEAgreementUploaded = "pending"
+	ntp.HOFUploaded = "pending"
+	ntp.UtilityAcknowledgementAndDisclaimerUploaded = "pending"
+	ntp.FinanceNTPOfProject = "pending"
+	ntp.FinanceCreditApproval = "pending"
+	ntp.FinanceAgreementCompleted = "pending"
+	ntp.OWEDocumentsCompleted = "pending"
+
+	var qc models.QC
+	qc.PowerClerk = "pending"
+	qc.ACHWaiveSendandSignedCashOnly = "pending"
+	qc.GreenAreaNMOnly = "pending"
+	qc.FinanceCreditApprovalLoanorLease = "pending"
+	qc.FinanceAgreementCompletedLoanorLease = "pending"
+	qc.OWEDocumentsCompleted = "pending"
+
+	projectList.Ntp = ntp
+	projectList.Qc = qc
 	projectList.CADLink = data[0]["current_live_cad"].(string)
 	projectList.DATLink = data[0]["system_sold_er"].(string)
 	projectList.PodioLink = data[0]["podio_link"].(string)
