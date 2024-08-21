@@ -923,7 +923,20 @@
 /*Responsive*/
 @media (max-width: 1024px) {
   .project-card-wrapper {
-    width: 50%;
+    width: 100%;
+  }
+
+  .top-project-cards{
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .status-card-parent .status-card{
+    width: 25% !important;
+  }
+
+  .second-project-card{
+    padding-left: unset !important;
   }
 
   .stats-card-wrapper {
@@ -962,7 +975,6 @@
 @media (max-width: 768px) {
   .top-project-cards {
     flex-direction: column;
-    gap: 10px;
     margin: 10px;
   }
 
@@ -1026,7 +1038,7 @@
     justify-content: center;
   }
 
-  .status-card{
+  .status-card-parent .status-card{
     width: 100% !important;
   }
 
@@ -1188,7 +1200,9 @@
   .project-card {
     width: 100%;
     padding: 1rem;
+    height: unset;
   }
+
 }
 
 .progress-qc button {
@@ -1238,5 +1252,9 @@
   }
   .progress-box{
     border-radius: 4px !important;
+  }
+  .status-btn{
+    position: absolute;
+    right: 15px;
   }
 }
