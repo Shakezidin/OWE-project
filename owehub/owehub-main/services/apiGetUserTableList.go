@@ -70,8 +70,8 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 			{TableName: "internal_ops_metrics_schema"},
 			{TableName: "next_steps_schema"},
 			{TableName: "sales_metrics_schema"},
-			{TableName: "consolidated_data_view"},
-			{TableName: "ops_analysis_timelines_view"},
+			{TableName: "ntp_schema"},
+			{TableName: "customers_prospects_schema"},
 		}
 
 		// Append the new tables to the tableList

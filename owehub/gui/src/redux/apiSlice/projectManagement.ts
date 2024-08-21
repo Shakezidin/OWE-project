@@ -116,7 +116,8 @@ export const getProjectDetail = createAsyncThunk(
       }
       const project = (data?.data?.project_response_list?.[0] ||
         {}) as IProject;
-      return { project };
+      const otherlinks = data?.data;
+      return { project, otherlinks };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
@@ -129,6 +130,7 @@ interface IState {
   isLoading: boolean;
   projectsCount: number;
   projectDetail: IProject;
+  otherlinks: any;
 }
 
 const initialState: IState = {
@@ -137,6 +139,7 @@ const initialState: IState = {
   isLoading: false,
   projectsCount: 0,
   projectDetail: {} as IProject,
+  otherlinks: {},
 };
 
 const projectManagementSlice = createSlice({
@@ -164,6 +167,7 @@ const projectManagementSlice = createSlice({
       .addCase(getProjectDetail.fulfilled, (state, action) => {
         state.isLoading = false;
         state.projectDetail = action.payload.project;
+        state.otherlinks = action.payload.otherlinks;
       })
       .addCase(getProjectDetail.rejected, (state, action) => {
         state.isLoading = false;

@@ -22,18 +22,36 @@ type PerfomanceStatusReq struct {
 }
 
 type PerfomanceResponse struct {
-	UniqueId               string `json:"unqiue_id"`
-	Customer               string `json:"customer"`
-	ContractDate           string `json:"contract_date"`
-	PermitApprovedDate     string `json:"permit_approved_date"`
-	PvInstallCompletedDate string `json:"install_completed_date"`
-	PtoDate                string `json:"pto_date"`
-	SiteSurveyCompleteDate string `json:"site_survey_complete_date"`
-	InstallReadyDate       string `json:"install_ready_date"`
+	UniqueId          string `json:"unqiue_id"`
+	Customer          string `json:"customer"`
+	SiteSurevyDate    string `json:"site_survey_date"`
+	CadDesignDate     string `json:"cad_design_date"`
+	PermittingDate    string `json:"permitting_date"`
+	RoofingDate       string `json:"roofing_date"`
+	InstallDate       string `json:"install_date"`
+	ElectricalDate    string `json:"electrical_date"`
+	InspectionDate    string `json:"inspection_date"`
+	ActivationDate    string `json:"activation_date"`
+	SiteSurveyColour  string `json:"site_survey_colour"`
+	CADDesignColour   string `json:"cad_design_colour"`
+	PermittingColour  string `json:"permitting_colour"`
+	RoofingColour     string `json:"roofing_colour"`
+	InstallColour     string `json:"install_colour"`
+	ElectricalColour  string `json:"electrical_colour"`
+	InspectionsColour string `json:"inspectionsColour"`
+	ActivationColour  string `json:"activation_colour"`
 }
 
 type PerfomanceListResponse struct {
-	PerfomanceList []PerfomanceResponse `json:"perfomance_response_list"`
+	PerfomanceList   []PerfomanceResponse `json:"perfomance_response_list"`
+	SiteSurveyCount  int64                `json:"site_survey_count"`
+	CadDesignCount   int64                `json:"cad_design_count"`
+	PerimittingCount int64                `json:"permitting_count"`
+	RoofingCount     int64                `json:"roofing_count"`
+	InstallCount     int64                `json:"isntall_count"`
+	ElectricalCount  int64                `json:"electrical_count"`
+	InspectionCount  int64                `json:"inspection_count"`
+	ActivationCount  int64                `json:"activation_count"`
 }
 
 // shift the below struct to project
@@ -66,6 +84,9 @@ var ColumnToFields = map[string]string{
 
 type ProjectListResponse struct {
 	ProjectList []ProjectResponse `json:"project_response_list"`
+	CADLink     string            `json:"cad_link"`
+	DATLink     string            `json:"dat_link"`
+	PodioLink   string            `json:"podio_link"`
 }
 
 type ProjectResponse struct {
@@ -103,6 +124,10 @@ type ProjectResponse struct {
 	PtoInProcess                 string            `json:"pto_in_process"`
 	PtoSubmitted                 string            `json:"pto_submitted"`
 	PtoCompleted                 string            `json:"pto_completed"`
+	CadReady                     string            `json:"cad_ready"`
+	BatteryScheduleDate          string            `json:"battery_scheduled_date"`
+	BatteryCompleteDate          string            `json:"battery_complete_date"`
+	FinCreatedDate               string            `json:"fin_created_date"`
 	SystemSize                   float64           `json:"system_size"`
 	AddersTotal                  string            `json:"adders_total"`
 	AdderBreakDownAndTotalString string            `json:"adder_breakdown_and_total_string"`
@@ -151,6 +176,10 @@ var ColumnToField = map[string]string{
 	"pto_created_date":             "PtoInProcess",
 	"pto_submitted_date":           "PtoSubmitted",
 	"pto_date":                     "PtoCompleted",
+	"cad_ready":                    "CadReady",
+	"battery_scheduled_date":       "BatteryScheduleDate",
+	"battery_complete_date":        "BatteryCompleteDate",
+	"fin_created_date":             "FinCreatedDate",
 	"system_size":                  "SystemSize",
 	"adders_total":                 "AddersTotal",
 	"adder_breakdown_and_total":    "AdderBreakDownAndTotalString",

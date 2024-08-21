@@ -156,6 +156,36 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 	}
 
+	var filtersBuilder strings.Builder
+	whereEleList = nil
+	filtersBuilder.WriteString(fmt.Sprintf("select current_live_cad,system_sold_er,podio_link from customers_customers_schema where unique_id = '%s'", dataReq.UniqueId))
+	// Check if there are filters
+	if len(dataReq.UniqueIds) > 0 {
+
+		filtersBuilder.WriteString(" AND ")
+		filtersBuilder.WriteString(" unique_id IN (")
+
+		for i, filter := range dataReq.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, filter)
+
+			if i < len(dataReq.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(") ")
+	}
+	linkQuery := filtersBuilder.String()
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	projectList.CADLink = data[0]["current_live_cad"].(string)
+	projectList.DATLink = data[0]["system_sold_er"].(string)
+	projectList.PodioLink = data[0]["podio_link"].(string)
+
 	// Send the response
 	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
@@ -198,7 +228,7 @@ func mapRowToStruct(item map[string]interface{}, v interface{}) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
- func cleanAdderBreakDownAndTotal(data string) map[string]string {
+func cleanAdderBreakDownAndTotal(data string) map[string]string {
 	result := make(map[string]string)
 	if len(data) == 0 {
 		return result
@@ -222,7 +252,7 @@ func mapRowToStruct(item map[string]interface{}, v interface{}) {
 			key := strings.TrimSpace(parts[0])
 			value := strings.TrimSpace(parts[1])
 			result[key] = value
-		} 
+		}
 	}
 	return result
 }

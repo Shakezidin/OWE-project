@@ -2,7 +2,7 @@ import { FC, InputHTMLAttributes } from 'react';
 import './Input.css';
 import { ReactComponent as EYE_ICON } from '../../../resources/assets/eye-icon.svg';
 import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-off-icon.svg';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import { FormInput } from '../../../core/models/data_models/typesModel';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -29,6 +29,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onMouseUp?: () => void;
   onMouseLeave?: () => void;
   isMobile?: boolean;
+  backgroundColor?: string;
 }
 
 const Input: FC<InputProps> = ({
@@ -48,6 +49,7 @@ const Input: FC<InputProps> = ({
   onMouseUp,
   onMouseLeave,
   isMobile,
+  backgroundColor,
   ...rest
 }) => {
   const validationRules = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +96,7 @@ const Input: FC<InputProps> = ({
           }}
           className="input"
           disabled={disabled}
+          style={{ backgroundColor }}
           {...rest}
         />
         {isTypePassword && type === 'text' ? (

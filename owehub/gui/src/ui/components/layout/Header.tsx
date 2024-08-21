@@ -7,7 +7,7 @@ import {
   MdKeyboardArrowRight,
   MdKeyboardArrowUp,
 } from 'react-icons/md';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../../redux/apiSlice/authSlice/authSlice';

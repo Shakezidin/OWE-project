@@ -1,0 +1,145 @@
+.qc-modal {
+  background-color: #fefefe;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  height: 450px;
+  overflow: hidden;
+}
+
+.ntp-modal {
+  background-color: #fefefe;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 720px;
+  height: 679px;
+  overflow: hidden;
+}
+
+.qchead-section {
+  border: 1px solid #d0d5dd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 28px;
+  padding-right: 6px;
+}
+
+.createQualCust {
+  margin-top: 26px;
+  padding-left: 36px;
+  padding-right: 46px;
+  display: flex;
+  flex-direction: column;
+  gap: 37px;
+}
+
+.qc-modal-body {
+  height: 100%;
+  /* Adjust the height for the body content */
+  overflow-y: auto;
+}
+
+.qc-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.qc-content span {
+  font-weight: 500;
+  font-size: 14px;
+  width: 87%;
+}
+
+.qc-stat-comp {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: left;
+  width: 50%;
+}
+
+.qc-stat-comp img {
+  width: 24px;
+  height: 25px;
+}
+
+.qc-status {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qc-status img {
+  width: 12px;
+  height: 8px;
+}
+
+.status.completed {
+  color: #2eaf71;
+}
+
+.status.pending {
+  color: #eba900;
+}
+
+.status.action {
+  color: #e14514;
+}
+
+.createQCText {
+  font-size: 24px;
+  margin-left: 36px;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 767px) {
+  .qc-content span {
+    font-size: 12px;
+    width: 63%;
+  }
+
+  .createQCText {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .qc-modal {
+    height: 81%;
+  }
+  .createQualCust {
+    gap: 21px;
+  }
+  .ntp-modal {
+    height: 562px;
+  }
+
+  .qc-modal-body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .qc-modal-body::-webkit-scrollbar {
+    display: initial;
+  }
+
+  .qc-modal-body::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px;
+  }
+  .qc-modal-body::-webkit-scrollbar-button {
+    display: initial;
+  }
+  .qc-modal-body::-webkit-scrollbar {
+    -ms-overflow-style: initial;
+    scrollbar-width: thin;
+  }
+  .qc-modal-body::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+}
