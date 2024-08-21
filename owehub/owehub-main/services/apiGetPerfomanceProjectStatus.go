@@ -170,8 +170,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			SaleRepList = append(SaleRepList, SaleRepName)
 		}
 
-		dealerName = data[0]["dealer_name"]
-		dataReq.DealerName = dealerName
+		// dealerName = data[0]["dealer_name"]
+		// dataReq.DealerName = dealerName
 		filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
