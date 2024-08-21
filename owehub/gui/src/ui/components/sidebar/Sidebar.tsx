@@ -74,7 +74,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
 
   const filteredList = useMemo(() => {
     let list = [...createSideMenuList()];
-    if ( dealer === null &&  role === TYPE_OF_USER.ADMIN) {
+    if ( role === TYPE_OF_USER.ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         newArr[0].mob.push(item);
@@ -95,7 +95,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         });
         return newArr;
       }
-    } else if (dealer === null && role === TYPE_OF_USER.FINANCE_ADMIN) {
+    } else if ( role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
