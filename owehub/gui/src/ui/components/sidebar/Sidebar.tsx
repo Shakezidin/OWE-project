@@ -69,7 +69,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
 
   const role = localStorage.getItem('role');
 
-  const dealer = localStorage.getItem('dealer_name');
+  const dealer = localStorage.getItem('dealer');
   console.log(dealer, "sidebar dealer")
 
   const filteredList = useMemo(() => {
