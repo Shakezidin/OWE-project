@@ -90,7 +90,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		dataReq.DealerName = dealerName
 
 		switch role {
-		case "Admin":
+		case "Admin", "Finance Admin":
 			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, true)
 		case "Dealer Owner":
 			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, false)
