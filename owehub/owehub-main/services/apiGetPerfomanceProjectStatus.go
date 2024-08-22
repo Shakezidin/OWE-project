@@ -301,7 +301,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
 			BatteryScheduleD = ""
 		} else {
-			RoofingCompleteD = BatteryScheduleDate.Format("2006-01-02")
+			BatteryScheduleD = BatteryScheduleDate.Format("2006-01-02")
 		}
 
 		BatteryCompleteDate, ok := item["battery_complete_date"].(time.Time)
