@@ -427,9 +427,10 @@ const ProjectStatus = () => {
       ],
     },
   ];
-
+ 
   const filteredStatusData = filtered.filter((status) => {
     if (status.name === 'Roofing') {
+     
       return (
         projectDetail.roofing_pending ||
         projectDetail.roofing_scheduled ||
@@ -437,6 +438,7 @@ const ProjectStatus = () => {
       );
     }
     if (status.name === 'Electrical') {
+     
       return (
         projectDetail.electrical_pending ||
         projectDetail.electrical_scheduled ||
@@ -446,7 +448,7 @@ const ProjectStatus = () => {
     return true; // Keep all other status objects
   });
 
-  console.log(filteredStatusData, 'Check');
+ 
 
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
@@ -527,10 +529,10 @@ const ProjectStatus = () => {
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
-    if (searchValue) {
-      dispatch(getProjectDetail(searchValue));
+    if (selectedProject.value) {
+      dispatch(getProjectDetail(selectedProject.value));
     }
-  }, [searchValue]);
+  }, [selectedProject.value]);
 
   useEffect(() => {
     if (projectId) {
@@ -568,7 +570,7 @@ const ProjectStatus = () => {
     setNtpOPen(true);
   };
 
-  console.log(otherlinks, "gshjf")
+  
 
   return (
     <>
@@ -589,17 +591,18 @@ const ProjectStatus = () => {
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className='cust-name'>Customer name:<pre> {projectDetail.home_owner}</pre></span>
-                    {/* <SelectOption
+                    <SelectOption
                       options={projectOption}
                       value={selectedProject}
+                      lazyRender
                       onChange={(val) => {
                         if (val) {
                           setSelectedProject(val);
                         }
                       }}
                       width="190px"
-                    /> */}
-                    <Input
+                    />
+                    {/* <Input
                       type="text"
                       placeholder="Search for Unique ID or Name"
                       value={search}
@@ -608,7 +611,7 @@ const ProjectStatus = () => {
                         handleSearchChange(e);
                         setSearch(e.target.value);
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -947,7 +950,7 @@ const ProjectStatus = () => {
                                   )
                                 )}
                               </div>
-                              {i === 6 ? null : (
+                              {i === filteredStatusData.length -1  ? null : (
                                 <div className="dotted-border"></div>
                               )}
                             </>
