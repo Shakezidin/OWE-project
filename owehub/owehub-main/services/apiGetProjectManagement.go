@@ -244,13 +244,10 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 func getStringValue(data map[string]interface{}, key string) (string, int64) {
 	if value, exists := data[key]; exists {
 		if status, ok := value.(string); ok {
-			switch status {
-			case "✔", "✅":
+			if status == "✔ N/A" {
+				return "Pending (Action Required)", 1
+			} else if status != "" {
 				return "Completed", 0
-			case "✔ N/A":
-				return "Completed (Action Required)", 1
-			default:
-				return "Pending", 0
 			}
 		}
 	}
