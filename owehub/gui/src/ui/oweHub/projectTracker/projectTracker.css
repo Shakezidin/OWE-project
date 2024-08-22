@@ -417,7 +417,7 @@
 .status-cust-name pre{
   color: #000;
   font-weight: 600;
-  width: 150px;
+  max-width: 150px;
   text-overflow: ellipsis;
   overflow-x: hidden;
   text-wrap: nowrap;
