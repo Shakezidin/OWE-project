@@ -713,7 +713,6 @@ func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64,
 		count = 1
 	}
 	if roofingCompleteDate != "" {
-		log.FuncErrorTrace(0, "date ==== %v", roofingCompleteDate)
 		return green, count, roofingCompleteDate
 	} else if roofingCreateDate != "" {
 		return blue, count, roofingCreateDate
