@@ -38,6 +38,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		rgnSalesMgrCheck bool
 		SaleRepList      []interface{}
 		role             string
+		uniqueId         string
 	)
 
 	log.EnterFn(0, "HandleGetProjectManagementRequest")
@@ -126,8 +127,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 			SaleRepList = append(SaleRepList, SaleRepName)
 		}
 
-		dealerName := data[0]["dealer_name"]
-		dataReq.DealerName = dealerName
+		// dealerName := data[0]["dealer_name"]
+		// dataReq.DealerName = dealerName
 		filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
@@ -154,6 +155,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectData.Epc = math.Round(projectData.Epc*100) / 100
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
+		uniqueId = projectData.UniqueId
+
 	}
 
 	var filtersBuilder strings.Builder
@@ -167,22 +170,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 			"FROM customers_customers_schema c "+
 			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
 			"LEFT JOIN prospects_customers_schema p ON c.item_id = p.item_id "+
-			"WHERE c.unique_id = '%s'", dataReq.UniqueId)) // Check if there are filters
-	if len(dataReq.UniqueIds) > 0 {
+			"WHERE c.unique_id = '%s'", uniqueId)) // Check if there are filters
 
-		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" c.unique_id IN (")
-
-		for i, filter := range dataReq.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
-
-			if i < len(dataReq.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
-	}
 	linkQuery := filtersBuilder.String()
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
 	if err != nil {
@@ -193,17 +182,27 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 	var ntp models.NTP
 	var qc models.QC
+	var actionRequiredCount, count int64
 
 	// Assign values from the data map to the struct fields
-	ntp.ProductionDiscrepancy = getStringValue(data[0], "production_discrepancy")
-	ntp.Sunpixel = getStringValue(data[0], "sunpixel")
-	ntp.LeaseAgreementUploaded = getStringValue(data[0], "lease_agreement_uploaded")
-	ntp.LightReachDesignVerification = getStringValue(data[0], "light_reach_design_verification")
-	ntp.OWEAgreementUploaded = getStringValue(data[0], "owe_agreement_uploaded")
-	ntp.HOFUploaded = getStringValue(data[0], "hof_uploaded")
-	ntp.UtilityAcknowledgementAndDisclaimerUploaded = getStringValue(data[0], "utility_acknowledgement_and_disclaimer_uploaded")
-	ntp.ACHWaiverCashCustomerOnlyUploaded = getStringValue(data[0], "ach_waiver_cash_customers_only_uploaded")
-	ntp.FinanceNTPOfProject = getStringValue(data[0], "finance_ntp_of_project")
+	ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy")
+	actionRequiredCount += count
+	ntp.Sunpixel, count = getStringValue(data[0], "sunpixel")
+	actionRequiredCount += count
+	ntp.LeaseAgreementUploaded, count = getStringValue(data[0], "lease_agreement_uploaded")
+	actionRequiredCount += count
+	ntp.LightReachDesignVerification, count = getStringValue(data[0], "light_reach_design_verification")
+	actionRequiredCount += count
+	ntp.OWEAgreementUploaded, count = getStringValue(data[0], "owe_agreement_uploaded")
+	actionRequiredCount += count
+	ntp.HOFUploaded, count = getStringValue(data[0], "hof_uploaded")
+	actionRequiredCount += count
+	ntp.UtilityAcknowledgementAndDisclaimerUploaded, count = getStringValue(data[0], "utility_acknowledgement_and_disclaimer_uploaded")
+	actionRequiredCount += count
+	ntp.ACHWaiverCashCustomerOnlyUploaded, count = getStringValue(data[0], "ach_waiver_cash_customers_only_uploaded")
+	actionRequiredCount += count
+	ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project")
+	actionRequiredCount += count
 	if value, exists := data[0]["f_ntp_approved"]; exists {
 		if t, ok := value.(time.Time); ok {
 			ntp.FntpApproved = t.Format(time.RFC3339)
@@ -213,16 +212,22 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	} else {
 		ntp.FntpApproved = ""
 	}
-	ntp.UtilityBillUploaded = getStringValue(data[0], "utility_bill_uploaded")
-	ntp.PowerClerkSignaturesComplete = getStringValue(data[0], "powerclerk_signatures_complete")
-	ntp.OverNet3point6bywalt = getStringValue(data[0], "over_net_3point6_per_w")
-	ntp.PremiumPanelAdder10c = getStringValue(data[0], "premium_panel_adder_10c")
-	qc.PowerClerk = getStringValue(data[0], "powerclerk_sent_az")
-	qc.ACHWaiveSendandSignedCashOnly = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
-	qc.GreenAreaNMOnly = getStringValue(data[0], "green_area_nm_only")
-	qc.FinanceCreditApprovalLoanorLease = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
-	qc.FinanceAgreementCompletedLoanorLease = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
-	qc.OWEDocumentsCompleted = getStringValue(data[0], "owe_documents_completed")
+	ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded")
+	actionRequiredCount += count
+	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete")
+	actionRequiredCount += count
+	ntp.OverNet3point6bywalt, count = getStringValue(data[0], "over_net_3point6_per_w")
+	actionRequiredCount += count
+	ntp.PremiumPanelAdder10c, count = getStringValue(data[0], "premium_panel_adder_10c")
+	actionRequiredCount += count
+	ntp.ActionRequiredCount = actionRequiredCount
+
+	qc.PowerClerk, _ = getStringValue(data[0], "powerclerk_sent_az")
+	qc.ACHWaiveSendandSignedCashOnly, _ = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
+	qc.GreenAreaNMOnly, _ = getStringValue(data[0], "green_area_nm_only")
+	qc.FinanceCreditApprovalLoanorLease, _ = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
+	qc.FinanceAgreementCompletedLoanorLease, _ = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
+	qc.OWEDocumentsCompleted, _ = getStringValue(data[0], "owe_documents_completed")
 
 	projectList.Ntp = ntp
 	projectList.Qc = qc
@@ -236,20 +241,20 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, projectList, int64(recordLen))
 }
 
-func getStringValue(data map[string]interface{}, key string) string {
+func getStringValue(data map[string]interface{}, key string) (string, int64) {
 	if value, exists := data[key]; exists {
 		if status, ok := value.(string); ok {
 			switch status {
 			case "✔", "✅":
-				return "Completed"
+				return "Completed", 0
 			case "✔ N/A":
-				return "Completed"
+				return "Completed (Action Required)", 1
 			default:
-				return "Pending"
+				return "Pending", 0
 			}
 		}
 	}
-	return "Pending"
+	return "Pending", 0
 }
 
 /******************************************************************************
@@ -333,7 +338,11 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 	filtersBuilder.WriteString(" WHERE")
 
 	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR home_owner ILIKE $%d", len(whereEleList)+2))
+
+	// Append parameters to whereEleList
 	whereEleList = append(whereEleList, dataFilter.UniqueId)
+	whereEleList = append(whereEleList, fmt.Sprintf("%%%s%%", dataFilter.UniqueId))
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
@@ -406,7 +415,11 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 	filtersBuilder.WriteString(" WHERE")
 
 	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR home_owner ILIKE $%d", len(whereEleList)+2))
+
+	// Append parameters to whereEleList
 	whereEleList = append(whereEleList, dataFilter.UniqueId)
+	whereEleList = append(whereEleList, fmt.Sprintf("%%%s%%", dataFilter.UniqueId))
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
