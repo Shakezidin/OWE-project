@@ -198,6 +198,61 @@
   grid-auto-flow: column;
   overflow: hidden;
 }
+.bg_booked_slot{
+  background: #377CF6;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  grid-auto-flow: column;
+  overflow: hidden;
+}
+
+.swap_wrapper{
+  position: fixed;
+  background-color: #fff;
+  width: 100%;
+  max-width: 292px;
+  height: 207px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  justify-content: center;
+  transition: opacity 500ms;
+  border-radius: 4px;
+  box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.swap_btn{
+  padding: 4px 38px;
+  background-color: #fff;
+  border-radius: 11.5px;
+  color: #8CE38A;
+  font-weight: 600;
+  border: none;
+  opacity: 0;
+  cursor: pointer;
+}
+.swap_primary_btn{
+  padding: 4px 24px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #377CF6;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+.swap_secondary_btn{
+  padding: 4px 24px;
+  border-radius: 4px;
+  margin-left: 9px;
+  cursor: pointer;
+  color: #767676;
+  background-color: #D9D9D9;
+  font-weight: 500;
+  font-size: 14px;
+  border: none;
+}
 
 .masked_img {
   background: url(../../../../resources/assets/masked_group.png) !important;
@@ -300,6 +355,7 @@
 .available_btn {
   background-color: #fff;
   color: #8ce38a;
+  border: none;
   padding: 0;
   width: 24px;
   display: grid;
@@ -317,6 +373,10 @@
 }
 
 .bg_available_slot:hover .available_btn {
+  opacity: 1;
+  transition: all 500ms;
+}
+.bg_available_slot:hover .swap_btn{
   opacity: 1;
   transition: all 500ms;
 }
