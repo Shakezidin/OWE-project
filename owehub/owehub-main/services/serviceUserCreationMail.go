@@ -44,7 +44,7 @@ func SendMailToClient(email string, username string) (err error) {
             <p>Password: %s</p>
             <p>
                 <a href="https://www.owe-hub.com/login" 
-                   style="display: inline-block; padding: 5px 10px; font-size: 16px; color: #ffffff; background-color: #007bff; text-align: center; text-decoration: none; border-radius: 5px;">
+                   style="display: inline-block; padding: 5px 10px; font-size: 14px; color: #ffffff; background-color: #007bff; text-align: center; text-decoration: none; border-radius: 5px;">
                    Login to Your Account
                 </a>
             </p>
