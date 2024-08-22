@@ -1,6 +1,6 @@
 import './PerformanceCards.css';
 import { ICONS } from '../../../resources/icons/Icons';
-import { MdOutlineIosShare } from 'react-icons/md';
+import { MdDownload, MdOutlineIosShare } from 'react-icons/md';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import artboard from '../../../resources/assets/artboard.svg';
@@ -28,6 +28,7 @@ const PerformanceCards: React.FC<performance> = ({
   activeHead,
   isLoading,
 }) => {
+  console.log(isGenerating, 'isGenerating');
   const rank1 = details?.find?.((item: any) => item?.rank === 1);
   const rank2 = details?.find?.((item: any) => item?.rank === 2);
   const rank3 = details?.find?.((item: any) => item?.rank === 3);
@@ -59,38 +60,40 @@ const PerformanceCards: React.FC<performance> = ({
         }}
       >
         <div className="right-button">
-          <div
-            style={{
-              transition: 'all 500ms',
-            }}
-            className={`relative flex items-center ${isAccoOpen ? 'justify-end' : 'justify-between'}`}
-          >
-            <span
-              className="collapse-btn"
-              role="btn"
+          {!isGenerating ? (
+            <div
               style={{
-                rotate: !isAccoOpen ? '180deg' : '',
                 transition: 'all 500ms',
-                marginTop: isAccoOpen ? 10 : undefined,
               }}
-              onClick={() => setIsAccoOpen(!isAccoOpen)}
+              className={`relative flex items-center ${isAccoOpen ? 'justify-end' : 'justify-between'}`}
             >
-              <IoChevronDownOutline />
-            </span>
-            {!isAccoOpen && (
-              <button
-                className="share-button"
-                onClick={shareImage}
-                disabled={isGenerating}
+              <span
+                className="collapse-btn"
+                role="btn"
+                style={{
+                  rotate: !isAccoOpen ? '180deg' : '',
+                  transition: 'all 500ms',
+                  marginTop: isAccoOpen ? 10 : undefined,
+                }}
+                onClick={() => setIsAccoOpen(!isAccoOpen)}
               >
-                <MdOutlineIosShare className="share-svg" />
-                <p> {isGenerating ? 'Downloading' : 'Share'} </p>
-              </button>
-            )}
-            {isOpen && (
-              <SocialShare setIsOpen={setIsOpen} socialUrl={socialUrl} />
-            )}
-          </div>
+                <IoChevronDownOutline />
+              </span>
+              {!isAccoOpen && (
+                <button
+                  className="share-button"
+                  onClick={shareImage}
+                  disabled={isGenerating}
+                >
+                  <MdDownload className="share-svg" />
+                  <p> Download </p>
+                </button>
+              )}
+              {isOpen && (
+                <SocialShare setIsOpen={setIsOpen} socialUrl={socialUrl} />
+              )}
+            </div>
+          ) : null}
         </div>
         <div className="banner-heading">
           <img
