@@ -59,8 +59,8 @@ type ApiRoutes []ServiceApiRoute
 var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/test",
-		apiHandler.HandleTest,
+		"/owe-commisions-service/v1/scheduling_home",
+		apiHandler.HandleSchedulingHome,
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
