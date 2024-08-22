@@ -568,6 +568,8 @@ const ProjectStatus = () => {
     setNtpOPen(true);
   };
 
+  console.log(otherlinks, "gshjf")
+
   return (
     <>
       <QCModal projectDetail={otherlinks} isOpen={filterOPen} handleClose={filterClose} />
@@ -676,8 +678,9 @@ const ProjectStatus = () => {
                                       {' '}
                                       {item} :{' '}
                                       {
-                                        // @ts-ignore
+                                       
                                         projectDetail
+                                         // @ts-ignore
                                           .adder_breakdown_and_total[item]
                                       }{' '}
                                     </li>
@@ -764,8 +767,9 @@ const ProjectStatus = () => {
                     <button>NTP</button>
                   </div>
                 </div>
+
                 <div className="progress-qc-acre">
-                  <span>2</span>
+                <span>{otherlinks?.ntp?.action_required_count || 0}</span>
                 </div>
               </div>
             </div>

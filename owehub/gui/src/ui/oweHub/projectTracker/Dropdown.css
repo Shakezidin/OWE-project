@@ -39,6 +39,7 @@
 .qc-modal-body {
   max-height: 590px;
   overflow-y: auto;
+  padding-bottom: 6px;
 }
 
 .qc-modal-body::-webkit-scrollbar {
@@ -82,7 +83,7 @@
   flex-direction: row;
   gap: 10px;
   justify-content: left;
-  width: 50%;
+  width: 60%;
 }
 
 .qc-stat-comp img {

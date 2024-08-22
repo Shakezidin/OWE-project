@@ -6,18 +6,18 @@ import { ICONS } from '../../../resources/icons/Icons';
 interface TableProps {
   handleClose: () => void;
   isOpen?: boolean;
-  projectDetail:any
+  projectDetail: any
 }
 
 // Filter component
-const QCModal: React.FC<TableProps> = ({projectDetail, handleClose, isOpen = false }) => {
+const QCModal: React.FC<TableProps> = ({ projectDetail, handleClose, isOpen = false }) => {
   const handleCloseModal = () => {
     handleClose();
   };
 
 
   const renderQCContent = (title: string, status: string) => {
-    const isCompleted = status === 'completed';
+    const isCompleted = status === 'Completed';
     const backgroundColor = isCompleted ? '#2EAF71' : '#EBA900';
     const icon = isCompleted ? ICONS.QCTICK : ICONS.QCLine;
     const statusText = isCompleted ? 'Completed' : 'Pending';
@@ -35,8 +35,12 @@ const QCModal: React.FC<TableProps> = ({projectDetail, handleClose, isOpen = fal
     );
   };
 
+  const formatTitle = (key: string) => {
+    return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
   const qcData = projectDetail?.qc;
-  
+
 
 
   return (
@@ -58,7 +62,7 @@ const QCModal: React.FC<TableProps> = ({projectDetail, handleClose, isOpen = fal
           </div>
           <div className="qc-modal-body">
             <div className="createQualCust">
-            {qcData && (
+              {/* {qcData && (
                 <>
                   {renderQCContent('PowerClerk Sent(AZ)', qcData.powerclerk_sent)}
                   {renderQCContent(
@@ -75,6 +79,14 @@ const QCModal: React.FC<TableProps> = ({projectDetail, handleClose, isOpen = fal
                     qcData['finance_agreement_completed(loan_or_lease)']
                   )}
                   {renderQCContent('OWE Documents Completed', qcData.OWE_documents_completed)}
+                </>
+              )} */}
+
+              {qcData && (
+                <>
+                  {Object.entries(qcData).map(([key, value]) => (
+                    <div key={key}>{renderQCContent(formatTitle(key), value as string)}</div>
+                  ))}
                 </>
               )}
             </div>
