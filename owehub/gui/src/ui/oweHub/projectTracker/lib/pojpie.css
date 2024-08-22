@@ -17,10 +17,14 @@
   cursor: not-allowed !important;
   opacity: 0.5;
 }
+.disable-btn svg{
+  cursor: not-allowed !important;
+  transition: none !important;
+  transform: none !important;
+}
 .disable-btn:hover{
   background-color: #fff !important;
   color: #377cf6 !important;
-  transform: unset;
 }
 
 .copy-message {
@@ -28,6 +32,9 @@
   font-size: 0.9rem;
   margin-top: 5px;
   animation: fadeOut 2s forwards;
+  position: absolute;
+  right: 26px;
+  top: 21px;
 }
 
 @keyframes fadeOut {

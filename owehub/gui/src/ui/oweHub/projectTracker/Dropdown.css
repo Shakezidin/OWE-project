@@ -128,20 +128,22 @@
     font-size: 12px;
     width: 70%;
   }
-
   .createQCText {
     font-size: 18px;
     font-weight: 500;
   }
-
   .qc-modal {
-    height: 81%;
+    margin: 10px;
+  }
+  .qc-stat-comp{
+    margin-left: 1rem;
+    width: 40%;
   }
   .createQualCust {
     gap: 21px;
   }
   .ntp-modal {
-    height: 562px;
+    margin: 10px;
   }
 
   .qc-modal-body::-webkit-scrollbar {
