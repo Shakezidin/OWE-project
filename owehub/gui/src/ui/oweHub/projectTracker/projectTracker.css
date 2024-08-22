@@ -1078,7 +1078,7 @@
 
   .status-cust-name span{
    position: absolute;
-   top: 65px;
+   top: 60px;
    left: 0;
   }
 
@@ -1277,6 +1277,10 @@
     height: unset;
   }
 
+  .last-card{
+    margin-right: unset !important;
+  }
+
 }
 
 .progress-qc button {
@@ -1317,6 +1321,9 @@
 }
 
 @media (max-width: 768px) {
+  .select-container .css-1n894bm-control, .select-container .css-xego5g-control{
+    margin-top: 1rem;
+  }
   .progress-qc-acre {
     margin-left: 160px;
     margin-top: -48px;
