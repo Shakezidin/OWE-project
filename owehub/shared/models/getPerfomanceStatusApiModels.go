@@ -115,6 +115,7 @@ type NTP struct {
 	PowerClerkSignaturesComplete                string `json:"powerclerk_signatures_complete"`
 	OverNet3point6bywalt                        string `json:"Over_net$3.6/w?"`
 	PremiumPanelAdder10c                        string `json:"Premium_panel_adder?(.10c)"`
+	ActionRequiredCount                         int64  `json:"action_required_count"`
 }
 
 type ProjectResponse struct {
