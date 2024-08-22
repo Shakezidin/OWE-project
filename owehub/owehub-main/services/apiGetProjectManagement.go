@@ -158,12 +158,20 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 	var filtersBuilder strings.Builder
 	whereEleList = nil
-	filtersBuilder.WriteString(fmt.Sprintf("select current_live_cad,system_sold_er,podio_link from customers_customers_schema where unique_id = '%s'", dataReq.UniqueId))
-	// Check if there are filters
+	filtersBuilder.WriteString(fmt.Sprintf(
+		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, n.sunpixel, n.lease_agreement_uploaded, "+
+			"n.light_reach_design_verification, n.owe_agreement_uploaded, n.hof_uploaded,n.utility_acknowledgement_and_disclaimer_uploaded, "+
+			"n.ach_waiver_cash_customers_only_uploaded, n.finance_ntp_of_project, n.f_ntp_approved, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
+			"n.over_net_3point6_per_w, n.premium_panel_adder_10c, p.powerclerk_sent_az, p.ach_waiver_sent_and_signed_cash_only, p.green_area_nm_only, p.finance_credit_approved_loan_or_lease, "+
+			"p.finance_agreement_completed_loan_or_lease, p.owe_documents_completed "+
+			"FROM customers_customers_schema c "+
+			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
+			"LEFT JOIN prospects_customers_schema p ON c.item_id = p.item_id "+
+			"WHERE c.unique_id = '%s'", dataReq.UniqueId)) // Check if there are filters
 	if len(dataReq.UniqueIds) > 0 {
 
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" unique_id IN (")
+		filtersBuilder.WriteString(" c.unique_id IN (")
 
 		for i, filter := range dataReq.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -182,27 +190,39 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
-	var ntp models.NTP
-	ntp.ACHWaiverCashCustomerOnlyUploaded = "Pendig"
-	ntp.ProductionDiscrepancy = "pending"
-	ntp.Sunpixel = "pending"
-	ntp.LeaseAgreementUploaded = "pending"
-	ntp.LightReachDesignVerification = "pending"
-	ntp.OWEAgreementUploaded = "pending"
-	ntp.HOFUploaded = "pending"
-	ntp.UtilityAcknowledgementAndDisclaimerUploaded = "pending"
-	ntp.FinanceNTPOfProject = "pending"
-	ntp.FinanceCreditApproval = "pending"
-	ntp.FinanceAgreementCompleted = "pending"
-	ntp.OWEDocumentsCompleted = "pending"
 
+	var ntp models.NTP
 	var qc models.QC
-	qc.PowerClerk = "pending"
-	qc.ACHWaiveSendandSignedCashOnly = "pending"
-	qc.GreenAreaNMOnly = "pending"
-	qc.FinanceCreditApprovalLoanorLease = "pending"
-	qc.FinanceAgreementCompletedLoanorLease = "pending"
-	qc.OWEDocumentsCompleted = "pending"
+
+	// Assign values from the data map to the struct fields
+	ntp.ProductionDiscrepancy = getStringValue(data[0], "production_discrepancy")
+	ntp.Sunpixel = getStringValue(data[0], "sunpixel")
+	ntp.LeaseAgreementUploaded = getStringValue(data[0], "lease_agreement_uploaded")
+	ntp.LightReachDesignVerification = getStringValue(data[0], "light_reach_design_verification")
+	ntp.OWEAgreementUploaded = getStringValue(data[0], "owe_agreement_uploaded")
+	ntp.HOFUploaded = getStringValue(data[0], "hof_uploaded")
+	ntp.UtilityAcknowledgementAndDisclaimerUploaded = getStringValue(data[0], "utility_acknowledgement_and_disclaimer_uploaded")
+	ntp.ACHWaiverCashCustomerOnlyUploaded = getStringValue(data[0], "ach_waiver_cash_customers_only_uploaded")
+	ntp.FinanceNTPOfProject = getStringValue(data[0], "finance_ntp_of_project")
+	if value, exists := data[0]["f_ntp_approved"]; exists {
+		if t, ok := value.(time.Time); ok {
+			ntp.FntpApproved = t.Format(time.RFC3339)
+		} else {
+			ntp.FntpApproved = ""
+		}
+	} else {
+		ntp.FntpApproved = ""
+	}
+	ntp.UtilityBillUploaded = getStringValue(data[0], "utility_bill_uploaded")
+	ntp.PowerClerkSignaturesComplete = getStringValue(data[0], "powerclerk_signatures_complete")
+	ntp.OverNet3point6bywalt = getStringValue(data[0], "over_net_3point6_per_w")
+	ntp.PremiumPanelAdder10c = getStringValue(data[0], "premium_panel_adder_10c")
+	qc.PowerClerk = getStringValue(data[0], "powerclerk_sent_az")
+	qc.ACHWaiveSendandSignedCashOnly = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
+	qc.GreenAreaNMOnly = getStringValue(data[0], "green_area_nm_only")
+	qc.FinanceCreditApprovalLoanorLease = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
+	qc.FinanceAgreementCompletedLoanorLease = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
+	qc.OWEDocumentsCompleted = getStringValue(data[0], "owe_documents_completed")
 
 	projectList.Ntp = ntp
 	projectList.Qc = qc
@@ -214,6 +234,22 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, projectList, int64(recordLen))
+}
+
+func getStringValue(data map[string]interface{}, key string) string {
+	if value, exists := data[key]; exists {
+		if status, ok := value.(string); ok {
+			switch status {
+			case "✔", "✅":
+				return "Completed"
+			case "✔ N/A":
+				return "Completed"
+			default:
+				return "Pending"
+			}
+		}
+	}
+	return "Pending"
 }
 
 /******************************************************************************
