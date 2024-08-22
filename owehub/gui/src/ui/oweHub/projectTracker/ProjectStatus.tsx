@@ -587,7 +587,7 @@ const ProjectStatus = () => {
               style={{ paddingInline: 16, paddingBottom: 16 }}
             >
               <div className="project-heading project-status-heading">
-                <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
+                <h3 style={{ marginTop: '1.3rem', lineHeight: "none" }}>Project Status</h3>
                 <div className="pro-status-dropdown">
                   <div className="status-cust-name">
                     <span className='cust-name'>Customer name:<pre> {projectDetail.home_owner}</pre></span>
