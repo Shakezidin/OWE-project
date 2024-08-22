@@ -15,7 +15,7 @@
   background: #ebf3ff;
 }
 .project-info-details {
-  width: 240px;
+  width: 210px;
 }
 .project-info-details h3 {
   width: 180px;
@@ -23,12 +23,9 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
-
-
 .project-info-details:hover{
-  text-decoration: underline;
-  color: rgb(0, 141, 218);
-  
+  transform: scale(1.02);
+  transition: all 0.2s ease-out;
 }
 .header-milestone {
   padding: 15px 20px;
@@ -624,7 +621,7 @@
   gap: 12px;
   margin-right: 12px;
   position: relative;
-  margin-top: -2px;
+  margin-top: -6px;
 }
 .proper-select .css-nls0j1-control,
 .proper-select .css-1aue19k-control {
@@ -639,8 +636,8 @@
 }
 
 .proper-select .input {
-  height: 50px;
-  /* width: 250px;   */
+  height: 48px;
+  width: 250px;  
 }
 .search-icon {
   position: absolute;
@@ -1017,6 +1014,18 @@
   .per-sales {
     font-size: 11px !important;
   }
+
+  .progress-box-body p{
+    font-size: 11px;
+  }
+
+  .performance-box-container{
+    gap: 0.5rem;
+  }
+
+  .status-indicator{
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1044,7 +1053,6 @@
   }
 
   .pro-status-dropdown {
-    margin-top: -1rem;
     min-width: unset;
   }
 
@@ -1060,7 +1068,7 @@
 
   .status-cust-name span{
    position: absolute;
-   top: 55px;
+   top: 65px;
    left: 0;
   }
 
@@ -1078,7 +1086,17 @@
   .status-indicator {
     width: 100%;
     text-align: center;
+    font-size: 14px;
   }
+
+  .progress-box-body p{
+    font-size: 14px;
+  }
+
+  .performance-box-container{
+    gap: 1rem;
+  }
+
 
   .performance-box-container {
     flex-wrap: wrap;
@@ -1223,7 +1241,6 @@
   }
 
   .proper-select {
-    flex-direction: column;
     gap: 5px;
     margin-top: 10px;
     margin-right: 0;

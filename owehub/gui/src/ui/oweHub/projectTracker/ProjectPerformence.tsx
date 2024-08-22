@@ -272,9 +272,8 @@ const ProjectPerformence = () => {
     { id: 3, title: 'Permitting', value: datacount.permitting_count },
     { id: 4, title: 'Roofing', value: datacount.roofing_count },
     { id: 5, title: 'Install', value: datacount.isntall_count },
-    { id: 6, title: 'Electrical', value: datacount.electrical_count },
-    { id: 7, title: 'Inspection', value: datacount.inspection_count },
-    { id: 8, title: 'Activation', value: datacount.activation_count },
+    { id: 6, title: 'Inspection', value: datacount.inspection_count },
+    { id: 7, title: 'Activation', value: datacount.activation_count },
   ];
 
   const cardColors = ['#57B3F1', '#EE824D', '#63ACA3', '#6761DA', '#C470C7'];

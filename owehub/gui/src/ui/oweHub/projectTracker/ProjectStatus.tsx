@@ -678,6 +678,7 @@ const ProjectStatus = () => {
                                       {
                                         // @ts-ignore
                                         projectDetail
+                                        //@ts-ignore
                                           .adder_breakdown_and_total[item]
                                       }{' '}
                                     </li>
@@ -695,7 +696,7 @@ const ProjectStatus = () => {
             </div>
             <div className="pl2 flex-auto second-project-card">
               <div
-                className="bg-white rounded-16 flex"
+                className="bg-white rounded-16 flex relative"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
