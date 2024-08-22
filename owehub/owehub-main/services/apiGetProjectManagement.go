@@ -203,15 +203,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	actionRequiredCount += count
 	ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project")
 	actionRequiredCount += count
-	if value, exists := data[0]["f_ntp_approved"]; exists {
-		if t, ok := value.(time.Time); ok {
-			ntp.FntpApproved = t.Format(time.RFC3339)
-		} else {
-			ntp.FntpApproved = ""
-		}
-	} else {
-		ntp.FntpApproved = ""
-	}
+	ntp.FntpApproved, count = getStringValue(data[0], "f_ntp_approved")
+	actionRequiredCount += count
 	ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded")
 	actionRequiredCount += count
 	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete")
@@ -243,11 +236,18 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 func getStringValue(data map[string]interface{}, key string) (string, int64) {
 	if value, exists := data[key]; exists {
-		if status, ok := value.(string); ok {
-			if status == "✔ N/A" {
-				return "Pending (Action Required)", 1
-			} else if status != "" {
+		switch v := value.(type) {
+		case string:
+			if v != "" {
 				return "Completed", 0
+			} else {
+				return "Pending", 0
+			}
+		case time.Time:
+			if !v.IsZero() {
+				return "Completed", 0
+			} else {
+				return "Pending", 0
 			}
 		}
 	}

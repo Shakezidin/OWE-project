@@ -141,6 +141,8 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
 	case "region":
 		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+	case "setter":
+		filtersBuilder.WriteString(fmt.Sprintf(" setter = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 
 	filtersBuilder.WriteString(fmt.Sprintf(" AND contract_date BETWEEN current_date - interval '1 days' * $%d AND current_date ", len(whereEleList)+1))
@@ -181,6 +183,8 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
 	case "region":
 		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+	case "setter":
+		filtersBuilder.WriteString(fmt.Sprintf(" setter = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters : %s", filters)
