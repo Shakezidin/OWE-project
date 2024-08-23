@@ -84,10 +84,12 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	LeaderBoardList := models.GetLeaderBoardList{}
+
 	if dataReq.Role == "Admin" || dataReq.Role == "Finance Admin" {
 		if len(dataReq.DealerName) == 0 {
 			log.FuncErrorTrace(0, "no dealer name selected")
-			FormAndSendHttpResp(resp, "No Dealer Name selected", http.StatusBadRequest, data)
+			FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 			return
 		}
 	}
@@ -210,7 +212,6 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	LeaderBoardList := models.GetLeaderBoardList{}
 	if len(data) > 0 {
 		for _, item := range data {
 			var hightlight bool
