@@ -98,6 +98,7 @@ type QC struct {
 	FinanceCreditApprovalLoanorLease     string `json:"finance_credit_approved_loan_or_lease"`
 	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement_completed_loan_or_lease"`
 	OWEDocumentsCompleted                string `json:"owe_documents_completed"`
+	ActionRequiredCount                  int64  `json:"qc_action_required_count"`
 }
 
 type NTP struct {
@@ -113,8 +114,6 @@ type NTP struct {
 	FntpApproved                                string `json:"F.NTP_approved"`
 	UtilityBillUploaded                         string `json:"utility_bill_uploaded"`
 	PowerClerkSignaturesComplete                string `json:"powerclerk_signatures_complete"`
-	OverNet3point6bywalt                        string `json:"Over_net$3.6/w?"`
-	PremiumPanelAdder10c                        string `json:"Premium_panel_adder?(.10c)"`
 	ActionRequiredCount                         int64  `json:"action_required_count"`
 }
 
