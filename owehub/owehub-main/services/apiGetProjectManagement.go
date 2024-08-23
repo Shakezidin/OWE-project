@@ -626,8 +626,6 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 				} else if v == "✔" {
 					return "Completed", 0
 				}
-			default:
-				return "", 0
 			}
 		case time.Time:
 			if !v.IsZero() {
