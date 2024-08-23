@@ -3,6 +3,7 @@ CREATE OR REPLACE FUNCTION insert_prospect_load_info(
     p_lra NUMERIC,
     p_average_capacity NUMERIC,
     p_continuous_current NUMERIC,
+    p_missi
     p_breakers_info JSONB
 ) RETURNS INT AS $$
 DECLARE
