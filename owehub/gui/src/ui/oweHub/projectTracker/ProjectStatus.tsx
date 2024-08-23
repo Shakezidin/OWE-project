@@ -650,9 +650,9 @@ const ProjectStatus = () => {
                             {el.name}
                           </p>
                           <span className="span-para">
-                            {projectDetail[
+                          {el.key === 'adders_total' || el.key === 'contract_amount' ? '$' : ''}  {projectDetail[
                               el.key as keyof typeof projectDetail
-                            ] || 'N/A'}
+                            ] || 'N/A'} {el.key === 'system_size' ? "(kW)" : ''}
                           </span>
                         </div>
                         {el.viewButton ? (
