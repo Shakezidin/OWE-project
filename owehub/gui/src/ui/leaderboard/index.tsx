@@ -312,6 +312,7 @@ const Index = () => {
           isShowDropdown={isShowDropdown}
           setIsFetched={setIsFetched}
           bannerDetails={bannerDetails}
+          isGenerating={isGenerating}
         />
         <PerformanceCards
           isGenerating={isGenerating}

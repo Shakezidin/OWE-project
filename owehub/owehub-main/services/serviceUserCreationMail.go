@@ -30,8 +30,30 @@ func SendMailToClient(email string, username string) (err error) {
 	subject := "Welcome to Our World Energy"
 	to := mail.NewEmail("", email)
 
-	plainTextContent := fmt.Sprintf("Dear %s,\n\nWe're thrilled to welcome you to Our World Energy!\n\nYour account has been successfully created.\n\nHere are your account details:\nEmail: %s\nPassword: %s\n\nThank you for choosing us!\nLogin Url: http://www.owe-hub.com/login \n\nBest regards,\nThe Team", username, email, createUserReqPassword)
-	htmlContent := ""
+	 
+	plainTextContent := "";
+
+	htmlContent := fmt.Sprintf(`
+    <html>
+        <body>
+            <p>Dear %s,</p>
+            <p>We're thrilled to welcome you to Our World Energy!</p>
+            <p>Your account has been successfully created.</p>
+            <p>Here are your account details:</p>
+            <p>Email: %s</p>
+            <p>Password: %s</p>
+            <p>
+                <a href="https://www.owe-hub.com/login" 
+                   style="display: inline-block; padding: 5px 10px; font-size: 14px; color: #ffffff; background-color: #007bff; text-align: center; text-decoration: none; border-radius: 5px;">
+                   Login to Your Account
+                </a>
+            </p>
+            <p>Thank you for choosing us!</p>
+            <p>Best regards,<br>The Team</p>
+        </body>
+    </html>`,
+    username, email, createUserReqPassword,
+)
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient("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")

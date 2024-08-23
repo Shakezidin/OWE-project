@@ -14,7 +14,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
     if (url) {
       navigator.clipboard.writeText(url).then(() => {
         setCopied(url);
-        setTimeout(() => setCopied(null), 2000); // Remove the message after 2 seconds
+        setTimeout(() => setCopied(null), 800); // Remove the message after 0.80 seconds
       });
     }
   };
@@ -53,7 +53,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               </a>
             </div>
           </div>
-          {copied === projectDetail?.podio_link && <span className="copy-message">Copied!</span>}
+          {copied === projectDetail?.podio_link && <span className="copy-message"> Copied!</span>}
         </div>
 
         {/* CAD Link */}
@@ -77,7 +77,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               </a>
             </div>
           </div>
-          {copied === projectDetail?.cad_link && <span className="copy-message">Copied!</span>}
+          {copied === projectDetail?.cad_link && <span className="copy-message"> Copied!</span>}
         </div>
 
         {/* DAT Link */}
@@ -101,7 +101,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               </a>
             </div>
           </div>
-          {copied === projectDetail?.dat_link && <span className="copy-message">Copied!</span>}
+          {copied === projectDetail?.dat_link && <span className="copy-message"> Copied!</span>}
         </div>
 
         {/* Contract Link */}
@@ -125,7 +125,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
               </a>
             </div>
           </div>
-          {copied === projectDetail?.includeContractUrl && <span className="copy-message">Copied!</span>}
+          {copied === projectDetail?.includeContractUrl && <span className="copy-message"> Copied!</span>}
         </div>
       </div>
     </>

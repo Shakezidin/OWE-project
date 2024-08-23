@@ -92,12 +92,12 @@ type ProjectListResponse struct {
 }
 
 type QC struct {
-	PowerClerk                           string `json:"powerclerk_sent"`
-	ACHWaiveSendandSignedCashOnly        string `json:"ACH_waiver(sent_and_signed)(cash_only)"`
-	GreenAreaNMOnly                      string `json:"green_area(nm_only)"`
-	FinanceCreditApprovalLoanorLease     string `json:"finance_credit_approval(loan_or_lease)"`
-	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement_completed(loan_or_lease)"`
-	OWEDocumentsCompleted                string `json:"OWE_documents_completed"`
+	PowerClerk                           string `json:"powerclerk_sent_az"`
+	ACHWaiveSendandSignedCashOnly        string `json:"ach_waiver_sent_and_signed_cash_only"`
+	GreenAreaNMOnly                      string `json:"green_area_nm_only"`
+	FinanceCreditApprovalLoanorLease     string `json:"finance_credit_approved_loan_or_lease"`
+	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement_completed_loan_or_lease"`
+	OWEDocumentsCompleted                string `json:"owe_documents_completed"`
 }
 
 type NTP struct {
@@ -105,14 +105,17 @@ type NTP struct {
 	Sunpixel                                    string `json:"sunpixel"`
 	LeaseAgreementUploaded                      string `json:"lease_agreement_uploaded"`
 	LightReachDesignVerification                string `json:"light_reach_design_verification"`
-	OWEAgreementUploaded                        string `json:"OWE_agreement_uploaded"`
-	HOFUploaded                                 string `json:"HOF_uploaded"`
+	OWEAgreementUploaded                        string `json:"owe_agreement_uploaded"`
+	HOFUploaded                                 string `json:"hof_uploaded"`
 	UtilityAcknowledgementAndDisclaimerUploaded string `json:"utility_acknowledgement_and_disclaimer_uploaded"`
-	ACHWaiverCashCustomerOnlyUploaded           string `json:"ACH_waiver_cash_customer_only_uploaded"`
+	ACHWaiverCashCustomerOnlyUploaded           string `json:"ach_waiver_cash_customers_only_uploaded"`
 	FinanceNTPOfProject                         string `json:"finance_ntp_of_project"`
-	FinanceCreditApproval                       string `json:"finance_credit_approval"`
-	FinanceAgreementCompleted                   string `json:"finance_agreement_completed"`
-	OWEDocumentsCompleted                       string `json:"OWE_documents_completed"`
+	FntpApproved                                string `json:"F.NTP_approved"`
+	UtilityBillUploaded                         string `json:"utility_bill_uploaded"`
+	PowerClerkSignaturesComplete                string `json:"powerclerk_signatures_complete"`
+	OverNet3point6bywalt                        string `json:"Over_net$3.6/w?"`
+	PremiumPanelAdder10c                        string `json:"Premium_panel_adder?(.10c)"`
+	ActionRequiredCount                         int64  `json:"action_required_count"`
 }
 
 type ProjectResponse struct {

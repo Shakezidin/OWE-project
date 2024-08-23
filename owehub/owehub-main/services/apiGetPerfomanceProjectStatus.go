@@ -301,7 +301,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
 			BatteryScheduleD = ""
 		} else {
-			RoofingCompleteD = BatteryScheduleDate.Format("2006-01-02")
+			BatteryScheduleD = BatteryScheduleDate.Format("2006-01-02")
 		}
 
 		BatteryCompleteDate, ok := item["battery_complete_date"].(time.Time)
@@ -793,9 +793,6 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, Pv
 	var count int64
 	if permittedcompletedDate != "" && iccompletedDate != "" && PvInstallcompletedDate == "" {
 		count = 1
-	}
-	if batteryScheduleDate != "" && batteryCompleted == "" {
-		count = 0
 	}
 	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
 	batteryScheduleDateParsed := parseDate(batteryScheduleDate)

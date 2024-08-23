@@ -15,7 +15,7 @@
   background: #ebf3ff;
 }
 .project-info-details {
-  width: 240px;
+  width: 210px;
 }
 .project-info-details h3 {
   width: 180px;
@@ -23,12 +23,9 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
-
-
 .project-info-details:hover{
   text-decoration: underline;
-  color: rgb(0, 141, 218);
-  
+  color: #000;
 }
 .header-milestone {
   padding: 15px 20px;
@@ -62,7 +59,7 @@
 
 .install-update:hover {
   text-decoration: underline;
-  color: rgb(0, 141, 218);
+  color: #000
 }
 
 #chart {
@@ -393,6 +390,10 @@
   height: 12px;
 }
 
+.leaderborder_filter-slect-wrapper .css-12ntb2c-menu{
+  width: 100%;
+}
+
 /* project status css  */
 .project-status-head-card {
   display: flex;
@@ -410,14 +411,20 @@
 }
 .status-cust-name span{
   display: flex;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
   color: #9D9D9D;
   font-weight: 500;
   font-size: 14px;
+  text-wrap: nowrap;
+  margin-left: 10px;
 }
 .status-cust-name pre{
   color: #000;
   font-weight: 600;
+  max-width: 150px;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  text-wrap: nowrap;
 }
 
 .project-status-body {
@@ -624,7 +631,7 @@
   gap: 12px;
   margin-right: 12px;
   position: relative;
-  margin-top: -2px;
+  margin-top: -6px;
 }
 .proper-select .css-nls0j1-control,
 .proper-select .css-1aue19k-control {
@@ -639,8 +646,8 @@
 }
 
 .proper-select .input {
-  height: 50px;
-  /* width: 250px;   */
+  height: 48px;
+  width: 250px;  
 }
 .search-icon {
   position: absolute;
@@ -1017,6 +1024,18 @@
   .per-sales {
     font-size: 11px !important;
   }
+
+  .progress-box-body p{
+    font-size: 11px;
+  }
+
+  .performance-box-container{
+    gap: 0.5rem;
+  }
+
+  .status-indicator{
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1044,7 +1063,6 @@
   }
 
   .pro-status-dropdown {
-    margin-top: -1rem;
     min-width: unset;
   }
 
@@ -1060,7 +1078,7 @@
 
   .status-cust-name span{
    position: absolute;
-   top: 55px;
+   top: 60px;
    left: 0;
   }
 
@@ -1078,7 +1096,17 @@
   .status-indicator {
     width: 100%;
     text-align: center;
+    font-size: 14px;
   }
+
+  .progress-box-body p{
+    font-size: 14px;
+  }
+
+  .performance-box-container{
+    gap: 1rem;
+  }
+
 
   .performance-box-container {
     flex-wrap: wrap;
@@ -1223,7 +1251,6 @@
   }
 
   .proper-select {
-    flex-direction: column;
     gap: 5px;
     margin-top: 10px;
     margin-right: 0;
@@ -1248,6 +1275,10 @@
     width: 100%;
     padding: 1rem;
     height: unset;
+  }
+
+  .last-card{
+    margin-right: unset !important;
   }
 
 }
@@ -1290,6 +1321,9 @@
 }
 
 @media (max-width: 768px) {
+  .select-container .css-1n894bm-control, .select-container .css-xego5g-control{
+    margin-top: 1rem;
+  }
   .progress-qc-acre {
     margin-left: 160px;
     margin-top: -48px;
@@ -1303,5 +1337,14 @@
   .status-btn{
     position: absolute;
     right: 15px;
+  }
+}
+
+@media (max-width: 1280px){
+  .project-status-heading{
+    flex-wrap: wrap;
+  }
+  .status-cust-name span{
+    margin-left: unset;
   }
 }
