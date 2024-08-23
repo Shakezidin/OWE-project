@@ -142,7 +142,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		dbUserCount, dbUserCountOk := dbUserCheck[0]["count"].(int64)
+		_, dbUserCountOk := dbUserCheck[0]["count"].(int64)
 		if !dbUserCountOk {
 			err = fmt.Errorf("Failed to assert db user count from type: %T", dbUserCheck[0]["count"])
 			log.FuncErrorTrace(0, "%v", err)
