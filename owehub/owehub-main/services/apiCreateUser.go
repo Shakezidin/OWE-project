@@ -33,8 +33,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		tablesPermissionsJSON []byte
 		dbUserCheck           []map[string]interface{}
 		username              string
-		usernamePrefix        string
-		nameAssignedCheck     bool
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
