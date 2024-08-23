@@ -7,11 +7,17 @@
   padding-inline: 79px;
   padding-bottom: 79px;
   border-radius: 10px;
-  width: 100%;
+  width: 100%; 
   max-width: 700px;
   margin: auto;
   box-sizing: border-box;
   min-height: 100vh;
+}
+.absolute_info_icon{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 20px;
 }
 
 .sr-form-header {
@@ -26,6 +32,7 @@
   padding-block: 17px;
   border: none;
   border-radius: 8px;
+  position: relative;
   width: 100%;
   padding-left: 24px;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));

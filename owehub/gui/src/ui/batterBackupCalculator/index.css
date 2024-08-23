@@ -3,9 +3,11 @@
   min-height: 100vh;
   padding: 2rem;
 }
+
 .battery-wrapper {
   border-radius: 8px;
 }
+
 .wrapper-header {
   border-bottom: none;
   margin-inline: -1.5rem;
@@ -13,6 +15,7 @@
   background-color: #313752;
   margin-top: -2rem;
 }
+
 .check-btn {
   height: 45px;
   display: flex;
@@ -68,9 +71,11 @@
   background-color: #fff;
   position: relative;
 }
+
 .pointer {
   cursor: pointer;
 }
+
 .calc-container {
   padding-inline: 25px;
 }
@@ -106,7 +111,8 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
-.unit-grid > div {
+
+.unit-grid>div {
   border-radius: 4px;
   font-size: 14px;
   color: #1f222a;
@@ -115,7 +121,7 @@
   cursor: pointer;
 }
 
-.unit-grid > div:last-child {
+.unit-grid>div:last-child {
   grid-column: 1/4;
   margin-bottom: 12px;
 }
@@ -155,6 +161,7 @@
 .calc-grey-btn {
   background-color: #f1f1f1;
 }
+
 .calc-yellow-btn {
   background-color: #e7ae1c;
   color: #fff;
@@ -173,14 +180,17 @@
   margin-inline: auto;
   transform: translateX(10px);
 }
+
 .category-container {
   height: 70vh !important;
   background-color: #fff;
   width: 100%;
 }
+
 .calc-input-wrapper .input-inner-view .input:disabled {
   background-color: #f2f2f2;
 }
+
 .category-popup-header {
   color: #919191;
   padding-block: 16px;
@@ -194,6 +204,7 @@
   padding-top: 20px;
   padding-left: 37px;
 }
+
 .battery-amp {
   background-color: #fff;
   padding-block: 12px;
@@ -207,6 +218,7 @@
   top: -12px;
   left: -52px;
 }
+
 .batter-amp-switch {
   width: 62px;
   height: 67px;
@@ -243,11 +255,13 @@
   left: -38px;
   top: -5px;
 }
+
 .screw-top {
   position: absolute;
   left: 10px;
   top: 10px;
 }
+
 .screw-top-right {
   position: absolute;
   right: 10px;
@@ -265,6 +279,7 @@
   left: 10px;
   bottom: 10px;
 }
+
 .sticky-wrapper {
   position: sticky;
   top: 0px;
@@ -272,6 +287,7 @@
   box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
   z-index: 50;
 }
+
 .battery-watt-wrapper {
   border-radius: 20px;
   padding-left: 21px;
@@ -310,12 +326,13 @@
   color: #272727;
   font-weight: 600;
 }
+
 .applicane-switch-container .switch {
   width: 27px;
   height: 16px;
 }
 
-.applicane-switch-container .switch input:checked + .slider {
+.applicane-switch-container .switch input:checked+.slider {
   background-color: #5484ff;
 }
 
@@ -324,7 +341,7 @@
   left: 2px;
 }
 
-.applicane-switch-container .switch input:checked + .slider:before {
+.applicane-switch-container .switch input:checked+.slider:before {
   background-color: #fff;
   width: 12px;
   transform: translateX(12px);
@@ -399,6 +416,7 @@
   padding-bottom: 31px;
   border-bottom: 2px dashed #cccccc;
 }
+
 .calc-bg-navy {
   background-color: #172935;
 }
@@ -409,6 +427,7 @@
   font-size: 14px;
   color: #919191;
 }
+
 .calc-select-wrapper .inputLabel {
   display: block;
   margin-bottom: 5px;
@@ -418,6 +437,7 @@
   border: none !important;
   overflow: visible;
 }
+
 .calc-input-wrapper .input-inner-view .input {
   border: 1px solid #ebebeb;
   border-radius: 4px;
@@ -448,6 +468,7 @@
   border-radius: 14px;
   padding: 3px;
 }
+
 .grid-amp-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -463,6 +484,7 @@
   height: 18px;
   border-radius: 50%;
 }
+
 .panel-container {
   flex-basis: 600px;
   flex: 1;
@@ -478,17 +500,21 @@
   color: #919191;
   font-weight: 500;
 }
+
 .crl-btn {
   background: transparent;
   border: none;
 }
+
 .dashed-section {
   border-right: 2px dashed #ebebeb;
   margin-top: 25px;
 }
+
 .breaker-size-label {
   flex-basis: 25%;
 }
+
 .breaker-quantity-toggler {
   gap: 24px;
 }
@@ -497,6 +523,7 @@
   background-color: #e7e7e7;
   color: #919191;
 }
+
 .calc-btn-wrapper {
   position: fixed;
   left: 0;
@@ -507,10 +534,30 @@
   padding-inline: 30px;
   filter: drop-shadow(0 -2px 12px rgba(0, 0, 0, 0.04));
 }
+
+.teritary-popup-btn {
+  width: 100%;
+  cursor: pointer;
+  margin-inline: auto;
+  border: 1px solid #000;
+  font-weight: 500;
+  max-width: 480px;
+  font-size: 12px;
+  background-color: #fff;
+  display: block;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 13px;
+}
+
+.mt-13{
+  margin-top: 13px;
+}
 @media (max-width: 1024px) {
   .breaker-size-label {
     flex-basis: calc(30% - 4px);
   }
+
   .battery-wrapper {
     background-color: transparent !important;
     padding-top: 0 !important;
@@ -526,13 +573,16 @@
   .sm-label-wrapper {
     display: none !important;
   }
+
   .form-calc-details .pr3 {
     padding: 1rem !important;
   }
+
   .form-calc-details .calc-input .input-inner-view,
   .form-calc-details .calc-input .input-inner-view .input {
     background: transparent !important;
   }
+
   .calc-row {
     grid-template-columns: 1fr;
     margin-block: 24px;
@@ -551,13 +601,16 @@
   .calc-label {
     font-size: 12px;
   }
+
   .unit-wrapper {
     flex: 1;
     max-width: 100%;
   }
+
   .form-group-container {
     padding: 2rem 1.5rem;
   }
+
   .dashed-section {
     border-bottom: 2px dashed #ebebeb;
     border-right: none;
@@ -566,6 +619,7 @@
   .batter-amp-wrapper {
     flex-direction: column;
   }
+
   .batter-amp-container {
     padding-inline: 13px;
   }
@@ -581,10 +635,12 @@
   .home-battery {
     max-width: 216px;
   }
+
   .battery-chip {
     top: -12px;
     left: -52px;
   }
+
   .battery-amp {
     font-size: 12px;
     padding-block: 10px;
@@ -599,6 +655,7 @@
     gap: 26px;
     flex-wrap: wrap;
   }
+
   .calc-input-wrapper .inputLabel,
   .calc-select-wrapper .inputLabel {
     font-size: 12px;
@@ -609,7 +666,7 @@
     font-size: 22px;
   }
 
-  .battery-watt-heading ~ p {
+  .battery-watt-heading~p {
     margin-top: 0 !important;
     font-size: 10px !important;
     position: absolute;
@@ -624,43 +681,50 @@
   .battery-power-calculator-wrapper {
     padding-inline: 22px;
   }
+
   .calc-stats {
     align-items: flex-end !important;
   }
 
-  .calc-stats > div > p {
+  .calc-stats>div>p {
     font-size: 12px !important;
   }
-  .calc-stats > div > div {
+
+  .calc-stats>div>div {
     align-items: center !important;
   }
-  .calc-stats > div > div > .mt1 {
+
+  .calc-stats>div>div>.mt1 {
     margin-top: 0;
     margin-right: 6px !important;
   }
+
   .appliance-icon {
     gap: 6px;
   }
 
-  .appliance-icon .icon > svg {
+  .appliance-icon .icon>svg {
     width: 22px;
   }
+
   .appliance-icon .appliance-name h5 {
     font-size: 12px !important;
   }
 
-  .appliance-icon .check > svg {
+  .appliance-icon .check>svg {
     width: 14px !important;
   }
-  .calc-stats > div > div > .mt1 > svg {
+
+  .calc-stats>div>div>.mt1>svg {
     width: 20px;
     height: 20px;
   }
+
   .stats-heading {
     font-size: 22px;
   }
 
-  .battery-watt-wrapper > div:first-child {
+  .battery-watt-wrapper>div:first-child {
     display: flex;
     flex-direction: column-reverse;
     gap: 10px;
@@ -675,7 +739,8 @@
   .counter-btn-wrapper {
     gap: 26px;
   }
-  .watt-counter-btn > svg {
+
+  .watt-counter-btn>svg {
     width: 14px !important;
     height: 14px;
   }
@@ -689,12 +754,13 @@
     top: -10px;
     left: -37px;
   }
+
   .flex-149 {
     flex-basis: 100px;
     flex-grow: 1;
   }
 
-  .battery-amp > svg {
+  .battery-amp>svg {
     margin-right: 4px !important;
   }
 

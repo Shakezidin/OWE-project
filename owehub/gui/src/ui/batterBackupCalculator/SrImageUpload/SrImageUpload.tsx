@@ -10,7 +10,8 @@ import { GoPlus } from 'react-icons/go';
 import { errorSwal } from '../../components/alert/ShowAlert';
 import { RiCloseLine } from 'react-icons/ri';
 import { sendMail } from '../../../utiles';
-
+import { FiInfo } from "react-icons/fi";
+import { Tooltip } from 'react-tooltip'
 const primaryApplicances = [
   { name: 'Water heater', id: 1 },
   { name: 'Cooking appliances', id: 2 },
@@ -47,6 +48,7 @@ const FormComponent: React.FC = () => {
     address?: string;
     systemSize?: string;
   }>({});
+  const [note, setNote] = useState("")
   const [randomKey, setRandomKey] = useState(Date.now());
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files?.length
@@ -118,6 +120,7 @@ const FormComponent: React.FC = () => {
           house_square: parseFloat(squareFeet),
           address,
           system_size: parseFloat(systemSize),
+          add_notes: note
         });
 
         if (response.status > 201) {
@@ -171,6 +174,7 @@ OWE Battery Calc
               setAddress('');
               setSystemSize('');
               setSquareFeet('');
+              setNote("")
             },
             (error) => {
               toast.error(error.text as string);
@@ -466,6 +470,27 @@ OWE Battery Calc
                 );
               })}
             </div>
+          </div>
+
+          <div className="prospect-input-field relative mt2">
+            <input
+              type="text"
+              placeholder="Add Note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+            <div className="absolute_info_icon">
+
+              <FiInfo style={{ cursor: "pointer" }} role='button' className='cursor-pointer' data-tooltip-id="my-tooltip-1" size={18} color='rgb(165 158 158)' />
+            </div>
+            <Tooltip
+              id="my-tooltip-1"
+              style={{maxWidth:300}}
+              place="bottom-start"
+              content="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
+              openOnClick
+              
+            />
           </div>
 
           <div
