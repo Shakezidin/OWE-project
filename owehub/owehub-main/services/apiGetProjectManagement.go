@@ -466,42 +466,43 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 
 func getStringValue(data map[string]interface{}, key string) (string, int64) {
 	if value, exists := data[key]; exists {
+		log.FuncErrorTrace(0, "data %v", value)
 		switch v := value.(type) {
 		case string:
 			switch key {
 			case "production_discrepancy":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Completed", 0
 				}
 
 			case "sunpixel":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
-				} else if v == "❌" || v == "✔" || v == "✔ N/A" {
+				} else if v == "❌" || v == "✔" || v == "✔ N/A" || v == " ✔" {
 					return "Completed", 0
 				}
 
 			case "lease_agreement_uploaded":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 
 			case "light_reach_design_verification":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 			case "owe_agreement_uploaded":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
@@ -509,29 +510,29 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 					return "Completed", 0
 				}
 			case "hof_uploaded":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 			case "utility_acknowledgement_and_disclaimer_uploaded":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 			case "ach_waiver_cash_customers_only_uploaded":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
-				} else if v == "✔" || v == "✔️ N/A" || v == "❌" {
+				} else if v == "✔" || v == "✔ N/A" || v == "❌" {
 					return "Completed", 0
 				}
 			case "finance_ntp_of_project":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips" {
 					return "Pending (Action Required)", 1
@@ -539,57 +540,57 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 					return "Completed", 0
 				}
 			case "utility_bill_uploaded":
-				if v == "" {
+				if v == "" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 			case "powerclerk_signatures_complete":
-				if v == "" || v == "❌  Pending CAD (SRP)" {
+				if v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌  Pending" || v == "❌  Pending Sending PC" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 			case "powerclerk_sent_az":
-				if v == "" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "Pending Utility Account #" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 			case "ach_waiver_sent_and_signed_cash_only":
-				if v == "" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
-				} else if v == "✔" || v == "✔️ N/A" || v == "❌" {
+				} else if v == "✔" || v == "✔ N/A" || v == "❌" {
 					return "Completed", 0
 				}
 			case "green_area_nm_only":
-				if v == "" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌  (Project DQ'd)" {
 					return "Pending (Action Required)", 1
-				} else if v == "✔" || v == "✔️ N/A" {
+				} else if v == "✔" || v == "✔ N/A" {
 					return "Completed", 0
 				}
 			case "finance_credit_approved_loan_or_lease":
-				if v == "" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "✔" || v == "✔ CASH - N/A" {
 					return "Completed", 0
 				}
 			case "finance_agreement_completed_loan_or_lease":
-				if v == "" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "✔" || v == "✔ CASH - N/A" {
 					return "Completed", 0
 				}
 			case "owe_documents_completed":
-				if v == "" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
