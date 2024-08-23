@@ -71,12 +71,17 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	// NEW LOGIC: Delete By Email
 	//
 	if len(deleteUsersReq.EmailIds) > 0 {
-
 		userDetailsQuery := "SELECT * FROM user_details WHERE email_id = ANY($1)"
 		userDetails, err = db.ReteriveFromDB(db.OweHubDbIndex, userDetailsQuery, []interface{}{pq.Array(deleteUsersReq.EmailIds)})
 
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get user details err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to delete users", http.StatusInternalServerError, nil)
+			return
+		}
+
 		for _, user := range userDetails {
-			dbUsername := user["db_username"].(string)
+			dbUsername, dbUsernameOk := user["db_username"].(string)
 			emailId := user["email_id"].(string)
 
 			// extract details for logging user info
@@ -87,7 +92,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 
 			// delete from RowDataDB
-			if dbUsername != "" {
+			if dbUsernameOk && dbUsername != "" {
 				// append db_username & table_permissions to userInfo for logging
 				userInfo["db_username"] = dbUsername
 
