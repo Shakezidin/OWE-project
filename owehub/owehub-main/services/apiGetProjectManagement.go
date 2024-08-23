@@ -209,18 +209,22 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	actionRequiredCount += count
 	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete")
 	actionRequiredCount += count
-	ntp.OverNet3point6bywalt, count = getStringValue(data[0], "over_net_3point6_per_w")
-	actionRequiredCount += count
-	ntp.PremiumPanelAdder10c, count = getStringValue(data[0], "premium_panel_adder_10c")
-	actionRequiredCount += count
 	ntp.ActionRequiredCount = actionRequiredCount
+	actionRequiredCount = 0
 
-	qc.PowerClerk, _ = getStringValue(data[0], "powerclerk_sent_az")
-	qc.ACHWaiveSendandSignedCashOnly, _ = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
-	qc.GreenAreaNMOnly, _ = getStringValue(data[0], "green_area_nm_only")
-	qc.FinanceCreditApprovalLoanorLease, _ = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
-	qc.FinanceAgreementCompletedLoanorLease, _ = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
-	qc.OWEDocumentsCompleted, _ = getStringValue(data[0], "owe_documents_completed")
+	qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az")
+	actionRequiredCount += count
+	qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
+	actionRequiredCount += count
+	qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only")
+	actionRequiredCount += count
+	qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
+	actionRequiredCount += count
+	qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
+	actionRequiredCount += count
+	qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed")
+	actionRequiredCount += count
+	qc.ActionRequiredCount = actionRequiredCount
 
 	projectList.Ntp = ntp
 	projectList.Qc = qc
@@ -232,26 +236,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, projectList, int64(recordLen))
-}
-
-func getStringValue(data map[string]interface{}, key string) (string, int64) {
-	if value, exists := data[key]; exists {
-		switch v := value.(type) {
-		case string:
-			if v != "" {
-				return "Completed", 0
-			} else {
-				return "Pending", 0
-			}
-		case time.Time:
-			if !v.IsZero() {
-				return "Completed", 0
-			} else {
-				return "Pending", 0
-			}
-		}
-	}
-	return "Pending", 0
 }
 
 /******************************************************************************
@@ -478,4 +462,148 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+func getStringValue(data map[string]interface{}, key string) (string, int64) {
+	if value, exists := data[key]; exists {
+		switch v := value.(type) {
+		case string:
+			switch key {
+			case "production_discrepancy":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Completed", 0
+				}
+
+			case "sunpixel":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" || v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+
+			case "lease_agreement_uploaded":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+
+			case "light_reach_design_verification":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "owe_agreement_uploaded":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "hof_uploaded":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "utility_acknowledgement_and_disclaimer_uploaded":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "ach_waiver_cash_customers_only_uploaded":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "✅" || v == "✔️ N/A" || v == "❌" {
+					return "Completed", 0
+				}
+			case "finance_ntp_of_project":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌ M1" || v == "❌ Approval" || v == "❌ Stips" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" {
+					return "Completed", 0
+				}
+			case "utility_bill_uploaded":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "powerclerk_signatures_complete":
+				if v == "" || v == "❌ Pending CAD (SRP)" {
+					return "Pending", 0
+				} else if v == "❌ Pending" || v == "❌ Pending Sending PC" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "powerclerk_sent_az":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "Pending Utility Account #" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "ach_waiver_sent_and_signed_cash_only":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "✅" || v == "✔️ N/A" || v == "❌" {
+					return "Completed", 0
+				}
+			case "green_area_nm_only":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌ (Project DQ'd)" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" || v == "✔️ N/A" {
+					return "Completed", 0
+				}
+			case "finance_credit_approved_loan_or_lease":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "✅" || v == "✅ CASH - N/A" {
+					return "Completed", 0
+				}
+			case "finance_agreement_completed_loan_or_lease":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "✅" || v == "✅ CASH - N/A" {
+					return "Completed", 0
+				}
+			case "owe_documents_completed":
+				if v == "" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✅" {
+					return "Completed", 0
+				}
+			}
+		case time.Time:
+			if !v.IsZero() {
+				return "Completed", 0
+			} else {
+				return "Pending", 0
+			}
+		}
+	}
+	return "Pending", 0
 }
