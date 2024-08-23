@@ -88,6 +88,9 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if dataReq.Role == "Admin" || dataReq.Role == "Finance Admin" {
 		if len(dataReq.DealerName) == 0 {
+			LeaderBoard := models.GetLeaderBoard{}
+			LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, LeaderBoard)
+
 			log.FuncErrorTrace(0, "no dealer name selected")
 			FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 			return
