@@ -30,8 +30,7 @@ func SendMailToClient(email string, username string) (err error) {
 	subject := "Welcome to Our World Energy"
 	to := mail.NewEmail("", email)
 
-	 
-	plainTextContent := "";
+	plainTextContent := ""
 
 	htmlContent := fmt.Sprintf(`
     <html>
@@ -43,7 +42,7 @@ func SendMailToClient(email string, username string) (err error) {
             <p>Email: %s</p>
             <p>Password: %s</p>
             <p>
-                <a href="https://www.owe-hub.com/login" 
+                <a clicktracking="off" href="https://www.owe-hub.com/login" 
                    style="display: inline-block; padding: 5px 10px; font-size: 14px; color: #ffffff; background-color: #007bff; text-align: center; text-decoration: none; border-radius: 5px;">
                    Login to Your Account
                 </a>
@@ -52,8 +51,8 @@ func SendMailToClient(email string, username string) (err error) {
             <p>Best regards,<br>The Team</p>
         </body>
     </html>`,
-    username, email, createUserReqPassword,
-)
+		username, email, createUserReqPassword,
+	)
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient("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")
