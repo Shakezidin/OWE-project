@@ -33,8 +33,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		tablesPermissionsJSON []byte
 		dbUserCheck           []map[string]interface{}
 		username              string
-		usernamePrefix        string
-		nameAssignedCheck     bool
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -119,79 +117,74 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			and granting privileges
 	 	**/
 	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
-		// this takes the name of the user entered
-		nameParts := strings.Fields(createUserReq.Name)
-		if len(nameParts) >= 2 {
-			// this joins the different names using '_'
-			usernamePrefix = strings.Join(nameParts[0:2], "_")
-		} else {
-			usernamePrefix = nameParts[0]
-		}
+		if len(createUserReq.TablesPermissions) > 0 {
+			// retrieve db username from mobile number
+			username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
 
-		// retrieve db username from mobile number
-		username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
+			// make sure that user with username doesnt already exist
+			dbUserCheckQuery := "SELECT count(*) FROM PG_USER WHERE USENAME = $1"
+			dbUserCheckParams := []interface{}{username}
+			dbUserCheck, err = db.ReteriveFromDB(db.RowDataDBIndex, dbUserCheckQuery, dbUserCheckParams)
 
-		// make sure that user with username doesnt already exist
-		dbUserCheckQuery := "SELECT count(*) FROM PG_USER WHERE USENAME = $1"
-		dbUserCheckParams := []interface{}{username}
-		dbUserCheck, err = db.ReteriveFromDB(db.RowDataDBIndex, dbUserCheckQuery, dbUserCheckParams)
-
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
-			return
-		}
-
-		_, dbUserCountOk := dbUserCheck[0]["count"].(int64)
-		if !dbUserCountOk {
-			err = fmt.Errorf("Failed to assert db user count from type: %T", dbUserCheck[0]["count"])
-			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
-			return
-		}
-
-		if !nameAssignedCheck {
-			username = fmt.Sprintf("%s_%d", usernamePrefix, 1)
-			username = strings.ToLower(username)
-		}
-
-		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
-		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
-		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-			FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
-			return
-		}
-
-		log.FuncErrorTrace(0, "createUserReq.TablesPermissions %+v", createUserReq.TablesPermissions)
-		for _, item := range createUserReq.TablesPermissions {
-			switch item.PrivilegeType {
-			case "View":
-				sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, username)
-			case "Edit":
-				sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, username)
-			case "Full":
-				sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, username)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to get user name count from DB err: %v", err)
+				FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
+				return
 			}
 
-			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+			dbUserCount, dbUserCountOk := dbUserCheck[0]["count"].(int64)
+			if !dbUserCountOk {
+				err = fmt.Errorf("Failed to assert db user count from type: %T", dbUserCheck[0]["count"])
+				log.FuncErrorTrace(0, "%v", err)
+				FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
+				return
+			}
 
+			if dbUserCount != 0 {
+				err = fmt.Errorf("duplicate mobile number provided")
+				log.FuncErrorTrace(0, "%v", err)
+				FormAndSendHttpResp(resp, "Mobile number already taken", http.StatusBadRequest, nil)
+				return
+			}
+
+			sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
 			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
+			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 			if err != nil {
-				dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
-				dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
+				log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
+				FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
+				return
+			}
 
-				if dropErr != nil {
-					log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
-					FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)
+			log.FuncErrorTrace(0, "createUserReq.TablesPermissions %+v", createUserReq.TablesPermissions)
+			for _, item := range createUserReq.TablesPermissions {
+				switch item.PrivilegeType {
+				case "View":
+					sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, username)
+				case "Edit":
+					sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, username)
+				case "Full":
+					sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, username)
+				}
+
+				log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+
+				err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+				log.FuncErrorTrace(0, " sqlStatement err %+v", err)
+				if err != nil {
+					dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
+					dropErr := db.ExecQueryDB(db.RowDataDBIndex, dropQuery)
+
+					if dropErr != nil {
+						log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
+						FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)
+						return
+					}
+					log.FuncErrorTrace(0, "Failed to create user while adding privilges err: %v", err)
+					FormAndSendHttpResp(resp, "Failed to create privilages for user", http.StatusInternalServerError, nil)
 					return
 				}
-				log.FuncErrorTrace(0, "Failed to create user while adding privilges err: %v", err)
-				FormAndSendHttpResp(resp, "Failed to create privilages for user", http.StatusInternalServerError, nil)
-				return
 			}
 		}
 	}
