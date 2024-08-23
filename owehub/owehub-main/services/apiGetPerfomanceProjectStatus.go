@@ -421,7 +421,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		ElectricalCount += electricCountT
 		inspectionColor, InspectionCountT, InspectionDate := InspectionColor(FinCreateD, FinPassD, PvInstallCompleteD)
 		InspectionCount += InspectionCountT
-		activationColor, actiovationCountT, ActivationDate := activationColor(PTOSubmitD, PTOD, FinPassD)
+		activationColor, actiovationCountT, ActivationDate := activationColor(PTOSubmitD, PTOD, FinPassD, FinCreateD)
 		ActivationCount += actiovationCountT
 
 		perfomanceResponse := models.PerfomanceResponse{
@@ -739,9 +739,9 @@ func InspectionColor(finCreatedDate, finPassDate, pv_install_completed_date stri
 	return grey, count, ""
 }
 
-func activationColor(ptoSubmittedDate, ptodate, finPassDate string) (string, int64, string) {
+func activationColor(ptoSubmittedDate, ptodate, finPassDate, finCreatedDate string) (string, int64, string) {
 	var count int64
-	if finPassDate != "" && ptodate == "" {
+	if (finPassDate != "" || finCreatedDate != "") && ptodate == "" {
 		count = 1
 	}
 	if ptodate != "" {
