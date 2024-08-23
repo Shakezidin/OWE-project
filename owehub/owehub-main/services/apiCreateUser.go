@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strconv"
 	"strings"
 
 	"encoding/json"
@@ -32,6 +33,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		tablesPermissionsJSON []byte
 		dbUserCheck           []map[string]interface{}
 		username              string
+		usernamePrefix        string
+		nameAssignedCheck     bool
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -116,6 +119,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			and granting privileges
 	 	**/
 	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
+		// this takes the name of the user entered
+		nameParts := strings.Fields(createUserReq.Name)
+		if len(nameParts) >= 2 {
+			// this joins the different names using '_'
+			usernamePrefix = strings.Join(nameParts[0:2], "_")
+		} else {
+			usernamePrefix = nameParts[0]
+		}
 
 		// retrieve db username from mobile number
 		username = fmt.Sprintf("OWE_%s", createUserReq.MobileNumber)
@@ -126,8 +137,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		dbUserCheck, err = db.ReteriveFromDB(db.RowDataDBIndex, dbUserCheckQuery, dbUserCheckParams)
 
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get user name count from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
+			log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -139,11 +150,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if dbUserCount != 0 {
-			err = fmt.Errorf("duplicate mobile number provided")
-			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "Mobile number already taken", http.StatusBadRequest, nil)
-			return
+		if !nameAssignedCheck {
+			username = fmt.Sprintf("%s_%d", usernamePrefix, 1)
+			username = strings.ToLower(username)
 		}
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
@@ -152,7 +161,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-			FormAndSendHttpResp(resp, "Failed, User already exists in db user", http.StatusInternalServerError, nil)
+			FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
 			return
 		}
 
@@ -213,7 +222,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the stored procedure or function to create the user
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
-
 		//  Drop roles from db.RowDataDBIndex if created (incase of DB User & Admin)
 		if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
 			dropQuery := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP USER %s;", username, username)
@@ -225,7 +233,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 				log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", username)
 			}
 		}
-
 		// Handle the error
 		if strings.Contains(err.Error(), "User with email") {
 			// Handle the case where provided user data violates unique constraint
@@ -272,4 +279,25 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send HTTP response
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
+}
+
+func getNumberAfterSecondUnderscore(s string) (int, error) {
+	parts := strings.Split(s, "_")
+	if len(parts) < 3 {
+		return 0, fmt.Errorf("string doesn't contain at least two underscores")
+	}
+	numStr := parts[2]
+	num, err := strconv.Atoi(numStr)
+	if err != nil {
+		return 0, err
+	}
+	return num, nil
+}
+
+func getNameWithoutNumber(s string) string {
+	parts := strings.Split(s, "_")
+	if len(parts) < 3 {
+		return s // Return original string if it doesn't contain at least two underscores
+	}
+	return strings.Join(parts[:2], "_")
 }
