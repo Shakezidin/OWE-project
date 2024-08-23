@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"math/rand"
@@ -117,4 +118,77 @@ func BytesToStringArray(raw []byte) []string {
 		strArray[i] = strings.TrimSpace(strArray[i]) // Trim spaces
 	}
 	return strArray
+}
+
+// Log details in user related apis: create, update & delete user apis
+func initUserApiLogging(req *http.Request) (
+	logUserApi func(string), closeUserLog func(error),
+) {
+	var (
+		urlParts           []string
+		apiName            string
+		logBuilder         strings.Builder
+		authenticatedEmail string
+		startTime          string
+		logFile            *os.File
+		logFileOpenErr     error
+	)
+
+	log.EnterFn(0, "startUserApiLogging")
+	defer func() { log.ExitFn(0, "startUserApiLogging", logFileOpenErr) }()
+
+	// initialize log parameters for the api call
+
+	urlParts = strings.Split(req.URL.Path, "/")
+	apiName = urlParts[len(urlParts)-1]
+	authenticatedEmail = req.Context().Value("emailid").(string)
+	startTime = time.Now().Format("2006-01-02T15:04:05.999Z")
+
+	logFile, logFileOpenErr = os.OpenFile("/var/log/owe/owe-users.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+
+	// initial logs for the api call
+	if logFileOpenErr != nil {
+		log.FuncErrorTrace(0, "Cannot open user log file err: %v", logFileOpenErr)
+	} else {
+		// write authenticatedEmail and apiName
+		_, err := logBuilder.WriteString(fmt.Sprintf("\n[%s] %s invoked by user %s\n", startTime, apiName, authenticatedEmail))
+		if err != nil {
+			log.FuncErrorTrace(0, "Cannot write to user log builder err: %v", err)
+		}
+	}
+
+	logUserApi = func(message string) {
+		if logFileOpenErr != nil {
+			return
+		}
+		_, err := logBuilder.WriteString(fmt.Sprintf("%s\n", message))
+		if err != nil {
+			log.FuncErrorTrace(0, "Cannot write to user log builder err: %v", err)
+		}
+	}
+
+	// Record end of api call (Call this in a deferred func)
+	closeUserLog = func(err error) {
+
+		if logFileOpenErr != nil {
+			return
+		}
+
+		// only write log on api success
+		if err != nil {
+			return
+		}
+
+		_, err = logFile.WriteString(logBuilder.String())
+		if err != nil {
+			log.FuncErrorTrace(0, "Cannot write to user log file err: %v", err)
+		}
+
+		err = logFile.Close()
+		if err != nil {
+			log.FuncErrorTrace(0, "Cannot close log file: %v", err)
+		}
+	}
+
+	return logUserApi, closeUserLog
 }
