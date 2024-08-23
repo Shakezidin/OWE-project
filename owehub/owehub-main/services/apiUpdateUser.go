@@ -112,7 +112,10 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
 		// Join selected parts with underscores
 
-		query := fmt.Sprintf("SELECT name, tables_permissions FROM user_details WHERE email_id = '%s';", updateUserReq.EmailId)
+		query := fmt.Sprintf(
+			"SELECT name, tables_permissions FROM user_details WHERE email_id = '%s';",
+			updateUserReq.EmailId,
+		)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get old username from db with err %s", err)
@@ -142,7 +145,12 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		oldusername := strings.Join(strings.Fields(userName)[0:2], "_")
 
 		// Construct SQL statements to revoke privileges and drop the role (user)
-		sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; ALTER ROLE %s RENAME TO %s;", oldusername, oldusername, newusername)
+		sqlStatement := fmt.Sprintf(
+			"REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; ALTER ROLE %s RENAME TO %s;",
+			oldusername,
+			oldusername,
+			newusername,
+		)
 
 		// Execute the SQL statement
 		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
@@ -266,7 +274,11 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// records updated user in user logs
-	userInfoResult, err = db.ReteriveFromDB(db.OweHubDbIndex, "SELECT mobile_number, db_username FROM user_details WHERE email_id = $1", []interface{}{updateUserReq.EmailId})
+	userInfoResult, err = db.ReteriveFromDB(
+		db.OweHubDbIndex,
+		"SELECT mobile_number, db_username FROM user_details WHERE email_id = $1",
+		[]interface{}{updateUserReq.EmailId},
+	)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Retrieve User Details from DB err: %v", err)
