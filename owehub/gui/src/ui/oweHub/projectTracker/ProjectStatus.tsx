@@ -569,6 +569,7 @@ const ProjectStatus = () => {
   const ntpAction = () => {
     setNtpOPen(true);
   };
+  const popupRef = useRef(null);
 
 
 
@@ -665,7 +666,11 @@ const ProjectStatus = () => {
                           </div>
                         ) : null}
                         {activePopups && i === 1 && (
-                          <div className="popup">
+                          <div
+                            className="popup"
+                            ref={popupRef}
+                            onMouseLeave={() => setActivePopups(false)}
+                          >
                             <p className="pop-head">Adder Details</p>
                             <ol className="order-list">
                               {
@@ -766,14 +771,14 @@ const ProjectStatus = () => {
                     <button>QC</button>
                   </div>
                   <div className="progress-ntp-acre">
-                  <span>{otherlinks?.ntp?.qc_action_required_count || 0}</span>
-                </div>
+                    <span>{otherlinks?.ntp?.qc_action_required_count || 0}</span>
+                  </div>
                   <div className="progress-qc mt0" onClick={ntpAction}>
                     <button>NTP</button>
                   </div>
                 </div>
 
-                
+
 
                 <div className="progress-qc-acre">
                   <span>{otherlinks?.ntp?.action_required_count || 0}</span>
