@@ -84,7 +84,9 @@ const QCModal: React.FC<TableProps> = ({ projectDetail, handleClose, isOpen = fa
 
               {qcData && (
                 <>
-                  {Object.entries(qcData).map(([key, value]) => (
+                  {Object.entries(qcData)
+                  .filter(([key]) => key !== 'qc_action_required_count')
+                  .map(([key, value]) => (
                     <div key={key}>{renderQCContent(formatTitle(key), value as string)}</div>
                   ))}
                 </>

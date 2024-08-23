@@ -40,6 +40,12 @@
 .primary_btn {
   background-color: #4372e9;
   color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.primary_btn:hover {
+  background-color: #0044f1;
+  transform: scale(1.06);
 }
 
 .secondary_btn {
@@ -47,4 +53,10 @@
   color: #9c9c9c;
   background-color: #fff;
   margin-left: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.secondary_btn:hover {
+  background-color: #fbfbfb !important;
+  transform: scale(1.06) !important;
 }
