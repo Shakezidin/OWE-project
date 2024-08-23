@@ -21,7 +21,7 @@ type ProspectInfoData struct {
 	EvCharger         bool     `json:"ev_charger"`
 	Spa               bool     `json:"spa"`
 	SysSize           float64  `json:"system_size"`
-	AddNotes          string   `json:"add_notes"`
+	AddedNotes        string   `json:"added_notes"`
 }
 
 type GetProspectInfo struct {
@@ -33,7 +33,7 @@ type GetProspectInfo struct {
 	Primary      PrimaryData   `json:"primary_data"`
 	Secondary    SecondaryData `json:"secondary_data"`
 	SysSize      float64       `json:"system_size"`
-	AddNotes     string        `json:"add_notes"`
+	AddedNotes   string        `json:"added_notes"`
 }
 
 type PrimaryData struct {

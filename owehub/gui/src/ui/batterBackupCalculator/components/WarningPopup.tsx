@@ -2,6 +2,7 @@ import React, { SetStateAction } from 'react';
 import { WarningIcon } from '../icons';
 import { Ibattery } from './BatteryAmp';
 import { CgClose } from 'react-icons/cg';
+import Swal from 'sweetalert2';
 interface IPopPupProps {
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<SetStateAction<boolean>>;
@@ -16,6 +17,8 @@ interface IPopPupProps {
     secondaryText: string;
   };
 }
+
+
 const WarningPopup = ({
   isOpen,
   setIsOpen,
@@ -30,6 +33,24 @@ const WarningPopup = ({
   const handleClose = () => {
     setIsOpen?.((prev) => !prev);
   };
+  const showAlert = async () => {
+    Swal.fire({
+      title: `<p style="font-size:14px;padding-top:20px;margin-bottom:16px; ">By selecting Agree below I am acknowledging that the battery configuration I am selecting is under the configuration recommended by Our World Energy. I understand that by selecting this configuration the performance and duration of my battery will be highly dependent on my habits and that Our World Energy does not guarantee any performance metrics for this configuration.<p>`,
+      showDenyButton: true,
+      confirmButtonText: "Approve",
+      denyButtonText: `I do not Approve`,
+      focusDeny: true,
+      confirmButtonColor: "#0BAF11",
+      width:"35em",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleClose()
+        setRequiredBattery((prev) => (prev ? prev - 1 : prev));
+      } else if (result.isDenied) {
+        return
+      }
+    });
+  }
   return (
     <div className="transparent-model px2 scrollbar">
       <div
@@ -55,22 +76,28 @@ const WarningPopup = ({
             className="text-dark mt1"
             style={{ fontWeight: 500, fontSize: 14 }}
           >
-            You are attempting to reduce the total number of batteries below our
-            recommended minimum for a Full Home Back-Up.We cannot gaurentee the
-            effectiveness in which this battery configuration can support your
-            home. Would you like to remain at the recommended battery quantity
-            for a Full Home Back-Up or reduce the number of batteries in this
-            system and switch to a Partial Home Back-up
+            You are attempting to reduce the total number of batteries below our recommended minimum
+            <br /> for a Full Home Back-Up.
+            <br />
+            <span className='mt2 block'>
+
+            We cannot guarantee the effectiveness of this battery configuration in supporting your home.
+            <br />
+            <span className="block mt2">
+
+            Would you like to:
+            </span>
+            </span>
+
+    
           </p>
         </div>
-        <div className="mt4">
+        <div className="mt3">
           <button
             onClick={() => {
               setMainOn(false);
               setMainDisabled(false);
-
               setRequiredBattery((prev) => (prev ? prev - 1 : prev));
-
               handleClose();
               setBatteryPower((prev) =>
                 prev.map((battery) => ({ ...battery, isOn: false }))
@@ -78,7 +105,7 @@ const WarningPopup = ({
             }}
             className="calc-grey-btn warning-popup-btn pointer"
           >
-            I would like to switch to a partial home back-up.
+            Reduce the number of batteries in this system and switch to a Partial Home Backup
           </button>
           <button
             onClick={() => {
@@ -92,8 +119,9 @@ const WarningPopup = ({
             }}
             className="calc-green-btn pointer warning-popup-btn"
           >
-            I would like to remain with the recommended configuration.
+            Remain at the recommended battery quantity for a Full Home Backup
           </button>
+          <button onClick={showAlert} className='teritary-popup-btn' > Reduce the number of batteries in this system while remaining on Full Home Backup</button>
         </div>
       </div>
     </div>

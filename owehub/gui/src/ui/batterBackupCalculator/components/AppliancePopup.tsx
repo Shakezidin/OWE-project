@@ -13,6 +13,7 @@ interface IPopPupProps {
   address: string;
   squareFoot: number;
   systemSize: number;
+  note:string
 }
 const primaryApplicances = [
   { name: 'Water heater', id: 1, key: 'water_heater' },
@@ -49,6 +50,7 @@ const AppliancePopup = ({
   squareFoot,
   address,
   systemSize,
+  note=""
 }: IPopPupProps) => {
   return (
     <div className="transparent-model p3">
@@ -109,6 +111,21 @@ const AppliancePopup = ({
             disabled
             onChange={() => 0}
           />
+        </div>
+
+        <div
+          className="calc-input-wrapper relative mb2"
+          style={{ width: '100%' }}
+        >
+       {note.trim()&&  <Input
+            type="text"
+            name=""
+            label="Note"
+            placeholder={'Note'}
+            value={note}
+            readOnly
+            onChange={() => 0}
+          />}
         </div>
 
         <div className="sr-appliance-wrapper">
