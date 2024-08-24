@@ -19,7 +19,8 @@ type DataRequestBody struct {
 	PageSize   int      `json:"page_size"`
 	Archived   bool     `json:"archived"`
 	Filters    []Filter `json:"filters"`
-	DealerName string
+	DealerName interface{}
+	Email      string
 }
 
 type MailRequestBody struct {

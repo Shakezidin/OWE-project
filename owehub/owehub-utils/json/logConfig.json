@@ -1,9 +1,0 @@
-{
-    "logEnv": "VM",
-    "logLevel": 5,
-    "logFile": "/var/log/owe/owehub-utils.log",
-    "logFileSize": 200,
-    "logFileBackup": 5,
-    "logFileAge": 28,
-    "logFileCompress": false
-}
