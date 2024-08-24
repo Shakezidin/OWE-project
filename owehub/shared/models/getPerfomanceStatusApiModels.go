@@ -9,16 +9,17 @@ package models
 type EmptyReq struct{}
 
 type PerfomanceStatusReq struct {
-	PageNumber   int `json:"page_number"`
-	PageSize     int `json:"page_size"`
-	Email        string
-	UniqueIds    []string `json:"unique_ids"`
-	ProjectLimit int
-	DealerName   interface{}
-	IntervalDays string
-	ItemLastSeen int64  `json:"item_last_seen"`
-	StartDate    string `json:"start_date"`
-	EndDate      string `json:"end_date"`
+	PageNumber        int    `json:"page_number"`
+	PageSize          int    `json:"page_size"`
+	SelectedMilestone string `json:"selected_milestone"`
+	Email             string
+	UniqueIds         []string `json:"unique_ids"`
+	ProjectLimit      int
+	DealerName        interface{}
+	IntervalDays      string
+	ItemLastSeen      int64  `json:"item_last_seen"`
+	StartDate         string `json:"start_date"`
+	EndDate           string `json:"end_date"`
 }
 
 type PerfomanceResponse struct {

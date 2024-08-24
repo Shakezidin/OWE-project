@@ -21,11 +21,11 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetPerfomanceProjectStatusRequest
- * DESCRIPTION:     handler for get InstallCost data request
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:		HandleGetPerfomanceProjectStatusRequest
+* DESCRIPTION:     handler for get InstallCost data request
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
 const (
 	green = "#63ACA3"
 	blue  = "#377CF6"
@@ -444,9 +444,62 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			InspectionsColour: inspectionColor,
 			ActivationColour:  activationColor,
 		}
-		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+		switch dataReq.SelectedMilestone {
+		case "survey":
+			if SiteSurveyCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		case "cad":
+			if CadDesignCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		case "permit":
+			if PerimittingCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		case "roof":
+			if RoofingCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		case "install":
+			if InstallCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		case "electrical":
+			if electricCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		case "inspection":
+			if InspectionCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		case "activation":
+			if actiovationCountT == 1 {
+				perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+			}
+		default:
+			perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
+		}
 	}
 
+	switch dataReq.SelectedMilestone {
+	case "survey":
+		RecordCount = SiteSurveyCount
+	case "cad":
+		RecordCount = CadDesignCount
+	case "permit":
+		RecordCount = PerimittingCount
+	case "roof":
+		RecordCount = RoofingCount
+	case "install":
+		RecordCount = InstallCount
+	case "electrical":
+		RecordCount = ElectricalCount
+	case "inspection":
+		RecordCount = InspectionCount
+	case "activation":
+		RecordCount = ActivationCount
+	}
 	paginatedData := PaginateData(perfomanceList, dataReq)
 	perfomanceList.PerfomanceList = paginatedData
 	perfomanceList.SiteSurveyCount = SiteSurveyCount
@@ -463,13 +516,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAdminDlrFilters
- * DESCRIPTION:
-		 PaginateData function paginates data directly from the returned data itself
-		 without setting any offset value. For large data sizes, using an offset
-		 was creating performance issues. This approach manages to keep the response
-		 time under 2 seconds.
- ******************************************************************************/
+* FUNCTION:		PrepareAdminDlrFilters
+* DESCRIPTION:
+		PaginateData function paginates data directly from the returned data itself
+		without setting any offset value. For large data sizes, using an offset
+		was creating performance issues. This approach manages to keep the response
+		time under 2 seconds.
+******************************************************************************/
 
 func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq) []models.PerfomanceResponse {
 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
@@ -486,11 +539,11 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAdminDlrFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:		PrepareAdminDlrFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
 
 func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
@@ -576,10 +629,10 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString(" WHERE")
 	}
 	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-		 AND intOpsMetSchema.unique_id <> ''
-		 AND intOpsMetSchema.system_size IS NOT NULL
-		 AND intOpsMetSchema.system_size > 0 
-		 AND salMetSchema.project_status NOT IN ('CANCEL','PTO''d')`)
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0 
+			AND salMetSchema.project_status NOT IN ('CANCEL','PTO''d')`)
 
 	filters = filtersBuilder.String()
 
@@ -588,11 +641,11 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareInstallCostFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:		PrepareInstallCostFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
 func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
@@ -670,10 +723,10 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
-		 AND intOpsMetSchema.unique_id <> ''
-		 AND intOpsMetSchema.system_size IS NOT NULL
-		 AND intOpsMetSchema.system_size > 0 
-		 AND salMetSchema.project_status NOT IN ('CANCEL', 'PTO''d')`)
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0 
+			AND salMetSchema.project_status NOT IN ('CANCEL', 'PTO''d')`)
 
 	filters = filtersBuilder.String()
 
@@ -681,6 +734,9 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
+func getRecordCount(milestone string) {
+
+}
 func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string) {
 	var count int64
 	if contract_date != "" && completedDate == "" {
