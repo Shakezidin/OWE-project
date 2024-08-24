@@ -19,11 +19,11 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetUsersDataRequest
- * DESCRIPTION:     handler for get users data request
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
+* FUNCTION:		HandleGetUsersDataRequest
+* DESCRIPTION:     handler for get users data request
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
 type tablePermission struct {
 	TableName     string `json:"table_name"`
 	PrivilegeType string `json:"privilege_type"`
@@ -88,41 +88,48 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-			SELECT ud.user_id AS record_id, ud.name AS name, 
-			ud.user_code, 
-			ud.db_username,
-			ud.mobile_number, 
-			ud.email_id, 
-			ud.password_change_required, 
-			ud.created_at,
-			ud.updated_at, 
-			COALESCE(ud1.name, 'NA') AS reporting_manager, 
-			COALESCE(vd.dealer_name, 'NA') AS dealer_owner, 
-			ud.user_status, 
-			ud.user_designation, 
-			ud.description, 
-			ud.region,
-			ud.street_address, 
-			ud.city, 
-			ud.country,
-			st.name AS state_name,
-			ur.role_name,
-			zc.zipcode,
-			vd.dealer_name as dealer,
-			vd.dealer_logo,
-			vd.bg_colour,
-			ud.tables_permissions
-			FROM user_details ud
-			LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
-			LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
-			LEFT JOIN states st ON ud.state = st.state_id
-			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
-			LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id`
+			 SELECT ud.user_id AS record_id, ud.name AS name, 
+			 ud.user_code, 
+			 ud.db_username,
+			 ud.mobile_number, 
+			 ud.email_id, 
+			 ud.password_change_required, 
+			 ud.created_at,
+			 ud.updated_at, 
+			 COALESCE(ud1.name, 'NA') AS reporting_manager, 
+			 COALESCE(vd.dealer_name, 'NA') AS dealer_owner, 
+			 ud.user_status, 
+			 ud.user_designation, 
+			 ud.description, 
+			 ud.region,
+			 ud.street_address, 
+			 ud.city, 
+			 ud.country,
+			 st.name AS state_name,
+			 ur.role_name,
+			 zc.zipcode,
+			 vd.dealer_name as dealer,
+			 vd.dealer_logo,
+			 vd.bg_colour,
+			 ud.tables_permissions
+			 FROM user_details ud
+			 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
+			 LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
+			 LEFT JOIN states st ON ud.state = st.state_id
+			 LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
+			 LEFT JOIN zipcodes zc ON ud.zipcode = zc.id
+			 LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id`
 
-	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false)
-	if filter != "" {
-		queryWithFiler = query + filter
+	if len(dataReq.SalesRepStatus) > 0 {
+		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false, true)
+		if filter != "" {
+			queryWithFiler = query + filter
+		}
+	} else {
+		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false, false)
+		if filter != "" {
+			queryWithFiler = query + filter
+		}
 	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
@@ -311,35 +318,97 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			BgColour:          BgColour,
 			TablePermission:   tablePermissions,
 		}
-
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
 	}
 
-	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, true)
-	if filter != "" {
-		queryForAlldata = query + filter
+	if len(dataReq.SalesRepStatus) > 0 {
+		activeRepQuery := `
+		 SELECT DISTINCT
+			 primary_sales_rep AS active_sales_representative
+		 FROM
+			 consolidated_data_view
+		 WHERE
+			 contract_date BETWEEN current_date - interval '90 day' AND current_date;
+		 `
+
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, activeRepQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get active sales representatives from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get active sales representatives from DB", http.StatusBadRequest, nil)
+			return
+		}
+
+		activeSalesReps := make(map[string]bool)
+		for _, item := range data {
+			repName, nameOk := item["active_sales_representative"].(string)
+			if nameOk && repName != "" {
+				activeSalesReps[repName] = true
+			}
+		}
+
+		finalUsersDetailsList := models.GetUsersDataList{}
+		for _, rep := range usersDetailsList.UsersDataList {
+			isActive := activeSalesReps[rep.Name]
+
+			if dataReq.SalesRepStatus == "Active" && isActive {
+				finalUsersDetailsList.UsersDataList = append(finalUsersDetailsList.UsersDataList, rep)
+			}
+
+			if dataReq.SalesRepStatus == "InActive" && !isActive {
+				finalUsersDetailsList.UsersDataList = append(finalUsersDetailsList.UsersDataList, rep)
+			}
+		}
+
+		usersDetailsList.UsersDataList = finalUsersDetailsList.UsersDataList
+		RecordCount = int64(len(finalUsersDetailsList.UsersDataList))
+		usersDetailsList.UsersDataList = PaginateRep(usersDetailsList.UsersDataList, dataReq.PageNumber, dataReq.PageSize)
+	} else {
+		filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, true, false)
+		if filter != "" {
+			queryForAlldata = query + filter
+		}
+
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get user data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get user data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		RecordCount = int64(len(data))
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get user data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get user data from DB", http.StatusBadRequest, nil)
-		return
-	}
-	RecordCount = int64(len(data))
-
-	// Send the response
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersDetailsList.UsersDataList), usersDetailsList)
 	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList, RecordCount)
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareUsersDetailFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
-func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
+* FUNCTION:		PaginateRep
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+func PaginateRep(repList []models.GetUsersData, page_number int, page_size int) []models.GetUsersData {
+	start := (page_number - 1) * page_size
+	end := page_number * page_size
+
+	if start >= len(repList) {
+		return []models.GetUsersData{}
+	}
+
+	if end > len(repList) {
+		end = len(repList)
+	}
+
+	return repList[start:end]
+}
+
+/******************************************************************************
+* FUNCTION:		PrepareUsersDetailFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBody, forDataCount, SalesRepStatus bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareUsersDetailFilters")
 	defer func() { log.ExitFn(0, "PrepareUsersDetailFilters", nil) }()
 
@@ -425,6 +494,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.db_username, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode, vd.dealer_logo, vd.bg_colour, vd.dealer_name")
 	} else if nameSearch {
+	} else if SalesRepStatus {
 	} else {
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
