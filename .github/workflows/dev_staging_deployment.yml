@@ -23,14 +23,12 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.OWEHUB_STAGING_SSH_PRIVATE_KEY }}
-
-          #- name: Copy files to server
-          #run: |
-          #scp -P ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no -r ./* ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }}:/home/ubuntu/github
-
-          #- name: SSH on Staging Server
-          #run: |
-          #ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+    
+    - name: Bump version and create a new tag
+      run: |
+        npm install
+        npx standard-version
+        git push --follow-tags
 
     - name: Checkout latest dev branch
       run: |
