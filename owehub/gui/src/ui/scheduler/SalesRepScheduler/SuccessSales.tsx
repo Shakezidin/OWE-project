@@ -18,6 +18,10 @@ const SalesRepSchedulePage: React.FC<TableProps> = ({
     navigate('/salesrep-schedule');
     handleClose();
   };
+  const handleSchedule = () => {
+    navigate('/schedule-sales-rep');
+    handleClose();
+  };
   return (
     <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
       <div className="transparent-model">
@@ -34,7 +38,7 @@ const SalesRepSchedulePage: React.FC<TableProps> = ({
           </div>
 
           <div className={styles.survey_button}>
-            <button className={styles.self}>Self schedule this survey</button>
+            <button className={styles.self} onClick={handleSchedule}>Self schedule this survey</button>
             <button className={styles.other} onClick={handleClick}>
               Schedule this survey for me
             </button>

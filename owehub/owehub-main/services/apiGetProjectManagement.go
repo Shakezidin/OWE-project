@@ -165,11 +165,9 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, n.sunpixel, n.lease_agreement_uploaded, "+
 			"n.light_reach_design_verification, n.owe_agreement_uploaded, n.hof_uploaded,n.utility_acknowledgement_and_disclaimer_uploaded, "+
 			"n.ach_waiver_cash_customers_only_uploaded, n.finance_ntp_of_project, n.f_ntp_approved, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
-			"n.over_net_3point6_per_w, n.premium_panel_adder_10c, p.powerclerk_sent_az, p.ach_waiver_sent_and_signed_cash_only, p.green_area_nm_only, p.finance_credit_approved_loan_or_lease, "+
-			"p.finance_agreement_completed_loan_or_lease, p.owe_documents_completed "+
+			"n.over_net_3point6_per_w, n.premium_panel_adder_10c "+
 			"FROM customers_customers_schema c "+
 			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
-			"LEFT JOIN prospects_customers_schema p ON c.item_id = p.item_id "+
 			"WHERE c.unique_id = '%s'", uniqueId)) // Check if there are filters
 
 	linkQuery := filtersBuilder.String()
@@ -179,6 +177,9 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
+	projectList.CADLink = data[0]["current_live_cad"].(string)
+	projectList.DATLink = data[0]["system_sold_er"].(string)
+	projectList.PodioLink = data[0]["podio_link"].(string)
 
 	var ntp models.NTP
 	var qc models.QC
@@ -209,49 +210,62 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	actionRequiredCount += count
 	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete")
 	actionRequiredCount += count
-	ntp.OverNet3point6bywalt, count = getStringValue(data[0], "over_net_3point6_per_w")
-	actionRequiredCount += count
-	ntp.PremiumPanelAdder10c, count = getStringValue(data[0], "premium_panel_adder_10c")
-	actionRequiredCount += count
 	ntp.ActionRequiredCount = actionRequiredCount
+	actionRequiredCount = 0
 
-	qc.PowerClerk, _ = getStringValue(data[0], "powerclerk_sent_az")
-	qc.ACHWaiveSendandSignedCashOnly, _ = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
-	qc.GreenAreaNMOnly, _ = getStringValue(data[0], "green_area_nm_only")
-	qc.FinanceCreditApprovalLoanorLease, _ = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
-	qc.FinanceAgreementCompletedLoanorLease, _ = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
-	qc.OWEDocumentsCompleted, _ = getStringValue(data[0], "owe_documents_completed")
+	var filtersBuilders strings.Builder
+	whereEleList = nil
+
+	filtersBuilders.WriteString(fmt.Sprintf(
+		`WITH extracted_values AS (
+        SELECT
+            unique_id,  -- Include unique_id in the CTE
+            split_part(prospectid_dealerid_salesrepid, ',', 1) AS first_value
+        FROM
+            consolidated_data_view
+        WHERE
+            unique_id = '%v'
+    )
+    SELECT
+        e.first_value,
+        p.powerclerk_sent_az, p.ach_waiver_sent_and_signed_cash_only, p.green_area_nm_only, p.finance_credit_approved_loan_or_lease, 
+		p.finance_agreement_completed_loan_or_lease, p.owe_documents_completed 
+    FROM
+        extracted_values e
+    JOIN
+        prospects_customers_schema p
+    ON
+        e.first_value = p.item_id::text;`, uniqueId))
+
+	linkQuery = filtersBuilders.String()
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az")
+	actionRequiredCount += count
+	qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
+	actionRequiredCount += count
+	qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only")
+	actionRequiredCount += count
+	qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
+	actionRequiredCount += count
+	qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
+	actionRequiredCount += count
+	qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed")
+	actionRequiredCount += count
+	qc.ActionRequiredCount = actionRequiredCount
 
 	projectList.Ntp = ntp
 	projectList.Qc = qc
-	projectList.CADLink = data[0]["current_live_cad"].(string)
-	projectList.DATLink = data[0]["system_sold_er"].(string)
-	projectList.PodioLink = data[0]["podio_link"].(string)
 
 	// Send the response
 	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, projectList, int64(recordLen))
-}
-
-func getStringValue(data map[string]interface{}, key string) (string, int64) {
-	if value, exists := data[key]; exists {
-		switch v := value.(type) {
-		case string:
-			if v != "" {
-				return "Completed", 0
-			} else {
-				return "Pending", 0
-			}
-		case time.Time:
-			if !v.IsZero() {
-				return "Completed", 0
-			} else {
-				return "Pending", 0
-			}
-		}
-	}
-	return "Pending", 0
 }
 
 /******************************************************************************
@@ -478,4 +492,149 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+func getStringValue(data map[string]interface{}, key string) (string, int64) {
+	if value, exists := data[key]; exists {
+		log.FuncInfoTrace(0, "data for key %v: %v", key, value)
+		switch v := value.(type) {
+		case string:
+			switch key {
+			case "production_discrepancy":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Completed", 0
+				}
+
+			case "sunpixel":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" || v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" || v == " ✔" {
+					return "Completed", 0
+				}
+
+			case "lease_agreement_uploaded":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+
+			case "light_reach_design_verification":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "owe_agreement_uploaded":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "hof_uploaded":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "utility_acknowledgement_and_disclaimer_uploaded":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "ach_waiver_cash_customers_only_uploaded":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" || v == "❌" {
+					return "Completed", 0
+				}
+			case "finance_ntp_of_project":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" {
+					return "Completed", 0
+				}
+			case "utility_bill_uploaded":
+				if v == "" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "powerclerk_signatures_complete":
+				if v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌  Pending" || v == "❌  Pending Sending PC" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "powerclerk_sent_az":
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "Pending Utility Account #" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "ach_waiver_sent_and_signed_cash_only":
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" || v == "❌" || v == "✔ - N/A" || v == "N/A" {
+					return "Completed", 0
+				}
+			case "green_area_nm_only":
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌  (Project DQ'd)" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" || v == "✔ N/A" || v == "✔  N/A" || v == "✔ - N/A" {
+					return "Completed", 0
+				}
+			case "finance_credit_approved_loan_or_lease":
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "✔" || v == "✔ CASH - N/A" {
+					return "Completed", 0
+				}
+			case "finance_agreement_completed_loan_or_lease":
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "✔" || v == "✔ CASH - N/A" {
+					return "Completed", 0
+				}
+			case "owe_documents_completed":
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else if v == "✔" {
+					return "Completed", 0
+				}
+			}
+		case time.Time:
+			if !v.IsZero() {
+				return "Completed", 0
+			} else {
+				return "Pending", 0
+			}
+		}
+	}
+	return "Pending", 0
 }

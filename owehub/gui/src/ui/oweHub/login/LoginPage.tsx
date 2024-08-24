@@ -250,14 +250,18 @@ export const LoginPage = () => {
             </div>
           </form>
 
-          <Link to={ROUTES.SR_IMAGE_UPLOAD}>
+          <Link 
+          // to={ROUTES.SR_IMAGE_UPLOAD}
+          to="#"
+          >
             <div className="battery-calc">
               <div className="battery-calc-button">
                 <Lottie
                   animationData={PowerAnimation}
                   style={{ width: 70, height: 70 }}
+                  loop={false}
                 />
-                <p className="coming-soon">Battery Calculator</p>
+                <p className="coming-soon">Battery Calculator is Coming Soon!</p>
               </div>
             </div>
           </Link>

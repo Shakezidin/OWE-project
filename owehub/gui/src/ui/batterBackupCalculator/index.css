@@ -549,7 +549,11 @@
   border-radius: 12px;
   margin-bottom: 13px;
 }
-
+.missing_label_wrapper{
+  background-color: #fff;
+  padding: 1rem 29px;
+  border-radius: 6px;
+}
 .mt-13{
   margin-top: 13px;
 }

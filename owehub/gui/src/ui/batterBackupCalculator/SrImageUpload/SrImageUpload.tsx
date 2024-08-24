@@ -120,7 +120,7 @@ const FormComponent: React.FC = () => {
           house_square: parseFloat(squareFeet),
           address,
           system_size: parseFloat(systemSize),
-          add_notes: note
+          added_notes: note
         });
 
         if (response.status > 201) {
@@ -485,7 +485,7 @@ OWE Battery Calc
             </div>
             <Tooltip
               id="my-tooltip-1"
-              style={{maxWidth:300}}
+              style={{maxWidth:300,zIndex:10}}
               place="bottom-start"
               content="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
               openOnClick

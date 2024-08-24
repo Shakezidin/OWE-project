@@ -39,6 +39,7 @@ const BatteryAmp = () => {
     lra?: number;
     prospect_name?: string;
     SysSize?: number;
+    missing_labels?: string
   }>({});
   const [requiredBattery, setRequiredBattery] = useState(0);
   const [initial, setInitial] = useState(0);
@@ -107,8 +108,8 @@ const BatteryAmp = () => {
           denyButtonText: `I do not want to back-up this breaker`,
           focusDeny: true,
           confirmButtonColor: "#0BAF11",
-          customClass:{
-            denyButton:"mt-13"
+          customClass: {
+            denyButton: "mt-13"
           }
         }).then((result) => {
           if (result.isConfirmed) {
@@ -266,6 +267,9 @@ const BatteryAmp = () => {
           {' '}
           Customise panel as per requirement
         </p>
+        {otherDeatil.missing_labels && <p  style={{ color: '#d62222', fontSize: 12, fontWeight: 500 }} className='mt1'>
+          The breakers in your main panel were not properly labeled, our team has leveraged their extensive electrical experience to estimate the loads assigned to each breaker. While our team's experience is extensive without properly labeled breakers we cannot guarantee the accuracy of their estimate.
+        </p>}
       </div>
       <div className="batter-amp-container ">
         <div className="py3  batter-amp-wrapper  ">

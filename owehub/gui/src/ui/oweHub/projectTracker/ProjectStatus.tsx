@@ -427,10 +427,10 @@ const ProjectStatus = () => {
       ],
     },
   ];
- 
+
   const filteredStatusData = filtered.filter((status) => {
     if (status.name === 'Roofing') {
-     
+
       return (
         projectDetail.roofing_pending ||
         projectDetail.roofing_scheduled ||
@@ -438,7 +438,7 @@ const ProjectStatus = () => {
       );
     }
     if (status.name === 'Electrical') {
-     
+
       return (
         projectDetail.electrical_pending ||
         projectDetail.electrical_scheduled ||
@@ -448,7 +448,7 @@ const ProjectStatus = () => {
     return true; // Keep all other status objects
   });
 
- 
+
 
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
@@ -569,8 +569,9 @@ const ProjectStatus = () => {
   const ntpAction = () => {
     setNtpOPen(true);
   };
+  const popupRef = useRef(null);
 
-  
+
 
   return (
     <>
@@ -649,9 +650,9 @@ const ProjectStatus = () => {
                             {el.name}
                           </p>
                           <span className="span-para">
-                            {projectDetail[
+                          {el.key === 'adders_total' || el.key === 'contract_amount' ? '$' : ''}{projectDetail[
                               el.key as keyof typeof projectDetail
-                            ] || 'N/A'}
+                            ] || 'N/A'} {el.key === 'system_size' ? "(kW)" : ''}
                           </span>
                         </div>
                         {el.viewButton ? (
@@ -665,7 +666,11 @@ const ProjectStatus = () => {
                           </div>
                         ) : null}
                         {activePopups && i === 1 && (
-                          <div className="popup">
+                          <div
+                            className="popup"
+                            ref={popupRef}
+                            onMouseLeave={() => setActivePopups(false)}
+                          >
                             <p className="pop-head">Adder Details</p>
                             <ol className="order-list">
                               {
@@ -682,7 +687,7 @@ const ProjectStatus = () => {
                                       {item} :{' '}
                                       {
                                         projectDetail
-                                         // @ts-ignore
+                                          // @ts-ignore
                                           .adder_breakdown_and_total[item]
                                       }{' '}
                                     </li>
@@ -765,13 +770,18 @@ const ProjectStatus = () => {
                   <div className="progress-qc mt0" onClick={filter}>
                     <button>QC</button>
                   </div>
+                  <div className="progress-ntp-acre">
+                    <span>{otherlinks?.ntp?.qc_action_required_count || 0}</span>
+                  </div>
                   <div className="progress-qc mt0" onClick={ntpAction}>
                     <button>NTP</button>
                   </div>
                 </div>
 
+
+
                 <div className="progress-qc-acre">
-                <span>{otherlinks?.ntp?.action_required_count || 0}</span>
+                  <span>{otherlinks?.ntp?.action_required_count || 0}</span>
                 </div>
               </div>
             </div>
@@ -949,7 +959,7 @@ const ProjectStatus = () => {
                                   )
                                 )}
                               </div>
-                              {i === filteredStatusData.length -1  ? null : (
+                              {i === filteredStatusData.length - 1 ? null : (
                                 <div className="dotted-border"></div>
                               )}
                             </>

@@ -206,13 +206,13 @@ OWE Battery Calc
         prospect_id: parseInt(id!),
         prospect_name: inputDetails.prospectName,
         lra: parseFloat(inputDetails.lra),
-
+        missing_labels: missingLabel,
         breakers: batter.map((battery) => ({
           ...battery,
           ampere: battery.amp.includes('70')
             ? parseFloat(battery.amp.split('+')[0])
             : parseFloat(battery.amp.split(' ')[0]),
-          missing_labels: missingLabel
+        
         })),
       });
       await shareImage();
@@ -357,7 +357,7 @@ OWE Battery Calc
                 ''
               )}
             </div>
-            <div style={{ marginRight: "-2rem" }} className="flex mt3 mb2 items-center  justify-between">
+            <div style={{ marginRight: "-2rem" }} className="flex missing_label_wrapper mt3 mb2 items-center  justify-between">
               <span>Missing Labels</span>
 
               <Switch checked={missingLabel} onChange={() => setMissingLabel(prev => !prev)} />

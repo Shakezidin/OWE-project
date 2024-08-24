@@ -82,6 +82,7 @@ import Scheduler from './ui/scheduler';
 import ScheduleDetail from './ui/scheduler/ScheduleDetail';
 import CustomersList from './ui/scheduler/SalesRepScheduler/CustomersList';
 import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
+import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
 function App() {
   const dispatch = useAppDispatch();
 
@@ -292,6 +293,10 @@ function App() {
           <Route
             path={ROUTES.SALES_REP_SCHEDULER}
             element={<CustomersList />}
+          />
+          <Route
+            path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
+            element={<SchedulerBar />}
           />
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
           <Route

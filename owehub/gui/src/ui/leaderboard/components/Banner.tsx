@@ -69,7 +69,7 @@ const Banner: React.FC<BannerProps> = ({
     ) {
       getNewFormData();
     }
-  }, [role, isShowDropdown]);
+  }, [role]);
 
   useEffect(() => {
     if (

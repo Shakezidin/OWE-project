@@ -178,7 +178,6 @@ const Index = () => {
   const resetDealer = (value: string) => {
     if (value !== 'dealer' && isShowDropdown && selectDealer.length) {
       setIsShowDropdown(false);
-      setSelectDealer([]);
     }
     if (value === 'dealer') {
       setIsShowDropdown(true);

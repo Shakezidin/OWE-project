@@ -36,8 +36,12 @@
   z-index: 11;
 }
 
+.calender-wrapper svg:hover{
+  transform: scale(1.09);
+  transition: transform 0.3s ease;
+}
+
 .leaderboard-data__datepicker-wrapper:hover {
-  /* transform: scale(1.09); */
   z-index: 11;
 }
 
@@ -54,6 +58,7 @@
   display: flex;
   justify-content: center;
   padding: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .leaderboard-data__datepicker-btns button {
@@ -649,5 +654,11 @@
   }
   .leaderboard-table-container::-webkit-scrollbar-corner {
     background-color: transparent;
+  }
+}
+
+@media (max-width: 400px){
+  .leaderboard-data__datepicker-content{
+    right: -20px;
   }
 }

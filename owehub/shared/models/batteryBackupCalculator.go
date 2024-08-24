@@ -33,7 +33,7 @@ type GetProspectInfo struct {
 	Primary      PrimaryData   `json:"primary_data"`
 	Secondary    SecondaryData `json:"secondary_data"`
 	SysSize      float64       `json:"system_size"`
-	AddedNotes   string        `json:"add_notes"`
+	AddedNotes   string        `json:"added_notes"`
 }
 
 type PrimaryData struct {
@@ -100,8 +100,8 @@ type ProspectLoadInfo struct {
 	LRA              float64       `json:"lra"`
 	AverageCapacity  float64       `json:"average_capacity"`
 	ContinousCurrent float64       `json:"continous_current"`
-	Breakers         []BreakerInfo `json:"breakers"`
 	MissingLabels    bool          `json:"missing_labels"`
+	Breakers         []BreakerInfo `json:"breakers"`
 }
 
 type GetProspectLoadInfo struct {
