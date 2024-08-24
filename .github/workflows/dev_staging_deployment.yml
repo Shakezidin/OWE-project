@@ -23,12 +23,6 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.OWEHUB_STAGING_SSH_PRIVATE_KEY }}
-    
-    - name: Bump version and create a new tag
-      run: |
-        npm install
-        npx standard-version
-        git push --follow-tags
 
     - name: Checkout latest dev branch
       run: |
