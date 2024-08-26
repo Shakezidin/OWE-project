@@ -67,6 +67,7 @@ const ProjectStatus = () => {
   };
   const [search, setSearch] = useState('OUR22645');
   const [searchValue, setSearchValue] = useState('OUR22645');
+  const [active, setActive] = useState(false)
   const filtered = [
     // {
     //   name: 'Sales',
@@ -567,6 +568,7 @@ const ProjectStatus = () => {
   const [showComplete, setShowComplete] = useState(false);
 
   const handleOrderStatusClick = () => {
+    setActive(!active)
     setShowComplete(!showComplete);
   };
 
@@ -660,16 +662,16 @@ const ProjectStatus = () => {
                           </p>
                           <span className="span-para">
                             {el.key === 'adders_total' ||
-                            el.key === 'contract_amount'
+                              el.key === 'contract_amount'
                               ? '$'
                               : ''}
-                            { el.key !== 'net_epc' ?
-                            <> 
-                            {projectDetail[
-                              el.key as keyof typeof projectDetail
-                            ] || 'N/A'}{' '}
-                            </> 
-                          : 'Coming Soon'}
+                            {el.key !== 'net_epc' ?
+                              <>
+                                {projectDetail[
+                                  el.key as keyof typeof projectDetail
+                                ] || 'N/A'}{' '}
+                              </>
+                              : 'Coming Soon'}
                             {el.key === 'system_size' ? '(kW)' : ''}
                           </span>
                         </div>
@@ -694,23 +696,23 @@ const ProjectStatus = () => {
                               {
                                 // @ts-ignore
                                 projectDetail.adder_breakdown_and_total &&
-                                  Object.keys(
-                                    // @ts-ignore
-                                    projectDetail.adder_breakdown_and_total
-                                  ).map((item, ind) => {
-                                    // @ts-ignore
-                                    return (
-                                      <li key={ind} className="order-list-name">
-                                        {' '}
-                                        {item} :{' '}
-                                        {
-                                          // @ts-ignore
-                                          projectDetail
-                                            .adder_breakdown_and_total[item]
-                                        }{' '}
-                                      </li>
-                                    );
-                                  })
+                                Object.keys(
+                                  // @ts-ignore
+                                  projectDetail.adder_breakdown_and_total
+                                ).map((item, ind) => {
+                                  // @ts-ignore
+                                  return (
+                                    <li key={ind} className="order-list-name">
+                                      {' '}
+                                      {item} :{' '}
+                                      {
+                                        // @ts-ignore
+                                        projectDetail
+                                          .adder_breakdown_and_total[item]
+                                      }{' '}
+                                    </li>
+                                  );
+                                })
                               }
                             </ol>
                           </div>
@@ -786,12 +788,12 @@ const ProjectStatus = () => {
               <div className=" flex items-center project-status-table-title ">
                 <div className="progress-box-container status-btn ml3">
                   <div className="progress-os mt0">
-                    <button onClick={handleOrderStatusClick}>
+                    <button onClick={handleOrderStatusClick} className={`order-status-btn ${active ? 'active' : ''}`}>
                       Order Status
                     </button>
                     {showComplete && (
                       <div className="complete-status-dropdown">
-                         Co Compelete <img src={ICONS.QCTICK} alt="img" />
+                        Co Compelete <img src={ICONS.complete} width={16} alt="img" />
                       </div>
                     )}
                   </div>
@@ -898,19 +900,19 @@ const ProjectStatus = () => {
                                         {!(
                                           el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ]
                                         ) && (
-                                          <span
-                                            className="date-para"
-                                            style={{
-                                              color: el.color,
-                                              fontSize: '9px',
-                                            }}
-                                          >
-                                            ETA
-                                          </span>
-                                        )}
+                                            <span
+                                              className="date-para"
+                                              style={{
+                                                color: el.color,
+                                                fontSize: '9px',
+                                              }}
+                                            >
+                                              ETA
+                                            </span>
+                                          )}
                                         <p
                                           style={{
                                             color: el.color,
@@ -918,22 +920,22 @@ const ProjectStatus = () => {
                                           }}
                                         >
                                           {el.key &&
-                                          projectDetail[
+                                            projectDetail[
                                             el.key as keyof typeof projectDetail
-                                          ]
+                                            ]
                                             ? format(
-                                                new Date(
-                                                  projectDetail[
-                                                    el.key as keyof typeof projectDetail
-                                                  ]
-                                                ),
-                                                'dd MMMM'
-                                              ).slice(0, 6)
+                                              new Date(
+                                                projectDetail[
+                                                el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)
                                             : 'N/A'}
                                         </p>
                                         {el.key &&
                                           projectDetail[
-                                            el.key as keyof typeof projectDetail
+                                          el.key as keyof typeof projectDetail
                                           ] && (
                                             <p
                                               className="stage-1-para"
@@ -946,7 +948,7 @@ const ProjectStatus = () => {
                                               {format(
                                                 new Date(
                                                   projectDetail[
-                                                    el.key as keyof typeof projectDetail
+                                                  el.key as keyof typeof projectDetail
                                                   ]
                                                 ),
                                                 'yyyy'
