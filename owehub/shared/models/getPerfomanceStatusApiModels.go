@@ -105,7 +105,6 @@ type QC struct {
 type NTP struct {
 	ProductionDiscrepancy        string `json:"production_discrepancy"`
 	FinanceNTPOfProject          string `json:"finance_ntp_of_project"`
-	FntpApproved                 string `json:"F.NTP_approved"`
 	UtilityBillUploaded          string `json:"utility_bill_uploaded"`
 	PowerClerkSignaturesComplete string `json:"powerclerk_signatures_complete"`
 	ActionRequiredCount          int64  `json:"action_required_count"`
