@@ -23,7 +23,7 @@ const performance = {
     {
       path: ROUTES.PROJECT_PERFORMANCE,
       sidebarProps: {
-        displayText: 'Performance',
+        displayText: 'Pipeline',
         icon: (
           <GrDocumentPerformance
             size={20}
@@ -226,7 +226,7 @@ const mob = {
     {
       path: ROUTES.PROJECT_PERFORMANCE,
       sidebarProps: {
-        displayText: 'Performance',
+        displayText: 'Pipeline',
         icon: (
           <GrDocumentPerformance
             size={20}

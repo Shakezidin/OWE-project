@@ -54,6 +54,7 @@ const ProjectPerformence = () => {
   const refBtn = useRef<null | HTMLDivElement>(null);
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const { projects } = useAppSelector((state) => state.projectManagement);
+  const [selectedMilestone, setSelectedMilestone] = useState('')
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState(
     ''
@@ -230,6 +231,7 @@ const ProjectPerformence = () => {
             ? format(selectedRangeDate.end, 'dd-MM-yyyy')
             : '',
         uniqueId: searchValue ? searchValue : '',
+        selected_milestone:selectedMilestone,
       })
     );
   }, [
@@ -237,7 +239,8 @@ const ProjectPerformence = () => {
     selectedRangeDate.start,
     selectedRangeDate.end,
     selectedProject.value,
-    searchValue
+    searchValue,
+    selectedMilestone
   ]);
 
   const calculateCompletionPercentage = (
@@ -267,13 +270,13 @@ const ProjectPerformence = () => {
   const endIndex = page * perPage;
 
   const topCardsData = [
-    { id: 1, title: 'Site Survey', value: datacount.site_survey_count },
-    { id: 2, title: 'CAD Design', value: datacount.cad_design_count },
-    { id: 3, title: 'Permitting', value: datacount.permitting_count },
-    { id: 4, title: 'Roofing', value: datacount.roofing_count },
-    { id: 5, title: 'Install', value: datacount.isntall_count },
-    { id: 6, title: 'Inspection', value: datacount.inspection_count },
-    { id: 7, title: 'Activation', value: datacount.activation_count },
+    { id: 1, title: 'Site Survey', value: datacount.site_survey_count, pending:'survey' },
+    { id: 2, title: 'CAD Design', value: datacount.cad_design_count, pending:'cad' },
+    { id: 3, title: 'Permitting', value: datacount.permitting_count , pending:'permit'},
+    { id: 4, title: 'Roofing', value: datacount.roofing_count, pending:'roof' },
+    { id: 5, title: 'Install', value: datacount.isntall_count, pending:'install' },
+    { id: 6, title: 'Inspection', value: datacount.inspection_count , pending:'inspection'},
+    { id: 7, title: 'Activation', value: datacount.activation_count , pending:'activation'},
   ];
 
   const cardColors = ['#57B3F1', '#EE824D', '#63ACA3', '#6761DA', '#C470C7'];
@@ -550,6 +553,9 @@ const ProjectPerformence = () => {
     );
   };
 
+  const handlePendingRequest = (pending:any) => {
+     setSelectedMilestone(pending)
+  }
  
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
@@ -557,7 +563,7 @@ const ProjectPerformence = () => {
     <div className="">
       <Breadcrumb
         head=""
-        linkPara="Performance"
+        linkPara="Pipeline"
         route={''}
         linkparaSecond="Dashboard"
         marginLeftMobile="12px"
@@ -572,7 +578,7 @@ const ProjectPerformence = () => {
           ) : null}
         </div>
         <div className="project-heading">
-          <h2>Pending Queue</h2>
+          <h2>Active Queue</h2>
 
           <div className="flex items-center justify-end">
             <PeriodFilter
@@ -604,6 +610,7 @@ const ProjectPerformence = () => {
                       backgroundColor: cardColor,
                       outline: `1px dotted ${cardColor}`,
                     }}
+                    onClick={(e) =>  handlePendingRequest(card?.pending)}
                   >
                     <span
                       className="stages-numbers"

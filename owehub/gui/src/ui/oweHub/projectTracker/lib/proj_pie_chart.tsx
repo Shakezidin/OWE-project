@@ -33,7 +33,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
 
       <div className="pc-links">
         {/* Podio Link */}
-        <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
+        {/* <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
           <div className="link-head">
             <h3>Podio</h3>
             <span>Go to Podio Document for more info</span>
@@ -54,7 +54,7 @@ const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
             </div>
           </div>
           {copied === projectDetail?.podio_link && <span className="copy-message"> Copied!</span>}
-        </div>
+        </div> */}
 
         {/* CAD Link */}
         <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>

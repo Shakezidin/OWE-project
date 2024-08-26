@@ -53,7 +53,7 @@ export const ROUTES = {
   // other routes
   REPORT: '/report',
   DATABASE_CONTROLLER: '/databaseController',
-  PROJECT_PERFORMANCE: '/performance',
+  PROJECT_PERFORMANCE: '/pipeline',
   PROJECT_STATUS: '/project-management',
   USER_MANAEMENT: '/userManagement',
   TECHNICAL_SUPPORT: '/technicalSupport',

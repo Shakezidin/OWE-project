@@ -1283,6 +1283,34 @@
 
 }
 
+.progress-os button {
+  width: 95px;
+  height: 32px;
+  background-color: #f2f7ff;
+  border: 1px solid #377cf6;
+  font-weight: 500;
+  font-size: 12px;
+  color: #377cf6;
+  cursor: pointer;
+  border-radius: 4px;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.complete-status-dropdown{
+  border: 1px solid black;
+  font-size: 12px;
+  width: 95px;
+  height: 21px;
+  margin-top: 5px;
+ padding-left: 3px;
+ padding-bottom: 5px;
+ padding-top: 3px;
+ padding-right: 3px;
+  
+
+}
+
 .progress-qc button {
   width: 56px;
   height: 32px;
