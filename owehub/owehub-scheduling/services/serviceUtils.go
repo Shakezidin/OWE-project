@@ -118,3 +118,18 @@ func BytesToStringArray(raw []byte) []string {
 	}
 	return strArray
 }
+
+// Paginate a list using slicing
+func StaticPaginate[T any](data []T, pageNumber int64, pageSize int64) []T {
+	start := (pageNumber - 1) * pageSize
+	if start >= int64(len(data)) {
+		return []T{}
+	}
+
+	end := start + pageSize
+	if end > int64(len(data)) {
+		end = int64(len(data))
+	}
+
+	return data[start:end]
+}

@@ -7,6 +7,13 @@
 
 package models
 
+type GetSchedulingHomeRequest struct {
+	Queue      string `json:"queue"`
+	Order      string `json:"order"`
+	PageNumber int64  `json:"page_number"`
+	PageSize   int64  `json:"page_size"`
+}
+
 type CreateSchedulingHome struct {
 	UniqueId    string  `json:"unique_id"`
 	Payee       string  `json:"payee"`
