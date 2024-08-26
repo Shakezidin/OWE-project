@@ -103,19 +103,12 @@ type QC struct {
 }
 
 type NTP struct {
-	ProductionDiscrepancy                       string `json:"production_discrepancy"`
-	Sunpixel                                    string `json:"sunpixel"`
-	LeaseAgreementUploaded                      string `json:"lease_agreement_uploaded"`
-	LightReachDesignVerification                string `json:"light_reach_design_verification"`
-	OWEAgreementUploaded                        string `json:"owe_agreement_uploaded"`
-	HOFUploaded                                 string `json:"hof_uploaded"`
-	UtilityAcknowledgementAndDisclaimerUploaded string `json:"utility_acknowledgement_and_disclaimer_uploaded"`
-	ACHWaiverCashCustomerOnlyUploaded           string `json:"ach_waiver_cash_customers_only_uploaded"`
-	FinanceNTPOfProject                         string `json:"finance_ntp_of_project"`
-	FntpApproved                                string `json:"F.NTP_approved"`
-	UtilityBillUploaded                         string `json:"utility_bill_uploaded"`
-	PowerClerkSignaturesComplete                string `json:"powerclerk_signatures_complete"`
-	ActionRequiredCount                         int64  `json:"action_required_count"`
+	ProductionDiscrepancy        string `json:"production_discrepancy"`
+	FinanceNTPOfProject          string `json:"finance_ntp_of_project"`
+	FntpApproved                 string `json:"F.NTP_approved"`
+	UtilityBillUploaded          string `json:"utility_bill_uploaded"`
+	PowerClerkSignaturesComplete string `json:"powerclerk_signatures_complete"`
+	ActionRequiredCount          int64  `json:"action_required_count"`
 }
 
 type ProjectResponse struct {
