@@ -163,7 +163,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	whereEleList = nil
 	filtersBuilder.WriteString(fmt.Sprintf(
 		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, "+
-			"n.finance_ntp_of_project, n.f_ntp_approved, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
+			"n.finance_ntp_of_project, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
 			"n.over_net_3point6_per_w, n.premium_panel_adder_10c "+
 			"FROM customers_customers_schema c "+
 			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
@@ -188,8 +188,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy")
 	actionRequiredCount += count
 	ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project")
-	actionRequiredCount += count
-	ntp.FntpApproved, count = getStringValue(data[0], "f_ntp_approved")
 	actionRequiredCount += count
 	ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded")
 	actionRequiredCount += count
@@ -507,101 +505,91 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 }
 
 func getStringValue(data map[string]interface{}, key string) (string, int64) {
-	if value, exists := data[key]; exists {
-		log.FuncInfoTrace(0, "data for key %v: %v", key, value)
-		switch v := value.(type) {
-		case string:
-			switch key {
-			case "production_discrepancy":
-				if v == "" || v == "<nil>" {
+	if v, exists := data[key]; exists {
+		switch key {
+		case "production_discrepancy":
+			if v == "" || v == "<nil>" {
+				return "Pending", 0
+			} else {
+				return "Completed", 0
+			}
+		case "finance_ntp_of_project":
+			if v == "" || v == "<nil>" {
+				return "Pending", 0
+			} else if v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "utility_bill_uploaded":
+			if v == "" || v == "<nil>" {
+				return "Pending", 0
+			} else if v == "❌" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "powerclerk_signatures_complete":
+			if v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" {
+				return "Pending", 0
+			} else if v == "❌  Pending" || v == "❌  Pending Sending PC" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "powerclerk_sent_az":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
-				} else {
-					return "Completed", 0
-				}
-			case "finance_ntp_of_project":
-				if v == "" || v == "<nil>" {
-					return "Pending", 0
-				} else if v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips" {
+				} else if v == "Pending Utility Account #" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
 				}
-			case "utility_bill_uploaded":
-				if v == "" || v == "<nil>" {
+			}
+		case "ach_waiver_sent_and_signed_cash_only":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "green_area_nm_only":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
+					return "Pending (Action Required)", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "finance_credit_approved_loan_or_lease":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "finance_agreement_completed_loan_or_lease":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "owe_documents_completed":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
 				}
-			case "powerclerk_signatures_complete":
-				if v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" {
-					return "Pending", 0
-				} else if v == "❌  Pending" || v == "❌  Pending Sending PC" {
-					return "Pending (Action Required)", 1
-				} else {
-					return "Completed", 0
-				}
-			case "powerclerk_sent_az":
-				if v != "Not Needed" {
-					if v == "" || v == "NULL" || v == "<nil>" {
-						return "Pending", 0
-					} else if v == "Pending Utility Account #" {
-						return "Pending (Action Required)", 1
-					} else {
-						return "Completed", 0
-					}
-				}
-			case "ach_waiver_sent_and_signed_cash_only":
-				if v != "Not Needed" {
-					if v == "" || v == "NULL" || v == "<nil>" {
-						return "Pending", 0
-					} else {
-						return "Completed", 0
-					}
-				}
-			case "green_area_nm_only":
-				if v != "Not Needed" {
-					if v == "" || v == "NULL" || v == "<nil>" {
-						return "Pending", 0
-					} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
-						return "Pending (Action Required)", 1
-					} else {
-						return "Completed", 0
-					}
-				}
-			case "finance_credit_approved_loan_or_lease":
-				if v != "Not Needed" {
-					if v == "" || v == "NULL" || v == "<nil>" {
-						return "Pending", 0
-					} else {
-						return "Completed", 0
-					}
-				}
-			case "finance_agreement_completed_loan_or_lease":
-				if v != "Not Needed" {
-					if v == "" || v == "NULL" || v == "<nil>" {
-						return "Pending", 0
-					} else {
-						return "Completed", 0
-					}
-				}
-			case "owe_documents_completed":
-				if v != "Not Needed" {
-					if v == "" || v == "NULL" || v == "<nil>" {
-						return "Pending", 0
-					} else if v == "❌" {
-						return "Pending (Action Required)", 1
-					} else {
-						return "Completed", 0
-					}
-				}
-			}
-		case time.Time:
-			if !v.IsZero() {
-				return "Completed", 0
-			} else {
-				return "Pending", 0
 			}
 		}
 	}
