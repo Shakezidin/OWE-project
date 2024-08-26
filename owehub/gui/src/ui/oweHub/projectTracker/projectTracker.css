@@ -18,6 +18,19 @@
 
 .project-info-details {
   width: 210px;
+  line-height: 10px;
+}
+
+.performance-info-p {
+  position: absolute;
+  top: 80px;
+  font-weight: 500;
+  text-decoration: underline;
+  transition: all 0.2s ease;
+}
+.performance-info-p:hover {
+  transform: scale(1.03);
+  cursor: pointer;
 }
 
 .project-info-details h3 {
@@ -43,7 +56,9 @@
   display: flex;
   align-items: center;
   padding: 30px;
+  padding-bottom: 45px;
   background-color: var(--white-color);
+  position: relative;
 }
 
 .strips-wrapper {
@@ -1307,7 +1322,7 @@
 
 }
 
-.progress-os{
+.progress-os {
   position: relative;
 }
 
@@ -1349,7 +1364,7 @@
 }
 
 .order-status-btn.active:hover {
-  background-color: #377cf6; 
+  background-color: #377cf6;
 }
 
 .complete-status-dropdown {

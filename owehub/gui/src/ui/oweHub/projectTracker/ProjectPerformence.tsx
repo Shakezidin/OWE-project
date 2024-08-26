@@ -231,7 +231,7 @@ const ProjectPerformence = () => {
             ? format(selectedRangeDate.end, 'dd-MM-yyyy')
             : '',
         uniqueId: searchValue ? searchValue : '',
-        selected_milestone:selectedMilestone,
+        selected_milestone: selectedMilestone,
       })
     );
   }, [
@@ -270,13 +270,13 @@ const ProjectPerformence = () => {
   const endIndex = page * perPage;
 
   const topCardsData = [
-    { id: 1, title: 'Site Survey', value: datacount.site_survey_count, pending:'survey' },
-    { id: 2, title: 'CAD Design', value: datacount.cad_design_count, pending:'cad' },
-    { id: 3, title: 'Permitting', value: datacount.permitting_count , pending:'permit'},
-    { id: 4, title: 'Roofing', value: datacount.roofing_count, pending:'roof' },
-    { id: 5, title: 'Install', value: datacount.isntall_count, pending:'install' },
-    { id: 6, title: 'Inspection', value: datacount.inspection_count , pending:'inspection'},
-    { id: 7, title: 'Activation', value: datacount.activation_count , pending:'activation'},
+    { id: 1, title: 'Site Survey', value: datacount.site_survey_count, pending: 'survey' },
+    { id: 2, title: 'CAD Design', value: datacount.cad_design_count, pending: 'cad' },
+    { id: 3, title: 'Permitting', value: datacount.permitting_count, pending: 'permit' },
+    { id: 4, title: 'Roofing', value: datacount.roofing_count, pending: 'roof' },
+    { id: 5, title: 'Install', value: datacount.isntall_count, pending: 'install' },
+    { id: 6, title: 'Inspection', value: datacount.inspection_count, pending: 'inspection' },
+    { id: 7, title: 'Activation', value: datacount.activation_count, pending: 'activation' },
   ];
 
   const cardColors = ['#57B3F1', '#EE824D', '#63ACA3', '#6761DA', '#C470C7'];
@@ -553,10 +553,10 @@ const ProjectPerformence = () => {
     );
   };
 
-  const handlePendingRequest = (pending:any) => {
-     setSelectedMilestone(pending)
+  const handlePendingRequest = (pending: any) => {
+    setSelectedMilestone(pending)
   }
- 
+
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
@@ -610,7 +610,7 @@ const ProjectPerformence = () => {
                       backgroundColor: cardColor,
                       outline: `1px dotted ${cardColor}`,
                     }}
-                    onClick={(e) =>  handlePendingRequest(card?.pending)}
+                    onClick={(e) => handlePendingRequest(card?.pending)}
                   >
                     <span
                       className="stages-numbers"
@@ -658,7 +658,7 @@ const ProjectPerformence = () => {
           <div className="proper-top">
             <div className="performance-project">
               <div className="proper-select">
-                
+
 
                 {/* <IoIosSearch className="search-icon" /> */}
 
@@ -761,6 +761,8 @@ const ProjectPerformence = () => {
                                   </p>
                                 </div>
                               </Link>
+
+                                <p className='performance-info-p' onClick={() => {}}>More info.</p>
 
                               <div className="strips-wrapper">
                                 <div
@@ -905,37 +907,37 @@ const ProjectPerformence = () => {
                                     />
                                   </div>
                                 </div>
-                               
-                               {project?.electrical_date ?
-                                <div
-                                  className="notch-strip"
-                                  style={getColorStyle(
-                                    project.electrical_colour
-                                  )}
-                                >
-                                  <p className="strips-data">electrical</p>
-                                  <div className="notch-title">
-                                    {project.electrical_date ? (
-                                      <p>{project?.electrical_date}</p>
-                                    ) : (
-                                      <p
-                                        className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
-                                      >
-                                        {'No Data'}
-                                      </p>
+
+                                {project?.electrical_date ?
+                                  <div
+                                    className="notch-strip"
+                                    style={getColorStyle(
+                                      project.electrical_colour
                                     )}
+                                  >
+                                    <p className="strips-data">electrical</p>
+                                    <div className="notch-title">
+                                      {project.electrical_date ? (
+                                        <p>{project?.electrical_date}</p>
+                                      ) : (
+                                        <p
+                                          className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        >
+                                          {'No Data'}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <div className='strip-arrow'>
+                                      <MdOutlineKeyboardDoubleArrowRight
+                                        style={{
+                                          width: '1.2rem',
+                                          height: '1.2rem',
+                                          color: project.electrical_colour
+                                        }}
+                                      />
+                                    </div>
                                   </div>
-                                  <div className='strip-arrow'>
-                                    <MdOutlineKeyboardDoubleArrowRight
-                                      style={{
-                                        width: '1.2rem',
-                                        height: '1.2rem',
-                                        color: project.electrical_colour
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                               : null }
+                                  : null}
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
