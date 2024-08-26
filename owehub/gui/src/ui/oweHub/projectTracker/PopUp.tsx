@@ -6,15 +6,18 @@ import { ICONS } from '../../../resources/icons/Icons';
 interface TableProps {
   handleClose: () => void;
   isOpen?: boolean;
-  projectDetail: any
+  projectDetail: any;
 }
 
 // Filter component
-const QCModal: React.FC<TableProps> = ({ projectDetail, handleClose, isOpen = false }) => {
+const QCModal: React.FC<TableProps> = ({
+  projectDetail,
+  handleClose,
+  isOpen = false,
+}) => {
   const handleCloseModal = () => {
     handleClose();
   };
-
 
   const renderQCContent = (title: string, status: string) => {
     const isCompleted = status === 'Completed';
@@ -29,19 +32,22 @@ const QCModal: React.FC<TableProps> = ({ projectDetail, handleClose, isOpen = fa
           <div className="qc-status" style={{ backgroundColor }}>
             <img src={icon} alt={statusText} />
           </div>
-          <span className={`status ${statusText.toLowerCase()}`}>{statusText}</span>
+          <span className={`status ${statusText.toLowerCase()}`}>
+            {statusText}
+          </span>
         </div>
       </div>
     );
   };
 
   const formatTitle = (key: string) => {
-    return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return key
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   const qcData = projectDetail?.qc;
-
-
 
   return (
     <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
@@ -85,10 +91,15 @@ const QCModal: React.FC<TableProps> = ({ projectDetail, handleClose, isOpen = fa
               {qcData && (
                 <>
                   {Object.entries(qcData)
-                  .filter(([key]) => key !== 'qc_action_required_count')
-                  .map(([key, value]) => (
-                    <div key={key}>{renderQCContent(formatTitle(key), value as string)}</div>
-                  ))}
+                    .filter(
+                      ([key, value]) =>
+                        key !== 'qc_action_required_count' && value
+                    ) // Filter out empty values
+                    .map(([key, value]) => (
+                      <div key={key}>
+                        {renderQCContent(formatTitle(key), value as string)}
+                      </div>
+                    ))}
                 </>
               )}
             </div>

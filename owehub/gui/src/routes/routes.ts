@@ -49,6 +49,7 @@ export const ROUTES = {
   CONFIG_APOTH: '/config/ap-oth',
   CONFIG_APPDA: '/config/ap-pda',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
+  CALENDAR:'/calendar',
 
   // other routes
   REPORT: '/report',
