@@ -3,6 +3,9 @@
     color: #263747;
     font-size: 600;
 }
+.grid_spans{
+    grid-template-columns: repeat(12,1fr) .5fr !important;
+}
 
 .primary_heading {
     color: #04a5e8;
@@ -222,7 +225,7 @@
 .progress_bar {
     height: 36px;
     display: grid;
-    grid-template-columns: repeat(13, 1fr);
+    grid-template-columns: repeat(12, 1fr) .5fr;
     grid-auto-flow: column;
     gap: 1px;
 }

@@ -207,7 +207,7 @@ const SchedulerBar = () => {
               </div>
 
               <div className={sharedStyles.date_wrapper}>
-                <div className={`px2 items-center  ${sharedStyles.date_grid_container}`}>
+                <div className={`px2 items-center   ${sharedStyles.date_grid_container}`}>
                   {arr.map((item, ind) => {
                     return (
                       <div className="date_container" key={ind}>
@@ -234,7 +234,7 @@ const SchedulerBar = () => {
                 </div>
                 <div className="px1 mt2">
                   <div
-                    className={`py1 px2 ${styles.time_slot_wrapper}`}
+                    className={`py1 px2 ${styles.grid_spans} ${styles.time_slot_wrapper}`}
                     style={{ background: '#F2F4F6' }}
                   >
                     {filteredTime.map((time, ind) => {
