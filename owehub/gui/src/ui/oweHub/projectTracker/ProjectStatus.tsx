@@ -552,6 +552,8 @@ const ProjectStatus = () => {
 
   const filterClose = () => setFilterOpen(false);
 
+   
+
   const filter = () => {
     setFilterOpen(true);
   };
@@ -572,6 +574,26 @@ const ProjectStatus = () => {
     setShowComplete(!showComplete);
   };
 
+
+    // Function to handle Escape key press
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        filterClose();
+        ntpClose();
+      }
+    };
+  
+    useEffect(() => {
+      // Add event listener for keydown
+      window.addEventListener('keydown', handleKeyDown);
+  
+      // Clean up event listener on component unmount
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }, []);
+  
+    
   return (
     <>
       <QCModal
@@ -639,6 +661,7 @@ const ProjectStatus = () => {
                         padding: 3,
                         border: `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
+                        pointerEvents: el.key === 'net_epc' ? 'none' : 'auto'
                       }}
                     >
                       <div
@@ -647,7 +670,8 @@ const ProjectStatus = () => {
                           background: el.bgColor,
                           height: 83,
                           zIndex: i === 1 ? 50 : undefined,
-                          opacity: el.key === 'net_epc' ? '0.4' : ''
+                          opacity: el.key === 'net_epc' ? '0.4' : '',
+                          
                         }}
                       >
                         <div
