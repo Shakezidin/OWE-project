@@ -145,9 +145,9 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	dealerIn += ")"
 
 	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "state" && dataReq.GroupBy != "region" {
-		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, ", dataReq.GroupBy)
+		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, dealer as dealer, unique_id, home_owner, customer_email, customer_phone_number, address, state, contract_total, system_size, ntp_date, pv_install_completed_date, pto_date, cancelled_date, ", dataReq.GroupBy)
 	} else {
-		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
+		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name,unique_id, home_owner, customer_email, customer_phone_number, address, state, contract_total, system_size, ntp_date, pv_install_completed_date, pto_date, cancelled_date, ", dataReq.GroupBy)
 	}
 
 	filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck, dealerIn)
@@ -295,9 +295,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList.TotalInstall = totalInstall
 	LeaderBoardList.TotalNtp = totalNtp
 	LeaderBoardList.TotalSale = totalSale
+	LeaderBoardList.Data = data
 
 	RecordCount = int64(len(data))
-	log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
+	// log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
 	FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 }
 
@@ -389,12 +390,12 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 
 	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "state" && dataReq.GroupBy != "region" {
 		if dataReq.GroupBy != "dealer" {
-			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v , dealer HAVING", dataReq.GroupBy))
+			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v , dealer,unique_id, home_owner, customer_email, customer_phone_number, address, state, contract_total, system_size, ntp_date, pv_install_completed_date, pto_date, cancelled_date HAVING", dataReq.GroupBy))
 		} else {
-			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v HAVING", dataReq.GroupBy))
+			filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v,unique_id, home_owner, customer_email, customer_phone_number, address, state, contract_total, system_size, ntp_date, pv_install_completed_date, pto_date, cancelled_date HAVING", dataReq.GroupBy))
 		}
 	} else {
-		filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v HAVING", dataReq.GroupBy))
+		filtersBuilder.WriteString(fmt.Sprintf(" GROUP BY %v, unique_id, home_owner, customer_email, customer_phone_number, address, state, contract_total, system_size, ntp_date, pv_install_completed_date, pto_date, cancelled_date HAVING", dataReq.GroupBy))
 	}
 
 	if dataReq.StartDate != "" && dataReq.EndDate != "" {
