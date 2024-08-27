@@ -811,17 +811,10 @@ const ProjectStatus = () => {
 
               <div className=" flex items-center project-status-table-title ">
                 <div className="progress-box-container status-btn ml3">
-                  <div className="progress-os mt0">
-                    <button onClick={handleOrderStatusClick} className={`order-status-btn ${active ? 'active' : ''}`}>
-                      Order Status
-                    </button>
-                    {showComplete && (
-                      <div className="complete-status-dropdown">
-                        Co Compelete <img src={ICONS.complete} width={16} alt="img" />
-                      </div>
-                    )}
+                  <div className="co-status mt0">
+                    <p>CO Status</p>
+                    <p style={{color: "#2EAF71"}}>Completed <img src={ICONS.complete} width={16} alt="img" /></p>
                   </div>
-
                   <div className="progress-qc mt0" onClick={filter}>
                     <button>QC</button>
                   </div>

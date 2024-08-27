@@ -36,7 +36,10 @@ import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { debounce } from '../../../utiles/debounce';
 import Input from '../../components/text_input/Input';
-import { IoIosSearch } from 'react-icons/io';
+import { IoClose } from "react-icons/io5";
+// import { IoIosSearch } from 'react-icons/io';
+// import { MdFileDownloadDone } from "react-icons/md";
+import { MdDone } from "react-icons/md";
 interface Option {
   value: string;
   label: string;
@@ -59,6 +62,9 @@ const ProjectPerformence = () => {
   const [searchValue, setSearchValue] = useState(
     ''
   );
+
+  const [activeCardId, setActiveCardId] = useState(null);
+  const [activeCardTitle, setActiveCardTitle] = useState<string>('');
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -389,6 +395,18 @@ const ProjectPerformence = () => {
         document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    useEffect(() => {
+      const handleKeydown = (e: any) => {
+        if(e.key === 'Escape'){
+          setActiveCardId(null)
+        }
+      }
+      window.addEventListener('keydown', handleKeydown)
+      return () => {
+        window.removeEventListener('keydown', handleKeydown)
+      }
+    }, [])
+
     return (
       <div className="flex items-center justify-end">
         <div className="leaderborder_filter-slect-wrapper mr1">
@@ -598,6 +616,11 @@ const ProjectPerformence = () => {
           <div className="project-card-container-1">
             {topCardsData.map((card, index) => {
               const cardColor = cardColors[index % cardColors.length];
+              const isActive = activeCardId === card.id;
+              const handleCardClick = (cardId: any, title: string) => {
+                setActiveCardId(activeCardId === cardId ? null : cardId);
+                setActiveCardTitle(activeCardId === cardId ? '' : title);
+              };
               return (
                 <div
                   className="flex items-center arrow-wrap"
@@ -605,18 +628,22 @@ const ProjectPerformence = () => {
                 >
                   <div
                     key={card.id}
-                    className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''}`}
+                    className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
                     style={{
                       backgroundColor: cardColor,
-                      outline: `1px dotted ${cardColor}`,
+                      outline: activeCardId === card.id ? `4px solid ${cardColor}`:  `1px dotted ${cardColor}`,
+                    
                     }}
-                    onClick={(e) => handlePendingRequest(card?.pending)}
+                    onClick={(e) => {
+                      handlePendingRequest(card?.pending);
+                      handleCardClick(card.id, card.title);
+                    }}
                   >
                     <span
                       className="stages-numbers"
                       style={{ color: cardColor, borderColor: cardColor }}
                     >
-                      {card.id}
+                      {activeCardId === card.id ? <MdDone /> : card.id}
                     </span>
                     <p>{card.title || 'N/A'}</p>
                     <h2>{card.value || 'N/A'}</h2>
@@ -657,11 +684,14 @@ const ProjectPerformence = () => {
         <div className="performance-table-heading">
           <div className="proper-top">
             <div className="performance-project">
+             {activeCardId !== null && (
+               <div className='active-queue'>
+               <IoClose onClick={() => {setActiveCardId(null)}} />
+               <h2>{activeCardTitle || 'N/A'}</h2>
+             </div>
+             )}
               <div className="proper-select">
-
-
                 {/* <IoIosSearch className="search-icon" /> */}
-
                 <Input
                   type="text"
                   placeholder="Search for Unique ID or Name"
