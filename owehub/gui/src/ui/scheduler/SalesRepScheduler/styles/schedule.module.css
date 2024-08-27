@@ -14,10 +14,9 @@
 }
 
 .customer_wrapper_list {
-    flex-basis: calc(100%);
+    flex-basis: 100%;
     border-radius: 12px;
     background-color: #fff;
-    padding-top: 15px;
     border: 1px solid #d0d5dd;
 }
 
@@ -135,10 +134,10 @@
     display: grid;
     grid-template-columns: 210px auto;
     border-bottom: 1px solid #efefef;
-    padding-bottom: 13px; 
+    padding-bottom: 13px;
 }
 
-.tstop h2{
+.tstop h2 {
     margin-top: 30px;
     font-size: 14px;
     font-weight: 700;
@@ -168,15 +167,15 @@
     color: #377CF6;
 }
 
-.left_side{
+.left_side {
     display: flex;
     flex-direction: column;
 }
 
-.progressbar{
+.progressbar {
     display: grid;
-  grid-template-columns: 160px auto;
-  border-bottom: 1px solid #efefef;
+    grid-template-columns: 160px auto;
+    border-bottom: 1px solid #efefef;
 }
 
 
@@ -188,54 +187,66 @@
     align-items: center;
     padding-left: 59px;
     padding-block: 25px;
-  }
+}
 
-  .half_hour_span_wrapper {
+.half_hour_span_wrapper {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: end;
-  }
+}
 
-  .half_hour_span {
+.half_hour_span {
     height: 17px;
     width: 1px;
     background-color: rgba(255, 255, 255, 0.4);
     /* transform: translateX(-5px); */
-  }
-  
-  .full_hour_span {
+}
+
+.full_hour_span {
     height: 36px;
     width: 1px;
     background-color: rgba(255, 255, 255, 0.4);
-  }
+}
 
-  .progress_wrapper {
+.time_slot_wrapper {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+}
+
+.progress_wrapper {
     padding: 14px 24px;
     position: relative;
-  }
-  .progress_bar {
+}
+
+.progress_bar {
     height: 36px;
     display: grid;
-    grid-template-columns: repeat(22, 1fr);
+    grid-template-columns: repeat(13, 1fr);
     grid-auto-flow: column;
-  }
-  .bg_available_slot:hover .available_btn {
+    gap: 1px;
+}
+
+.bg_available_slot:hover .available_btn {
     opacity: 1;
     transition: all 500ms;
-  }
-  .bg_available_slot:hover .swap_btn{
+}
+
+.bg_available_slot:hover .swap_btn {
     opacity: 1;
     transition: all 500ms;
-  }
-  
-  .bg_available_slot {
+}
+
+.bg_available_slot {
     background: #8ce38a;
     height: 100%;
     display: grid;
     place-items: center;
     grid-auto-flow: column;
     overflow: hidden;
-  }
+}
 
-  
+.sales_rep_book_btn {
+    padding:4px 18px !important;
+    font-size: 12px;
+}

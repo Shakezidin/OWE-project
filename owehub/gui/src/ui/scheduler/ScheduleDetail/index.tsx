@@ -381,7 +381,7 @@ const Index = () => {
                     <div className="date_container" key={ind}>
                       <div
                         style={{ width: 'fit-content', cursor: 'pointer' }}
-                        className={`mx-auto cursor-pointer  ${item === activeDate ? styles.active_date : ''}`}
+                        className={`mx-auto cursor-pointer  ${item === activeDate ? styles.active_date : styles.inactive_date}`}
                         onClick={() => setActiveDate(item)}
                       >
                         <span style={{ fontSize: 18, fontWeight: 500 }}>
