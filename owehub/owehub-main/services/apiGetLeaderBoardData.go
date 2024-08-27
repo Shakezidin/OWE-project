@@ -295,7 +295,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	LeaderBoardList.TotalInstall = totalInstall
 	LeaderBoardList.TotalNtp = totalNtp
 	LeaderBoardList.TotalSale = totalSale
-	LeaderBoardList.Data = data
+	LeaderBoardList.Data = Paginate(data, dataReq.PageNumber, dataReq.PageSize)
 
 	RecordCount = int64(len(data))
 	// log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
