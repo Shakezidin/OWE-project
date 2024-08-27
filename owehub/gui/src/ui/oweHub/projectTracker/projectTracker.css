@@ -25,12 +25,12 @@
   position: absolute;
   top: 80px;
   font-weight: 500;
-  text-decoration: underline;
   transition: all 0.2s ease;
 }
 .performance-info-p:hover {
   transform: scale(1.03);
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .project-info-details h3 {
@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   padding: 30px;
-  padding-bottom: 45px;
+  padding-bottom: 40px;
   background-color: var(--white-color);
   position: relative;
 }
@@ -82,6 +82,20 @@
 .install-update:hover {
   text-decoration: underline;
   color: #000
+}
+
+.active-queue{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 10px;
+  text-wrap: nowrap;
+}
+
+.active-queue svg{
+  width: 2rem;
+  height: 1.7rem;
+  cursor: pointer;
 }
 
 #chart {
@@ -174,7 +188,7 @@
   gap: 1.5rem;
   width: 100%;
   overflow-x: scroll;
-  padding: 1rem 1.1rem;
+  padding: 1rem 1.25rem;
   scroll-behavior: smooth;
 }
 
@@ -215,8 +229,7 @@
 }
 
 .project-card-container-1 .project-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+  transform: scale(1.05);
 }
 
 .project-card-container-1 .project-card::after {
@@ -239,6 +252,9 @@
   position: absolute;
   top: 15px;
   left: -15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .project-card-container-2 {
@@ -317,6 +333,12 @@
   outline-offset: 3px;
   width: 140px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.project-card:hover,
+.project-card.active {
+  transform: scale(1.05);
 }
 
 .project-card h2,
@@ -1014,6 +1036,9 @@
 
 /*Responsive*/
 @media (max-width: 1024px) {
+  .progress-box-container{
+    gap: 0.6rem;
+  }
   .project-card-wrapper {
     width: 100%;
   }
@@ -1144,7 +1169,6 @@
   .performance-box-container {
     gap: 1rem;
   }
-
 
   .performance-box-container {
     flex-wrap: wrap;
@@ -1322,64 +1346,16 @@
 
 }
 
-.progress-os {
-  position: relative;
+.co-status{
+  display: flex;
+  flex-direction: column;
 }
-
-.progress-os button {
-  width: 95px;
-  height: 32px;
-  background-color: #f2f7ff;
-  border: 1px solid #377cf6;
-  font-weight: 500;
+.co-status p{
   font-size: 12px;
-  color: #377cf6;
-  cursor: pointer;
-  border-radius: 4px;
-  z-index: 1;
-  transition: all 0.3s ease;
-}
-
-.order-status-btn {
-  width: 95px;
-  height: 32px;
-  background-color: #f2f7ff;
-  border: 1px solid #377cf6;
-  font-weight: 500;
-  font-size: 12px;
-  border-radius: 4px;
-  z-index: 1;
-  transition: all 0.3s ease;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.order-status-btn:hover {
-  background-color: #377cf6;
-  color: #fff;
-}
-
-.order-status-btn.active {
-  background-color: #377cf6;
-  color: white;
-}
-
-.order-status-btn.active:hover {
-  background-color: #377cf6;
-}
-
-.complete-status-dropdown {
-  border: 1px solid #7D7D7D;
-  font-size: 12px;
-  padding: 5px;
-  border-radius: 4px;
-  position: absolute;
-  z-index: 99;
-  text-wrap: nowrap;
   display: flex;
   align-items: center;
-  gap: 7px;
-  transform: translate(-12%, 15%);
-  background: #fff;
+  gap: 5px;
+  font-weight: 500;
 }
 
 .progress-qc button {
