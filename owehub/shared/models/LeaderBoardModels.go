@@ -32,9 +32,10 @@ type GetLeaderBoard struct {
 }
 
 type GetLeaderBoardList struct {
-	LeaderBoardList []GetLeaderBoard `json:"ap_ded_list"`
-	TotalSale       float64          `json:"total_sale"`
-	TotalNtp        float64          `json:"total_ntp"`
-	TotalInstall    float64          `json:"total_install"`
-	TotalCancel     float64          `json:"total_cancel"`
+	LeaderBoardList []GetLeaderBoard         `json:"ap_ded_list"`
+	TotalSale       float64                  `json:"total_sale"`
+	TotalNtp        float64                  `json:"total_ntp"`
+	TotalInstall    float64                  `json:"total_install"`
+	TotalCancel     float64                  `json:"total_cancel"`
+	Data            []map[string]interface{} `json:"data"`
 }
