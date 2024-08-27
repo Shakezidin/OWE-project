@@ -659,6 +659,7 @@ const ProjectPerformence = () => {
                           width: '1.5rem',
                           height: '1.5rem',
                           color: cardColor,
+                          marginLeft: activeCardId === card.id ? "8px" : "0px"
                         }}
                       />
                       <MdOutlineKeyboardDoubleArrowRight
