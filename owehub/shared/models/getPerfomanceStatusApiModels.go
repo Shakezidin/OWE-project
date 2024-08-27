@@ -93,6 +93,7 @@ type ProjectListResponse struct {
 	CADLink     string            `json:"cad_link"`
 	DATLink     string            `json:"dat_link"`
 	PodioLink   string            `json:"podio_link"`
+	CoStatus    string            `json:"co_status"`
 	Ntp         NTP               `json:"ntp"`
 	Qc          QC                `json:"qc"`
 }
