@@ -796,7 +796,7 @@ const ProjectPerformence = () => {
                                 </>  
                                 </Link>
 
-                                <div className="milestone-status mt1">
+                                <div className="milestone-status">
                                   <div className="status-item">
                                     CO:<img src={ICONS.complete} width={16} alt="img" />  
                                   </div>
