@@ -1,3 +1,29 @@
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff; /* Adjust color based on status */
+  color: #000; /* Adjust color based on status */
+}
+
+
+.customer-name:hover{
+  text-decoration: underline;
+  color: #000
+}
+
+
+
 .project-main-container {
   display: flex;
   flex-direction: column;
@@ -40,10 +66,10 @@
   overflow: hidden;
 }
 
-.project-info-details:hover {
+/* .project-info-details:hover {
   text-decoration: underline;
   color: #000;
-}
+} */
 
 .header-milestone {
   padding: 15px 20px;

@@ -37,6 +37,7 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { debounce } from '../../../utiles/debounce';
 import Input from '../../components/text_input/Input';
 import { IoClose } from "react-icons/io5";
+import { ICONS } from '../../../resources/icons/Icons';
 // import { IoIosSearch } from 'react-icons/io';
 // import { MdFileDownloadDone } from "react-icons/md";
 import { MdDone } from "react-icons/md";
@@ -780,252 +781,271 @@ const ProjectPerformence = () => {
                       return (
                         <tr key={index}>
                           <td style={{ padding: '0px' }}>
-                            <div className="milestone-data">
+                          <div className="milestone-data">
+                              
+                              <div className="project-info-details">
                               <Link
-                                to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
+                              to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
+                            >
+                              <>
+                                <h3 className='customer-name'>{project.customer}</h3>
+                                <p className="install-update">
+                                  {project.unqiue_id}
+                                </p>
+                                </>  
+                                </Link>
+
+                                <div className="milestone-status mt1">
+                                  <div className="status-item">
+                                    CO:<img src={ICONS.complete} width={16} alt="img" />  
+                                  </div>
+                                  <div className="status-item">
+                                   QC:<img src={ICONS.complete} width={16} alt="img" /> {project.qc.qc_action_required_count}
+                                  </div>
+                                  <div className="status-item">
+                                  NTP:<img src={ICONS.complete} width={16} alt="img" />  {project.ntp.action_required_count}
+                                    {/* Replace with the actual status */}
+                                  </div>
+                                </div>
+
+
+                              </div>
+                         
+
+                            {/* <p className='performance-info-p' onClick={() => {}}>More info.</p> */}
+
+                            <div className="strips-wrapper">
+                              <div
+                                className="milestone-strips"
+                                style={getColorStyle(
+                                  project.site_survey_colour
+                                )}
                               >
-                                <div className="project-info-details">
-                                  <h3>{project.customer}</h3>
-                                  <p className="install-update">
-                                    {project.unqiue_id}
-                                  </p>
-                                </div>
-                              </Link>
-
-                                <p className='performance-info-p' onClick={() => {}}>More info.</p>
-
-                              <div className="strips-wrapper">
-                                <div
-                                  className="milestone-strips"
-                                  style={getColorStyle(
-                                    project.site_survey_colour
+                                <p className="strips-data">site survey</p>
+                                <div className="strip-title">
+                                  {project.site_survey_date ? (
+                                    <p>{project?.site_survey_date}</p>
+                                  ) : (
+                                    <p
+                                      className={`${project.site_survey_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                    >
+                                      {'No Data'}
+                                    </p>
                                   )}
-                                >
-                                  <p className="strips-data">site survey</p>
-                                  <div className="strip-title">
-                                    {project.site_survey_date ? (
-                                      <p>{project?.site_survey_date}</p>
-                                    ) : (
-                                      <p
-                                        className={`${project.site_survey_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
-                                      >
-                                        {'No Data'}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div className='strip-arrow'>
-                                    <MdOutlineKeyboardDoubleArrowRight
-                                      style={{
-                                        width: '1.2rem',
-                                        height: '1.2rem',
-                                        color: project.site_survey_colour
-                                      }}
-                                    />
-                                  </div>
                                 </div>
+                                <div className="strip-arrow">
+                                  <MdOutlineKeyboardDoubleArrowRight
+                                    style={{
+                                      width: '1.2rem',
+                                      height: '1.2rem',
+                                      color: project.site_survey_colour,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.cad_design_colour
+                                )}
+                              >
+                                <p className="strips-data">cad design</p>
+                                <div className="notch-title">
+                                  {project.cad_design_date ? (
+                                    <p>{project?.cad_design_date}</p>
+                                  ) : (
+                                    <p
+                                      className={`${project.cad_design_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                    >
+                                      {'No Data'}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="strip-arrow">
+                                  <MdOutlineKeyboardDoubleArrowRight
+                                    style={{
+                                      width: '1.2rem',
+                                      height: '1.2rem',
+                                      color: project.cad_design_colour,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.permitting_colour
+                                )}
+                              >
+                                <p className="strips-data">permitting</p>
+                                <div className="notch-title">
+                                  {project.permitting_date ? (
+                                    <p>{project?.permitting_date}</p>
+                                  ) : (
+                                    <p
+                                      className={`${project.permitting_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                    >
+                                      {'No Data'}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="strip-arrow">
+                                  <MdOutlineKeyboardDoubleArrowRight
+                                    style={{
+                                      width: '1.2rem',
+                                      height: '1.2rem',
+                                      color: project.permitting_colour,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              {project.roofing_colour ? (
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
-                                    project.cad_design_colour
+                                    project.roofing_colour
                                   )}
                                 >
-                                  <p className="strips-data">cad design</p>
+                                  <p className="strips-data">roofing</p>
                                   <div className="notch-title">
-                                    {project.cad_design_date ? (
-                                      <p>{project?.cad_design_date}</p>
+                                    {project.roofing_date ? (
+                                      <p>{project?.roofing_date}</p>
                                     ) : (
                                       <p
-                                        className={`${project.cad_design_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        className={`${project.roofing_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
                                       >
                                         {'No Data'}
                                       </p>
                                     )}
                                   </div>
-                                  <div className='strip-arrow'>
+                                  <div className="strip-arrow">
                                     <MdOutlineKeyboardDoubleArrowRight
                                       style={{
                                         width: '1.2rem',
                                         height: '1.2rem',
-                                        color: project.cad_design_colour
+                                        color: project.roofing_colour,
                                       }}
                                     />
                                   </div>
                                 </div>
+                              ) : null}
+
+                              <div
+                                className="notch-strip"
+                                style={getColorStyle(project.install_colour)}
+                              >
+                                <p className="strips-data">install</p>
+                                <div className="notch-title">
+                                  {project.install_date ? (
+                                    <p>{project?.install_date}</p>
+                                  ) : (
+                                    <p
+                                      className={`${project.install_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                    >
+                                      {'No Data'}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="strip-arrow">
+                                  <MdOutlineKeyboardDoubleArrowRight
+                                    style={{
+                                      width: '1.2rem',
+                                      height: '1.2rem',
+                                      color: project.install_colour,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              {project?.electrical_date ? (
                                 <div
                                   className="notch-strip"
                                   style={getColorStyle(
-                                    project.permitting_colour
+                                    project.electrical_colour
                                   )}
                                 >
-                                  <p className="strips-data">permitting</p>
+                                  <p className="strips-data">electrical</p>
                                   <div className="notch-title">
-                                    {project.permitting_date ? (
-                                      <p>{project?.permitting_date}</p>
+                                    {project.electrical_date ? (
+                                      <p>{project?.electrical_date}</p>
                                     ) : (
                                       <p
-                                        className={`${project.permitting_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                        className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
                                       >
                                         {'No Data'}
                                       </p>
                                     )}
                                   </div>
-                                  <div className='strip-arrow'>
+                                  <div className="strip-arrow">
                                     <MdOutlineKeyboardDoubleArrowRight
                                       style={{
                                         width: '1.2rem',
                                         height: '1.2rem',
-                                        color: project.permitting_colour
+                                        color: project.electrical_colour,
                                       }}
                                     />
                                   </div>
                                 </div>
-
-                                {project.roofing_colour ? (
-                                  <div
-                                    className="notch-strip"
-                                    style={getColorStyle(
-                                      project.roofing_colour
-                                    )}
-                                  >
-                                    <p className="strips-data">roofing</p>
-                                    <div className="notch-title">
-                                      {project.roofing_date ? (
-                                        <p>{project?.roofing_date}</p>
-                                      ) : (
-                                        <p
-                                          className={`${project.roofing_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
-                                        >
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div className='strip-arrow'>
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.roofing_colour
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                ) : null}
-
-                                <div
-                                  className="notch-strip"
-                                  style={getColorStyle(project.install_colour)}
-                                >
-                                  <p className="strips-data">install</p>
-                                  <div className="notch-title">
-                                    {project.install_date ? (
-                                      <p>{project?.install_date}</p>
-                                    ) : (
-                                      <p
-                                        className={`${project.install_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
-                                      >
-                                        {'No Data'}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div className='strip-arrow'>
-                                    <MdOutlineKeyboardDoubleArrowRight
-                                      style={{
-                                        width: '1.2rem',
-                                        height: '1.2rem',
-                                        color: project.install_colour
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-
-                                {project?.electrical_date ?
-                                  <div
-                                    className="notch-strip"
-                                    style={getColorStyle(
-                                      project.electrical_colour
-                                    )}
-                                  >
-                                    <p className="strips-data">electrical</p>
-                                    <div className="notch-title">
-                                      {project.electrical_date ? (
-                                        <p>{project?.electrical_date}</p>
-                                      ) : (
-                                        <p
-                                          className={`${project.electrical_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
-                                        >
-                                          {'No Data'}
-                                        </p>
-                                      )}
-                                    </div>
-                                    <div className='strip-arrow'>
-                                      <MdOutlineKeyboardDoubleArrowRight
-                                        style={{
-                                          width: '1.2rem',
-                                          height: '1.2rem',
-                                          color: project.electrical_colour
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  : null}
-                                <div
-                                  className="notch-strip"
-                                  style={getColorStyle(
-                                    project.inspectionsColour
+                              ) : null}
+                              <div
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.inspectionsColour
+                                )}
+                              >
+                                <p className="strips-data">inspection</p>
+                                <div className="notch-title">
+                                  {project.inspection_date ? (
+                                    <p>{project?.inspection_date}</p>
+                                  ) : (
+                                    <p
+                                      className={`${project.inspectionsColour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                    >
+                                      {'No Data'}
+                                    </p>
                                   )}
-                                >
-                                  <p className="strips-data">inspection</p>
-                                  <div className="notch-title">
-                                    {project.inspection_date ? (
-                                      <p>{project?.inspection_date}</p>
-                                    ) : (
-                                      <p
-                                        className={`${project.inspectionsColour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
-                                      >
-                                        {'No Data'}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div className='strip-arrow'>
-                                    <MdOutlineKeyboardDoubleArrowRight
-                                      style={{
-                                        width: '1.2rem',
-                                        height: '1.2rem',
-                                        color: project.inspectionsColour
-                                      }}
-                                    />
-                                  </div>
                                 </div>
-                                <div
-                                  className="notch-strip"
-                                  style={getColorStyle(
-                                    project.activation_colour
+                                <div className="strip-arrow">
+                                  <MdOutlineKeyboardDoubleArrowRight
+                                    style={{
+                                      width: '1.2rem',
+                                      height: '1.2rem',
+                                      color: project.inspectionsColour,
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.activation_colour
+                                )}
+                              >
+                                <p className="strips-data">activation</p>
+                                <div className="notch-title">
+                                  {project.activation_date ? (
+                                    <p>{project?.activation_date}</p>
+                                  ) : (
+                                    <p
+                                      className={`${project.activation_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
+                                    >
+                                      {'No Data'}
+                                    </p>
                                   )}
-                                >
-                                  <p className="strips-data">activation</p>
-                                  <div className="notch-title">
-                                    {project.activation_date ? (
-                                      <p>{project?.activation_date}</p>
-                                    ) : (
-                                      <p
-                                        className={`${project.activation_colour === '#E9E9E9' ? 'text-dark' : 'text-white'}`}
-                                      >
-                                        {'No Data'}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div>
-                                    <MdOutlineKeyboardDoubleArrowRight
-                                      style={{
-                                        width: '1.2rem',
-                                        height: '1.2rem',
-                                        color: project.activation_colour
-                                      }}
-                                    />
-                                  </div>
+                                </div>
+                                <div>
+                                  <MdOutlineKeyboardDoubleArrowRight
+                                    style={{
+                                      width: '1.2rem',
+                                      height: '1.2rem',
+                                      color: project.activation_colour,
+                                    }}
+                                  />
                                 </div>
                               </div>
                             </div>
+                          </div>
                           </td>
                         </tr>
                       );
