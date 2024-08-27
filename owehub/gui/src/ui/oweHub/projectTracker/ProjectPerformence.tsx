@@ -688,7 +688,7 @@ const ProjectPerformence = () => {
             <div className="performance-project">
              {activeCardId !== null && (
                <div className='active-queue'>
-               <IoClose onClick={() => {setActiveCardId(null)}} />
+               <IoClose onClick={() => {setActiveCardId(null), setSelectedMilestone('')}}  />
                <h2>{activeCardTitle || 'N/A'}</h2>
              </div>
              )}
@@ -796,7 +796,7 @@ const ProjectPerformence = () => {
                                 </>  
                                 </Link>
 
-                                <div className="milestone-status">
+                                {/* <div className="milestone-status">
                                   <div className="status-item">
                                     CO:<img src={ICONS.complete} width={16} alt="img" />  
                                   </div>
@@ -805,9 +805,9 @@ const ProjectPerformence = () => {
                                   </div>
                                   <div className="status-item">
                                   NTP:<img src={ICONS.complete} width={16} alt="img" />  {project.ntp.action_required_count}
-                                    {/* Replace with the actual status */}
+                                    
                                   </div>
-                                </div>
+                                </div> */}
 
 
                               </div>
