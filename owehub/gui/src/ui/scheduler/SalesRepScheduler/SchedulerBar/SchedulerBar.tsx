@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styles from '../styles/schedule.module.css';
+import Pagination from '../../../components/pagination/Pagination';
 
 
 interface Shift {
@@ -19,7 +20,7 @@ const SchedulerBar = () => {
     { day: 'Mon', date: '28' },
     { day: 'Tue', date: '29' },
     { day: 'Wed', date: '30' },
-    { day: 'Thur', date: '31' },
+    { day: 'Thr', date: '31' },
     { day: 'Fri', date: '1' },
     { day: 'Sat', date: '2' },
     { day: 'Sun', date: '3' },
@@ -52,6 +53,7 @@ const SchedulerBar = () => {
             </span>
           </div>
         </div>
+
         <div className={styles.avail}>
           <button
             className={`${styles.time_range} ${selectedButton === 'All time slots' ? styles.selected : ''}`}
@@ -93,40 +95,199 @@ const SchedulerBar = () => {
       <div className={`flex justify-between mt2 ${styles.h_screen}`}>
         <div className={styles.customer_wrapper_list}>
           <div>
-          <div className={styles.dayselect}>
-            {dummyData.map((shift, index) => (
-              <div
-                key={index}
-                className={`${styles.shift} ${selectedShift && selectedShift.day === shift.day ? styles.selected : ''
-                  }`}
-                onClick={() => handleShiftClick(shift)}
-              >
-                <div className={styles.selectedday}>{shift.day}</div>
-                <div className={styles.selecteddate}>{shift.date}</div>
+            <div>
+              <div className={styles.dayselect}>
+                {dummyData.map((shift, index) => (
+                  <div
+                    key={index}
+                    className={`${styles.shift} ${selectedShift && selectedShift.day === shift.day ? styles.selected : ''
+                      }`}
+                    onClick={() => handleShiftClick(shift)}
+                  >
+                    <div className={styles.selectedday}>{shift.day}</div>
+                    <div className={styles.selecteddate}>{shift.date}</div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className={styles.tstop}>
-            <div className={styles.timeselect}>
-              {timeOptions.map((time, index) => (
-                <div
-                  key={index}
-                  className={`${styles.time} ${time === '6 AM' || time === '6 PM' ? styles.specialColor : ''
-                    }`}
-                >
-                  {time}
+              <div className={styles.tstop}>
+                <h2>Surveyor</h2>
+                <div className={styles.timeselect}>
+                  {timeOptions.map((time, index) => (
+                    <div
+                      key={index}
+                      className={`${styles.time} ${time === '6 AM' || time === '6 PM' ? styles.specialColor : ''
+                        }`}
+                    >
+                      {time}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            </div>
+
+
+            <div className={styles.progressbar}>
+
+              <div className={styles.surveyor_name}>Person 1</div>
+
+              <div className={styles.progress_wrapper}>
+                <div className={styles.progress_bar}>
+                  <div
+                    style={{
+                      gridColumn: `${9 + 1}/${6 + 1}`,
+                      gridTemplateColumns: `repeat(${1 * 2},1fr)`,
+                    }}
+                    className={` relative ${styles.bg_available_slot}`}
+                  >
+                    <div
+                      className={`relative ${styles.half_hour_span_wrapper} }`}
+                    >
+                      <div
+                        data-time-available={true}
+                        className={
+                          styles.half_hour_span
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.progressbar}>
+
+              <div className={styles.surveyor_name}>Person 2</div>
+
+              <div className={styles.progress_wrapper}>
+                <div className={styles.progress_bar}>
+                  <div
+                    style={{
+                      gridColumn: `${7 + 1}/${3 + 1}`,
+                      gridTemplateColumns: `repeat(${1 * 2},1fr)`,
+                    }}
+                    className={` relative ${styles.bg_available_slot}`}
+                  >
+                    <div
+                      className={`relative ${styles.half_hour_span_wrapper} }`}
+                    >
+                      <div
+                        data-time-available={true}
+                        className={
+                          styles.half_hour_span
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.progressbar}>
+
+              <div className={styles.surveyor_name}>Person 3</div>
+
+              <div className={styles.progress_wrapper}>
+                <div className={styles.progress_bar}>
+                  <div
+                    style={{
+                      gridColumn: `${16 + 1}/${12 + 1}`,
+                      gridTemplateColumns: `repeat(${5 * 2},1fr)`,
+                    }}
+                    className={` relative ${styles.bg_available_slot}`}
+                  >
+                    <div
+                      className={`relative ${styles.half_hour_span_wrapper} }`}
+                    >
+                      <div
+                        data-time-available={true}
+                        className={
+                          styles.half_hour_span
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div className={styles.progressbar}>
+
+              <div className={styles.surveyor_name}>Person 4</div>
+
+              <div className={styles.progress_wrapper}>
+                <div className={styles.progress_bar}>
+                  <div
+                    style={{
+                      gridColumn: `${11 + 1}/${8 + 1}`,
+                      gridTemplateColumns: `repeat(${1 * 2},1fr)`,
+                    }}
+                    className={` relative ${styles.bg_available_slot}`}
+                  >
+                    <div
+                      className={`relative ${styles.half_hour_span_wrapper} }`}
+                    >
+                      <div
+                        data-time-available={true}
+                        className={
+                          styles.half_hour_span
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+           
+
+            <div className={styles.progressbar}>
+
+              <div className={styles.surveyor_name}>Person 5</div>
+
+              <div className={styles.progress_wrapper}>
+                <div className={styles.progress_bar}>
+                  <div
+                    style={{
+                      gridColumn: `${7 + 1}/${5 + 1}`,
+                      gridTemplateColumns: `repeat(${5 * 2},1fr)`,
+                    }}
+                    className={` relative ${styles.bg_available_slot}`}
+                  >
+                    <div
+                      className={`relative ${styles.half_hour_span_wrapper} }`}
+                    >
+                      <div
+                        data-time-available={true}
+                        className={
+                          styles.half_hour_span
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div className="page-heading-container">
+              <p className="page-heading">1 - 10 of 50 item</p>
+
+              <Pagination
+                currentPage={1}
+                totalPages={12} // You need to calculate total pages
+                paginate={(num) => num}
+                currentPageData={[]}
+                goToNextPage={() => 0}
+                goToPrevPage={() => 0}
+                perPage={10}
+              />
             </div>
           </div>
-
-          <div className={styles.progressbar}>
-            
-          </div>
-          </div>
         </div>
+
       </div>
     </div>
+
   )
 }
 
