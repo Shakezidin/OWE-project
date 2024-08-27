@@ -33,7 +33,7 @@ type GetSchedulingHome struct {
 }
 
 type GetSchedulingHomeList struct {
-	SchedulingHomeList []GetSchedulingHome `json:"ap_ded_list"`
+	SchedulingHomeList []GetSchedulingHome `json:"scheduling_list"`
 }
 
 type UpdateSchedulingHome struct {
