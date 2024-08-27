@@ -41,6 +41,11 @@ type PerfomanceResponse struct {
 	ElectricalColour  string `json:"electrical_colour"`
 	InspectionsColour string `json:"inspectionsColour"`
 	ActivationColour  string `json:"activation_colour"`
+	CADLink           string `json:"cad_link"`
+	DATLink           string `json:"dat_link"`
+	PodioLink         string `json:"podio_link"`
+	Ntp               NTP    `json:"ntp"`
+	Qc                QC     `json:"qc"`
 }
 
 type PerfomanceListResponse struct {

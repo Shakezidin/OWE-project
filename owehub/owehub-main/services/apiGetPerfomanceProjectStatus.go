@@ -515,15 +515,17 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 }
 
-/******************************************************************************
-* FUNCTION:		PrepareAdminDlrFilters
-* DESCRIPTION:
-		PaginateData function paginates data directly from the returned data itself
-		without setting any offset value. For large data sizes, using an offset
-		was creating performance issues. This approach manages to keep the response
-		time under 2 seconds.
-******************************************************************************/
+/*
+*****************************************************************************
+  - FUNCTION:		PrepareAdminDlrFilters
+  - DESCRIPTION:
+    PaginateData function paginates data directly from the returned data itself
+    without setting any offset value. For large data sizes, using an offset
+    was creating performance issues. This approach manages to keep the response
+    time under 2 seconds.
 
+*****************************************************************************
+*/
 func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq) []models.PerfomanceResponse {
 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
 
@@ -535,6 +537,131 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	}
 
 	paginatedData = append(paginatedData, data.PerfomanceList[startIndex:endIndex]...)
+
+	// Extract Unique IDs from Paginated Data
+	uniqueIds := make([]string, len(paginatedData))
+	for i, item := range paginatedData {
+		uniqueIds[i] = item.UniqueId // Assuming 'UniqueId' is the field name
+	}
+
+	// Build the SQL Query
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(
+		`WITH base_query AS (
+            SELECT c.unique_id, c.current_live_cad, c.system_sold_er, c.podio_link,
+                   n.production_discrepancy, n.finance_ntp_of_project, n.utility_bill_uploaded, 
+                   n.powerclerk_signatures_complete, n.over_net_3point6_per_w, n.premium_panel_adder_10c
+            FROM customers_customers_schema c
+            LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id
+            WHERE c.unique_id IN ('`)
+
+	filtersBuilder.WriteString(strings.Join(uniqueIds, "','"))
+	filtersBuilder.WriteString(`')
+        ), extracted_values AS (
+            SELECT unique_id, utility_company, state,
+                   split_part(prospectid_dealerid_salesrepid, ',', 1) AS first_value
+            FROM consolidated_data_view
+            WHERE unique_id IN ('`)
+
+	filtersBuilder.WriteString(strings.Join(uniqueIds, "','"))
+	filtersBuilder.WriteString(`')
+        )
+        SELECT b.*, 
+               e.first_value,
+               CASE 
+                   WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
+                   ELSE 'Not Needed' 
+               END AS powerclerk_sent_az,
+               CASE 
+                   WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
+                   ELSE 'Not Needed'
+               END AS ach_waiver_sent_and_signed_cash_only,
+               CASE 
+                   WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
+                   ELSE 'Not Needed'
+               END AS green_area_nm_only,
+               CASE 
+                   WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
+                   ELSE 'Not Needed'
+               END AS finance_credit_approved_loan_or_lease,
+               CASE 
+                   WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
+                   ELSE 'Not Needed'
+               END AS finance_agreement_completed_loan_or_lease,
+               CASE 
+                   WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
+                   ELSE 'Not Needed'
+               END AS owe_documents_completed
+        FROM base_query b
+        LEFT JOIN extracted_values e ON b.unique_id = e.unique_id
+        LEFT JOIN prospects_customers_schema p ON e.first_value = p.item_id::text;`)
+
+	linkQuery := filtersBuilder.String()
+
+	// Execute the Query
+	result, err := db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		return paginatedData
+	}
+
+	// Step 3: Map Result to `PerfomanceResponse` structs
+	resultMap := make(map[string]map[string]interface{})
+	for _, row := range result {
+		uniqueId := row["unique_id"].(string)
+		resultMap[uniqueId] = row
+	}
+
+	// actionRequiredCount = 0
+
+	// Step 3: Map Result to `PerfomanceResponse` structs
+	for i := range paginatedData {
+		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
+			paginatedData[i].CADLink = row["current_live_cad"].(string)
+			paginatedData[i].PodioLink = row["podio_link"].(string)
+			paginatedData[i].DATLink = row["system_sold_er"].(string)
+
+			var actionRequiredCount int64
+
+			// Assign values from the data map to the struct fields
+			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy")
+			actionRequiredCount += count
+			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project")
+			actionRequiredCount += count
+			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded")
+			actionRequiredCount += count
+			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete")
+			actionRequiredCount += count
+			paginatedData[i].Ntp = models.NTP{
+				ProductionDiscrepancy:        ProductionDiscrepancy,
+				FinanceNTPOfProject:          FinanceNTPOfProject,
+				UtilityBillUploaded:          UtilityBillUploaded,
+				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
+				ActionRequiredCount:          actionRequiredCount,
+			}
+			PowerClerk, count := getStringValue(row, "powerclerk_sent_az")
+			actionRequiredCount += count
+			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only")
+			actionRequiredCount += count
+			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only")
+			actionRequiredCount += count
+			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease")
+			actionRequiredCount += count
+			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease")
+			actionRequiredCount += count
+			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed")
+			actionRequiredCount += count
+			paginatedData[i].Qc = models.QC{
+				PowerClerk:                           PowerClerk,
+				ACHWaiveSendandSignedCashOnly:        ACHWaiveSendandSignedCashOnly,
+				GreenAreaNMOnly:                      GreenAreaNMOnly,
+				FinanceCreditApprovalLoanorLease:     FinanceCreditApprovalLoanorLease,
+				FinanceAgreementCompletedLoanorLease: FinanceAgreementCompletedLoanorLease,
+				OWEDocumentsCompleted:                OWEDocumentsCompleted,
+			}
+		}
+	}
+
 	return paginatedData
 }
 
