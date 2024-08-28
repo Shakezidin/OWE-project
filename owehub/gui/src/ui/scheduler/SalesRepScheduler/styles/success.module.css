@@ -80,3 +80,15 @@
   background-color: #0040e1;
   transform: scale(1.03);
 }
+
+.createUserCrossButton {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  
+  cursor: pointer;
+}
+
+.createUserCrossButton img{
+  transition: transform 0.3s ease;
+}
