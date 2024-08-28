@@ -58,47 +58,72 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if dataReq.PageSize < 1 || dataReq.PageNumber < 1 {
-		log.FuncErrorTrace(0, "Invalid pagination provided for ScheduleData data request")
-		FormAndSendHttpResp(resp, "Invalid Pagination Provided", http.StatusBadRequest, nil)
-		return
-	}
-
-	if dataReq.Order != "desc" && dataReq.Order != "asc" {
-		log.FuncErrorTrace(0, "Invalid order provided for ScheduleData data request")
-		FormAndSendHttpResp(resp, "Invalid Order Provided", http.StatusBadRequest, nil)
-		return
-	}
-
-	scheduleDataQuery = fmt.Sprintf(
-		`SELECT 
-			 home_owner, 
-			 customer_email,
-			 customer_phone_number,
-			 system_size,
-			 address,
-			 contract_date
+	scheduleDataQuery = `
+		SELECT 
+			home_owner, 
+			customer_email,
+			customer_phone_number,
+			system_size,
+			address,
+			contract_date
 		 FROM CONSOLIDATED_DATA_VIEW
 		 WHERE
-		 	 contract_date IS NOT NULL 
-		 	 AND site_survey_scheduled_date IS NULL
+		 	contract_date IS NOT NULL 
+		 	AND site_survey_scheduled_date IS NULL
 		 ORDER BY 
-			 contract_date %s`,
-		dataReq.Order,
-	)
+			contract_date $1`
 
-	scheduleDataRecords, err = db.ReteriveFromDB(db.RowDataDBIndex, scheduleDataQuery, nil)
+	scheduleDataRecords, err = db.ReteriveFromDB(db.RowDataDBIndex, scheduleDataQuery, []interface{}{dataReq.Order})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get schedule data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get schedule data from DB", http.StatusBadRequest, nil)
+		return
+	}
 
 	priorityTime := time.Now().Add(-36 * time.Hour) // contracts before this time are "priority"
 
 	for _, record := range scheduleDataRecords {
-		homeOwner, _ := record["home_owner"].(string)
-		// roofType, _ := item["roof_type"].(string)
-		customerEmail, _ := record["customer_email"].(string)
-		customerPhoneNumber, _ := record["customer_phone_number"].(string)
-		systemSize, _ := record["system_size"].(float64)
-		address, _ := record["address"].(string)
-		contractDate, _ := record["contract_date"].(time.Time)
+		// Home Owner Name
+		homeOwner, ok := record["home_owner"].(string)
+		if !ok || homeOwner == "" {
+			log.FuncErrorTrace(0, "Failed to get home owner name for Record: %v", record)
+			continue
+		}
+
+		// Email
+		customerEmail, ok := record["customer_email"].(string)
+		if !ok || customerEmail == "" {
+			log.FuncErrorTrace(0, "Failed to get customer email for Record: %v", record)
+			continue
+		}
+
+		// Phone Number
+		customerPhoneNumber, ok := record["customer_phone_number"].(string)
+		if !ok || customerPhoneNumber == "" {
+			log.FuncErrorTrace(0, "Failed to get customer phone number for Home Owner: %v, Item: %+v", homeOwner, record)
+			customerPhoneNumber = ""
+		}
+
+		// System Size
+		systemSize, ok := record["system_size"].(float64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get system size for Home Owner: %v, Item: %+v", homeOwner, record)
+			systemSize = 0.0
+		}
+
+		// Address
+		address, ok := record["address"].(string)
+		if !ok || address == "" {
+			log.FuncErrorTrace(0, "Failed to get address for Home Owner: %v, Item: %+v", homeOwner, record)
+			address = ""
+		}
+
+		// Contract Date
+		contractDate, ok := record["contract_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get contract date for Home Owner: %v, Item: %+v", homeOwner, record)
+			contractDate = time.Time{}
+		}
 
 		itemQueue := "regular" // item belongs to regular queue by default
 
@@ -124,7 +149,6 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 		if dataReq.Queue == itemQueue {
 			apiResp.SchedulingHomeList = append(apiResp.SchedulingHomeList, item)
 		}
-
 	}
 
 	apiResp.SchedulingHomeList = StaticPaginate(apiResp.SchedulingHomeList, dataReq.PageNumber, dataReq.PageSize)
@@ -132,5 +156,4 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 	recordCount = int64(len(apiResp.SchedulingHomeList))
 	log.FuncInfoTrace(0, "Number of ScheduleData fetched : %v list %+v", recordCount, apiResp.SchedulingHomeList)
 	FormAndSendHttpResp(resp, "ScheduleData", http.StatusOK, apiResp, recordCount)
-
 }
