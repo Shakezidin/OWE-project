@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { CSSProperties, memo, useState } from 'react';
 import styles from './customer.module.css';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
@@ -7,7 +7,6 @@ import { LuClock } from 'react-icons/lu';
 import GoogleMapReact from 'google-map-react';
 import { IoLocationOutline } from 'react-icons/io5';
 import roofIcon from '../../../../resources/assets/roof_top.svg';
-import { CSSObjectWithLabel } from 'react-select';
 import { ICONS } from '../../../../resources/icons/Icons';
 const Marker = ({
   text,
@@ -20,9 +19,21 @@ const Marker = ({
 }) => <div>{text}</div>;
 interface propTypes {
   withSecondaryBtn?: boolean;
-  mapStyles?: CSSObjectWithLabel;
+  mapStyles?: CSSProperties;
+  name: string,
+  email: string,
+  mobile: string,
+  sysSize: number,
+  roofType: string
+  address: string
 }
-const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
+const Index = ({ withSecondaryBtn = false, mapStyles = {}, name,
+  email,
+  mobile,
+  sysSize,
+  roofType,
+  address
+}: propTypes) => {
   const [isOpen, setIsOpen] = useState(false);
   const defaultProps = {
     center: {
@@ -32,7 +43,6 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
     zoom: 11,
   };
   const key = process.env.REACT_APP_GOOGLE_KEY;
-  console.log(key, 'key google');
   return (
     <div
       className={styles.customer_wrapper}
@@ -43,10 +53,10 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
           <div
             className={` flex items-center justify-center ${styles.bg_name} ${styles.avatar_circle}`}
           >
-            JM
+            {name.slice(0, 2) || "N/A"}
           </div>
 
-          <h3 className={` ml1 ${styles.customer_name}`}>James Martin</h3>
+          <h3 className={` ml1 ${styles.customer_name}`}> {name || "N/A"} </h3>
         </div>
 
         <div className="flex items-start">
@@ -57,7 +67,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
           </div>
           <div className="ml1">
             <h3 className={styles.customer_name}>Email</h3>
-            <p className={styles.sm_text}>Jacob Martin322@gmail.com</p>
+            <p className={styles.sm_text}> {email || "N/A"} </p>
           </div>
         </div>
 
@@ -70,7 +80,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
 
           <div className="ml1">
             <h3 className={styles.customer_name}>Phone Number</h3>
-            <p className={styles.sm_text}>(831) 544 - 1235</p>
+            <p className={styles.sm_text}> {mobile || "N/A"} </p>
           </div>
         </div>
 
@@ -102,7 +112,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
                 System Size
               </h4>
               <p className={styles.sm_text} style={{ fontSize: 12 }}>
-                11
+                {sysSize}
               </p>
             </div>
           </div>
@@ -115,7 +125,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
             </div>
             <div className="ml1">
               <h3 className={styles.customer_name}>Roof Type</h3>
-              <p className={styles.sm_text}>XYZ</p>
+              <p className={styles.sm_text}> {roofType} </p>
             </div>
           </div>
         </div>
@@ -181,7 +191,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {} }) => {
             <div className="flex items-center mt1">
               <IoLocationOutline className="mr1" />
               <p className={styles.map_location}>
-                103 backstreet, churchline, arizona,12544
+                {address || "N/A"}
               </p>
             </div>
           </div>
