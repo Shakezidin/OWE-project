@@ -550,7 +550,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 		`WITH base_query AS (
             SELECT c.unique_id, c.current_live_cad, c.system_sold_er, c.podio_link,
                    n.production_discrepancy, n.finance_ntp_of_project, n.utility_bill_uploaded, 
-                   n.powerclerk_signatures_complete, n.over_net_3point6_per_w, n.premium_panel_adder_10c
+                   n.powerclerk_signatures_complete, n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status
             FROM customers_customers_schema c
             LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id
             WHERE c.unique_id IN ('`)
@@ -620,6 +620,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 			paginatedData[i].CADLink = row["current_live_cad"].(string)
 			paginatedData[i].PodioLink = row["podio_link"].(string)
 			paginatedData[i].DATLink = row["system_sold_er"].(string)
+			paginatedData[i].CoStatus = row["change_order_status"].(string)
 
 			var actionRequiredCount int64
 
@@ -759,7 +760,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
 			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status NOT IN ('CANCEL','PTO''d')`)
+			AND salMetSchema.project_status = 'ACTIVE'`)
 
 	filters = filtersBuilder.String()
 
@@ -853,7 +854,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
 			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status NOT IN ('CANCEL', 'PTO''d')`)
+			AND salMetSchema.project_status = 'ACTIVE'`)
 
 	filters = filtersBuilder.String()
 

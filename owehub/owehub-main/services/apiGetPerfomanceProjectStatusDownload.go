@@ -613,7 +613,7 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
 			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status NOT IN ('CANCEL','PTO''d')`)
+			AND salMetSchema.project_status = 'ACTIVE'`)
 
 	filters = filtersBuilder.String()
 
@@ -686,7 +686,7 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
 			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status NOT IN ('CANCEL', 'PTO''d')`)
+			AND salMetSchema.project_status = 'ACTIVE'`)
 
 	filters = filtersBuilder.String()
 
