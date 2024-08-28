@@ -926,6 +926,7 @@ const ProjectPerformence = () => {
                                     />
                                     {project.ntp.action_required_count}
                                   </div>
+                                  { project.co_status ?
                                   <div className="status-item">
                                     CO:
                                     <img
@@ -934,6 +935,7 @@ const ProjectPerformence = () => {
                                       alt="img"
                                     />
                                   </div>
+                             : null }
                                 </div>
 
 
