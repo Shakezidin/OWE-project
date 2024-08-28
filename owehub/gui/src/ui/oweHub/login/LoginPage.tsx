@@ -144,7 +144,7 @@ export const LoginPage = () => {
 
   const width = useWindowWidth();
   const isMobile = width < 768;
-
+  const isStaging = process.env.REACT_APP_ENV
   return (
     <div className="mainContainer">
       <div className={'overlay'} />
@@ -243,25 +243,24 @@ export const LoginPage = () => {
                 className="login-button"
                 title="Log In"
                 type="submit"
-                onClick={() => {}}
+                onClick={() => { }}
               >
                 Log In
               </button>
             </div>
           </form>
 
-          <Link 
-          // to={ROUTES.SR_IMAGE_UPLOAD}
-          to="#"
+          <Link
+            to={isStaging === "staging" ? ROUTES.SR_IMAGE_UPLOAD : "#"}
           >
             <div className="battery-calc">
-              <div className="battery-calc-button">
+              <div className={`battery-calc-button ${isStaging === "staging" ? "" : "disabled-battery-calc"}`}>
                 <Lottie
                   animationData={PowerAnimation}
                   style={{ width: 70, height: 70 }}
                   loop={false}
                 />
-                <p className="coming-soon">Battery Calculator is Coming Soon!</p>
+                <p className="coming-soon">{isStaging === "staging" ? "Battery Calculator" : "Battery Calculator is Coming Soon!"}</p>
               </div>
             </div>
           </Link>
