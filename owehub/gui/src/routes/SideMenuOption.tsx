@@ -157,7 +157,7 @@ const project = {
     {
       path: ROUTES.PROJECT_STATUS,
       sidebarProps: {
-        displayText: 'Project Management',
+        displayText: 'Project Manager',
         icon: (
           <AiOutlineProject
             size={20}
@@ -211,7 +211,7 @@ const mob = {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
       sidebarProps: {
-        displayText: 'Team Management',
+        displayText: 'Teams',
         icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
       },
     },
@@ -219,7 +219,7 @@ const mob = {
       path: ROUTES.USER_MANAEMENT,
 
       sidebarProps: {
-        displayText: 'User Management',
+        displayText: 'Users',
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
@@ -239,7 +239,7 @@ const mob = {
     {
       path: ROUTES.PROJECT_STATUS,
       sidebarProps: {
-        displayText: 'Project Management',
+        displayText: 'Project Manager',
         icon: (
           <AiOutlineProject
             size={20}
@@ -266,7 +266,7 @@ const other = {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
       sidebarProps: {
-        displayText: 'Team Management',
+        displayText: 'Teams',
         icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
       },
     },
@@ -274,7 +274,7 @@ const other = {
       path: ROUTES.USER_MANAEMENT,
 
       sidebarProps: {
-        displayText: 'User Management',
+        displayText: 'Users',
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
