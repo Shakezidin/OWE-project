@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './styles/success.module.css';
 import { ICONS } from '../../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
@@ -22,10 +22,32 @@ const SalesRepSchedulePage: React.FC<TableProps> = ({
     navigate('/schedule-sales-rep');
     handleClose();
   };
+
+
+  useEffect(() => {
+    const handleEscKey = (event:any) => {
+      if (event.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isOpen, handleClose]);
+
+
   return (
     <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
       <div className="transparent-model">
         <div className={styles.customer_wrapper_list}>
+        <div className={styles.createUserCrossButton} onClick={handleClose}>
+          <img src={ICONS.crossIconUser}/>
+        </div>
           <div className={styles.success_not}>
             <div className={styles.succicon}>
               <img src={ICONS.QCTICK} alt="img" />

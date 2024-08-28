@@ -27,8 +27,8 @@ interface Option {
 }
 
 const TeamManagement: React.FC = () => {
-  const cardColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
-  const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
+  const cardColors = ['#E0728C', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
+  const arrowColors = ['#E0728C', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const [refetch, setRefetch] = useState(1);
   const [newFormData, setNewFormData] = useState<any>([]);
   const [, setSelectedDealer] = useState(null);

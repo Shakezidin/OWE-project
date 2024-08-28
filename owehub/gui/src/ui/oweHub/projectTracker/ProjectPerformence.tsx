@@ -166,7 +166,7 @@ const ProjectPerformence = () => {
 
   const ExportCsv = async () => {
     setIsExporting(true);
-    const headers = ['UniqueId','Home Owner', 'Email', 'PhoneNumber', 'State','Address', 'ContractDate', 'SystemSize', 'ContractAmount',];
+    const headers = ['UniqueId', 'Home Owner', 'Email', 'PhoneNumber', 'State', 'Address', 'ContractDate', 'SystemSize', 'ContractAmount',];
 
     const getAllData = await postCaller('get_csvdownload', {
       page: 'performance',
@@ -190,7 +190,7 @@ const ProjectPerformence = () => {
       item.ContractDate,
       item.SystemSize,
       item.ContractAmount
-      
+
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -209,7 +209,7 @@ const ProjectPerformence = () => {
     setExportShow(false);
   };
 
-  
+
 
   useEffect(() => {
     dispatch(getProjects());
@@ -373,7 +373,7 @@ const ProjectPerformence = () => {
     },
   ];
 
-  const cardColors = ['#57B3F1', '#EE824D', '#63ACA3', '#6761DA', '#C470C7'];
+  const cardColors = ['#57B3F1', '#E0728C', '#63ACA3', '#6761DA', '#C470C7'];
   const resetPage = () => {
     setPage(1);
   };
@@ -418,12 +418,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-            {
-              startDate: selected.start,
-              endDate: selected.end,
-              key: 'selection',
-            },
-          ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
         : []
     );
 
@@ -494,9 +494,9 @@ const ProjectPerformence = () => {
         window.removeEventListener('keydown', handleKeydown);
       };
     }, []);
-    
 
-  
+
+
     return (
       <div className="flex items-center justify-end">
         <div className="leaderborder_filter-slect-wrapper mr1">
@@ -677,29 +677,33 @@ const ProjectPerformence = () => {
         marginLeftMobile="12px"
       />
       <div className="project-container">
-        <div className="leaderboard-data__selected-dates performance-date">
-          {selectedRangeDate.start && selectedRangeDate.end ? (
-            <>
-              {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
-              {format(selectedRangeDate.end, 'dd MMM yyyy')}
-            </>
-          ) : null}
-        </div>
+        {role === 'Admin' && (
+          <div className="leaderboard-data__selected-dates performance-date">
+
+            {selectedRangeDate.start && selectedRangeDate.end ? (
+              <>
+                {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
+                {format(selectedRangeDate.end, 'dd MMM yyyy')}
+              </>
+            ) : null}
+          </div>
+        )}
         <div className="project-heading">
           <h2>Active Queue</h2>
-
-          <div className="flex items-center justify-end">
-            <PeriodFilter
-              resetPage={resetPage}
-              period={selectedRangeDate}
-              setPeriod={setSelectedRangeDate}
-            />
-            <DateFilter
-              selected={selectedRangeDate}
-              resetPage={resetPage}
-              setSelected={setSelectedRangeDate}
-            />
-          </div>
+          {role === 'Admin' && (
+            <div className="flex items-center justify-end">
+              <PeriodFilter
+                resetPage={resetPage}
+                period={selectedRangeDate}
+                setPeriod={setSelectedRangeDate}
+              />
+              <DateFilter
+                selected={selectedRangeDate}
+                resetPage={resetPage}
+                setSelected={setSelectedRangeDate}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex stats-card-wrapper">
@@ -830,11 +834,11 @@ const ProjectPerformence = () => {
               <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
-               
+
                 className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
                 <FaUpload size={12} className="mr-1" />
-                <span> Export </span>
+                <span>{isExportingData ? ' Downloading... ' : ' Export '}</span>
               </button>
             </div>
           </div>
@@ -903,18 +907,36 @@ const ProjectPerformence = () => {
                                   </>
                                 </Link>
 
-                                {/* <div className="milestone-status">
+                                <div className="milestone-status">
                                   <div className="status-item">
-                                    CO:<img src={ICONS.complete} width={16} alt="img" />  
+                                    QC:
+                                    <img
+                                      src={project.qc.qc_action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
+                                      width={16}
+                                      alt="img"
+                                    />
+                                    {project.qc.qc_action_required_count}
                                   </div>
                                   <div className="status-item">
-                                   QC:<img src={ICONS.complete} width={16} alt="img" /> {project.qc.qc_action_required_count}
+                                    NTP:
+                                    <img
+                                      src={project.ntp.action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
+                                      width={16}
+                                      alt="img"
+                                    />
+                                    {project.ntp.action_required_count}
                                   </div>
                                   <div className="status-item">
-                                  NTP:<img src={ICONS.complete} width={16} alt="img" />  {project.ntp.action_required_count}
-                                    
+                                    CO:
+                                    <img
+                                      src={project.co_status === 'CO Complete' ? ICONS.complete : ICONS.Pendingqc}
+                                      width={16}
+                                      alt="img"
+                                    />
                                   </div>
-                                </div> */}
+                                </div>
+
+
                               </div>
 
                               {/* <p className='performance-info-p' onClick={() => {}}>More info.</p> */}
