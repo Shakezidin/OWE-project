@@ -19,6 +19,11 @@
   color: #f1f1f1;
   background-color: #377cf6 !important;
   margin-top: 15px;
+  transition: all 0.3s ease;
+}
+.performance-exportbtn:hover{
+  background-color: #005eff !important;
+  transform: scale(1.07);
 }
 .milestone-status {
   display: flex;
