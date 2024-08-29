@@ -17,6 +17,7 @@ import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { AiOutlineDatabase } from 'react-icons/ai';
 import { AiOutlineUserSwitch } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
+import { FaRegCalendarCheck } from "react-icons/fa6";
 
 const performance = {
   performance: [
@@ -250,8 +251,14 @@ const mob = {
       },
     },
     {
+      path: ROUTES.CALENDAR,
+      sidebarProps: {
+        displayText: 'Performance Calendar',
+        icon: <FaRegCalendarCheck size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
       path: ROUTES.TECHNICAL_SUPPORT,
-
       sidebarProps: {
         displayText: 'Technical Support',
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
