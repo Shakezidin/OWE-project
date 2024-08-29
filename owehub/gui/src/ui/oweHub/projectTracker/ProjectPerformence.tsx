@@ -169,7 +169,7 @@ const ProjectPerformence = () => {
 
   const ExportCsv = async () => {
     setIsExporting(true);
-    const headers = ['UniqueId', 'Home Owner', 'Email', 'PhoneNumber', 'State', 'Address', 'ContractDate', 'SystemSize', 'ContractAmount',];
+    const headers = ['UniqueId', 'Homeowner Name', 'Homeowner Contact Info', 'Address', 'State', 'Contract $', 'Sys Size', 'Sale Date'];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
@@ -185,13 +185,14 @@ const ProjectPerformence = () => {
     const csvData = getAllData?.data?.performance_csv?.map?.((item: any) => [
       item.UniqueId,
       item.HomeOwner,
-      item.Email,
       item.PhoneNumber,
-      item.State,
       item.Address,
-      item.ContractDate,
+      item.State,
+      item.ContractAmount,
       item.SystemSize,
-      item.ContractAmount
+      item.ContractDate,
+      
+     
 
     ]);
 
