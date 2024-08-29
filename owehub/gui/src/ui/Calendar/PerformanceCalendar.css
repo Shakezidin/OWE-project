@@ -86,7 +86,6 @@
 
 .row {
   display: flex;
-  justify-content: space-around;
 }
 
 .cell {
@@ -100,7 +99,7 @@
   box-sizing: border-box;
   background-color: white;
   position: relative;
-  width: 200px;
+  flex: 1;
 }
 
 .cell.selected {
