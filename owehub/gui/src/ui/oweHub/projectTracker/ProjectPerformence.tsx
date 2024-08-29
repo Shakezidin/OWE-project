@@ -172,8 +172,8 @@ const ProjectPerformence = () => {
     const headers = ['UniqueId', 'Homeowner Name', 'Homeowner Contact Info', 'Address', 'State', 'Contract $', 'Sys Size', 'Sale Date'];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
-      start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+      start_date: '',
+      end_date: '',
       page_number: 1,
       page_size: projectsCount,
       selected_milestone: selectedMilestone,
@@ -282,16 +282,8 @@ const ProjectPerformence = () => {
       getPerfomanceStatus({
         page,
         perPage,
-        startDate: searchValue
-          ? ''
-          : selectedRangeDate.start
-            ? format(selectedRangeDate.start, 'dd-MM-yyyy')
-            : '',
-        endDate: searchValue
-          ? ''
-          : selectedRangeDate.end
-            ? format(selectedRangeDate.end, 'dd-MM-yyyy')
-            : '',
+        startDate:'',
+        endDate: '' ,
         uniqueId: searchValue ? searchValue : '',
         selected_milestone: selectedMilestone,
       })
