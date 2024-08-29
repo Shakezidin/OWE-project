@@ -209,22 +209,6 @@ const mob = {
       },
     },
     {
-      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
-
-      sidebarProps: {
-        displayText: 'Teams',
-        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
-    {
-      path: ROUTES.USER_MANAEMENT,
-
-      sidebarProps: {
-        displayText: 'Users',
-        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
-    {
       path: ROUTES.PROJECT_PERFORMANCE,
       sidebarProps: {
         displayText: 'Pipeline',
@@ -250,13 +234,24 @@ const mob = {
         ),
       },
     },
+
     {
-      path: ROUTES.CALENDAR,
+      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+
       sidebarProps: {
-        displayText: 'Performance Calendar',
-        icon: <FaRegCalendarCheck size={20} style={{ flexShrink: '0' }} />,
+        displayText: 'Teams',
+        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
       },
     },
+    {
+      path: ROUTES.USER_MANAEMENT,
+
+      sidebarProps: {
+        displayText: 'Users',
+        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    
     {
       path: ROUTES.TECHNICAL_SUPPORT,
       sidebarProps: {
@@ -264,6 +259,13 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
+    // {
+    //   path: ROUTES.CALENDAR,
+    //   sidebarProps: {
+    //     displayText: 'Performance Calendar',
+    //     icon: <FaRegCalendarCheck size={20} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
   ],
 };
 

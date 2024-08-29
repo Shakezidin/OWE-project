@@ -169,7 +169,16 @@ const ProjectPerformence = () => {
 
   const ExportCsv = async () => {
     setIsExporting(true);
-    const headers = ['UniqueId', 'Homeowner Name', 'Homeowner Contact Info', 'Address', 'State', 'Contract $', 'Sys Size', 'Sale Date'];
+    const headers = [
+      'UniqueId',
+      'Homeowner Name',
+      'Homeowner Contact Info',
+      'Address',
+      'State',
+      'Contract $',
+      'Sys Size',
+      'Sale Date',
+    ];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
       start_date: '',
@@ -191,9 +200,6 @@ const ProjectPerformence = () => {
       item.ContractAmount,
       item.SystemSize,
       item.ContractDate,
-      
-     
-
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -211,8 +217,6 @@ const ProjectPerformence = () => {
     setIsExporting(false);
     setExportShow(false);
   };
-
-
 
   useEffect(() => {
     dispatch(getProjects());
@@ -282,8 +286,8 @@ const ProjectPerformence = () => {
       getPerfomanceStatus({
         page,
         perPage,
-        startDate:'',
-        endDate: '' ,
+        startDate: '',
+        endDate: '',
         uniqueId: searchValue ? searchValue : '',
         selected_milestone: selectedMilestone,
       })
@@ -413,12 +417,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+            {
+              startDate: selected.start,
+              endDate: selected.end,
+              key: 'selection',
+            },
+          ]
         : []
     );
 
@@ -490,13 +494,7 @@ const ProjectPerformence = () => {
       };
     }, []);
 
-
-
-
     return (
-
-
-
       <div className="flex items-center justify-end">
         <div className="leaderborder_filter-slect-wrapper mr1">
           <Select
@@ -671,12 +669,9 @@ const ProjectPerformence = () => {
 
   const filterClose = () => setFilterOpen(false);
 
-
-
   const filter = () => {
     setFilterOpen(true);
   };
-
 
   const [ntpOPen, setNtpOPen] = React.useState<boolean>(false);
 
@@ -685,7 +680,6 @@ const ProjectPerformence = () => {
   const ntpAction = () => {
     setNtpOPen(true);
   };
-
 
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
@@ -803,7 +797,9 @@ const ProjectPerformence = () => {
                 <div className="active-queue">
                   <IoClose
                     onClick={() => {
-                      setActiveCardId(null), setSelectedMilestone(''), setPage(1);
+                      setActiveCardId(null),
+                        setSelectedMilestone(''),
+                        setPage(1);
                     }}
                   />
                   <h2>{activeCardTitle || 'N/A'}</h2>
@@ -848,7 +844,7 @@ const ProjectPerformence = () => {
                 </div>
               </div>
             </div>
-            <div className='perf-export-btn'>
+            <div className="perf-export-btn">
               <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
@@ -925,7 +921,8 @@ const ProjectPerformence = () => {
                                 </Link>
 
                                 <div className="milestone-status">
-                                  <div className="status-item click qc"
+                                  <div
+                                    className="status-item click qc"
                                     onClick={() => {
                                       setSelectedProjectQC(project.qc);
                                       filter();
@@ -933,7 +930,14 @@ const ProjectPerformence = () => {
                                   >
                                     QC:
                                     <img
-                                      src={project.qc.qc_action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
+                                      src={
+                                        Object.values(project.qc).some(
+                                          (value) => value === 'Pending'
+                                        ) ||
+                                        project.qc.qc_action_required_count > 0
+                                          ? ICONS.Pendingqc
+                                          : ICONS.complete
+                                      }
                                       width={16}
                                       alt="img"
                                     />
@@ -948,17 +952,33 @@ const ProjectPerformence = () => {
                                   >
                                     NTP:
                                     <img
-                                      src={project.ntp.action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
+                                      src={
+                                        Object.values(project.ntp).some(
+                                          (value) => value === 'Pending'
+                                        ) ||
+                                        project.ntp.action_required_count > 0
+                                          ? ICONS.Pendingqc
+                                          : ICONS.complete
+                                      }
                                       width={16}
                                       alt="img"
                                     />
                                     {project.ntp.action_required_count}
                                   </div>
-                                  {project.co_status !== 'CO Complete' && project.co_status && (
-                                    <div className="status-item co">
-                                      CO: <img src={ICONS.QCLine} width={10} alt="img" />
-                                    </div>
-                                  )}
+                                  {project.co_status !== 'CO Complete' &&
+                                    project.co_status && (
+                                      <div
+                                        className="status-item co"
+                                        data-tooltip={project.co_status} // Custom tooltip
+                                      >
+                                        CO:{' '}
+                                        <img
+                                          src={ICONS.QCLine}
+                                          width={10}
+                                          alt="img"
+                                        />
+                                      </div>
+                                    )}
                                 </div>
                               </div>
 
@@ -1243,7 +1263,6 @@ const ProjectPerformence = () => {
         </div>
       </div>
     </div>
-
   );
 };
 
