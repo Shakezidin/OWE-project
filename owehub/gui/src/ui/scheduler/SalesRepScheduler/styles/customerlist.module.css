@@ -95,9 +95,8 @@
   max-height: 700px;
 }
 .cust_det_top {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(5,1fr) auto;
 }
 .name_icon {
   height: 24px;

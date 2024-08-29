@@ -164,7 +164,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	filtersBuilder.WriteString(fmt.Sprintf(
 		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, "+
 			"n.finance_ntp_of_project, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
-			"n.over_net_3point6_per_w, n.premium_panel_adder_10c "+
+			"n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status "+
 			"FROM customers_customers_schema c "+
 			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
 			"WHERE c.unique_id = '%s'", uniqueId)) // Check if there are filters
@@ -179,6 +179,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	projectList.CADLink = data[0]["current_live_cad"].(string)
 	projectList.DATLink = data[0]["system_sold_er"].(string)
 	projectList.PodioLink = data[0]["podio_link"].(string)
+	projectList.CoStatus = data[0]["change_order_status"].(string)
 
 	var ntp models.NTP
 	var qc models.QC

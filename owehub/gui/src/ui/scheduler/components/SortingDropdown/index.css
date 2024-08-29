@@ -50,3 +50,7 @@
   transform: scale(1.04);
   background-color: #0045f4;
 }
+
+.active_sorting{
+  color: #0045f4;
+}

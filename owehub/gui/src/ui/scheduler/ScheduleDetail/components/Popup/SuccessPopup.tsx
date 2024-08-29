@@ -1,4 +1,4 @@
-import React, { SetStateAction } from 'react';
+import React, { SetStateAction, useEffect } from 'react';
 import styles from './styles/index.module.css';
 import email from '../../../../../resources/assets/sucess_email.png';
 const SuccessPopup = ({
@@ -6,6 +6,19 @@ const SuccessPopup = ({
 }: {
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
 }) => {
+
+  
+  useEffect(() => {
+    const handleEscKey = (event:any) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, []);
+
   return (
     <div className={styles.popup_background}>
       <div className={styles.popup_card_wrapper}>

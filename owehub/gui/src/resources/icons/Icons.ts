@@ -136,6 +136,9 @@ import down from '../../resources/assets/Polygon 15.svg';
 import QCTICK from '../../resources/assets/qctick.svg';
 import QCLine from '../../resources/assets/QCLine.svg';
 import userSwap from "../../resources/assets/user_swap.png"
+import pendingqc from "../../resources/assets/pendingqcntp.svg"
+
+
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
   LOGO: logo,
@@ -287,5 +290,7 @@ export const ICONS = {
   DOWN: down,
   QCTICK: QCTICK,
   QCLine: QCLine,
-  userSwap
+  userSwap,
+  Pendingqc:pendingqc
+
 };

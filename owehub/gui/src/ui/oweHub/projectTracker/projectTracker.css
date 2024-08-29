@@ -1,22 +1,41 @@
-
 .project-info-details {
   display: flex;
   flex-direction: column;
   font-size: 12px;
 }
 
+.performance-exportbtn{
+  margin-left: auto;
+  width: -moz-fit-content;
+  width: fit-content;
+  cursor: pointer;
+  z-index: 10;
+  align-items: center;
+  height: 35px;
+  border-radius: 5px;
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #f1f1f1;
+  background-color: #377cf6 !important;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+}
+.performance-exportbtn:hover{
+  background-color: #005eff !important;
+  transform: scale(1.07);
+}
 .milestone-status {
   display: flex;
-  justify-content: space-between;
   gap: 8px;
   background-color: #f0f4ff;
   padding: 4px 8px;
   border-radius: 8px;
-  width: 200px;
+  width: fit-content;
   margin-top: 20px;
   margin-bottom: -20px;
 }
- 
+
 .status-item {
   display: flex;
   align-items: center;
@@ -31,12 +50,14 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #fff; /* Adjust color based on status */
-  color: #000; /* Adjust color based on status */
+  background-color: #fff;
+  /* Adjust color based on status */
+  color: #000;
+  /* Adjust color based on status */
 }
 
 
-.customer-name:hover{
+.customer-name:hover {
   text-decoration: underline;
   color: #000
 }
@@ -72,6 +93,7 @@
   font-weight: 500;
   transition: all 0.2s ease;
 }
+
 .performance-info-p:hover {
   transform: scale(1.03);
   cursor: pointer;
@@ -129,7 +151,7 @@
   color: #000
 }
 
-.active-queue{
+.active-queue {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -137,10 +159,15 @@
   text-wrap: nowrap;
 }
 
-.active-queue svg{
+.active-queue svg {
   width: 2rem;
   height: 1.7rem;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.active-queue svg:hover {
+  transform: scale(1.13);
 }
 
 #chart {
@@ -1078,12 +1105,22 @@
 .project-card-wrapper {
   width: 70%;
 }
+.mob-projhead{
+  font-size: 16px;
+    font-weight: 600;
+    line-height: 30px;
+    text-align: left;
+    color: #263747;
+    margin-top: -16px;
+}
+
 
 /*Responsive*/
 @media (max-width: 1024px) {
-  .progress-box-container{
+  .progress-box-container {
     gap: 0.6rem;
   }
+
   .project-card-wrapper {
     width: 100%;
   }
@@ -1152,6 +1189,16 @@
     margin: 10px;
   }
 
+  .mob-projSt {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 30px;
+    text-align: left;
+    color: #263747;
+    margin-bottom: 20px;
+  }
+  
+
   .project-card-wrapper {
     width: 100%;
   }
@@ -1166,9 +1213,15 @@
 
   .project-status-table-title {
     flex-direction: column;
-    gap: 10px;
+    gap: 30px;
     align-items: flex-start !important;
+    margin-top: 20px;
   }
+
+  .co-status {
+    margin-top: 60px;
+  }
+
 
   .pro-status-dropdown {
     min-width: unset;
@@ -1197,8 +1250,8 @@
 
   .progress-qc-acre {
     position: absolute;
-    right: 10px;
-    top: 75px;
+    right: 56px;
+    top: 92px;
   }
 
   .status-indicator {
@@ -1226,7 +1279,7 @@
 
   .status-boxes {
     margin-left: unset !important;
-    margin-top: 10px;
+    margin-top: 34px;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -1331,6 +1384,11 @@
     margin-top: 10px;
   }
 
+  .status-cust-name {
+    padding-top: 25px;
+    padding-right: 30px;
+  }
+
   .rep-drop_label {
     height: 26px;
   }
@@ -1341,10 +1399,6 @@
     padding: 0px;
     gap: 15px;
     flex-direction: column;
-  }
-
-  .project-heading h2 {
-    margin-left: 3px;
   }
 
   .project-container {
@@ -1391,11 +1445,13 @@
 
 }
 
-.co-status{
+.co-status {
   display: flex;
   flex-direction: column;
+  margin-left: 6px
 }
-.co-status p{
+
+.co-status p {
   font-size: 12px;
   display: flex;
   align-items: center;
@@ -1474,7 +1530,7 @@
   }
 
   .project-status-table-title {
-    margin-top: 13px;
+    margin-top: 23px;
   }
 
   .progress-box {
@@ -1483,8 +1539,8 @@
 
   .status-btn {
     position: absolute;
-    right: 15px;
-    top: 2rem;
+    right: 62px;
+    top: 3rem;
   }
 }
 

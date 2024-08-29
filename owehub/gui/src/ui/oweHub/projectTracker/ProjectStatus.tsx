@@ -592,6 +592,8 @@ const ProjectStatus = () => {
         window.removeEventListener('keydown', handleKeyDown);
       };
     }, []);
+
+    const isMobile = useMatchMedia('(max-width: 767px)');
   
     
   return (
@@ -763,14 +765,18 @@ const ProjectStatus = () => {
           </div>
 
           <div className="bg-white rounded-16 project-table-wrapper">
+          
             <div
               className="project-heading project-status-heading mt2"
               style={{ padding: '22px' }}
             >
-              <div className=" flex items-center project-status-table-title ">
-                <h3>Project Stages</h3>
+              
+              {isMobile &&(<div className='mob-projhead'>Project Stages</div>) }
+              <div className="flex items-center project-status-table-title">
+              {!isMobile &&(<h3>Project Stages</h3>) }
                 <div className="progress-box-container status-boxes ml3">
                   <div className="progress-box-body mt0">
+
                     <div
                       className="progress-box"
                       style={{
@@ -809,12 +815,9 @@ const ProjectStatus = () => {
                 </div>
               </div>
 
-              <div className=" flex items-center project-status-table-title ">
+              <div className="flex items-center project-status-table-title1">
                 <div className="progress-box-container status-btn ml3">
-                  <div className="co-status mt0">
-                    <p>CO Status</p>
-                    <p style={{color: "#2EAF71"}}>Completed <img src={ICONS.complete} width={16} alt="img" /></p>
-                  </div>
+                
                   <div className="progress-qc mt0" onClick={filter}>
                     <button>QC</button>
                   </div>
@@ -827,10 +830,15 @@ const ProjectStatus = () => {
                     <button>NTP</button>
                   </div>
                 </div>
-
                 <div className="progress-qc-acre">
                   <span>{otherlinks?.ntp?.action_required_count || 0}</span>
                 </div>
+                {otherlinks?.co_status ? 
+                <div className="co-status mt0">
+                    <p>CO Status</p>
+                    <p style={{color: "#2EAF71"}}>{otherlinks.co_status === 'CO Complete' ? <span>Completed <img src={ICONS.complete} width={16} alt="img" /> </span> : <span>Pending <img src={ICONS.Pendingqc} width={16} alt="img" /> </span>}</p>
+                  </div>
+               :  null }  
               </div>
             </div>
             <div className="project-management-table ">
