@@ -49,6 +49,21 @@ const QCPopUp: React.FC<TableProps> = ({
       .join(' ');
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event:any) => {
+      if (event.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+
   const qcData = projectDetail;
 
   return (
