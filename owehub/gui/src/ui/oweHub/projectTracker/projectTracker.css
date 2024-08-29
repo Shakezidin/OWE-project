@@ -1496,7 +1496,7 @@
 .co-status {
   display: flex;
   flex-direction: column;
-  margin-left: 6px
+  margin-left: 12px
 }
 
 .co-status p {
