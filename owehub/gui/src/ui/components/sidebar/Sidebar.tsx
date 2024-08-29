@@ -70,23 +70,30 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const role = localStorage.getItem('role');
 
   const dealer = localStorage.getItem('dealer');
-  console.log(dealer, "sidebar dealer")
+  console.log(dealer, 'sidebar dealer');
 
   const filteredList = useMemo(() => {
     let list = [...createSideMenuList()];
-    if ( role === TYPE_OF_USER.ADMIN) {
+    const isStaging = process.env.REACT_APP_ENV;
+    if (role === TYPE_OF_USER.ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        newArr[0].mob.push(item);
+        if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+        } else {
+          newArr[0].mob.push(item);
+        }
       });
       return newArr;
-    }else if (role === TYPE_OF_USER.DEALER_OWNER) {
-        return list;
-    } else if ( role === TYPE_OF_USER.FINANCE_ADMIN) {
+    } else if (role === TYPE_OF_USER.DEALER_OWNER) {
+      return list;
+    } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
-          newArr[0].mob.push(item);
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
@@ -97,11 +104,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
           item.path !== ROUTES.USER_MANAEMENT
         ) {
-          newArr[0].mob.push(item);
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
-    }else if (role === TYPE_OF_USER.DB_USER) {
+    } else if (role === TYPE_OF_USER.DB_USER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -110,23 +120,26 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS
         ) {
-          newArr[0].mob.push(item);
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
     } else {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (
-          item.path !== ROUTES.USER_MANAEMENT
-        ) {
-          newArr[0].mob.push(item);
+        if (item.path !== ROUTES.USER_MANAEMENT) {
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
     }
   }, [createSideMenuList, role]);
-
 
   const handleMouseover = (
     e: React.MouseEvent<HTMLAnchorElement | MouseEvent>,
@@ -170,8 +183,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   // const isMobile = width < 768;
   const isMobile = true;
 
-
-  console.log(dealer, "dealer")
+  console.log(dealer, 'dealer');
   return (
     <div
       style={{ zIndex: '30' }}
