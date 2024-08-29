@@ -171,8 +171,7 @@ const ProjectPerformence = () => {
     setIsExporting(true);
     const headers = ['UniqueId', 'Home Owner', 'Email', 'PhoneNumber', 'State', 'Address', 'ContractDate', 'SystemSize', 'ContractAmount',];
 
-    const getAllData = await postCaller('get_csvdownload', {
-      page: 'performance',
+    const getAllData = await postCaller('get_peroformancecsvdownload', {
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       page_number: 1,
@@ -204,7 +203,7 @@ const ProjectPerformence = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Performance.csv');
+    link.setAttribute('download', 'Pipeline.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -670,6 +669,7 @@ const ProjectPerformence = () => {
 
   const handlePendingRequest = (pending: any) => {
     setSelectedMilestone(pending);
+    setPage(1);
   };
 
   const [selectedProjectQC, setSelectedProjectQC] = useState<any>(null);
@@ -810,7 +810,7 @@ const ProjectPerformence = () => {
                 <div className="active-queue">
                   <IoClose
                     onClick={() => {
-                      setActiveCardId(null), setSelectedMilestone('');
+                      setActiveCardId(null), setSelectedMilestone(''), setPage(1);
                     }}
                   />
                   <h2>{activeCardTitle || 'N/A'}</h2>
