@@ -933,7 +933,7 @@ const ProjectPerformence = () => {
                                 </Link>
 
                                 <div className="milestone-status">
-                                  <div className="status-item click"
+                                  <div className="status-item click qc"
                                     onClick={() => {
                                       setSelectedProjectQC(project.qc);
                                       filter();
@@ -947,7 +947,8 @@ const ProjectPerformence = () => {
                                     />
                                     {project.qc.qc_action_required_count}
                                   </div>
-                                  <div className="status-item click"
+                                  <div
+                                    className={`status-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
                                     onClick={() => {
                                       setSelectedProjectQC(project.ntp);
                                       ntpAction();
@@ -961,14 +962,9 @@ const ProjectPerformence = () => {
                                     />
                                     {project.ntp.action_required_count}
                                   </div>
-                                  {project.co_status !== 'CO Complete' || project.co_status !== '' && (
-                                    <div className="status-item">
-                                      CO:
-                                      <img
-                                        src={project.co_status === 'CO Complete' ? ICONS.complete : ICONS.Pendingqc}
-                                        width={16}
-                                        alt="img"
-                                      />
+                                  {project.co_status !== 'CO Complete' && (
+                                    <div className="status-item co">
+                                      CO: <img src={ICONS.QCLine} width={10} alt="img" />
                                     </div>
                                   )}
                                 </div>
