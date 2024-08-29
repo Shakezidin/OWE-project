@@ -297,12 +297,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -703,7 +703,8 @@ const Table = ({
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-        <div onClick={toggleExportShow}>
+
+        <div className="export-trigger" onClick={toggleExportShow}>
           <FaUpload size={12} className="mr1" />
           <span> Export </span>
         </div>
@@ -821,8 +822,8 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -977,7 +978,7 @@ const Table = ({
                   {(role === TYPE_OF_USER.ADMIN ||
                     role === TYPE_OF_USER.FINANCE_ADMIN ||
                     role === TYPE_OF_USER.DEALER_OWNER) &&
-                  groupBy === 'dealer'
+                    groupBy === 'dealer'
                     ? 'Code Name'
                     : 'Name'}
                 </th>

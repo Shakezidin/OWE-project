@@ -64,6 +64,22 @@ const NtpPopUp: React.FC<TableProps> = ({
     );
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event:any) => {
+      if (event.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+
+
   const formatTitle = (key: string) => {
     return key
       .split('_')
