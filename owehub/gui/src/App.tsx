@@ -83,7 +83,7 @@ import ScheduleDetail from './ui/scheduler/ScheduleDetail';
 import CustomersList from './ui/scheduler/SalesRepScheduler/CustomersList';
 import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
-import Calendar from './ui/Calendar/OldCalendar';
+import Calendar from './ui/Calendar/PerformanceCalendar';
 function App() {
   const dispatch = useAppDispatch();
 
@@ -285,6 +285,8 @@ function App() {
             </Route>
           )}
 
+        <Route path={ROUTES.CALENDAR} element={<Calendar />} />
+
           <Route
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
@@ -309,8 +311,6 @@ function App() {
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
-        <Route path={ROUTES.CALENDAR} element={<Calendar />} />
-
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
       </Routes>
     </BrowserRouter>
