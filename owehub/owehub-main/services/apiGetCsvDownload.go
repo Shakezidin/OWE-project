@@ -95,7 +95,7 @@ func HandleGetCsvDownloadRequest(resp http.ResponseWriter, req *http.Request) {
 
 	switch dataReq.Page {
 	case "leaderboard":
-		query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date FROM consolidated_data_view"
+		query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date,ntp_date, pv_install_completed_date, pto_date, canceled_date FROM consolidated_data_view"
 	case "performance":
 		query = "SELECT intOpsMetSchema.home_owner, intOpsMetSchema.unique_id, salMetSchema.customer_email, salMetSchema.customer_phone_number, salMetSchema.address, salMetSchema.state, " +
 			"salMetSchema.contract_total, intOpsMetSchema.system_size, salMetSchema.contract_date, intOpsMetSchema.site_survey_scheduled_date, intOpsMetSchema.site_survey_completed_date, intOpsMetSchema.cad_ready, " +
