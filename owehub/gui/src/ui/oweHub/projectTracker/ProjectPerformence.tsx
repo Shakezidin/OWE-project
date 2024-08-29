@@ -962,7 +962,7 @@ const ProjectPerformence = () => {
                                     />
                                     {project.ntp.action_required_count}
                                   </div>
-                                  {project.co_status !== 'CO Complete' && (
+                                  {project.co_status !== 'CO Complete' && project.co_status && (
                                     <div className="status-item co">
                                       CO: <img src={ICONS.QCLine} width={10} alt="img" />
                                     </div>

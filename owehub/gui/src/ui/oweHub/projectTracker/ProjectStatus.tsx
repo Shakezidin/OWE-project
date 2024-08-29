@@ -663,7 +663,7 @@ const ProjectStatus = () => {
                         padding: 3,
                         border: `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
-                        pointerEvents: el.key === 'net_epc' ? 'none' : 'auto'
+                      
                       }}
                     >
                       <div
@@ -672,7 +672,7 @@ const ProjectStatus = () => {
                           background: el.bgColor,
                           height: 83,
                           zIndex: i === 1 ? 50 : undefined,
-                          opacity: el.key === 'net_epc' ? '0.4' : '',
+                          
                           
                         }}
                       >
@@ -691,13 +691,13 @@ const ProjectStatus = () => {
                               el.key === 'contract_amount'
                               ? '$'
                               : ''}
-                            {el.key !== 'net_epc' ?
+                            
                               <>
                                 {projectDetail[
                                   el.key as keyof typeof projectDetail
                                 ] || 'N/A'}{' '}
                               </>
-                              : 'Coming Soon'}
+                              
                             {el.key === 'system_size' ? '(kW)' : ''}
                           </span>
                         </div>
@@ -821,24 +821,29 @@ const ProjectStatus = () => {
                   <div className="progress-qc mt0" onClick={filter}>
                     <button>QC</button>
                   </div>
+
+                { otherlinks?.qc?.qc_action_required_count > 0 ?
                   <div className="progress-ntp-acre">
                     <span>
-                      {otherlinks?.ntp?.qc_action_required_count || 0}
+                      {otherlinks?.qc?.qc_action_required_count }
                     </span>
                   </div>
+                 : null }
                   <div className="progress-qc mt0" onClick={ntpAction}>
                     <button>NTP</button>
                   </div>
                 </div>
+                { otherlinks?.ntp?.action_required_count > 0 ?
                 <div className="progress-qc-acre">
-                  <span>{otherlinks?.ntp?.action_required_count || 0}</span>
+                  <span>{otherlinks?.ntp?.action_required_count }</span>
                 </div>
-                {otherlinks?.co_status ? 
+               : null }
+                { otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && 
                 <div className="co-status mt0">
                     <p>CO Status</p>
-                    <p style={{color: "#2EAF71"}}>{otherlinks.co_status === 'CO Complete' ? <span>Completed <img src={ICONS.complete} width={16} alt="img" /> </span> : <span className='pending-coo'>Pending <img src={ICONS.QCLine} width={16} alt="img"  className='pending-co'/> </span>}</p>
+                    <p style={{color: "#2EAF71"}}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>Pending <img src={ICONS.QCLine} width={16} alt="img"  className='pending-co'/> </span>}</p>
                   </div>
-               :  null }  
+              }  
               </div>
             </div>
             <div className="project-management-table ">
