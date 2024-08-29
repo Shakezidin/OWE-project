@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 
 	"encoding/json"
 	"fmt"
@@ -69,9 +70,9 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	performerData := models.GetPerformarData{}
 
-	if role == "Admin" || role == "Finance Admin" {
+	if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) {
 
-	} else if role == "Dealer Owner" || role == "SubDealer Owner" {
+	} else if role == string(types.RoleDealerOwner) || role == string(types.RoleSubDealerOwner) {
 		query = `SELECT vd.dealer_name as dealer_name, ud.name as owner_name, vd.dealer_logo as dealer_logo, vd.bg_colour as bg_color, vd.id as dealer_id FROM user_details ud 
 				JOIN v_dealer vd ON ud.dealer_id = vd.id
 				WHERE ud.email_id = $1`

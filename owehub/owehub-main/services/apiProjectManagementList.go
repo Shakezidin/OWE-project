@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"strings"
 
 	"encoding/json"
@@ -130,7 +131,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		filter, whereEleList = PreparePrjtSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
-	if filter != "" || role == "Admin" {
+	if filter != "" || role == string(types.RoleAdmin) {
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
