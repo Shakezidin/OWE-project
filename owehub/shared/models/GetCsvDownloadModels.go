@@ -7,7 +7,6 @@
 package models
 
 type GetCsvDownload struct {
-	Page              string `json:"page"`
 	Email             string `json:"email"`
 	Dealer            interface{}
 	StartDate         string   `json:"start_date"`

@@ -1558,8 +1558,15 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_csvdownload",
-		apiHandler.HandleGetCsvDownloadRequest,
+		"/owe-commisions-service/v1/get_peroformancecsvdownload",
+		apiHandler.HandleGetPerformanceCsvDownloadRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_leaderboardcsvdownload",
+		apiHandler.HandleGetLeaderBoardCsvDownloadRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
