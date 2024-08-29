@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"encoding/json"
 	"io/ioutil"
 	"strings"
@@ -129,11 +130,11 @@ func HandleGetCsvDownloadRequest(resp http.ResponseWriter, req *http.Request) {
 			dataReq.Dealer = dealerName
 
 			switch role {
-			case "Admin", "Finance Admin":
+			case string(types.RoleAdmin), string(types.RoleFinAdmin):
 				filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, true, false, false)
-			case "Dealer Owner":
+			case string(types.RoleDealerOwner):
 				filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, false, false, false)
-			case "Sale Representative":
+			case string(types.RoleSalesRep):
 				SaleRepList = append(SaleRepList, name)
 				filter, whereEleList = PrepareSaleRepCsvFilters(tableName, dataReq, SaleRepList)
 			// this is for the roles regional manager and sales manager
@@ -549,7 +550,7 @@ func HandleGetCsvDownloadRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	data = Paginate(data, int64(dataReq.PageSize), int64(dataReq.PageNumber))
+	data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
 	// log.FuncInfoTrace(0, "Number of data List fetched : %v list %+v", len(data), data)
 	FormAndSendHttpResp(resp, "csv Data", http.StatusOK, data, RecordCount)
