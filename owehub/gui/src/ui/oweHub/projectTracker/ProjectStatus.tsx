@@ -771,7 +771,7 @@ const ProjectStatus = () => {
               style={{ padding: '22px' }}
             >
               
-              {isMobile &&(<div className='mob-projhead'>Project Stages</div>) }
+              {isMobile &&(<p className='mob-projhead'>Project Stages</p>) }
               <div className="flex items-center project-status-table-title">
               {!isMobile &&(<h3>Project Stages</h3>) }
                 <div className="progress-box-container status-boxes ml3">
