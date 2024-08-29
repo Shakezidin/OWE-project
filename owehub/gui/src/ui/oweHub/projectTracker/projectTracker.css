@@ -52,7 +52,7 @@
 }
 .status-item.co{
   color: #fff;
-  background-color: #F64822;
+  background-color: #FF8934;
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   padding-left: 6px;
@@ -60,13 +60,13 @@
 }
 .pending-co{
   color: #fff;
-  background-color: #F64822;
+  background-color: #FF8934;
   padding: 6px 1px;
   border-radius: 50%;
 }
 
 .pending-coo{
-    color: #F64822;
+    color: #FF8934;
     align-items: center;
     display: flex;
     gap: 4px;
