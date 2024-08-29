@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"sort"
 	"strings"
 	"time"
@@ -86,17 +87,17 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	LeaderBoardList := models.GetLeaderBoardList{}
 
-	// if dataReq.Role == "Admin" || dataReq.Role == "Finance Admin" {
-	// 	if len(dataReq.DealerName) == 0 {
-	// 		LeaderBoardList.LeaderBoardList = []models.GetLeaderBoard{}
+	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) {
+		if len(dataReq.DealerName) == 0 {
+			LeaderBoardList.LeaderBoardList = []models.GetLeaderBoard{}
 
-	// 		log.FuncErrorTrace(0, "no dealer name selected")
-	// 		FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
-	// 		return
-	// 	}
-	// }
+			log.FuncErrorTrace(0, "no dealer name selected")
+			FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
+			return
+		}
+	}
 
-	if dataReq.Role != "Admin" && dataReq.Role != "Finance Admin" && !(dataReq.Role == "Dealer Owner" && dataReq.GroupBy == "dealer") {
+	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) && !(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
 			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
@@ -123,7 +124,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		dataReq.DealerName = append(dataReq.DealerName, dealerName)
-		if dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter" {
+		if dataReq.Role == string(types.RoleSalesRep) || dataReq.Role == string(types.RoleApptSetter) {
 			HighlightName, ok = data[0]["name"].(string)
 			if !ok {
 				log.FuncErrorTrace(0, "Failed to convert name to string for data: %v", data[0])
@@ -241,7 +242,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 				dlrName = dataReq.DealerName[0]
 			}
 
-			if HighLightDlrName == dlrName && HighlightName == Name && (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") {
+			if HighLightDlrName == dlrName && HighlightName == Name && (dataReq.Role == string(types.RoleSalesRep) || dataReq.Role == string(types.RoleApptSetter)) {
 				hightlight = true
 			}
 			totalSale += Sale
@@ -288,7 +289,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
 
-	if (dataReq.Role == "Sale Representative" || dataReq.Role == "Appointment Setter") && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
+	if (dataReq.Role == string(types.RoleSalesRep) || dataReq.Role == string(types.RoleApptSetter)) && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
 		LeaderBoardList.LeaderBoardList = append(LeaderBoardList.LeaderBoardList, currSaleRep)
 	}
 	LeaderBoardList.TotalCancel = totalCancel
@@ -333,6 +334,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	defer func() { log.ExitFn(0, "PrepareDateFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	var whereAdded bool
 
 	startDate, err := time.Parse("02-01-2006", dataReq.StartDate)
 	if err != nil {
@@ -385,6 +387,16 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	if len(dealerIn) > 13 {
 		filtersBuilder.WriteString(" WHERE ")
 		filtersBuilder.WriteString(dealerIn)
+		whereAdded = true
+	}
+
+	if !whereAdded {
+		filtersBuilder.WriteString(" WHERE ")
+		filtersBuilder.WriteString("project_status != 'DUPLICATE' ")
+		whereAdded = true
+	} else {
+		filtersBuilder.WriteString(" AND ")
+		filtersBuilder.WriteString("project_status != 'DUPLICATE' ")
 	}
 
 	if (len(dataReq.DealerName) > 1 || len(dataReq.DealerName) == 0) && dataReq.GroupBy != "state" && dataReq.GroupBy != "region" {
