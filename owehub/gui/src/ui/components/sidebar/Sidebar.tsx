@@ -81,20 +81,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       });
       return newArr;
     }else if (role === TYPE_OF_USER.DEALER_OWNER) {
-      if (dealer === "WhyGen Solar") {
         return list;
-      } else {
-        const newArr: any[] = [{ mob: [] }];
-        list[0].mob.forEach((item: any) => {
-          if (
-            item.path !== ROUTES.PROJECT_PERFORMANCE &&
-            item.path !== ROUTES.PROJECT_STATUS
-          ) {
-            newArr[0].mob.push(item);
-          }
-        });
-        return newArr;
-      }
     } else if ( role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
@@ -108,10 +95,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-          item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === "WhyGen Solar") ||
-            (item.path !== ROUTES.PROJECT_PERFORMANCE &&
-              item.path !== ROUTES.PROJECT_STATUS))
+          item.path !== ROUTES.USER_MANAEMENT
         ) {
           newArr[0].mob.push(item);
         }
@@ -134,10 +118,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
-          item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === "WhyGen Solar") ||
-            (item.path !== ROUTES.PROJECT_PERFORMANCE &&
-              item.path !== ROUTES.PROJECT_STATUS))
+          item.path !== ROUTES.USER_MANAEMENT
         ) {
           newArr[0].mob.push(item);
         }
