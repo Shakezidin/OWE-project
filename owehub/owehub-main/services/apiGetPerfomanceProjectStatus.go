@@ -706,9 +706,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			filtersBuilder.WriteString(" WHERE")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(" intOpsMetSchema.unique_id IN (")
+		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
 
 			if i < len(dataFilter.UniqueIds)-1 {
@@ -798,7 +798,6 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		whereAdded = true
 	}
 
-	// Check if there are filters for unique IDs
 	if len(dataFilter.UniqueIds) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -807,9 +806,9 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" intOpsMetSchema.unique_id IN (")
+		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
 
 			if i < len(dataFilter.UniqueIds)-1 {
