@@ -43,6 +43,9 @@ import { ICONS } from '../../../resources/icons/Icons';
 // import { IoIosSearch } from 'react-icons/io';
 // import { MdFileDownloadDone } from "react-icons/md";
 import { MdDone } from 'react-icons/md';
+import QCModal from './PopUp';
+import QCPopUp from './ProjMngPopups/QC';
+import NtpPopUp from './ProjMngPopups/NTP';
 interface Option {
   value: string;
   label: string;
@@ -497,7 +500,11 @@ const ProjectPerformence = () => {
 
 
 
+
     return (
+
+
+
       <div className="flex items-center justify-end">
         <div className="leaderborder_filter-slect-wrapper mr1">
           <Select
@@ -665,6 +672,28 @@ const ProjectPerformence = () => {
     setSelectedMilestone(pending);
   };
 
+  const [selectedProjectQC, setSelectedProjectQC] = useState<any>(null);
+
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
+  const filterClose = () => setFilterOpen(false);
+
+
+
+  const filter = () => {
+    setFilterOpen(true);
+  };
+
+
+  const [ntpOPen, setNtpOPen] = React.useState<boolean>(false);
+
+  const ntpClose = () => setNtpOPen(false);
+
+  const ntpAction = () => {
+    setNtpOPen(true);
+  };
+
+
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
@@ -677,33 +706,29 @@ const ProjectPerformence = () => {
         marginLeftMobile="12px"
       />
       <div className="project-container">
-        {role === 'Admin' && (
-          <div className="leaderboard-data__selected-dates performance-date">
-
-            {selectedRangeDate.start && selectedRangeDate.end ? (
-              <>
-                {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
-                {format(selectedRangeDate.end, 'dd MMM yyyy')}
-              </>
-            ) : null}
-          </div>
-        )}
+        {/* <div className="leaderboard-data__selected-dates performance-date">
+          {selectedRangeDate.start && selectedRangeDate.end ? (
+            <>
+              {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
+              {format(selectedRangeDate.end, 'dd MMM yyyy')}
+            </>
+          ) : null}
+        </div> */}
         <div className="project-heading">
           <h2>Active Queue</h2>
-          {role === 'Admin' && (
-            <div className="flex items-center justify-end">
-              <PeriodFilter
-                resetPage={resetPage}
-                period={selectedRangeDate}
-                setPeriod={setSelectedRangeDate}
-              />
-              <DateFilter
-                selected={selectedRangeDate}
-                resetPage={resetPage}
-                setSelected={setSelectedRangeDate}
-              />
-            </div>
-          )}
+
+          {/* <div className="flex items-center justify-end">
+            <PeriodFilter
+              resetPage={resetPage}
+              period={selectedRangeDate}
+              setPeriod={setSelectedRangeDate}
+            />
+            <DateFilter
+              selected={selectedRangeDate}
+              resetPage={resetPage}
+              setSelected={setSelectedRangeDate}
+            />
+          </div> */}
         </div>
 
         <div className="flex stats-card-wrapper">
@@ -908,7 +933,12 @@ const ProjectPerformence = () => {
                                 </Link>
 
                                 <div className="milestone-status">
-                                  <div className="status-item">
+                                  <div className="status-item click"
+                                    onClick={() => {
+                                      setSelectedProjectQC(project.qc);
+                                      filter();
+                                    }}
+                                  >
                                     QC:
                                     <img
                                       src={project.qc.qc_action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
@@ -917,7 +947,12 @@ const ProjectPerformence = () => {
                                     />
                                     {project.qc.qc_action_required_count}
                                   </div>
-                                  <div className="status-item">
+                                  <div className="status-item click"
+                                    onClick={() => {
+                                      setSelectedProjectQC(project.ntp);
+                                      ntpAction();
+                                    }}
+                                  >
                                     NTP:
                                     <img
                                       src={project.ntp.action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
@@ -926,17 +961,17 @@ const ProjectPerformence = () => {
                                     />
                                     {project.ntp.action_required_count}
                                   </div>
-                                  <div className="status-item">
-                                    CO:
-                                    <img
-                                      src={project.co_status === 'CO Complete' ? ICONS.complete : ICONS.Pendingqc}
-                                      width={16}
-                                      alt="img"
-                                    />
-                                  </div>
+                                  {project.co_status !== 'CO Complete' || project.co_status !== '' && (
+                                    <div className="status-item">
+                                      CO:
+                                      <img
+                                        src={project.co_status === 'CO Complete' ? ICONS.complete : ICONS.Pendingqc}
+                                        width={16}
+                                        alt="img"
+                                      />
+                                    </div>
+                                  )}
                                 </div>
-
-
                               </div>
 
                               {/* <p className='performance-info-p' onClick={() => {}}>More info.</p> */}
@@ -1179,6 +1214,17 @@ const ProjectPerformence = () => {
                     }
                   )
                 )}
+
+                <QCPopUp
+                  projectDetail={selectedProjectQC}
+                  isOpen={filterOPen}
+                  handleClose={filterClose}
+                />
+                <NtpPopUp
+                  projectDetail={selectedProjectQC}
+                  isOpen={ntpOPen}
+                  handleClose={ntpClose}
+                />
               </tbody>
             </table>
           </div>
@@ -1209,6 +1255,7 @@ const ProjectPerformence = () => {
         </div>
       </div>
     </div>
+
   );
 };
 
