@@ -848,11 +848,10 @@ const ProjectPerformence = () => {
                 </div>
               </div>
             </div>
-            <div>
+            <div className='perf-export-btn'>
               <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
-
                 className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
                 <FaUpload size={12} className="mr-1" />
