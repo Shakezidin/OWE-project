@@ -59,7 +59,7 @@ export const fetchUserOnboarding = createAsyncThunk(
         {
           name: 'Inactive SaleRep',
           value: Math.abs(inactive_sale_rep),
-          fill: '#EE824D',
+          fill: '#E0728C',
         }
       );
     }
