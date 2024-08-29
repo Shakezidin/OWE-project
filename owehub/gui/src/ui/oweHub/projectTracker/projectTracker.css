@@ -58,6 +58,20 @@
   padding-left: 6px;
   padding-right: 6px;
 }
+.pending-co{
+  color: #fff;
+  background-color: #F64822;
+  padding: 6px 1px;
+  border-radius: 50%;
+}
+
+.pending-coo{
+    color: #F64822;
+    align-items: center;
+    display: flex;
+    gap: 4px;
+    font-size: 12px;
+}
 .status-item.click:hover{
   color: white;
   background-color: #377cf6;
