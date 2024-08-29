@@ -27,12 +27,11 @@
 }
 .milestone-status {
   display: flex;
-  justify-content: space-between;
   gap: 8px;
   background-color: #f0f4ff;
   padding: 4px 8px;
   border-radius: 8px;
-  width: 200px;
+  width: fit-content;
   margin-top: 20px;
   margin-bottom: -20px;
 }
@@ -1457,6 +1456,7 @@
 .co-status {
   display: flex;
   flex-direction: column;
+  margin-left: 6px
 }
 
 .co-status p {

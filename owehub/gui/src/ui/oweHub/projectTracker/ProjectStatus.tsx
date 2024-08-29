@@ -817,10 +817,7 @@ const ProjectStatus = () => {
 
               <div className="flex items-center project-status-table-title1">
                 <div className="progress-box-container status-btn ml3">
-                <div className="co-status mt0">
-                    <p>CO Status</p>
-                    <p style={{color: "#2EAF71"}}>Completed <img src={ICONS.complete} width={16} alt="img" /></p>
-                  </div>
+                
                   <div className="progress-qc mt0" onClick={filter}>
                     <button>QC</button>
                   </div>
@@ -836,6 +833,12 @@ const ProjectStatus = () => {
                 <div className="progress-qc-acre">
                   <span>{otherlinks?.ntp?.action_required_count || 0}</span>
                 </div>
+                {otherlinks?.co_status ? 
+                <div className="co-status mt0">
+                    <p>CO Status</p>
+                    <p style={{color: "#2EAF71"}}>{otherlinks.co_status === 'CO Complete' ? <span>Completed <img src={ICONS.complete} width={16} alt="img" /> </span> : <span>Pending <img src={ICONS.Pendingqc} width={16} alt="img" /> </span>}</p>
+                  </div>
+               :  null }  
               </div>
             </div>
             <div className="project-management-table ">
