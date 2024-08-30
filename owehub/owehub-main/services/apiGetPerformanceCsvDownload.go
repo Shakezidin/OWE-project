@@ -650,8 +650,13 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
 
-	// Add the always-included filters
-	filtersBuilder.WriteString(` AND unique_id IS NOT NULL
+	// Always add the following filters
+	if whereAdded {
+		filtersBuilder.WriteString(" AND")
+	} else {
+		filtersBuilder.WriteString(" WHERE")
+	}
+	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
 			AND intOpsMetSchema.system_size > 0 
