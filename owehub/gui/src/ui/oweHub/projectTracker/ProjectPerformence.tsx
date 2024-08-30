@@ -376,31 +376,7 @@ const ProjectPerformence = () => {
   const resetPage = () => {
     setPage(1);
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (isAuthenticated) {
-          const data = await postCaller('get_performance_tiledata', {
-            start_date: selectedRangeDate.start,
-            end_date: selectedRangeDate.end,
-          });
-
-          if (data?.data) {
-            setTileData(data?.data);
-          }
-
-          if (data.status > 201) {
-            toast.error(data.message);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, [isAuthenticated, selectedRangeDate.start, selectedRangeDate.end]);
+ 
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
@@ -962,12 +938,8 @@ const ProjectPerformence = () => {
                                         className="status-item co"
                                         data-tooltip={project.co_status} // Custom tooltip
                                       >
-                                        CO:{' '}
-                                        <img
-                                          src={ICONS.QCLine}
-                                          width={10}
-                                          alt="img"
-                                        />
+                                        C/O
+                                        
                                       </div>
                                     )}
                                 </div>
