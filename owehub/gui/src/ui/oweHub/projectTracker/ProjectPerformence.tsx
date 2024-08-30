@@ -701,7 +701,7 @@ const ProjectPerformence = () => {
             </>
           ) : null}
         </div> */}
-        <div className="project-heading">
+        <div className="pipeline-title">
           <h2>Active Queue</h2>
 
           {/* <div className="flex items-center justify-end">
