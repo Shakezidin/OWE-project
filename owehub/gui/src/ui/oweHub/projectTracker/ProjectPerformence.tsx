@@ -701,21 +701,10 @@ const ProjectPerformence = () => {
             </>
           ) : null}
         </div> */}
-        <div className="project-heading">
+        <div className="project-heading pipeline-heading">
           <h2>Active Queue</h2>
 
-          {/* <div className="flex items-center justify-end">
-            <PeriodFilter
-              resetPage={resetPage}
-              period={selectedRangeDate}
-              setPeriod={setSelectedRangeDate}
-            />
-            <DateFilter
-              selected={selectedRangeDate}
-              resetPage={resetPage}
-              setSelected={setSelectedRangeDate}
-            />
-          </div> */}
+
         </div>
 
         <div className="flex stats-card-wrapper">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   format,
   addDays,
@@ -10,6 +10,7 @@ import {
   isSameMonth,
   isSameDay,
 } from 'date-fns';
+import { DateRange } from 'react-date-range';
 import './PerformanceCalendar.css';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import CalendarSidebar from './CalendarSidebar';
@@ -24,26 +25,50 @@ interface Event {
 
 const PerformanceCalendar: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null); 
-  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);   
-  const [sidebarVisible, setSidebarVisible] = useState<boolean>(false); 
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
+  const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
+  const [showCalendar, setShowCalendar] = useState<boolean>(false);
+  const [selectedRanges, setSelectedRanges] = useState<any[]>([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection'
+    }
+  ]);
+
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
 
   const closeSidebar = () => {
-    setSidebarVisible(false); 
+    setSidebarVisible(false);
   };
 
   useEffect(() => {
-    const handleEscape = (e: any) => {
+    const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         closeSidebar();
+        setShowCalendar(false);
       }
-    }
+    };
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(target) &&
+        (!backdropRef.current || !backdropRef.current.contains(target))
+      ) {
+        setShowCalendar(false);
+      }
+    };
+
     window.addEventListener("keydown", handleEscape)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      window.removeEventListener("KeyDown", handleEscape)
+      window.removeEventListener("keydown", handleEscape)
+      document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [])
-
 
   const [events] = useState<Event[]>([
     { id: 1, date: new Date(2024, 7, 1), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
@@ -64,30 +89,54 @@ const PerformanceCalendar: React.FC = () => {
   const handleDateClick = (day: Date): void => {
     setSelectedDate(day);
     setSelectedEvents(events.filter(event => isSameDay(event.date, day)));
-  
-    if (hasEvent(day)) { 
+
+    if (hasEvent(day)) {
       setSidebarVisible(true);
     } else {
       setSidebarVisible(false);
     }
   };
 
-
   const renderHeader = () => {
-    const dateFormat = 'MMMM yyyy';
+    const isCurrentMonth = isSameMonth(currentMonth, new Date());
+    const dateFormat = isCurrentMonth ? 'd MMMM yyyy' : 'MMMM yyyy';
     return (
       <div className="header">
         <div className='calendar-date flex items-center'>
           <div className="prev-icon" onClick={prevMonth}>
             <div className="icon"><FiChevronLeft /></div>
           </div>
-          <div className="date-format">
+          <div className="date-format" onClick={() => setShowCalendar(!showCalendar)}>
             <span>{format(currentMonth, dateFormat)}</span>
           </div>
           <div className="next-icon" onClick={nextMonth}>
             <div className="icon"><FiChevronRight /></div>
           </div>
         </div>
+        {showCalendar && (
+          <div className="performance-cal-content" ref={calendarRef}>
+            <DateRange
+              editableDateInputs={true}
+              onChange={(item) => {
+                const startDate = item.selection?.startDate;
+                const endDate = item.selection?.endDate;
+                if (startDate && endDate) {
+                  setSelectedRanges([{ startDate, endDate, key: 'selection' }]);
+                }
+              }}
+              moveRangeOnFirstSelection={false}
+              ranges={selectedRanges}
+            />
+            <div className="performance-cal-btns">
+              <button className="reset-calender" onClick={() => setSelectedRanges([{ startDate: new Date(), endDate: new Date(), key: 'selection' }])}>
+                Reset
+              </button>
+              <button className="apply-calender" onClick={() => setShowCalendar(false)}>
+                Apply
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -98,8 +147,10 @@ const PerformanceCalendar: React.FC = () => {
     const startDate = startOfWeek(currentMonth);
 
     for (let i = 0; i < 7; i++) {
+      const dayOfWeek = addDays(startDate, i);
+      const isToday = isSameDay(dayOfWeek, new Date());
       days.push(
-        <div className="col col-center" key={i}>
+        <div className={`col col-center ${isToday ? 'todayDate' : ''}`} key={i}>
           {format(addDays(startDate, i), dateFormat).substring(0, 3)}
         </div>
       );
@@ -131,7 +182,7 @@ const PerformanceCalendar: React.FC = () => {
             className={`col cell ${!isSameMonth(day, monthStart)
               ? 'non-month'
               : isSameDay(day, selectedDate as Date)
-                ? 'selected active' 
+                ? 'selected active'
                 : ''
               }`}
             key={day.toString()}
@@ -171,10 +222,8 @@ const PerformanceCalendar: React.FC = () => {
       {renderHeader()}
       {renderDays()}
       {renderCells()}
-
       {sidebarVisible && selectedDate && selectedEvents.length > 0 && (
-        <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} /> 
-      )}
+        <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} />)}
     </div>
   );
 };
