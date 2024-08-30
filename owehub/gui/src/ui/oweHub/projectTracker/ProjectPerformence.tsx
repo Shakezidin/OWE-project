@@ -701,7 +701,7 @@ const ProjectPerformence = () => {
             </>
           ) : null}
         </div> */}
-        <div className="pipeline-title">
+        <div className="project-heading">
           <h2>Active Queue</h2>
 
           {/* <div className="flex items-center justify-end">
@@ -741,6 +741,8 @@ const ProjectPerformence = () => {
                         activeCardId === card.id
                           ? `4px solid ${cardColor}`
                           : `1px dotted ${cardColor}`,
+                      pointerEvents: card.pending === 'roof' ? 'none' : 'auto',   
+                      opacity: card.pending === 'roof' ? '0.3' : '',
                     }}
                     onClick={(e) => {
                       handlePendingRequest(card?.pending);
@@ -754,7 +756,9 @@ const ProjectPerformence = () => {
                       {activeCardId === card.id ? <MdDone /> : card.id}
                     </span>
                     <p>{card.title || 'N/A'}</p>
+                    { card.pending !== 'roof' ?
                     <h2>{card.value || 'N/A'}</h2>
+                    : <small style={{color:'white'}}>Coming Soon</small>}
                   </div>
                   {index < topCardsData.length - 1 && (
                     <div
