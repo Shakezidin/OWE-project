@@ -702,7 +702,7 @@ const ProjectPerformence = () => {
           ) : null}
         </div> */}
         <div className="project-heading">
-          <h2>Active Queue</h2>
+          <h3>Active Queue</h3>
 
           {/* <div className="flex items-center justify-end">
             <PeriodFilter
