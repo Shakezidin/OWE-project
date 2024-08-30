@@ -329,7 +329,7 @@
 .project-heading {
   display: grid;
   gap: 1rem;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 122px 1fr auto;
   align-items: center;
   padding: 5px 10px 20px 10px;
   width: 100%;
