@@ -206,7 +206,6 @@ const Header: React.FC<Toggleprops> = ({
                             My Account
                           </p>
                         </div>
-
                         <div
                           className="image-box-container "
                           onClick={handleLogout}

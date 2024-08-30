@@ -626,6 +626,7 @@
 .status-cust-name {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 1rem;
 }
 
@@ -1492,11 +1493,6 @@
   .arrow-dir {
     transform: rotate(90deg);
     margin-top: 10px;
-  }
-
-  .status-cust-name {
-    padding-top: 25px;
-    padding-right: 30px;
   }
 
   .rep-drop_label {
