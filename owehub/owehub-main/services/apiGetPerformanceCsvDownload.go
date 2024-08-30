@@ -189,49 +189,49 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
 			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok || HomeOwner == "" {
 			log.FuncErrorTrace(0, "Failed to get Customer Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		CustomerEmail, ok := item["customer_email"].(string)
 		if !ok || CustomerEmail == "" {
 			log.FuncErrorTrace(0, "Failed to get Customer email Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		CustomerPhoneNumber, ok := item["customer_phone_number"].(string)
 		if !ok || CustomerPhoneNumber == "" {
 			log.FuncErrorTrace(0, "Failed to get Customer phone number Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		Address, ok := item["address"].(string)
 		if !ok || Address == "" {
 			log.FuncErrorTrace(0, "Failed to get address Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		State, ok := item["state"].(string)
 		if !ok || State == "" {
 			log.FuncErrorTrace(0, "Failed to get State Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		ContractTotal, ok := item["contract_total"].(float64)
 		if !ok || ContractTotal == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get ContractTotal Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		SystemSize, ok := item["system_size"].(float64)
 		if !ok || SystemSize == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get ContractTotal Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		SiteSurveyScheduleDate, ok := item["site_survey_scheduled_date"].(time.Time)
