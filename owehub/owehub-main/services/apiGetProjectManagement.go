@@ -274,7 +274,6 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	log.FuncErrorTrace(0, "dataaa = %v", data)
 	if len(data) > 0 {
 		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az")
 		actionRequiredCount += count
