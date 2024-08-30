@@ -1521,13 +1521,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_performance_tiledata",
-		apiHandler.HandleManagePerformanceTileDataRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-commisions-service/v1/get_performance_tiledata",
+	// 	apiHandler.HandleManagePerformanceTileDataRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupEveryOne},
+	// },
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomance_leaderboard",

@@ -98,7 +98,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	}
 
 	RecordCount = int64(len(data))
-	data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
+	// data = Paginate(data, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 
 	// log.FuncInfoTrace(0, "Number of data List fetched : %v list %+v", len(data), data)
 	FormAndSendHttpResp(resp, "csv Data", http.StatusOK, data, RecordCount)
