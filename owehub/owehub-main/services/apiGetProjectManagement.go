@@ -177,10 +177,29 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
-	projectList.CADLink = data[0]["current_live_cad"].(string)
-	projectList.DATLink = data[0]["system_sold_er"].(string)
-	projectList.PodioLink = data[0]["podio_link"].(string)
-	projectList.CoStatus = data[0]["change_order_status"].(string)
+	if val, ok := data[0]["current_live_cad"].(string); ok {
+		projectList.CADLink = val
+	} else {
+		projectList.CADLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["system_sold_er"].(string); ok {
+		projectList.DATLink = val
+	} else {
+		projectList.DATLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["podio_link"].(string); ok {
+		projectList.PodioLink = val
+	} else {
+		projectList.PodioLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["change_order_status"].(string); ok {
+		projectList.CoStatus = val
+	} else {
+		projectList.CoStatus = "" // or a default value
+	}
 
 	var ntp models.NTP
 	var qc models.QC
@@ -255,6 +274,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	log.FuncErrorTrace(0, "dataaa = %v", data)
 	if len(data) > 0 {
 		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az")
 		actionRequiredCount += count
