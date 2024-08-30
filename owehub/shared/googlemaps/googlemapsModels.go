@@ -21,13 +21,13 @@ type RouteMatrixReqRouteModifiers struct {
 	AvoidFerries bool `json:"avoid_ferries"`
 }
 
-// Location of a waypoint, either LatLng or Address must be provided
 type RouteMatrixReqLocation struct {
 	LatLng RouteMatrixReqLatLng `json:"latLng"`
 }
 
+// a waypoint, either LatLng or Address must be provided
 type RouteMatrixReqWaypoint struct {
-	Location *RouteMatrixReqLocation `json:"location"`
+	Location *RouteMatrixReqLocation `json:"location,omitempty"`
 	Address  *string                 `json:"address,omitempty"`
 }
 

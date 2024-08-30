@@ -60,7 +60,7 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	scheduleDataQuery = `
+	scheduleDataQuery = fmt.Sprintf(`
 		SELECT 
 			home_owner, 
 			customer_email,
@@ -73,9 +73,11 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 		 	contract_date IS NOT NULL 
 		 	AND site_survey_scheduled_date IS NULL
 		 ORDER BY 
-			contract_date $1`
+			contract_date %s`,
+		dataReq.Order,
+	)
 
-	scheduleDataRecords, err = db.ReteriveFromDB(db.RowDataDBIndex, scheduleDataQuery, []interface{}{dataReq.Order})
+	scheduleDataRecords, err = db.ReteriveFromDB(db.RowDataDBIndex, scheduleDataQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get schedule data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get schedule data from DB", http.StatusBadRequest, nil)
