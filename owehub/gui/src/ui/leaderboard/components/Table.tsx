@@ -660,8 +660,6 @@ const Table = ({
     
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
       dealer_name: selectDealer.map((item) => item.value),
-      page_size: count,
-      page_number: 1,
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'), 
       
