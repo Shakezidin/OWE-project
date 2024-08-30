@@ -76,6 +76,7 @@ const groupByOptionss = [
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
   { label: 'Region', value: 'region' },
+  { label: 'Setter', value: 'setter' },
 ];
 
 const groupByOptions = [
