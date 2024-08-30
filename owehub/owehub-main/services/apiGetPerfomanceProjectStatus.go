@@ -945,7 +945,7 @@ func parseDate(dateStr string) time.Time {
 
 func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
 	var count int64
-	if CadCompleteDate != "" && permitApprovedDate == "" && IcApprovedDate == "" {
+	if CadCompleteDate != "" && (permitApprovedDate == "" || IcApprovedDate == "") {
 		count = 1
 	}
 
