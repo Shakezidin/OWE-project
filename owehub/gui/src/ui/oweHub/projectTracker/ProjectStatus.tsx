@@ -552,7 +552,7 @@ const ProjectStatus = () => {
 
   const filterClose = () => setFilterOpen(false);
 
-   
+
 
   const filter = () => {
     setFilterOpen(true);
@@ -575,27 +575,27 @@ const ProjectStatus = () => {
   };
 
 
-    // Function to handle Escape key press
-    const handleKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        filterClose();
-        ntpClose();
-      }
-    };
-  
-    useEffect(() => {
-      // Add event listener for keydown
-      window.addEventListener('keydown', handleKeyDown);
-  
-      // Clean up event listener on component unmount
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-      };
-    }, []);
+  // Function to handle Escape key press
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape') {
+      filterClose();
+      ntpClose();
+    }
+  };
 
-    const isMobile = useMatchMedia('(max-width: 767px)');
-  
-    
+  useEffect(() => {
+    // Add event listener for keydown
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
+
   return (
     <>
       <QCModal
@@ -663,7 +663,7 @@ const ProjectStatus = () => {
                         padding: 3,
                         border: `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
-                      
+
                       }}
                     >
                       <div
@@ -672,8 +672,8 @@ const ProjectStatus = () => {
                           background: el.bgColor,
                           height: 83,
                           zIndex: i === 1 ? 50 : undefined,
-                          
-                          
+
+
                         }}
                       >
                         <div
@@ -691,13 +691,13 @@ const ProjectStatus = () => {
                               el.key === 'contract_amount'
                               ? '$'
                               : ''}
-                            
-                              <>
-                                {projectDetail[
-                                  el.key as keyof typeof projectDetail
-                                ] || 'N/A'}{' '}
-                              </>
-                              
+
+                            <>
+                              {projectDetail[
+                                el.key as keyof typeof projectDetail
+                              ] || 'N/A'}{' '}
+                            </>
+
                             {el.key === 'system_size' ? '(kW)' : ''}
                           </span>
                         </div>
@@ -765,85 +765,84 @@ const ProjectStatus = () => {
           </div>
 
           <div className="bg-white rounded-16 project-table-wrapper">
-          
+
             <div
               className="project-heading project-status-heading mt2"
               style={{ padding: '22px' }}
             >
-              
-              {isMobile &&(<p className='mob-projhead'>Project Stages</p>) }
+              {isMobile && (<p className='mob-projhead'>Project Stages</p>)}
               <div className="flex items-center project-status-table-title">
-              {!isMobile &&(<h3>Project Stages</h3>) }
-                <div className="progress-box-container status-boxes ml3">
-                  <div className="progress-box-body mt0">
-
-                    <div
-                      className="progress-box"
-                      style={{
-                        background: '#4191C9',
-                        borderRadius: 0,
-                        width: 14,
-                        height: 14,
-                      }}
-                    ></div>
-                    <p>Stages</p>
-                  </div>
-                  <div className="progress-box-body mt0">
-                    <div
-                      className="progress-box"
-                      style={{
-                        background: '#63ACA3',
-                        borderRadius: 0,
-                        width: 14,
-                        height: 14,
-                      }}
-                    ></div>
-                    <p>Completed</p>
-                  </div>
-                  <div className="progress-box-body mt0">
-                    <div
-                      className="progress-box"
-                      style={{
-                        background: '#E9E9E9',
-                        borderRadius: 0,
-                        width: 14,
-                        height: 14,
-                      }}
-                    ></div>
-                    <p>Not Started yet</p>
+                <div>
+                  {!isMobile && (<h3>Project Stages</h3>)}
+                </div>
+                <div className='proj-status-tab-head flex'>
+                  <div className="progress-box-container status-boxes">
+                    <div className="progress-box-body mt0">
+                      <div
+                        className="progress-box"
+                        style={{
+                          background: '#4191C9',
+                          borderRadius: 0,
+                          width: 14,
+                          height: 14,
+                        }}
+                      ></div>
+                      <p>Stages</p>
+                    </div>
+                    <div className="progress-box-body mt0">
+                      <div
+                        className="progress-box"
+                        style={{
+                          background: '#63ACA3',
+                          borderRadius: 0,
+                          width: 14,
+                          height: 14,
+                        }}
+                      ></div>
+                      <p>Completed</p>
+                    </div>
+                    <div className="progress-box-body mt0">
+                      <div
+                        className="progress-box"
+                        style={{
+                          background: '#E9E9E9',
+                          borderRadius: 0,
+                          width: 14,
+                          height: 14,
+                        }}
+                      ></div>
+                      <p>Not Started yet</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex items-center project-status-table-title1">
-                <div className="progress-box-container status-btn ml3">
-                
-                  <div className="progress-qc mt0" onClick={filter}>
-                    <button>QC</button>
+                <div className="flex items-center project-status-table-title1">
+                  <div className="progress-box-container status-btn ml3">
+                    <div className="progress-qc mt0" onClick={filter}>
+                      <button>QC</button>
+                    </div>
+                    {otherlinks?.qc?.qc_action_required_count > 0 ?
+                      <div className="progress-ntp-acre">
+                        <span>
+                          {otherlinks?.qc?.qc_action_required_count}
+                        </span>
+                      </div>
+                      : null}
+                    <div className="progress-qc mt0" onClick={ntpAction}>
+                      <button>NTP</button>
+                    </div>
                   </div>
-
-                { otherlinks?.qc?.qc_action_required_count > 0 ?
-                  <div className="progress-ntp-acre">
-                    <span>
-                      {otherlinks?.qc?.qc_action_required_count }
-                    </span>
-                  </div>
-                 : null }
-                  <div className="progress-qc mt0" onClick={ntpAction}>
-                    <button>NTP</button>
-                  </div>
+                  {/* {otherlinks?.ntp?.action_required_count > 0 ?
+                    <div className="progress-qc-acre">
+                      <span>{otherlinks?.ntp?.action_required_count}</span>
+                    </div>
+                    : null}
+                  {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&
+                    <div className="co-status mt0">
+                      <p>CO Status</p>
+                      <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>Pending <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
+                    </div>
+                  } */}
                 </div>
-                { otherlinks?.ntp?.action_required_count > 0 ?
-                <div className="progress-qc-acre">
-                  <span>{otherlinks?.ntp?.action_required_count }</span>
-                </div>
-               : null }
-                { otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && 
-                <div className="co-status mt0">
-                    <p>CO Status</p>
-                    <p style={{color: "#2EAF71"}}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>Pending <img src={ICONS.QCLine} width={16} alt="img"  className='pending-co'/> </span>}</p>
-                  </div>
-              }  
               </div>
             </div>
             <div className="project-management-table ">
