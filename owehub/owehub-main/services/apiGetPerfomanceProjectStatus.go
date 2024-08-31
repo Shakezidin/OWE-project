@@ -618,10 +618,29 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	// Step 3: Map Result to `PerfomanceResponse` structs
 	for i := range paginatedData {
 		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
-			paginatedData[i].CADLink = row["current_live_cad"].(string)
-			paginatedData[i].PodioLink = row["podio_link"].(string)
-			paginatedData[i].DATLink = row["system_sold_er"].(string)
-			paginatedData[i].CoStatus = row["change_order_status"].(string)
+			if val, ok := row["current_live_cad"].(string); ok {
+				paginatedData[i].CADLink = val
+			} else {
+				paginatedData[i].CADLink = "" // or a default value
+			}
+
+			if val, ok := row["system_sold_er"].(string); ok {
+				paginatedData[i].DATLink = val
+			} else {
+				paginatedData[i].DATLink = "" // or a default value
+			}
+
+			if val, ok := row["podio_link"].(string); ok {
+				paginatedData[i].PodioLink = val
+			} else {
+				paginatedData[i].PodioLink = "" // or a default value
+			}
+
+			if val, ok := row["change_order_status"].(string); ok {
+				paginatedData[i].CoStatus = val
+			} else {
+				paginatedData[i].CoStatus = "" // or a default value
+			}
 
 			var actionRequiredCount int64
 
