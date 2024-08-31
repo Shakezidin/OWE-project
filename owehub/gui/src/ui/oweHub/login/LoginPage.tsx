@@ -25,26 +25,20 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { FormEvent } from '../../../core/models/data_models/typesModel';
 import Lottie from 'lottie-react';
 import PowerAnimation from '../../../resources/assets/power_anime.json';
-
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-}
+import useAuth, { AuthData } from '../../../hooks/useAuth';
+import useWindowWidth from '../../../hooks/useWindowWidth';
 
 export const LoginPage = () => {
+  const { authData, saveAuthData } = useAuth();
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<Credentials>({
     email_id: '',
     password: '',
     isRememberMe: false,
   });
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+  const isStaging = process.env.REACT_APP_ENV;
 
   const handleBattery = () => {
     navigate(ROUTES.SR_IMAGE_UPLOAD);
@@ -64,16 +58,12 @@ export const LoginPage = () => {
 
   /** handle local storage */
   useEffect(() => {
-    let localRememberMe = localStorage.getItem('isRememberMe');
-    let localEmail = localStorage.getItem('email');
-    let localPassword = localStorage.getItem('password');
-
-    if (localRememberMe === 'true') {
-      handleInputChange('email_id', localEmail);
-      handleInputChange('password', localPassword);
-      handleInputChange('isRememberMe', localRememberMe === 'true');
+    if (authData?.isRememberMe === 'true') {
+      handleInputChange('email_id', authData?.email);
+      handleInputChange('password', authData?.password);
+      handleInputChange('isRememberMe', authData?.isRememberMe === 'true');
     }
-  }, []);
+  }, [authData]);
 
   /** email validation */
   const isValidEmail = (email: string) => {
@@ -97,6 +87,7 @@ export const LoginPage = () => {
         const result = unwrapResult(actionResult);
         if (result.status === HTTP_STATUS.OK) {
           toast.success(result.message);
+
           const {
             email_id,
             user_name,
@@ -106,28 +97,35 @@ export const LoginPage = () => {
             time_to_expire_minutes,
             is_password_change_required,
           } = result.data;
+
+          const loginResponse: AuthData = {
+            role: role_name,
+            userName: user_name,
+            email: email_id,
+            type: access_token,
+            token: access_token,
+            password: credentials.password,
+            dealer: dealer_name,
+            expirationTimeInMin: time_to_expire_minutes,
+            expirationTime: (
+              Date.now() +
+              parseInt(time_to_expire_minutes) * 60 * 1000
+            ).toString(),
+            isRememberMe: credentials.isRememberMe.toString(),
+            isPasswordChangeRequired: is_password_change_required,
+          };
+          saveAuthData(loginResponse);
+
+          //TODO: Need to remove in future
           localStorage.setItem('email', email_id);
           localStorage.setItem('userName', user_name);
           localStorage.setItem('role', role_name);
           localStorage.setItem('token', access_token);
-          localStorage.setItem('password', credentials.password);
-          localStorage.setItem('dealer', dealer_name);
-          localStorage.setItem('expirationTimeInMin', time_to_expire_minutes);
           localStorage.setItem(
-            'expirationTime',
-            (
-              Date.now() +
-              parseInt(time_to_expire_minutes) * 60 * 1000
-            ).toString()
-          );
-          localStorage.setItem(
-            'isRememberMe',
-            credentials.isRememberMe.toString()
-          );
-          localStorage.setItem(
-            'is_password_change_required',
+            'isPasswordChangeRequired',
             is_password_change_required
           );
+
           if (role_name === TYPE_OF_USER.DB_USER) {
             navigate(ROUTES.LEADERBOARD);
           } else {
@@ -142,9 +140,6 @@ export const LoginPage = () => {
     }
   };
 
-  const width = useWindowWidth();
-  const isMobile = width < 768;
-  const isStaging = process.env.REACT_APP_ENV
   return (
     <div className="mainContainer">
       <div className={'overlay'} />
@@ -243,24 +238,28 @@ export const LoginPage = () => {
                 className="login-button"
                 title="Log In"
                 type="submit"
-                onClick={() => { }}
+                onClick={() => {}}
               >
                 Log In
               </button>
             </div>
           </form>
 
-          <Link
-            to={isStaging === "staging" ? ROUTES.SR_IMAGE_UPLOAD : "#"}
-          >
+          <Link to={isStaging === 'staging' ? ROUTES.SR_IMAGE_UPLOAD : '#'}>
             <div className="battery-calc">
-              <div className={`battery-calc-button ${isStaging === "staging" ? "" : "disabled-battery-calc"}`}>
+              <div
+                className={`battery-calc-button ${isStaging === 'staging' ? '' : 'disabled-battery-calc'}`}
+              >
                 <Lottie
                   animationData={PowerAnimation}
                   style={{ width: 70, height: 70 }}
                   loop={false}
                 />
-                <p className="coming-soon">{isStaging === "staging" ? "Battery Calculator" : "Battery Calculator is Coming Soon!"}</p>
+                <p className="coming-soon">
+                  {isStaging === 'staging'
+                    ? 'Battery Calculator'
+                    : 'Battery Calculator is Coming Soon!'}
+                </p>
               </div>
             </div>
           </Link>

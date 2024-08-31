@@ -33,10 +33,9 @@ import {
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
-import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
-import { useAppSelector } from '../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-import jsPDF from 'jspdf';
+import useAuth, { AuthData } from '../../../hooks/useAuth';
+
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
@@ -68,8 +67,6 @@ const rankByOptions = [
   { label: 'Install', value: 'install' },
   { label: 'Cancel', value: 'cancel' },
 ];
-
-const role = localStorage.getItem('role');
 
 const groupByOptionss = [
   { label: 'Sale Rep', value: 'primary_sales_rep' },
@@ -522,10 +519,12 @@ const Table = ({
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
+  const { authData, saveAuthData } = useAuth();
+
   const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 25;
   const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
+    authData?.isPasswordChangeRequired === 'false'
   );
 
   useEffect(() => {
@@ -602,7 +601,7 @@ const Table = ({
     if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
-  const role = localStorage.getItem('role');
+  const role = authData?.role
   const getTotal = (column: keyof ILeaderBordUser): number => {
     return sortedPage.reduce((sum, item) => {
       const value = item[column];

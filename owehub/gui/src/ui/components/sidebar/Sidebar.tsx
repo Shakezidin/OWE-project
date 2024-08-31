@@ -1,28 +1,11 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './sidebar.css';
-import { ICONS } from '../../../resources/icons/Icons';
 import { Link, useLocation } from 'react-router-dom';
-import { MdOutlinePayment } from 'react-icons/md';
-import { FiLayers } from 'react-icons/fi';
-import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowRight,
-  MdKeyboardArrowUp,
-} from 'react-icons/md';
-import { MdKeyboardArrowLeft } from 'react-icons/md';
-import { LuWallet } from 'react-icons/lu';
 import { createSideMenuList } from '../../../routes/SideMenuOption';
-import { GrDocumentPerformance } from 'react-icons/gr';
-import { AiOutlineProject } from 'react-icons/ai';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { ROUTES } from '../../../routes/routes';
+import useAuth from '../../../hooks/useAuth';
 
 interface Child {
   path: string;
@@ -38,23 +21,11 @@ interface Toggleprops {
   sidebarChange: number;
 }
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-}
-
 const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
-  const [repay, setRepay] = useState<boolean>(false);
-  const [db, setDb] = useState<boolean>(false);
-  const [project, setProject] = useState<boolean>(false);
+  const [, setDb] = useState<boolean>(false);
+  const [, setProject] = useState<boolean>(false);
 
+  const { authData } = useAuth();
   const [cords, setCords] = useState<{
     left: number;
     top: number;
@@ -67,21 +38,19 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
 
-  const role = localStorage.getItem('role');
-
-  const dealer = localStorage.getItem('dealer');
-  console.log(dealer, "sidebar dealer")
+  const role = authData?.role;
+  const dealer = authData?.dealer;
 
   const filteredList = useMemo(() => {
     let list = [...createSideMenuList()];
-    if ( role === TYPE_OF_USER.ADMIN) {
+    if (role === TYPE_OF_USER.ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         newArr[0].mob.push(item);
       });
       return newArr;
-    }else if (role === TYPE_OF_USER.DEALER_OWNER) {
-      if (dealer === "WhyGen Solar") {
+    } else if (role === TYPE_OF_USER.DEALER_OWNER) {
+      if (dealer === 'WhyGen Solar') {
         return list;
       } else {
         const newArr: any[] = [{ mob: [] }];
@@ -95,7 +64,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         });
         return newArr;
       }
-    } else if ( role === TYPE_OF_USER.FINANCE_ADMIN) {
+    } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
@@ -109,7 +78,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
           item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === "WhyGen Solar") ||
+          ((dealer && dealer === 'WhyGen Solar') ||
             (item.path !== ROUTES.PROJECT_PERFORMANCE &&
               item.path !== ROUTES.PROJECT_STATUS))
         ) {
@@ -117,7 +86,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }
       });
       return newArr;
-    }else if (role === TYPE_OF_USER.DB_USER) {
+    } else if (role === TYPE_OF_USER.DB_USER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -135,7 +104,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === "WhyGen Solar") ||
+          ((dealer && dealer === 'WhyGen Solar') ||
             (item.path !== ROUTES.PROJECT_PERFORMANCE &&
               item.path !== ROUTES.PROJECT_STATUS))
         ) {
@@ -145,7 +114,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       return newArr;
     }
   }, [createSideMenuList, role]);
-
 
   const handleMouseover = (
     e: React.MouseEvent<HTMLAnchorElement | MouseEvent>,
@@ -183,14 +151,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     }
   }, [toggleOpen]);
 
-  const width = useWindowWidth();
-
   // TODO showing required routes for now
   // const isMobile = width < 768;
   const isMobile = true;
-
-
-  console.log(dealer, "dealer")
   return (
     <div
       style={{ zIndex: '30' }}

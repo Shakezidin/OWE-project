@@ -11,15 +11,10 @@ import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
 import { HiDownload } from 'react-icons/hi';
 import { toCanvas } from 'html-to-image';
-import {
-  Calendar,
-  Dollar,
-  FirstAwardIcon,
-  SecondAwardIcon,
-  ThirdAwardIcon,
-} from './Icons';
+import { FirstAwardIcon, SecondAwardIcon, ThirdAwardIcon } from './Icons';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
-import { useAppSelector } from '../../../redux/hooks';
+import useAuth, { AuthData } from '../../../hooks/useAuth';
+
 interface IDealer {
   dealer?: string;
   rep_name?: string;
@@ -60,24 +55,7 @@ const switchIcons = (rank: number) => {
       );
   }
 };
-const rangeOptData = [
-  {
-    label: 'Today',
-    value: `${format(today, 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Monthly',
-    value: `${format(subDays(today, 30), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Yearly',
-    value: `${format(subDays(today, 365), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-];
+
 const Sidebar = ({
   isOpen,
   setIsOpen,
@@ -90,6 +68,7 @@ const Sidebar = ({
   unit: string;
 }) => {
   const [data, setData] = useState<any>({});
+  const { authData, saveAuthData } = useAuth();
   const [selectedRangeDate, setSelectedRangeDate] = useState({
     label: 'Weekly',
     value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
@@ -99,7 +78,7 @@ const Sidebar = ({
   const [isShareOpen, setIsShareOpen] = useState(false);
   const topCards = useRef<HTMLDivElement | null>(null);
   const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
+    authData?.isPasswordChangeRequired === 'false'
   );
   const getLeaderDetail = async () => {
     try {

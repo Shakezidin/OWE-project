@@ -24,6 +24,7 @@ import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import useAuth from '../../../../hooks/useAuth';
 
 interface createUserProps {
   editMode: boolean;
@@ -51,6 +52,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   setLogoUrl,
 }) => {
   const dispatch = useAppDispatch();
+  const { authData } = useAuth();
 
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [dbAccess, setDbAcess] = useState(false);
@@ -78,7 +80,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
-    const userRole = localStorage.getItem('role');
+    const userRole = authData?.role;
     if (userRole === TYPE_OF_USER.DEALER_OWNER) {
       role = role.filter(
         (role) =>
@@ -89,7 +91,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       );
     }
     return role;
-  }, []);
+  }, [authData]);
 
   /**handle change for report */
   const handleChangeForRegion = async (newValue: any, fieldName: string) => {

@@ -5,10 +5,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import {
-  getPerfomance,
-  getPerfomanceStatus,
-} from '../../../redux/apiSlice/perfomanceSlice';
+import { getPerfomanceStatus } from '../../../redux/apiSlice/perfomanceSlice';
 import { Calendar } from './ICONS';
 import Select from 'react-select';
 import { getProjects } from '../../../redux/apiSlice/projectManagement';
@@ -33,16 +30,15 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import useMatchMedia from '../../../hooks/useMatchMedia';
-import SelectOption from '../../components/selectOption/SelectOption';
 import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
-import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { debounce } from '../../../utiles/debounce';
 import Input from '../../components/text_input/Input';
 import { IoClose } from 'react-icons/io5';
 import { ICONS } from '../../../resources/icons/Icons';
-// import { IoIosSearch } from 'react-icons/io';
-// import { MdFileDownloadDone } from "react-icons/md";
 import { MdDone } from 'react-icons/md';
+import useAuth from '../../../hooks/useAuth';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+
 interface Option {
   value: string;
   label: string;
@@ -72,10 +68,8 @@ const ProjectPerformence = () => {
     value: string;
   }>({} as Option);
 
-  const handleCancel = () => {
-    setSelectedProject({} as Option);
-  };
-  const role = localStorage.getItem('role');
+  const { authData } = useAuth();
+  const role = authData?.role;
 
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
@@ -166,7 +160,17 @@ const ProjectPerformence = () => {
 
   const ExportCsv = async () => {
     setIsExporting(true);
-    const headers = ['UniqueId', 'Home Owner', 'Email', 'PhoneNumber', 'State', 'Address', 'ContractDate', 'SystemSize', 'ContractAmount',];
+    const headers = [
+      'UniqueId',
+      'Home Owner',
+      'Email',
+      'PhoneNumber',
+      'State',
+      'Address',
+      'ContractDate',
+      'SystemSize',
+      'ContractAmount',
+    ];
 
     const getAllData = await postCaller('get_csvdownload', {
       page: 'performance',
@@ -189,8 +193,7 @@ const ProjectPerformence = () => {
       item.Address,
       item.ContractDate,
       item.SystemSize,
-      item.ContractAmount
-
+      item.ContractAmount,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -208,8 +211,6 @@ const ProjectPerformence = () => {
     setIsExporting(false);
     setExportShow(false);
   };
-
-
 
   useEffect(() => {
     dispatch(getProjects());
@@ -418,12 +419,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+            {
+              startDate: selected.start,
+              endDate: selected.end,
+              key: 'selection',
+            },
+          ]
         : []
     );
 
@@ -494,8 +495,6 @@ const ProjectPerformence = () => {
         window.removeEventListener('keydown', handleKeydown);
       };
     }, []);
-
-
 
     return (
       <div className="flex items-center justify-end">
@@ -679,7 +678,6 @@ const ProjectPerformence = () => {
       <div className="project-container">
         {role === 'Admin' && (
           <div className="leaderboard-data__selected-dates performance-date">
-
             {selectedRangeDate.start && selectedRangeDate.end ? (
               <>
                 {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
@@ -834,7 +832,6 @@ const ProjectPerformence = () => {
               <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
-
                 className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
                 <FaUpload size={12} className="mr-1" />
@@ -911,7 +908,11 @@ const ProjectPerformence = () => {
                                   <div className="status-item">
                                     QC:
                                     <img
-                                      src={project.qc.qc_action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
+                                      src={
+                                        project.qc.qc_action_required_count > 0
+                                          ? ICONS.Pendingqc
+                                          : ICONS.complete
+                                      }
                                       width={16}
                                       alt="img"
                                     />
@@ -920,25 +921,31 @@ const ProjectPerformence = () => {
                                   <div className="status-item">
                                     NTP:
                                     <img
-                                      src={project.ntp.action_required_count > 0 ? ICONS.Pendingqc : ICONS.complete}
+                                      src={
+                                        project.ntp.action_required_count > 0
+                                          ? ICONS.Pendingqc
+                                          : ICONS.complete
+                                      }
                                       width={16}
                                       alt="img"
                                     />
                                     {project.ntp.action_required_count}
                                   </div>
-                                  { project.co_status ?
-                                  <div className="status-item">
-                                    CO:
-                                    <img
-                                      src={project.co_status === 'CO Complete' ? ICONS.complete : ICONS.Pendingqc}
-                                      width={16}
-                                      alt="img"
-                                    />
-                                  </div>
-                             : null }
+                                  {project.co_status ? (
+                                    <div className="status-item">
+                                      CO:
+                                      <img
+                                        src={
+                                          project.co_status === 'CO Complete'
+                                            ? ICONS.complete
+                                            : ICONS.Pendingqc
+                                        }
+                                        width={16}
+                                        alt="img"
+                                      />
+                                    </div>
+                                  ) : null}
                                 </div>
-
-
                               </div>
 
                               {/* <p className='performance-info-p' onClick={() => {}}>More info.</p> */}

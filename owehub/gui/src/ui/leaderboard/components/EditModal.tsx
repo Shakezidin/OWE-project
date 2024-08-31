@@ -15,6 +15,8 @@ import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import PLaceholderImg from '../../../resources/assets/placeholder_img.svg';
+import useAuth from '../../../hooks/useAuth';
+
 interface EditModalProps {
   onClose: () => void;
   vdealer: any;
@@ -87,8 +89,11 @@ const LogoPicker = ({
   dealerLogo: undefined | string;
 }) => {
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { authData } = useAuth();
+  
+  const role = authData?.role;
+  const adminTheme = authData?.adminTheme;
 
   const handleFileInputChange = () => {
     const file = fileInputRef.current?.files?.[0];
@@ -102,15 +107,12 @@ const LogoPicker = ({
       }
     };
   };
-  const role = localStorage.getItem('role');
+
   const switchImg = () => {
     if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
-      const admintheme = localStorage.getItem('admintheme');
-      if (admintheme) {
-        const parsed = JSON.parse(admintheme);
-        if (parsed) {
-          return parsed.dealer_logo || ICONS.OWEBanner;
-        }
+
+      if (adminTheme) {
+        return adminTheme.dealerLogo || ICONS.OWEBanner;
       } else {
         return ICONS.OWEBanner;
       }
@@ -155,7 +157,9 @@ const EditModal = ({
   const [color, setColor] = useState('#40A2EC');
   const [logo, setLogo] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const role = localStorage.getItem('role');
+  const { authData, appendAuthData } = useAuth();
+
+  const role = authData?.role;
   const handleUpdate = async () => {
     let imageUrl;
     setIsLoading(true);
@@ -164,13 +168,11 @@ const EditModal = ({
         imageUrl = await uploadImage(logo);
       }
       if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
-        localStorage.setItem(
-          'admintheme',
-          JSON.stringify({
-            bg_color: color,
-            dealer_logo: imageUrl,
-          })
-        );
+        const adminTheme = {
+          bg_color: color,
+          dealer_logo: imageUrl,
+        };
+        appendAuthData('adminTheme', adminTheme);
         setTimeout(() => {
           setRefetch((prev) => !prev);
         }, 100);

@@ -6,6 +6,7 @@ import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { UserManagementTableColumn } from '../../../../resources/static_data/UserManagementColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import useAuth from '../../../../hooks/useAuth';
 
 interface DBUserTableProps {
   data: UserRoleBasedListModel[];
@@ -30,6 +31,7 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
   const isAllRowsSelected = selectedRows?.size === data?.length;
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const { authData } = useAuth();
 
   const handleSort = (key: string) => {
     console.log(key);
@@ -68,7 +70,7 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem('email');
+    const storedEmail = authData?.email;
     if (storedEmail) {
       setEmail(storedEmail);
     }

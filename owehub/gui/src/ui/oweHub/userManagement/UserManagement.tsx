@@ -35,6 +35,7 @@ import {
   ALL_USER_ROLE_LIST as USERLIST,
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
+import useAuth from '../../../hooks/useAuth';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -46,10 +47,11 @@ const UserManagement: React.FC = () => {
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
+  const { authData } = useAuth();
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
-    const userRole = localStorage.getItem('role');
+    const userRole = authData?.role;
     if (userRole === TYPE_OF_USER.DEALER_OWNER) {
       role = role.filter(
         (role) =>
@@ -60,7 +62,7 @@ const UserManagement: React.FC = () => {
       );
     }
     return role;
-  }, []);
+  }, [authData]);
   const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
   const {
     loading,

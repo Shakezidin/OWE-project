@@ -86,13 +86,15 @@ import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/Schedule
 import Calendar from './ui/Calendar/OldCalendar';
 function App() {
   const dispatch = useAppDispatch();
+  const { isAuthenticated, role_name } = useAppSelector(
+    (state: RootState) => state.auth
+  );
 
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-  const { isAuthenticated, role_name } = useAppSelector(
-    (state: RootState) => state.auth
-  );
+
+  console.log(role_name);
 
   /**config and user manangement routes*/
   const configAndUserManagementRoutes = () => {

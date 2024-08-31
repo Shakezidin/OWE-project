@@ -124,7 +124,7 @@ import BellPr from '../../resources/assets/BellIconPr.svg';
 import locationpr from '../../resources/assets/location.svg';
 import Phone from '../../resources/assets/Phone.svg';
 import Techie from '../../resources/assets/techie.svg';
-import complete from '../../resources/assets/COmpleted.png';
+import complete from '../../resources/assets/Completed.png';
 import pending from '../../resources/assets/Pending.png';
 import AddIconSr from '../../resources/assets/AddNewSr.svg';
 import SystemSize from '../../resources/assets/SystemSize.svg';
@@ -135,9 +135,8 @@ import up from '../../resources/assets/Polygon 14.svg';
 import down from '../../resources/assets/Polygon 15.svg';
 import QCTICK from '../../resources/assets/qctick.svg';
 import QCLine from '../../resources/assets/QCLine.svg';
-import userSwap from "../../resources/assets/user_swap.png"
-import pendingqc from "../../resources/assets/pendingqcntp.svg"
-
+import userSwap from '../../resources/assets/user_swap.png';
+import pendingqc from '../../resources/assets/pendingqcntp.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -291,6 +290,5 @@ export const ICONS = {
   QCTICK: QCTICK,
   QCLine: QCLine,
   userSwap,
-  Pendingqc:pendingqc
-
+  Pendingqc: pendingqc,
 };

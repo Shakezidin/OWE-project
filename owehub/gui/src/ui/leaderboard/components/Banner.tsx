@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { FaChevronDown } from 'react-icons/fa';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import useAuth from '../../../hooks/useAuth';
 
 interface BannerProps {
   selectDealer: { label: string; value: string }[];
@@ -37,13 +38,15 @@ const Banner: React.FC<BannerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
+  const { authData } = useAuth();
+
   const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
+    authData?.isPasswordChangeRequired === 'false'
   );
   const tableData = {
     tableNames: ['dealer_name'],
   };
-  const role = localStorage.getItem('role');
+  const role = authData?.role;
 
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({
@@ -102,13 +105,13 @@ const Banner: React.FC<BannerProps> = ({
 
   useEffect(() => {
     if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
-      const admintheme = localStorage.getItem('admintheme');
+      const admintheme = authData?.adminTheme;
       if (admintheme) {
-        const parsed = JSON.parse(admintheme);
+        const parsed = admintheme;
         setDetails((prev: any) => ({ ...prev, ...parsed }));
       }
     }
-  }, [refetch]);
+  }, [refetch, authData]);
 
   useEffect(() => {
     if (details?.dealer_id) {
