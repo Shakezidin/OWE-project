@@ -103,6 +103,7 @@ const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming wee
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
 // Calculate the start and end of last week
@@ -133,6 +134,11 @@ const periodFilterOptions: DateRangeWithLabel[] = [
     label: 'Last Month',
     start: startOfLastMonth,
     end: endOfLastMonth,
+  },
+  {
+    label: 'Last Quarter',
+    start: startOfThreeMonthsAgo,
+    end: today,
   },
   {
     label: 'This Year',
@@ -429,7 +435,7 @@ const DateFilter = ({
             }),
             menu: (baseStyles) => ({
               ...baseStyles,
-              width: '92px',
+              width: '109px',
               zIndex: 999,
               color: '#FFFFFF',
             }),
