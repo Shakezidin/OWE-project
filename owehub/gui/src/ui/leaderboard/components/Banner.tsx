@@ -272,7 +272,7 @@ const Banner: React.FC<BannerProps> = ({
             >
               <img
                 src={ICONS.BannerTrophy}
-                style={{ maxWidth: 225 }}
+                style={{ maxWidth: 241 }}
                 alt="banner-trophy-image"
               />
             </div>
