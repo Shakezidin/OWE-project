@@ -270,7 +270,11 @@ const Banner: React.FC<BannerProps> = ({
                   : 'user-trophy'
               }
             >
-              <img src={ICONS.BannerTrophy} alt="banner-trophy-image" />
+              <img
+                src={ICONS.BannerTrophy}
+                style={{ maxWidth: 225 }}
+                alt="banner-trophy-image"
+              />
             </div>
             <div className="banner-stars">
               <img

@@ -295,6 +295,7 @@ const TeamManagement: React.FC = () => {
                                     <img
                                       src={ICONS.teamgroup}
                                       alt="team-group"
+                                      style={{ maxWidth: 77 }}
                                     />
                                     <h4>{item.team_strength} members</h4>
                                   </div>

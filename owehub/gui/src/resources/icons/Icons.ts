@@ -103,13 +103,13 @@ import user from '../../resources/assets/sales.svg';
 import vector from '../../resources/assets/Vector1.svg';
 import lable_img from '../../resources/assets/lable_img.svg';
 import dbm from '../../resources/assets/dbm.svg';
-import teamgroup from '../../resources/assets/teamgroup.svg';
+import teamgroup from '../../resources/assets/teamgroup.png';
 import addicon from '../../resources/assets/addnew.svg';
 import TeamEdit from '../../resources/assets/TeamEdit.svg';
 import cutOff from '../../resources/assets/cutoff_icon.svg';
 import BannerLogo from '../../resources/assets/banner-logo.svg';
 import OWEBannerLogo from '../../resources/assets/owe-banner-logo.svg';
-import BannerTrophy from '../../resources/assets/banner-trophy.svg';
+import BannerTrophy from '../../resources/assets/banner.png';
 import Performars from '../../resources/assets/performars.svg';
 import PerformanceBackground from '../../resources/assets/performars-background.svg';
 import GreyTwo from '../../resources/assets/greyTwo.svg';
@@ -135,9 +135,8 @@ import up from '../../resources/assets/Polygon 14.svg';
 import down from '../../resources/assets/Polygon 15.svg';
 import QCTICK from '../../resources/assets/qctick.svg';
 import QCLine from '../../resources/assets/QCLine.svg';
-import userSwap from "../../resources/assets/user_swap.png"
-import pendingqc from "../../resources/assets/pendingqcntp.svg"
-
+import userSwap from '../../resources/assets/user_swap.png';
+import pendingqc from '../../resources/assets/pendingqcntp.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -291,6 +290,5 @@ export const ICONS = {
   QCTICK: QCTICK,
   QCLine: QCLine,
   userSwap,
-  Pendingqc:pendingqc
-
+  Pendingqc: pendingqc,
 };
