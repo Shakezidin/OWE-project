@@ -39,7 +39,7 @@
   transition: transform 0.3s ease;
 }
 
-.search-container:hover {
+.search-container .user-img-container:hover {
   /* background-color: #363636; */
   transform: scale(1.02);
 }

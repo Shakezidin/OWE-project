@@ -416,16 +416,29 @@
   border-radius: 4px;
   color: var(--orange-color);
 }
-.exportt {
-  transition: all 500ms;
+
+
+.export-trigger{
+  margin-left: auto;
+  width: fit-content;
+  cursor: pointer;
+  z-index: 10;
+  background-color: var(--orange-color);
+  border-radius: 5px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #f1f1f1;
+  transition:all 0.3s ease;
 }
 
-.exportt:hover {
-  transition: all 500ms;
+.export-trigger:hover {
   transform: scale(1.09);
   background-color: #ec9d76;
   color: #fff;
 }
+
+
+
 .export-opt {
   overflow: hidden;
 }
@@ -466,7 +479,7 @@
   border-radius: 8px;
 }
 
-.exportt {
+/* .exportt {
   margin-left: auto;
   width: fit-content;
   cursor: pointer;
@@ -476,7 +489,7 @@
   padding: 6px 12px;
   font-size: 12px;
   color: #f1f1f1;
-}
+} */
 .export-btn {
   background: transparent;
   display: flex;

@@ -8,6 +8,7 @@ import {
   AiOutlineTeam,
 } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
+import { FaRegCalendarCheck } from "react-icons/fa6";
 
 const mob = {
   mob: [
@@ -16,22 +17,6 @@ const mob = {
       sidebarProps: {
         displayText: 'Leaderboard',
         icon: <ImStatsBars2 size={18} style={{ flexShrink: '0' }} />,
-      },
-    },
-    {
-      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
-
-      sidebarProps: {
-        displayText: 'Teams',
-        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
-    {
-      path: ROUTES.USER_MANAEMENT,
-
-      sidebarProps: {
-        displayText: 'Users',
-        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
     {
@@ -60,14 +45,38 @@ const mob = {
         ),
       },
     },
+
+    {
+      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+
+      sidebarProps: {
+        displayText: 'Teams',
+        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.USER_MANAEMENT,
+
+      sidebarProps: {
+        displayText: 'Users',
+        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    
     {
       path: ROUTES.TECHNICAL_SUPPORT,
-
       sidebarProps: {
         displayText: 'Technical Support',
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
+    // {
+    //   path: ROUTES.CALENDAR,
+    //   sidebarProps: {
+    //     displayText: 'Performance Calendar',
+    //     icon: <FaRegCalendarCheck size={20} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
   ],
 };
 

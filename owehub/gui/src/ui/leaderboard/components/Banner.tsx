@@ -40,13 +40,18 @@ const Banner: React.FC<BannerProps> = ({
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
   const { authData } = useAuth();
 
-  const [isAuthenticated] = useState(
-    authData?.isPasswordChangeRequired === 'false'
-  );
+  const [isAuthenticated, setAuthenticated] = useState(false);
   const tableData = {
     tableNames: ['dealer_name'],
   };
   const role = authData?.role;
+
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
 
   const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
     newFormData?.dealer_name?.map((value: string) => ({

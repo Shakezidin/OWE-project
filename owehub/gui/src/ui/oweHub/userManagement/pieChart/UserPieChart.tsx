@@ -224,11 +224,11 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   <div
                     className="flex items-center mr1"
                     style={{
-                      background: '#EE824D',
+                      background: '#E0728C',
                       width: 18,
                       height: 18,
                       borderRadius: '50%',
-                      border: '3px solid #FFE2D4',
+                      border: '3px solid rgb(253 196 209)',
                       flexShrink: 0,
                     }}
                   />

@@ -83,11 +83,6 @@ const Index = () => {
     if (role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ADMIN) {
       setIsFetched(true);
     }
-
-    console.log(
-      'authData?.isPasswordChangeRequired',
-      authData?.isPasswordChangeRequired
-    );
     setAuthenticated(
       authData?.isPasswordChangeRequired?.toString() === 'false'
     );

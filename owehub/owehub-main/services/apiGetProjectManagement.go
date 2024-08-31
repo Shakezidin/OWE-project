@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"math"
 	"strings"
 	"time"
@@ -132,7 +133,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
-	if filter != "" || role == "Admin" {
+	if filter != "" || role == string(types.RoleAdmin) {
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
@@ -176,10 +177,29 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
-	projectList.CADLink = data[0]["current_live_cad"].(string)
-	projectList.DATLink = data[0]["system_sold_er"].(string)
-	projectList.PodioLink = data[0]["podio_link"].(string)
-	projectList.CoStatus = data[0]["change_order_status"].(string)
+	if val, ok := data[0]["current_live_cad"].(string); ok {
+		projectList.CADLink = val
+	} else {
+		projectList.CADLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["system_sold_er"].(string); ok {
+		projectList.DATLink = val
+	} else {
+		projectList.DATLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["podio_link"].(string); ok {
+		projectList.PodioLink = val
+	} else {
+		projectList.PodioLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["change_order_status"].(string); ok {
+		projectList.CoStatus = val
+	} else {
+		projectList.CoStatus = "" // or a default value
+	}
 
 	var ntp models.NTP
 	var qc models.QC

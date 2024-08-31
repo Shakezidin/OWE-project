@@ -38,37 +38,33 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
 
-  const role = authData?.role;
-  const dealer = authData?.dealer;
+  const role = localStorage.getItem('role');
+
+  const dealer = localStorage.getItem('dealer');
+  console.log(dealer, 'sidebar dealer');
 
   const filteredList = useMemo(() => {
     let list = [...createSideMenuList()];
+    const isStaging = process.env.REACT_APP_ENV;
     if (role === TYPE_OF_USER.ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        newArr[0].mob.push(item);
+        if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+        } else {
+          newArr[0].mob.push(item);
+        }
       });
       return newArr;
     } else if (role === TYPE_OF_USER.DEALER_OWNER) {
-      if (dealer === 'WhyGen Solar') {
-        return list;
-      } else {
-        const newArr: any[] = [{ mob: [] }];
-        list[0].mob.forEach((item: any) => {
-          if (
-            item.path !== ROUTES.PROJECT_PERFORMANCE &&
-            item.path !== ROUTES.PROJECT_STATUS
-          ) {
-            newArr[0].mob.push(item);
-          }
-        });
-        return newArr;
-      }
+      return list;
     } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
-          newArr[0].mob.push(item);
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
@@ -77,12 +73,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-          item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === 'WhyGen Solar') ||
-            (item.path !== ROUTES.PROJECT_PERFORMANCE &&
-              item.path !== ROUTES.PROJECT_STATUS))
+          item.path !== ROUTES.USER_MANAEMENT
         ) {
-          newArr[0].mob.push(item);
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
@@ -95,20 +91,21 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS
         ) {
-          newArr[0].mob.push(item);
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
     } else {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (
-          item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === 'WhyGen Solar') ||
-            (item.path !== ROUTES.PROJECT_PERFORMANCE &&
-              item.path !== ROUTES.PROJECT_STATUS))
-        ) {
-          newArr[0].mob.push(item);
+        if (item.path !== ROUTES.USER_MANAEMENT) {
+          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
@@ -154,6 +151,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   // TODO showing required routes for now
   // const isMobile = width < 768;
   const isMobile = true;
+
+  console.log(dealer, 'dealer');
   return (
     <div
       style={{ zIndex: '30' }}

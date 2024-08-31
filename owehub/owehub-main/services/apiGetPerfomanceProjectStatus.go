@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"encoding/json"
 	"io/ioutil"
 	"math"
@@ -130,11 +131,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		dataReq.DealerName = dealerName
 
 		switch role {
-		case "Admin", "Finance Admin":
+		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
-		case "Dealer Owner":
+		case string(types.RoleDealerOwner):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
-		case "Sale Representative":
+		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 		// this is for the roles regional manager and sales manager
@@ -705,9 +706,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			filtersBuilder.WriteString(" WHERE")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(" intOpsMetSchema.unique_id IN (")
+		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
 
 			if i < len(dataFilter.UniqueIds)-1 {
@@ -797,7 +798,6 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		whereAdded = true
 	}
 
-	// Check if there are filters for unique IDs
 	if len(dataFilter.UniqueIds) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -806,9 +806,9 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" intOpsMetSchema.unique_id IN (")
+		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
 
 			if i < len(dataFilter.UniqueIds)-1 {
@@ -862,9 +862,6 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
-func getRecordCount(milestone string) {
-
-}
 func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string) {
 	var count int64
 	if contract_date != "" && completedDate == "" {
@@ -948,7 +945,7 @@ func parseDate(dateStr string) time.Time {
 
 func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
 	var count int64
-	if CadCompleteDate != "" && permitApprovedDate == "" && IcApprovedDate == "" {
+	if CadCompleteDate != "" && (permitApprovedDate == "" || IcApprovedDate == "") {
 		count = 1
 	}
 

@@ -38,7 +38,9 @@ import { ICONS } from '../../../resources/icons/Icons';
 import { MdDone } from 'react-icons/md';
 import useAuth from '../../../hooks/useAuth';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-
+import QCModal from './PopUp';
+import QCPopUp from './ProjMngPopups/QC';
+import NtpPopUp from './ProjMngPopups/NTP';
 interface Option {
   value: string;
   label: string;
@@ -162,20 +164,18 @@ const ProjectPerformence = () => {
     setIsExporting(true);
     const headers = [
       'UniqueId',
-      'Home Owner',
-      'Email',
-      'PhoneNumber',
-      'State',
+      'Homeowner Name',
+      'Homeowner Contact Info',
       'Address',
-      'ContractDate',
-      'SystemSize',
-      'ContractAmount',
+      'State',
+      'Contract $',
+      'Sys Size',
+      'Sale Date',
     ];
 
-    const getAllData = await postCaller('get_csvdownload', {
-      page: 'performance',
-      start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+    const getAllData = await postCaller('get_peroformancecsvdownload', {
+      start_date: '',
+      end_date: '',
       page_number: 1,
       page_size: projectsCount,
       selected_milestone: selectedMilestone,
@@ -187,13 +187,12 @@ const ProjectPerformence = () => {
     const csvData = getAllData?.data?.performance_csv?.map?.((item: any) => [
       item.UniqueId,
       item.HomeOwner,
-      item.Email,
       item.PhoneNumber,
-      item.State,
       item.Address,
-      item.ContractDate,
-      item.SystemSize,
+      item.State,
       item.ContractAmount,
+      item.SystemSize,
+      item.ContractDate,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -204,7 +203,7 @@ const ProjectPerformence = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Performance.csv');
+    link.setAttribute('download', 'Pipeline.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -280,16 +279,8 @@ const ProjectPerformence = () => {
       getPerfomanceStatus({
         page,
         perPage,
-        startDate: searchValue
-          ? ''
-          : selectedRangeDate.start
-            ? format(selectedRangeDate.start, 'dd-MM-yyyy')
-            : '',
-        endDate: searchValue
-          ? ''
-          : selectedRangeDate.end
-            ? format(selectedRangeDate.end, 'dd-MM-yyyy')
-            : '',
+        startDate: '',
+        endDate: '',
         uniqueId: searchValue ? searchValue : '',
         selected_milestone: selectedMilestone,
       })
@@ -378,31 +369,7 @@ const ProjectPerformence = () => {
   const resetPage = () => {
     setPage(1);
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (isAuthenticated) {
-          const data = await postCaller('get_performance_tiledata', {
-            start_date: selectedRangeDate.start,
-            end_date: selectedRangeDate.end,
-          });
-
-          if (data?.data) {
-            setTileData(data?.data);
-          }
-
-          if (data.status > 201) {
-            toast.error(data.message);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, [isAuthenticated, selectedRangeDate.start, selectedRangeDate.end]);
+ 
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
@@ -662,6 +629,25 @@ const ProjectPerformence = () => {
 
   const handlePendingRequest = (pending: any) => {
     setSelectedMilestone(pending);
+    setPage(1);
+  };
+
+  const [selectedProjectQC, setSelectedProjectQC] = useState<any>(null);
+
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
+  const filterClose = () => setFilterOpen(false);
+
+  const filter = () => {
+    setFilterOpen(true);
+  };
+
+  const [ntpOPen, setNtpOPen] = React.useState<boolean>(false);
+
+  const ntpClose = () => setNtpOPen(false);
+
+  const ntpAction = () => {
+    setNtpOPen(true);
   };
 
   console.log(projectStatus, datacount, 'projectStatus');
@@ -676,32 +662,16 @@ const ProjectPerformence = () => {
         marginLeftMobile="12px"
       />
       <div className="project-container">
-        {role === 'Admin' && (
-          <div className="leaderboard-data__selected-dates performance-date">
-            {selectedRangeDate.start && selectedRangeDate.end ? (
-              <>
-                {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
-                {format(selectedRangeDate.end, 'dd MMM yyyy')}
-              </>
-            ) : null}
-          </div>
-        )}
-        <div className="project-heading">
+        {/* <div className="leaderboard-data__selected-dates performance-date">
+          {selectedRangeDate.start && selectedRangeDate.end ? (
+            <>
+              {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
+              {format(selectedRangeDate.end, 'dd MMM yyyy')}
+            </>
+          ) : null}
+        </div> */}
+        <div className="project-heading pipeline-heading">
           <h2>Active Queue</h2>
-          {role === 'Admin' && (
-            <div className="flex items-center justify-end">
-              <PeriodFilter
-                resetPage={resetPage}
-                period={selectedRangeDate}
-                setPeriod={setSelectedRangeDate}
-              />
-              <DateFilter
-                selected={selectedRangeDate}
-                resetPage={resetPage}
-                setSelected={setSelectedRangeDate}
-              />
-            </div>
-          )}
         </div>
 
         <div className="flex stats-card-wrapper">
@@ -727,6 +697,8 @@ const ProjectPerformence = () => {
                         activeCardId === card.id
                           ? `4px solid ${cardColor}`
                           : `1px dotted ${cardColor}`,
+                      pointerEvents: card.pending === 'roof' ? 'none' : 'auto',   
+                      opacity: card.pending === 'roof' ? '0.3' : '',
                     }}
                     onClick={(e) => {
                       handlePendingRequest(card?.pending);
@@ -740,7 +712,9 @@ const ProjectPerformence = () => {
                       {activeCardId === card.id ? <MdDone /> : card.id}
                     </span>
                     <p>{card.title || 'N/A'}</p>
+                    { card.pending !== 'roof' ?
                     <h2>{card.value || 'N/A'}</h2>
+                    : <small style={{color:'white'}}>Coming Soon</small>}
                   </div>
                   {index < topCardsData.length - 1 && (
                     <div
@@ -783,7 +757,9 @@ const ProjectPerformence = () => {
                 <div className="active-queue">
                   <IoClose
                     onClick={() => {
-                      setActiveCardId(null), setSelectedMilestone('');
+                      setActiveCardId(null),
+                        setSelectedMilestone(''),
+                        setPage(1);
                     }}
                   />
                   <h2>{activeCardTitle || 'N/A'}</h2>
@@ -828,7 +804,7 @@ const ProjectPerformence = () => {
                 </div>
               </div>
             </div>
-            <div>
+            <div className="perf-export-btn">
               <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
@@ -905,10 +881,19 @@ const ProjectPerformence = () => {
                                 </Link>
 
                                 <div className="milestone-status">
-                                  <div className="status-item">
+                                  <div
+                                    className="status-item click qc"
+                                    onClick={() => {
+                                      setSelectedProjectQC(project.qc);
+                                      filter();
+                                    }}
+                                  >
                                     QC:
                                     <img
                                       src={
+                                        Object.values(project.qc).some(
+                                          (value) => value === 'Pending'
+                                        ) ||
                                         project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
@@ -918,10 +903,19 @@ const ProjectPerformence = () => {
                                     />
                                     {project.qc.qc_action_required_count}
                                   </div>
-                                  <div className="status-item">
+                                  <div
+                                    className={`status-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
+                                    onClick={() => {
+                                      setSelectedProjectQC(project.ntp);
+                                      ntpAction();
+                                    }}
+                                  >
                                     NTP:
                                     <img
                                       src={
+                                        Object.values(project.ntp).some(
+                                          (value) => value === 'Pending'
+                                        ) ||
                                         project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
@@ -931,20 +925,16 @@ const ProjectPerformence = () => {
                                     />
                                     {project.ntp.action_required_count}
                                   </div>
-                                  {project.co_status ? (
-                                    <div className="status-item">
-                                      CO:
-                                      <img
-                                        src={
-                                          project.co_status === 'CO Complete'
-                                            ? ICONS.complete
-                                            : ICONS.Pendingqc
-                                        }
-                                        width={16}
-                                        alt="img"
-                                      />
-                                    </div>
-                                  ) : null}
+                                  {project.co_status !== 'CO Complete' &&
+                                    project.co_status && (
+                                      <div
+                                        className="status-item co"
+                                        data-tooltip={project.co_status} // Custom tooltip
+                                      >
+                                        C/O
+                                        
+                                      </div>
+                                    )}
                                 </div>
                               </div>
 
@@ -1188,6 +1178,17 @@ const ProjectPerformence = () => {
                     }
                   )
                 )}
+
+                <QCPopUp
+                  projectDetail={selectedProjectQC}
+                  isOpen={filterOPen}
+                  handleClose={filterClose}
+                />
+                <NtpPopUp
+                  projectDetail={selectedProjectQC}
+                  isOpen={ntpOPen}
+                  handleClose={ntpClose}
+                />
               </tbody>
             </table>
           </div>
