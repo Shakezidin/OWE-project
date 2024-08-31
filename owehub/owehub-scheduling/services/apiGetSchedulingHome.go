@@ -11,7 +11,7 @@ import (
 	"OWEApp/shared/googlemaps"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"time"
+	"sync"
 
 	"encoding/json"
 	"fmt"
@@ -60,7 +60,37 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	scheduleDataQuery = fmt.Sprintf(`
+	if dataReq.Queue == "priority" {
+		scheduleDataQuery = fmt.Sprintf(`
+			SELECT 
+				home_owner, 
+				customer_email,
+				customer_phone_number,
+				system_size,
+				address,
+				contract_date
+			FROM CONSOLIDATED_DATA_VIEW
+			WHERE
+				contract_date IS NOT NULL 
+				AND site_survey_scheduled_date IS NULL
+				AND home_owner IS NOT NULL
+				AND customer_email IS NOT NULL
+				AND address IS NOT NULL
+				AND address != ''
+				AND contract_date < NOW() - INTERVAL '36 HOURS'
+			ORDER BY 
+				contract_date %s
+			LIMIT %d
+			OFFSET %d
+			`,
+			dataReq.Order,
+			dataReq.PageNumber,
+			(dataReq.PageNumber-1)*dataReq.PageSize,
+		)
+	}
+
+	if dataReq.Queue == "travel" || dataReq.Queue == "regular" {
+		scheduleDataQuery = fmt.Sprintf(`
 		SELECT 
 			home_owner, 
 			customer_email,
@@ -68,14 +98,21 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 			system_size,
 			address,
 			contract_date
-		 FROM CONSOLIDATED_DATA_VIEW
-		 WHERE
-		 	contract_date IS NOT NULL 
-		 	AND site_survey_scheduled_date IS NULL
-		 ORDER BY 
-			contract_date %s`,
-		dataReq.Order,
-	)
+		FROM CONSOLIDATED_DATA_VIEW
+		WHERE
+			contract_date IS NOT NULL 
+			AND site_survey_scheduled_date IS NULL
+			AND home_owner IS NOT NULL
+			AND customer_email IS NOT NULL
+			AND address IS NOT NULL
+			AND address != ''
+			AND contract_date >= NOW() - INTERVAL '36 HOURS'
+		ORDER BY 
+			contract_date %s
+		`,
+			dataReq.Order,
+		)
+	}
 
 	scheduleDataRecords, err = db.ReteriveFromDB(db.RowDataDBIndex, scheduleDataQuery, nil)
 	if err != nil {
@@ -84,14 +121,16 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	priorityTime := time.Now().Add(-36 * time.Hour) // contracts before this time are "priority"
-
-	travelQueueItems, err = getTravelQueue(scheduleDataRecords)
-
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get travel queue data err: %v", err)
-		travelQueueItems = map[string]bool{}
+	// compute travel queue only when necessary
+	if dataReq.Queue == "travel" || dataReq.Queue == "regular" {
+		travelQueueItems, err = getTravelQueue(scheduleDataRecords)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get travel queue data err: %v", err)
+			travelQueueItems = map[string]bool{}
+		}
 	}
+
+	apiResp.SchedulingHomeList = []models.GetSchedulingHome{}
 
 	for _, record := range scheduleDataRecords {
 		// Home Owner Name
@@ -129,15 +168,6 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 			address = ""
 		}
 
-		// Contract Date
-		contractDate, ok := record["contract_date"].(time.Time)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get contract date for Home Owner: %v, Item: %+v", homeOwner, record)
-			contractDate = time.Time{}
-		}
-
-		itemQueue := "regular" // item belongs to regular queue by default
-
 		item := models.GetSchedulingHome{
 			HomeOwner:           homeOwner,
 			RoofType:            "XYZ",
@@ -147,25 +177,26 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 			Address:             address,
 		}
 
-		// Job is in travel queue if travelQueueItems contains this address
-		if _, ok := travelQueueItems[address]; ok {
-			itemQueue = "travel"
+		if dataReq.Queue == "priority" {
+			apiResp.SchedulingHomeList = append(apiResp.SchedulingHomeList, item)
+			continue
 		}
 
-		// Job is in priority if:
-		// 1. More than 36 hours have been passed since contract
-		// TODO: More conditions for priority job
-		if contractDate.Before(priorityTime) {
-			itemQueue = "priority"
+		_, isTravel := travelQueueItems[address]
+
+		if dataReq.Queue == "travel" && isTravel {
+			apiResp.SchedulingHomeList = append(apiResp.SchedulingHomeList, item)
 		}
 
-		// push the item if desired queue is selected
-		if dataReq.Queue == itemQueue {
+		if dataReq.Queue == "regular" && !isTravel {
 			apiResp.SchedulingHomeList = append(apiResp.SchedulingHomeList, item)
 		}
 	}
 
-	apiResp.SchedulingHomeList = StaticPaginate(apiResp.SchedulingHomeList, dataReq.PageNumber, dataReq.PageSize)
+	// priority queue already paginated, so static pagination not required
+	if dataReq.Queue == "regular" || dataReq.Queue == "travel" {
+		apiResp.SchedulingHomeList = StaticPaginate(apiResp.SchedulingHomeList, dataReq.PageNumber, dataReq.PageSize)
+	}
 
 	recordCount = int64(len(apiResp.SchedulingHomeList))
 	log.FuncInfoTrace(0, "Number of ScheduleData fetched : %v list %+v", recordCount, apiResp.SchedulingHomeList)
@@ -182,164 +213,94 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
  ******************************************************************************/
 func getTravelQueue(homeownerRecords []map[string]interface{}) (travelQueue map[string]bool, err error) {
 	var (
-		existingAddresses         string
-		whereEleList              []interface{}
-		newAddressesQuery         string
-		newAddressesRecords       []map[string]interface{}
+		mutex                     sync.Mutex
 		warehouseAddressesRecords []map[string]interface{}
-		routeMatrixResp           *googlemaps.RouteMatrixResp
-		groupingRecords           []map[string]interface{}
 	)
 
 	log.EnterFn(0, "getTravelQueue")
 	defer func() { log.ExitFn(0, "getTravelQueue", err) }()
 
-	if len(homeownerRecords) == 0 {
-		return map[string]bool{}, nil
+	warehouseAddressesRecords, err = db.ReteriveFromDB(
+		db.OweHubDbIndex,
+		"SELECT address FROM scheduling_locations WHERE type = 'warehouse'",
+		nil,
+	)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get warehouse addresses from DB err: %v", err)
+		return nil, err
 	}
 
-	for i, record := range homeownerRecords {
+	destinations := []googlemaps.RouteMatrixReqItem{} // warehouse addresses
+
+	for _, record := range warehouseAddressesRecords {
 		address, ok := record["address"].(string)
 		if !ok || address == "" {
 			log.FuncErrorTrace(0, "Failed to get address for record: %+v", record)
 			continue
 		}
 
-		if i != 0 {
-			existingAddresses += ", "
-		}
-
-		whereEleList = append(whereEleList, address)
-		existingAddresses = fmt.Sprintf("%s($%d, 'homeowner')", existingAddresses, len(whereEleList))
-	}
-
-	newAddressesQuery = fmt.Sprintf(`
-		SELECT e.* 
-		FROM (VALUES %s) e(address, type) 
-		WHERE NOT EXISTS (
-			SELECT 1 FROM scheduling_locations sl WHERE sl.type = 'homeowner' AND sl.address = e.address
-		)`,
-		existingAddresses,
-	)
-
-	newAddressesRecords, err = db.ReteriveFromDB(db.OweHubDbIndex, newAddressesQuery, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get new addresses from DB err: %v", err)
-		return nil, err
-	}
-
-	// if any new addresses found, hit googlemaps api & update the db
-	if len(newAddressesRecords) > 0 {
-		warehouseAddressesRecords, err = db.ReteriveFromDB(
-			db.OweHubDbIndex,
-			"SELECT address FROM scheduling_locations WHERE type = 'warehouse'",
-			nil,
-		)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get warehouse addresses from DB err: %v", err)
-			return nil, err
-		}
-
-		origins := []googlemaps.RouteMatrixReqItem{}      // homeowner addresses
-		destinations := []googlemaps.RouteMatrixReqItem{} // warehouse addresses
-
-		for _, record := range newAddressesRecords {
-			address, ok := record["address"].(string)
-			if !ok || address == "" {
-				log.FuncErrorTrace(0, "Failed to get address for new address record: %+v", record)
-				continue
-			}
-
-			origins = append(origins, googlemaps.RouteMatrixReqItem{
-				Waypoint: googlemaps.RouteMatrixReqWaypoint{
-					Address: &address,
-				},
-			})
-		}
-		for _, record := range warehouseAddressesRecords {
-			address, ok := record["address"].(string)
-			if !ok || address == "" {
-				log.FuncErrorTrace(0, "Failed to get address for warehouse record: %+v", record)
-				continue
-			}
-
-			destinations = append(destinations, googlemaps.RouteMatrixReqItem{
-				Waypoint: googlemaps.RouteMatrixReqWaypoint{
-					Address: &address,
-				},
-			})
-		}
-
-		routeMatrixResp, err = googlemaps.CallRouteMatrixApi(&googlemaps.RouteMatrixReq{
-			Origins:           origins,
-			Destinations:      destinations,
-			TravelMode:        "DRIVE",
-			RoutingPreference: "TRAFFIC_AWARE",
+		destinations = append(destinations, googlemaps.RouteMatrixReqItem{
+			Waypoint: googlemaps.RouteMatrixReqWaypoint{Address: &address},
 		})
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to hit googlemaps api err: %v", err)
-			return nil, err
-		}
-
-		// insert new location
-		err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "scheduling_locations", newAddressesRecords)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to insert new addresses into DB err: %v", err)
-			return nil, err
-		}
-
-		// insert routes
-		routeItems := make([]map[string]interface{}, 0)
-		for _, item := range *routeMatrixResp {
-			homeownerAddress := *origins[item.OriginIndex].Waypoint.Address
-			warehouseAddress := *destinations[item.DestinationIndex].Waypoint.Address
-
-			routeItems = append(routeItems, map[string]interface{}{
-				"homeowner_location_address": homeownerAddress,
-				"warehouse_location_address": warehouseAddress,
-				"distance_meters":            item.DistanceMeters,
-				"duration":                   item.Duration,
-			})
-		}
-		err = db.AddMultipleRecordInDB(db.OweHubDbIndex, "scheduling_locations", routeItems)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get new scheduling location records into DB err: %v", err)
-			return nil, err
-		}
 	}
 
-	groupingQuery := `
-		SELECT homeowner_location_address, min(distance_meters) 
-		FROM scheduling_routes 
-		GROUP BY homeowner_location_address`
+	originChunks := Chunkify(homeownerRecords, 25)
+	destChunks := Chunkify(destinations, 25)
+	originWg := sync.WaitGroup{}
 
-	groupingRecords, err = db.ReteriveFromDB(db.OweHubDbIndex, groupingQuery, nil)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to execute get address grouping from DB err: %v", err)
-		return nil, err
+	travelQueue = make(map[string]bool)
+
+	for originIndex := range originChunks {
+		originWg.Add(1)
+		destWg := sync.WaitGroup{}
+
+		go func(originChunk []map[string]interface{}) {
+			defer originWg.Done()
+
+			origins := []googlemaps.RouteMatrixReqItem{}
+
+			for _, record := range originChunk {
+				address, ok := record["address"].(string)
+				if !ok || address == "" {
+					log.FuncErrorTrace(0, "Failed to get address for record: %+v", record)
+					continue
+				}
+
+				origins = append(origins, googlemaps.RouteMatrixReqItem{
+					Waypoint: googlemaps.RouteMatrixReqWaypoint{Address: &address},
+				})
+			}
+
+			for destIndex := range destChunks {
+				destWg.Add(1)
+				go func(destinations []googlemaps.RouteMatrixReqItem) {
+					defer destWg.Done()
+
+					resp, err := googlemaps.CallRouteMatrixApi(&googlemaps.RouteMatrixReq{
+						Origins:      origins,
+						Destinations: destinations,
+						TravelMode:   "DRIVE",
+					})
+					if err != nil {
+						log.FuncErrorTrace(0, "Failed to hit googlemaps api err: %v", err)
+						return
+					}
+
+					for _, item := range *resp {
+						homeownerAddr := *origins[item.OriginIndex].Waypoint.Address
+						mutex.Lock()
+						if item.DistanceMeters >= 160934 { // 100 miles
+							travelQueue[homeownerAddr] = true
+						}
+						mutex.Unlock()
+					}
+
+				}(destChunks[destIndex])
+			}
+			destWg.Wait()
+		}(originChunks[originIndex])
 	}
 
-	travelQueue = map[string]bool{}
-
-	for _, record := range groupingRecords {
-		address, ok := record["homeowner_location_address"].(string)
-		if !ok || address == "" {
-			log.FuncErrorTrace(0, "Failed to get homeowner_location_address for group record: %+v", record)
-			continue
-		}
-
-		minDistMeters, ok := record["min"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get min for group record: %+v", record)
-			continue
-		}
-
-		minDistMiles := minDistMeters / 1609
-
-		if minDistMiles > 100 {
-			travelQueue[address] = true
-		}
-	}
-
+	originWg.Wait()
 	return travelQueue, nil
 }
