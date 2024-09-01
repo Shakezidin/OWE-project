@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 // Define the structure of the login response
-interface AdminTheme {
+export interface AdminTheme {
   BGColor: string;
   dealerLogo: string;
 }
@@ -26,7 +26,8 @@ type UseAuthReturnType = {
   authData: AuthData | null;
   saveAuthData: (data: AuthData) => void;
   clearAuthData: () => void;
-  appendAuthData: (key: keyof AuthData, value: any) => void;
+  appendAuthData: (key: keyof AuthData, value: any) => Promise<void>;
+  getUpdatedAuthData: () => AuthData | null;
 };
 
 const useAuth = (): UseAuthReturnType => {
@@ -39,19 +40,32 @@ const useAuth = (): UseAuthReturnType => {
     }
   }, []);
 
+  /** save auth data **/
   const saveAuthData = (data: AuthData) => {
     setAuthData(data);
     localStorage.setItem('authData', JSON.stringify(data));
   };
 
-  const appendAuthData = (key: keyof AuthData, value: any) => {
+  /**Append new key **/
+  const appendAuthData = async (key: keyof AuthData, value: any) => {
     if (authData) {
       const updatedAuthData = { ...authData, [key]: value };
       setAuthData(updatedAuthData);
       localStorage.setItem('authData', JSON.stringify(updatedAuthData));
     }
   };
+  /** Get updated key data */
+  const getUpdatedAuthData = (): AuthData | null => {
+    const savedAuthData = localStorage.getItem('authData');
+    if (savedAuthData) {
+      const parsedAuthData = JSON.parse(savedAuthData);
+      setAuthData(parsedAuthData);
+      return parsedAuthData;
+    }
+    return null;
+  };
 
+  /**Clear all data */
   const clearAuthData = () => {
     setAuthData(null);
     localStorage.removeItem('authData');
@@ -62,6 +76,7 @@ const useAuth = (): UseAuthReturnType => {
     saveAuthData,
     clearAuthData,
     appendAuthData,
+    getUpdatedAuthData,
   };
 };
 

@@ -27,9 +27,7 @@ const MainLayout = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [isOpenChangePassword, setIsOpenChangePassword] = useState(
-    authData?.isPasswordChangeRequired === 'true'
-  );
+  const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
   const [toggleOpen, setToggleOpen] = useState<boolean>(false);
   const isAuthenticated = useSelector(
@@ -38,16 +36,18 @@ const MainLayout = () => {
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
 
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setIsOpenChangePassword(isPasswordChangeRequired === 'true');
+  }, [authData]);
+
   /** TODO: temp solution for session logout. Need to change in future */
   useEffect(() => {
     const token = authData?.token;
     const expirationTime = authData?.expirationTime;
     const expirationTimeInMin = authData?.expirationTimeInMin;
-
-    console.log('authData', authData);
-    console.log('token', token);
-    console.log('expirationTime', expirationTime);
-    console.log('expirationTimeInMin', expirationTimeInMin);
 
     if (token && expirationTime && expirationTimeInMin) {
       const currentTime = Date.now();

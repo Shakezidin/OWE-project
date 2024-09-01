@@ -38,7 +38,7 @@ const Banner: React.FC<BannerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [opts, setOpts] = useState<{ label: string; value: string }[]>([]);
-  const { authData } = useAuth();
+  const { authData, getUpdatedAuthData } = useAuth();
 
   const [isAuthenticated, setAuthenticated] = useState(false);
   const tableData = {
@@ -91,7 +91,6 @@ const Banner: React.FC<BannerProps> = ({
 
           if (data.status > 201) {
             // setIsLoading(false);
-
             toast.error(data?.message);
             return;
           }
@@ -109,14 +108,13 @@ const Banner: React.FC<BannerProps> = ({
   }, [dealerId, role, refetch, isAuthenticated]);
 
   useEffect(() => {
-    if (role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN) {
-      const admintheme = authData?.adminTheme;
-      if (admintheme) {
-        const parsed = admintheme;
-        setDetails((prev: any) => ({ ...prev, ...parsed }));
+    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
+      const updatedAuthData = getUpdatedAuthData();
+      if (updatedAuthData && updatedAuthData.adminTheme) {
+        setDetails((prev: any) => ({ ...prev, ...updatedAuthData.adminTheme }));
       }
     }
-  }, [refetch, authData]);
+  }, [refetch, role]);
 
   useEffect(() => {
     if (details?.dealer_id) {
@@ -181,6 +179,7 @@ const Banner: React.FC<BannerProps> = ({
     };
   }, [newFormData, search]);
 
+  console.log('details', details);
   return (
     <div className="relative">
       <div

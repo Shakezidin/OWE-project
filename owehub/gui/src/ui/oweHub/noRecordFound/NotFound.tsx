@@ -7,7 +7,7 @@ const NotFound = () => {
   const { authData, saveAuthData } = useAuth();
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const change = authData?.isPasswordChangeRequired === 'true';
+  const change = authData?.isPasswordChangeRequired?.toString() === 'true';
   return (
     <div>
       {isAuthenticated ? (

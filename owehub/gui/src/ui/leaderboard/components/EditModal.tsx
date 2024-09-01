@@ -91,7 +91,7 @@ const LogoPicker = ({
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { authData } = useAuth();
-  
+
   const role = authData?.role;
   const adminTheme = authData?.adminTheme;
 
@@ -110,15 +110,12 @@ const LogoPicker = ({
 
   const switchImg = () => {
     if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
-
       if (adminTheme) {
         return adminTheme.dealerLogo || ICONS.OWEBanner;
       } else {
         return ICONS.OWEBanner;
       }
     } else {
-      console.log('else state');
-
       return dealerLogo || PLaceholderImg;
     }
   };
@@ -176,7 +173,7 @@ const EditModal = ({
         setTimeout(() => {
           setRefetch((prev) => !prev);
         }, 100);
-        onClose();
+          onClose();
       }
 
       if (vdealer) {

@@ -42,7 +42,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isMobile = width < 768;
 
   const handleLogout = () => {
-    clearAuthData();
+    // clearAuthData();
     dispatch(logout());
     navigate('/login');
   };
