@@ -237,6 +237,10 @@ const (
 	TableName_Breaker_Info              string = "breaker_info"
 	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
 	ViewName_REP_PAY                    string = "rep_pay_pr_data"
+
+	/* Scheduling Tables and Procedures */
+	TableName_SchedulingProjects  string = "scheduling_projects"
+	TableName_SchedulingLocations string = "scheduling_locations"
 )
 
 /******************************************************************************

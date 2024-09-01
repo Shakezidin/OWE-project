@@ -50,3 +50,36 @@ type ArchiveSchedulingHome struct {
 	RecordId   []int64 `json:"record_id"`
 	IsArchived bool    `json:"is_archived"`
 }
+
+type CreateSchedulingProjectReq struct {
+	FirstName         string  `json:"first_name"`
+	LastName          string  `json:"last_name"`
+	Email             string  `json:"email"`
+	Phone             string  `json:"phone"`
+	Address           string  `json:"address"`
+	RoofType          string  `json:"roof_type"`
+	HouseStories      int     `json:"house_stories"`
+	HouseAreaSqft     float64 `json:"house_area_sqft"`
+	SystemSize        float64 `json:"system_size"`
+	IsBatteryIncluded bool    `json:"is_battery_included"`
+}
+
+type GetSchedulingProjectsReq struct {
+	PageNumber int64 `json:"page_number"`
+	PageSize   int64 `json:"page_size"`
+}
+
+type GetSchedulingProjects struct {
+	FirstName    string  `json:"first_name"`
+	LastName     string  `json:"last_name"`
+	Email        string  `json:"email"`
+	Phone        string  `json:"phone"`
+	Address      string  `json:"address"`
+	RoofType     string  `json:"roof_type"`
+	SystemSize   float64 `json:"system_size"`
+	SalesRepName string  `json:"sales_rep_name"`
+}
+
+type GetSchedulingProjectsList struct {
+	SchedulingList []GetSchedulingProjects `json:"scheduling_list"`
+}

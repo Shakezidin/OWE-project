@@ -20,12 +20,12 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:         HandleGetSchedulingHome
+ * FUNCTION:         HandleGetSchedulingHomeRequest
  * DESCRIPTION:      handler for get ScheduleData request
  * INPUT:            resp, req
  * RETURNS:          void
  ******************************************************************************/
-func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
+func HandleGetSchedulingHomeRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                 error
 		dataReq             models.GetSchedulingHomeRequest
@@ -56,7 +56,7 @@ func HandleGetSchedulingHome(resp http.ResponseWriter, req *http.Request) {
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get ScheduleData data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get LeaderBoard data Request body", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Failed to unmarshal request body", http.StatusBadRequest, nil)
 		return
 	}
 

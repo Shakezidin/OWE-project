@@ -60,7 +60,21 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/scheduling_home",
-		apiHandler.HandleGetSchedulingHome,
+		apiHandler.HandleGetSchedulingHomeRequest,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_scheduling_project",
+		apiHandler.HandleCreateSchedulingProjectRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_scheduling_projects",
+		apiHandler.HandleGetSchedulingProjectsRequest,
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
