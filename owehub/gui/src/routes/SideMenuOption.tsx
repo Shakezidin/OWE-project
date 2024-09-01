@@ -17,13 +17,14 @@ import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { AiOutlineDatabase } from 'react-icons/ai';
 import { AiOutlineUserSwitch } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
+import { FaRegCalendarCheck } from "react-icons/fa6";
 
 const performance = {
   performance: [
     {
       path: ROUTES.PROJECT_PERFORMANCE,
       sidebarProps: {
-        displayText: 'Performance',
+        displayText: 'Pipeline',
         icon: (
           <GrDocumentPerformance
             size={20}
@@ -157,7 +158,7 @@ const project = {
     {
       path: ROUTES.PROJECT_STATUS,
       sidebarProps: {
-        displayText: 'Project Management',
+        displayText: 'Project Manager',
         icon: (
           <AiOutlineProject
             size={20}
@@ -208,25 +209,9 @@ const mob = {
       },
     },
     {
-      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
-
-      sidebarProps: {
-        displayText: 'Team Management',
-        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
-    {
-      path: ROUTES.USER_MANAEMENT,
-
-      sidebarProps: {
-        displayText: 'User Management',
-        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
-    {
       path: ROUTES.PROJECT_PERFORMANCE,
       sidebarProps: {
-        displayText: 'Performance',
+        displayText: 'Pipeline',
         icon: (
           <GrDocumentPerformance
             size={20}
@@ -239,7 +224,7 @@ const mob = {
     {
       path: ROUTES.PROJECT_STATUS,
       sidebarProps: {
-        displayText: 'Project Management',
+        displayText: 'Project Manager',
         icon: (
           <AiOutlineProject
             size={20}
@@ -249,14 +234,38 @@ const mob = {
         ),
       },
     },
+
+    {
+      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+
+      sidebarProps: {
+        displayText: 'Teams',
+        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.USER_MANAEMENT,
+
+      sidebarProps: {
+        displayText: 'Users',
+        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    
     {
       path: ROUTES.TECHNICAL_SUPPORT,
-
       sidebarProps: {
         displayText: 'Technical Support',
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
+    // {
+    //   path: ROUTES.CALENDAR,
+    //   sidebarProps: {
+    //     displayText: 'Performance Calendar',
+    //     icon: <FaRegCalendarCheck size={20} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
   ],
 };
 
@@ -266,7 +275,7 @@ const other = {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
       sidebarProps: {
-        displayText: 'Team Management',
+        displayText: 'Teams',
         icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
       },
     },
@@ -274,7 +283,7 @@ const other = {
       path: ROUTES.USER_MANAEMENT,
 
       sidebarProps: {
-        displayText: 'User Management',
+        displayText: 'Users',
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },

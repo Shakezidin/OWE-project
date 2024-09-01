@@ -8,7 +8,7 @@ export interface IPerfomanceSale {
 }
 
 export interface IProjectStatus {
-  unqiue_id: string;
+  unqiue_id: any;
   contract_date: string;
   customer: string;
   permit_approved_date: string;
@@ -67,12 +67,14 @@ export const getPerfomanceStatus = createAsyncThunk(
       startDate,
       endDate,
       uniqueId,
+      selected_milestone
     }: {
       page: number;
       perPage: number;
       startDate: string;
       endDate: string;
-      uniqueId?: string;
+      uniqueId?: any;
+      selected_milestone:string;
     },
     { rejectWithValue }
   ) => {
@@ -83,16 +85,18 @@ export const getPerfomanceStatus = createAsyncThunk(
         start_date: startDate,
         end_date: endDate,
         ...(uniqueId && { unique_ids: [uniqueId] }),
+        selected_milestone:selected_milestone,
       });
 
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
 
+      const datacount = data.data;
       const list = (data.data.perfomance_response_list ||
         []) as IProjectStatus[];
 
-      return { list, count: data.dbRecCount };
+      return { list, count: data.dbRecCount, datacount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
@@ -105,8 +109,9 @@ interface IState {
   isLoading: boolean;
   isSuccess: number;
   commisionMetrics: ICommision;
-  projectStatus: IProjectStatus[];
+  projectStatus: any;
   projectsCount: number;
+  datacount: any;
 }
 
 const initialState: IState = {
@@ -117,6 +122,7 @@ const initialState: IState = {
   commisionMetrics: {} as ICommision,
   projectStatus: [],
   projectsCount: 0,
+  datacount: {},
 };
 
 const perfomanceSlice = createSlice({
@@ -154,6 +160,7 @@ const perfomanceSlice = createSlice({
         state.isLoading = false;
         state.projectStatus = action.payload.list;
         state.projectsCount = action.payload.count;
+        state.datacount = action.payload.datacount;
       })
       .addCase(getPerfomanceStatus.rejected, (state, action) => {
         state.isLoading = false;

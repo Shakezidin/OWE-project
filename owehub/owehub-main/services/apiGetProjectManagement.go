@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"math"
 	"strings"
 	"time"
@@ -38,6 +39,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		rgnSalesMgrCheck bool
 		SaleRepList      []interface{}
 		role             string
+		uniqueId         string
 	)
 
 	log.EnterFn(0, "HandleGetProjectManagementRequest")
@@ -90,7 +92,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		dataReq.DealerName = dealerName
 
 		switch role {
-		case "Admin":
+		case "Admin", "Finance Admin":
 			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, true)
 		case "Dealer Owner":
 			filter, whereEleList = PrepareProjectAdminDlrFilters(tableName, dataReq, false)
@@ -126,12 +128,12 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 			SaleRepList = append(SaleRepList, SaleRepName)
 		}
 
-		dealerName := data[0]["dealer_name"]
-		dataReq.DealerName = dealerName
+		// dealerName := data[0]["dealer_name"]
+		// dataReq.DealerName = dealerName
 		filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
-	if filter != "" || role == "Admin" {
+	if filter != "" || role == string(types.RoleAdmin) {
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
@@ -154,22 +156,142 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectData.Epc = math.Round(projectData.Epc*100) / 100
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
+		uniqueId = projectData.UniqueId
+
 	}
 
-	// query := `select cad_link,dat_link,podio_link from consolidated_data_view`
-	// data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
-	// 	FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
-	// 	return
-	// }
-	// projectList.CADLink = data[0]["cad_link"].(string)
-	// projectList.DATLink = data[0]["dat_link"].(string)
-	// projectList.PodioLink = data[0]["podio_link"].(string)
+	var filtersBuilder strings.Builder
+	whereEleList = nil
+	filtersBuilder.WriteString(fmt.Sprintf(
+		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, "+
+			"n.finance_ntp_of_project, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
+			"n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status "+
+			"FROM customers_customers_schema c "+
+			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
+			"WHERE c.unique_id = '%s'", uniqueId)) // Check if there are filters
 
-	projectList.CADLink = "http.cad_link.com"
-	projectList.DATLink = "http.dat_link.com"
-	projectList.PodioLink = "http.podio.com"
+	linkQuery := filtersBuilder.String()
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	if val, ok := data[0]["current_live_cad"].(string); ok {
+		projectList.CADLink = val
+	} else {
+		projectList.CADLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["system_sold_er"].(string); ok {
+		projectList.DATLink = val
+	} else {
+		projectList.DATLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["podio_link"].(string); ok {
+		projectList.PodioLink = val
+	} else {
+		projectList.PodioLink = "" // or a default value
+	}
+
+	if val, ok := data[0]["change_order_status"].(string); ok {
+		projectList.CoStatus = val
+	} else {
+		projectList.CoStatus = "" // or a default value
+	}
+
+	var ntp models.NTP
+	var qc models.QC
+	var actionRequiredCount, count int64
+
+	// Assign values from the data map to the struct fields
+	ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy")
+	actionRequiredCount += count
+	ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project")
+	actionRequiredCount += count
+	ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded")
+	actionRequiredCount += count
+	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete")
+	actionRequiredCount += count
+	ntp.ActionRequiredCount = actionRequiredCount
+	actionRequiredCount = 0
+
+	var filtersBuilders strings.Builder
+	whereEleList = nil
+
+	filtersBuilders.WriteString(fmt.Sprintf(
+		`WITH extracted_values AS (
+					SELECT
+						unique_id, 
+						utility_company,  
+						state,
+						split_part(prospectid_dealerid_salesrepid, ',', 1) AS first_value
+					FROM
+						consolidated_data_view
+					WHERE
+						unique_id = '%v'
+				)
+				SELECT
+					e.first_value,
+					CASE 
+						WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
+						ELSE 'Not Needed' 
+					END AS powerclerk_sent_az,
+					CASE 
+						WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
+						ELSE 'Not Needed'
+					END AS ach_waiver_sent_and_signed_cash_only,
+					CASE 
+						WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
+						ELSE 'Not Needed'
+					END AS green_area_nm_only,
+					CASE 
+						WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
+						ELSE 'Not Needed'
+					END AS finance_credit_approved_loan_or_lease,
+					CASE 
+						WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
+						ELSE 'Not Needed'
+					END AS finance_agreement_completed_loan_or_lease,
+					CASE 
+						WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
+						ELSE 'Not Needed'
+					END AS owe_documents_completed
+				FROM
+					extracted_values e
+				JOIN
+					prospects_customers_schema p
+				ON
+					e.first_value = p.item_id::text;
+			`, uniqueId))
+
+	linkQuery = filtersBuilders.String()
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if len(data) > 0 {
+		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az")
+		actionRequiredCount += count
+		qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
+		actionRequiredCount += count
+		qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only")
+		actionRequiredCount += count
+		qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
+		actionRequiredCount += count
+		qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
+		actionRequiredCount += count
+		qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed")
+		actionRequiredCount += count
+		qc.ActionRequiredCount = actionRequiredCount
+	}
+
+	projectList.Ntp = ntp
+	projectList.Qc = qc
 
 	// Send the response
 	recordLen := len(data)
@@ -258,7 +380,11 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 	filtersBuilder.WriteString(" WHERE")
 
 	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR home_owner ILIKE $%d", len(whereEleList)+2))
+
+	// Append parameters to whereEleList
 	whereEleList = append(whereEleList, dataFilter.UniqueId)
+	whereEleList = append(whereEleList, fmt.Sprintf("%%%s%%", dataFilter.UniqueId))
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
@@ -275,6 +401,27 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 			}
 		}
 		filtersBuilder.WriteString(") ")
+	}
+
+	if len(dataFilter.UniqueIds) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" OR ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
 	}
 
 	if !adminCheck {
@@ -310,7 +457,11 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 	filtersBuilder.WriteString(" WHERE")
 
 	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR home_owner ILIKE $%d", len(whereEleList)+2))
+
+	// Append parameters to whereEleList
 	whereEleList = append(whereEleList, dataFilter.UniqueId)
+	whereEleList = append(whereEleList, fmt.Sprintf("%%%s%%", dataFilter.UniqueId))
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
@@ -327,6 +478,27 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 			}
 		}
 		filtersBuilder.WriteString(") ")
+	}
+
+	if len(dataFilter.UniqueIds) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" OR ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
 	}
 
 	if whereAdded {
@@ -351,4 +523,96 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+func getStringValue(data map[string]interface{}, key string) (string, int64) {
+	if v, exists := data[key]; exists {
+		switch key {
+		case "production_discrepancy":
+			if v == "" || v == "<nil>" {
+				return "Pending", 0
+			} else {
+				return "Completed", 0
+			}
+		case "finance_ntp_of_project":
+			if v == "" || v == "<nil>" {
+				return "Pending", 0
+			} else if v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "utility_bill_uploaded":
+			if v == "" || v == "<nil>" {
+				return "Pending", 0
+			} else if v == "❌" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "powerclerk_signatures_complete":
+			if v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" {
+				return "Pending", 0
+			} else if v == "❌  Pending" || v == "❌  Pending Sending PC" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "powerclerk_sent_az":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "Pending Utility Account #" {
+					return "Pending (Action Required)", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "ach_waiver_sent_and_signed_cash_only":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "green_area_nm_only":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
+					return "Pending (Action Required)", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "finance_credit_approved_loan_or_lease":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "finance_agreement_completed_loan_or_lease":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "owe_documents_completed":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" {
+					return "Pending", 0
+				} else if v == "❌" {
+					return "Pending (Action Required)", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		}
+	}
+	return "", 0
 }

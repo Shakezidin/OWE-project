@@ -76,6 +76,7 @@ const groupByOptionss = [
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
   { label: 'Region', value: 'region' },
+  { label: 'Setter', value: 'setter' },
 ];
 
 const groupByOptions = [
@@ -84,6 +85,7 @@ const groupByOptions = [
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
   { label: 'Region', value: 'region' },
+  { label: 'Setter', value: 'setter' },
 ];
 
 export const RankColumn = ({ rank }: { rank: number }) => {
@@ -101,6 +103,7 @@ const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming wee
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
 // Calculate the start and end of last week
@@ -131,6 +134,11 @@ const periodFilterOptions: DateRangeWithLabel[] = [
     label: 'Last Month',
     start: startOfLastMonth,
     end: endOfLastMonth,
+  },
+  {
+    label: 'Last Quarter',
+    start: startOfThreeMonthsAgo,
+    end: today,
   },
   {
     label: 'This Year',
@@ -296,12 +304,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -427,7 +435,7 @@ const DateFilter = ({
             }),
             menu: (baseStyles) => ({
               ...baseStyles,
-              width: '92px',
+              width: '109px',
               zIndex: 999,
               color: '#FFFFFF',
             }),
@@ -654,32 +662,36 @@ const Table = ({
     // Define the headers for the CSV
 
     setIsExporting(true);
-    const headers = ['Rank', 'Name', 'Sale', 'NTP', 'Install', 'Cancel'];
-    if (showPartner) {
-      headers.splice(2, 0, 'Partner');
-    }
-    const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
-      type: activeHead,
-      dealer: selectDealer.map((item) => item.value),
-      page_size: count,
-      page_number: 1,
+    const headers = ['UniqueID', 'Homeowner Name', 'Homeowner Email', 'Homeowner Phone', 'Address', 'State','Contract $', 'Sys Size', 'Sale Date', 'NTP Date', 'Install Date', 'Pto Date', 'Cancel Date' ];
+
+    
+    const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
+      dealer_name: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-      sort_by: active,
-      group_by: groupBy,
+      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'), 
+      
+     
+
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
       return;
     }
-    const csvData = getAllLeaders?.data?.ap_ded_list?.map?.((item: any) => [
-      item.rank,
-      item.rep_name,
-      showPartner ? item.dealer : '',
-      formatSaleValue(item.sale),
-      formatSaleValue(item.ntp),
-      formatSaleValue(item.install),
-      formatSaleValue(item.cancel),
+    const csvData = getAllLeaders?.data?.map?.((item: any) => [
+      item.unique_id,
+      item.home_owner,
+      item.customer_email,
+      item.customer_phone_number,
+      item.address,
+      item.state,
+      item.contract_total,
+      item.system_size,
+      item.contract_date,
+      item.ntp_date,
+      item.pv_install_completed_date,
+      item.pto_date,
+      item.canceled_date,
+    
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -702,7 +714,8 @@ const Table = ({
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-        <div onClick={toggleExportShow}>
+
+        <div className="export-trigger" onClick={toggleExportShow}>
           <FaUpload size={12} className="mr1" />
           <span> Export </span>
         </div>
@@ -820,8 +833,8 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -976,7 +989,7 @@ const Table = ({
                   {(role === TYPE_OF_USER.ADMIN ||
                     role === TYPE_OF_USER.FINANCE_ADMIN ||
                     role === TYPE_OF_USER.DEALER_OWNER) &&
-                  groupBy === 'dealer'
+                    groupBy === 'dealer'
                     ? 'Code Name'
                     : 'Name'}
                 </th>

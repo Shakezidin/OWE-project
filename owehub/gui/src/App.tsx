@@ -80,6 +80,10 @@ import TeamTable from './ui/oweHub/teammanagement/teamtable';
 import Leaderboard from './ui/leaderboard';
 import Scheduler from './ui/scheduler';
 import ScheduleDetail from './ui/scheduler/ScheduleDetail';
+import CustomersList from './ui/scheduler/SalesRepScheduler/CustomersList';
+import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
+import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
+import Calendar from './ui/Calendar/PerformanceCalendar';
 function App() {
   const dispatch = useAppDispatch();
 
@@ -281,12 +285,23 @@ function App() {
             </Route>
           )}
 
+        <Route path={ROUTES.CALENDAR} element={<Calendar />} />
+
           <Route
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
+          <Route
+            path={ROUTES.SALES_REP_SCHEDULER}
+            element={<CustomersList />}
+          />
+          <Route
+            path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
+            element={<SchedulerBar />}
+          />
+          <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
           <Route
             path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
             element={<TeamManagement />}
@@ -296,7 +311,6 @@ function App() {
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
-
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
       </Routes>
     </BrowserRouter>

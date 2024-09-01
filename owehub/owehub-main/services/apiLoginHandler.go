@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	types "OWEApp/shared/types"
@@ -91,6 +92,16 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if roleName != "Admin" && roleName != "Finance Admin" && roleName != "DB User" {
+		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON vd.id = ud.dealer_id WHERE ud.email_id = '%v'", emailId)
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get v Dealer data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		loginResp.DealerName = data[0]["dealer_name"].(string)
+	}
 	loginResp.EmailId = emailId
 	loginResp.UserName = userName
 	loginResp.RoleName = roleName

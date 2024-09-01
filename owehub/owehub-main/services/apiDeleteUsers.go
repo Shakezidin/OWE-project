@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -28,11 +29,14 @@ import (
  ******************************************************************************/
 func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err            error
-		deleteUsersReq models.DeleteUsers
-		whereEleList   []interface{}
-		query          string
-		rowsAffected   int64
+		err              error
+		reqBody          []byte
+		deleteUsersReq   models.DeleteUsers
+		whereEleList     []interface{}
+		query            string
+		userDetails      []map[string]interface{}
+		tablePermissions []models.TablePermission
+		rowsAffected     int64
 	)
 
 	log.EnterFn(0, "HandleDeleteUsersRequest")
@@ -45,7 +49,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	reqBody, err := ioutil.ReadAll(req.Body)
+	reqBody, err = ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from delete users request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
@@ -58,6 +62,91 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to unmarshal delete users request", http.StatusBadRequest, nil)
 		return
 	}
+
+	// setup user info logging
+	logUserApi, closeUserLog := initUserApiLogging(req)
+	defer func() { closeUserLog(err) }()
+
+	//
+	// NEW LOGIC: Delete By Email
+	//
+	if len(deleteUsersReq.EmailIds) > 0 {
+		userDetailsQuery := "SELECT * FROM user_details WHERE email_id = ANY($1)"
+		userDetails, err = db.ReteriveFromDB(db.OweHubDbIndex, userDetailsQuery, []interface{}{pq.Array(deleteUsersReq.EmailIds)})
+
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get user details err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to delete users", http.StatusInternalServerError, nil)
+			return
+		}
+
+		for _, user := range userDetails {
+			dbUsername, dbUsernameOk := user["db_username"].(string)
+			emailId := user["email_id"].(string)
+
+			// extract details for logging user info
+			userInfo := map[string]interface{}{
+				"name":          user["name"],
+				"user_code":     user["user_code"],
+				"mobile_number": user["mobile_number"],
+			}
+
+			// delete from RowDataDB
+			if dbUsernameOk && dbUsername != "" {
+				// append db_username & table_permissions to userInfo for logging
+				userInfo["db_username"] = dbUsername
+
+				tablePermissionsBytes := user["tables_permissions"].([]byte)
+				unmarshallErr := json.Unmarshal(tablePermissionsBytes, &tablePermissions)
+				if unmarshallErr != nil {
+					log.FuncErrorTrace(0, "Failed unmarshall table permissions %s err: %v", string(tablePermissionsBytes), unmarshallErr)
+					continue
+				}
+
+				tablePermissionStringParts := make([]string, len(tablePermissions))
+				for i, perm := range tablePermissions {
+					tablePermissionStringParts[i] = fmt.Sprintf("%s(%s)", perm.TableName, strings.ToLower(perm.PrivilegeType))
+				}
+				userInfo["table_permissions"] = strings.Join(tablePermissionStringParts, ", ")
+				sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP ROLE %s;", dbUsername, dbUsername)
+				dropRoleErr := db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+
+				// ignore error incase it is "user does not exist"; i.e. user was already deleted due to some reason
+				if dropRoleErr != nil && !strings.Contains(strings.ToLower(dropRoleErr.Error()), "does not exist") {
+					log.FuncErrorTrace(0, "Failed to delete user %s from owedb err: %v", dbUsername, dropRoleErr)
+					continue
+				}
+			}
+
+			// delete from OweHubDb & log
+			deleteQuery := "DELETE FROM user_details WHERE email_id = $1"
+			deleteErr, rowsDeleted := db.UpdateDataInDB(db.OweHubDbIndex, deleteQuery, []interface{}{emailId})
+
+			if deleteErr != nil {
+				log.FuncErrorTrace(0, "Failed to delete user %s from owehubdb err: %v", dbUsername, deleteErr)
+				continue
+			}
+
+			rowsAffected += rowsDeleted
+			logUserApi(fmt.Sprintf("Deleted %s from owedb and owehubdb - %+v", emailId, userInfo))
+		}
+
+		if rowsAffected == 0 {
+			log.DBTransDebugTrace(0, "No User(s) deleted with emails: %v", deleteUsersReq.EmailIds)
+			FormAndSendHttpResp(resp, "No User(s) deleted, user(s) not present with provided emails", http.StatusNotFound, nil)
+			logUserApi("No users deleted")
+			return
+		}
+
+		log.DBTransDebugTrace(0, "Total %d User(s) deleted with Emails: %v", rowsAffected, deleteUsersReq.EmailIds)
+		FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
+
+		return
+	}
+
+	//
+	// END NEW LOGIC
+	//
 
 	if len(deleteUsersReq.UserCodes) == 0 {
 		err = fmt.Errorf("User codes list is empty, unable to proceed")

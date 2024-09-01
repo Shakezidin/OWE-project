@@ -410,7 +410,7 @@ table tbody tr:has(td[colspan='10'] .data-not-found):hover {
     gap: 1rem;
     padding: 20px;
   }
-  .dashBoard-container{
+  .dashBoard-container {
     margin: 10px;
   }
 }

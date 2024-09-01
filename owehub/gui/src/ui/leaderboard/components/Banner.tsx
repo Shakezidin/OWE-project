@@ -17,6 +17,7 @@ interface BannerProps {
   bannerDetails: any;
   groupBy: string;
   isShowDropdown: boolean;
+  isGenerating: boolean;
   setIsFetched: React.Dispatch<SetStateAction<boolean>>;
 }
 
@@ -25,6 +26,7 @@ const Banner: React.FC<BannerProps> = ({
   setSelectDealer,
   isShowDropdown,
   setIsFetched,
+  isGenerating,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
@@ -67,7 +69,7 @@ const Banner: React.FC<BannerProps> = ({
     ) {
       getNewFormData();
     }
-  }, [role, isShowDropdown]);
+  }, [role]);
 
   useEffect(() => {
     if (
@@ -186,10 +188,13 @@ const Banner: React.FC<BannerProps> = ({
         ></div>
         <div className="banner-wrap">
           {/* left side  */}
-          <button className="edit-button" onClick={() => setShowModal(true)}>
-            <LiaEdit className="edit-svg" />
-            <p>Edit</p>
-          </button>
+          {!isGenerating ? (
+            <button className="edit-button" onClick={() => setShowModal(true)}>
+              <LiaEdit className="edit-svg" />
+              <p>Edit</p>
+            </button>
+          ) : null}
+
           <div className="flex items-center pl4 banner-left">
             {role !== TYPE_OF_USER.FINANCE_ADMIN &&
               role !== TYPE_OF_USER.ADMIN &&
@@ -265,7 +270,11 @@ const Banner: React.FC<BannerProps> = ({
                   : 'user-trophy'
               }
             >
-              <img src={ICONS.BannerTrophy} alt="banner-trophy-image" />
+              <img
+                src={ICONS.BannerTrophy}
+                style={{ maxWidth: 241 }}
+                alt="banner-trophy-image"
+              />
             </div>
             <div className="banner-stars">
               <img
@@ -297,18 +306,21 @@ const Banner: React.FC<BannerProps> = ({
           style={{ zIndex: 100 }}
           ref={dropdownRef}
         >
-          <div
-            onClick={() => setIsOpen(!isOpen)}
-            className={`dealer-toggler pointer flex items-center ${
-              isOpen ? 'open' : ''
-            }`}
-          >
-            <span>
-              {selectDealer?.length}{' '}
-              <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
-            </span>
-            <FaChevronDown className="ml1 fa-chevron-down" />
-          </div>
+          {!isGenerating ? (
+            <div
+              onClick={() => setIsOpen(!isOpen)}
+              className={`dealer-toggler pointer flex items-center ${
+                isOpen ? 'open' : ''
+              }`}
+            >
+              <span>
+                {selectDealer?.length}{' '}
+                <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
+              </span>
+              <FaChevronDown className="ml1 fa-chevron-down" />
+            </div>
+          ) : null}
+
           {isOpen && (
             <div
               className=" scrollbar dealer-dropdown dropdown-menu "

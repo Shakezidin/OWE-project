@@ -101,6 +101,7 @@ export const LoginPage = () => {
             email_id,
             user_name,
             role_name,
+            dealer_name,
             access_token,
             time_to_expire_minutes,
             is_password_change_required,
@@ -110,6 +111,7 @@ export const LoginPage = () => {
           localStorage.setItem('role', role_name);
           localStorage.setItem('token', access_token);
           localStorage.setItem('password', credentials.password);
+          localStorage.setItem('dealer', dealer_name);
           localStorage.setItem('expirationTimeInMin', time_to_expire_minutes);
           localStorage.setItem(
             'expirationTime',
@@ -142,7 +144,7 @@ export const LoginPage = () => {
 
   const width = useWindowWidth();
   const isMobile = width < 768;
-
+  const isStaging = process.env.REACT_APP_ENV
   return (
     <div className="mainContainer">
       <div className={'overlay'} />
@@ -241,23 +243,27 @@ export const LoginPage = () => {
                 className="login-button"
                 title="Log In"
                 type="submit"
-                onClick={() => {}}
+                onClick={() => { }}
               >
                 Log In
               </button>
             </div>
           </form>
 
-          <div className="battery-calc">
-            <div className="battery-calc-button">
-              <Lottie
-                animationData={PowerAnimation}
-                loop={false}
-                style={{ width: 70, height: 70 }}
-              />
-              <p className="coming-soon">Battery Calculator is Coming Soon!</p>
+          <Link
+            to={isStaging === "staging" ? ROUTES.SR_IMAGE_UPLOAD : "#"}
+          >
+            <div className="battery-calc">
+              <div className={`battery-calc-button ${isStaging === "staging" ? "" : "disabled-battery-calc"}`}>
+                <Lottie
+                  animationData={PowerAnimation}
+                  style={{ width: 70, height: 70 }}
+                  loop={false}
+                />
+                <p className="coming-soon">{isStaging === "staging" ? "Battery Calculator" : "Battery Calculator is Coming Soon!"}</p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
         <div className="solar-sun">
           <img src={ICONS.SolarSun} alt="sun-image" />

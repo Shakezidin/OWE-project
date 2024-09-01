@@ -44,4 +44,13 @@
   padding: 5px;
   color: #fff;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+.sort_btn:hover {
+  transform: scale(1.04);
+  background-color: #0045f4;
+}
+
+.active_sorting{
+  color: #0045f4;
 }

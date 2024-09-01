@@ -1,18 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { SetStateAction, useEffect, useRef, useState } from 'react';
 import { PiSortAscendingLight } from 'react-icons/pi';
 import './index.css';
-const SortingDropDown = () => {
+interface propTypes {
+  onChange?: (val: string) => void, default?: "asc" | "desc" | "all"
+}
+const SortingDropDown = ({ default: defaultSort, onChange, }: propTypes) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+  const [isActive, setIsActive] = useState<"asc" | "desc" | "all">("asc");
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
   const dropdownRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const elm = event.target as HTMLElement;
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
+        && !elm.closest(".pr-dropdown")
       ) {
         setIsDropdownOpen(false);
       }
@@ -25,7 +30,7 @@ const SortingDropDown = () => {
     };
   }, []);
   return (
-    <div className="relative">
+    <div className="relative drop-ref-container">
       <button
         onClick={toggleDropdown}
         ref={dropdownRef}
@@ -37,14 +42,27 @@ const SortingDropDown = () => {
       {isDropdownOpen && (
         <div className="pr-dropdown">
           <ul>
-            <li>All</li>
-            <li>Old To New</li>
-            <li>New To Old</li>
+            {/* <li onClick={() => {
+              setIsActive("all")
+              setIsDropdownOpen(false)
+              onChange?.("all")
+            }} className={isActive === "all" ? "active_sorting" : ""} >All</li> */}
+            <li onClick={() => {
+              setIsActive("desc")
+              setIsDropdownOpen(false)
+              onChange?.("desc")
+            }} className={isActive === "desc" ? "active_sorting" : ""} >Old To New</li>
+            <li onClick={() => {
+              setIsActive("asc")
+              setIsDropdownOpen(false)
+              onChange?.("asc")
+            }} className={isActive === "asc" ? "active_sorting" : ""}>New To Old</li>
           </ul>
         </div>
       )}
     </div>
   );
 };
+
 
 export default SortingDropDown;

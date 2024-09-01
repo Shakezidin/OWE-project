@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './projectTracker.css';
 import { projectStatusHeadData } from './projectData';
 import SelectOption from '../../components/selectOption/SelectOption';
@@ -16,11 +16,10 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import { toast } from 'react-toastify';
 import Proj_pie_chart from './lib/proj_pie_chart';
 import { ICONS } from '../../../resources/icons/Icons';
-
-import PodDropdown from './PodioDropdown';
 import QCModal from './PopUp';
-
-
+import NtpModal from './NtpPopUp';
+import Input from '../../components/text_input/Input';
+import { debounce } from '../../../utiles/debounce';
 
 interface ActivePopups {
   [key: number]: number | null;
@@ -53,17 +52,21 @@ const data = [
 ];
 
 const ProjectStatus = () => {
-  const { projects, projectDetail, isLoading } = useAppSelector(
+  const { projects, projectDetail, isLoading, otherlinks } = useAppSelector(
     (state) => state.projectManagement
   );
   const location = useLocation();
   const projectId = new URLSearchParams(location.search).get('project_id');
+  const projectName = new URLSearchParams(location.search).get('customer-name');
 
   const getStatus = (arr: string[]) => {
     return arr.every(
       (item) => projectDetail[item as keyof typeof projectDetail]
     );
   };
+  const [search, setSearch] = useState('OUR22645');
+  const [searchValue, setSearchValue] = useState('OUR22645');
+  const [active, setActive] = useState(false);
   const filtered = [
     // {
     //   name: 'Sales',
@@ -442,8 +445,6 @@ const ProjectStatus = () => {
     return true; // Keep all other status objects
   });
 
-  console.log(filteredStatusData, 'Check');
-
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
   const isTablet = useMatchMedia('(max-width:1024px)');
@@ -465,6 +466,13 @@ const ProjectStatus = () => {
       setActivePopups(false);
     }
   };
+
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(e.target.value);
+    }, 800),
+    []
+  );
 
   useEffect(() => {
     if (activePopups) {
@@ -519,16 +527,23 @@ const ProjectStatus = () => {
     }
   }, [selectedProject.value]);
 
+  useEffect(() => {
+    if (projectId) {
+      setSearch(projectId);
+      setSearchValue(projectId);
+    }
+  }, [projectId]);
+
   const options = [
     { id: 1, content: 'Podio' },
     { id: 2, content: 'Active CAD' },
     { id: 3, content: 'DAT' },
   ];
-  
+
   const handleButton1Click = (optionId: number) => {
     console.log('Button 1 clicked for option:', optionId);
   };
-  
+
   const handleButton2Click = (optionId: number) => {
     console.log('Button 2 clicked for option:', optionId);
   };
@@ -540,387 +555,471 @@ const ProjectStatus = () => {
     setFilterOpen(true);
   };
 
+  const [ntpOPen, setNtpOPen] = React.useState<boolean>(false);
 
+  const ntpClose = () => setNtpOPen(false);
+
+  const ntpAction = () => {
+    setNtpOPen(true);
+  };
+  const popupRef = useRef(null);
+
+  const [showComplete, setShowComplete] = useState(false);
+
+  const handleOrderStatusClick = () => {
+    setActive(!active);
+    setShowComplete(!showComplete);
+  };
+
+  // Function to handle Escape key press
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape') {
+      filterClose();
+      ntpClose();
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for keydown
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const isMobile = useMatchMedia('(max-width: 767px)');
 
   return (
     <>
-    <QCModal
-       isOpen={filterOPen}
-       handleClose={filterClose} 
-    />
+      <QCModal
+        projectDetail={otherlinks}
+        isOpen={filterOPen}
+        handleClose={filterClose}
+      />
 
-    <div className="">
-      <div style={{ padding: '0px' }}>
-        <div className="flex mt1 top-project-cards">
-          <div
-            className="px1 project-card-wrapper  bg-white rounded-16"
-            style={{ paddingInline: 16, paddingBottom: 16 }}
-          >
-            <div className="project-heading project-status-heading mb3">
-              <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
-              <div className="pro-status-dropdown" style={{ minWidth: 200 }}>
-                <div className="">
-                  <SelectOption
-                    options={projectOption}
-                    value={selectedProject}
-                    onChange={(val) => {
-                      if (val) {
-                        setSelectedProject(val);
-                      }
-                    }}
-                    width="190px"
-                  />
+      <NtpModal
+        projectDetail={otherlinks}
+        isOpen={ntpOPen}
+        handleClose={ntpClose}
+      />
+
+      <div className="">
+        <div style={{ padding: '0px' }}>
+          <div className="flex mt1 top-project-cards">
+            <div
+              className="px1 project-card-wrapper  bg-white rounded-16"
+              style={{ paddingInline: 16, paddingBottom: 16 }}
+            >
+              <div className="project-heading project-status-heading">
+                <h3 style={{ marginTop: '1.3rem', lineHeight: 'none' }}>
+                  Project Status
+                </h3>
+                <div className="pro-status-dropdown">
+                  <div className="status-cust-name">
+                    <span className="cust-name">
+                      Customer name:<pre> {projectDetail.home_owner}</pre>
+                    </span>
+                    <SelectOption
+                      options={projectOption}
+                      value={selectedProject}
+                      lazyRender
+                      onChange={(val) => {
+                        if (val) {
+                          setSelectedProject(val);
+                        }
+                      }}
+                      width="190px"
+                    />
+                    {/* <Input
+                      type="text"
+                      placeholder="Search for Unique ID or Name"
+                      value={search}
+                      name="Search for Unique ID or Name"
+                      onChange={(e) => {
+                        handleSearchChange(e);
+                        setSearch(e.target.value);
+                      }}
+                    /> */}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex items-center flex-wrap mxn1">
-              {projectStatusHeadData.map((el, i) => (
-                <div
-                  key={i}
-                  className={` ${isTablet ? 'col-6' : ' lg-col-3'} px1`}
-                  style={{ marginBottom: 10 }}
-                >
+              <div className="flex status-card-parent items-center flex-wrap mxn1">
+                {projectStatusHeadData.map((el, i) => (
                   <div
-                    className="rounded-8"
-                    style={{
-                      padding: 3,
-                      border: `1px dashed ${el.bgColor}`,
-                      zIndex: i === 1 ? 50 : undefined,
-                    }}
+                    key={i}
+                    className={`status-card ${isTablet ? 'col-6' : ' lg-col-3'} px1`}
+                    style={{ marginBottom: 10 }}
                   >
                     <div
-                      className=" flex items-center rounded-8 justify-center relative"
+                      className="rounded-8"
                       style={{
-                        background: el.bgColor,
-                        height: 83,
+                        padding: 3,
+                        border: `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
                       }}
                     >
                       <div
+                        className=" flex items-center rounded-8 justify-center relative "
                         style={{
-                          width: '100%',
-                          textAlign: 'center',
-                          color: '#fff',
+                          background: el.bgColor,
+                          height: 83,
+                          zIndex: i === 1 ? 50 : undefined,
                         }}
                       >
-                        <p className="para-head text-white-color">{el.name}</p>
-                        <span className="span-para">
-                          {projectDetail[
-                            el.key as keyof typeof projectDetail
-                          ] || 'N/A'}
-                        </span>
-                      </div>
-                      {el.viewButton ? (
                         <div
-                          className="view-flex"
-                          ref={refBtn}
-                          onClick={() => setActivePopups((prev) => !prev)}
+                          style={{
+                            width: '100%',
+                            textAlign: 'center',
+                            color: '#fff',
+                          }}
                         >
-                          <p>View</p>
-                          <img src={ICONS.arrowDown} alt="" />
+                          <p className="para-head text-white-color">
+                            {el.name}
+                          </p>
+                          <span className="span-para">
+                            {el.key === 'adders_total' ||
+                            el.key === 'contract_amount'
+                              ? '$'
+                              : ''}
+
+                            <>
+                              {projectDetail[
+                                el.key as keyof typeof projectDetail
+                              ] || 'N/A'}{' '}
+                            </>
+
+                            {el.key === 'system_size' ? '(kW)' : ''}
+                          </span>
                         </div>
-                      ) : null}
-                      {activePopups && i === 1 && (
-                        <div className="popup">
-                          <p className="pop-head">Adder Details</p>
-                          <ol className="order-list">
-                            {
-                              // @ts-ignore
-                              projectDetail.adder_breakdown_and_total &&
-                                Object.keys(
-                                  projectDetail.adder_breakdown_and_total
-                                ).map((item, ind) => {
-                                  // @ts-ignore
-                                  return (
-                                    <li key={ind} className="order-list-name">
-                                      {' '}
-                                      {item} :{' '}
-                                      {
-                                        projectDetail.adder_breakdown_and_total[
-                                          item
-                                        ]
-                                      }{' '}
-                                    </li>
-                                  );
-                                })
-                            }
-                          </ol>
-                        </div>
-                      )}
+                        {el.viewButton ? (
+                          <div
+                            className="view-flex"
+                            ref={refBtn}
+                            onClick={() => setActivePopups((prev) => !prev)}
+                          >
+                            <p>View</p>
+                            <img src={ICONS.arrowDown} alt="" />
+                          </div>
+                        ) : null}
+                        {activePopups && i === 1 && (
+                          <div
+                            className="popup"
+                            ref={popupRef}
+                            onMouseLeave={() => setActivePopups(false)}
+                          >
+                            <p className="pop-head">Adder Details</p>
+                            <ol className="order-list">
+                              {
+                                // @ts-ignore
+                                projectDetail.adder_breakdown_and_total &&
+                                  Object.keys(
+                                    // @ts-ignore
+                                    projectDetail.adder_breakdown_and_total
+                                  ).map((item, ind) => {
+                                    // @ts-ignore
+                                    return (
+                                      <li key={ind} className="order-list-name">
+                                        {' '}
+                                        {item} :{' '}
+                                        {
+                                          // @ts-ignore
+                                          projectDetail
+                                            .adder_breakdown_and_total[item]
+                                        }{' '}
+                                      </li>
+                                    );
+                                  })
+                              }
+                            </ol>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+            <div className="pl2 flex-auto second-project-card">
+              <div
+                className="bg-white rounded-16 flex relative"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                  // alignItems: 'center',
+                }}
+              >
+                <Proj_pie_chart projectDetail={otherlinks} />
+              </div>
             </div>
           </div>
-          <div className="pl2 flex-auto second-project-card">
+
+          <div className="bg-white rounded-16 project-table-wrapper">
             <div
-              className="bg-white rounded-16 flex items-center justify-center"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                alignItems: 'center',
-              }}
+              className="project-heading project-status-heading mt2"
+              style={{ padding: '22px' }}
             >
-              <Proj_pie_chart />
-            </div>
-          </div>
-        </div>
+              <p className="mob-projhead">Project Stages</p>
 
-        <div className="bg-white rounded-16 project-table-wrapper">
-          <div
-            className="project-heading project-status-heading mt2"
-            style={{ padding: '22px' }}
-          >
-            <div className=" flex items-center project-status-table-title ">
-              <h3>Project Stages</h3>
-              <div className="progress-box-container ml3">
-                <div className="progress-box-body mt0">
-                  <div
-                    className="progress-box"
-                    style={{
-                      background: '#4191C9',
-                      borderRadius: 0,
-                      width: 14,
-                      height: 14,
-                    }}
-                  ></div>
-                  <p>Stages</p>
-                </div>
-                <div className="progress-box-body mt0">
-                  <div
-                    className="progress-box"
-                    style={{
-                      background: '#63ACA3',
-                      borderRadius: 0,
-                      width: 14,
-                      height: 14,
-                    }}
-                  ></div>
-                  <p>Completed</p>
-                </div>
-                <div className="progress-box-body mt0">
-                  <div
-                    className="progress-box"
-                    style={{
-                      background: '#E9E9E9',
-                      borderRadius: 0,
-                      width: 14,
-                      height: 14,
-                    }}
-                  ></div>
-                  <p>Not Started yet</p>
+              <div className="proj-status-tab-head flex">
+                <div className="progress-box-container status-boxes">
+                  <div className="progress-box-body mt0">
+                    <div
+                      className="progress-box"
+                      style={{
+                        background: '#4191C9',
+                        borderRadius: 0,
+                        width: 14,
+                        height: 14,
+                      }}
+                    ></div>
+                    <p>Stages</p>
+                  </div>
+                  <div className="progress-box-body mt0">
+                    <div
+                      className="progress-box"
+                      style={{
+                        background: '#63ACA3',
+                        borderRadius: 0,
+                        width: 14,
+                        height: 14,
+                      }}
+                    ></div>
+                    <p>Completed</p>
+                  </div>
+                  <div className="progress-box-body mt0">
+                    <div
+                      className="progress-box"
+                      style={{
+                        background: '#E9E9E9',
+                        borderRadius: 0,
+                        width: 14,
+                        height: 14,
+                      }}
+                    ></div>
+                    <p>Not Started yet</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className=" flex items-center project-status-table-title ">
-             
-              <div className="progress-box-container ml3">
-                <div className="progress-qc mt0" onClick={filter}>
-                   <button >QC</button>
+              <div className="flex items-center project-status-table-title1">
+                <div className="progress-box-container status-btn ml3">
+                  <div className="progress-qc mt0" onClick={filter}>
+                    <button>QC</button>
+                  </div>
+                  {otherlinks?.qc?.qc_action_required_count > 0 ? (
+                    <div className="progress-ntp-acre">
+                      <span>{otherlinks?.qc?.qc_action_required_count}</span>
+                    </div>
+                  ) : null}
+                  <div className="progress-qc mt0" onClick={ntpAction}>
+                    <button>NTP</button>
+                  </div>
                 </div>
-                <div className="progress-qc mt0">
-                   <button>NTP</button>
-                </div>
-                <div className="progress-box-body mt0">
-                   <PodDropdown
-                   options={options}
-                   onButton1Click={handleButton1Click}
-                   onButton2Click={handleButton2Click}
-                   />
-                </div>
+                {/* {otherlinks?.ntp?.action_required_count > 0 ?
+                      <div className="progress-qc-acre">
+                        <span>{otherlinks?.ntp?.action_required_count}</span>
+                      </div>
+                      : null}
+                    {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&
+                      <div className="co-status mt0">
+                        <p>CO Status</p>
+                        <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>Pending <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
+                      </div>
+                    } */}
               </div>
             </div>
-
-          </div>
-          <div className="project-management-table ">
-            <table>
-              <tbody>
-                <tr style={{ borderBottom: 'none' }}>
-                  <td style={{ padding: '0px' }}>
-                    <div className="project-staus-progress-container">
-                      {isLoading ? (
-                        <div
-                          style={{ display: 'flex', justifyContent: 'center' }}
-                        >
-                          <MicroLoader />
-                        </div>
-                      ) : !isLoading &&
-                        Object.keys(projectDetail).length < 1 ? (
-                        <td colSpan={7} style={{ textAlign: 'center' }}>
+            <div className="project-management-table ">
+              <table>
+                <tbody>
+                  <tr style={{ borderBottom: 'none' }}>
+                    <td style={{ padding: '0px' }}>
+                      <div className="project-staus-progress-container">
+                        {isLoading ? (
                           <div
                             style={{
                               display: 'flex',
                               justifyContent: 'center',
                             }}
                           >
-                            <DataNotFound />
+                            <MicroLoader />
                           </div>
-                        </td>
-                      ) : (
-                        filteredStatusData.map((item: any, i: any) => (
-                          <>
-                            <div className="project-status-table">
-                              <div
-                                className="project-status-card"
-                                style={{
-                                  marginTop: '0',
-                                  background: item.bgColor,
-                                }}
-                              >
+                        ) : !isLoading &&
+                          Object.keys(projectDetail).length < 1 ? (
+                          <td colSpan={7} style={{ textAlign: 'center' }}>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <DataNotFound />
+                            </div>
+                          </td>
+                        ) : (
+                          filteredStatusData.map((item: any, i: any) => (
+                            <>
+                              <div className="project-status-table">
                                 <div
-                                  className="status-number"
+                                  className="project-status-card"
                                   style={{
-                                    background: '#FFFFF',
-                                    color: item.numColor,
+                                    marginTop: '0',
+                                    background: item.bgColor,
                                   }}
                                 >
-                                  {getStatus(
-                                    item.childStatusData.map(
-                                      (item: any) => item.key
-                                    )
-                                  ) ? (
-                                    <FaCheck />
-                                  ) : (
-                                    i + 1
-                                  )}
-                                </div>
-                                <p
-                                  className="stage-1-para"
-                                  style={{ color: item.color }}
-                                >
-                                  {item.name}
-                                </p>
-                              </div>
-                              {item.childStatusData.map(
-                                (el: any, index: any) => (
                                   <div
-                                    className="notch-corner"
+                                    className="status-number"
                                     style={{
-                                      background: el.bgColor,
-                                      color: '#858585',
+                                      background: '#FFFFF',
+                                      color: item.numColor,
                                     }}
                                   >
-                                    <div className="child-corner"></div>
+                                    {getStatus(
+                                      item.childStatusData.map(
+                                        (item: any) => item.key
+                                      )
+                                    ) ? (
+                                      <FaCheck />
+                                    ) : (
+                                      i + 1
+                                    )}
+                                  </div>
+                                  <p
+                                    className="stage-1-para"
+                                    style={{ color: item.color }}
+                                  >
+                                    {item.name}
+                                  </p>
+                                </div>
+                                {item.childStatusData.map(
+                                  (el: any, index: any) => (
                                     <div
-                                      className=""
+                                      className="notch-corner"
                                       style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        width: '35px',
+                                        background: el.bgColor,
+                                        color: '#858585',
                                       }}
                                     >
-                                      {!(
-                                        el.key &&
-                                        projectDetail[
-                                          el.key as keyof typeof projectDetail
-                                        ]
-                                      ) && (
-                                        <span
-                                          className="date-para"
+                                      <div className="child-corner"></div>
+                                      <div
+                                        className=""
+                                        style={{
+                                          display: 'flex',
+                                          flexDirection: 'column',
+                                          alignItems: 'center',
+                                          width: '35px',
+                                        }}
+                                      >
+                                        {!(
+                                          el.key &&
+                                          projectDetail[
+                                            el.key as keyof typeof projectDetail
+                                          ]
+                                        ) && (
+                                          <span
+                                            className="date-para"
+                                            style={{
+                                              color: el.color,
+                                              fontSize: '9px',
+                                            }}
+                                          >
+                                            ETA
+                                          </span>
+                                        )}
+                                        <p
                                           style={{
                                             color: el.color,
                                             fontSize: '9px',
                                           }}
                                         >
-                                          ETA
-                                        </span>
-                                      )}
-                                      <p
-                                        style={{
-                                          color: el.color,
-                                          fontSize: '9px',
-                                        }}
-                                      >
+                                          {el.key &&
+                                          projectDetail[
+                                            el.key as keyof typeof projectDetail
+                                          ]
+                                            ? format(
+                                                new Date(
+                                                  projectDetail[
+                                                    el.key as keyof typeof projectDetail
+                                                  ]
+                                                ),
+                                                'dd MMMM'
+                                              ).slice(0, 6)
+                                            : 'N/A'}
+                                        </p>
                                         {el.key &&
-                                        projectDetail[
-                                          el.key as keyof typeof projectDetail
-                                        ]
-                                          ? format(
-                                              new Date(
-                                                projectDetail[
-                                                  el.key as keyof typeof projectDetail
-                                                ]
-                                              ),
-                                              'dd MMMM'
-                                            ).slice(0, 6)
-                                          : 'N/A'}
-                                      </p>
-                                      {el.key &&
-                                        projectDetail[
-                                          el.key as keyof typeof projectDetail
-                                        ] && (
-                                          <p
-                                            className="stage-1-para"
-                                            style={{
-                                              color: el.color,
-                                              fontSize: '10px',
-                                            }}
-                                          >
-                                            {' '}
-                                            {format(
-                                              new Date(
-                                                projectDetail[
-                                                  el.key as keyof typeof projectDetail
-                                                ]
-                                              ),
-                                              'yyyy'
-                                            )}
-                                          </p>
-                                        )}
-                                    </div>
-                                    <div
-                                      className="border-notch"
-                                      style={{
-                                        border: '0.5px solid ',
-                                        borderColor: el.borderColor,
-                                      }}
-                                    ></div>
-                                    <div
-                                      className=""
-                                      style={{ width: '115px' }}
-                                    >
-                                      <p
-                                        className="stage-1-para"
+                                          projectDetail[
+                                            el.key as keyof typeof projectDetail
+                                          ] && (
+                                            <p
+                                              className="stage-1-para"
+                                              style={{
+                                                color: el.color,
+                                                fontSize: '10px',
+                                              }}
+                                            >
+                                              {' '}
+                                              {format(
+                                                new Date(
+                                                  projectDetail[
+                                                    el.key as keyof typeof projectDetail
+                                                  ]
+                                                ),
+                                                'yyyy'
+                                              )}
+                                            </p>
+                                          )}
+                                      </div>
+                                      <div
+                                        className="border-notch"
                                         style={{
-                                          color: el.color,
-                                          fontSize: '12px',
+                                          border: '0.5px solid ',
+                                          borderColor: el.borderColor,
                                         }}
-                                      >
-                                        {el.process}
-                                      </p>
-                                      <p
+                                      ></div>
+                                      <div
                                         className=""
-                                        style={{
-                                          color: el.color,
-                                          fontSize: '11px',
-                                        }}
+                                        style={{ width: '115px' }}
                                       >
-                                        {el.data}
-                                      </p>
+                                        <p
+                                          className="stage-1-para"
+                                          style={{
+                                            color: el.color,
+                                            fontSize: '12px',
+                                          }}
+                                        >
+                                          {el.process}
+                                        </p>
+                                        <p
+                                          className=""
+                                          style={{
+                                            color: el.color,
+                                            fontSize: '11px',
+                                          }}
+                                        >
+                                          {el.data}
+                                        </p>
+                                      </div>
                                     </div>
-                                  </div>
-                                )
+                                  )
+                                )}
+                              </div>
+                              {i === filteredStatusData.length - 1 ? null : (
+                                <div className="dotted-border"></div>
                               )}
-                            </div>
-                            {i === 6 ? null : (
-                              <div className="dotted-border"></div>
-                            )}
-                          </>
-                        ))
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                            </>
+                          ))
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

@@ -29,7 +29,10 @@ const PaginationComponent: React.FC<PaginationProps> = ({
             className={currentPage === totalPages ? 'disabled' : 'current-btn'}
           >
             <MdArrowForwardIos
-              style={{ color: '#667085', fontSize: '.9rem' }}
+              style={{
+                color: currentPage === totalPages ? '#d9d9d9' : '#667085',
+                fontSize: '.9rem',
+              }}
             />
           </button>
         }

@@ -29,6 +29,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onMouseUp?: () => void;
   onMouseLeave?: () => void;
   isMobile?: boolean;
+  backgroundColor?: string;
 }
 
 const Input: FC<InputProps> = ({
@@ -48,6 +49,7 @@ const Input: FC<InputProps> = ({
   onMouseUp,
   onMouseLeave,
   isMobile,
+  backgroundColor,
   ...rest
 }) => {
   const validationRules = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +96,7 @@ const Input: FC<InputProps> = ({
           }}
           className="input"
           disabled={disabled}
+          style={{ backgroundColor }}
           {...rest}
         />
         {isTypePassword && type === 'text' ? (

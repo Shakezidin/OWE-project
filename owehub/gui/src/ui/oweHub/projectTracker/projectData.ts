@@ -71,7 +71,7 @@ export const projectStatusHeadData = [
   {
     name: 'Adder',
     para: '$65,000',
-    bgColor: '#EE824D',
+    bgColor: '#E0728C',
     viewButton: true,
     key: 'adders_total',
   },
@@ -114,7 +114,7 @@ export const projectStatusHeadData = [
     name: 'Net EPC',
     para: 'NA',
     viewButton: false,
-    bgColor: '#EE824D',
+    bgColor: '#E0728C',
     key: 'net_epc',
   },
 ];

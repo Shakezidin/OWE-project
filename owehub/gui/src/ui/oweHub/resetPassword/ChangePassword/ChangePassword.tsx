@@ -259,7 +259,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
             style={{ width: '100%' }}
             onClick={handleClose}
           >
-            LogOut
+            Logout
           </button>
         </form>
       </div>

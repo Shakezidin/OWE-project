@@ -20,7 +20,7 @@ update_ip() {
 
 # Check if any argument is passed
 if [ $# -eq 0 ]; then
-    echo "No arguments provided. Usage: $0 {all|gui|backend|migrate_db|database}"
+    echo "No arguments provided. Usage: $0 {all|gui|backend|migrate_db}"
     exit 1
 fi
 
@@ -41,11 +41,6 @@ case "$1" in
         ./stop-OweApp-Backend-svc.sh
         ./migrate_postgres_image.sh
 	./start-OweApp-Backend-svc.sh
-        ;;
-    database)
-        ./stop-OweApp-Backend-svc.sh
-        ./make_postgres_image.sh
-        ./start-OweApp-Backend-svc.sh
         ;;
     *)
         echo "Invalid argument. Usage: $0 {deploy_all|gui|backend|database}"

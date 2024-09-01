@@ -39,17 +39,32 @@ func SalesMetricsRetrieveQueryFunc() string {
         SELECT
             intOpsMetSchema.home_owner,
             intOpsMetSchema.unique_id,
-            salMetSchema.contract_date,
-            intOpsMetSchema.permit_approved_date,
-            intOpsMetSchema.pv_install_completed_date,
-            intOpsMetSchema.pto_date,
+            intOpsMetSchema.site_survey_scheduled_date,
             intOpsMetSchema.site_survey_completed_date,
+            intOpsMetSchema.cad_ready,
             intOpsMetSchema.cad_complete_date,
-            fieldOpsSchema.install_ready_date,
+            intOpsMetSchema.permit_submitted_date,
+            intOpsMetSchema.ic_submitted_date,
+            intOpsMetSchema.permit_approved_date,
+            intOpsMetSchema.ic_approved_date,
+            fieldOpsSchema.roofing_created_date,
             fieldOpsSchema.roofing_completed_date,
-            intopsmetschema.electrical_permit_approved_date,
+            intOpsMetSchema.pv_install_created_date,
+            fieldOpsSchema.battery_scheduled_date,
+            fieldOpsSchema.battery_complete_date,
+            intOpsMetSchema.pv_install_completed_date,
+            fieldOpsSchema.mpu_created_date,
+            fieldOpsSchema.derate_created_date,
+            secondFieldOpsSchema.trenching_ws_open,
+            fieldOpsSchema.derate_completed_date,
+            fieldOpsSchema.mpu_complete_date,
+            secondFieldOpsSchema.trenching_completed,
+            fieldOpsSchema.fin_created_date,
+            fieldOpsSchema.fin_pass_date,
+            intOpsMetSchema.pto_submitted_date,
+            intOpsMetSchema.pto_date,
+            salMetSchema.contract_date,
             salMetSchema.dealer,
-            salMetSchema.active_date,
             salMetSchema.primary_sales_rep
         FROM
             internal_ops_metrics_schema AS intOpsMetSchema
@@ -108,7 +123,8 @@ func ProjectMngmntRetrieveQueryFunc() string {
         mpu_created_date, mpu_scheduled_date, mpu_complete_date,
         derate_created_date, derate_scheduled_date, derate_completed_date,
         trenching_ws_open, trenching_scheduled, trenching_completed,
-        adder_breakdown_and_total, adders_total,cad_complete_date,active_date
+        adder_breakdown_and_total, adders_total,cad_complete_date,active_date,cad_ready,
+        battery_scheduled_date,battery_complete_date,fin_created_date,home_owner
         FROM consolidated_data_view
     `
 	return ProjectMngmntRetrieveQuery

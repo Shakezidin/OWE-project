@@ -9,35 +9,56 @@ package models
 type EmptyReq struct{}
 
 type PerfomanceStatusReq struct {
-	PageNumber   int `json:"page_number"`
-	PageSize     int `json:"page_size"`
-	Email        string
-	UniqueIds    []string `json:"unique_ids"`
-	ProjectLimit int
-	DealerName   interface{}
-	IntervalDays string
-	ItemLastSeen int64  `json:"item_last_seen"`
-	StartDate    string `json:"start_date"`
-	EndDate      string `json:"end_date"`
+	PageNumber        int    `json:"page_number"`
+	PageSize          int    `json:"page_size"`
+	SelectedMilestone string `json:"selected_milestone"`
+	Email             string
+	UniqueIds         []string `json:"unique_ids"`
+	ProjectLimit      int
+	DealerName        interface{}
+	IntervalDays      string
+	ItemLastSeen      int64  `json:"item_last_seen"`
+	StartDate         string `json:"start_date"`
+	EndDate           string `json:"end_date"`
 }
 
 type PerfomanceResponse struct {
-	UniqueId                     string `json:"unqiue_id"`
-	Customer                     string `json:"customer"`
-	ContractDate                 string `json:"contract_date"`
-	PermitApprovedDate           string `json:"permit_approved_date"`
-	PvInstallCompletedDate       string `json:"install_completed_date"`
-	PtoDate                      string `json:"pto_date"`
-	SiteSurveyCompleteDate       string `json:"site_survey_complete_date"`
-	InstallReadyDate             string `json:"install_ready_date"`
-	CadCompleteDate              string `json:"cad_complete_date"`
-	RoofingCompleteDate          string `json:"roofing_complete_date"`
-	ElectricalPermitApprovedDate string `json:"electrical_permit_approved_date"`
-	ActiveDate                   string `json:"active_date"`
+	UniqueId          string `json:"unqiue_id"`
+	Customer          string `json:"customer"`
+	SiteSurevyDate    string `json:"site_survey_date"`
+	CadDesignDate     string `json:"cad_design_date"`
+	PermittingDate    string `json:"permitting_date"`
+	RoofingDate       string `json:"roofing_date"`
+	InstallDate       string `json:"install_date"`
+	ElectricalDate    string `json:"electrical_date"`
+	InspectionDate    string `json:"inspection_date"`
+	ActivationDate    string `json:"activation_date"`
+	SiteSurveyColour  string `json:"site_survey_colour"`
+	CADDesignColour   string `json:"cad_design_colour"`
+	PermittingColour  string `json:"permitting_colour"`
+	RoofingColour     string `json:"roofing_colour"`
+	InstallColour     string `json:"install_colour"`
+	ElectricalColour  string `json:"electrical_colour"`
+	InspectionsColour string `json:"inspectionsColour"`
+	ActivationColour  string `json:"activation_colour"`
+	CADLink           string `json:"cad_link"`
+	DATLink           string `json:"dat_link"`
+	PodioLink         string `json:"podio_link"`
+	CoStatus          string `json:"co_status"`
+	Ntp               NTP    `json:"ntp"`
+	Qc                QC     `json:"qc"`
 }
 
 type PerfomanceListResponse struct {
-	PerfomanceList []PerfomanceResponse `json:"perfomance_response_list"`
+	PerfomanceList   []PerfomanceResponse `json:"perfomance_response_list"`
+	SiteSurveyCount  int64                `json:"site_survey_count"`
+	CadDesignCount   int64                `json:"cad_design_count"`
+	PerimittingCount int64                `json:"permitting_count"`
+	RoofingCount     int64                `json:"roofing_count"`
+	InstallCount     int64                `json:"isntall_count"`
+	ElectricalCount  int64                `json:"electrical_count"`
+	InspectionCount  int64                `json:"inspection_count"`
+	ActivationCount  int64                `json:"activation_count"`
 }
 
 // shift the below struct to project
@@ -73,6 +94,27 @@ type ProjectListResponse struct {
 	CADLink     string            `json:"cad_link"`
 	DATLink     string            `json:"dat_link"`
 	PodioLink   string            `json:"podio_link"`
+	CoStatus    string            `json:"co_status"`
+	Ntp         NTP               `json:"ntp"`
+	Qc          QC                `json:"qc"`
+}
+
+type QC struct {
+	PowerClerk                           string `json:"powerclerk_sent_az"`
+	ACHWaiveSendandSignedCashOnly        string `json:"ach_waiver_sent_and_signed_cash_only"`
+	GreenAreaNMOnly                      string `json:"green_area_nm_only"`
+	FinanceCreditApprovalLoanorLease     string `json:"finance_credit_approved_loan_or_lease"`
+	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement_completed_loan_or_lease"`
+	OWEDocumentsCompleted                string `json:"owe_documents_completed"`
+	ActionRequiredCount                  int64  `json:"qc_action_required_count"`
+}
+
+type NTP struct {
+	ProductionDiscrepancy        string `json:"production_discrepancy"`
+	FinanceNTPOfProject          string `json:"finance_NTP_of_project"`
+	UtilityBillUploaded          string `json:"utility_bill_uploaded"`
+	PowerClerkSignaturesComplete string `json:"powerclerk_signatures_complete"`
+	ActionRequiredCount          int64  `json:"action_required_count"`
 }
 
 type ProjectResponse struct {
@@ -110,6 +152,10 @@ type ProjectResponse struct {
 	PtoInProcess                 string            `json:"pto_in_process"`
 	PtoSubmitted                 string            `json:"pto_submitted"`
 	PtoCompleted                 string            `json:"pto_completed"`
+	CadReady                     string            `json:"cad_ready"`
+	BatteryScheduleDate          string            `json:"battery_scheduled_date"`
+	BatteryCompleteDate          string            `json:"battery_complete_date"`
+	FinCreatedDate               string            `json:"fin_created_date"`
 	SystemSize                   float64           `json:"system_size"`
 	AddersTotal                  string            `json:"adders_total"`
 	AdderBreakDownAndTotalString string            `json:"adder_breakdown_and_total_string"`
@@ -120,6 +166,7 @@ type ProjectResponse struct {
 	ContractAmount               float64           `json:"contract_amount"`
 	FinancePartner               string            `json:"finance_partner"`
 	NetEPC                       float64           `json:"net_epc"`
+	HomeOwner                    string            `json:"home_owner"`
 }
 
 // first is db column name  // second is struct name
@@ -158,6 +205,10 @@ var ColumnToField = map[string]string{
 	"pto_created_date":             "PtoInProcess",
 	"pto_submitted_date":           "PtoSubmitted",
 	"pto_date":                     "PtoCompleted",
+	"cad_ready":                    "CadReady",
+	"battery_scheduled_date":       "BatteryScheduleDate",
+	"battery_complete_date":        "BatteryCompleteDate",
+	"fin_created_date":             "FinCreatedDate",
 	"system_size":                  "SystemSize",
 	"adders_total":                 "AddersTotal",
 	"adder_breakdown_and_total":    "AdderBreakDownAndTotalString",
@@ -167,4 +218,5 @@ var ColumnToField = map[string]string{
 	"contract_total":               "ContractAmount",
 	"finance_company":              "FinancePartner",
 	"net_epc":                      "NetEPC",
+	"home_owner":                   "HomeOwner",
 }

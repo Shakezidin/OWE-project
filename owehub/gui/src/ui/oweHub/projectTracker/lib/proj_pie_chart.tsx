@@ -1,129 +1,135 @@
-import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { getDealerPayTileData } from '../../../../redux/apiActions/dealerPayAction';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import useMatchMedia from '../../../../hooks/useMatchMedia';
+import React, { useState } from 'react';
+import { FiLink } from 'react-icons/fi';
+import { RiExternalLinkLine } from 'react-icons/ri';
 import './pojpie.css';
-import DataNotFound from '../../../components/loader/DataNotFound';
 
-interface ChartDataItem {
-  name: string;
-  value: number;
+interface ProjPieChartProps {
+  projectDetail: any;
 }
 
-const Proj_pie_chart: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { tileData, loading } = useAppSelector((state) => state.dealerPaySlice);
-  const [chartData, setChartData] = useState<ChartDataItem[]>([]);
+const ProjPieChart: React.FC<ProjPieChartProps> = ({ projectDetail }) => {
+  const [copied, setCopied] = useState<string | null>(null);
 
-  useEffect(() => {
-    dispatch(getDealerPayTileData({ dealer: 'dealer' }));
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (tileData) {
-      const amountPrepaid = tileData.amount_prepaid || 0;
-      const pipelineRemaining = tileData.pipeline_remaining || 0;
-      setChartData([
-        { name: 'Amount Prepaid', value: amountPrepaid },
-        { name: 'Pipeline Remaining', value: pipelineRemaining },
-      ]);
+  const handleCopyLink = (url: string | undefined) => {
+    if (url) {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(url);
+        setTimeout(() => setCopied(null), 800); // Remove the message after 0.80 seconds
+      });
     }
-  }, [tileData]);
+  };
 
-  const COLORS = ['#62aca3', '#FF8042'];
-  const isTablet = useMatchMedia('(max-width: 1024px)');
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, url: string | undefined) => {
+    if (!url || !projectDetail) {
+      e.preventDefault(); // Prevent navigation if no URL or projectDetail is not present
+    }
+  };
+
+  const isDisabled = !projectDetail;
 
   return (
-    <div className="proj-pie">
-      {loading ||
-      (tileData?.pipeline_remaining === 0 && tileData?.amount_prepaid === 0) ? (
-        <div
-          className="data-not-found"
-          style={{ width: '100%', marginTop: '-98px' }}
-        >
-          <DataNotFound title={loading ? 'Searching..' : 'No Data Found'} />
-        </div>
-      ) : (
-        <>
-          <PieChart width={isTablet ? 210 : 360} height={isTablet ? 200 : 220}>
-            <Pie
-              data={chartData}
-              innerRadius={isTablet ? 60 : 53}
-              outerRadius={isTablet ? 85 : 80}
-              fill="#8884d8"
-              paddingAngle={5}
-              dataKey="value"
-            >
-              {chartData.map((entry, index: number) => (
-                <Cell
-                  style={{ outline: 'none' }}
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-          </PieChart>
+    <>
+      <div className="pm-doc-heading">Resources</div>
 
-          <div className="stats-wrapper items-center justify-center pb2">
-            <div className="flex items-center">
-              <div className="flex items-center">
-                <div
-                  className="flex items-center mr1"
-                  style={{
-                    background: '#63ACA3',
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    border: '3px solid #D2FFF9',
-                    flexShrink: 0,
-                  }}
-                />
-
-                <span className="bold h5" style={{ color: '#263747' }}>
-                  {Number(tileData?.amount_prepaid).toFixed(2)}
-                </span>
-              </div>
-              <span className="bold" style={{ padding: '0 5px' }}>
-                -
-              </span>
-
-              <h3 className="h5" style={{ fontWeight: '500' }}>
-                Amount Prepaid
-              </h3>
+      <div className="pc-links">
+        {/* Podio Link */}
+        {/* <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
+          <div className="link-head">
+            <h3>Podio</h3>
+            <span>Go to Podio Document for more info</span>
+          </div>
+          <div className="link-url">
+            <div  className={`link-tab ${!projectDetail?.podio_link ? 'disable-btn' : ''}`} onClick={() => !isDisabled && handleCopyLink(projectDetail?.podio_link)}>
+              <FiLink />
             </div>
-
-            <div className="flex items-center ">
-              <div className="flex items-center">
-                <div
-                  className="flex items-center mr1"
-                  style={{
-                    background: '#EE824D',
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    border: '3px solid #FFE2D4',
-                    flexShrink: 0,
-                  }}
-                />
-
-                <span className="bold h5" style={{ color: '#263747' }}>
-                  {Number(tileData?.pipeline_remaining).toFixed(2)}
-                </span>
-              </div>
-              <span className="mxhalf bold" style={{ padding: '0 5px' }}>
-                -
-              </span>
-
-              <h3 className="h5" style={{ fontWeight: '500' }}>
-                Pipeline Remaining
-              </h3>
+            <div  className={`link-tab ${!projectDetail?.podio_link ? 'disable-btn' : ''}`}>
+              <a
+                href={projectDetail?.podio_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => handleClick(e, projectDetail?.podio_link)}
+              >
+                <RiExternalLinkLine />
+              </a>
             </div>
           </div>
-        </>
-      )}
-    </div>
+          {copied === projectDetail?.podio_link && <span className="copy-message"> Copied!</span>}
+        </div> */}
+
+        {/* CAD Link */}
+        <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
+          <div className="link-head">
+            <h3>CAD</h3>
+            <span>Go to Document for more info</span>
+          </div>
+          <div className="link-url">
+            <div  className={`link-tab ${!projectDetail?.cad_link ? 'disable-btn' : ''}`} onClick={() => !isDisabled && handleCopyLink(projectDetail?.cad_link)}>
+              <FiLink />
+            </div>
+            <div className={`link-tab ${!projectDetail?.cad_link ? 'disable-btn' : ''}`}>
+              <a
+                href={projectDetail?.cad_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => handleClick(e, projectDetail?.cad_link)}
+              >
+                <RiExternalLinkLine />
+              </a>
+            </div>
+          </div>
+          {copied === projectDetail?.cad_link && <span className="copy-message"> Copied!</span>}
+        </div>
+
+        {/* DAT Link */}
+        <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
+          <div className="link-head">
+            <h3>DAT</h3>
+            <span>Go to Document for more info</span>
+          </div>
+          <div className="link-url">
+            <div className={`link-tab ${!projectDetail?.dat_link ? 'disable-btn' : ''}`}  onClick={() => !isDisabled && handleCopyLink(projectDetail?.dat_link)}>
+              <FiLink />
+            </div>
+            <div  className={`link-tab ${!projectDetail?.dat_link ? 'disable-btn' : ''}`} >
+              <a
+                href={projectDetail?.dat_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => handleClick(e, projectDetail?.dat_link)}
+              >
+                <RiExternalLinkLine />
+              </a>
+            </div>
+          </div>
+          {copied === projectDetail?.dat_link && <span className="copy-message"> Copied!</span>}
+        </div>
+
+        {/* Contract Link */}
+        <div className={`pc-link ${isDisabled ? 'disable-btn' : ''}`}>
+          <div className="link-head">
+            <h3>Contract</h3>
+            <span>Go to Document for more info</span>
+          </div>
+          <div className="link-url">
+            <div  className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`}  onClick={() => !isDisabled && handleCopyLink(projectDetail?.includeContractUrl)}>
+              <FiLink />
+            </div>
+            <div  className={`link-tab ${!projectDetail?.includeContractUrl ? 'disable-btn' : ''}`} >
+              <a
+                href={projectDetail?.includeContractUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => handleClick(e, projectDetail?.includeContractUrl)}
+              >
+                <RiExternalLinkLine />
+              </a>
+            </div>
+          </div>
+          {copied === projectDetail?.includeContractUrl && <span className="copy-message"> Copied!</span>}
+        </div>
+      </div>
+    </>
   );
 };
 
-export default Proj_pie_chart;
+export default ProjPieChart;

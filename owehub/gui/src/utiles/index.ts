@@ -1,6 +1,14 @@
 import { Dispatch, SetStateAction } from 'react';
 import { postCaller } from '../infrastructure/web_api/services/apiUrl';
-import { format, parse, addMinutes } from 'date-fns';
+import {
+  format,
+  parse,
+  addMinutes,
+  differenceInHours,
+  setHours,
+  setMinutes,
+  differenceInMinutes,
+} from 'date-fns';
 export const firstCapitalize = (str: string) => {
   const key = str[0].toUpperCase() + str.slice(1, str.length);
   return key;
@@ -47,4 +55,24 @@ export const generateTimeArray = (start: string, end: string) => {
     currentTime = addMinutes(currentTime, 30);
   }
   return timeArray;
+};
+
+export const timeDifference = (time1: string, time2: string) => {
+  let date1 = parse(time1, 'h:mm a', new Date());
+  let date2 = parse(time2, 'h:mm a', new Date());
+
+  // Set both dates to the same day
+  const baseDate = new Date(2000, 0, 1); // An arbitrary date
+  date1 = setMinutes(setHours(baseDate, date1.getHours()), date1.getMinutes());
+  date2 = setMinutes(setHours(baseDate, date2.getHours()), date2.getMinutes());
+
+  // Calculate the difference in minutes
+  let diff = differenceInMinutes(date2, date1);
+
+  // If the difference is negative, add 24 hours (in minutes)
+  if (diff < 0) {
+    diff += 24 * 60;
+  }
+
+  return diff / 60;
 };
