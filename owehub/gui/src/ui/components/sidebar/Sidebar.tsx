@@ -75,10 +75,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const filteredList = useMemo(() => {
     let list = [...createSideMenuList()];
     const isStaging = process.env.REACT_APP_ENV;
+
     if (role === TYPE_OF_USER.ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+        if (
+          (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) ||
+          (isStaging !== 'staging' && item.path === ROUTES.PEINDING_QUEUE)
+        ) {
         } else {
           newArr[0].mob.push(item);
         }
@@ -90,7 +94,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
-          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          if (
+            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) ||
+            (isStaging !== 'staging' && item.path === ROUTES.PEINDING_QUEUE)
+          ) {
           } else {
             newArr[0].mob.push(item);
           }
@@ -104,7 +111,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
           item.path !== ROUTES.USER_MANAEMENT
         ) {
-          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          if (
+            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) ||
+            (isStaging !== 'staging' && item.path === ROUTES.PEINDING_QUEUE)
+          ) {
           } else {
             newArr[0].mob.push(item);
           }
@@ -120,7 +130,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS
         ) {
-          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          if (
+            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) ||
+            (isStaging !== 'staging' && item.path === ROUTES.PEINDING_QUEUE)
+          ) {
           } else {
             newArr[0].mob.push(item);
           }
@@ -131,7 +144,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
-          if (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) {
+          if (
+            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) ||
+            (isStaging !== 'staging' && item.path === ROUTES.PEINDING_QUEUE)
+          ) {
           } else {
             newArr[0].mob.push(item);
           }

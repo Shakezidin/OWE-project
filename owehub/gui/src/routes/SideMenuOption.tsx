@@ -1,7 +1,7 @@
 import { ROUTES } from './routes';
 import { CiWallet } from 'react-icons/ci';
 import { BiSupport } from 'react-icons/bi';
-import { RiUserSettingsLine } from 'react-icons/ri';
+import { RiPieChart2Fill, RiUserSettingsLine } from 'react-icons/ri';
 import { BsDatabaseGear } from 'react-icons/bs';
 import { MdOutlinePayment } from 'react-icons/md';
 import { FiServer } from 'react-icons/fi';
@@ -17,7 +17,7 @@ import { MdOutlineSpaceDashboard } from 'react-icons/md';
 import { AiOutlineDatabase } from 'react-icons/ai';
 import { AiOutlineUserSwitch } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
-import { FaRegCalendarCheck } from "react-icons/fa6";
+import { FaRegCalendarCheck } from 'react-icons/fa6';
 
 const performance = {
   performance: [
@@ -234,6 +234,19 @@ const mob = {
         ),
       },
     },
+    {
+      path: ROUTES.PEINDING_QUEUE,
+      sidebarProps: {
+        displayText: 'Pending Queues',
+        icon: (
+          <RiPieChart2Fill
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
 
     {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
@@ -251,7 +264,7 @@ const mob = {
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
-    
+
     {
       path: ROUTES.TECHNICAL_SUPPORT,
       sidebarProps: {

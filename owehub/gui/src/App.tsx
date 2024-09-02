@@ -84,6 +84,7 @@ import CustomersList from './ui/scheduler/SalesRepScheduler/CustomersList';
 import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
 import Calendar from './ui/Calendar/PerformanceCalendar';
+import PendingQueue from './ui/oweHub/pendingQueue';
 function App() {
   const dispatch = useAppDispatch();
 
@@ -284,8 +285,8 @@ function App() {
               <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
             </Route>
           )}
-
-        <Route path={ROUTES.CALENDAR} element={<Calendar />} />
+          <Route path={ROUTES.PEINDING_QUEUE} element={<PendingQueue />} />
+          <Route path={ROUTES.CALENDAR} element={<Calendar />} />
 
           <Route
             path={ROUTES.TECHNICAL_SUPPORT}
