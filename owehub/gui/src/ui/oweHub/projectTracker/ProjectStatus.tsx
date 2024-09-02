@@ -818,7 +818,7 @@ const ProjectStatus = () => {
                     <button>NTP</button>
                   </div>
                 </div>
-                {/* {otherlinks?.ntp?.action_required_count > 0 ?
+                {otherlinks?.ntp?.action_required_count > 0 ?
                       <div className="progress-qc-acre">
                         <span>{otherlinks?.ntp?.action_required_count}</span>
                       </div>
@@ -828,7 +828,7 @@ const ProjectStatus = () => {
                         <p>CO Status</p>
                         <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>Pending <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
                       </div>
-                    } */}
+                    }
               </div>
             </div>
             <div className="project-management-table ">
