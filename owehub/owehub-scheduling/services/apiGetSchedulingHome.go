@@ -87,9 +87,7 @@ func HandleGetSchedulingHomeRequest(resp http.ResponseWriter, req *http.Request)
 			dataReq.PageNumber,
 			(dataReq.PageNumber-1)*dataReq.PageSize,
 		)
-	}
-
-	if dataReq.Queue == "travel" || dataReq.Queue == "regular" {
+	} else {
 		scheduleDataQuery = fmt.Sprintf(`
 		SELECT 
 			home_owner, 
@@ -230,7 +228,7 @@ func getTravelQueue(homeownerRecords []map[string]interface{}) (travelQueue map[
 		return nil, err
 	}
 
-	destinations := []googlemaps.RouteMatrixReqItem{} // warehouse addresses
+	warehouseAddr := []googlemaps.RouteMatrixReqItem{} // warehouse addresses
 
 	for _, record := range warehouseAddressesRecords {
 		address, ok := record["address"].(string)
@@ -239,68 +237,97 @@ func getTravelQueue(homeownerRecords []map[string]interface{}) (travelQueue map[
 			continue
 		}
 
-		destinations = append(destinations, googlemaps.RouteMatrixReqItem{
+		warehouseAddr = append(warehouseAddr, googlemaps.RouteMatrixReqItem{
 			Waypoint: googlemaps.RouteMatrixReqWaypoint{Address: &address},
 		})
 	}
 
-	originChunks := Chunkify(homeownerRecords, 25)
-	destChunks := Chunkify(destinations, 25)
-	originWg := sync.WaitGroup{}
+	homeownerRecordChunks := Chunkify(homeownerRecords, 25)
+	warehouseAddrChunks := Chunkify(warehouseAddr, 25)
+	homeownerWg := sync.WaitGroup{}
 
 	travelQueue = make(map[string]bool)
 
-	for originIndex := range originChunks {
-		originWg.Add(1)
-		destWg := sync.WaitGroup{}
-
-		go func(originChunk []map[string]interface{}) {
-			defer originWg.Done()
-
-			origins := []googlemaps.RouteMatrixReqItem{}
-
-			for _, record := range originChunk {
-				address, ok := record["address"].(string)
-				if !ok || address == "" {
-					log.FuncErrorTrace(0, "Failed to get address for record: %+v", record)
-					continue
-				}
-
-				origins = append(origins, googlemaps.RouteMatrixReqItem{
-					Waypoint: googlemaps.RouteMatrixReqWaypoint{Address: &address},
-				})
-			}
-
-			for destIndex := range destChunks {
-				destWg.Add(1)
-				go func(destinations []googlemaps.RouteMatrixReqItem) {
-					defer destWg.Done()
-
-					resp, err := googlemaps.CallRouteMatrixApi(&googlemaps.RouteMatrixReq{
-						Origins:      origins,
-						Destinations: destinations,
-						TravelMode:   "DRIVE",
-					})
-					if err != nil {
-						log.FuncErrorTrace(0, "Failed to hit googlemaps api err: %v", err)
-						return
-					}
-
-					for _, item := range *resp {
-						homeownerAddr := *origins[item.OriginIndex].Waypoint.Address
-						mutex.Lock()
-						if item.DistanceMeters >= 160934 { // 100 miles
-							travelQueue[homeownerAddr] = true
-						}
-						mutex.Unlock()
-					}
-
-				}(destChunks[destIndex])
-			}
-			destWg.Wait()
-		}(originChunks[originIndex])
+	for _, homeownerChunk := range homeownerRecordChunks {
+		homeownerWg.Add(1)
+		go getTravelQueueHomeownerChunk(homeownerChunk, &warehouseAddrChunks, &travelQueue, &homeownerWg, &mutex)
 	}
 
-	originWg.Wait()
+	homeownerWg.Wait()
 	return travelQueue, nil
+}
+
+/******************************************************************************
+ * FUNCTION:         getTravelQueueHomeownerChunk
+ * DESCRIPTION:
+ *
+ * INPUT:            originChunk, destChunks, travelQueue, originWg, mutex
+ * RETURNS:          void
+ ******************************************************************************/
+func getTravelQueueHomeownerChunk(
+	homeownerChunk []map[string]interface{},
+	warehouseChunks *[][]googlemaps.RouteMatrixReqItem,
+	travelQueue *map[string]bool,
+	homeownerWg *sync.WaitGroup,
+	mutex *sync.Mutex,
+) {
+	defer homeownerWg.Done()
+	destWg := sync.WaitGroup{}
+
+	origins := []googlemaps.RouteMatrixReqItem{}
+
+	for _, record := range homeownerChunk {
+		address, ok := record["address"].(string)
+		if !ok || address == "" {
+			log.FuncErrorTrace(0, "Failed to get address for record: %+v", record)
+			continue
+		}
+
+		origins = append(origins, googlemaps.RouteMatrixReqItem{
+			Waypoint: googlemaps.RouteMatrixReqWaypoint{Address: &address},
+		})
+	}
+
+	for _, destinations := range *warehouseChunks {
+		destWg.Add(1)
+		go getTravelQueueWarehouseChunk(destinations, &origins, travelQueue, &destWg, mutex)
+	}
+	destWg.Wait()
+}
+
+/******************************************************************************
+ * FUNCTION:         getTravelQueueWarehouseChunk
+ * DESCRIPTION:
+ *
+ * INPUT:            destination, origins, travelQueue, destWg, mutex
+ * RETURNS:          void
+ ******************************************************************************/
+func getTravelQueueWarehouseChunk(
+	warehouseChunk []googlemaps.RouteMatrixReqItem,
+	homeowners *[]googlemaps.RouteMatrixReqItem,
+	travelQueue *map[string]bool,
+	warehouseWg *sync.WaitGroup,
+	mutex *sync.Mutex,
+) {
+	defer warehouseWg.Done()
+
+	resp, err := googlemaps.CallRouteMatrixApi(&googlemaps.RouteMatrixReq{
+		Origins:      *homeowners,
+		Destinations: warehouseChunk,
+		TravelMode:   "DRIVE",
+	})
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to hit googlemaps api err: %v", err)
+		return
+	}
+
+	for _, item := range *resp {
+		homeownerAddr := *(*homeowners)[item.OriginIndex].Waypoint.Address
+		mutex.Lock()
+		if item.DistanceMeters >= 160934 { // 100 miles
+			(*travelQueue)[homeownerAddr] = true
+		}
+		mutex.Unlock()
+	}
+
 }

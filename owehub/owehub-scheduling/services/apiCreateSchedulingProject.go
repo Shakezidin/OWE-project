@@ -26,8 +26,8 @@ import (
 func HandleCreateSchedulingProjectRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                        error
-		emailCheckQuery            string
-		emailCheckRecords          []map[string]interface{}
+		emailCheckRecords          []interface{}
+		queryParameters            []interface{}
 		createSchedulingProjectReq models.CreateSchedulingProjectReq
 	)
 
@@ -55,33 +55,46 @@ func HandleCreateSchedulingProjectRequest(resp http.ResponseWriter, req *http.Re
 		return
 	}
 
-	// Check for required fields
-	if len(createSchedulingProjectReq.Email) <= 0 || len(createSchedulingProjectReq.FirstName) <= 0 || len(createSchedulingProjectReq.LastName) <= 0 {
-		err = fmt.Errorf("Empty input fields in API are not allowed")
+	// Check if email is provided
+	if len(createSchedulingProjectReq.Email) <= 0 {
+		err = fmt.Errorf("Email field is empty")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty input fields in API are not allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Email field is required", http.StatusBadRequest, nil)
+		return
+	}
+
+	// Check if first name is provided
+	if len(createSchedulingProjectReq.FirstName) <= 0 {
+		err = fmt.Errorf("First name field is empty")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "First name field is required", http.StatusBadRequest, nil)
+		return
+	}
+
+	// Check if last name is provided
+	if len(createSchedulingProjectReq.LastName) <= 0 {
+		err = fmt.Errorf("Last name field is empty")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Last name field is required", http.StatusBadRequest, nil)
 		return
 	}
 
 	// make sure that user with email doesnt already exist
-	emailCheckQuery = fmt.Sprintf("SELECT count(*) FROM %s WHERE EMAIL = $1", db.TableName_SchedulingProjects)
-	emailCheckRecords, err = db.ReteriveFromDB(db.OweHubDbIndex, emailCheckQuery, []interface{}{createSchedulingProjectReq.Email})
-
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get email count from DB err: %v", err)
+	emailCheckRecords, err = db.CallDBFunction(db.OweHubDbIndex, db.CheckSchedulingProjectsEmailExistsFunction, []interface{}{createSchedulingProjectReq.Email})
+	if err != nil || len(emailCheckRecords) <= 0 {
+		log.FuncErrorTrace(0, "Failed to call procedure db.CheckSchedulingProjectsEmailExists err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to validate email", http.StatusInternalServerError, nil)
 		return
 	}
-
-	emailCheckCount, emailCheckOk := emailCheckRecords[0]["count"].(int64)
-	if !emailCheckOk {
-		err = fmt.Errorf("Failed to assert email count from type: %T", emailCheckRecords[0]["count"])
+	isEmailValid, ok := emailCheckRecords[0].(map[string]interface{})["result"].(bool)
+	if !ok {
+		err = fmt.Errorf("Failed to assert email check type: %T", emailCheckRecords[0])
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Failed to validate email", http.StatusInternalServerError, nil)
 		return
 	}
 
-	if emailCheckCount != 0 {
+	if isEmailValid {
 		err = fmt.Errorf("duplicate email provided")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Email already taken", http.StatusBadRequest, nil)
@@ -90,22 +103,18 @@ func HandleCreateSchedulingProjectRequest(resp http.ResponseWriter, req *http.Re
 
 	authenticatedEmail := req.Context().Value("emailid").(string)
 
-	err = db.AddSingleRecordInDB(
-		db.OweHubDbIndex,
-		db.TableName_SchedulingProjects,
-		map[string]interface{}{
-			"first_name":         createSchedulingProjectReq.FirstName,
-			"last_name":          createSchedulingProjectReq.LastName,
-			"email":              createSchedulingProjectReq.Email,
-			"phone":              createSchedulingProjectReq.Phone,
-			"address":            createSchedulingProjectReq.Address,
-			"roof_type":          createSchedulingProjectReq.RoofType,
-			"house_stories":      createSchedulingProjectReq.HouseStories,
-			"house_area_sqft":    createSchedulingProjectReq.HouseAreaSqft,
-			"system_size":        createSchedulingProjectReq.SystemSize,
-			"sales_rep_email_id": authenticatedEmail,
-		},
-	)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.FirstName)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.LastName)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.Email)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.Phone)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.Address)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.RoofType)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.HouseStories)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.HouseAreaSqft)
+	queryParameters = append(queryParameters, createSchedulingProjectReq.SystemSize)
+	queryParameters = append(queryParameters, authenticatedEmail)
+
+	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateSchedulingProjectFunction, queryParameters)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to insert scheduling project into DB with err: %v", err)
