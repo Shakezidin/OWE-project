@@ -826,7 +826,7 @@ const ProjectStatus = () => {
                     {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&
                       <div className="co-status mt0">
                         <p>CO Status</p>
-                        <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>Pending <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
+                        <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>{otherlinks.co_status} <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
                       </div>
                     }
               </div>
