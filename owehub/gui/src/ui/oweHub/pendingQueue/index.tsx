@@ -4,7 +4,7 @@ import Input from '../../components/text_input/Input';
 import { AiFillMinusCircle } from 'react-icons/ai';
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
-  const [active, setActive] = useState<'all' | 'ntp' | 'co' | 'qc'>('all');
+  const [active, setActive] = useState<'all' | 'ntp' | 'co' | 'qc'>('qc');
 
   return (
     <>
@@ -72,7 +72,7 @@ const PendingQueue = () => {
       >
         <div className="performance-table-heading">
           <div className="flex items-center justify-between">
-            <h3 className="ml3 " style={{ fontWeight: 500 }}>
+            <h3 className="ml3 " style={{ fontWeight: 700, fontSize: 20 }}>
               QC Checklist
             </h3>
             <div className="proper-top">
@@ -100,7 +100,7 @@ const PendingQueue = () => {
                         <p>Project Info</p>
                       </div>
                       <div className="header-milestone">
-                        <p>Project Status</p>
+                        <p> Checklist Details</p>
                       </div>
                     </div>
                   </th>
