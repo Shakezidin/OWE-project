@@ -136,7 +136,7 @@ const periodFilterOptions: DateRangeWithLabel[] = [
     end: endOfLastMonth,
   },
   {
-    label: 'Last Quarter',
+    label: 'This Quarter',
     start: startOfThreeMonthsAgo,
     end: today,
   },
