@@ -8,7 +8,7 @@ import {
   MdKeyboardArrowUp,
 } from 'react-icons/md';
 import { ICONS } from '../../../resources/icons/Icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
 import { ROUTES } from '../../../routes/routes';
@@ -17,6 +17,7 @@ import { IoMdLogOut } from 'react-icons/io';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoMenu } from 'react-icons/io5';
 import { RxCross2 } from 'react-icons/rx';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,6 +51,9 @@ const Header: React.FC<Toggleprops> = ({
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
+
+  const currentDate = new Date();
+  const dayOfMonth = currentDate.getDate();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -99,6 +103,8 @@ const Header: React.FC<Toggleprops> = ({
 
   const width = useWindowWidth();
   const isMobile = width < 768;
+
+  const isStaging = process.env.REACT_APP_ENV
 
   return (
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
@@ -167,7 +173,20 @@ const Header: React.FC<Toggleprops> = ({
         </div>
       </div>
       {!isMobile && (
-        <div className="search-container ">
+        <div className="search-container">
+          {isStaging === "staging" ?
+            (<div>
+              {userRole === TYPE_OF_USER.ADMIN || userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+                <div className='calendar-logo'>
+                  <Link to={ROUTES.CALENDAR}>
+                    <span></span>
+                    <p className=''>{dayOfMonth}</p>
+                  </Link>
+                </div>
+              ) : null}
+            </div>)
+            : null
+          }
           <div
             className="user-container relative"
             ref={dropdownRef}
