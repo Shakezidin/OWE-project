@@ -144,7 +144,7 @@ export const LoginPage = () => {
 
   const width = useWindowWidth();
   const isMobile = width < 768;
-  const isStaging = process.env.REACT_APP_ENV
+  const isStaging = process.env.REACT_APP_ENV  
   return (
     <div className="mainContainer">
       <div className={'overlay'} />
