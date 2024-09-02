@@ -3,9 +3,11 @@
   flex-direction: column;
   font-size: 12px;
 }
-.pipeline-heading{
+
+.pipeline-heading {
   display: flex !important;
 }
+
 .performance-exportbtn {
   margin-left: auto;
   width: -moz-fit-content;
@@ -59,22 +61,29 @@
 .status-item.co {
   position: relative;
   /* Add some padding if needed */
-  border-radius: 4px; /* Round the corners */
-  cursor: pointer; /* Change cursor to pointer */
+  border-radius: 4px;
+  /* Round the corners */
+  cursor: pointer;
+  /* Change cursor to pointer */
 }
 
 .status-item.co:hover::before {
-  content: attr(data-tooltip); /* Display tooltip content */
+  content: attr(data-tooltip);
+  /* Display tooltip content */
   position: absolute;
-  top: 100%; /* Position below the element */
+  top: 100%;
+  /* Position below the element */
   left: 50%;
   transform: translateX(-50%);
-  background-color: #ff8934; /* Tooltip background color */
-  color: white; /* Tooltip text color */
+  background-color: #ff8934;
+  /* Tooltip background color */
+  color: white;
+  /* Tooltip text color */
   padding: 5px;
   padding-left: 6px;
   border-radius: 4px;
-  white-space: nowrap; /* Prevent line breaks */
+  white-space: nowrap;
+  /* Prevent line breaks */
   z-index: 10;
   opacity: 1;
   visibility: visible;
@@ -83,7 +92,8 @@
 }
 
 .status-item.co::before {
-  content: ''; /* Empty content to hide tooltip */
+  content: '';
+  /* Empty content to hide tooltip */
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease-in-out;
@@ -101,8 +111,10 @@
 .pending-co {
   color: #fff;
   background-color: #ff8934;
-  padding: 6px 1px;
   border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  padding: 0 3px;
 }
 
 .pending-coo {
@@ -1153,9 +1165,10 @@
     font-size: 11px;
   }
 }
+
 @media (max-width: 400px) {
   .status-btn {
-    right: 92px !important;
+    margin-left: 0 !important;
   }
 }
 
@@ -1293,13 +1306,16 @@
   .project-status-table-title1 {
     justify-content: flex-end;
   }
+
   .proj-status-tab-head {
     grid-row-start: 2;
   }
+
   .top-project-cards {
     flex-direction: column;
     margin: 10px;
   }
+
   .project-heading {
     grid-template-rows: auto auto;
   }
@@ -1461,12 +1477,6 @@
     margin-top: 1rem;
   }
 
-  .co-status {
-    position: absolute;
-    right: 18px;
-    top: 18px;
-  }
-
   .per-calender-container {
     margin-left: -266px;
     top: 140%;
@@ -1624,6 +1634,7 @@
 }
 
 @media (max-width: 768px) {
+
   .select-container .css-1n894bm-control,
   .select-container .css-xego5g-control {
     margin-top: 1rem;
