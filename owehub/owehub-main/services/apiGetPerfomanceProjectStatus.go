@@ -721,13 +721,16 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 && !filterCheck {
+		// Start with WHERE if none has been added
 		if whereAdded {
-			filtersBuilder.WriteString(" AND")
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
 		} else {
-			filtersBuilder.WriteString(" WHERE")
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
+
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -737,17 +740,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			}
 		}
 		filtersBuilder.WriteString(") ")
-	}
 
-	if len(dataFilter.UniqueIds) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" OR ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-
-		filtersBuilder.WriteString(" intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -758,6 +753,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			}
 		}
 		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
 	}
 
 	// Add dealer filter if not adminCheck and not filterCheck
