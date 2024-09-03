@@ -71,22 +71,25 @@ const PendingQueue = () => {
         style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
         <div className="performance-table-heading">
-          <div className="flex items-center justify-between">
-            <h3 className="ml3 " style={{ fontWeight: 700, fontSize: 20 }}>
+          <div
+            className={`flex  py2 items-center justify-between ${styles.pending_queue_table_header}`}
+          >
+            <h3
+              className={` ${styles.table_heading}`}
+              style={{ fontWeight: 700, fontSize: 20 }}
+            >
               QC Checklist
             </h3>
-            <div className="proper-top">
-              <div className="proper-select">
-                <Input
-                  type="text"
-                  placeholder="Search for Unique ID or Name"
-                  value={search}
-                  name="Search for Unique ID or Name"
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                  }}
-                />
-              </div>
+            <div className={styles.search_wrapper}>
+              <Input
+                type="text"
+                placeholder="Search for Unique ID or Name"
+                value={search}
+                name="Search for Unique ID or Name"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+              />
             </div>
           </div>
 

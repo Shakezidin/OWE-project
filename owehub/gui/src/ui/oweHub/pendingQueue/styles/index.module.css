@@ -4,7 +4,7 @@
   padding: 19px 28px;
   margin-top: 15px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   align-items: center;
   gap: 20px;
 }
@@ -90,4 +90,28 @@
 .danger_card {
   border: 1px solid #e14514;
   background-color: #fcece7;
+}
+
+.search_wrapper {
+  flex-basis: 250px;
+}
+.pending_queue_table_header {
+  padding-inline: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .pending_queue_title {
+    padding-left: 2rem;
+  }
+  .table_heading {
+    font-size: 15px !important;
+  }
+}
+@media screen and (max-width: 450px) {
+  .pending_queue_table_header {
+    padding-inline: 1rem;
+  }
+  .search_wrapper {
+    flex-basis: 200px;
+  }
 }
