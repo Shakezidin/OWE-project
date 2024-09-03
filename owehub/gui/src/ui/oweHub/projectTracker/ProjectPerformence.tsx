@@ -706,7 +706,7 @@ const ProjectPerformence = () => {
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => handleActiveTab('Active Queue')}
           >
-            Active Queue
+            Active
           </p>
           <p
             className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
@@ -730,7 +730,7 @@ const ProjectPerformence = () => {
       </div>
       <div className="project-container">
         <div className="project-heading pipeline-heading">
-          <h2>Active Queue</h2>
+          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
         </div>
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1 mx-auto">
