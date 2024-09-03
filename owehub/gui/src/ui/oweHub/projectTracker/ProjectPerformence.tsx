@@ -712,7 +712,7 @@ const ProjectPerformence = () => {
             className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => handleActiveTab('Active Queue')}
           >
-            AQ
+            Active
           </p>
           <p
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
