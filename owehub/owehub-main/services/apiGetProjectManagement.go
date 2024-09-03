@@ -40,6 +40,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		SaleRepList      []interface{}
 		role             string
 		uniqueId         string
+		ntpDate          string
 	)
 
 	log.EnterFn(0, "HandleGetProjectManagementRequest")
@@ -157,6 +158,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		projectData.AdderBreakDownAndTotal = cleanAdderBreakDownAndTotal(projectData.AdderBreakDownAndTotalString)
 		projectList.ProjectList = append(projectList.ProjectList, projectData)
 		uniqueId = projectData.UniqueId
+		ntpDate = projectData.NtpCompleted
 
 	}
 
@@ -165,7 +167,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	filtersBuilder.WriteString(fmt.Sprintf(
 		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, "+
 			"n.finance_ntp_of_project, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
-			"n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status "+
+			"n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status"+
 			"FROM customers_customers_schema c "+
 			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
 			"WHERE c.unique_id = '%s'", uniqueId)) // Check if there are filters
@@ -206,13 +208,13 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	var actionRequiredCount, count int64
 
 	// Assign values from the data map to the struct fields
-	ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy")
+	ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy", ntpDate)
 	actionRequiredCount += count
-	ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project")
+	ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project", ntpDate)
 	actionRequiredCount += count
-	ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded")
+	ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded", ntpDate)
 	actionRequiredCount += count
-	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete")
+	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete", ntpDate)
 	actionRequiredCount += count
 	ntp.ActionRequiredCount = actionRequiredCount
 	actionRequiredCount = 0
@@ -275,17 +277,17 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	if len(data) > 0 {
-		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az")
+		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az", ntpDate)
 		actionRequiredCount += count
-		qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only")
+		qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only", ntpDate)
 		actionRequiredCount += count
-		qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only")
+		qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only", ntpDate)
 		actionRequiredCount += count
-		qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease")
+		qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease", ntpDate)
 		actionRequiredCount += count
-		qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease")
+		qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease", ntpDate)
 		actionRequiredCount += count
-		qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed")
+		qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed", ntpDate)
 		actionRequiredCount += count
 		qc.ActionRequiredCount = actionRequiredCount
 	}
@@ -525,44 +527,44 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 	return filters, whereEleList
 }
 
-func getStringValue(data map[string]interface{}, key string) (string, int64) {
+func getStringValue(data map[string]interface{}, key string, ntp_date string) (string, int64) {
 	if v, exists := data[key]; exists {
 		switch key {
 		case "production_discrepancy":
-			if v == "" || v == "<nil>" {
+			if (v == "" || v == "<nil>") && ntp_date == "" {
 				return "Pending", 0
 			} else {
 				return "Completed", 0
 			}
 		case "finance_ntp_of_project":
-			if v == "" || v == "<nil>" {
+			if (v == "" || v == "<nil>") && ntp_date == "" {
 				return "Pending", 0
-			} else if v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips" {
+			} else if (v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips") && ntp_date == "" {
 				return "Pending (Action Required)", 1
 			} else {
 				return "Completed", 0
 			}
 		case "utility_bill_uploaded":
-			if v == "" || v == "<nil>" {
+			if (v == "" || v == "<nil>") && ntp_date == "" {
 				return "Pending", 0
-			} else if v == "❌" {
+			} else if v == "❌" && ntp_date == "" {
 				return "Pending (Action Required)", 1
 			} else {
 				return "Completed", 0
 			}
 		case "powerclerk_signatures_complete":
-			if v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" {
+			if (v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>") && ntp_date == "" {
 				return "Pending", 0
-			} else if v == "❌  Pending" || v == "❌  Pending Sending PC" {
+			} else if (v == "❌  Pending" || v == "❌  Pending Sending PC" || v == "❌ Pending Sending PC") && ntp_date == "" {
 				return "Pending (Action Required)", 1
 			} else {
 				return "Completed", 0
 			}
 		case "powerclerk_sent_az":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
 					return "Pending", 0
-				} else if v == "Pending Utility Account #" {
+				} else if v == "Pending Utility Account #" || ntp_date == "" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -570,7 +572,7 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -578,9 +580,9 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 			}
 		case "green_area_nm_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
 					return "Pending", 0
-				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" || ntp_date == "" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -588,7 +590,7 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 			}
 		case "finance_credit_approved_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -596,7 +598,7 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 			}
 		case "finance_agreement_completed_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -604,9 +606,9 @@ func getStringValue(data map[string]interface{}, key string) (string, int64) {
 			}
 		case "owe_documents_completed":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
 					return "Pending", 0
-				} else if v == "❌" {
+				} else if v == "❌" || ntp_date == "" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0

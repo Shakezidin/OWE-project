@@ -78,6 +78,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		InspectionCount    int64
 		ActivationCount    int64
 		contractD          string
+		ntpD               string
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -408,6 +409,14 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		} else {
 			contractD = ContractDate.Format("2006-01-02")
 		}
+
+		ntpDate, ok := item["ntp_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
+			ntpD = ""
+		} else {
+			ntpD = ntpDate.Format("2006-01-02")
+		}
 		surveyColor, SiteSurveyCountT, SiteSurevyDate := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
@@ -444,6 +453,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			ElectricalColour:  electricColor,
 			InspectionsColour: inspectionColor,
 			ActivationColour:  activationColor,
+			NTPdate:           ntpD,
 		}
 		switch dataReq.SelectedMilestone {
 		case "survey":
@@ -503,14 +513,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	}
 	paginatedData := PaginateData(perfomanceList, dataReq)
 	perfomanceList.PerfomanceList = paginatedData
-	perfomanceList.SiteSurveyCount = SiteSurveyCount
-	perfomanceList.CadDesignCount = CadDesignCount
-	perfomanceList.PerimittingCount = PerimittingCount
-	perfomanceList.RoofingCount = RoofingCount
-	perfomanceList.InstallCount = InstallCount
-	perfomanceList.ElectricalCount = ElectricalCount
-	perfomanceList.InspectionCount = InspectionCount
-	perfomanceList.ActivationCount = ActivationCount
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
@@ -616,7 +618,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	// actionRequiredCount = 0
 
 	// Step 3: Map Result to `PerfomanceResponse` structs
-	for i := range paginatedData {
+	for i, datas := range paginatedData {
 		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
 			if val, ok := row["current_live_cad"].(string); ok {
 				paginatedData[i].CADLink = val
@@ -645,13 +647,13 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 			var actionRequiredCount int64
 
 			// Assign values from the data map to the struct fields
-			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy")
+			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate)
 			actionRequiredCount += count
-			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project")
+			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate)
 			actionRequiredCount += count
-			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded")
+			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate)
 			actionRequiredCount += count
-			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete")
+			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate)
 			actionRequiredCount += count
 			paginatedData[i].Ntp = models.NTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -660,17 +662,17 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
 				ActionRequiredCount:          actionRequiredCount,
 			}
-			PowerClerk, count := getStringValue(row, "powerclerk_sent_az")
+			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate)
 			actionRequiredCount += count
-			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only")
+			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate)
 			actionRequiredCount += count
-			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only")
+			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate)
 			actionRequiredCount += count
-			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease")
+			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate)
 			actionRequiredCount += count
-			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease")
+			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate)
 			actionRequiredCount += count
-			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed")
+			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate)
 			actionRequiredCount += count
 			paginatedData[i].Qc = models.QC{
 				PowerClerk:                           PowerClerk,
@@ -779,8 +781,23 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+
+	}
 
 	filters = filtersBuilder.String()
 
@@ -872,8 +889,22 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
 
 	filters = filtersBuilder.String()
 

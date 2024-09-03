@@ -1078,8 +1078,8 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_perfomancemetrics",
-		apiHandler.HandleGetPerfomanceSalesRequest,
+		"/owe-commisions-service/v1/get_perfomancetiledata",
+		apiHandler.HandleGetPerfomanceTileDataRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
