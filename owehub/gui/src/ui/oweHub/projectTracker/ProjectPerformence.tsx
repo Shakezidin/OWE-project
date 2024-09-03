@@ -66,7 +66,9 @@ const ProjectPerformence = () => {
   const [selectedMilestone, setSelectedMilestone] = useState('');
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
-
+  const [activeTab, setActiveTab] = useState('Active Queue')
+  const [loading,setLoading] = useState(false);
+  const [titleData, setTileData] = useState<any>('')
   const [activeCardId, setActiveCardId] = useState(null);
   const [activeCardTitle, setActiveCardTitle] = useState<string>('');
 
@@ -118,7 +120,7 @@ const ProjectPerformence = () => {
     key: 'selection',
   });
 
-  const [tileData, setTileData] = useState<any>({});
+   
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
@@ -282,6 +284,37 @@ const ProjectPerformence = () => {
   );
 
   useEffect(() => {
+    
+      (async () => {
+        setLoading(true);
+        try {
+          const data = await postCaller('get_perfomancetiledata', {            
+            page_size: perPage,
+            page_number: page,
+            project_status: activeTab === 'Active Queue' ? ["ACTIVE"] : ["JEOPARDY","HOLD"]
+
+          });
+
+          if (data.status > 201) {
+            toast.error(data.message);
+            return;
+          }
+          console.log(data.data)
+          setTileData(data.data)
+          setLoading(false);
+        } catch (error) {
+          console.error(error);
+        } finally {
+        }
+      })();
+    
+  }, [
+   page,
+   activeTab
+  ]);
+
+
+  useEffect(() => {
     dispatch(
       getPerfomanceStatus({
         page,
@@ -331,43 +364,43 @@ const ProjectPerformence = () => {
     {
       id: 1,
       title: 'Site Survey',
-      value: datacount.site_survey_count,
+      value: titleData.site_survey_count,
       pending: 'survey',
     },
     {
       id: 2,
       title: 'CAD Design',
-      value: datacount.cad_design_count,
+      value: titleData.cad_design_count,
       pending: 'cad',
     },
     {
       id: 3,
       title: 'Permitting',
-      value: datacount.permitting_count,
+      value: titleData.permitting_count,
       pending: 'permit',
     },
     {
       id: 4,
       title: 'Roofing',
-      value: datacount.roofing_count,
+      value: titleData.roofing_count,
       pending: 'roof',
     },
     {
       id: 5,
       title: 'Install',
-      value: datacount.isntall_count,
+      value: titleData.isntall_count,
       pending: 'install',
     },
     {
       id: 6,
       title: 'Inspection',
-      value: datacount.inspection_count,
+      value: titleData.inspection_count,
       pending: 'inspection',
     },
     {
       id: 7,
       title: 'Activation',
-      value: datacount.activation_count,
+      value: titleData.activation_count,
       pending: 'activation',
     },
   ];
@@ -641,7 +674,7 @@ const ProjectPerformence = () => {
 
   const [selectedProjectQC, setSelectedProjectQC] = useState<any>(null);
 
-  const [activeTab, setActiveTab] = useState('Active Queue')
+
 
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
@@ -688,7 +721,22 @@ const ProjectPerformence = () => {
         </div>
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
-            {topCardsData.map((card, index) => {
+            { true ?
+                
+               <div
+                 style={{
+                   display: 'flex',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                   width:'100%',
+                   marginInline:'auto'
+                 }}
+                 
+               >
+                 <MicroLoader  />
+               </div>
+            
+           :<> {topCardsData.map((card, index) => {
               const cardColor = cardColors[index % cardColors.length];
               const isActive = activeCardId === card.id;
               const handleCardClick = (cardId: any, title: string) => {
@@ -753,8 +801,9 @@ const ProjectPerformence = () => {
                   )}
                 </div>
               );
-            })}
-          </div>
+            })}</>
+           }
+          </div> 
         </div>
       </div>
 
