@@ -102,6 +102,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 			filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
 		// default handles Regional Manager & Sales Manager and is entryway to below if
 		default:
+			SaleRepList = append(SaleRepList, name)
 			rgnSalesMgrCheck = true
 		}
 	}
@@ -110,12 +111,12 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
 		// This is thrown if no sale rep are available and also for remaining roles
-		if len(data) == 0 {
+		if len(SaleRepList) == 0 {
 			emptyPerfomanceList := models.ProjectListResponse{
 				ProjectList: []models.ProjectResponse{},
 			}
-			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(0))
+			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
+			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(0))
 			return
 		}
 
