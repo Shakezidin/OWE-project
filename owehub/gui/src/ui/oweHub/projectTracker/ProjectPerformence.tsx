@@ -316,6 +316,8 @@ const ProjectPerformence = () => {
         endDate: '',
         uniqueId: searchValue ? searchValue : '',
         selected_milestone: selectedMilestone,
+        project_status:
+            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
       })
     );
   }, [
@@ -325,6 +327,7 @@ const ProjectPerformence = () => {
     selectedProject.value,
     searchValue,
     selectedMilestone,
+    activeTab
   ]);
 
   const calculateCompletionPercentage = (

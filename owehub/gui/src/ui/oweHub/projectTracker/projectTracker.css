@@ -1639,6 +1639,48 @@
   align-items: center;
 }
 
+.progress-co button {
+  width: 75px;
+  height: 32px;
+  background-color: #EBA900;
+  border: 1px solid #EBA900;
+  font-weight: 500;
+  font-size: 12px;
+  margin-left: 6px;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.co-button {
+  position: relative;
+   
+  cursor: pointer;
+}
+
+.hover-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #EBA900;
+  color: #fff;
+  padding: 5px;
+  margin-top: 3px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.co-button:hover .hover-text {
+  visibility: visible;
+  opacity: 1;
+}
+
 .progress-qc-acre span {
   font-size: 10px;
   font-weight: 600;

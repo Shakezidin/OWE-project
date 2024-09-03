@@ -818,17 +818,25 @@ const ProjectStatus = () => {
                     <button>NTP</button>
                   </div>
                 </div>
-                {otherlinks?.ntp?.action_required_count > 0 ?
-                      <div className="progress-qc-acre">
-                        <span>{otherlinks?.ntp?.action_required_count}</span>
-                      </div>
-                      : null}
-                    {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&
+                {otherlinks?.ntp?.action_required_count > 0 ? (
+                  <div className="progress-qc-acre">
+                    <span>{otherlinks?.ntp?.action_required_count}</span>
+                  </div>
+                ) : null}
+                {/* {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&
                       <div className="co-status mt0">
                         <p>C/O Status</p>
                         <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>{otherlinks.co_status} <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
                       </div>
-                    }
+                    } */}
+                   {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&  
+                <div className="progress-co mt0">
+                  <button className="co-button">
+                    C/O Status
+                    <span className="hover-text">{otherlinks.co_status}</span>
+                  </button>
+                </div>
+                }
               </div>
             </div>
             <div className="project-management-table ">
