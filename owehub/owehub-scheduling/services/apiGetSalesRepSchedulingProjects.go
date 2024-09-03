@@ -18,28 +18,25 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:        HandleGetSchedulingProjectsRequest
+ * FUNCTION:        HandleGetSalesRepSchedulingProjectsRequest
  * DESCRIPTION:     Handler for getting scheduling projects with pagination
  * INPUT:           resp, req
  * RETURNS:         void
  ******************************************************************************/
-func HandleGetSchedulingProjectsRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetSalesRepSchedulingProjectsRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                       error
 		apiResp                   models.GetSchedulingProjectsList
 		dataReq                   models.GetSchedulingProjectsReq
 		schedulingProjectsQuery   string
 		schedulingProjectsRecords []map[string]interface{}
-		whereClause               string
-		authenticatedEmail        string
-		authenticatedRolename     string
 	)
 
-	log.EnterFn(0, "HandleGetSchedulingProjectsRequest")
-	defer func() { log.ExitFn(0, "HandleGetSchedulingProjectsRequest", err) }()
+	log.EnterFn(0, "HandleGetSalesRepSchedulingProjectsRequest")
+	defer func() { log.ExitFn(0, "HandleGetSalesRepSchedulingProjectsRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get SchedulingProjects request")
+		err = fmt.Errorf("HTTP Request body is null in get SalesRep SchedulingProjects request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,27 +44,19 @@ func HandleGetSchedulingProjectsRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get SchedulingProjects request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get SalesRep SchedulingProjects request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get SchedulingProjects request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to unmarshal get SalesRep SchedulingProjects request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal request body", http.StatusBadRequest, nil)
 		return
 	}
 
-	whereClause = "WHERE sp.is_appointment_approved = false"
-
-	// for sales rep show only projects created by him
-	authenticatedEmail = req.Context().Value("emailid").(string)
-	authenticatedRolename = req.Context().Value("rolename").(string)
-	if authenticatedRolename == "Sale Rep" {
-		whereClause = fmt.Sprintf("%s AND sp.sales_rep_email_id = '%s'", whereClause, authenticatedEmail)
-	}
-
+	// Fetch records with pagination
 	schedulingProjectsQuery = fmt.Sprintf(`
 		SELECT 
 			sp.first_name,
@@ -80,20 +69,19 @@ func HandleGetSchedulingProjectsRequest(resp http.ResponseWriter, req *http.Requ
 			ud.name as sales_rep_name
 		FROM %s sp
 		INNER JOIN %s ud ON ud.email_id = sp.sales_rep_email_id
-		%s
+		WHERE sp.is_appointment_approved = false
 		ORDER BY sp.created_at 
 		DESC LIMIT $1 
 		OFFSET $2`,
 		db.TableName_SchedulingProjects,
 		db.TableName_users_details,
-		whereClause,
 	)
 
 	offset := dataReq.PageSize * (dataReq.PageNumber - 1)
 
 	schedulingProjectsRecords, err = db.ReteriveFromDB(db.OweHubDbIndex, schedulingProjectsQuery, []interface{}{dataReq.PageSize, offset})
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to retrieve scheduling projects from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to retrieve SalesRep scheduling projects from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to retrieve records", http.StatusInternalServerError, nil)
 		return
 	}
@@ -169,6 +157,6 @@ func HandleGetSchedulingProjectsRequest(resp http.ResponseWriter, req *http.Requ
 		})
 	}
 
-	log.FuncBriefTrace(0, "%d scheduling projects fetched %+v", len(apiResp.SchedulingList), apiResp.SchedulingList)
+	log.FuncBriefTrace(0, "%d SalesRep scheduling projects fetched %+v", len(apiResp.SchedulingList), apiResp.SchedulingList)
 	FormAndSendHttpResp(resp, "Scheduling projects retrieved successfully", http.StatusOK, apiResp)
 }

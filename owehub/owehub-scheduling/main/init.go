@@ -74,7 +74,7 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_scheduling_projects",
-		apiHandler.HandleGetSchedulingProjectsRequest,
+		apiHandler.HandleGetSalesRepSchedulingProjectsRequest,
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
