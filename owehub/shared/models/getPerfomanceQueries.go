@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 func SalesRepRetrieveQueryFunc() string {
 	salerRepRetrieveQuery := `
     WITH RECURSIVE RegionalManagerHierarchy AS (
@@ -107,6 +109,7 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
 }
 
 func ProjectMngmntRetrieveQueryFunc() string {
+
 	ProjectMngmntRetrieveQuery := `
         SELECT unique_id, contract_date, ntp_working_date, 
         ntp_date, site_survey_scheduled_date, site_survey_rescheduled_date, 
@@ -129,4 +132,54 @@ func ProjectMngmntRetrieveQueryFunc() string {
         FROM consolidated_data_view
     `
 	return ProjectMngmntRetrieveQuery
+}
+
+func QcNtpRetrieveQueryFunc() string {
+	// Build the SQL Query
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(`
+        SELECT 
+            cv.unique_id,
+            n.production_discrepancy, 
+            n.finance_ntp_of_project, 
+            n.utility_bill_uploaded, 
+            n.powerclerk_signatures_complete, 
+            split_part(cv.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
+            cv.utility_company,
+            cv.state,
+            cv.home_owner,
+            CASE 
+                WHEN cv.utility_company = 'APS' THEN p.powerclerk_sent_az
+                ELSE 'Not Needed' 
+            END AS powerclerk_sent_az,
+            CASE 
+                WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
+                ELSE 'Not Needed'
+            END AS ach_waiver_sent_and_signed_cash_only,
+            CASE 
+                WHEN cv.state = 'NM :: New Mexico' THEN p.green_area_nm_only
+                ELSE 'Not Needed'
+            END AS green_area_nm_only,
+            CASE 
+                WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
+                ELSE 'Not Needed'
+            END AS finance_credit_approved_loan_or_lease,
+            CASE 
+                WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
+                ELSE 'Not Needed'
+            END AS finance_agreement_completed_loan_or_lease,
+            CASE 
+                WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
+                ELSE 'Not Needed'
+            END AS owe_documents_completed
+        FROM customers_customers_schema c
+        LEFT JOIN ntp_ntp_schema n 
+            ON c.unique_id = n.unique_id
+        LEFT JOIN consolidated_data_view cv 
+            ON c.unique_id = cv.unique_id
+        LEFT JOIN prospects_customers_schema p 
+            ON split_part(cv.prospectid_dealerid_salesrepid, ',', 1) = p.item_id::text
+    `)
+
+	return filtersBuilder.String()
 }
