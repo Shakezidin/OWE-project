@@ -641,6 +641,8 @@ const ProjectPerformence = () => {
 
   const [selectedProjectQC, setSelectedProjectQC] = useState<any>(null);
 
+  const [activeTab, setActiveTab] = useState('Active Queue')
+
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
   const filterClose = () => setFilterOpen(false);
@@ -657,11 +659,15 @@ const ProjectPerformence = () => {
     setNtpOPen(true);
   };
 
+  const handleActiveTab = (tab: any) => {
+    setActiveTab(tab)
+  }
+
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
     <div className="">
-      <div className='flex justify-between p2 top-radio-wrapper'>
+      <div className='flex justify-between p2 top-btns-wrapper'>
         <Breadcrumb
           head=""
           linkPara="Pipeline"
@@ -669,22 +675,17 @@ const ProjectPerformence = () => {
           linkparaSecond="Dashboard"
           marginLeftMobile="12px"
         />
-        <div className='pipeline-top-radio'>
-          <label>
-            <input type="radio" name='radio' value="Active Queue" defaultChecked />
-            <p>Active Queue</p>
-          </label>
-          <label>
-            <input type="radio" name='radio' value="Hold & Jeopardy" />
-            <p>Hold & Jeopardy</p>
-          </label>
+        <div className='pipeline-header-btns'>
+            <p className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`} onClick={() => handleActiveTab('Active Queue')}>Active Queue</p>
+            <p className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`} onClick={() => handleActiveTab('Active Queue')}>AQ</p>
+            <p className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`} onClick={() => handleActiveTab('Hold & Jeopardy')} >Hold & Jeopardy</p>
+            <p className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`} onClick={() => handleActiveTab('Hold & Jeopardy')} >H&J</p>
         </div>
       </div>
       <div className="project-container">
         <div className="project-heading pipeline-heading">
           <h2>Active Queue</h2>
         </div>
-
         <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
             {topCardsData.map((card, index) => {

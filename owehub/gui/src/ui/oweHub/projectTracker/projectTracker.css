@@ -355,28 +355,6 @@
   font-weight: 550;
   color: var(--page-heading-color);
 }
-.pipeline-top-radio{
-  display: flex;
-  gap: 1rem;
-}
-.pipeline-top-radio label{
-    display: flex;
-    align-items: center;
-    gap: 0.4rem; 
-    cursor: pointer;
-    font-weight: 500;
-    color: #AFAFAF;
-}
-.pipeline-top-radio input{
-  width: 1rem;
-  height: 1rem;
-}
-.pipeline-top-radio [type="radio"] {
-  accent-color: #377CF6;
-}
-.pipeline-top-radio input[type="radio"]:checked + p {
-  color: #377CF6; 
-}
 .project-card-container-1 {
   display: flex;
   flex-wrap: nowrap;
@@ -385,6 +363,38 @@
   overflow-x: scroll;
   padding: 1rem 1.25rem;
   scroll-behavior: smooth;
+}
+
+.pipeline-header-btns{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pipeline-header-btns p{
+  font-weight: 500;
+  font-size: 16px;
+  border: 1.5px solid #377CF6;
+  background: #fff;
+  color: #377CF6;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.pipeline-header-btns .active{
+  background: #377CF6;
+  color: #fff;
+}
+.pipeline-header-btns .mobile-btn{
+  display: none;
+}
+.pipeline-header-btns p:hover{
+  background: #377CF6;
+  color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
 }
 
 .last-card {
@@ -1685,10 +1695,10 @@
   .status-boxes {
     margin-top: 1rem;
   }
-  .top-radio-wrapper{
-    flex-direction: column;
+  .pipeline-header-btns .desktop-btn{
+    display: none;
   }
-  .pipeline-top-radio{
-    justify-content: center;
+  .pipeline-header-btns .mobile-btn{
+    display: block;
   }
 }
