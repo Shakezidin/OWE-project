@@ -832,7 +832,8 @@ const ProjectStatus = () => {
                    {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&  
                 <div className="progress-co mt0">
                   <button className="co-button">
-                    C/O Status
+                    <p className='co-desktop'>C/O Status</p>
+                    <p className='co-mobile'>C/O</p>
                     <span className="hover-text">{otherlinks.co_status}</span>
                   </button>
                 </div>
