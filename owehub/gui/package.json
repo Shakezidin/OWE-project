@@ -37,6 +37,7 @@
     "pdf-lib": "^1.17.1",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
+    "react-aws-s3-typescript": "^1.1.5",
     "react-csv": "^2.2.2",
     "react-date-range": "^2.0.1",
     "react-datepicker": "^6.9.0",
@@ -70,7 +71,8 @@
     "start:stage": "env-cmd -f .env.staging react-scripts start",
     "build:dev": "env-cmd -f .env.development react-scripts build",
     "build:stage": "env-cmd -f .env.staging react-scripts build",
-    "build:prod": "env-cmd -f .env.production react-scripts build"
+    "build:prod": "env-cmd -f .env.production react-scripts build",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix"
   },
   "browserslist": {
     "production": [

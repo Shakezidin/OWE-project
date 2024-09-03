@@ -44,7 +44,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({ onClose, selectedDate
                     <div className='sidebar-cards'>
                         {calendarData.map((data) => (
                             <div className="card">
-                                <p className='card-title' style={{color: data.color}}><span style={{background: data.color}}></span>{data.title} date</p>
+                                <p className='card-title' style={{color: data.color}}><span style={{background: data.color}}></span>{data.title} Date</p>
                                 <p className='card-id'>Project {data.category}</p>
                                 <p className='our-id'>{data.id}</p>
                                 <p className='card-name'>{data.name}</p>

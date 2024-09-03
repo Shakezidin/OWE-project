@@ -49,7 +49,7 @@ export const ROUTES = {
   CONFIG_APOTH: '/config/ap-oth',
   CONFIG_APPDA: '/config/ap-pda',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
-  CALENDAR:'/calendar',
+  CALENDAR: '/calendar',
 
   // other routes
   REPORT: '/report',
@@ -73,5 +73,6 @@ export const ROUTES = {
   SCHEDULE_DETAIL: '/schedule-detail/:id',
   SALES_REP_SCHEDULER: '/salesrep-schedule',
   ADD_NEW_SALES: '/add-new-salesrep-schedule',
-  SCHEDULE_SALES_REP_SURVEY:'/schedule-sales-rep'
+  SCHEDULE_SALES_REP_SURVEY: '/schedule-sales-rep',
+  PEINDING_QUEUE: '/pending-queues',
 };

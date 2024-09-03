@@ -7,7 +7,7 @@ import {
   MdKeyboardArrowRight,
 } from 'react-icons/md';
 import { ICONS } from '../../../resources/icons/Icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
 import { ROUTES } from '../../../routes/routes';
@@ -19,6 +19,7 @@ import { RxCross2 } from 'react-icons/rx';
 import useAuth from '../../../hooks/useAuth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
 
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,6 +41,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
 
   const width = useWindowWidth();
   const isMobile = width < 768;
+  const currentDate = new Date();
+  const dayOfMonth = currentDate.getDate();
+  const isStaging = process.env.REACT_APP_ENV
 
   const handleLogout = () => {
     // clearAuthData();
@@ -156,7 +160,20 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         </div>
       </div>
       {!isMobile && (
-        <div className="search-container ">
+        <div className="search-container">
+          {isStaging === "staging" ?
+            (<div>
+              {userRole === TYPE_OF_USER.ADMIN || userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+                <div className='calendar-logo'>
+                  <Link to={ROUTES.CALENDAR}>
+                    <span></span>
+                    <p className=''>{dayOfMonth}</p>
+                  </Link>
+                </div>
+              ) : null}
+            </div>)
+            : null
+          }
           <div
             className="user-container relative"
             ref={dropdownRef}
