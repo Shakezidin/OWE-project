@@ -60,30 +60,27 @@
 
 .status-item.co {
   position: relative;
-  /* Add some padding if needed */
   border-radius: 4px;
-  /* Round the corners */
   cursor: pointer;
-  /* Change cursor to pointer */
+  min-width: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .status-item.co:hover::before {
   content: attr(data-tooltip);
-  /* Display tooltip content */
   position: absolute;
   top: 100%;
-  /* Position below the element */
   left: 50%;
   transform: translateX(-50%);
   background-color: #ff8934;
-  /* Tooltip background color */
   color: white;
-  /* Tooltip text color */
   padding: 5px;
   padding-left: 6px;
   border-radius: 4px;
   white-space: nowrap;
-  /* Prevent line breaks */
   z-index: 10;
   opacity: 1;
   visibility: visible;
@@ -93,9 +90,9 @@
 
 .status-item.co::before {
   content: '';
-  /* Empty content to hide tooltip */
   opacity: 0;
   visibility: hidden;
+  position: absolute;
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -104,8 +101,12 @@
   background-color: #ff8934;
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
-  padding-left: 6px;
-  padding-right: 6px;
+}
+
+.status-item.co:hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pending-co {
@@ -1163,7 +1164,7 @@
 .progress-box-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 10px;
 }
 
 .status-indicator {
@@ -1200,6 +1201,17 @@
 @media (max-width: 400px) {
   .status-btn {
     margin-left: 0 !important;
+  }
+}
+@media (max-width: 432px) {
+  .co-desktop{
+    display: none;
+  }
+  .co-mobile{
+    display: block !important;
+  }
+  .hover-text{
+    left: 20% !important;
   }
 }
 
@@ -1640,23 +1652,27 @@
 }
 
 .progress-co button {
-  width: 75px;
   height: 32px;
   background-color: #EBA900;
   border: 1px solid #EBA900;
   font-weight: 500;
+  padding: 0 6px;
   font-size: 12px;
-  margin-left: 6px;
+  margin-left: 10px;
   color: white;
   cursor: pointer;
   border-radius: 4px;
   z-index: 1;
   transition: all 0.3s ease;
 }
-
+.progress-co button:hover {
+  transform: scale(1.05);
+}
+.co-mobile{
+  display: none;
+}
 .co-button {
   position: relative;
-   
   cursor: pointer;
 }
 
