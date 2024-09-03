@@ -3,7 +3,7 @@ import { CiWallet } from 'react-icons/ci';
 import { BiSupport } from 'react-icons/bi';
 import { RiPieChart2Fill, RiUserSettingsLine } from 'react-icons/ri';
 import { BsDatabaseGear } from 'react-icons/bs';
-import { MdOutlinePayment } from 'react-icons/md';
+import { MdOutlinePayment, MdPendingActions } from 'react-icons/md';
 import { FiServer } from 'react-icons/fi';
 import { GrDocumentConfig } from 'react-icons/gr';
 import { TYPE_OF_USER } from '../resources/static_data/Constant';
@@ -237,9 +237,9 @@ const mob = {
     {
       path: ROUTES.PEINDING_QUEUE,
       sidebarProps: {
-        displayText: 'Pending Queues',
+        displayText: 'Pending Actions',
         icon: (
-          <RiPieChart2Fill
+          <MdPendingActions
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"
