@@ -237,13 +237,16 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 && !filterCheck {
+		// Start with a WHERE clause if none has been added yet
 		if whereAdded {
-			filtersBuilder.WriteString(" AND")
+			filtersBuilder.WriteString(" AND (") // Start a group for OR conditions
 		} else {
-			filtersBuilder.WriteString(" WHERE")
+			filtersBuilder.WriteString(" WHERE (") // Start a group for OR conditions
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(" LOWER(cv.unique_id) IN (")
+
+		// Add condition for LOWER(cv.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(cv.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -253,17 +256,9 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 			}
 		}
 		filtersBuilder.WriteString(") ")
-	}
 
-	if len(dataFilter.UniqueIds) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" OR ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-
-		filtersBuilder.WriteString(" cv.home_owner ILIKE ANY (ARRAY[")
+		// Add OR condition for cv.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR cv.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -274,6 +269,9 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 			}
 		}
 		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
 	}
 
 	// Add dealer filter if not adminCheck and not filterCheck
