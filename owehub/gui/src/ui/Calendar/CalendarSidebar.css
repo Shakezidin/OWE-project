@@ -54,7 +54,7 @@
 .sidebar-cards{
     margin-top: 2rem;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
@@ -66,7 +66,6 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 3px;
-    width: 150px;
     transition: all 0.3s ease;
 }
 .sidebar-cards .card:hover{
@@ -89,6 +88,13 @@
     margin: 0;
     border-radius: 50%;
 }
+.sidebar-cards .card-address{
+    font-size: 14px;
+    color: #1F2937;
+}
+.sidebar-cards .card-address:hover{
+    text-decoration: underline;
+}
 
 .sidebar-cards .card-id{
     color: #838383;
@@ -96,7 +102,7 @@
 }
 .sidebar-cards .our-id{
     color: "#1F2937";
-    font-weight: 600;
+    font-size: 13px;
 }
 .sidebar-cards .card-status{
     border-radius: 1rem;
@@ -104,6 +110,6 @@
     cursor: pointer;
     padding: 3px 12px;
     color: #fff;
-    margin-top: 4px;
+    margin-top: 10px;
     text-transform: capitalize;
 }

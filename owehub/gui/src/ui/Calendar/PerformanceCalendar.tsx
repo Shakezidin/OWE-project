@@ -10,10 +10,12 @@ import {
   isSameMonth,
   isSameDay,
 } from 'date-fns';
-import { DateRange } from 'react-date-range';
 import './PerformanceCalendar.css';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import CalendarSidebar from './CalendarSidebar';
+import { IoClose } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+import { DateRange } from 'react-date-range';
 
 interface Event {
   id: number;
@@ -49,7 +51,9 @@ const PerformanceCalendar: React.FC = () => {
       if (e.key === "Escape") {
         closeSidebar();
         setShowCalendar(false);
+        handleCalcClose();
       }
+      
     };
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -97,25 +101,36 @@ const PerformanceCalendar: React.FC = () => {
     }
   };
 
+  const navigate = useNavigate();
+
+  const handleCalcClose = () => {
+    navigate(-1); 
+  };
+
   const renderHeader = () => {
     const isCurrentMonth = isSameMonth(currentMonth, new Date());
     const dateFormat = isCurrentMonth ? 'd MMMM yyyy' : 'MMMM yyyy';
     return (
       <div className="header">
-        <div className='calendar-date flex items-center'>
-          <div className="prev-icon" onClick={prevMonth}>
-            <div className="icon"><FiChevronLeft /></div>
+        <div className="flex items-center justify-between" style={{ width: "99%" }}>
+          <div className='calendar-date flex items-center'>
+            <div className="prev-icon" onClick={prevMonth}>
+              <div className="icon"><FiChevronLeft /></div>
+            </div>
+            <div className="date-format" onClick={() => setShowCalendar(!showCalendar)}>
+              <span style={{ display: "block", width: "180px", textAlign: "center" }}>{format(currentMonth, dateFormat)}</span>
+            </div>
+            <div className="next-icon" onClick={nextMonth}>
+              <div className="icon"><FiChevronRight /></div>
+            </div>
           </div>
-          <div className="date-format" onClick={() => setShowCalendar(!showCalendar)}>
-            <span>{format(currentMonth, dateFormat)}</span>
-          </div>
-          <div className="next-icon" onClick={nextMonth}>
-            <div className="icon"><FiChevronRight /></div>
+          <div onClick={handleCalcClose}>
+            <IoClose className='calendar-close'/>
           </div>
         </div>
         {showCalendar && (
           <div className="performance-cal-content" ref={calendarRef}>
-            <DateRange
+             <DateRange
               editableDateInputs={true}
               onChange={(item) => {
                 const startDate = item.selection?.startDate;
