@@ -310,7 +310,7 @@ const ProjectPerformence = () => {
         uniqueId: searchValue ? searchValue : '',
         selected_milestone: selectedMilestone,
         project_status:
-            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
+          activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
       })
     );
   }, [
@@ -320,7 +320,7 @@ const ProjectPerformence = () => {
     selectedProject.value,
     searchValue,
     selectedMilestone,
-    activeTab
+    activeTab,
   ]);
 
   const calculateCompletionPercentage = (
@@ -974,7 +974,11 @@ const ProjectPerformence = () => {
                                       width={16}
                                       alt="img"
                                     />
-                                    {project.qc.qc_action_required_count}
+                                    {Object.values(project.qc).every(
+                                      (value) => value !== 'Pending'
+                                    ) && project.qc.qc_action_required_count > 0
+                                      ? project.qc.qc_action_required_count
+                                      : ''}
                                   </div>
                                   <div
                                     className={`status-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
@@ -996,7 +1000,11 @@ const ProjectPerformence = () => {
                                       width={16}
                                       alt="img"
                                     />
-                                    {project.ntp.action_required_count}
+                                    {Object.values(project.ntp).every(
+                                      (value) => value !== 'Pending'
+                                    ) && project.qc.qc_action_required_count > 0
+                                      ? project.ntp.action_required_count
+                                      : ''}
                                   </div>
                                   {project.co_status !== 'CO Complete' &&
                                     project.co_status && (
