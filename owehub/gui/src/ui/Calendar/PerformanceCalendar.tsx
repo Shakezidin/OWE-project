@@ -135,6 +135,7 @@ const PerformanceCalendar: React.FC = () => {
               onChange={(item) => {
                 const startDate = item.selection?.startDate;
                 const endDate = item.selection?.endDate;
+                console.log(item)
                 if (startDate && endDate) {
                   setSelectedRanges([{ startDate, endDate, key: 'selection' }]);
                 }
