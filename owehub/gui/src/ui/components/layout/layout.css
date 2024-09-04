@@ -31,11 +31,16 @@
   position: absolute;
   left: -24px;
   top: 2px;
+  transition: all 0.3s ease;
 }
 .calendar-logo p{
   margin-top: 1px;
   font-weight: 600;
   color: #363636;
+}
+.calendar-logo:hover{
+  transform: scale(1.03);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .header-scrolled {

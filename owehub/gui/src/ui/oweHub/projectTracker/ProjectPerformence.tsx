@@ -61,7 +61,9 @@ const ProjectPerformence = () => {
   const [selectedMilestone, setSelectedMilestone] = useState('');
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
-
+  const [activeTab, setActiveTab] = useState('Active Queue');
+  const [loading, setLoading] = useState(false);
+  const [titleData, setTileData] = useState<any>('');
   const [activeCardId, setActiveCardId] = useState(null);
   const [activeCardTitle, setActiveCardTitle] = useState<string>('');
 
@@ -111,7 +113,6 @@ const ProjectPerformence = () => {
     key: 'selection',
   });
 
-  const [tileData, setTileData] = useState<any>({});
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
@@ -275,6 +276,31 @@ const ProjectPerformence = () => {
   );
 
   useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await postCaller('get_perfomancetiledata', {
+          page_size: perPage,
+          page_number: page,
+          project_status:
+            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
+        });
+
+        if (data.status > 201) {
+          toast.error(data.message);
+          return;
+        }
+        console.log(data.data);
+        setTileData(data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    })();
+  }, [page, activeTab]);
+
+  useEffect(() => {
     dispatch(
       getPerfomanceStatus({
         page,
@@ -283,6 +309,8 @@ const ProjectPerformence = () => {
         endDate: '',
         uniqueId: searchValue ? searchValue : '',
         selected_milestone: selectedMilestone,
+        project_status:
+            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
       })
     );
   }, [
@@ -292,6 +320,7 @@ const ProjectPerformence = () => {
     selectedProject.value,
     searchValue,
     selectedMilestone,
+    activeTab
   ]);
 
   const calculateCompletionPercentage = (
@@ -324,43 +353,43 @@ const ProjectPerformence = () => {
     {
       id: 1,
       title: 'Site Survey',
-      value: datacount.site_survey_count,
+      value: titleData.site_survey_count,
       pending: 'survey',
     },
     {
       id: 2,
       title: 'CAD Design',
-      value: datacount.cad_design_count,
+      value: titleData.cad_design_count,
       pending: 'cad',
     },
     {
       id: 3,
       title: 'Permitting',
-      value: datacount.permitting_count,
+      value: titleData.permitting_count,
       pending: 'permit',
     },
     {
       id: 4,
       title: 'Roofing',
-      value: datacount.roofing_count,
+      value: titleData.roofing_count,
       pending: 'roof',
     },
     {
       id: 5,
       title: 'Install',
-      value: datacount.isntall_count,
+      value: titleData.isntall_count,
       pending: 'install',
     },
     {
       id: 6,
       title: 'Inspection',
-      value: datacount.inspection_count,
+      value: titleData.inspection_count,
       pending: 'inspection',
     },
     {
       id: 7,
       title: 'Activation',
-      value: datacount.activation_count,
+      value: titleData.activation_count,
       pending: 'activation',
     },
   ];
@@ -369,7 +398,6 @@ const ProjectPerformence = () => {
   const resetPage = () => {
     setPage(1);
   };
-
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
@@ -386,12 +414,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+            {
+              startDate: selected.start,
+              endDate: selected.end,
+              key: 'selection',
+            },
+          ]
         : []
     );
 
@@ -634,8 +662,6 @@ const ProjectPerformence = () => {
 
   const [selectedProjectQC, setSelectedProjectQC] = useState<any>(null);
 
-  const [activeTab, setActiveTab] = useState('Active Queue')
-
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
   const filterClose = () => setFilterOpen(false);
@@ -653,14 +679,14 @@ const ProjectPerformence = () => {
   };
 
   const handleActiveTab = (tab: any) => {
-    setActiveTab(tab)
-  }
+    setActiveTab(tab);
+  };
 
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
     <div className="">
-      <div className='flex justify-between p2 top-btns-wrapper'>
+      <div className="flex justify-between p2 top-btns-wrapper">
         <Breadcrumb
           head=""
           linkPara="Pipeline"
@@ -668,85 +694,127 @@ const ProjectPerformence = () => {
           linkparaSecond="Dashboard"
           marginLeftMobile="12px"
         />
-        <div className='pipeline-header-btns'>
-            <p className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`} onClick={() => handleActiveTab('Active Queue')}>Active Queue</p>
-            <p className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`} onClick={() => handleActiveTab('Active Queue')}>AQ</p>
-            <p className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`} onClick={() => handleActiveTab('Hold & Jeopardy')} >Hold & Jeopardy</p>
-            <p className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`} onClick={() => handleActiveTab('Hold & Jeopardy')} >H&J</p>
+        <div className="pipeline-header-btns">
+          <p
+            className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+            onClick={() => handleActiveTab('Active Queue')}
+          >
+            Active
+          </p>
+          <p
+            className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+            onClick={() => handleActiveTab('Active Queue')}
+          >
+            Active
+          </p>
+          <p
+            className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+            onClick={() => handleActiveTab('Hold & Jeopardy')}
+          >
+            Hold & Jeopardy
+          </p>
+          <p
+            className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+            onClick={() => handleActiveTab('Hold & Jeopardy')}
+          >
+            H&J
+          </p>
         </div>
       </div>
       <div className="project-container">
         <div className="project-heading pipeline-heading">
-          <h2>Active Queue</h2>
+          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
         </div>
         <div className="flex stats-card-wrapper">
-          <div className="project-card-container-1">
-            {topCardsData.map((card, index) => {
-              const cardColor = cardColors[index % cardColors.length];
-              const isActive = activeCardId === card.id;
-              const handleCardClick = (cardId: any, title: string) => {
-                setActiveCardId(activeCardId === cardId ? null : cardId);
-                setActiveCardTitle(activeCardId === cardId ? '' : title);
-              };
-              return (
-                <div
-                  className="flex items-center arrow-wrap"
-                  style={{ marginRight: '-20px' }}
-                >
-                  <div
-                    key={card.id}
-                    className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
-                    style={{
-                      backgroundColor: cardColor,
-                      outline:
-                        activeCardId === card.id
-                          ? `4px solid ${cardColor}`
-                          : `1px dotted ${cardColor}`,
-                      pointerEvents: card.pending === 'roof' ? 'none' : 'auto',
-                      opacity: card.pending === 'roof' ? '0.3' : '',
-                    }}
-                    onClick={(e) => {
-                      handlePendingRequest(card?.pending);
-                      handleCardClick(card.id, card.title);
-                    }}
-                  >
-                    <span
-                      className="stages-numbers"
-                      style={{ color: cardColor, borderColor: cardColor }}
-                    >
-                      {activeCardId === card.id ? <MdDone /> : card.id}
-                    </span>
-                    <p>{card.title || 'N/A'}</p>
-                    {card.pending !== 'roof' ?
-                      <h2>{card.value || 'N/A'}</h2>
-                      : <small style={{ color: 'white' }}>Coming Soon</small>}
-                  </div>
-                  {index < topCardsData.length - 1 && (
+          <div className="project-card-container-1 mx-auto">
+            {loading ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  marginInline: 'auto',
+                }}
+              >
+                <MicroLoader />
+              </div>
+            ) : (
+              <>
+                {' '}
+                {topCardsData.map((card, index) => {
+                  const cardColor = cardColors[index % cardColors.length];
+                  const isActive = activeCardId === card.id;
+                  const handleCardClick = (cardId: any, title: string) => {
+                    setActiveCardId(activeCardId === cardId ? null : cardId);
+                    setActiveCardTitle(activeCardId === cardId ? '' : title);
+                  };
+                  return (
                     <div
-                      className="flex arrow-dir"
-                      style={{ padding: '0 5px' }}
+                      className="flex items-center arrow-wrap"
+                      style={{ marginRight: '-20px' }}
                     >
-                      <MdOutlineKeyboardDoubleArrowRight
+                      <div
+                        key={card.id}
+                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
                         style={{
-                          width: '1.5rem',
-                          height: '1.5rem',
-                          color: cardColor,
-                          marginLeft: activeCardId === card.id ? '8px' : '0px',
+                          backgroundColor: cardColor,
+                          outline:
+                            activeCardId === card.id
+                              ? `4px solid ${cardColor}`
+                              : `1px dotted ${cardColor}`,
+                          pointerEvents:
+                            card.pending === 'roof' ? 'none' : 'auto',
+                          opacity: card.pending === 'roof' ? '0.3' : '',
                         }}
-                      />
-                      <MdOutlineKeyboardDoubleArrowRight
-                        style={{
-                          marginLeft: '-10px',
-                          height: '1.5rem',
-                          width: '1.5rem',
-                          color: cardColors[(index + 1) % cardColors.length],
+                        onClick={(e) => {
+                          handlePendingRequest(card?.pending);
+                          handleCardClick(card.id, card.title);
                         }}
-                      />
+                      >
+                        <span
+                          className="stages-numbers"
+                          style={{ color: cardColor, borderColor: cardColor }}
+                        >
+                          {activeCardId === card.id ? <MdDone /> : card.id}
+                        </span>
+                        <p>{card.title || 'N/A'}</p>
+                        {card.pending !== 'roof' ? (
+                          <h2>{card.value || 'N/A'}</h2>
+                        ) : (
+                          <small style={{ color: 'white' }}>Coming Soon</small>
+                        )}
+                      </div>
+                      {index < topCardsData.length - 1 && (
+                        <div
+                          className="flex arrow-dir"
+                          style={{ padding: '0 5px' }}
+                        >
+                          <MdOutlineKeyboardDoubleArrowRight
+                            style={{
+                              width: '1.5rem',
+                              height: '1.5rem',
+                              color: cardColor,
+                              marginLeft:
+                                activeCardId === card.id ? '8px' : '0px',
+                            }}
+                          />
+                          <MdOutlineKeyboardDoubleArrowRight
+                            style={{
+                              marginLeft: '-10px',
+                              height: '1.5rem',
+                              width: '1.5rem',
+                              color:
+                                cardColors[(index + 1) % cardColors.length],
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  );
+                })}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -899,7 +967,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.qc.qc_action_required_count > 0
+                                        project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -921,7 +989,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.ntp.action_required_count > 0
+                                        project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -937,7 +1005,6 @@ const ProjectPerformence = () => {
                                         data-tooltip={project.co_status} // Custom tooltip
                                       >
                                         C/O
-
                                       </div>
                                     )}
                                 </div>

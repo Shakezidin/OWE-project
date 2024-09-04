@@ -201,6 +201,10 @@
   border: 1.5px solid #C1CCD7;
 }
 
+.performance-cal-content .rdrMonths{
+  display: none;
+}
+
 .performance-cal-content .rdrDateDisplay, .performance-cal-content .rdrDateDisplayWrapper{
   display: none;
 }

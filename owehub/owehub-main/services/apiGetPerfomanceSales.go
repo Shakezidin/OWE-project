@@ -133,6 +133,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 			filter, whereEleList = PrepareSaleRepTalesFilters(tableName, dataReq, SaleRepList)
 		// this is for the roles regional manager and sales manager
 		default:
+			SaleRepList = append(SaleRepList, name)
 			rgnSalesMgrCheck = true
 		}
 	} else {
@@ -145,12 +146,12 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
 		// This is thrown if no sale rep are available and for other user roles
-		if len(data) == 0 {
+		if len(SaleRepList) == 0 {
 			emptyPerfomanceList := models.PerfomanceListResponse{
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
-			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			log.FuncErrorTrace(0, "No sale representatives: %v", err)
+			FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 

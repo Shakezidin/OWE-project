@@ -141,6 +141,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 		// this is for the roles regional manager and sales manager
 		default:
+			SaleRepList = append(SaleRepList, name)
 			rgnSalesMgrCheck = true
 		}
 	} else {
@@ -153,12 +154,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
 		// This is thrown if no sale rep are available and for other user roles
-		if len(data) == 0 {
+		if len(SaleRepList) == 0 {
 			emptyPerfomanceList := models.PerfomanceListResponse{
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
-			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
+			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -721,13 +722,16 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 && !filterCheck {
+		// Start with WHERE if none has been added
 		if whereAdded {
-			filtersBuilder.WriteString(" AND")
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
 		} else {
-			filtersBuilder.WriteString(" WHERE")
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
+
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -737,17 +741,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			}
 		}
 		filtersBuilder.WriteString(") ")
-	}
 
-	if len(dataFilter.UniqueIds) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" OR ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-
-		filtersBuilder.WriteString(" intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -758,6 +754,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			}
 		}
 		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
 	}
 
 	// Add dealer filter if not adminCheck and not filterCheck
