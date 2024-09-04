@@ -728,7 +728,7 @@ const Table = ({
       return "Code Name"
     }
     if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
-      return "Parnter Name"
+      return "Partner Name"
     }
     else {
       return 'Name'
