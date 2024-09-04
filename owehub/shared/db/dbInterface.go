@@ -241,7 +241,6 @@ const (
 	/* Scheduling Tables and Procedures */
 	TableName_SchedulingProjects               string = "scheduling_projects"
 	TableName_SchedulingLocations              string = "scheduling_locations"
-	CheckSchedulingProjectsEmailExistsFunction string = "check_scheduling_projects_email_exists"
 	CreateSchedulingProjectFunction            string = "create_scheduling_project"
 )
 

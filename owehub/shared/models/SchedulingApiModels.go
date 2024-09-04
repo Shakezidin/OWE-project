@@ -7,6 +7,8 @@
 
 package models
 
+import "time"
+
 type GetSchedulingHomeRequest struct {
 	Queue      string `json:"queue"`
 	Order      string `json:"order"`
@@ -52,16 +54,21 @@ type ArchiveSchedulingHome struct {
 }
 
 type CreateSchedulingProjectReq struct {
-	FirstName         string  `json:"first_name"`
-	LastName          string  `json:"last_name"`
-	Email             string  `json:"email"`
-	Phone             string  `json:"phone"`
-	Address           string  `json:"address"`
-	RoofType          string  `json:"roof_type"`
-	HouseStories      int     `json:"house_stories"`
-	HouseAreaSqft     float64 `json:"house_area_sqft"`
-	SystemSize        float64 `json:"system_size"`
-	IsBatteryIncluded bool    `json:"is_battery_included"`
+	FirstName         string     `json:"first_name"`
+	LastName          string     `json:"last_name"`
+	Email             string     `json:"email"`
+	Phone             string     `json:"phone"`
+	Address           string     `json:"address"`
+	RoofType          string     `json:"roof_type"`
+	HouseStories      int        `json:"house_stories"`
+	HouseAreaSqft     float64    `json:"house_area_sqft"`
+	SystemSize        float64    `json:"system_size"`
+	IsBatteryIncluded bool       `json:"is_battery_included"`
+	SalesRepEmailID   string     `json:"sales_rep_email_id"`
+	SiteSurveyStartDt *time.Time `json:"site_survey_start_dt,omitempty"`
+	SiteSurveyEndDt   *time.Time `json:"site_survey_end_dt,omitempty"`
+	Backup3           string     `json:"backup_3,omitempty"`
+	Backup4           string     `json:"backup_4,omitempty"`
 }
 
 type GetSchedulingProjectsReq struct {

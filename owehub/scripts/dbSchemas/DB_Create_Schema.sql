@@ -241,5 +241,4 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcBatteryBackupCalc_CreateProspectLoad.sql';
 
 /* Scheduling Schema */
-\i '/docker-entrypoint-initdb.d/DB_ProcCheckSchedulingProjectsEmailExists.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateSchedulingProject.sql';

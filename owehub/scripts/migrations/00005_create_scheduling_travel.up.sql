@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS scheduling_projects (
     is_battery_included BOOLEAN,
     is_appointment_approved BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    backup_1 TEXT,
-    backup_2 TEXT,
+    site_survey_start_dt timestamp without time zone,
+    site_survey_end_dt timestamp without time zone,
     backup_3 TEXT,
     backup_4 TEXT,
     FOREIGN KEY (sales_rep_email_id) REFERENCES user_details(email_id)
