@@ -20,10 +20,17 @@ type PendingQueueReq struct {
 type GetPendingQueue struct {
 	UniqueId  string `json:"uninque_id"`
 	HomeOwner string `json:"home_owner"`
+	COStatus  string `json:"co_status"`
 	Ntp       NTP    `json:"ntp"`
 	Qc        QC     `json:"qc"`
 }
 
 type GetPendingQueueList struct {
 	PendingQueueList []GetPendingQueue `json:"pending_queue_list"`
+}
+
+type GetPendingQueueTileResp struct {
+	QcPendingCount  int64 `json:"qc_pending_count"`
+	NTPPendingCount int64 `json:"ntp_pending_count"`
+	CoPendingCount  int64 `json:"co_pending_count"`
 }

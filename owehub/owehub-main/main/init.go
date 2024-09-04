@@ -1573,17 +1573,17 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_pendingqueuesdata",
+		apiHandler.HandleGetPendingQuesDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_pendingqueuestiledata",
 		apiHandler.HandleGetPendingQuesTileDataRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/get_pendingqueuestiledata",
-	// 	apiHandler.HandleGetPendingQuesTileDataRequest,
-	// 	true,
-	// 	[]types.UserGroup{types.GroupEveryOne},
-	// },
 
 	/************ Battery Backup Calculator API *******************/
 	{
