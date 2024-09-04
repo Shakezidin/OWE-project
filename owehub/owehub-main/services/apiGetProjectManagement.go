@@ -615,6 +615,14 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 					return "Completed", 0
 				}
 			}
+		case "change_order_status":
+			if v == "" {
+				return "", 0
+			} else if v == "CO Complete" {
+				return "Completed", 0
+			} else {
+				return "Pending", 1
+			}
 		}
 	}
 	return "", 0
