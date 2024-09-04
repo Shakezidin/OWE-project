@@ -3,24 +3,17 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import Banner from './components/Banner';
-import {
-  format,
-  subDays,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  startOfYear,
-} from 'date-fns';
+import { format, subDays, startOfWeek, endOfWeek } from 'date-fns';
 import PerformanceCards from './components/PerformanceCards';
 import Sidebar from './components/Sidebar';
 import Table from './components/Table';
 import './index.css';
-import { useAppSelector } from '../../redux/hooks';
 import jsPDF from 'jspdf';
 import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 import { PDFDocument } from 'pdf-lib';
 import 'jspdf-autotable';
+import useAuth, { AuthData } from '../../hooks/useAuth';
+
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
@@ -33,11 +26,7 @@ const categories = [
   { name: 'Install', key: 'install' },
   { name: 'Cancel', key: 'cancel' },
 ];
-
-const role = localStorage.getItem('role');
-
 const groupby = [{ label: 'Sale Rep', value: 'primary_sales_rep' }];
-
 interface Details {
   dealer_name?: string;
   dealer_logo?: string;
@@ -57,6 +46,8 @@ const Index = () => {
   const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
     weekStartsOn: 1,
   });
+  const { authData } = useAuth();
+
   const [isOpen, setIsOpen] = useState(-1);
   const [count, setCount] = useState(0);
   const [active, setActive] = useState(categories[0].key);
@@ -83,17 +74,19 @@ const Index = () => {
       end: endOfLastWeek,
     });
 
-  const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
-  );
+  const [isAuthenticated, setAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const role = authData?.role;
 
   useEffect(() => {
-    const role = localStorage.getItem('role');
+    const role = authData?.role;
     if (role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ADMIN) {
       setIsFetched(true);
     }
-  }, []);
+    setAuthenticated(
+      authData?.isPasswordChangeRequired?.toString() === 'false'
+    );
+  }, [authData]);
 
   const showPartner = useMemo(() => {
     if (groupBy === 'region' || groupBy === 'state') {
@@ -116,7 +109,7 @@ const Index = () => {
     } else {
       return false;
     }
-  }, [groupBy, role]);
+  }, [groupBy, role, authData]);
 
   useEffect(() => {
     if (isAuthenticated && isFetched) {
@@ -155,6 +148,7 @@ const Index = () => {
     groupBy,
     isAuthenticated,
     isFetched,
+    authData,
   ]);
   const shareImage = () => {
     if (topCards.current) {

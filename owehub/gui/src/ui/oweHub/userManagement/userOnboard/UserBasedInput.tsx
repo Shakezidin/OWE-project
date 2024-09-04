@@ -10,6 +10,7 @@ import {
   MANAGER_ASSIGN_TO_USER,
   TYPE_OF_USER,
 } from '../../../../resources/static_data/Constant';
+import useAuth from '../../../../hooks/useAuth';
 
 interface inputSelectProps {
   onChange: any;
@@ -34,7 +35,9 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
   const [newFormData, setNewFormData] = useState<any>([]);
   const [dealer, setDealer] = useState<{ [key: string]: any }>({});
   const [reportError, setReportError] = useState('');
-  const role = localStorage.getItem('role');
+  const { authData } = useAuth();
+
+  const role = authData?.role;
 
   const getnewformData = async () => {
     const tableData = {

@@ -5,7 +5,6 @@ import {
   MdKeyboardArrowDown,
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
-  MdKeyboardArrowUp,
 } from 'react-icons/md';
 import { ICONS } from '../../../resources/icons/Icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,6 +16,9 @@ import { IoMdLogOut } from 'react-icons/io';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoMenu } from 'react-icons/io5';
 import { RxCross2 } from 'react-icons/rx';
+import useAuth from '../../../hooks/useAuth';
+import useWindowWidth from '../../../hooks/useWindowWidth';
+
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 interface Toggleprops {
   toggleOpen: boolean;
@@ -25,46 +27,37 @@ interface Toggleprops {
   sidebarChange: number;
 }
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-}
-
-const Header: React.FC<Toggleprops> = ({
-  toggleOpen,
-  setToggleOpen,
-  setSidebarChange,
-  sidebarChange,
-}) => {
+const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const [name, setName] = useState<String>();
-  const userRole = localStorage.getItem('role');
-  const userName = localStorage.getItem('userName');
+  const { authData, clearAuthData } = useAuth();
+
+  const userRole = authData?.role;
+  const userName = authData?.userName;
   const [openIcon, setOPenIcon] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
 
+  const width = useWindowWidth();
+  const isMobile = width < 768;
   const currentDate = new Date();
   const dayOfMonth = currentDate.getDate();
+  const isStaging = process.env.REACT_APP_ENV
 
   const handleLogout = () => {
+    // clearAuthData();
     dispatch(logout());
     navigate('/login');
   };
+
   useEffect(() => {
     if (userName) {
       const firstLetter = userName.charAt(0).toUpperCase();
       setName(firstLetter);
     }
   }, [userName]);
+
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 0;
@@ -81,7 +74,6 @@ const Header: React.FC<Toggleprops> = ({
   }, [scrolled]);
 
   // Code for if we click anywhere outside dropdown he will close
-
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -100,11 +92,6 @@ const Header: React.FC<Toggleprops> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const width = useWindowWidth();
-  const isMobile = width < 768;
-
-  const isStaging = process.env.REACT_APP_ENV
 
   return (
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>

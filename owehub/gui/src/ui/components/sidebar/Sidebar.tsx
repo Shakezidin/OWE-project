@@ -1,28 +1,11 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './sidebar.css';
-import { ICONS } from '../../../resources/icons/Icons';
 import { Link, useLocation } from 'react-router-dom';
-import { MdOutlinePayment } from 'react-icons/md';
-import { FiLayers } from 'react-icons/fi';
-import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowRight,
-  MdKeyboardArrowUp,
-} from 'react-icons/md';
-import { MdKeyboardArrowLeft } from 'react-icons/md';
-import { LuWallet } from 'react-icons/lu';
 import { createSideMenuList } from '../../../routes/SideMenuOption';
-import { GrDocumentPerformance } from 'react-icons/gr';
-import { AiOutlineProject } from 'react-icons/ai';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { ROUTES } from '../../../routes/routes';
+import useAuth from '../../../hooks/useAuth';
 
 interface Child {
   path: string;
@@ -38,23 +21,11 @@ interface Toggleprops {
   sidebarChange: number;
 }
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-}
-
 const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
-  const [repay, setRepay] = useState<boolean>(false);
-  const [db, setDb] = useState<boolean>(false);
-  const [project, setProject] = useState<boolean>(false);
+  const [, setDb] = useState<boolean>(false);
+  const [, setProject] = useState<boolean>(false);
 
+  const { authData } = useAuth();
   const [cords, setCords] = useState<{
     left: number;
     top: number;
@@ -192,8 +163,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       setProject(false);
     }
   }, [toggleOpen]);
-
-  const width = useWindowWidth();
 
   // TODO showing required routes for now
   // const isMobile = width < 768;

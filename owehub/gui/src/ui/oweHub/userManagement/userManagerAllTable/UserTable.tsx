@@ -7,6 +7,7 @@ import { UserManagementTableColumn as UserColumns } from '../../../../resources/
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import useAuth from '../../../../hooks/useAuth';
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
@@ -34,6 +35,8 @@ const UserTable: React.FC<UserTableProps> = ({
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [email, setEmail] = useState('');
+  const { authData } = useAuth();
+
   const handleSort = (key: string) => {
     console.log(key);
     if (sortKey === key) {
@@ -81,11 +84,11 @@ const UserTable: React.FC<UserTableProps> = ({
   }, [selectedValue, UserColumns]);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem('email');
+    const storedEmail = authData?.email;
     if (storedEmail) {
       setEmail(storedEmail);
     }
-  }, []);
+  }, [authData]);
 
   return (
     <div

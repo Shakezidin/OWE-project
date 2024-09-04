@@ -33,10 +33,9 @@ import {
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
-import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
-import { useAppSelector } from '../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-import jsPDF from 'jspdf';
+import useAuth, { AuthData } from '../../../hooks/useAuth';
+
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
@@ -68,8 +67,6 @@ const rankByOptions = [
   { label: 'Install', value: 'install' },
   { label: 'Cancel', value: 'cancel' },
 ];
-
-const role = localStorage.getItem('role');
 
 const groupByOptionss = [
   { label: 'Sale Rep', value: 'primary_sales_rep' },
@@ -304,12 +301,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -529,11 +526,18 @@ const Table = ({
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
+  const { authData, saveAuthData } = useAuth();
+
   const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 25;
-  const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
-  );
+  const [isAuthenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
 
   useEffect(() => {
     if (isAuthenticated && isFetched) {
@@ -609,7 +613,7 @@ const Table = ({
     if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
-  const role = localStorage.getItem('role');
+  const role = authData?.role;
   const getTotal = (column: keyof ILeaderBordUser): number => {
     return sortedPage.reduce((sum, item) => {
       const value = item[column];
@@ -662,16 +666,26 @@ const Table = ({
     // Define the headers for the CSV
 
     setIsExporting(true);
-    const headers = ['UniqueID', 'Homeowner Name', 'Homeowner Email', 'Homeowner Phone', 'Address', 'State','Contract $', 'Sys Size', 'Sale Date', 'NTP Date', 'Install Date', 'Pto Date', 'Cancel Date' ];
+    const headers = [
+      'UniqueID',
+      'Homeowner Name',
+      'Homeowner Email',
+      'Homeowner Phone',
+      'Address',
+      'State',
+      'Contract $',
+      'Sys Size',
+      'Sale Date',
+      'NTP Date',
+      'Install Date',
+      'Pto Date',
+      'Cancel Date',
+    ];
 
-    
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
       dealer_name: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'), 
-      
-     
-
+      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -691,7 +705,6 @@ const Table = ({
       item.pv_install_completed_date,
       item.pto_date,
       item.canceled_date,
-    
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -714,7 +727,6 @@ const Table = ({
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-
         <div className="export-trigger" onClick={toggleExportShow}>
           <FaUpload size={12} className="mr1" />
           <span> Export </span>
@@ -833,8 +845,8 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -989,7 +1001,7 @@ const Table = ({
                   {(role === TYPE_OF_USER.ADMIN ||
                     role === TYPE_OF_USER.FINANCE_ADMIN ||
                     role === TYPE_OF_USER.DEALER_OWNER) &&
-                    groupBy === 'dealer'
+                  groupBy === 'dealer'
                     ? 'Code Name'
                     : 'Name'}
                 </th>

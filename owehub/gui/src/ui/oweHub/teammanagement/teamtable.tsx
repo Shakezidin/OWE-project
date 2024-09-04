@@ -3,7 +3,6 @@ import '../userManagement/user.css';
 import '../configure/configure.css';
 import { FaArrowDown } from 'react-icons/fa6';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 import Pagination from '../../components/pagination/Pagination';
 import { ICONS } from '../../../resources/icons/Icons';
 import './dashboard.css';
@@ -11,12 +10,7 @@ import AddMember from './NewMember/AddMember';
 import MoveMember from './NewMember/MoveMember';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { ROUTES } from '../../../routes/routes';
-import {
-  BrowserRouter as Router,
-  Route,
-  useParams,
-  useLocation,
-} from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { getTeam } from '../../../redux/apiActions/teamManagement/teamManagement';
 import { BiEditAlt } from 'react-icons/bi';
 import { MdOutlineDone } from 'react-icons/md';
@@ -28,6 +22,8 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import { showAlert } from '../../components/alert/ShowAlert';
 import { checkLastPage } from '../../../utiles';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import useAuth from '../../../hooks/useAuth';
+
 interface User {
   name: string;
   phoneNumber: string;
@@ -44,6 +40,7 @@ const TeamTable: React.FC = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+  const { authData } = useAuth();
 
   const { team, isLoading, totalcount } = useAppSelector(
     (state) => state.teamManagmentSlice
@@ -75,6 +72,8 @@ const TeamTable: React.FC = () => {
   const endIndex = currentPage * itemsPerPage;
   const currentPageData = team?.sale_rep_list?.slice() || [];
   const [updating, setUpdating] = useState(false);
+  const role = authData?.role;
+  const UserEmail = authData?.email;
 
   const onSubmitCreateUser = () => {
     console.log('User created');
@@ -134,9 +133,6 @@ const TeamTable: React.FC = () => {
     }
     setIsEditing(true);
   };
-
-  const role = localStorage.getItem('role');
-  const UserEmail = localStorage.getItem('email');
 
   const handleDelete = async (id: any) => {
     const confirmed = await showAlert(

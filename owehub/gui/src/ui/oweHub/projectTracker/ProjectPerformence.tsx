@@ -5,10 +5,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import {
-  getPerfomance,
-  getPerfomanceStatus,
-} from '../../../redux/apiSlice/perfomanceSlice';
+import { getPerfomanceStatus } from '../../../redux/apiSlice/perfomanceSlice';
 import { Calendar } from './ICONS';
 import Select from 'react-select';
 import { getProjects } from '../../../redux/apiSlice/projectManagement';
@@ -33,16 +30,14 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import useMatchMedia from '../../../hooks/useMatchMedia';
-import SelectOption from '../../components/selectOption/SelectOption';
 import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
-import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { debounce } from '../../../utiles/debounce';
 import Input from '../../components/text_input/Input';
 import { IoClose } from 'react-icons/io5';
 import { ICONS } from '../../../resources/icons/Icons';
-// import { IoIosSearch } from 'react-icons/io';
-// import { MdFileDownloadDone } from "react-icons/md";
 import { MdDone } from 'react-icons/md';
+import useAuth from '../../../hooks/useAuth';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
@@ -77,10 +72,8 @@ const ProjectPerformence = () => {
     value: string;
   }>({} as Option);
 
-  const handleCancel = () => {
-    setSelectedProject({} as Option);
-  };
-  const role = localStorage.getItem('role');
+  const { authData } = useAuth();
+  const role = authData?.role;
 
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
