@@ -17,12 +17,28 @@ type PendingQueueReq struct {
 	EndDate              string `json:"end_date"`
 }
 
+type PendingQueueQC struct {
+	PowerClerk                           string `json:"powerclerk"`
+	ACHWaiveSendandSignedCashOnly        string `json:"ach_waiver"`
+	GreenAreaNMOnly                      string `json:"green_area"`
+	FinanceCreditApprovalLoanorLease     string `json:"finance_credit"`
+	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement"`
+	OWEDocumentsCompleted                string `json:"owe"`
+}
+
+type PendingQueueNTP struct {
+	ProductionDiscrepancy        string `json:"production"`
+	FinanceNTPOfProject          string `json:"finance_NTP"`
+	UtilityBillUploaded          string `json:"utility_bill"`
+	PowerClerkSignaturesComplete string `json:"powerclerk"`
+}
+
 type GetPendingQueue struct {
-	UniqueId  string `json:"uninque_id"`
-	HomeOwner string `json:"home_owner"`
-	COStatus  string `json:"co_status"`
-	Ntp       NTP    `json:"ntp"`
-	Qc        QC     `json:"qc"`
+	UniqueId  string          `json:"uninque_id"`
+	HomeOwner string          `json:"home_owner"`
+	COStatus  string          `json:"co_status"`
+	Ntp       PendingQueueNTP `json:"ntp"`
+	Qc        PendingQueueQC  `json:"qc"`
 }
 
 type GetPendingQueueList struct {

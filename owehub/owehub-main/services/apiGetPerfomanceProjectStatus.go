@@ -742,6 +742,18 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		}
 		filtersBuilder.WriteString(") ")
 
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+
 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
 		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
@@ -835,9 +847,9 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 
 	if len(dataFilter.UniqueIds) > 0 {
 		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
+			filtersBuilder.WriteString(" AND (")
 		} else {
-			filtersBuilder.WriteString(" WHERE ")
+			filtersBuilder.WriteString(" WHERE (")
 			whereAdded = true
 		}
 
@@ -851,6 +863,20 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			}
 		}
 		filtersBuilder.WriteString(") ")
+
+		// Add OR condition for cv.unique_id ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+		// Close the OR group
+		filtersBuilder.WriteString(")")
 	}
 
 	// Add sales representative filter
