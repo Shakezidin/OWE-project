@@ -47,7 +47,7 @@ const PendingQueue = () => {
         const data = await postCaller('get_pendingqueuesdata', {
           page_size: itemsPerPage,
           page_number: page,
-          selected_pending_stage: 'qc',
+          selected_pending_stage: active,
           unique_ids: [debouncedSearch],
         });
 
@@ -88,7 +88,7 @@ const PendingQueue = () => {
 
   return (
     <>
-      <h2 className={`my2 ${styles.pending_queue_title}`}>Pending projects</h2>
+      <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions</h2>
       <div className={styles.pending_card_wrapper}>
         <div className={styles.pending_card} onClick={() => setActive('qc')}>
           <div
