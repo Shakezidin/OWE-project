@@ -76,14 +76,11 @@ const PerformanceCalendar: React.FC = () => {
 
   const [events] = useState<Event[]>([
     { id: 1, date: new Date(2024, 8, 3), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-    { id: 2, date: new Date(2024, 8, 3), color: 'voilet', title: 'Electrical Date', idColor: "#8E81E0" },
-    { id: 3, date: new Date(2024, 8, 3), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
-    { id: 4, date: new Date(2024, 8, 21), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-    { id: 5, date: new Date(2024, 8, 21), color: 'voilet', title: 'Electrical Date', idColor: "#8E81E0" },
-    { id: 6, date: new Date(2024, 8, 21), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
-    { id: 7, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-    { id: 8, date: new Date(2024, 9, 24), color: 'voilet', title: 'Electrical Date', idColor: "#8E81E0" },
-    { id: 9, date: new Date(2024, 9, 24), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
+    { id: 2, date: new Date(2024, 8, 3), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
+    { id: 3, date: new Date(2024, 8, 21), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
+    { id: 4, date: new Date(2024, 8, 21), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
+    { id: 5, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
+    { id: 6, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
   ]);
 
   const hasEvent = (day: Date): boolean => {
