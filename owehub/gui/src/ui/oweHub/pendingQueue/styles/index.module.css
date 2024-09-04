@@ -87,6 +87,19 @@
   background-color: #fdf6e5;
 }
 
+ 
+ 
+.success_card  {
+  background-color: #E0FFF0;  
+  border: 1px solid #2EAF71;  
+}
+
+.action_required_card {
+  background-color: #FCECE7; 
+  border: 2px solid #E14514;  
+}
+
+
 .danger_card {
   border: 1px solid #e14514;
   background-color: #fcece7;
