@@ -23,7 +23,7 @@ type PendingQueueQC struct {
 	GreenAreaNMOnly                      string `json:"green_area"`
 	FinanceCreditApprovalLoanorLease     string `json:"finance_credit"`
 	FinanceAgreementCompletedLoanorLease string `json:"finance_agreement"`
-	OWEDocumentsCompleted                string `json:"owe"`
+	OWEDocumentsCompleted                string `json:"owe_document"`
 }
 
 type PendingQueueNTP struct {
