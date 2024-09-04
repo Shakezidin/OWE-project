@@ -90,7 +90,7 @@ const PendingQueue = () => {
     <>
       <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions</h2>
       <div className={styles.pending_card_wrapper}>
-        <div className={styles.pending_card} onClick={() => setActive('qc')}>
+        <div className={styles.pending_card} onClick={() => {setActive('qc') , setPage(1), setSearch('')}}>
           <div
             className={` ${active === 'qc' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
@@ -102,7 +102,7 @@ const PendingQueue = () => {
                 className={styles.pending_card_title}
                 style={{ fontWeight: 500 }}
               >
-                QC Checklist
+              Qc Checklist
               </h5>
               <p className={styles.pending_card_desc}>
                 Click to see all project in QC
@@ -110,7 +110,7 @@ const PendingQueue = () => {
             </div>
           </div>
         </div>
-        <div className={styles.pending_card} onClick={() => setActive('ntp')}>
+        <div className={styles.pending_card} onClick={() => {setActive('ntp'), setPage(1),  setSearch('')}}>
           <div
             className={` ${active === 'ntp' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
@@ -130,7 +130,7 @@ const PendingQueue = () => {
             </div>
           </div>
         </div>
-        <div className={styles.pending_card} onClick={() => setActive('co')}>
+        <div className={styles.pending_card} onClick={() => {setActive('co'), setPage(1), setSearch('')}}>
           <div
             className={` ${active === 'co' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
@@ -164,7 +164,7 @@ const PendingQueue = () => {
               className={` ${styles.table_heading}`}
               style={{ fontWeight: 700, fontSize: 20 }}
             >
-              QC Checklist
+               {active === 'qc' ? 'QC Checklist' : active === 'ntp' ? 'NTP Checklist' : 'C/O Status'}
             </h3>
 
             <div className="performance-box-container">
