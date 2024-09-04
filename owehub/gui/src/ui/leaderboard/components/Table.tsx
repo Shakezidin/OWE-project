@@ -1002,7 +1002,7 @@ const Table = ({
                     role === TYPE_OF_USER.FINANCE_ADMIN ||
                     role === TYPE_OF_USER.DEALER_OWNER) &&
                   groupBy === 'dealer'
-                    ? 'Code Name'
+                    ? 'Partner Name'
                     : 'Name'}
                 </th>
 

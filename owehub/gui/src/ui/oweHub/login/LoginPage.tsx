@@ -127,9 +127,9 @@ export const LoginPage = () => {
           );
 
           if (role_name === TYPE_OF_USER.DB_USER) {
-            navigate(ROUTES.LEADERBOARD);
+            navigate(ROUTES.PEINDING_QUEUE);
           } else {
-            navigate(ROUTES.LEADERBOARD);
+            navigate(ROUTES.PEINDING_QUEUE);
           }
         } else {
           toast.error(result.message);
