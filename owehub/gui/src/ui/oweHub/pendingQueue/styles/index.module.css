@@ -77,6 +77,7 @@
   height: 54px;
   display: flex;
   flex-basis: 152px;
+  flex-shrink: 0;
   align-items: center;
   border-radius: 5px;
   padding-left: 9px;
@@ -87,18 +88,15 @@
   background-color: #fdf6e5;
 }
 
- 
- 
-.success_card  {
-  background-color: #E0FFF0;  
-  border: 1px solid #2EAF71;  
+.success_card {
+  background-color: #e0fff0;
+  border: 1px solid #2eaf71;
 }
 
 .action_required_card {
-  background-color: #FCECE7; 
-  border: 2px solid #E14514;  
+  background-color: #fcece7;
+  border: 2px solid #e14514;
 }
-
 
 .danger_card {
   border: 1px solid #e14514;
@@ -119,12 +117,20 @@
   .table_heading {
     font-size: 15px !important;
   }
+  .pending_queue_table_header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .search_wrapper {
+    flex: 1;
+    width: 100%;
+  }
+  .table_heading {
+    display: none;
+  }
 }
 @media screen and (max-width: 450px) {
   .pending_queue_table_header {
     padding-inline: 1rem;
-  }
-  .search_wrapper {
-    flex-basis: 200px;
   }
 }
