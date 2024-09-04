@@ -27,7 +27,7 @@ import (
  * RETURNS:    		void
  ******************************************************************************/
 
-func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		dataReq          models.PendingQueueReq
@@ -40,6 +40,9 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		RecordCount      int64
 		SaleRepList      []interface{}
 		ntpD             string
+		QcPendingCount   int64
+		NTPPendingCount  int64
+		CoPendingCount   int64
 	)
 
 	log.EnterFn(0, "HandleGetPendingQuesTileDataRequest")
@@ -150,33 +153,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	RecordCount = int64(len(data))
-	pendingqueueList := models.GetPendingQueueList{}
-
 	for _, item := range data {
-		var ntp models.NTP
-		var qc models.QC
-		// Fetch and validate UniqueId
-		UniqueId, ok := item["unique_id"].(string)
-		if !ok || UniqueId == "" {
-			UniqueId = ""
-			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
-			continue
-		}
-
-		// Fetch and validate HomeOwner
-		HomeOwner, ok := item["home_owner"].(string)
-		if !ok || HomeOwner == "" {
-			HomeOwner = ""
-			log.FuncErrorTrace(0, "Failed to get HomeOwner. Item: %+v\n", item)
-		}
-
-		// Fetch and validate HomeOwner
-		CoStatus, ok := item["change_order_status"].(string)
-		if !ok || CoStatus == "" {
-			CoStatus = ""
-			log.FuncErrorTrace(0, "Failed to get change order status. Item: %+v\n", item)
-		}
 
 		ntpDate, ok := item["ntp_date"].(time.Time)
 		if !ok {
@@ -186,31 +163,38 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			ntpD = ntpDate.Format("2006-01-02")
 		}
 
-		ntp.ProductionDiscrepancy, _ = getStringValue(item, "production_discrepancy", ntpD)
-		ntp.FinanceNTPOfProject, _ = getStringValue(item, "finance_ntp_of_project", ntpD)
-		ntp.UtilityBillUploaded, _ = getStringValue(item, "utility_bill_uploaded", ntpD)
-		ntp.PowerClerkSignaturesComplete, _ = getStringValue(item, "powerclerk_signatures_complete", ntpD)
-		qc.PowerClerk, _ = getStringValue(item, "powerclerk_sent_az", ntpD)
-		qc.ACHWaiveSendandSignedCashOnly, _ = getStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
-		qc.GreenAreaNMOnly, _ = getStringValue(item, "green_area_nm_only", ntpD)
-		qc.FinanceCreditApprovalLoanorLease, _ = getStringValue(item, "finance_credit_approved_loan_or_lease", ntpD)
-		qc.FinanceAgreementCompletedLoanorLease, _ = getStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD)
-		qc.OWEDocumentsCompleted, _ = getStringValue(item, "owe_documents_completed", ntpD)
-
-		PendingQueue := models.GetPendingQueue{
-			UniqueId:  UniqueId,
-			HomeOwner: HomeOwner,
-			COStatus:  CoStatus,
-			Ntp:       ntp,
-			Qc:        qc,
-		}
-
-		pendingqueueList.PendingQueueList = append(pendingqueueList.PendingQueueList, PendingQueue)
+		_, count := getPendingQueueStringValue(item, "production_discrepancy", ntpD)
+		NTPPendingCount += count
+		_, count = getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD)
+		NTPPendingCount += count
+		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
+		NTPPendingCount += count
+		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
+		QcPendingCount += count
+		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
+		QcPendingCount += count
+		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
+		QcPendingCount += count
+		_, count = getPendingQueueStringValue(item, "green_area_nm_only", ntpD)
+		QcPendingCount += count
+		_, count = getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD)
+		QcPendingCount += count
+		_, count = getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD)
+		QcPendingCount += count
+		_, count = getPendingQueueStringValue(item, "owe_documents_completed", ntpD)
+		QcPendingCount += count
+		_, count = getPendingQueueStringValue(item, "change_order_status", ntpD)
+		CoPendingCount += count
 	}
 
-	paginatedData := Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
-	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(paginatedData), paginatedData)
-	FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, paginatedData, RecordCount)
+	pendingQueueTile := models.GetPendingQueueTileResp{
+		QcPendingCount:  QcPendingCount,
+		NTPPendingCount: NTPPendingCount,
+		CoPendingCount:  CoPendingCount,
+	}
+
+	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", 1, pendingQueueTile)
+	FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, pendingQueueTile, RecordCount)
 }
 
 /******************************************************************************
@@ -220,7 +204,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
  * RETURNS:    		void
  ******************************************************************************/
 
-func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.PendingQueueReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
+func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.PendingQueueReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
 
@@ -244,45 +228,6 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		whereAdded = true
 	}
 
-	// Check if there are filters
-	if len(dataFilter.UniqueIds) > 0 && !filterCheck {
-		// Start with a WHERE clause if none has been added yet
-		if whereAdded {
-			filtersBuilder.WriteString(" AND (") // Start a group for OR conditions
-		} else {
-			filtersBuilder.WriteString(" WHERE (") // Start a group for OR conditions
-			whereAdded = true
-		}
-
-		// Add condition for LOWER(cv.unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(cv.unique_id) IN (")
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
-
-		// Add OR condition for cv.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR cv.home_owner ILIKE ANY (ARRAY[")
-		for i, filter := range dataFilter.UniqueIds {
-			// Wrap the filter in wildcards for pattern matching
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString("]) ")
-
-		// Close the OR group
-		filtersBuilder.WriteString(")")
-	}
-
 	// Add dealer filter if not adminCheck and not filterCheck
 	if !adminCheck && !filterCheck {
 		if whereAdded {
@@ -302,10 +247,10 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		filtersBuilder.WriteString(" WHERE")
 	}
 	filtersBuilder.WriteString(` cv.unique_id IS NOT NULL
-			 AND cv.unique_id <> ''
-			 AND cv.system_size IS NOT NULL
-			 AND cv.system_size > 0
-			 AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			  AND cv.unique_id <> ''
+			  AND cv.system_size IS NOT NULL
+			  AND cv.system_size > 0
+			  AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
 
 	filters = filtersBuilder.String()
 
@@ -319,7 +264,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.PendingQueueReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
+func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.PendingQueueReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
 
@@ -340,26 +285,6 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 
 		filtersBuilder.WriteString(fmt.Sprintf(" WHERE cv.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
-	}
-
-	if len(dataFilter.UniqueIds) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-
-		filtersBuilder.WriteString(" LOWER(cv.unique_id) IN (")
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
 	}
 
 	// Add sales representative filter
@@ -395,13 +320,113 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND cv.unique_id IS NOT NULL
-			 AND cv.unique_id <> ''
-			 AND cv.system_size IS NOT NULL
-			 AND cv.system_size > 0 
-			 AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			  AND cv.unique_id <> ''
+			  AND cv.system_size IS NOT NULL
+			  AND cv.system_size > 0 
+			  AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
 
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_date string) (string, int64) {
+	if v, exists := data[key]; exists {
+		switch key {
+		case "production_discrepancy":
+			if (v == "" || v == "<nil>") && ntp_date == "" {
+				return "Pending", 1
+			} else {
+				return "Completed", 0
+			}
+		case "finance_ntp_of_project":
+			if (v == "" || v == "<nil>") && ntp_date == "" {
+				return "Pending", 1
+			} else if (v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips") && ntp_date == "" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "utility_bill_uploaded":
+			if (v == "" || v == "<nil>") && ntp_date == "" {
+				return "Pending", 1
+			} else if v == "❌" && ntp_date == "" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "powerclerk_signatures_complete":
+			if (v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>") && ntp_date == "" {
+				return "Pending", 1
+			} else if (v == "❌  Pending" || v == "❌  Pending Sending PC" || v == "❌ Pending Sending PC") && ntp_date == "" {
+				return "Pending (Action Required)", 1
+			} else {
+				return "Completed", 0
+			}
+		case "powerclerk_sent_az":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+					return "Pending", 1
+				} else if v == "Pending Utility Account #" || ntp_date == "" {
+					return "Pending (Action Required)", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "ach_waiver_sent_and_signed_cash_only":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+					return "Pending", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "green_area_nm_only":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+					return "Pending", 1
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" || ntp_date == "" {
+					return "Pending (Action Required)", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "finance_credit_approved_loan_or_lease":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+					return "Pending", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "finance_agreement_completed_loan_or_lease":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+					return "Pending", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "owe_documents_completed":
+			if v != "Not Needed" {
+				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+					return "Pending", 1
+				} else if v == "❌" || ntp_date == "" {
+					return "Pending (Action Required)", 1
+				} else {
+					return "Completed", 0
+				}
+			}
+		case "change_order_status":
+			if v == "" {
+				return "", 0
+			} else if v == "CO Complete" {
+				return "Completed", 0
+			} else {
+				return "Pending", 1
+			}
+		}
+	}
+	return "", 0
 }

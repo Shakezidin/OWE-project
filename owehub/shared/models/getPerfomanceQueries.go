@@ -144,6 +144,7 @@ func QcNtpRetrieveQueryFunc() string {
             n.finance_ntp_of_project, 
             n.utility_bill_uploaded, 
             n.powerclerk_signatures_complete, 
+            n.change_order_status,
             split_part(cv.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
             cv.utility_company,
             cv.state,
