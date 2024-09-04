@@ -21,7 +21,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetPendingQuesTileDataRequest
+ * FUNCTION:		HandleGetPendingQuesDataRequest
  * DESCRIPTION:     handler for get pending queue data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -42,8 +42,8 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		ntpD             string
 	)
 
-	log.EnterFn(0, "HandleGetPendingQuesTileDataRequest")
-	defer func() { log.ExitFn(0, "HandleGetPendingQuesTileDataRequest", err) }()
+	log.EnterFn(0, "HandleGetPendingQuesDataRequest")
+	defer func() { log.ExitFn(0, "HandleGetPendingQuesDataRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get pending queue data request")
@@ -191,13 +191,13 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,
 			COStatus:  CoStatus,
-			Ntp: models.NTP{
+			Ntp: models.PendingQueueNTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
 				FinanceNTPOfProject:          FinanceNTPOfProject,
 				UtilityBillUploaded:          UtilityBillUploaded,
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
 			},
-			Qc: models.QC{
+			Qc: models.PendingQueueQC{
 				PowerClerk:                           PowerClerk,
 				ACHWaiveSendandSignedCashOnly:        ACHWaiveSendandSignedCashOnly,
 				GreenAreaNMOnly:                      GreenAreaNMOnly,
@@ -286,6 +286,18 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		}
 		filtersBuilder.WriteString(") ")
 
+		// Add OR condition for cv.unique_id ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(cv.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+
 		// Add OR condition for cv.home_owner ILIKE ANY (ARRAY[...])
 		filtersBuilder.WriteString(" OR cv.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
@@ -364,9 +376,9 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 
 	if len(dataFilter.UniqueIds) > 0 {
 		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
+			filtersBuilder.WriteString(" AND (")
 		} else {
-			filtersBuilder.WriteString(" WHERE ")
+			filtersBuilder.WriteString(" WHERE (")
 			whereAdded = true
 		}
 
@@ -380,6 +392,20 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 			}
 		}
 		filtersBuilder.WriteString(") ")
+
+		// Add OR condition for cv.unique_id ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(cv.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+		// Close the OR group
+		filtersBuilder.WriteString(")")
 	}
 
 	// Add sales representative filter

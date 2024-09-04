@@ -424,7 +424,7 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			} else if v == "CO Complete" {
 				return "Completed", 0
 			} else {
-				return "Pending", 1
+				return v.(string), 1
 			}
 		}
 	}
