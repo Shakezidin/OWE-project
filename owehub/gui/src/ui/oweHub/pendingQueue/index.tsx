@@ -64,7 +64,7 @@ const PendingQueue = () => {
       } finally {
       }
     })();
-  }, [page, itemsPerPage, debouncedSearch]);
+  }, [page, itemsPerPage, debouncedSearch, active]);
 
   const getStatusColor = (status: string) => {
     if (status === 'Pending (Action Required)') {
