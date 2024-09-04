@@ -1,6 +1,6 @@
 /**************************************************************************
  * File       	   : apiGetPerfomanceProjectStatus.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
+ * DESCRIPTION     : This file contains functions for get perfomance status data handler
  * DATE            : 07-May-2024
  **************************************************************************/
 
@@ -23,7 +23,7 @@ import (
 
 /******************************************************************************
 * FUNCTION:		HandleGetPerfomanceProjectStatusRequest
-* DESCRIPTION:     handler for get InstallCost data request
+* DESCRIPTION:     handler for get perfomance status data request
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
@@ -116,9 +116,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-	// this sets the data interval bracket for querying
-	dataReq.IntervalDays = "90"
-	// Check whether the user is Admin, Dealer, Sales Rep
 
 	whereEleList = append(whereEleList, dataReq.Email)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
@@ -531,6 +528,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 *****************************************************************************
 */
 func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq) []models.PerfomanceResponse {
+	log.EnterFn(0, "PaginateData")
+	defer func() { log.ExitFn(0, "PaginateData", nil) }()
 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
 
 	startIndex := (req.PageNumber - 1) * req.PageSize
@@ -605,7 +604,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	// Execute the Query
 	result, err := db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get qc and ntp data from DB err: %v", err)
 		return paginatedData
 	}
 
@@ -697,8 +696,8 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 ******************************************************************************/
 
 func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareAdminDlrFilters")
+	defer func() { log.ExitFn(0, "PrepareAdminDlrFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -817,14 +816,14 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareInstallCostFilters
+* FUNCTION:		PrepareSaleRepFilters
 * DESCRIPTION:     handler for prepare filter
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
 func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareSaleRepFilters")
+	defer func() { log.ExitFn(0, "PrepareSaleRepFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -845,15 +844,18 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		whereAdded = true
 	}
 
+	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
+		// Start with WHERE if none has been added
 		if whereAdded {
-			filtersBuilder.WriteString(" AND (")
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
 		} else {
-			filtersBuilder.WriteString(" WHERE (")
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -864,7 +866,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 		filtersBuilder.WriteString(") ")
 
-		// Add OR condition for cv.unique_id ILIKE ANY (ARRAY[...])
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
 		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -875,6 +877,20 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			}
 		}
 		filtersBuilder.WriteString("])")
+
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+
 		// Close the OR group
 		filtersBuilder.WriteString(")")
 	}

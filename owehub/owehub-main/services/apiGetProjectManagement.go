@@ -1,6 +1,6 @@
 /**************************************************************************
- * File       	   : apiGetPerfomanceProjectStatus.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
+ * File       	   : apiGetProjectManagement.go
+ * DESCRIPTION     : This file contains functions for get project management data handler
  * DATE            : 07-May-2024
  **************************************************************************/
 
@@ -23,7 +23,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetProjectManagementRequest
+ * FUNCTION:		HandleGetProjectMngmntRequest
  * DESCRIPTION:     handler for get ProjectManagement data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -43,8 +43,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		ntpDate          string
 	)
 
-	log.EnterFn(0, "HandleGetProjectManagementRequest")
-	defer func() { log.ExitFn(0, "HandleGetProjectManagementRequest", err) }()
+	log.EnterFn(0, "HandleGetProjectMngmntRequest")
+	defer func() { log.ExitFn(0, "HandleGetProjectMngmntRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ProjectManagement data request")
@@ -298,8 +298,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 	// Send the response
 	recordLen := len(data)
-	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
-	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, projectList, int64(recordLen))
+	log.FuncInfoTrace(0, "Number of project management data List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
+	FormAndSendHttpResp(resp, "Project Management Data", http.StatusOK, projectList, int64(recordLen))
 }
 
 /******************************************************************************
