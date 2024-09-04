@@ -161,7 +161,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if dataReq.GroupBy == "dealer" && dataReq.Role != string(types.GroupAdmin) {
+	if dataReq.GroupBy == "dealer" && dataReq.Role != string(types.RoleAdmin) {
 		// Step 1: Extract unique dealer names and prepare query placeholders
 		dealerNames := make([]string, 0, len(data))
 		for _, item := range data {
