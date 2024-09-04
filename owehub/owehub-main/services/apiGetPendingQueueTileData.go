@@ -170,7 +170,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
 		NTPPendingCount += count
 		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
-		QcPendingCount += count
+		NTPPendingCount += count
 		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
 		QcPendingCount += count
 		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
