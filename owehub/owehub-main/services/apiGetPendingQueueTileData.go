@@ -366,9 +366,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "powerclerk_sent_az":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "Pending Utility Account #" || ntp_date == "" {
+				} else if v == "Pending Utility Account #" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -376,7 +379,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -384,9 +390,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "green_area_nm_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" || ntp_date == "" {
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -394,7 +403,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "finance_credit_approved_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -402,7 +414,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "finance_agreement_completed_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -410,9 +425,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "owe_documents_completed":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "❌" || ntp_date == "" {
+				} else if v == "❌" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
