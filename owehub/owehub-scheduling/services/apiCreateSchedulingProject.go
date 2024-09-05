@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -186,6 +187,13 @@ func HandleCreateSchedulingProjectRequest(resp http.ResponseWriter, req *http.Re
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to insert scheduling project into DB with err: %v", err)
+
+		// 404 incase project doesnt exist
+		if strings.Contains(err.Error(), "already exists") {
+			FormAndSendHttpResp(resp, "Email already in use", http.StatusNotFound, nil)
+			return
+		}
+
 		FormAndSendHttpResp(resp, "Failed to create scheduling project", http.StatusInternalServerError, nil)
 		return
 	}
