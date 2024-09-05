@@ -9,6 +9,7 @@ CREATE OR REPLACE FUNCTION create_scheduling_project(
     p_house_area_sqft DOUBLE PRECISION,
     p_system_size DOUBLE PRECISION,
     p_sales_rep_email_id VARCHAR,
+    p_is_battery_included BOOLEAN,
     p_site_survey_start_dt timestamp without time zone DEFAULT NULL,
     p_site_survey_end_dt timestamp without time zone DEFAULT NULL,
     p_backup_3 TEXT DEFAULT NULL,
@@ -27,12 +28,14 @@ BEGIN
         INSERT INTO scheduling_projects (
             first_name, last_name, email, phone, address, roof_type, 
             house_stories, house_area_sqft, system_size, sales_rep_email_id,
-            site_survey_start_dt, site_survey_end_dt, backup_3, backup_4
+            is_battery_included, site_survey_start_dt, site_survey_end_dt, 
+            backup_3, backup_4
         ) 
         VALUES (
             p_first_name, p_last_name, p_email, p_phone, p_address, p_roof_type, 
             p_house_stories, p_house_area_sqft, p_system_size, p_sales_rep_email_id,
-            p_site_survey_start_dt, p_site_survey_end_dt, p_backup_3, p_backup_4
+            p_is_battery_included, p_site_survey_start_dt, p_site_survey_end_dt, 
+            p_backup_3, p_backup_4
         );
         
         RETURN 0;

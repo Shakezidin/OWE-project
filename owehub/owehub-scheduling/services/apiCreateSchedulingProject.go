@@ -144,12 +144,12 @@ func HandleCreateSchedulingProjectRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	// Check if SalesRepEmailID is provided
-	if len(createSchedulingProjectReq.SalesRepEmailID) <= 0 {
-		err = fmt.Errorf("SalesRepEmailID field is empty")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "SalesRepEmailID field is required", http.StatusBadRequest, nil)
-		return
-	}
+	// if len(createSchedulingProjectReq.SalesRepEmailID) <= 0 {
+	// 	err = fmt.Errorf("SalesRepEmailID field is empty")
+	// 	log.FuncErrorTrace(0, "%v", err)
+	// 	FormAndSendHttpResp(resp, "SalesRepEmailID field is required", http.StatusBadRequest, nil)
+	// 	return
+	// }
 
 	authenticatedEmail := req.Context().Value("emailid").(string)
 
@@ -163,8 +163,8 @@ func HandleCreateSchedulingProjectRequest(resp http.ResponseWriter, req *http.Re
 	queryParameters = append(queryParameters, createSchedulingProjectReq.HouseStories)
 	queryParameters = append(queryParameters, createSchedulingProjectReq.HouseAreaSqft)
 	queryParameters = append(queryParameters, createSchedulingProjectReq.SystemSize)
+	queryParameters = append(queryParameters, authenticatedEmail)
 	queryParameters = append(queryParameters, createSchedulingProjectReq.IsBatteryIncluded)
-	queryParameters = append(queryParameters, createSchedulingProjectReq.SalesRepEmailID)
 
 	// Add SiteSurveyStartDt and SiteSurveyEndDt if provided
 	if createSchedulingProjectReq.SiteSurveyStartDt != nil {
@@ -181,8 +181,6 @@ func HandleCreateSchedulingProjectRequest(resp http.ResponseWriter, req *http.Re
 	// Add Backup3 and Backup4 if provided
 	queryParameters = append(queryParameters, createSchedulingProjectReq.Backup3)
 	queryParameters = append(queryParameters, createSchedulingProjectReq.Backup4)
-
-	queryParameters = append(queryParameters, authenticatedEmail)
 
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateSchedulingProjectFunction, queryParameters)
 
