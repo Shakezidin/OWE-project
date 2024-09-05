@@ -1,6 +1,6 @@
 import React from 'react';
-import { ICONS } from '../../icons/Icons';
-import '../../pages/configure/configure.css';
+import { ICONS } from '../../../resources/icons/Icons';
+import '../../oweHub/configure/configure.css';
 import { useAppSelector } from '../../../redux/hooks';
 import { useLocation } from 'react-router-dom';
 import { RiFilterLine } from 'react-icons/ri';

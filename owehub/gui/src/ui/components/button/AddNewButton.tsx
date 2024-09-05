@@ -1,5 +1,5 @@
 /**
- * Created by satishazad on 17/01/24
+ * Created by Ankit Chuahan on 17/01/24
  * File Name: ActionButton
  * Product Name: WebStorm
  * Project Name: commission_app
@@ -8,7 +8,7 @@
 
 import React from 'react';
 import './ActionButton.css';
-import { ICONS } from '../../icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 
 interface ActionButtonProps {
   title: string;
@@ -18,12 +18,10 @@ interface ActionButtonProps {
 export const AddNewButton = (props: ActionButtonProps) => {
   const { title, onClick } = props;
   return (
-    <div className="iconsSection2">
+    <div className="iconsSection2 iconSection2-mobile">
       <button
         type="button"
-        style={{
-          
-        }}
+        style={{}}
         // className="hover-btn"
         onClick={onClick}
       >
@@ -32,7 +30,7 @@ export const AddNewButton = (props: ActionButtonProps) => {
           alt=""
           style={{ width: '14px', height: '14px' }}
         />{' '}
-        {title}
+        <span className="mobileTitle">{title}</span>
       </button>
     </div>
   );

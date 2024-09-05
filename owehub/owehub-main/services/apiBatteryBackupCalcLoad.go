@@ -71,6 +71,7 @@ func HandleSetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, prospectLoadInfo.LRA)
 	queryParameters = append(queryParameters, prospectLoadInfo.AverageCapacity)
 	queryParameters = append(queryParameters, prospectLoadInfo.ContinousCurrent)
+	queryParameters = append(queryParameters, prospectLoadInfo.MissingLabels)
 
 	breakersJSON, err := json.Marshal(prospectLoadInfo.Breakers)
 	if err != nil {
@@ -142,6 +143,7 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	query := `SELECT
             pl.prospect_load_id,
             pl.prospect_id,
+						pl.missing_labels,
 						pi.prospect_name,
 						pi.address,
 						pi.house_square::numeric::float8,
@@ -193,6 +195,7 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	prospectLoadInfo.Address = data[0]["address"].(string)
 	prospectLoadInfo.HouseSquare = data[0]["house_square"].(float64)
 	prospectLoadInfo.SysSize = data[0]["sys_size"].(float64)
+	prospectLoadInfo.MissingLabels = data[0]["missing_labels"].(bool)
 
 	if err := json.Unmarshal(data[0]["breakers"].([]uint8), &prospectLoadInfo.Breakers); err != nil {
 		log.FuncErrorTrace(0, "Failed to Unmarshal Breakers Info from Prospect Load err: %+v", err)

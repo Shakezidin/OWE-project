@@ -59,7 +59,7 @@ export const fetchUserOnboarding = createAsyncThunk(
         {
           name: 'Inactive SaleRep',
           value: Math.abs(inactive_sale_rep),
-          fill: '#EE824D',
+          fill: '#E0728C',
         }
       );
     }
@@ -105,14 +105,10 @@ export const fetchUserListBasedOnRole = createAsyncThunk(
   }
 );
 
-
 export const fetchDealerList = createAsyncThunk(
   'dealer/user_list_dealer',
   async (data: any) => {
-    const response = await postCaller(
-      'get_vdealer' ,
-       data
-    );
+    const response = await postCaller('get_vdealer', data);
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error('Failed to fetch onboarding data');
     }
@@ -120,6 +116,6 @@ export const fetchDealerList = createAsyncThunk(
     if (!vdealers_list || vdealers_list.length === 0) {
       return { vdealers_list: [], count: 0 };
     }
-    return { vdealers_list , count: response.dbRecCount };
+    return { vdealers_list, count: response.dbRecCount };
   }
 );

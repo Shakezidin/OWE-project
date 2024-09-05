@@ -64,14 +64,14 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 	tableList := models.TableList{}
 	if dataReq.GetAllTable {
 		tables := []models.Table{
-			{TableName: "adder_data_cfg_schema"},
+			{TableName: "adders2_adder_schema"},
 			{TableName: "field_ops_metrics_schema"},
 			{TableName: "finance_metrics_schema"},
 			{TableName: "internal_ops_metrics_schema"},
 			{TableName: "next_steps_schema"},
 			{TableName: "sales_metrics_schema"},
-			{TableName: "consolidated_data_view"},
-			{TableName: "ops_analysis_timelines_view"},
+			{TableName: "ntp_ntp_schema"},
+			{TableName: "customers_customers_schema"},
 		}
 
 		// Append the new tables to the tableList

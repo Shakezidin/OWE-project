@@ -81,6 +81,6 @@ func HandleUpdateVDealerDataRequest(resp http.ResponseWriter, req *http.Request)
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "New v dealer Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "V Dealer Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New Partner Updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Partner Updated Successfully", http.StatusOK, nil)
 }

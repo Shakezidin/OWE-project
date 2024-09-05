@@ -20,6 +20,7 @@ const (
 	GroupSalesManagement UserGroup = "GroupSalesManagement"
 	GroupEveryOne        UserGroup = "GroupEveryOne"
 	GroupDb              UserGroup = "GroupDb"
+	GroupAdminDealer     UserGroup = "GroupAdminDealer"
 )
 
 var (
@@ -31,6 +32,11 @@ var (
 		GroupDb: {
 			RoleAdmin,
 			RoleDbUser,
+		},
+		GroupAdminDealer: {
+			RoleAdmin,
+			RoleDealerOwner,
+			RoleSubDealerOwner,
 		},
 		GroupDealerFinance: {
 			RoleDealerOwner,

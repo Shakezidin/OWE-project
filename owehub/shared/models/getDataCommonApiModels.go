@@ -13,12 +13,13 @@ type Filter struct {
 	Data      interface{} `json:"Data"`
 }
 
-// Parse the request body to extract parameters
 type DataRequestBody struct {
-	PageNumber int      `json:"page_number"`
-	PageSize   int      `json:"page_size"`
-	Archived   bool     `json:"archived"`
-	Filters    []Filter `json:"filters"`
+	PageNumber     int      `json:"page_number"`
+	PageSize       int      `json:"page_size"`
+	Archived       bool     `json:"archived"`
+	SalesRepStatus string   `json:"sales_rep_status"`
+	Filters        []Filter `json:"filters"`
+	DealerName     string
 }
 
 type MailRequestBody struct {

@@ -5,7 +5,6 @@ import {
   deleteUserOnboarding,
   deleteUserDealer,
   fetchDealerOwner,
-
   createDealer,
   fetchRegionList,
 } from '../../apiActions/auth/createUserSliceActions';
@@ -28,8 +27,8 @@ const initialState: CreateOnboardUserStateModel = {
     dealer_logo: '',
     dealer: '',
     assigned_Manager: '',
-    dealer_code:'',
-    preferred_name:'',
+    dealer_code: '',
+    preferred_name: '',
   },
   dealerOwenerList: [],
   regionList: [],
@@ -109,13 +108,10 @@ const createUserSlice = createSlice({
         }
       )
       /** create user */
-      .addCase(
-        createDealer.pending,
-        (state: CreateOnboardUserStateModel) => {
-          state.loading = true;
-          state.error = null;
-        }
-      )
+      .addCase(createDealer.pending, (state: CreateOnboardUserStateModel) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(
         createDealer.fulfilled,
         (state: CreateOnboardUserStateModel, action) => {
@@ -133,31 +129,30 @@ const createUserSlice = createSlice({
         }
       )
 
-
-          /** create dealer user */
-          .addCase(
-            createUserOnboarding.pending,
-            (state: CreateOnboardUserStateModel) => {
-              state.loading = true;
-              state.error = null;
-            }
-          )
-          .addCase(
-            createUserOnboarding.fulfilled,
-            (state: CreateOnboardUserStateModel, action) => {
-              state.loading = false;
-              state.error = null;
-              state.createUserResult = action.payload;
-            }
-          )
-          .addCase(
-            createUserOnboarding.rejected,
-            (state: CreateOnboardUserStateModel, action) => {
-              state.loading = false;
-              state.error =
-                action.error.message ?? 'Unable to create Onboarding User';
-            }
-          )
+      /** create dealer user */
+      .addCase(
+        createUserOnboarding.pending,
+        (state: CreateOnboardUserStateModel) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addCase(
+        createUserOnboarding.fulfilled,
+        (state: CreateOnboardUserStateModel, action) => {
+          state.loading = false;
+          state.error = null;
+          state.createUserResult = action.payload;
+        }
+      )
+      .addCase(
+        createUserOnboarding.rejected,
+        (state: CreateOnboardUserStateModel, action) => {
+          state.loading = false;
+          state.error =
+            action.error.message ?? 'Unable to create Onboarding User';
+        }
+      )
       /** delete */
       /** create user */
       .addCase(
@@ -184,11 +179,7 @@ const createUserSlice = createSlice({
         }
       );
 
-      //delete user dealer
-
-      
-
-    
+    //delete user dealer
   },
 });
 

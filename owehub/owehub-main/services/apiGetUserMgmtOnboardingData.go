@@ -35,19 +35,34 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 	defer func() { log.ExitFn(0, "HandleGetUserMgmtOnboardingDataRequest", err) }()
 
 	query = ` 
-		SELECT 
-		ur.role_name, 
-		COUNT(u.user_id) AS user_count,
-		CASE
-			WHEN ur.role_name = 'Sale Representative' THEN string_agg(u.name, ', ')
-			ELSE NULL
-		END AS sales_representatives
-	FROM 
-		user_details u
-	INNER JOIN 
-		user_roles ur ON u.role_id = ur.role_id
-	GROUP BY 
-		ur.role_name;`
+			WITH user_data AS (
+    SELECT 
+        ur.role_name, 
+        COUNT(u.user_id) AS user_count,
+        CASE
+            WHEN ur.role_name = 'Sale Representative' THEN string_agg(u.name, ', ')
+            ELSE NULL
+        END AS sales_representatives
+    FROM 
+        user_details u
+    INNER JOIN 
+        user_roles ur ON u.role_id = ur.role_id
+    GROUP BY 
+        ur.role_name
+),
+dealer_data AS (
+    SELECT 
+        'Partner' AS role_name,
+        COUNT(*) AS user_count,
+        NULL AS sales_representatives
+    FROM 
+        v_dealer
+    WHERE 
+        is_deleted = FALSE
+)
+SELECT * FROM user_data
+UNION ALL
+SELECT * FROM dealer_data;`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {

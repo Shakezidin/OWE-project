@@ -240,6 +240,14 @@ input[type='password']::-ms-clear {
   cursor: pointer;
 }
 
+.createUserCrossButton svg {
+  transition: transform 0.3s ease;
+}
+
+.createUserCrossButton svg:hover {
+  transform: scale(1.4);
+}
+
 .createProfileText {
   font-size: 24px;
   margin-left: 36px;
@@ -475,8 +483,15 @@ br {
     width: 256px;
     text-align: left;
   }
-
+  .modal {
+    margin: 10px;
+  }
   .react-tel-input .country-list * {
     text-align: left;
   }
+}
+.one-line-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

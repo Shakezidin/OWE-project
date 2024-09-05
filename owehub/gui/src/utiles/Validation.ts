@@ -21,46 +21,41 @@ export const validateForm = (
   formData: CreateUserModel
 ): { [key: string]: boolean } => {
   const errors: { [key: string]: boolean } = {};
-if(formData.role_name  !== 'Partner'){
-  if (!validateName(formData.first_name)) {
-    errors.FirstName = true;
-  }
+  if (formData.role_name !== 'Partner') {
+    if (!validateName(formData.first_name)) {
+      errors.FirstName = true;
+    }
 
-  if (!validateName(formData.last_name)) {
-    errors.LastName = true;
-  }
+    if (!validateName(formData.last_name)) {
+      errors.LastName = true;
+    }
 
-  if (!validateEmail(formData.email_id)) {
-    errors.Email = true;
-  }
+    if (!validateEmail(formData.email_id)) {
+      errors.Email = true;
+    }
 
-  if (!validateMobileNumber(formData.mobile_number)) {
-    errors.PhoneNumber = true;
+    if (!validateMobileNumber(formData.mobile_number)) {
+      errors.PhoneNumber = true;
+    }
   }
-}
   if (formData.role_name.length === 0) {
     errors.Role = true;
   }
 
-  if (
-    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
-  ) {
+  if (formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER) {
     if (formData.report_to.length === 0) {
-     
       errors.Report_Manager = true;
     }
   }
 
   if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
     if (formData.report_to.length === 0) {
-     
       errors.Report_Manager = true;
     }
   }
 
   if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
-      if (formData.report_to.length === 0) {
-     
+    if (formData.report_to.length === 0) {
       errors.Report_Manager = true;
     }
     //  else if (formData.team_name.length === 0) {
@@ -69,13 +64,11 @@ if(formData.role_name  !== 'Partner'){
   }
   if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     if (formData.report_to.length === 0) {
-     
       errors.Report_Manager = true;
     }
   }
   if (formData.role_name === TYPE_OF_USER.PARTNER) {
     if (formData.dealer_code.length === 0) {
-     
       errors.Dealer_Code = true;
     }
   }
@@ -96,10 +89,7 @@ export const createUserObject = (
     designation: 'SE',
     description: formData.description,
   };
-  if (
-    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER 
-    
-  ) {
+  if (formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER) {
     createObject = {
       ...createObject,
       dealer: formData.dealer,
@@ -132,7 +122,10 @@ export const createUserObject = (
       reporting_manager: formData.report_to,
     };
   }
-  if (formData.role_name === TYPE_OF_USER.DEALER_OWNER) {
+  if (
+    formData.role_name === TYPE_OF_USER.DEALER_OWNER ||
+    formData.role_name === TYPE_OF_USER.SUB_DEALER_OWNER
+  ) {
     createObject = {
       ...createObject,
       dealer_logo: formData?.dealer_logo,

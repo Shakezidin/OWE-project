@@ -1,6 +1,6 @@
 {
   "name": "owe_web_app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@emailjs/browser": "^4.3.3",
@@ -9,6 +9,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/google-map-react": "^2.1.10",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.70",
     "@types/papaparse": "^5.3.14",
@@ -17,11 +18,13 @@
     "@types/react-datepicker": "^6.2.0",
     "@types/react-dates": "^21.8.6",
     "@types/react-dom": "^18.2.18",
+    "@types/react-window": "^1.8.8",
     "@types/redux-logger": "^3.0.12",
     "axios": "^1.6.5",
     "basscss": "^8.0.2",
     "date-fns": "^3.6.0",
     "formik": "^2.4.5",
+    "google-map-react": "^2.2.1",
     "html-to-image": "^1.11.11",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
@@ -32,6 +35,8 @@
     "pdf-lib": "^1.17.1",
     "react": "^18.3.1",
     "react-chat-widget": "^3.1.4",
+    "react-apexcharts": "^1.4.1",
+    "react-aws-s3-typescript": "^1.1.5",
     "react-csv": "^2.2.2",
     "react-date-range": "^2.0.1",
     "react-datepicker": "^6.9.0",
@@ -48,6 +53,7 @@
     "react-toastify": "^10.0.5",
     "react-tooltip": "^5.26.4",
     "react-webcam": "^7.2.0",
+    "react-window": "^1.8.10",
     "recharts": "^2.12.3",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^3.1.0",
@@ -60,13 +66,13 @@
     "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "start:dev": "env-cmd -f .env.development react-scripts start",
+    "start:stage": "env-cmd -f .env.staging react-scripts start",
+    "build:dev": "env-cmd -f .env.development react-scripts build",
+    "build:stage": "env-cmd -f .env.staging react-scripts build",
+    "build:prod": "env-cmd -f .env.production react-scripts build",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix"
   },
   "browserslist": {
     "production": [

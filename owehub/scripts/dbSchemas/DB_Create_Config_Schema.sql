@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS user_details(
 
 CREATE TABLE IF NOT EXISTS teams (
     team_id SERIAL NOT NULL,
-    team_name VARCHAR(255) NOT NULL,
+    team_name VARCHAR(255) NOT NULL UNIQUE,
     dealer_id INT NOT NULL,
     description VARCHAR(255),
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,

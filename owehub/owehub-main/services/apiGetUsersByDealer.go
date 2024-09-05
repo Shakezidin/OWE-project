@@ -45,11 +45,29 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
-
-	if len(dataReq.DealerName) <= 0 {
-		log.FuncErrorTrace(0, "Empty Input Fields in API is Not Allowed")
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+	role := req.Context().Value("rolename").(string)
+	if role == "" {
+		FormAndSendHttpResp(resp, "error while getting role", http.StatusBadRequest, nil)
 		return
+	}
+	email := req.Context().Value("emailid").(string)
+	if email == "" {
+		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		return
+	}
+
+	if role == "Dealer Owner" || role == "SubDealer Owner" {
+		queryForDealer := `
+			select vd.dealer_name from user_details ud
+			join v_dealer vd on vd.id = ud.dealer_id
+			where ud.email_id = $1`
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, queryForDealer, []interface{}{email})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		dataReq.DealerName = data[0]["dealer_name"].(string)
 	}
 
 	/* If role is not passed then get users for all roles of dealer */
@@ -58,7 +76,7 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 				SELECT name FROM, user_code user_details
 				WHERE dealer_id IN (
 					SELECT id FROM v_dealer
-					WHERE LOWER(dealer_code) = LOWER($1)
+					WHERE LOWER(dealer_name) = LOWER($1)
 				)
 				`
 		whereEleList = append(whereEleList, dataReq.DealerName)
@@ -67,7 +85,7 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 				SELECT name, user_code FROM user_details
 				WHERE dealer_id IN (
 					SELECT id FROM v_dealer
-					WHERE LOWER(dealer_code) = LOWER($1)
+					WHERE LOWER(dealer_name) = LOWER($1)
 				)
 				AND role_id IN (
 					SELECT role_id

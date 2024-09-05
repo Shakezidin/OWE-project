@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -55,8 +56,7 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(createVDealerReq.DealerCode) <= 0) || (len(createVDealerReq.DealerName) <= 0) ||
-		(len(createVDealerReq.Description) <= 0) {
+	if (len(createVDealerReq.DealerCode) <= 0) || (len(createVDealerReq.DealerName) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -74,6 +74,17 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateVDealerFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
+		if strings.Contains(err.Error(), "duplicate") {
+			if strings.Contains(err.Error(), "dealer_name") {
+				log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
+				FormAndSendHttpResp(resp, "V Dealer with Dealer Name Already Exists", http.StatusInternalServerError, nil)
+				return
+			} else if strings.Contains(err.Error(), "dealer_code") {
+				log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
+				FormAndSendHttpResp(resp, "V Dealer with Dealer Code Already Exists", http.StatusInternalServerError, nil)
+				return
+			}
+		}
 		log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create V dealer", http.StatusInternalServerError, nil)
 		return
@@ -81,6 +92,6 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "New v dealer created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "V Dealer Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New partner created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Partner Created Successfully", http.StatusOK, nil)
 }

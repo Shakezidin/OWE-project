@@ -1,6 +1,12 @@
 // SelectComponent.tsx
 import React, { useEffect, useRef } from 'react';
-import Select, { CSSObjectWithLabel, MenuPosition } from 'react-select';
+import Select, {
+  CSSObjectWithLabel,
+  MenuPosition,
+  createFilter,
+  MenuListProps,
+} from 'react-select';
+import { FixedSizeList as List } from 'react-window';
 import './drop.css';
 interface Option {
   value: string;
@@ -25,9 +31,36 @@ interface Props {
   menuWidth?: string;
   menuPosition?: MenuPosition | undefined;
   enableHoverEffect?: boolean;
-
+  lazyRender?: boolean;
+  optionStyles?: CSSObjectWithLabel;
 }
 
+const MenuList = ({ options, children, maxHeight, getValue }: any) => {
+  const [value] = getValue();
+  const initialOffset = options.indexOf(value) * 36;
+  if (!children?.length)
+    return <span className="text-center block py2"> No Data Found </span>;
+
+  return (
+    <List
+      height={maxHeight}
+      itemCount={options.length}
+      itemSize={50}
+      className="scrollable-view-children"
+      width={'100%'}
+      initialScrollOffset={initialOffset}
+    >
+      {({ index, style }) => (
+        <div style={style}>
+          {
+            // @ts-ignore
+            children[index]
+          }
+        </div>
+      )}
+    </List>
+  );
+};
 
 const SelectOption: React.FC<Props> = ({
   options,
@@ -45,8 +78,10 @@ const SelectOption: React.FC<Props> = ({
   labelColor,
   placeholder,
   menuWidth,
-  menuPosition = "absolute",
+  menuPosition = 'absolute',
   enableHoverEffect = true,
+  lazyRender = false,
+  optionStyles,
 }) => {
   const scrollRef = useRef(null);
 
@@ -57,7 +92,11 @@ const SelectOption: React.FC<Props> = ({
         options={options}
         isSearchable
         menuPosition={menuPosition}
+        filterOption={
+          lazyRender ? createFilter({ ignoreAccents: false }) : undefined
+        }
         onChange={onChange}
+        components={lazyRender ? { MenuList } : undefined}
         placeholder={placeholder || 'Select'} // Pass the placeholder prop here
         ref={scrollRef}
         value={value || { label: placeholder || 'Select', value: '' }}
@@ -75,11 +114,12 @@ const SelectOption: React.FC<Props> = ({
             boxShadow: 'none',
             width: width || baseStyles.width,
             ...controlStyles,
-            transition: 'background-color 0.3s ease, border-color 0.3s ease', // Modify this line
-            '&:hover': enableHoverEffect ? {
-              border: '1px solid #377CF6',
-              backgroundColor: '#DDEBFF',
-            } : {},
+            transition: 'border-color 0.3s ease', // Modify this line
+            '&:hover': enableHoverEffect
+              ? {
+                  border: '2px solid #0493ce',
+                }
+              : {},
           }),
           indicatorSeparator: () => ({
             display: 'none',
@@ -93,10 +133,11 @@ const SelectOption: React.FC<Props> = ({
             '&:hover': {
               background: state.isSelected ? '#377CF6' : '#DDEBFF',
             },
+            ...optionStyles,
           }),
           menu: (base) => ({
             ...base,
-            zIndex: 999,
+            zIndex: 99,
             ...menuStyles,
             width: menuWidth || base.width,
           }),

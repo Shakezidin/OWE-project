@@ -11,11 +11,11 @@ export interface UserOnboardingStateModel {
   loading: boolean;
   userOnboardingList: OnboardingChartModel[];
   userRoleBasedList: UserRoleBasedListModel[];
-  dealerList:[];
+  dealerList: [];
   totalCount?: number;
   dbTables: DBTable[];
   userPerformanceList: OnboardingChartModel[];
-  dealerCount?:number;
+  dealerCount?: number;
 }
 
 export interface CreateOnboardUserStateModel {

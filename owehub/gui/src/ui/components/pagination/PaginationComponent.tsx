@@ -26,10 +26,13 @@ const PaginationComponent: React.FC<PaginationProps> = ({
         nextLabel={
           <button
             disabled={totalPages <= currentPage}
-            className={'current-btn'}
+            className={currentPage === totalPages ? 'disabled' : 'current-btn'}
           >
             <MdArrowForwardIos
-              style={{ color: '#667085', fontSize: '.9rem' }}
+              style={{
+                color: currentPage === totalPages ? '#d9d9d9' : '#667085',
+                fontSize: '.9rem',
+              }}
             />
           </button>
         }

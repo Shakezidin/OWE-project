@@ -16,14 +16,17 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     <App />
-    <ToastContainer autoClose={2000} limit={2} pauseOnHover={false}
-    style={{
-      zIndex: 10000000000000000,
-    }}
-    toastStyle={{
-      zIndex: 10000000000000000,
-    }}
-     />
+    <ToastContainer
+      autoClose={2000}
+      limit={2}
+      pauseOnHover={false}
+      style={{
+        zIndex: 10000000000000000,
+      }}
+      toastStyle={{
+        zIndex: 10000000000000000,
+      }}
+    />
   </Provider>
 );
 
