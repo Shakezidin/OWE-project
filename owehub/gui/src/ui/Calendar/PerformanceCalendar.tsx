@@ -53,7 +53,7 @@ const PerformanceCalendar: React.FC = () => {
         setShowCalendar(false);
         handleCalcClose();
       }
-      
+
     };
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -101,50 +101,102 @@ const PerformanceCalendar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCalcClose = () => {
-    navigate(-1); 
+    navigate(-1);
   };
+
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i);
+
+  const handleReset = () => {
+    setSelectedRanges([{ startDate: new Date(), endDate: new Date(), key: 'selection' }]);
+    setSelectedMonth(new Date().getMonth());
+    setSelectedYear(new Date().getFullYear());
+  };
+
+  const [displayedDate, setDisplayedDate] = useState<string>(format(currentMonth, 'MMMM yyyy')); // Initial date display
+  const [isDefaultDate, setIsDefaultDate] = useState<boolean>(true); // State to track if default date should be displayed
+
+  const handleApply = () => {
+    const newDate = new Date(selectedYear, selectedMonth); // Create a new date using selected month and year
+    setCurrentMonth(newDate); // Update the currentMonth with the new selected date
+    setDisplayedDate(format(newDate, 'MMMM yyyy')); // Update the displayed date
+    setIsDefaultDate(false); // Switch to displaying the selected date
+    setShowCalendar(false);
+  };
+
+  const handleNextMonth = (): void => {
+    const newDate = addMonths(currentMonth, 1);
+    setCurrentMonth(newDate);
+    setSelectedMonth(newDate.getMonth()); // Update selectedMonth to match currentMonth
+    setSelectedYear(newDate.getFullYear()); // Update selectedYear to match currentMonth
+    setDisplayedDate(format(newDate, 'MMMM yyyy')); // Update displayed date when clicking next
+  };
+
+  const handlePrevMonth = (): void => {
+    const newDate = subMonths(currentMonth, 1);
+    setCurrentMonth(newDate);
+    setSelectedMonth(newDate.getMonth()); // Update selectedMonth to match currentMonth
+    setSelectedYear(newDate.getFullYear()); // Update selectedYear to match currentMonth
+    setDisplayedDate(format(newDate, 'MMMM yyyy')); // Update displayed date when clicking previous
+  };
+
 
   const renderHeader = () => {
     const isCurrentMonth = isSameMonth(currentMonth, new Date());
     const dateFormat = isCurrentMonth ? 'd MMMM yyyy' : 'MMMM yyyy';
     return (
       <div className="header">
-        <div className="flex items-center justify-between" style={{ width: "99%" }}>
+        <div className="flex items-center justify-between sales-calendar" style={{ width: "99%" }}>
           <div className='calendar-date flex items-center'>
-            <div className="prev-icon" onClick={prevMonth}>
+            <div className="prev-icon" onClick={handlePrevMonth}>
               <div className="icon"><FiChevronLeft /></div>
             </div>
             <div className="date-format" onClick={() => setShowCalendar(!showCalendar)}>
-              <span style={{ display: "block", width: "180px", textAlign: "center" }}>{format(currentMonth, dateFormat)}</span>
+              <span style={{ display: "block", width: "180px", textAlign: "center" }}>
+                {isDefaultDate ? format(currentMonth, dateFormat) : displayedDate}
+              </span>
             </div>
-            <div className="next-icon" onClick={nextMonth}>
+            <div className="next-icon" onClick={handleNextMonth}>
               <div className="icon"><FiChevronRight /></div>
             </div>
           </div>
           <div onClick={handleCalcClose}>
-            <IoClose className='calendar-close'/>
+            <IoClose className='calendar-close' />
           </div>
         </div>
         {showCalendar && (
           <div className="performance-cal-content" ref={calendarRef}>
-             <DateRange
-              editableDateInputs={true}
-              onChange={(item) => {
-                const startDate = item.selection?.startDate;
-                const endDate = item.selection?.endDate;
-                console.log(item)
-                if (startDate && endDate) {
-                  setSelectedRanges([{ startDate, endDate, key: 'selection' }]);
-                }
-              }}
-              moveRangeOnFirstSelection={false}
-              ranges={selectedRanges}
-            />
+            <div className="dropdown-calc-container">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+              >
+                {months.map((month, index) => (
+                  <option key={month} value={index}>{month}</option>
+                ))}
+              </select>
+
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+              >
+                {years.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
             <div className="performance-cal-btns">
-              <button className="reset-calender" onClick={() => setSelectedRanges([{ startDate: new Date(), endDate: new Date(), key: 'selection' }])}>
+              <button className="reset-calender" onClick={handleReset}>
                 Reset
               </button>
-              <button className="apply-calender" onClick={() => setShowCalendar(false)}>
+              <button className="apply-calender" onClick={handleApply}>
                 Apply
               </button>
             </div>
