@@ -4,9 +4,37 @@ import {
   addResponseMessage,
   addLinkSnippet,
   toggleInputDisabled,
+  renderCustomComponent,
 } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { io } from 'socket.io-client';
+
+const ButtonSelection = ({ options, onSelect }: any) => (
+  <>
+    Please choose type of issue you are facing:
+    <div
+      style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
+    >
+      {options.map((option: any, index: any) => (
+        <button
+          key={index}
+          onClick={() => onSelect(option)}
+          style={{
+            margin: '5px 0',
+            padding: '10px',
+            border: 'none',
+            borderRadius: '5px',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            cursor: 'pointer',
+          }}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  </>
+);
 
 const socket = io('http://localhost:3001');
 const ChatSupport = () => {
@@ -36,11 +64,23 @@ const ChatSupport = () => {
     socket.on('error', (data) => {
       alert(JSON.stringify(data));
     });
-    addResponseMessage(`Hi, How can i help you!
-        Please choose issue type:
-        1. Dealer Issue
-        2. Sales Issue
-        `);
+  }, []);
+
+  const handleSelectOption = (option: any) => {
+    addResponseMessage(`You selected: ${option.label}`);
+  };
+
+  const handleShowOptions = () => {
+    addResponseMessage('Hi, How can I help you?');
+    addResponseMessage('Please choose type of issue you are facing:');
+    renderCustomComponent(ButtonSelection, {
+      options: [{ label: 'Sales Issue' }, { label: 'Dealer Issue' }],
+      onSelect: handleSelectOption,
+    });
+  };
+
+  useEffect(() => {
+    handleShowOptions();
   }, []);
 
   const handleNewUserMessage = (newMessage: any) => {
@@ -90,37 +130,10 @@ export default ChatSupport;
 // import 'react-chat-widget/lib/styles.css';
 
 // // Custom button component
-// const ButtonSelection = ({ options, onSelect }: any) => (
-//   <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}>
-//     {options.map((option: any, index: any) => (
-//       <button
-//         key={index}
-//         onClick={() => onSelect(option)}
-//         style={{
-//           margin: '5px 0',
-//           padding: '10px',
-//           border: 'none',
-//           borderRadius: '5px',
-//           backgroundColor: '#007bff',
-//           color: '#fff',
-//           cursor: 'pointer',
-//         }}
-//       >
-//         {option.label}
-//       </button>
-//     ))}
-//   </div>
-// );
 
 // const ChatSupport = () => {
 //   const handleNewUserMessage = (newMessage: any) => {
 //     console.log(`New message incoming! ${newMessage}`);
-//   };
-
-//   const handleSelectOption = (option: any) => {
-
-//     addResponseMessage(`You selected: ${option.label}`);
-
 //   };
 
 //   const handleShowOptions = () => {
@@ -131,10 +144,6 @@ export default ChatSupport;
 //       onSelect: handleSelectOption,
 //     });
 //   };
-
-//   useEffect(() => {
-//     handleShowOptions();
-//   }, []);
 
 //   return (
 //     <div className="App">

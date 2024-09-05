@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
-import { ICONS } from '../../../icons/Icons';
+import { ICONS } from '../../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchSlackConfigList } from '../../../../redux/apiActions/config/slackConfigAction';
 // import CreateTimeLine from "./CreateTimeLine";
