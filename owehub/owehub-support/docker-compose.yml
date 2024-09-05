@@ -1,0 +1,6 @@
+version: "3"
+services:
+  owehub-support:
+    build: .
+    ports:
+      - "3005:3005"
