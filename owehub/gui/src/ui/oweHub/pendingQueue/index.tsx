@@ -102,7 +102,7 @@ const PendingQueue = () => {
                 className={styles.pending_card_title}
                 style={{ fontWeight: 500 }}
               >
-                Qc Checklist
+                QC Checklist
               </h5>
               <p className={styles.pending_card_desc}>
                 Click to see all project in QC
