@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"encoding/json"
 	"io/ioutil"
 	"strings"
@@ -21,15 +22,16 @@ import (
 
 func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err            error
-		dataReq        models.GetCsvDownload
-		data           []map[string]interface{}
-		whereEleList   []interface{}
-		queryWithFiler string
-		filter         string
-		RecordCount    int64
-		query          string
-		dealerIn       string
+		err                   error
+		dataReq               models.GetCsvDownload
+		data                  []map[string]interface{}
+		whereEleList          []interface{}
+		queryWithFiler        string
+		filter                string
+		RecordCount           int64
+		query                 string
+		dealerIn              string
+		dealerOwnerFetchQuery string
 	)
 
 	log.EnterFn(0, "HandleGetCsvDownloadRequest")
@@ -56,13 +58,48 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
-	query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date,ntp_date, pv_install_completed_date, pto_date, canceled_date FROM consolidated_data_view"
-
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
+
+	dataReq.Role = req.Context().Value("rolename").(string)
+	if dataReq.Role == "" {
+		FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) && !(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
+		dealerOwnerFetchQuery = fmt.Sprintf(`
+			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
+			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			where ud.email_id = '%v';
+		`, dataReq.Email)
+
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+			FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
+			return
+		}
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+			FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+			return
+		}
+
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to convert dealer_name to string for data: %v", data[0])
+			FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
+			return
+		}
+
+		dataReq.DealerName = append(dataReq.DealerName, dealerName)
+	}
+
+	query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date,ntp_date, pv_install_completed_date, pto_date, canceled_date, primary_sales_rep, secondary_sales_rep FROM consolidated_data_view"
 
 	if len(dataReq.DealerName) == 0 {
 		errorResp := []string{}

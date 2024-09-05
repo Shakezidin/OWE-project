@@ -16,6 +16,19 @@ import { FaRegCalendarCheck } from 'react-icons/fa6';
 const mob = {
   mob: [
     {
+      path: ROUTES.PEINDING_QUEUE,
+      sidebarProps: {
+        displayText: 'Pending Actions',
+        icon: (
+          <MdPendingActions
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
       path: ROUTES.LEADERBOARD,
       sidebarProps: {
         displayText: 'Leaderboard',
@@ -48,19 +61,7 @@ const mob = {
         ),
       },
     },
-    {
-      path: ROUTES.PEINDING_QUEUE,
-      sidebarProps: {
-        displayText: 'Pending Actions',
-        icon: (
-          <MdPendingActions
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
-        ),
-      },
-    },
+    
 
     {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,

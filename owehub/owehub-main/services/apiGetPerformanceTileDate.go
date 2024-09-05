@@ -1,6 +1,6 @@
 /**************************************************************************
- * File       	   : apiGetInstallCostData.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
+ * File       	   : apiGetPerfomanceTileData.go
+ * DESCRIPTION     : This file contains functions for get performance tile data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
 
@@ -20,8 +20,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleManageRepPayTileDataRequest
- * DESCRIPTION:     handler for get InstallCost data request
+ * FUNCTION:		HandleManagePerformanceTileDataRequest
+ * DESCRIPTION:     handler for get performance tile data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -37,11 +37,11 @@ func HandleManagePerformanceTileDataRequest(resp http.ResponseWriter, req *http.
 		SaleRepList      []interface{}
 	)
 
-	log.EnterFn(0, "HandleManageRepPayTileDataRequest")
-	defer func() { log.ExitFn(0, "HandleManageRepPayTileDataRequest", err) }()
+	log.EnterFn(0, "HandleManagePerformanceTileDataRequest")
+	defer func() { log.ExitFn(0, "HandleManagePerformanceTileDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get reppay tile data request")
+		err = fmt.Errorf("HTTP Request body is null in get perfomance tile data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleManagePerformanceTileDataRequest(resp http.ResponseWriter, req *http.
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get reppay tile  data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get perfomance tile data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get reppay tile data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get reppay tile data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get perfomance tile data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get perfomance tile data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -100,8 +100,8 @@ func HandleManagePerformanceTileDataRequest(resp http.ResponseWriter, req *http.
 			rgnSalesMgrCheck = true
 		}
 	} else {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -168,7 +168,7 @@ func HandleManagePerformanceTileDataRequest(resp http.ResponseWriter, req *http.
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAdminDlrFilters
+ * FUNCTION:		PreparePerfromanceAdminDlrFilters
  * DESCRIPTION:     handler for prepare filter
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -221,14 +221,14 @@ func PreparePerfromanceAdminDlrFilters(tableName string, dataFilter models.GetPe
 }
 
 // /******************************************************************************
-//   - FUNCTION:		PrepareInstallCostFilters
+//   - FUNCTION:		PreparePerformanceSaleRepFilters
 //   - DESCRIPTION:     handler for prepare filter
 //   - INPUT:			resp, req
 //   - RETURNS:    		void
 //     ******************************************************************************/
 func PreparePerformanceSaleRepFilters(tableName string, dataFilter models.GetPerformanceTileDataReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PreparePerformanceSaleRepFilters")
+	defer func() { log.ExitFn(0, "PreparePerformanceSaleRepFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false // Change to false since WHERE clause is being added dynamically

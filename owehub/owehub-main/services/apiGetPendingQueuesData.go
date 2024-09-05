@@ -1,7 +1,7 @@
 /**************************************************************************
- * File       	   : apiGetPerfomanceProjectStatus.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
- * DATE            : 07-May-2024
+ * File       	   : apiGetPendingQueueData.go
+ * DESCRIPTION     : This file contains functions for get pending queue data handler
+ * DATE            : 04-Sep-2024
  **************************************************************************/
 
 package services
@@ -103,8 +103,8 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			rgnSalesMgrCheck = true
 		}
 	} else {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get pending queue data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -145,8 +145,8 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 	// retrieving value from owe_db from here
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get pending queue data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -234,15 +234,15 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAdminDlrFilters
+ * FUNCTION:		PrepareAdminDlrPendingQueueFilters
  * DESCRIPTION:     handler for prepare filter
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 
 func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.PendingQueueReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareAdminDlrPendingQueueFilters")
+	defer func() { log.ExitFn(0, "PrepareAdminDlrPendingQueueFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -337,7 +337,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 			 AND cv.unique_id <> ''
 			 AND cv.system_size IS NOT NULL
 			 AND cv.system_size > 0
-			 AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			 AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -346,14 +346,14 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareInstallCostFilters
+ * FUNCTION:		PrepareSaleRepPendingQueueFilters
  * DESCRIPTION:     handler for prepare filter
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.PendingQueueReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareSaleRepPendingQueueFilters")
+	defer func() { log.ExitFn(0, "PrepareSaleRepPendingQueueFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -374,15 +374,18 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 		whereAdded = true
 	}
 
+	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
+		// Start with WHERE if none has been added
 		if whereAdded {
-			filtersBuilder.WriteString(" AND (")
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
 		} else {
-			filtersBuilder.WriteString(" WHERE (")
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" LOWER(cv.unique_id) IN (")
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(cv.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -393,7 +396,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 		}
 		filtersBuilder.WriteString(") ")
 
-		// Add OR condition for cv.unique_id ILIKE ANY (ARRAY[...])
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
 		filtersBuilder.WriteString(" OR LOWER(cv.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -404,6 +407,20 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 			}
 		}
 		filtersBuilder.WriteString("])")
+
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR cv.home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+
 		// Close the OR group
 		filtersBuilder.WriteString(")")
 	}
@@ -444,7 +461,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 			 AND cv.unique_id <> ''
 			 AND cv.system_size IS NOT NULL
 			 AND cv.system_size > 0 
-			 AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			 AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 

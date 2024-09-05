@@ -73,11 +73,11 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		contractD          string
 	)
 
-	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
-	defer func() { log.ExitFn(0, "HandleGetPerfomanceProjectStatusRequest", err) }()
+	log.EnterFn(0, "HandleGetPerfomanceTileDataRequest")
+	defer func() { log.ExitFn(0, "HandleGetPerfomanceTileDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get PerfomanceProjectStatus data request")
+		err = fmt.Errorf("HTTP Request body is null in get perfomance tile data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -85,15 +85,15 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get PerfomanceProjectStatus data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get perfomance tile data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get PerfomanceProjectStatus data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceProjectStatus data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get perfomance tile data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get perfomance tile data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -108,9 +108,6 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-	// this sets the data interval bracket for querying
-	dataReq.IntervalDays = "90"
-	// Check whether the user is Admin, Dealer, Sales Rep
 
 	whereEleList = append(whereEleList, dataReq.Email)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
@@ -137,8 +134,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 			rgnSalesMgrCheck = true
 		}
 	} else {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -181,8 +178,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	// retrieving value from owe_db from here
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -416,12 +413,12 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		ActivationCount:  ActivationCount,
 	}
 
-	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", 1, perfomanceResponse)
-	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceResponse, RecordCount)
+	log.FuncInfoTrace(0, "Number of perfomance tile List fetched : %v list %+v", 1, perfomanceResponse)
+	FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceResponse, RecordCount)
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareAdminDlrFilters
+* FUNCTION:		PrepareAdminDlrTalesFilters
 * DESCRIPTION:     handler for prepare filter
 * INPUT:			resp, req
 * RETURNS:    		void
@@ -497,14 +494,14 @@ func PrepareAdminDlrTalesFilters(tableName string, dataFilter models.PerfomanceT
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareInstallCostFilters
+* FUNCTION:		PrepareSaleRepTalesFilters
 * DESCRIPTION:     handler for prepare filter
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
 func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTileDataReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareSaleRepTalesFilters")
+	defer func() { log.ExitFn(0, "PrepareSaleRepTalesFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false

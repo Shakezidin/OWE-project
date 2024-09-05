@@ -5,6 +5,7 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { AiFillMinusCircle } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import Pagination from '../../components/pagination/Pagination';
+import { Link } from 'react-router-dom';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
@@ -13,10 +14,32 @@ const PendingQueue = () => {
   const debouncedSearch = useDebounce(search);
   const [active, setActive] = useState<'all' | 'ntp' | 'co' | 'qc'>('qc');
   const [loading, setLoading] = useState(false);
+  const [tileData, setTileData] = useState<any>('');
+  const [load, setLoad] = useState(false);
   const [dataPending, setDataPending] = useState<any>([]);
   const [page, setPage] = useState(1);
   const [totalcount, setTotalcount] = useState(0);
   const itemsPerPage = 10;
+
+  useEffect(() => {
+    (async () => {
+      setLoad(true);
+      try {
+        const data = await postCaller('get_pendingqueuestiledata', {});
+
+        if (data.status > 201) {
+          toast.error(data.message);
+          return;
+        }
+        setTileData(data.data);
+        setLoad(false);
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    })();
+  }, []);
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -24,7 +47,7 @@ const PendingQueue = () => {
         const data = await postCaller('get_pendingqueuesdata', {
           page_size: itemsPerPage,
           page_number: page,
-          selected_pending_stage: 'qc',
+          selected_pending_stage: active,
           unique_ids: [debouncedSearch],
         });
 
@@ -41,7 +64,7 @@ const PendingQueue = () => {
       } finally {
       }
     })();
-  }, [page, itemsPerPage, debouncedSearch]);
+  }, [page, itemsPerPage, debouncedSearch, active]);
 
   const getStatusColor = (status: string) => {
     if (status === 'Pending (Action Required)') {
@@ -65,19 +88,21 @@ const PendingQueue = () => {
 
   return (
     <>
-      <h2 className={`my2 ${styles.pending_queue_title}`}>Pending projects</h2>
+      <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions</h2>
       <div className={styles.pending_card_wrapper}>
-        <div className={styles.pending_card} onClick={() => setActive('qc')}>
+        <div className={styles.pending_card} onClick={() => {setActive('qc') , setPage(1), setSearch('')}}>
           <div
             className={` ${active === 'qc' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
-            <h5 className={styles.pending_stats}>134</h5>
+            <h5 className={styles.pending_stats}>
+              {tileData.qc_pending_count || 'N/A'}
+            </h5>
             <div>
               <h5
                 className={styles.pending_card_title}
                 style={{ fontWeight: 500 }}
               >
-                QC Checklist
+              Qc Checklist
               </h5>
               <p className={styles.pending_card_desc}>
                 Click to see all project in QC
@@ -85,11 +110,13 @@ const PendingQueue = () => {
             </div>
           </div>
         </div>
-        <div className={styles.pending_card} onClick={() => setActive('ntp')}>
+        <div className={styles.pending_card} onClick={() => {setActive('ntp'), setPage(1),  setSearch('')}}>
           <div
             className={` ${active === 'ntp' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
-            <h5 className={styles.pending_stats}>175</h5>
+            <h5 className={styles.pending_stats}>
+              {tileData.ntp_pending_count || 'N/A'}
+            </h5>
             <div>
               <h5
                 className={styles.pending_card_title}
@@ -103,11 +130,13 @@ const PendingQueue = () => {
             </div>
           </div>
         </div>
-        <div className={styles.pending_card} onClick={() => setActive('co')}>
+        <div className={styles.pending_card} onClick={() => {setActive('co'), setPage(1), setSearch('')}}>
           <div
             className={` ${active === 'co' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
-            <h5 className={styles.pending_stats}>192</h5>
+            <h5 className={styles.pending_stats}>
+              {tileData.co_pending_count || 'N/A'}
+            </h5>
             <div>
               <h5
                 className={styles.pending_card_title}
@@ -135,7 +164,7 @@ const PendingQueue = () => {
               className={` ${styles.table_heading}`}
               style={{ fontWeight: 700, fontSize: 20 }}
             >
-              QC Checklist
+               {active === 'qc' ? 'QC Checklist' : active === 'ntp' ? 'NTP Checklist' : 'C/O Status'}
             </h3>
 
             <div className="performance-box-container">
@@ -207,23 +236,60 @@ const PendingQueue = () => {
                   <tr key={index}>
                     <td style={{ padding: '0px' }}>
                       <div className="milestone-data">
-                        <div
-                          className="project-info-details"
-                          style={{ flexShrink: 0 }}
+                        <Link
+                          to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
-                          <h3 className={`customer-name ${styles.no_hover}`}>
-                            {item.home_owner}
-                          </h3>
-                          <p className={`install-update ${styles.no_hover}`}>
-                            {item.uninque_id}
-                          </p>
-                        </div>
+                          <div
+                            className="project-info-details"
+                            style={{ flexShrink: 0 }}
+                          >
+                            <h3 className={`customer-name`}>
+                              {item.home_owner}
+                            </h3>
+                            <p className={`install-update`}>
+                              {item.uninque_id}
+                            </p>
+                          </div>
+                        </Link>
                         <div
                           style={{ gap: 20 }}
                           className="flex flex-auto items-center"
                         >
-                          {item[active] ? (
-                            Object.keys(item[active]).map((key) => {
+                          {active === 'co' ? (
+                            item.co_status ? (
+                              <div
+                                className={`items-center ${getStatusColor(item.co_status)} ${styles.outline_card_wrapper}`}
+                              >
+                                <AiFillMinusCircle
+                                  size={24}
+                                  className="mr1"
+                                  color={
+                                    item.co_status ===
+                                    'Pending (Action Required)'
+                                      ? '#E14514'
+                                      : item.co_status === 'Pending'
+                                        ? '#EBA900'
+                                        : '#2EAF71'
+                                  }
+                                />
+                                <span
+                                  style={{
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                  }}
+                                >
+                                  {item.co_status
+                                    .replace(/_/g, ' ')
+                                    .replace(/\b\w/g, (char: any) =>
+                                      char.toUpperCase()
+                                    )}
+                                </span>
+                              </div>
+                            ) : (
+                              <p className="no-data">No data available</p>
+                            )
+                          ) : (
+                            Object.keys(item[active] || {}).map((key) => {
                               if (
                                 (active === 'ntp' &&
                                   key === 'action_required_count') ||
@@ -257,13 +323,15 @@ const PendingQueue = () => {
                                       fontSize: 14,
                                     }}
                                   >
-                                    {key.replace(/_/g, ' ')}
+                                    {key
+                                      .replace(/_/g, ' ')
+                                      .replace(/\b\w/g, (char) =>
+                                        char.toUpperCase()
+                                      )}
                                   </span>
                                 </div>
                               );
                             })
-                          ) : (
-                            <p>No data available</p>
                           )}
                         </div>
                       </div>

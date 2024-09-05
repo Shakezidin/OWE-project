@@ -1,7 +1,7 @@
 /**************************************************************************
- * File       	   : apiGetPerfomanceProjectStatus.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
- * DATE            : 07-May-2024
+ * File       	   : apiGetPaindingQueueTileData.go
+ * DESCRIPTION     : This file contains functions for get pendig queue tile data handler
+ * DATE            : 04-Sep-2024
  **************************************************************************/
 
 package services
@@ -49,7 +49,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 	defer func() { log.ExitFn(0, "HandleGetPendingQuesTileDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get pending queue data request")
+		err = fmt.Errorf("HTTP Request body is null in get pending queue tile data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -57,15 +57,15 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get pending queue data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get pending queue tile data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get pending queue data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get pending queue data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get pending queue tile data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get pending queue data tile Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -106,8 +106,8 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 			rgnSalesMgrCheck = true
 		}
 	} else {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -148,8 +148,8 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 	// retrieving value from owe_db from here
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -170,7 +170,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
 		NTPPendingCount += count
 		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
-		QcPendingCount += count
+		NTPPendingCount += count
 		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
 		QcPendingCount += count
 		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
@@ -193,20 +193,20 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		CoPendingCount:  CoPendingCount,
 	}
 
-	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", 1, pendingQueueTile)
-	FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, pendingQueueTile, RecordCount)
+	log.FuncInfoTrace(0, "Number of pending queue tile List fetched : %v list %+v", 1, pendingQueueTile)
+	FormAndSendHttpResp(resp, "pending queue tile Data", http.StatusOK, pendingQueueTile, RecordCount)
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAdminDlrFilters
+ * FUNCTION:		PrepareAdminDlrPendingQueueTileFilters
  * DESCRIPTION:     handler for prepare filter
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 
 func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.PendingQueueReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareAdminDlrPendingQueueTileFilters")
+	defer func() { log.ExitFn(0, "PrepareAdminDlrPendingQueueTileFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -250,7 +250,7 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 			  AND cv.unique_id <> ''
 			  AND cv.system_size IS NOT NULL
 			  AND cv.system_size > 0
-			  AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			  AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -259,14 +259,14 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareInstallCostFilters
+ * FUNCTION:		PrepareSaleRepPendingQueueTileFilters
  * DESCRIPTION:     handler for prepare filter
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.PendingQueueReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareSaleRepPendingQueueTileFilters")
+	defer func() { log.ExitFn(0, "PrepareSaleRepPendingQueueTileFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -323,7 +323,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 			  AND cv.unique_id <> ''
 			  AND cv.system_size IS NOT NULL
 			  AND cv.system_size > 0 
-			  AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			  AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -366,9 +366,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "powerclerk_sent_az":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "Pending Utility Account #" || ntp_date == "" {
+				} else if v == "Pending Utility Account #" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -376,7 +379,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -384,9 +390,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "green_area_nm_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" || ntp_date == "" {
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -394,7 +403,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "finance_credit_approved_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -402,7 +414,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "finance_agreement_completed_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -410,9 +425,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "owe_documents_completed":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "❌" || ntp_date == "" {
+				} else if v == "❌" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0

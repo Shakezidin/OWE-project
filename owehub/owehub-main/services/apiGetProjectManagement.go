@@ -1,6 +1,6 @@
 /**************************************************************************
- * File       	   : apiGetPerfomanceProjectStatus.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
+ * File       	   : apiGetProjectManagement.go
+ * DESCRIPTION     : This file contains functions for get project management data handler
  * DATE            : 07-May-2024
  **************************************************************************/
 
@@ -23,7 +23,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetProjectManagementRequest
+ * FUNCTION:		HandleGetProjectMngmntRequest
  * DESCRIPTION:     handler for get ProjectManagement data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -43,8 +43,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		ntpDate          string
 	)
 
-	log.EnterFn(0, "HandleGetProjectManagementRequest")
-	defer func() { log.ExitFn(0, "HandleGetProjectManagementRequest", err) }()
+	log.EnterFn(0, "HandleGetProjectMngmntRequest")
+	defer func() { log.ExitFn(0, "HandleGetProjectMngmntRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ProjectManagement data request")
@@ -298,8 +298,8 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 	// Send the response
 	recordLen := len(data)
-	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
-	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, projectList, int64(recordLen))
+	log.FuncInfoTrace(0, "Number of project management data List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
+	FormAndSendHttpResp(resp, "Project Management Data", http.StatusOK, projectList, int64(recordLen))
 }
 
 /******************************************************************************
@@ -563,9 +563,12 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 			}
 		case "powerclerk_sent_az":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
-				} else if v == "Pending Utility Account #" || ntp_date == "" {
+				} else if v == "Pending Utility Account #" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -573,7 +576,10 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -581,9 +587,12 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 			}
 		case "green_area_nm_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
-				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" || ntp_date == "" {
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -591,7 +600,10 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 			}
 		case "finance_credit_approved_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -599,7 +611,10 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 			}
 		case "finance_agreement_completed_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -607,9 +622,12 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 			}
 		case "owe_documents_completed":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 0
-				} else if v == "❌" || ntp_date == "" {
+				} else if v == "❌" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
