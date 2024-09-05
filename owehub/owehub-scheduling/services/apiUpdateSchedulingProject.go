@@ -1,7 +1,7 @@
 /**************************************************************************
-* File			: apiCreateSchedulingProject.go
-* DESCRIPTION	: This file contains functions for creating scheduling projects
-* DATE			: 01-Sep-2024
+* File			: apiUpdateSchedulingProject.go
+* DESCRIPTION	: This file contains functions for updating scheduling projects
+* DATE			: 05-Sep-2024
 **************************************************************************/
 
 package services
