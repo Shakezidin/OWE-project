@@ -551,53 +551,73 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(
 		`WITH base_query AS (
-            SELECT c.unique_id, c.current_live_cad, c.system_sold_er, c.podio_link,
-                   n.production_discrepancy, n.finance_ntp_of_project, n.utility_bill_uploaded, 
-                   n.powerclerk_signatures_complete, n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status
-            FROM customers_customers_schema c
-            LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id
-            WHERE c.unique_id IN ('`)
-
-	filtersBuilder.WriteString(strings.Join(uniqueIds, "','"))
-	filtersBuilder.WriteString(`')
-        ), extracted_values AS (
-            SELECT unique_id, utility_company, state,
-                   split_part(prospectid_dealerid_salesrepid, ',', 1) AS first_value
-            FROM consolidated_data_view
-            WHERE unique_id IN ('`)
-
-	filtersBuilder.WriteString(strings.Join(uniqueIds, "','"))
-	filtersBuilder.WriteString(`')
-        )
-        SELECT b.*, 
-               e.first_value,
-               CASE 
-                   WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
-                   ELSE 'Not Needed' 
-               END AS powerclerk_sent_az,
-               CASE 
-                   WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
-                   ELSE 'Not Needed'
-               END AS ach_waiver_sent_and_signed_cash_only,
-               CASE 
-                   WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
-                   ELSE 'Not Needed'
-               END AS green_area_nm_only,
-               CASE 
-                   WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
-                   ELSE 'Not Needed'
-               END AS finance_credit_approved_loan_or_lease,
-               CASE 
-                   WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
-                   ELSE 'Not Needed'
-               END AS finance_agreement_completed_loan_or_lease,
-               CASE 
-                   WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
-                   ELSE 'Not Needed'
-               END AS owe_documents_completed
-        FROM base_query b
-        LEFT JOIN extracted_values e ON b.unique_id = e.unique_id
-        LEFT JOIN prospects_customers_schema p ON e.first_value = p.item_id::text;`)
+        SELECT 
+            ips.unique_id, 
+            c.current_live_cad, 
+            c.system_sold_er, 
+            c.podio_link,
+            n.production_discrepancy, 
+            n.finance_ntp_of_project, 
+            n.utility_bill_uploaded, 
+            n.powerclerk_signatures_complete, 
+            n.over_net_3point6_per_w, 
+            n.premium_panel_adder_10c, 
+            n.change_order_status
+        FROM 
+            internal_ops_metrics_schema ips
+        LEFT JOIN 
+            customers_customers_schema c ON ips.unique_id = c.unique_id
+        LEFT JOIN 
+            ntp_ntp_schema n ON ips.unique_id = n.unique_id
+        WHERE 
+            ips.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
+    ), 
+    extracted_values AS (
+        SELECT 
+            ips.unique_id, 
+            ips.utility_company, 
+            ss.state,
+            split_part(ss.prospectid_dealerid_salesrepid, ',', 1) AS first_value
+        FROM 
+            internal_ops_metrics_schema ips
+        LEFT JOIN 
+            sales_metrics_schema ss ON ips.unique_id = ss.unique_id
+        WHERE 
+            ips.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
+    )
+    SELECT 
+        b.*, 
+        e.first_value,
+        CASE 
+            WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
+            ELSE 'Not Needed' 
+        END AS powerclerk_sent_az,
+        CASE 
+            WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
+            ELSE 'Not Needed'
+        END AS ach_waiver_sent_and_signed_cash_only,
+        CASE 
+            WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
+            ELSE 'Not Needed'
+        END AS green_area_nm_only,
+        CASE 
+            WHEN p.payment_method IN ('Lease', 'Loan') THEN p.finance_credit_approved_loan_or_lease
+            ELSE 'Not Needed'
+        END AS finance_credit_approved_loan_or_lease,
+        CASE 
+            WHEN p.payment_method IN ('Lease', 'Loan') THEN p.finance_agreement_completed_loan_or_lease
+            ELSE 'Not Needed'
+        END AS finance_agreement_completed_loan_or_lease,
+        CASE 
+            WHEN p.payment_method IN ('Cash', 'Loan') THEN p.owe_documents_completed
+            ELSE 'Not Needed'
+        END AS owe_documents_completed
+    FROM 
+        base_query b
+    LEFT JOIN 
+        extracted_values e ON b.unique_id = e.unique_id
+    LEFT JOIN 
+        prospects_customers_schema p ON e.first_value = p.item_id::text;`)
 
 	linkQuery := filtersBuilder.String()
 
