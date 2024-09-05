@@ -1081,26 +1081,39 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 	return grey, count, ""
 }
 
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string) {
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string) {
 	var count int64
-	if permittedcompletedDate != "" && iccompletedDate != "" && PvInstallcompletedDate == "" {
+	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
 		count = 1
 	}
+
+	// Parse the dates
 	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
 	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
 	batteryCompletedParsed := parseDate(batteryCompleted)
-	PvInstallcompletedDateParsed := parseDate(PvInstallcompletedDate)
+	pvInstallCompletedDateParsed := parseDate(pvInstallCompletedDate)
+	// Green conditions
+	if batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
 
-	if !batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !PvInstallcompletedDateParsed.IsZero() {
-		latestCompletedDate := batteryCompleted
-		if PvInstallcompletedDateParsed.After(batteryCompletedParsed) {
-			latestCompletedDate = PvInstallcompletedDate
+		// Determine the latest date for green
+		latestCompletedDate := pvInstallCompletedDate
+		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
+			latestCompletedDate = batteryCompleted
 		}
-		return green, count, latestCompletedDate
-	} else if !pvInstallCreatedateParsed.IsZero() {
-		return blue, count, pvInstallCreatedate
+		return "green", count, latestCompletedDate
 	}
-	return grey, count, ""
+
+	// Blue conditions
+	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+		return "blue", count, pvInstallCompletedDate
+	} else if !pvInstallCreatedateParsed.IsZero() {
+		return "blue", count, pvInstallCreatedate
+	}
+
+	// Default grey condition
+	return "grey", count, ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
