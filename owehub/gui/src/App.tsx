@@ -95,8 +95,6 @@ function App() {
     dispatch(initializeAuth());
   }, [dispatch]);
 
-  console.log(role_name);
-
   /**config and user manangement routes*/
   const configAndUserManagementRoutes = () => {
     return (

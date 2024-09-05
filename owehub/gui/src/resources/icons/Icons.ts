@@ -124,7 +124,7 @@ import BellPr from '../../resources/assets/BellIconPr.svg';
 import locationpr from '../../resources/assets/location.svg';
 import Phone from '../../resources/assets/Phone.svg';
 import Techie from '../../resources/assets/techie.svg';
-import complete from '../../resources/assets/COmpleted.png';
+import complete from '../../resources/assets/Completed.png';
 import pending from '../../resources/assets/Pending.png';
 import AddIconSr from '../../resources/assets/AddNewSr.svg';
 import SystemSize from '../../resources/assets/SystemSize.svg';

@@ -28,6 +28,7 @@ type UseAuthReturnType = {
   clearAuthData: () => void;
   appendAuthData: (key: keyof AuthData, value: any) => Promise<void>;
   getUpdatedAuthData: () => AuthData | null;
+  filterAuthData: () => void;
 };
 
 const useAuth = (): UseAuthReturnType => {
@@ -65,6 +66,16 @@ const useAuth = (): UseAuthReturnType => {
     return null;
   };
 
+  /** Filter auth data to keep only email and password */
+  const filterAuthData = () => {
+    if (authData) {
+      const { email, password, isRememberMe } = authData;
+      const filteredAuthData = { email, password, isRememberMe };
+      setAuthData(filteredAuthData as AuthData);
+      localStorage.setItem('authData', JSON.stringify(filteredAuthData));
+    }
+  };
+
   /**Clear all data */
   const clearAuthData = () => {
     setAuthData(null);
@@ -77,6 +88,7 @@ const useAuth = (): UseAuthReturnType => {
     clearAuthData,
     appendAuthData,
     getUpdatedAuthData,
+    filterAuthData,
   };
 };
 
