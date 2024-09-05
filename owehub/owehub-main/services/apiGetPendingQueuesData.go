@@ -40,6 +40,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		RecordCount      int64
 		SaleRepList      []interface{}
 		ntpD             string
+		CoStatus         string
 	)
 
 	log.EnterFn(0, "HandleGetPendingQuesDataRequest")
@@ -161,6 +162,12 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			continue
 		}
 
+		if val, ok := item["change_order_status"].(string); ok {
+			CoStatus = val
+		} else {
+			CoStatus = "" // or a default value
+		}
+
 		// Fetch and validate HomeOwner
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok || HomeOwner == "" {
@@ -186,7 +193,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		FinanceCreditApprovalLoanorLease, QcFinanceCreditAPprovedCount := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD)
 		FinanceAgreementCompletedLoanorLease, QcFinanceAggrementCount := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD)
 		OWEDocumentsCompleted, qcOweDocumentCount := getPendingQueueStringValue(item, "owe_documents_completed", ntpD)
-		CoStatus, coStatusCount := getPendingQueueStringValue(item, "change_order_status", ntpD)
+		_, coStatusCount := getPendingQueueStringValue(item, "change_order_status", ntpD)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,

@@ -532,13 +532,13 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 	if v, exists := data[key]; exists {
 		switch key {
 		case "production_discrepancy":
-			if (v == "" || v == "<nil>") && ntp_date == "" {
+			if (v == "" || v == "<nil>" || v == nil) && ntp_date == "" {
 				return "Pending", 0
 			} else {
 				return "Completed", 0
 			}
 		case "finance_ntp_of_project":
-			if (v == "" || v == "<nil>") && ntp_date == "" {
+			if (v == "" || v == "<nil>" || v == nil) && ntp_date == "" {
 				return "Pending", 0
 			} else if (v == "❌  M1" || v == "❌  Approval" || v == "❌  Stips") && ntp_date == "" {
 				return "Pending (Action Required)", 1
@@ -546,7 +546,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				return "Completed", 0
 			}
 		case "utility_bill_uploaded":
-			if (v == "" || v == "<nil>") && ntp_date == "" {
+			if (v == "" || v == "<nil>" || v == nil) && ntp_date == "" {
 				return "Pending", 0
 			} else if v == "❌" && ntp_date == "" {
 				return "Pending (Action Required)", 1
@@ -554,7 +554,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				return "Completed", 0
 			}
 		case "powerclerk_signatures_complete":
-			if (v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>") && ntp_date == "" {
+			if (v == "" || v == "❌  Pending CAD (SRP)" || v == "<nil>" || v == nil) && ntp_date == "" {
 				return "Pending", 0
 			} else if (v == "❌  Pending" || v == "❌  Pending Sending PC" || v == "❌ Pending Sending PC") && ntp_date == "" {
 				return "Pending (Action Required)", 1
@@ -566,7 +566,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				if ntp_date != "" {
 					return "Completed", 0
 				}
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || v == nil {
 					return "Pending", 0
 				} else if v == "Pending Utility Account #" {
 					return "Pending (Action Required)", 1
@@ -579,7 +579,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				if ntp_date != "" {
 					return "Completed", 0
 				}
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || v == nil {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -590,7 +590,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				if ntp_date != "" {
 					return "Completed", 0
 				}
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || v == nil {
 					return "Pending", 0
 				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
 					return "Pending (Action Required)", 1
@@ -603,7 +603,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				if ntp_date != "" {
 					return "Completed", 0
 				}
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || v == nil {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -614,7 +614,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				if ntp_date != "" {
 					return "Completed", 0
 				}
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || v == nil {
 					return "Pending", 0
 				} else {
 					return "Completed", 0
@@ -625,7 +625,7 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				if ntp_date != "" {
 					return "Completed", 0
 				}
-				if v == "" || v == "NULL" || v == "<nil>" {
+				if v == "" || v == "NULL" || v == "<nil>" || v == nil {
 					return "Pending", 0
 				} else if v == "❌" {
 					return "Pending (Action Required)", 1
