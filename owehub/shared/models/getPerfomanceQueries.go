@@ -149,6 +149,7 @@ func QcNtpRetrieveQueryFunc() string {
             cv.utility_company,
             cv.state,
             cv.home_owner,
+            cv.ntp_date,
             CASE 
                 WHEN cv.utility_company = 'APS' THEN p.powerclerk_sent_az
                 ELSE 'Not Needed' 

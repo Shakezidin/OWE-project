@@ -90,7 +90,7 @@ const PendingQueue = () => {
     <>
       <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions</h2>
       <div className={styles.pending_card_wrapper}>
-        <div className={styles.pending_card} onClick={() => {setActive('qc') , setPage(1), setSearch('')}}>
+        <div className={styles.pending_card} onClick={() => { setActive('qc'), setPage(1), setSearch('') }}>
           <div
             className={` ${active === 'qc' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
@@ -102,7 +102,7 @@ const PendingQueue = () => {
                 className={styles.pending_card_title}
                 style={{ fontWeight: 500 }}
               >
-              Qc Checklist
+                Qc Checklist
               </h5>
               <p className={styles.pending_card_desc}>
                 Click to see all project in QC
@@ -110,7 +110,7 @@ const PendingQueue = () => {
             </div>
           </div>
         </div>
-        <div className={styles.pending_card} onClick={() => {setActive('ntp'), setPage(1),  setSearch('')}}>
+        <div className={styles.pending_card} onClick={() => { setActive('ntp'), setPage(1), setSearch('') }}>
           <div
             className={` ${active === 'ntp' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
@@ -130,7 +130,7 @@ const PendingQueue = () => {
             </div>
           </div>
         </div>
-        <div className={styles.pending_card} onClick={() => {setActive('co'), setPage(1), setSearch('')}}>
+        <div className={styles.pending_card} onClick={() => { setActive('co'), setPage(1), setSearch('') }}>
           <div
             className={` ${active === 'co' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
           >
@@ -164,7 +164,7 @@ const PendingQueue = () => {
               className={` ${styles.table_heading}`}
               style={{ fontWeight: 700, fontSize: 20 }}
             >
-               {active === 'qc' ? 'QC Checklist' : active === 'ntp' ? 'NTP Checklist' : 'C/O Status'}
+              {active === 'qc' ? 'QC Checklist' : active === 'ntp' ? 'NTP Checklist' : 'C/O Status'}
             </h3>
 
             <div className="performance-box-container">
@@ -258,18 +258,14 @@ const PendingQueue = () => {
                           {active === 'co' ? (
                             item.co_status ? (
                               <div
-                                className={`items-center ${getStatusColor(item.co_status)} ${styles.outline_card_wrapper}`}
+                                className={`items-center ${styles.warning_card} ${styles.outline_card_wrapper}`}
                               >
                                 <AiFillMinusCircle
                                   size={24}
                                   className="mr1"
+                                  style={{ flexShrink: 0 }}
                                   color={
-                                    item.co_status ===
-                                    'Pending (Action Required)'
-                                      ? '#E14514'
-                                      : item.co_status === 'Pending'
-                                        ? '#EBA900'
-                                        : '#2EAF71'
+                                    '#EBA900'
                                   }
                                 />
                                 <span
@@ -310,7 +306,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                      'Pending (Action Required)'
+                                        'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'

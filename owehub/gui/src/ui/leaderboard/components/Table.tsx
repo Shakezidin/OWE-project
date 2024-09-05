@@ -680,6 +680,8 @@ const Table = ({
       'Install Date',
       'Pto Date',
       'Cancel Date',
+      "Primary Sales Rep",
+      "Secondary Sales Rep"
     ];
 
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
@@ -705,6 +707,8 @@ const Table = ({
       item.pv_install_completed_date,
       item.pto_date,
       item.canceled_date,
+      item.primary_sales_rep,
+      item.secondary_sales_rep
     ]);
 
     const csvRows = [headers, ...csvData];
