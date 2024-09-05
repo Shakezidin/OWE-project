@@ -15,7 +15,6 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import CalendarSidebar from './CalendarSidebar';
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
-import { DateRange } from 'react-date-range';
 
 interface Event {
   id: number;
@@ -112,7 +111,9 @@ const PerformanceCalendar: React.FC = () => {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i);
+  const yearRange = 75
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: yearRange * 2 + 1 }, (_, i) => currentYear - yearRange + i);
 
   const handleReset = () => {
     setSelectedRanges([{ startDate: new Date(), endDate: new Date(), key: 'selection' }]);
@@ -120,31 +121,31 @@ const PerformanceCalendar: React.FC = () => {
     setSelectedYear(new Date().getFullYear());
   };
 
-  const [displayedDate, setDisplayedDate] = useState<string>(format(currentMonth, 'MMMM yyyy')); // Initial date display
-  const [isDefaultDate, setIsDefaultDate] = useState<boolean>(true); // State to track if default date should be displayed
+  const [displayedDate, setDisplayedDate] = useState<string>(format(currentMonth, 'MMMM yyyy'));
+  const [isDefaultDate, setIsDefaultDate] = useState<boolean>(true);
 
   const handleApply = () => {
-    const newDate = new Date(selectedYear, selectedMonth); // Create a new date using selected month and year
-    setCurrentMonth(newDate); // Update the currentMonth with the new selected date
-    setDisplayedDate(format(newDate, 'MMMM yyyy')); // Update the displayed date
-    setIsDefaultDate(false); // Switch to displaying the selected date
+    const newDate = new Date(selectedYear, selectedMonth);
+    setCurrentMonth(newDate);
+    setDisplayedDate(format(newDate, 'MMMM yyyy'));
+    setIsDefaultDate(false);
     setShowCalendar(false);
   };
 
   const handleNextMonth = (): void => {
     const newDate = addMonths(currentMonth, 1);
     setCurrentMonth(newDate);
-    setSelectedMonth(newDate.getMonth()); // Update selectedMonth to match currentMonth
-    setSelectedYear(newDate.getFullYear()); // Update selectedYear to match currentMonth
-    setDisplayedDate(format(newDate, 'MMMM yyyy')); // Update displayed date when clicking next
+    setSelectedMonth(newDate.getMonth());
+    setSelectedYear(newDate.getFullYear());
+    setDisplayedDate(format(newDate, 'MMMM yyyy'));
   };
 
   const handlePrevMonth = (): void => {
     const newDate = subMonths(currentMonth, 1);
     setCurrentMonth(newDate);
-    setSelectedMonth(newDate.getMonth()); // Update selectedMonth to match currentMonth
-    setSelectedYear(newDate.getFullYear()); // Update selectedYear to match currentMonth
-    setDisplayedDate(format(newDate, 'MMMM yyyy')); // Update displayed date when clicking previous
+    setSelectedMonth(newDate.getMonth());
+    setSelectedYear(newDate.getFullYear());
+    setDisplayedDate(format(newDate, 'MMMM yyyy'));
   };
 
 
