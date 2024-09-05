@@ -10,7 +10,7 @@ import 'react-chat-widget/lib/styles.css';
 import { io } from 'socket.io-client';
 
 const ButtonSelection = ({ options, onSelect }: any) => (
-  <>
+  <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}>
     Please choose type of issue you are facing:
     <div
       style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
@@ -33,10 +33,10 @@ const ButtonSelection = ({ options, onSelect }: any) => (
         </button>
       ))}
     </div>
-  </>
+  </div>
 );
 
-const socket = io('http://localhost:3001');
+const socket = io('https://staging.owe-hub.com/slack/');
 const ChatSupport = () => {
   const [channelName, setChannelName] = useState(null);
   const [issueType, setIssueType] = useState(null);
@@ -67,14 +67,17 @@ const ChatSupport = () => {
   }, []);
 
   const handleSelectOption = (option: any) => {
-    addResponseMessage(`You selected: ${option.label}`);
+    setIssueType(option.value);
+    addResponseMessage('Thanks, now please tell us the issue?');
   };
 
   const handleShowOptions = () => {
     addResponseMessage('Hi, How can I help you?');
-    addResponseMessage('Please choose type of issue you are facing:');
     renderCustomComponent(ButtonSelection, {
-      options: [{ label: 'Sales Issue' }, { label: 'Dealer Issue' }],
+      options: [
+        { label: 'Sales Issue', value: '1' },
+        { label: 'Dealer Issue', value: '2' },
+      ],
       onSelect: handleSelectOption,
     });
   };
