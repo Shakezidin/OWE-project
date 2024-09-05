@@ -81,6 +81,7 @@
   align-items: center;
   border-radius: 5px;
   padding-left: 9px;
+  padding-right: 5px;
 }
 
 .warning_card {

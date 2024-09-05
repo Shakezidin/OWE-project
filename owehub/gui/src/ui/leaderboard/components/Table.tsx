@@ -301,12 +301,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -668,7 +668,7 @@ const Table = ({
     setIsExporting(true);
     const headers = [
       'UniqueID',
-      'Homeowner Name',
+      getName,
       'Homeowner Email',
       'Homeowner Phone',
       'Address',
@@ -723,6 +723,18 @@ const Table = ({
     setExportShow(false);
   };
 
+  const getName = useMemo(() => {
+    if (role === TYPE_OF_USER.DEALER_OWNER) {
+      return "Code Name"
+    }
+    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
+      return "Partner Name"
+    }
+    else {
+      return 'Name'
+    }
+
+  }, [role])
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
@@ -845,8 +857,8 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -998,12 +1010,8 @@ const Table = ({
                 <th>Rank</th>
 
                 <th>
-                  {(role === TYPE_OF_USER.ADMIN ||
-                    role === TYPE_OF_USER.FINANCE_ADMIN ||
-                    role === TYPE_OF_USER.DEALER_OWNER) &&
-                  groupBy === 'dealer'
-                    ? 'Code Name'
-                    : 'Name'}
+                  {
+                    getName}
                 </th>
 
                 {showPartner && <th>Partner</th>}

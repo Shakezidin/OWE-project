@@ -170,7 +170,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
 		NTPPendingCount += count
 		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
-		QcPendingCount += count
+		NTPPendingCount += count
 		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
 		QcPendingCount += count
 		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
@@ -250,7 +250,7 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 			  AND cv.unique_id <> ''
 			  AND cv.system_size IS NOT NULL
 			  AND cv.system_size > 0
-			  AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			  AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -323,7 +323,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 			  AND cv.unique_id <> ''
 			  AND cv.system_size IS NOT NULL
 			  AND cv.system_size > 0 
-			  AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			  AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -366,9 +366,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "powerclerk_sent_az":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "Pending Utility Account #" || ntp_date == "" {
+				} else if v == "Pending Utility Account #" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -376,7 +379,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -384,9 +390,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "green_area_nm_only":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" || ntp_date == "" {
+				} else if v == "❌ (Project DQ'd)" || v == "❌  (Project DQ'd)" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0
@@ -394,7 +403,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "finance_credit_approved_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -402,7 +414,10 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "finance_agreement_completed_loan_or_lease":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
 				} else {
 					return "Completed", 0
@@ -410,9 +425,12 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 			}
 		case "owe_documents_completed":
 			if v != "Not Needed" {
-				if v == "" || v == "NULL" || v == "<nil>" || ntp_date == "" {
+				if ntp_date != "" {
+					return "Completed", 0
+				}
+				if v == "" || v == "NULL" || v == "<nil>" {
 					return "Pending", 1
-				} else if v == "❌" || ntp_date == "" {
+				} else if v == "❌" {
 					return "Pending (Action Required)", 1
 				} else {
 					return "Completed", 0

@@ -337,7 +337,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 			 AND cv.unique_id <> ''
 			 AND cv.system_size IS NOT NULL
 			 AND cv.system_size > 0
-			 AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			 AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -461,7 +461,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 			 AND cv.unique_id <> ''
 			 AND cv.system_size IS NOT NULL
 			 AND cv.system_size > 0 
-			 AND cv.project_status IN ('BLOCKED','HOLD','HOLD - Exceptions','JEOPARDY','Unresponsive','Unworkable')`)
+			 AND cv.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
