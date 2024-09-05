@@ -42,7 +42,7 @@ const MainLayout = () => {
   useEffect(() => {
     const token = authData?.token;
     const expirationTime = authData?.expirationTime;
-    const expirationTimeInMin = '1';
+    const expirationTimeInMin = authData?.expirationTimeInMin;
 
     if (token && expirationTime && expirationTimeInMin) {
       const currentTime = Date.now();
@@ -56,7 +56,7 @@ const MainLayout = () => {
             navigate('/login');
             toast.error('Session time expired. Please login again..');
           },
-          parseInt('1') * 60 * 1000
+          parseInt(expirationTimeInMin) * 60 * 1000
         ); // 480 minutes in milliseconds
 
         return () => clearTimeout(timeout);
@@ -66,7 +66,7 @@ const MainLayout = () => {
         dispatch(logout());
         filterAuthData();
         navigate('/login');
-       
+
         toast.error('Session time expired. Please login again..');
       }
     }
