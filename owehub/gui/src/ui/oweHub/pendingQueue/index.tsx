@@ -102,7 +102,7 @@ const PendingQueue = () => {
                 className={styles.pending_card_title}
                 style={{ fontWeight: 500 }}
               >
-                QC Checklist
+                QC Pending
               </h5>
               <p className={styles.pending_card_desc}>
                 Click to see all project in QC
@@ -122,7 +122,7 @@ const PendingQueue = () => {
                 className={styles.pending_card_title}
                 style={{ fontWeight: 500 }}
               >
-                NTP Checklist
+                NTP Pending
               </h5>
               <p className={styles.pending_card_desc}>
                 Click to see all project in NTP
@@ -142,7 +142,7 @@ const PendingQueue = () => {
                 className={styles.pending_card_title}
                 style={{ fontWeight: 500 }}
               >
-                C/O Status
+                C/O Pending
               </h5>
               <p className={styles.pending_card_desc}>
                 Click to see all project in C/O
