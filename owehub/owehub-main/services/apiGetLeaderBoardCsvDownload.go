@@ -101,12 +101,12 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date,ntp_date, pv_install_completed_date, pto_date, canceled_date, primary_sales_rep, secondary_sales_rep FROM consolidated_data_view"
 
-	if len(dataReq.DealerName) == 0 {
-		errorResp := []string{}
-		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "csv Data", http.StatusOK, errorResp, RecordCount)
-		return
-	}
+	// if len(dataReq.DealerName) == 0 {
+	// 	errorResp := []string{}
+	// 	log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
+	// 	FormAndSendHttpResp(resp, "csv Data", http.StatusOK, errorResp, RecordCount)
+	// 	return
+	// }
 	dealerIn = "dealer IN("
 	for i, data := range dataReq.DealerName {
 		if i > 0 {

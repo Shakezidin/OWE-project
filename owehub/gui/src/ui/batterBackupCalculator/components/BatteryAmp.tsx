@@ -99,7 +99,8 @@ const BatteryAmp = () => {
     const ampValue = batteries[index].category_ampere * 0.6;
     const remain = avavilableAmpPercentage.remainingAmps - ampValue;
     const battery = batteries[index]
-    if (remain >= 0 && !batteries[index].isOn) {
+    console.log(battery.amp, "ampppp", remain)
+    if ((battery.amp < 70 ? remain >= 0 : true) && !batteries[index].isOn) {
       if (battery.amp >= 70) {
         Swal.fire({
           title: `<p style="font-size:14px;padding-top:20px;padding-bottom:16px;">This breaker exceeds the limits of a single Powerwall 3 if you would like to back up this load an additional battery is required.<p>`,
@@ -267,7 +268,7 @@ const BatteryAmp = () => {
           {' '}
           Customise panel as per requirement
         </p>
-        {otherDeatil.missing_labels && <p  style={{ color: '#d62222', fontSize: 12, fontWeight: 500 }} className='mt1'>
+        {otherDeatil.missing_labels && <p style={{ color: '#d62222', fontSize: 12, fontWeight: 500 }} className='mt1'>
           The breakers in your main panel were not properly labeled, our team has leveraged their extensive electrical experience to estimate the loads assigned to each breaker. While our team's experience is extensive without properly labeled breakers we cannot guarantee the accuracy of their estimate.
         </p>}
       </div>

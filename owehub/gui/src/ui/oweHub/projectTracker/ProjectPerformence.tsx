@@ -280,8 +280,6 @@ const ProjectPerformence = () => {
       setLoading(true);
       try {
         const data = await postCaller('get_perfomancetiledata', {
-          page_size: perPage,
-          page_number: page,
           project_status:
             activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
         });
@@ -298,7 +296,7 @@ const ProjectPerformence = () => {
       } finally {
       }
     })();
-  }, [page, activeTab]);
+  }, [ activeTab]);
 
   useEffect(() => {
     dispatch(
