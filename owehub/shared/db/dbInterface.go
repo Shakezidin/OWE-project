@@ -239,9 +239,10 @@ const (
 	ViewName_REP_PAY                    string = "rep_pay_pr_data"
 
 	/* Scheduling Tables and Procedures */
-	TableName_SchedulingProjects               string = "scheduling_projects"
-	TableName_SchedulingLocations              string = "scheduling_locations"
-	CreateSchedulingProjectFunction            string = "create_scheduling_project"
+	TableName_SchedulingProjects    string = "scheduling_projects"
+	TableName_SchedulingLocations   string = "scheduling_locations"
+	CreateSchedulingProjectFunction string = "create_scheduling_project"
+	UpdateSchedulingProjectFunction string = "update_scheduling_project"
 )
 
 /******************************************************************************

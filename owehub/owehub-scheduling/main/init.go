@@ -73,6 +73,13 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_scheduling_project",
+		apiHandler.HandleUpdateSchedulingProjectRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_scheduling_projects",
 		apiHandler.HandleGetSalesRepSchedulingProjectsRequest,
 		false,

@@ -71,6 +71,13 @@ type CreateSchedulingProjectReq struct {
 	Backup4           string     `json:"backup_4,omitempty"`
 }
 
+type UpdateSchedulingProjectReq struct {
+	Email                 string     `json:"email"`
+	IsAppointmentApproved bool       `json:"is_appointment_approved"`
+	SiteSurveyStartDt     *time.Time `json:"site_survey_start_dt,omitempty"`
+	SiteSurveyEndDt       *time.Time `json:"site_survey_end_dt,omitempty"`
+}
+
 type GetSchedulingProjectsReq struct {
 	PageNumber int64 `json:"page_number"`
 	PageSize   int64 `json:"page_size"`
