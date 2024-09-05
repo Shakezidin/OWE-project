@@ -224,7 +224,7 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" cv.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" ss.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -236,7 +236,7 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 			filtersBuilder.WriteString(" WHERE")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" cv.dealer = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
@@ -246,11 +246,11 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` cv.unique_id IS NOT NULL
-			  AND cv.unique_id <> ''
-			  AND cv.system_size IS NOT NULL
-			  AND cv.system_size > 0
-			  AND cv.project_status IN ('ACTIVE')`)
+	filtersBuilder.WriteString(` ips.unique_id IS NOT NULL
+			  AND ips.unique_id <> ''
+			  AND ips.system_size IS NOT NULL
+			  AND ips.system_size > 0
+			  AND ss.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -283,7 +283,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE cv.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE ss.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -296,7 +296,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" cv.primary_sales_rep IN (")
+		filtersBuilder.WriteString(" ss.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -315,15 +315,15 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 		filtersBuilder.WriteString(" WHERE ")
 		whereAdded = true
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" cv.dealer = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	// Add the always-included filters
-	filtersBuilder.WriteString(` AND cv.unique_id IS NOT NULL
-			  AND cv.unique_id <> ''
-			  AND cv.system_size IS NOT NULL
-			  AND cv.system_size > 0 
-			  AND cv.project_status IN ('ACTIVE')`)
+	filtersBuilder.WriteString(` AND ips.unique_id IS NOT NULL
+			  AND ips.unique_id <> ''
+			  AND ips.system_size IS NOT NULL
+			  AND ips.system_size > 0 
+			  AND ss.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
