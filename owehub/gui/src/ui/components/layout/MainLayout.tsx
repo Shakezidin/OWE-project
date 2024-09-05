@@ -17,14 +17,9 @@ import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 import useAuth from '../../../hooks/useAuth';
-import useWindowWidth from '../../../hooks/useWindowWidth';
 
 const MainLayout = () => {
-  const { authData } = useAuth();
-
-  const width = useWindowWidth();
-  const isMobile = width < 768;
-
+  const { authData, filterAuthData } = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
@@ -47,7 +42,7 @@ const MainLayout = () => {
   useEffect(() => {
     const token = authData?.token;
     const expirationTime = authData?.expirationTime;
-    const expirationTimeInMin = authData?.expirationTimeInMin;
+    const expirationTimeInMin = '1';
 
     if (token && expirationTime && expirationTimeInMin) {
       const currentTime = Date.now();
@@ -57,10 +52,11 @@ const MainLayout = () => {
           () => {
             dispatch(activeSessionTimeout());
             dispatch(logout());
+            filterAuthData();
             navigate('/login');
             toast.error('Session time expired. Please login again..');
           },
-          parseInt(expirationTimeInMin) * 60 * 1000
+          parseInt('1') * 60 * 1000
         ); // 480 minutes in milliseconds
 
         return () => clearTimeout(timeout);
@@ -68,8 +64,9 @@ const MainLayout = () => {
         // Token has expired
         dispatch(activeSessionTimeout());
         dispatch(logout());
+        filterAuthData();
         navigate('/login');
-
+       
         toast.error('Session time expired. Please login again..');
       }
     }
@@ -86,6 +83,7 @@ const MainLayout = () => {
           } else {
             // User does not exist, log out
             dispatch(logout());
+            filterAuthData();
             navigate('/login');
             toast.error('User does not exist. Please register..');
             cancelAllRequests();
@@ -95,7 +93,7 @@ const MainLayout = () => {
           console.error('Error checking user existence:', error);
         });
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, authData]);
 
   useEffect(() => {
     setToggleOpen(isTablet);
