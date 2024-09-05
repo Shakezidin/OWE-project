@@ -688,6 +688,7 @@ const Table = ({
       dealer_name: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+      group_by: groupBy
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
