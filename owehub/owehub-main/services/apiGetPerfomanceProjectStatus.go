@@ -1102,18 +1102,18 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pv
 		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
 			latestCompletedDate = batteryCompleted
 		}
-		return "green", count, latestCompletedDate
+		return green, count, latestCompletedDate
 	}
 
 	// Blue conditions
 	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
-		return "blue", count, pvInstallCompletedDate
+		return blue, count, pvInstallCompletedDate
 	} else if !pvInstallCreatedateParsed.IsZero() {
-		return "blue", count, pvInstallCreatedate
+		return blue, count, pvInstallCreatedate
 	}
 
 	// Default grey condition
-	return "grey", count, ""
+	return grey, count, ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
