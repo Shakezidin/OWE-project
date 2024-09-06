@@ -225,8 +225,8 @@ function App() {
               <Navigate
                 to={
                   role_name === TYPE_OF_USER.DB_USER
-                    ? ROUTES.LEADERBOARD
-                    : ROUTES.LEADERBOARD
+                    ? ROUTES.PEINDING_QUEUE
+                    : ROUTES.PEINDING_QUEUE
                 }
               />
             ) : (
@@ -239,7 +239,7 @@ function App() {
           path="/login"
           element={
             isAuthenticated ? (
-              <Navigate to={ROUTES.LEADERBOARD} />
+              <Navigate to={ROUTES.PEINDING_QUEUE} />
             ) : (
               <LoginPage />
             )

@@ -32,7 +32,7 @@ export interface Ibattery {
   category_ampere: number;
   category_name: string;
 }
- 
+
 const BatteryAmp = () => {
   const [otherDeatil, setOtherDeatil] = useState<{
     continous_current?: number;
@@ -43,7 +43,7 @@ const BatteryAmp = () => {
   }>({});
   const [requiredBattery, setRequiredBattery] = useState(0);
   const [initial, setInitial] = useState(0);
- 
+
   const { id } = useParams();
   const [batteryPower, setBatteryPower] = useState<Ibattery[]>([]);
   const [initialBattery, setInitialBattery] = useState<Ibattery[]>([]);
@@ -52,6 +52,7 @@ const BatteryAmp = () => {
   const [mainDisabled, setMainDisabled] = useState(true);
   const [mssg, setMssg] = useState('');
   const [totalAmp, setTotalAmp] = useState(0);
+  const [fullhomeBackup, setFullhomeBackup] = useState(true)
   const [lightHouseAmpSize, setLightHouseAmpSize] = useState<string | number>(
     0
   );
@@ -67,7 +68,7 @@ const BatteryAmp = () => {
     if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
- 
+
   const exportPdf = () => {
     if (form.current) {
       const element = form.current;
@@ -93,13 +94,37 @@ const BatteryAmp = () => {
       });
     }
   };
- 
+
+  const switchPratialBackup = () => {
+    Swal.fire({
+      title: `<p style="font-size:14px;padding-top:20px;padding-bottom:16px;">The batteries are capable of powering the full load. Would you like to switch to full home backup?<p>`,
+      showDenyButton: true,
+      confirmButtonText: "Yes, switch to full home backup",
+      denyButtonText: `No, stay on partial home backup.`,
+      focusDeny: true,
+      confirmButtonColor: "#0BAF11",
+      customClass: {
+        denyButton: "mt-13"
+      }
+    })
+      .then((result) => {
+        if (result.isDenied) {
+          setFullhomeBackup(false)
+        } else {
+          setFullhomeBackup(true)
+        }
+        setRequiredBattery(prev => prev + 1)
+      })
+     
+
+  }
+
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
     const ampValue = batteries[index].category_ampere * 0.6;
     const remain = avavilableAmpPercentage.remainingAmps - ampValue;
     const battery = batteries[index]
-    console.log(battery.amp, "ampppp", remain)
+   
     if ((battery.amp < 70 ? remain >= 0 : true) && !batteries[index].isOn) {
       if (battery.amp >= 70) {
         Swal.fire({
@@ -114,11 +139,16 @@ const BatteryAmp = () => {
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            setRequiredBattery(prev => prev + 1)
+            battery.isOn = true
+            const totalBattery = requiredBattery + 1
+            if (required <= totalBattery) {
+              switchPratialBackup()
+            }
           } else if (result.isDenied) {
             return
           }
         });
+        
       }
       else {
         batteries[index].isOn = true;
@@ -135,7 +165,7 @@ const BatteryAmp = () => {
     }
     setBatteryPower([...batteries]);
   };
- 
+
   const minRequired = (
     arr: Ibattery[],
     totalCategoryAmp: number,
@@ -153,11 +183,11 @@ const BatteryAmp = () => {
     });
     return Math.max(count, requiredPowerwallsByLRA, externalBattery);
   };
- 
+
   const roundToTenthsPlace = (number: number) => {
     return Math.round(number * 10) / 10;
   };
- 
+
   const avavilableAmpPercentage = useMemo(() => {
     const ampCapacity =
       requiredBattery * 48 -
@@ -171,16 +201,16 @@ const BatteryAmp = () => {
         selectedAmp += item.category_ampere * 0.6;
       }
     });
- 
+
     const remainingAmps = ampCapacity - selectedAmp;
     const percentage = (remainingAmps / ampCapacity) * 100;
     return { percentage, remainingAmps };
   }, [requiredBattery, batteryPower, lightHouseAmpSize]);
- 
+
   const required = useMemo(() => {
     return initial;
   }, [initial]);
- 
+
   useEffect(() => {
     const getProspectDetail = async () => {
       try {
@@ -210,9 +240,9 @@ const BatteryAmp = () => {
               roundToTenthsPlace(data?.data?.SysSize) / 14
             )
           );
- 
+
           let max = 0;
- 
+
           batt.forEach((battery) => {
             if (battery.amp >= 60) {
               max = 2;
@@ -224,7 +254,7 @@ const BatteryAmp = () => {
               ? parseFloat(lightHouseAmpSize)
               : lightHouseAmpSize)
           );
- 
+
           setOtherDeatil(data?.data);
           setInitial(min);
           setRequiredBattery(min);
@@ -237,13 +267,13 @@ const BatteryAmp = () => {
       getProspectDetail();
     }
   }, [id]);
- 
+
   useEffect(() => {
-    if (requiredBattery >= required) {
+    if (requiredBattery >= required && fullhomeBackup) {
       setMainOn(true);
       setBatteryPower((prev) => prev.map((ba) => ({ ...ba, isOn: true })));
     }
-  }, [required, requiredBattery]);
+  }, [required, requiredBattery, fullhomeBackup]);
   return (
     <div
       ref={form}
@@ -328,7 +358,7 @@ const BatteryAmp = () => {
                 </div>
               </div>
             </div>
- 
+
             {!mainOn && (
               <>
                 <div className="battery-progress-bar  mt2 relative">
@@ -342,7 +372,7 @@ const BatteryAmp = () => {
               </>
             )}
           </div>
- 
+
           <div
             style={{ width: '100%' }}
             className="mt3 battery-watt-wrapper  justify-between flex items-center bg-white"
@@ -363,7 +393,7 @@ const BatteryAmp = () => {
               />
             </div>
           </div>
- 
+
           <div
             className="bg-white mt3 panel-container p3 flex-grow-1 relative"
             style={{ borderRadius: 20 }}
@@ -371,15 +401,15 @@ const BatteryAmp = () => {
             <div className="absolute screw-top">
               <img src={screw} alt="" />
             </div>
- 
+
             <div className="absolute screw-top-right">
               <img src={screw} alt="" />
             </div>
- 
+
             <div className="absolute screw-bottom-right">
               <img src={screw} alt="" />
             </div>
- 
+
             <div className="absolute screw-bottom-left">
               <img src={screw} alt="" />
             </div>
@@ -510,7 +540,7 @@ const BatteryAmp = () => {
                   </div>
                 )}
               </div>
- 
+
               <div className="mt4 grid-amp-container">
                 {batteryPower.map((item, index: number) => {
                   return (
@@ -572,7 +602,7 @@ const BatteryAmp = () => {
                     </div>
                   );
                 })}
- 
+
                 <div
                   style={{ border: '1px solid #D1D1D1' }}
                   className={` flex items-center relative `}
@@ -627,7 +657,7 @@ const BatteryAmp = () => {
           </div>
         </div>
       </div>
- 
+
       {isOpen && (
         <WarningPopup
           setMainOn={setMainOn}
@@ -644,6 +674,5 @@ const BatteryAmp = () => {
     </div>
   );
 };
- 
+
 export default BatteryAmp;
- 

@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import './srImageUpload.css';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import axios from 'axios';
 import { PiCircle } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 import { IoCheckmarkCircle } from 'react-icons/io5';
@@ -10,8 +9,6 @@ import { GoPlus } from 'react-icons/go';
 import { errorSwal } from '../../components/alert/ShowAlert';
 import { RiCloseLine } from 'react-icons/ri';
 import { sendMail } from '../../../utiles';
-import { FiInfo } from 'react-icons/fi';
-import { Tooltip } from 'react-tooltip';
 import s3Upload from '../../../utiles/s3Upload';
 const primaryApplicances = [
   { name: 'Water heater', id: 1 },
@@ -65,7 +62,7 @@ const FormComponent: React.FC = () => {
     setUploadedImages((prevImages) => [...prevImages, ...fileURLs]);
     setRandomKey(Date.now());
   };
- 
+
   const handleDeleteImage = (index: number) => {
     setUploadedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
@@ -73,18 +70,18 @@ const FormComponent: React.FC = () => {
   const handleValidation = () => {
     const tempError = {} as typeof error;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
- 
+
     if (!emailRegex.test(email)) {
       tempError['email'] = 'Email is required';
     }
     if (!prospectName.trim()) {
       tempError['prospectName'] = 'Prospect Name is required';
     }
- 
+
     if (!address.trim()) {
       tempError['address'] = 'Address is required';
     }
- 
+
     if (!squareFeet.trim()) {
       tempError['squareFeet'] = "House's Square Feet is required";
     }
@@ -94,7 +91,7 @@ const FormComponent: React.FC = () => {
     setError({ ...tempError });
     return !Boolean(Object.keys(tempError).length);
   };
- 
+
   const handleFormSubmit = async () => {
     if (handleValidation()) {
       setIsUploading(true);
@@ -112,7 +109,7 @@ const FormComponent: React.FC = () => {
           obj2[app.name.toLocaleLowerCase().replaceAll(' ', '_')] =
             app.isSelected;
         });
- 
+
         const response = await postCaller('set_prospect_info', {
           prospect_name: prospectName,
           sr_email_id: email,
@@ -124,7 +121,7 @@ const FormComponent: React.FC = () => {
           system_size: parseFloat(systemSize),
           added_notes: note,
         });
- 
+
         if (response.status > 201) {
           toast.error((response as Error).message);
           setIsUploading(false);
@@ -137,15 +134,15 @@ const FormComponent: React.FC = () => {
 <p>
 Hi Electrical Team,
  <br>
- 
+
 You have recieved a request from Sales Rep Team to fill the information in battery calculation form.
  <br>
- 
+
 Please visit the below URL to complete the form
 </p>
- 
+
 <a clicktracking="off"  href="${`${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`}" >${`${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`}</a>
- 
+
 <strong style="display:block;">
 Thank you
 </strong>
@@ -191,7 +188,7 @@ OWE Battery Calc
       }
     }
   };
- 
+
   async function fetchImage(url: string) {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -199,12 +196,12 @@ OWE Battery Calc
     const filename = contentDisposition
       ? contentDisposition.split('filename=')[1].replace(/"/g, '')
       : 'default.jpg'; // Fallback if filename is not provided
- 
+
     return { blob, filename };
   }
   const uploadImages = async (imageArray: string[]): Promise<string[]> => {
     if (!imageArray || imageArray.length === 0) return [];
- 
+
     try {
       const uploadResponses = Promise.all(
         imageArray.map(async (imageSrc) => {
@@ -219,14 +216,14 @@ OWE Battery Calc
           return uploaded.location;
         })
       );
- 
+
       return uploadResponses;
     } catch (error) {
       console.error('Error uploading images to Cloudinary:', error);
       throw error;
     }
   };
- 
+
   const checkFormValidity = () => {
     if (email && uploadedImages.length > 0) {
       setIsFormValid(true);
@@ -234,11 +231,11 @@ OWE Battery Calc
       setIsFormValid(false);
     }
   };
- 
+
   useEffect(() => {
     checkFormValidity();
   }, [prospectName, email, uploadedImages]);
- 
+
   const lightHouseAmpSize = Math.ceil(
     ((parseFloat(squareFeet) * 1.5) / 120) * 0.6
   );
@@ -263,7 +260,7 @@ OWE Battery Calc
               <div className="error">{error.prospectName}</div>
             )}
           </div>
- 
+
           <div className="prospect-input-field mt2">
             <input
               type="email"
@@ -275,7 +272,7 @@ OWE Battery Calc
             />
             {error.email && <div className="error">{error.email}</div>}
           </div>
- 
+
           <div className="prospect-input-field mt2">
             <input
               type="text"
@@ -286,7 +283,7 @@ OWE Battery Calc
             />
             {error.address && <div className="error">{error.address}</div>}
           </div>
- 
+
           <div className="prospect-input-field mt2">
             <input
               type="text"
@@ -306,7 +303,7 @@ OWE Battery Calc
               <div className="error">{error.systemSize}</div>
             )}
           </div>
- 
+
           <div className="prospect-input-field mt2 relative">
             <input
               type="text"
@@ -330,20 +327,20 @@ OWE Battery Calc
               <div className="error">{error.squareFeet}</div>
             )}
           </div>
- 
+
           <div className="sr-appliance-wrapper">
             <div className="sr-appliance-header flex items-center">
               <div className="text-sm" style={{ flexBasis: '60%' }}>
                 <h4 className="text-dark-navy">Primary appliances</h4>
               </div>
- 
+
               <div
                 className="text-sm text-center"
                 style={{ flexBasis: '20%', flexShrink: 0 }}
               >
                 <h4 className="text-dark-navy">Electric</h4>
               </div>
- 
+
               <div
                 className="text-sm end"
                 style={{ flexBasis: '20%', flexShrink: 0 }}
@@ -363,7 +360,7 @@ OWE Battery Calc
                         {appliance.name}
                       </h5>
                     </div>
- 
+
                     <div style={{ flexBasis: '20%', flexShrink: 0 }}>
                       {appliance.isSelected === 'electric' ? (
                         <IoCheckmarkCircle
@@ -389,7 +386,7 @@ OWE Battery Calc
                         />
                       )}
                     </div>
- 
+
                     <div
                       className="text-sm end"
                       style={{ flexBasis: '20%', flexShrink: 0 }}
@@ -423,7 +420,7 @@ OWE Battery Calc
               })}
             </div>
           </div>
- 
+
           <div className="sr-appliance-wrapper mt2">
             <div className="sr-appliance-header">
               <div className="text-sm">
@@ -446,7 +443,7 @@ OWE Battery Calc
                         {appliance.name}
                       </h5>
                     </div>
- 
+
                     <div
                       className="text-sm end"
                       style={{ flexBasis: '20%', flexShrink: 0 }}
@@ -480,33 +477,18 @@ OWE Battery Calc
               })}
             </div>
           </div>
- 
+
           <div className="prospect-input-field relative mt2">
-            <input
-              type="text"
-              placeholder="Add Note"
+            <textarea
+            rows={4}
+              placeholder="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
-            <div className="absolute_info_icon">
-              <FiInfo
-                style={{ cursor: 'pointer' }}
-                role="button"
-                className="cursor-pointer"
-                data-tooltip-id="my-tooltip-1"
-                size={18}
-                color="rgb(165 158 158)"
-              />
-            </div>
-            <Tooltip
-              id="my-tooltip-1"
-              style={{ maxWidth: 300, zIndex: 10 }}
-              place="bottom-start"
-              content="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
-              openOnClick
-            />
+           
+            
           </div>
- 
+
           <div
             style={{ gap: 12 }}
             className="upload-btn-wrapper mt3 pl3 flex items-center"
@@ -565,7 +547,7 @@ OWE Battery Calc
               </div>
             )}
           </div>
- 
+
           <button
             type="button"
             onClick={handleFormSubmit}
@@ -579,5 +561,5 @@ OWE Battery Calc
     </div>
   );
 };
- 
+
 export default FormComponent;
