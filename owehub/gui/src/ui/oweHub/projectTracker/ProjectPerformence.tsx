@@ -696,25 +696,25 @@ const ProjectPerformence = () => {
         <div className="pipeline-header-btns">
           <p
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Active Queue')}
+            onClick={() => {handleActiveTab('Active Queue'), setPage(1)}}
           >
             Active
           </p>
           <p
             className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Active Queue')}
+            onClick={() => {handleActiveTab('Active Queue'), setPage(1)}}
           >
             Active
           </p>
           <p
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Hold & Jeopardy')}
+            onClick={() => {handleActiveTab('Hold & Jeopardy'),setPage(1)}}
           >
             Hold & Jeopardy
           </p>
           <p
             className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Hold & Jeopardy')}
+            onClick={() => {handleActiveTab('Hold & Jeopardy'),setPage(1)}}
           >
             H&J
           </p>
