@@ -14,14 +14,16 @@
   z-index: 101;
   padding-right: 2rem;
 }
-.calendar-logo span{
+
+.calendar-logo span {
   background: #377CF6;
   display: block;
   height: 11px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
-.calendar-logo{
+
+.calendar-logo {
   height: 2.6rem;
   width: 2.6rem;
   border: 1px solid #CCCCCC;
@@ -33,12 +35,14 @@
   top: 2px;
   transition: all 0.3s ease;
 }
-.calendar-logo p{
+
+.calendar-logo p {
   margin-top: 1px;
   font-weight: 600;
   color: #363636;
 }
-.calendar-logo:hover{
+
+.calendar-logo:hover {
   transform: scale(1.03);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
@@ -208,6 +212,7 @@
   cursor: pointer;
   transition: transform 0.3s ease;
 }
+
 .user-img-container:hover {
   background-color: #ddebff;
   transform: scale(1.02);
@@ -233,6 +238,10 @@
 .user-name h4 {
   font-size: 12px;
   font-weight: 500;
+  width: 150px;
+  text-wrap: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .admin-p {
