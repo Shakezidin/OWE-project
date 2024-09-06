@@ -187,6 +187,13 @@
   line-height: 10px;
 }
 
+ 
+
+.deco-text:hover{
+  text-decoration: underline;
+  color: #000;
+}
+
 .performance-info-p {
   position: absolute;
   top: 80px;

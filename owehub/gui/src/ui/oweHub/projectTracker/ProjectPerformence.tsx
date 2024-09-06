@@ -942,14 +942,14 @@ const ProjectPerformence = () => {
                                 <Link
                                   to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
                                 >
-                                  <>
-                                    <h3 className="customer-name">
+                                  <div className='deco-text'>
+                                    <h3>
                                       {project.customer}
                                     </h3>
                                     <p className="install-update">
                                       {project.unqiue_id}
                                     </p>
-                                  </>
+                                  </div>
                                 </Link>
 
                                 <div className="milestone-status">
