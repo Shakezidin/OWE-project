@@ -18,7 +18,7 @@ const mob = {
     {
       path: ROUTES.PEINDING_QUEUE,
       sidebarProps: {
-        displayText: 'Pending Actions (BETA)',
+        displayText: 'Pending Actions - (BETA)',
         icon: (
           <MdPendingActions
             size={20}

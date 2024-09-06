@@ -88,7 +88,7 @@ const PendingQueue = () => {
 
   return (
     <>
-      <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions</h2>
+      <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions - (BETA)</h2>
       {
         <div className={styles.pending_card_wrapper}>
           {
@@ -113,7 +113,7 @@ const PendingQueue = () => {
                         QC Pending
                       </h5>
                       <p className={styles.pending_card_desc}>
-                        Click to see all project in QC
+                      Click to see all pending actions in QC
                       </p>
                     </div>
                   </div>
@@ -133,7 +133,7 @@ const PendingQueue = () => {
                         NTP Pending
                       </h5>
                       <p className={styles.pending_card_desc}>
-                        Click to see all project in NTP
+                      Click to see all pending actions in NTP
                       </p>
                     </div>
                   </div>
@@ -153,7 +153,7 @@ const PendingQueue = () => {
                         C/O Pending
                       </h5>
                       <p className={styles.pending_card_desc}>
-                        Click to see all project in C/O
+                      Click to see all pending actions in C/O
                       </p>
                     </div>
                   </div>
