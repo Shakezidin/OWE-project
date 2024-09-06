@@ -212,11 +212,11 @@ const ProjectPerformence = () => {
     setExportShow(false);
   };
 
-  useEffect(() => {
-    dispatch(getProjects());
+  // useEffect(() => {
+  //   dispatch(getProjects());
 
-    return () => toast.dismiss();
-  }, []);
+  //   return () => toast.dismiss();
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -271,6 +271,7 @@ const ProjectPerformence = () => {
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
+      setPage(1)
     }, 800),
     []
   );
