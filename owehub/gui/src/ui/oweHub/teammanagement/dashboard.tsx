@@ -57,6 +57,7 @@ const TeamManagement: React.FC = () => {
     setIsFetched(true);
   };
   useEffect(() => {
+    const roleAdmin  = localStorage.getItem("role")
     if (
       roleAdmin === TYPE_OF_USER.ADMIN ||
       roleAdmin === TYPE_OF_USER.FINANCE_ADMIN
@@ -65,7 +66,7 @@ const TeamManagement: React.FC = () => {
     } else {
       setIsFetched(true);
     }
-  }, [roleAdmin]);
+  }, []);
 
   const dispatch = useAppDispatch();
 
