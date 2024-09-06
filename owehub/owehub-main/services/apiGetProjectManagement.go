@@ -163,6 +163,15 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 	}
 
+	if len(data) <= 0 {
+		projectList := models.ProjectListResponse{
+			ProjectList: []models.ProjectResponse{}, // Initialize as an empty array
+		}
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, projectList)
+		return
+	}
+
 	var filtersBuilder strings.Builder
 	whereEleList = nil
 	filtersBuilder.WriteString(fmt.Sprintf(
@@ -209,16 +218,18 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	var actionRequiredCount, count int64
 
 	// Assign values from the data map to the struct fields
-	ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy", ntpDate)
-	actionRequiredCount += count
-	ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project", ntpDate)
-	actionRequiredCount += count
-	ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded", ntpDate)
-	actionRequiredCount += count
-	ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete", ntpDate)
-	actionRequiredCount += count
-	ntp.ActionRequiredCount = actionRequiredCount
-	actionRequiredCount = 0
+	if len(data) > 0 {
+		ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy", ntpDate)
+		actionRequiredCount += count
+		ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project", ntpDate)
+		actionRequiredCount += count
+		ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded", ntpDate)
+		actionRequiredCount += count
+		ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete", ntpDate)
+		actionRequiredCount += count
+		ntp.ActionRequiredCount = actionRequiredCount
+		actionRequiredCount = 0
+	}
 
 	var filtersBuilders strings.Builder
 	whereEleList = nil
