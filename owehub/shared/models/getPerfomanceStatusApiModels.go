@@ -79,13 +79,13 @@ type PerfomanceListResponse struct {
 // shift the below struct to project
 
 type ProjectStatusReq struct {
-	Email        string
-	UniqueId     string `json:"unique_id"`
-	Customer     string `json:"customer"`
-	UniqueIds    []string
-	ProjectLimit int
-	DealerName   interface{}
-	IntervalDays string
+	Email         string
+	UniqueId      string `json:"unique_id"`
+	Customer      string `json:"customer"`
+	UniqueIds     []string
+	ProjectLimit  int
+	ProjectStatus []string `json:"project_status"`
+	DealerName    interface{}
 }
 
 // project management list
