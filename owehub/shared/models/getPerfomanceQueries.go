@@ -86,12 +86,7 @@ func SalesRetrieveQueryFunc() string {
         SELECT intOpsMetSchema.unique_id, intOpsMetSchema.home_owner
         FROM internal_ops_metrics_schema intOpsMetSchema
         LEFT JOIN sales_metrics_schema AS salMetSchema 
-            ON intOpsMetSchema.unique_id = salMetSchema.unique_id 
-        WHERE intOpsMetSchema.unique_id IS NOT NULL
-            AND intOpsMetSchema.unique_id <> ''
-            AND intOpsMetSchema.system_size IS NOT NULL
-            AND intOpsMetSchema.system_size > 0 
-    `
+            ON intOpsMetSchema.unique_id = salMetSchema.unique_id `
 	return SalesMetricsRetrieveQuery
 }
 
