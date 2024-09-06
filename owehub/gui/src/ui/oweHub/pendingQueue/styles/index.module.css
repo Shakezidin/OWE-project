@@ -16,6 +16,10 @@
   transition: all 0.5s;
 }
 
+.deco-text:hover{
+  text-decoration: underline;
+  color: #000;
+}
 .pending_card_inner {
   border: 1px solid #eba900;
   display: flex;

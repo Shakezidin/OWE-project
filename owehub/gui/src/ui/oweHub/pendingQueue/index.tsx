@@ -188,7 +188,7 @@ const PendingQueue = () => {
                   className="progress-box"
                   style={{ background: '#2EAF71', borderRadius: '2px' }}
                 ></div>
-                <p>Complete</p>
+                <p>Completed</p>
               </div>
               <div className="progress-box-body">
                 <div
@@ -226,12 +226,14 @@ const PendingQueue = () => {
               <tr>
                 <th style={{ padding: '0px' }}>
                   <div className="milestone-header">
+                     
                     <div className="project-info">
                       <p>Project Info</p>
                     </div>
                     <div className="header-milestone">
                       <p> Checklist Details</p>
                     </div>
+                     
                   </div>
                 </th>
               </tr>
@@ -254,7 +256,7 @@ const PendingQueue = () => {
                           to={`/project-management?project_id=${item.uninque_id}&customer-name=${item.home_owner}`}
                         >
                           <div
-                            className="project-info-details"
+                            className="project-info-details deco-text"
                             style={{ flexShrink: 0 }}
                           >
                             <h3 className={`customer-name`}>
