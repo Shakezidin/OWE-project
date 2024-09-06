@@ -65,7 +65,7 @@ const TeamManagement: React.FC = () => {
     } else {
       setIsFetched(true);
     }
-  }, []);
+  }, [roleAdmin]);
 
   const dispatch = useAppDispatch();
 
