@@ -15,10 +15,9 @@
   cursor: pointer;
   z-index: 10;
   align-items: center;
-  height: 35px;
   border-radius: 5px;
   border: none;
-  padding: 6px 12px;
+  padding: 10px 12px;
   font-size: 12px;
   color: #f1f1f1;
   background-color: #377cf6 !important;
@@ -187,9 +186,9 @@
   line-height: 10px;
 }
 
- 
 
-.deco-text:hover{
+
+.deco-text:hover {
   text-decoration: underline;
   color: #000;
 }
@@ -329,7 +328,6 @@
 .performance-project {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .performance-milestone-table {
@@ -363,6 +361,7 @@
   font-weight: 550;
   color: var(--page-heading-color);
 }
+
 .project-card-container-1 {
   display: flex;
   flex-wrap: nowrap;
@@ -373,13 +372,13 @@
   scroll-behavior: smooth;
 }
 
-.pipeline-header-btns{
+.pipeline-header-btns {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.pipeline-header-btns p{
+.pipeline-header-btns p {
   font-weight: 500;
   font-size: 16px;
   border: 1.5px solid #377CF6;
@@ -391,14 +390,17 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.pipeline-header-btns .active{
+
+.pipeline-header-btns .active {
   background: #377CF6;
   color: #fff;
 }
-.pipeline-header-btns .mobile-btn{
+
+.pipeline-header-btns .mobile-btn {
   display: none;
 }
-.pipeline-header-btns p:hover{
+
+.pipeline-header-btns p:hover {
   background: #377CF6;
   color: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -740,7 +742,7 @@
   cursor: pointer;
   position: absolute;
   right: 10px;
-  top: 57px;
+  top: 60px;
 }
 
 .view-flex img {
@@ -931,7 +933,7 @@
 
 .proper-select .input {
   height: 48px;
-  width: 250px;
+  width: 225px;
 }
 
 .search-icon {
@@ -1166,6 +1168,7 @@
   padding: 1rem;
   background: #f7f7f7;
   border-radius: 8px;
+  margin: 0 10px;
 }
 
 .progress-box-container {
@@ -1193,6 +1196,7 @@
 .progress-box-body p {
   font-size: 14px;
   font-weight: 500;
+  text-wrap: nowrap;
 }
 
 .second-project-card {
@@ -1210,14 +1214,17 @@
     margin-left: 0 !important;
   }
 }
+
 @media (max-width: 432px) {
-  .co-desktop{
+  .co-desktop {
     display: none;
   }
-  .co-mobile{
+
+  .co-mobile {
     display: block !important;
   }
-  .hover-text{
+
+  .hover-text {
     left: 20% !important;
   }
 }
@@ -1340,15 +1347,23 @@
   }
 
   .progress-box-body p {
-    font-size: 11px;
+    font-size: 10px;
+    text-wrap: nowrap;
   }
 
   .performance-box-container {
     gap: 0.5rem;
+    padding: 1rem 10px;
+  }
+
+  .performance-table-heading h3 {
+    font-size: 14px !important;
+    line-height: 1rem;
   }
 
   .status-indicator {
-    font-size: 11px;
+    font-size: 10px;
+    text-wrap: nowrap;
   }
 }
 
@@ -1427,8 +1442,8 @@
 
   .progress-qc-acre {
     position: absolute;
-    right: 56px;
-    top: 92px;
+    right: 14px;
+    top: 65px;
   }
 
   .status-indicator {
@@ -1646,7 +1661,7 @@
 }
 
 .progress-qc-acre {
-  margin-left: -7px;
+  margin-left: -10px;
   margin-top: -24px;
   z-index: 2;
   height: 16px;
@@ -1672,12 +1687,15 @@
   z-index: 1;
   transition: all 0.3s ease;
 }
+
 .progress-co button:hover {
   transform: scale(1.05);
 }
-.co-mobile{
+
+.co-mobile {
   display: none;
 }
+
 .co-button {
   position: relative;
   cursor: pointer;
@@ -1760,10 +1778,12 @@
   .status-boxes {
     margin-top: 1rem;
   }
-  .pipeline-header-btns .desktop-btn{
+
+  .pipeline-header-btns .desktop-btn {
     display: none;
   }
-  .pipeline-header-btns .mobile-btn{
+
+  .pipeline-header-btns .mobile-btn {
     display: block;
   }
 }
