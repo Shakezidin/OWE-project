@@ -195,14 +195,14 @@ const PendingQueue = () => {
                   className="progress-box"
                   style={{ background: '#EBA900', borderRadius: '2px' }}
                 ></div>
-                <p>Pending</p>
+                <p>Pending OWE</p>
               </div>
               <div className="progress-box-body">
                 <div
                   className="progress-box"
                   style={{ background: '#E14514', borderRadius: '2px' }}
                 ></div>
-                <p>Action Required</p>
+                <p>Sale Rep Action Required</p>
               </div>
             </div>
 
