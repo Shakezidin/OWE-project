@@ -153,7 +153,7 @@ func QcNtpRetrieveQueryFunc() string {
                 ELSE 'Not Needed'
             END AS ach_waiver_sent_and_signed_cash_only,
             CASE 
-                WHEN n.state = 'NM :: New Mexico' THEN p.green_area_nm_only
+                WHEN ss.state = 'NM :: New Mexico' THEN p.green_area_nm_only
                 ELSE 'Not Needed'
             END AS green_area_nm_only,
             CASE 
