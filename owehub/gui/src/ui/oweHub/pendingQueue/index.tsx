@@ -93,9 +93,9 @@ const PendingQueue = () => {
         <div className={styles.pending_card_wrapper}>
           {
             load ?
-            <div style={{gridTemplateColumns:"1/4"}} className='flex items-center justify-center'>
-              <MicroLoader />
-            </div>
+              <div style={{ gridTemplateColumns: "1/4" }} className='flex items-center justify-center'>
+                <MicroLoader />
+              </div>
               :
               <>
                 <div className={styles.pending_card} onClick={() => { setActive('qc'), setPage(1), setSearch('') }}>
@@ -105,7 +105,7 @@ const PendingQueue = () => {
                     <h5 className={styles.pending_stats}>
                       {tileData.qc_pending_count || 'N/A'}
                     </h5>
-                    <div>
+                    <div style={{ lineHeight: "1.2rem" }}>
                       <h5
                         className={styles.pending_card_title}
                         style={{ fontWeight: 500 }}
@@ -113,7 +113,7 @@ const PendingQueue = () => {
                         QC Pending
                       </h5>
                       <p className={styles.pending_card_desc}>
-                      Click to see all pending actions in QC
+                        Click to see all pending actions in QC
                       </p>
                     </div>
                   </div>
@@ -125,7 +125,7 @@ const PendingQueue = () => {
                     <h5 className={styles.pending_stats}>
                       {tileData.ntp_pending_count || 'N/A'}
                     </h5>
-                    <div>
+                    <div style={{ lineHeight: "1.2rem" }}>
                       <h5
                         className={styles.pending_card_title}
                         style={{ fontWeight: 500 }}
@@ -133,7 +133,7 @@ const PendingQueue = () => {
                         NTP Pending
                       </h5>
                       <p className={styles.pending_card_desc}>
-                      Click to see all pending actions in NTP
+                        Click to see all pending actions in NTP
                       </p>
                     </div>
                   </div>
@@ -145,7 +145,7 @@ const PendingQueue = () => {
                     <h5 className={styles.pending_stats}>
                       {tileData.co_pending_count || 'N/A'}
                     </h5>
-                    <div>
+                    <div style={{ lineHeight: "1.2rem" }}>
                       <h5
                         className={styles.pending_card_title}
                         style={{ fontWeight: 500 }}
@@ -153,7 +153,7 @@ const PendingQueue = () => {
                         C/O Pending
                       </h5>
                       <p className={styles.pending_card_desc}>
-                      Click to see all pending actions in C/O
+                        Click to see all pending actions in C/O
                       </p>
                     </div>
                   </div>
@@ -226,14 +226,14 @@ const PendingQueue = () => {
               <tr>
                 <th style={{ padding: '0px' }}>
                   <div className="milestone-header">
-                     
+
                     <div className="project-info">
                       <p>Project Info</p>
                     </div>
                     <div className="header-milestone">
                       <p> Checklist Details</p>
                     </div>
-                     
+
                   </div>
                 </th>
               </tr>
