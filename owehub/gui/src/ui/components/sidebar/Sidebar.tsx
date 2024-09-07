@@ -51,7 +51,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
-          (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) 
+          (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
         ) {
         } else {
           newArr[0].mob.push(item);
@@ -65,7 +65,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) 
+            (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -81,7 +81,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT
         ) {
           if (
-            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) 
+            (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -99,7 +99,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.PROJECT_STATUS
         ) {
           if (
-            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) 
+            (isStaging !== 'staging' &&  (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -112,7 +112,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            (isStaging !== 'staging' && item.path === ROUTES.CALENDAR) 
+            (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
           ) {
           } else {
             newArr[0].mob.push(item);
