@@ -28,7 +28,7 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 		err               error
 		userEmailId       string
 		changePasswordReq models.ChangePasswordReq
-		username          string
+		whereEleList      []interface{}
 	)
 
 	log.EnterFn(0, "HandleChangePassRequest")
@@ -64,8 +64,6 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 
 	userEmailId = req.Context().Value("emailid").(string)
 
-	userNameQuery := fmt.Sprintf("select db_username from user_details ud JOIN user_roles ur on ur.role_id = ud.role_id where (ud.role_id = 10 or ud.role_id = 1) and email_id = '%s'", userEmailId)
-
 	/* Validate the current credentials for user before update */
 	creds := models.Credentials{
 		EmailId:  userEmailId,
@@ -80,8 +78,9 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if roleName == "DB User" || roleName == "Admin" {
-		// err = db.ExecQueryDB(db.RowDataDBIndex, userNameQuery)
-		data, err := db.ReteriveFromDB(db.OweHubDbIndex, userNameQuery, nil)
+		userNameQuery := "select db_username from user_details WHERE LOWER(email_id) = LOWER($1)"
+		whereEleList = append(whereEleList, userEmailId)
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, userNameQuery, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get ar import data from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get ar import data from DB", http.StatusBadRequest, nil)
@@ -89,26 +88,20 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		if len(data) > 0 {
-			username, nameOk := data[0]["db_username"].(string)
-			if !nameOk || username == "" {
-				log.FuncErrorTrace(0, "empty username")
-				FormAndSendHttpResp(resp, "Failed to process the password, empty username", http.StatusInternalServerError, nil)
-				return
+			username, ok := data[0]["db_username"].(string)
+			if ok && len(username) > 0 {
+				username = data[0]["db_username"].(string)
+				sqlStatement := fmt.Sprintf("ALTER ROLE %s WITH PASSWORD '%s';", username, changePasswordReq.NewPassword)
+				err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to update OWEDB Password err: %v", err)
+					FormAndSendHttpResp(resp, "Failed update the DB Password", http.StatusInternalServerError, nil)
+					return
+				}
 			}
 		} else {
-			log.FuncErrorTrace(0, "Failed empy data response: %v", err)
-			FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
-			return
-		}
-		
-		username = data[0]["db_username"].(string)
-		sqlStatement := fmt.Sprintf("ALTER ROLE %s WITH PASSWORD '%s';", username, changePasswordReq.NewPassword)
-		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
-		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
-		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
-		if err != nil {
-			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-			FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+			log.FuncErrorTrace(0, "Failed to get user details from DB: %v", err)
+			FormAndSendHttpResp(resp, "User does not exists in DB", http.StatusInternalServerError, nil)
 			return
 		}
 	}
