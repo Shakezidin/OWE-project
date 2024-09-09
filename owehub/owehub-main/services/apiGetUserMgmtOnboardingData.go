@@ -10,6 +10,9 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"strings"
 
 	"net/http"
@@ -23,6 +26,7 @@ import (
  ******************************************************************************/
 func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
+		dataReq        models.GetUserMngmnt
 		err            error
 		data           []map[string]interface{}
 		whereEleList   []interface{}
@@ -33,6 +37,27 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 
 	log.EnterFn(0, "HandleGetUserMgmtOnboardingDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetUserMgmtOnboardingDataRequest", err) }()
+
+	if req.Body == nil {
+		err = fmt.Errorf("HTTP Request body is null in get user management data request")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		return
+	}
+
+	reqBody, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get user management data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	err = json.Unmarshal(reqBody, &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal get user management data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get user management data Request body", http.StatusBadRequest, nil)
+		return
+	}
 
 	query = ` 
 			WITH user_data AS (
@@ -139,10 +164,29 @@ SELECT * FROM dealer_data;`
 		}
 	}
 
+	if dataReq.Usertype == "Active" {
+		usrMgOnbList.Users = ExtractKeys(activeSalesReps)
+	}
+
+	if dataReq.Usertype == "InActive" {
+		usrMgOnbList.Users = inactiveSalesReps
+	}
+
 	usrMgOnbList.ActiveSaleRep = activeCount
 	usrMgOnbList.InactiveSaleRep = int64(len(inactiveSalesReps))
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of UserMgmt Onboarding List fetched : %v list %+v", len(usrMgOnbList.UsrMgmtOnbList), usrMgOnbList)
 	FormAndSendHttpResp(resp, "UserMgmt Onboarding Data", http.StatusOK, usrMgOnbList)
+}
+
+// ExtractKeys returns keys from a map[string]bool where the values are true
+func ExtractKeys(m map[string]bool) []string {
+	keys := make([]string, 0, len(m))
+	for k, v := range m {
+		if v {
+			keys = append(keys, k)
+		}
+	}
+	return keys
 }
