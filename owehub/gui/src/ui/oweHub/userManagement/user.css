@@ -43,7 +43,15 @@
   color: var(--para-color);
 }
 .admin-user {
+  display: flex;
+  gap: 8px;
   margin-top: 1.2rem;
+}
+.admin-user img{
+  transition: all 0.3s ease;
+}
+.admin-user img:hover{
+  transform: scale(1.2);
 }
 .user-new-button {
   display: flex;

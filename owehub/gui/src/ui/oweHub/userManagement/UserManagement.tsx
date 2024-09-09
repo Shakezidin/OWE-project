@@ -78,6 +78,29 @@ const UserManagement: React.FC = () => {
     deleteUserResult,
   } = useAppSelector((state) => state.createOnboardUser);
 
+  const [inactiveSalesRep, setInactiveSalesRep] = useState('');
+  const [activeSalesRep, setActiveSalesRep] = useState('');
+
+  const handleInactiveSlrpClick = (value: string) => {
+    setInactiveSalesRep(value);
+    setActiveSalesRep('');
+  };
+
+  const handleActiveSlrpClick = (value: string) => {
+    setActiveSalesRep(value);
+    setInactiveSalesRep('');
+  };
+
+  const handleCrossClick = () => {
+    setInactiveSalesRep('');
+    setActiveSalesRep('');
+    setIsClicked(false);
+    setIsClicked1(false);
+  };
+
+  const [isClicked, setIsClicked] = useState(false);
+  const [isClicked1, setIsClicked1] = useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     dispatch(userResetForm());
@@ -302,11 +325,7 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if(formData.assigned_Manager){
-  //     dispatch(updateUserForm({ field: 'assigned_Manager', value: '' }));
-  //   }
-  // },[formData.assigned_Manager])
+ 
 
   /** render UI */
   return (
@@ -339,6 +358,12 @@ const UserManagement: React.FC = () => {
           onboardingList={userOnboardingList}
           userPerformanceList={userPerformanceList}
           loading={loading}
+          onInactiveSlrpClick={handleInactiveSlrpClick}
+          onActiveSlrpClick={handleActiveSlrpClick}
+          isClicked={isClicked}
+          setIsClicked={setIsClicked}
+          isClicked1={isClicked1}
+          setIsClicked1={setIsClicked1}
         />
       </div>
 
@@ -352,6 +377,9 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
+          inactiveSalesRep={inactiveSalesRep}
+          activeSalesRep={activeSalesRep}
+          handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
           selectedRows={selectedRows}
@@ -368,11 +396,11 @@ const UserManagement: React.FC = () => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)
               : deleteUserRequest(
-                  [item.user_code],
-                  item.role_name === 'DB User'
-                    ? [item.db_username]
-                    : [item.name.split(' ').join('_')]
-                );
+                [item.user_code],
+                item.role_name === 'DB User'
+                  ? [item.db_username]
+                  : [item.name.split(' ').join('_')]
+              );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(
@@ -432,6 +460,7 @@ const UserManagement: React.FC = () => {
             );
             setOpen(true);
           }}
+
         />
       </div>
     </>
