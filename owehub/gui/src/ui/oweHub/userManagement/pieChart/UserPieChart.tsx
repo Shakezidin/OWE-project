@@ -43,7 +43,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   const handleClick = () => {
     setIsClicked1(false);
     setIsClicked(true);
-    onActiveSlrpClick('Active Users');
+    onActiveSlrpClick('Active Sales Rep');
     
   };
 
@@ -53,7 +53,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   const handleClick1 = () => {
     setIsClicked(false);
     setIsClicked1(true);
-    onInactiveSlrpClick('Inactive Users');
+    onInactiveSlrpClick('Inactive Sales Rep');
     
   };
 
