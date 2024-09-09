@@ -12,7 +12,7 @@ type GetCalenderData struct {
 	SurveyStatus  string `json:"survey_status"`
 	UniqueId      string `json:"unique_id"`
 	Address       string `json:"address"`
-	HomeOwner     string `json:"hoeme_owner"`
+	HomeOwner     string `json:"home_owner"`
 	InstallStatus string `json:"install_status"`
 	SurveyDate    string `json:"survey_date"`
 	InstallDate   string `json:"install_date"`
