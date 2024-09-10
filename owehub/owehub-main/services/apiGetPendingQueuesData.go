@@ -41,6 +41,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		SaleRepList      []interface{}
 		ntpD             string
 		CoStatus         string
+		prospectId       string
 	)
 
 	log.EnterFn(0, "HandleGetPendingQuesDataRequest")
@@ -183,17 +184,23 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			ntpD = ntpDate.Format("2006-01-02")
 		}
 
-		ProductionDiscrepancy, ntpProductionDiscripencyCount := getPendingQueueStringValue(item, "production_discrepancy", ntpD)
-		FinanceNTPOfProject, ntpFinanceNtpOfProjectCount := getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD)
-		UtilityBillUploaded, ntputilityBillUploadedCount := getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
-		PowerClerkSignaturesComplete, ntpPowerClerkSignatutreCount := getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
-		PowerClerk, QcPowerclerkSentAz := getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
-		ACHWaiveSendandSignedCashOnly, QcAchWaiverSendAndSignedCount := getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
-		GreenAreaNMOnly, QcGreenAreaNmOnlyCount := getPendingQueueStringValue(item, "green_area_nm_only", ntpD)
-		FinanceCreditApprovalLoanorLease, QcFinanceCreditAPprovedCount := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD)
-		FinanceAgreementCompletedLoanorLease, QcFinanceAggrementCount := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD)
-		OWEDocumentsCompleted, qcOweDocumentCount := getPendingQueueStringValue(item, "owe_documents_completed", ntpD)
-		_, coStatusCount := getPendingQueueStringValue(item, "change_order_status", ntpD)
+		if val, ok := item["first_value"].(string); ok {
+			prospectId = val
+		} else {
+			prospectId = "" // or a default value
+		}
+
+		ProductionDiscrepancy, ntpProductionDiscripencyCount := getPendingQueueStringValue(item, "production_discrepancy", ntpD, prospectId)
+		FinanceNTPOfProject, ntpFinanceNtpOfProjectCount := getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD, prospectId)
+		UtilityBillUploaded, ntputilityBillUploadedCount := getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD, prospectId)
+		PowerClerkSignaturesComplete, ntpPowerClerkSignatutreCount := getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD, prospectId)
+		PowerClerk, QcPowerclerkSentAz := getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD, prospectId)
+		ACHWaiveSendandSignedCashOnly, QcAchWaiverSendAndSignedCount := getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD, prospectId)
+		GreenAreaNMOnly, QcGreenAreaNmOnlyCount := getPendingQueueStringValue(item, "green_area_nm_only", ntpD, prospectId)
+		FinanceCreditApprovalLoanorLease, QcFinanceCreditAPprovedCount := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD, prospectId)
+		FinanceAgreementCompletedLoanorLease, QcFinanceAggrementCount := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD, prospectId)
+		OWEDocumentsCompleted, qcOweDocumentCount := getPendingQueueStringValue(item, "owe_documents_completed", ntpD, prospectId)
+		_, coStatusCount := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,
