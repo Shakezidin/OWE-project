@@ -262,14 +262,62 @@
 
 @media (max-width: 768px) {
   .cell {
-    height: 80px;
+    min-width: unset;
+    height: 50px;
+    width: 58px;
+    border: unset;
+    border-radius: 20px;
   }
-
+  .cell .number{
+    margin-bottom: unset;
+  }
+  .body{
+    border: 2px solid #C1CCD7;
+    border-top: unset;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
   .icon {
     font-size: 20px;
   }
-
   .header {
     font-size: 16px;
+    border-bottom: none;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+  .header .sales-calendar{
+    width: 100%;
+  }
+  .calendar {
+    margin: 10px;
+    width: unset;
+  }
+  .calendar-close{
+    display: none;
+  }
+  .calendar-date{
+    width: unset;
+    gap: 2rem;
+    margin-left: unset;
+  }
+  .calendar-date .icon {
+    border-radius: 8px;
+    background-color: #F1F1F1;
+    color: #334155;
+  }
+  .sales-calendar{
+    justify-content: center !important;
+  }
+  .event-box{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+  }
+  .event-box .event-icon{
+    display: none;
+  }
+  .event-box .event-text{
+    display: none;
   }
 }
