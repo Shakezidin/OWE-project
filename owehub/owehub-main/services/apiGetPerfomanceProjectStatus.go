@@ -640,6 +640,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	// Step 3: Map Result to `PerfomanceResponse` structs
 	for i, datas := range paginatedData {
 		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
+			var prospectId string
 			if val, ok := row["current_live_cad"].(string); ok {
 				paginatedData[i].CADLink = val
 			} else {
@@ -664,16 +665,22 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 				paginatedData[i].CoStatus = "" // or a default value
 			}
 
+			if val, ok := row["first_value"].(string); ok {
+				prospectId = val
+			} else {
+				prospectId = "" // or a default value
+			}
+
 			var actionRequiredCount int64
 
 			// Assign values from the data map to the struct fields
-			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate)
+			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate)
+			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate)
+			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate)
+			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			paginatedData[i].Ntp = models.NTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -682,17 +689,17 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
 				ActionRequiredCount:          actionRequiredCount,
 			}
-			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate)
+			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate)
+			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate)
+			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate)
+			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate)
+			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate)
+			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			paginatedData[i].Qc = models.QC{
 				PowerClerk:                           PowerClerk,
