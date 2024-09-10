@@ -18,7 +18,7 @@ const { Client } = require("pg");
 
 const client = new Client({
   user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
+  host: process.env.POSTGRES_HOST2,
   database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
   port: process.env.POSTGRES_PORT || 5432,
@@ -94,17 +94,7 @@ slackApp.message(async ({ message }) => {
 
 slackApp.start();
 
-(async () => {
-  await client.connect();
-  const queryText = `
-       SELECT * FROM Consolidated_data_view;
-      `;
-
-  console.log("Connected to PostgreSQL");
-
-  const res = await client.query(queryText);
-  console.log(res.rows);
-})();
+client.connect();
 
 io.on("connection", (socket) => {
   console.log("Connection", socket.id);
@@ -112,8 +102,9 @@ io.on("connection", (socket) => {
   socket.on("start-chat", async (data) => {
     try {
       console.log("start-chat", data);
-      const { name, email, message, issueType } = data;
+      const { name, email, message, issueType, project_id } = data;
 
+      console.log("DATA", data);
       startChatSchema.validateSync(data);
 
       const channelName = createUniqueChannelName(name, email);
@@ -144,20 +135,29 @@ io.on("connection", (socket) => {
       const channelId = channels[channelName].id;
 
       // Send a message to the created Slack channel
-      await web.chat.postMessage({
-        channel: channelId,
-        text: message,
-      });
+      // await web.chat.postMessage({
+      //   channel: channelId,
+      //   text: message,
+      // });
 
       userSockets.set(channelId, socket.id);
 
       console.log("channelId", channelId);
 
-      // Notify a designated Slack channel about the new message
-      await web.chat.postMessage({
-        channel: getSupportChannel(issueType),
-        text: `A new message has arrived! Join to reply: <#${channelId}|${channelName}>`,
-      });
+      const queryText = `SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  FROM sales_metrics_schema where unique_id = '${project_id}' AND primary_sales_rep='${primary_sales_rep}';`;
+
+      const res = await client.query(queryText);
+      if (res?.rows?.length) {
+        // Notify a designated Slack channel about the new message
+        const data = res.rows.pop();
+        await web.chat.postMessage({
+          channel: getSupportChannel(issueType),
+          text: `${data.primary_sales_rep} wants to query ${data.unique_id}  for customer ${data.customer} and  pod link is ${data.podio_link} 
+          Reply : <#${channelId}|${channelName}>`,
+        });
+      } else {
+        throw new Error("Project not found");
+      }
 
       const runAt = new Date(Date.now() + ms(config.noReplyRespondTime)); // 2 minutes in the future
 

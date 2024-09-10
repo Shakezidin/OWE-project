@@ -40,6 +40,7 @@ const socket = io('https://staging.owe-hub.com');
 const ChatSupport = () => {
   const [channelName, setChannelName] = useState(null);
   const [issueType, setIssueType] = useState(null);
+  const [projectId, setProjectId] = useState(null);
   const name = localStorage.getItem('userName');
   const email = localStorage.getItem('email');
   useEffect(() => {
@@ -68,7 +69,7 @@ const ChatSupport = () => {
 
   const handleSelectOption = (option: any) => {
     setIssueType(option.value);
-    addResponseMessage('Thanks, now please tell us the issue?');
+    addResponseMessage('Please enter the project Id');
   };
 
   const handleShowOptions = () => {
@@ -94,11 +95,22 @@ const ChatSupport = () => {
     if (!issueType) {
       if (['1', '2', '3'].includes(newMessage)) {
         setIssueType(newMessage);
-        addResponseMessage('Please enter the project Id');
       } else {
         addResponseMessage('Please select a correct option, 1 or 2');
       }
       return;
+    }
+
+    let project_id;
+
+    if(!projectId){
+      if(!newMessage.startsWith('OUR')){
+      return addResponseMessage('Plese enter valid Project ID');
+      }else{
+        project_id = newMessage.trim();
+        setProjectId(projectId);
+        addResponseMessage('Thanks, Please wait a while, we will connect you...');
+      }
     }
 
     if (!channelName) {
@@ -107,6 +119,7 @@ const ChatSupport = () => {
         email,
         message: newMessage,
         issueType: issueType === '1' ? 'DEALER' : 'SALES',
+        project_id,
       });
     } else {
       socket.emit('send-message', {

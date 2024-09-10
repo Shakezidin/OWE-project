@@ -13,6 +13,7 @@ const startChatSchema = object({
   message: string().required(),
   email: string().email(),
   name: string().required(),
+  project_id: string().required(),
 });
 
 module.exports = {
