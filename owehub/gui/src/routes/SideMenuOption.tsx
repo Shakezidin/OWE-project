@@ -61,26 +61,26 @@ const mob = {
         ),
       },
     },
-    {
-      path: ROUTES.COMMISSION_DASHBOARD,
-      sidebarProps: {
-        displayText: 'Dealer Pay',
-        icon: (
-          <MdOutlinePayment
-            size={20}
-            style={{ marginLeft: '5px' }}
-            className="hover-icon"
-          />
-        ),
-      },
-    },
-    {
-      path: ROUTES.CONFIG_PAGE,
-      sidebarProps: {
-        displayText: 'Configure',
-        icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
-      },
-    },
+    // {
+    //   path: ROUTES.COMMISSION_DASHBOARD,
+    //   sidebarProps: {
+    //     displayText: 'Dealer Pay',
+    //     icon: (
+    //       <MdOutlinePayment
+    //         size={20}
+    //         style={{ marginLeft: '5px' }}
+    //         className="hover-icon"
+    //       />
+    //     ),
+    //   },
+    // },
+    // {
+    //   path: ROUTES.CONFIG_PAGE,
+    //   sidebarProps: {
+    //     displayText: 'Configure',
+    //     icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
 
     {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
