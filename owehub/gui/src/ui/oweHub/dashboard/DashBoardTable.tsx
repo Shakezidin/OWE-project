@@ -36,7 +36,7 @@ const DashBoardTable = ({
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
   const [editMode, setEditMode] = useState(false);
-  const itemsPerPage = 10;
+  const itemsPerPage = 25;
   const totalPages = Math.ceil(count / itemsPerPage);
   const currentPageData = data?.slice();
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
