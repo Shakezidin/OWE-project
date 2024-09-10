@@ -180,54 +180,17 @@ func QcNtpRetrieveQueryFunc() string {
 	return filtersBuilder.String()
 }
 
-// func QcNtpRetrieveQueryFunc() string {
-// 	// Build the SQL Query
-// 	var filtersBuilder strings.Builder
-// 	filtersBuilder.WriteString(`
-//         SELECT
-//             ips.unique_id,
-//             n.production_discrepancy,
-//             n.finance_ntp_of_project,
-//             n.utility_bill_uploaded,
-//             n.powerclerk_signatures_complete,
-//             n.change_order_status,
-//             split_part(ss.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
-//             ips.utility_company,
-//             ss.state,
-//             ips.home_owner,
-//             ss.ntp_date,
-//             CASE
-//                 WHEN ips.utility_company = 'APS' THEN p.powerclerk_sent_az
-//                 ELSE 'Not Needed'
-//             END AS powerclerk_sent_az,
-//             CASE
-//                 WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
-//                 ELSE 'Not Needed'
-//             END AS ach_waiver_sent_and_signed_cash_only,
-//             CASE
-//                 WHEN n.state = 'NM :: New Mexico' THEN p.green_area_nm_only
-//                 ELSE 'Not Needed'
-//             END AS green_area_nm_only,
-//             CASE
-//                 WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
-//                 ELSE 'Not Needed'
-//             END AS finance_credit_approved_loan_or_lease,
-//             CASE
-//                 WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
-//                 ELSE 'Not Needed'
-//             END AS finance_agreement_completed_loan_or_lease,
-//             CASE
-//                 WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
-//                 ELSE 'Not Needed'
-//             END AS owe_documents_completed
-//         FROM internal_ops_metrics_schema ips
-//         LEFT JOIN sales_metrics_schema ss
-//             ON ips.unique_id = ss.unique_id
-//         LEFT JOIN ntp_ntp_schema n
-//             ON ips.unique_id = ips.unique_id
-//         LEFT JOIN prospects_customers_schema p
-//             ON split_part(ss.prospectid_dealerid_salesrepid, ',', 1) = p.item_id::text
-//     `)
+func CsvDownloadRetrieveQueryFunc() string {
+	// Build the SQL Query
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(`
+        SELECT unique_id,home_owner,customer_email,
+        customer_phone_number,address,state,
+        contract_total,system_size, 
+        contract_date,ntp_date, pv_install_completed_date, 
+        pto_date, canceled_date, primary_sales_rep, 
+        secondary_sales_rep FROM consolidated_data_view 
+        `)
 
-// 	return filtersBuilder.String()
-// }
+	return filtersBuilder.String()
+}

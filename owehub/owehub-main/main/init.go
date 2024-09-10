@@ -1591,6 +1591,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_calender_csv_download",
+		apiHandler.HandleGetCalenderCsvDownloadRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
