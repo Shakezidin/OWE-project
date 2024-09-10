@@ -43,6 +43,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		QcPendingCount   int64
 		NTPPendingCount  int64
 		CoPendingCount   int64
+		prospectId       string
 	)
 
 	log.EnterFn(0, "HandleGetPendingQuesTileDataRequest")
@@ -163,27 +164,33 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 			ntpD = ntpDate.Format("2006-01-02")
 		}
 
-		_, count := getPendingQueueStringValue(item, "production_discrepancy", ntpD)
+		if val, ok := item["first_value"].(string); ok {
+			prospectId = val
+		} else {
+			prospectId = "" // or a default value
+		}
+
+		_, count := getPendingQueueStringValue(item, "production_discrepancy", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD)
+		_, count = getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
+		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
+		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
+		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
+		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "green_area_nm_only", ntpD)
+		_, count = getPendingQueueStringValue(item, "green_area_nm_only", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD)
+		_, count = getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD)
+		_, count = getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "owe_documents_completed", ntpD)
+		_, count = getPendingQueueStringValue(item, "owe_documents_completed", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "change_order_status", ntpD)
+		_, count = getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		CoPendingCount += count
 	}
 
@@ -331,7 +338,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 	return filters, whereEleList
 }
 
-func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_date string) (string, int64) {
+func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_date string, prospectId string) (string, int64) {
 	if v, exists := data[key]; exists {
 		switch key {
 		case "production_discrepancy":
@@ -365,6 +372,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				return "Completed", 0
 			}
 		case "powerclerk_sent_az":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -378,6 +388,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -389,6 +402,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "green_area_nm_only":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -402,6 +418,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "finance_credit_approved_loan_or_lease":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -413,6 +432,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "finance_agreement_completed_loan_or_lease":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -424,6 +446,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "owe_documents_completed":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
