@@ -28,18 +28,22 @@ import (
 
 func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err            error
-		dataReq        models.GetCalenderDataReq
-		data           []map[string]interface{}
-		whereEleList   []interface{}
-		queryWithFiler string
-		filter         string
-		RecordCount    int64
-		// contractD           string
+		err                 error
+		dataReq             models.GetCalenderDataReq
+		data                []map[string]interface{}
+		whereEleList        []interface{}
+		queryWithFiler      string
+		filter              string
+		RecordCount         int64
+		contractD           string
 		PvInstallCreateD    string
 		PvInstallCompleteD  string
 		SiteSurevyD         string
 		siteSurveyCmpletedD string
+		BatteryScheduleD    string
+		BatteryCompleteD    string
+		PermitApprovedD     string
+		IcaprvdD            string
 	)
 
 	log.EnterFn(0, "HandleGetCalenderDataRequest")
@@ -103,7 +107,8 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	tableName := db.ViewName_ConsolidatedDataView
 	whereEleList = nil
 
-	query := fmt.Sprintf("SELECT contract_date, pv_install_created_date, pv_install_completed_date, home_owner, address, unique_id, site_survey_scheduled_date, site_survey_completed_date "+
+	query := fmt.Sprintf("SELECT contract_date, pv_install_created_date, pv_install_completed_date, home_owner, address, unique_id, site_survey_scheduled_date, site_survey_completed_date, "+
+		" battery_scheduled_date, battery_complete_date, permit_approved_date, ic_approved_date "+
 		"FROM consolidated_data_view where primary_sales_rep = '%v'", dataReq.Name)
 
 	filter, whereEleList = PrepareCalenderFilters(tableName, dataReq, true)
@@ -123,7 +128,6 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	for _, item := range data {
-		var surveryStatus, installStatus, surveyDate, installDate string
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
@@ -143,13 +147,13 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// continue
 		}
 
-		// ContractDate, ok := item["contract_date"].(time.Time)
-		// if !ok {
-		// 	// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-		// 	contractD = ""
-		// } else {
-		// 	contractD = ContractDate.Format("2006-01-02")
-		// }
+		ContractDate, ok := item["contract_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
+			contractD = ""
+		} else {
+			contractD = ContractDate.Format("2006-01-02")
+		}
 
 		PvInstallCreateDate, ok := item["pv_install_created_date"].(time.Time)
 		if !ok {
@@ -183,21 +187,44 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			siteSurveyCmpletedD = siteSurveyCmpletedDate.Format("2006-01-02")
 		}
 
-		if siteSurveyCmpletedD == "" {
-			surveryStatus = "Scheduled"
-			surveyDate = SiteSurevyD
+		BatteryScheduleDate, ok := item["battery_scheduled_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			BatteryScheduleD = ""
 		} else {
-			surveryStatus = "Completed"
-			surveyDate = siteSurveyCmpletedD
+			BatteryScheduleD = BatteryScheduleDate.Format("2006-01-02")
 		}
 
-		if PvInstallCompleteD == "" {
-			installStatus = "Scheduled"
-			installDate = PvInstallCreateD
+		BatteryCompleteDate, ok := item["battery_complete_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			BatteryCompleteD = ""
 		} else {
-			surveryStatus = "Completed"
-			installDate = PvInstallCompleteD
+			BatteryCompleteD = BatteryCompleteDate.Format("2006-01-02")
 		}
+
+		PermitApprovedDate, ok := item["permit_approved_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get InstallReadyDate for Unique ID %v. Item: %+v\n", UniqueId, item)
+			PermitApprovedD = ""
+		} else {
+			PermitApprovedD = PermitApprovedDate.Format("2006-01-02")
+		}
+
+		IcAPprovedDate, ok := item["ic_approved_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get roofing complete date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			IcaprvdD = ""
+		} else {
+			IcaprvdD = IcAPprovedDate.Format("2006-01-02")
+		}
+
+		if UniqueId == "OUR29424" {
+			log.FuncErrorTrace(0, "data = %v", item)
+		}
+
+		_, _, surveyDate, surveryStatus := getSurveyColor(SiteSurevyD, siteSurveyCmpletedD, contractD)
+		_, _, installDate, installStatus := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 
 		calenderData := models.GetCalenderData{
 			UniqueId:      UniqueId,
