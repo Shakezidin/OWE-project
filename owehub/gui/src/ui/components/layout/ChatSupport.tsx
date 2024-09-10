@@ -36,7 +36,7 @@ const ButtonSelection = ({ options, onSelect }: any) => (
   </div>
 );
 
-const socket = io('https://staging.owe-hub.com/slack/');
+const socket = io('https://staging.owe-hub.com');
 const ChatSupport = () => {
   const [channelName, setChannelName] = useState(null);
   const [issueType, setIssueType] = useState(null);
@@ -75,8 +75,9 @@ const ChatSupport = () => {
     addResponseMessage('Hi, How can I help you?');
     renderCustomComponent(ButtonSelection, {
       options: [
-        { label: 'Sales Issue', value: '1' },
-        { label: 'Dealer Issue', value: '2' },
+        { label: 'Project Support', value: '1' },
+        { label: 'Commission Support', value: '2' },
+        { label: 'Technical Support', value: '3' },
       ],
       onSelect: handleSelectOption,
     });
@@ -91,9 +92,9 @@ const ChatSupport = () => {
     // Now send the message throught the backend API
     // addResponseMessage();
     if (!issueType) {
-      if (['1', '2'].includes(newMessage)) {
+      if (['1', '2', '3'].includes(newMessage)) {
         setIssueType(newMessage);
-        addResponseMessage('Thanks, now please tell us the issue?');
+        addResponseMessage('Please enter the project Id');
       } else {
         addResponseMessage('Please select a correct option, 1 or 2');
       }

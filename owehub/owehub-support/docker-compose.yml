@@ -1,6 +1,21 @@
 version: "3"
+
 services:
+  # Node.js service
   owehub-support:
     build: .
     ports:
       - "3005:3005"
+    environment:
+      - POSTGRES_USER=OwePostgres
+      - POSTGRES_PASSWORD=OwePostgres
+      - POSTGRES_DB=owe_db
+      - POSTGRES_HOST=postgres_db_latest_1  # PostgreSQL container name
+      - POSTGRES_PORT=5432
+    container_name: owehub_support_1
+    networks:
+      - docker_owe_net  # Make sure this matches the PostgreSQL container network
+
+networks:
+  docker_owe_net:
+    external: true  # Indicates we're using the existing PostgreSQL network

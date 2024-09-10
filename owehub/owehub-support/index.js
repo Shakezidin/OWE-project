@@ -14,6 +14,16 @@ const config = require("./src/config");
 const schedule = require("node-schedule");
 const ms = require("ms");
 
+const { Client } = require("pg");
+
+const client = new Client({
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: process.env.POSTGRES_PORT || 5432,
+});
+
 const app = express();
 const port = process.env.PORT;
 
@@ -83,6 +93,18 @@ slackApp.message(async ({ message }) => {
 });
 
 slackApp.start();
+
+(async () => {
+  await client.connect();
+  const queryText = `
+       SELECT * FROM Consolidated_data_view;
+      `;
+
+  console.log("Connected to PostgreSQL");
+
+  const res = await client.query(queryText);
+  console.log(res.rows);
+})();
 
 io.on("connection", (socket) => {
   console.log("Connection", socket.id);
