@@ -990,7 +990,7 @@ func getSurveyColor(scheduledDate, completedDate, contract_date string) (string,
 	} else if scheduledDate != "" {
 		return blue, count, scheduledDate, "Scheduled"
 	}
-	return grey, count, "", "Scheduled"
+	return grey, count, "", ""
 }
 
 func getCadColor(createdDate, completedDate, site_survey_completed_date string) (string, int64, string) {
@@ -1120,7 +1120,7 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pv
 	}
 
 	// Default grey condition
-	return grey, count, "", "Pending"
+	return grey, count, "", ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
