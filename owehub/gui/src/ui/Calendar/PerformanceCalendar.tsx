@@ -13,8 +13,10 @@ import {
 import './PerformanceCalendar.css';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import CalendarSidebar from './CalendarSidebar';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface Event {
   id: number;
@@ -28,8 +30,11 @@ const PerformanceCalendar: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
+  const [data,setData] = useState<any>("")
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
+  const [events, setEvents] = useState<Event[]>([]);
   const [selectedRanges, setSelectedRanges] = useState<any[]>([
     {
       startDate: new Date(),
@@ -73,14 +78,70 @@ const PerformanceCalendar: React.FC = () => {
     }
   }, [])
 
-  const [events] = useState<Event[]>([
-    { id: 1, date: new Date(2024, 8, 3), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-    { id: 2, date: new Date(2024, 8, 3), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
-    { id: 3, date: new Date(2024, 8, 21), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-    { id: 4, date: new Date(2024, 8, 21), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
-    { id: 5, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-    { id: 6, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-  ]);
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const startOfCurrentMonth = format(startOfMonth(currentMonth), 'yyyy-MM-dd');
+        const endOfCurrentMonth = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
+
+        const calendardata = await postCaller('get_calender_data', {
+          // start_date: startOfCurrentMonth,
+          // end_date: endOfCurrentMonth,
+        });
+
+        if (calendardata.status > 201) {
+          toast.error(calendardata.message);
+          return;
+        }
+
+        setData(calendardata.data);
+
+        const newEvents: Event[] = [];
+
+        calendardata.data.calender_data_list.forEach((item: any, index: number) => {
+          if (item.survey_date) {
+            newEvents.push({
+              id: index * 2 + 1,
+              date: new Date(item.survey_date),
+              color: 'blue',
+              title: 'Survey Date',
+              idColor: '#57B3F1'
+            });
+          }
+
+          if (item.install_date) {
+            newEvents.push({
+              id: index * 2 + 2,
+              date: new Date(item.install_date),
+              color: 'purple',
+              title: 'Install PV Date',
+              idColor: '#C470C7'
+            });
+          }
+        });
+
+        setEvents(newEvents);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [currentMonth]);
+
+  console.log(data, "newdata")
+  // const [events] = useState<Event[]>([
+  //   { id: 1, date: new Date(2024, 8, 3), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
+  //   { id: 2, date: new Date(2024, 8, 3), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
+  //   { id: 3, date: new Date(2024, 8, 21), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
+  //   { id: 4, date: new Date(2024, 8, 21), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
+  //   { id: 5, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
+  //   { id: 6, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
+  // ]);
+
+
+  
 
   const hasEvent = (day: Date): boolean => {
     return events.some(event => isSameDay(event.date, day));
@@ -290,6 +351,7 @@ const PerformanceCalendar: React.FC = () => {
   const prevMonth = (): void => {
     setCurrentMonth(subMonths(currentMonth, 1));
   };
+
 
   return (
     <div className="calendar">
