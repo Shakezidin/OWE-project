@@ -415,7 +415,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		} else {
 			ntpD = ntpDate.Format("2006-01-02")
 		}
-		surveyColor, SiteSurveyCountT, SiteSurevyDate := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
+		surveyColor, SiteSurveyCountT, SiteSurevyDate, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
@@ -423,7 +423,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		PerimittingCount += PerimittingCountT
 		roofingColor, RoofingCountT, RoofingDate := roofingColor(RoofingCreatedD, RoofingCompleteD)
 		RoofingCount += RoofingCountT
-		installColor, InstallCountT, InstallDate := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
+		installColor, InstallCountT, InstallDate, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
 		electricColor, electricCountT, ElectricalDate := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
 		ElectricalCount += electricCountT
@@ -980,17 +980,17 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
-func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string) {
+func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string, string) {
 	var count int64
 	if contract_date != "" && completedDate == "" {
 		count = 1
 	}
 	if completedDate != "" {
-		return green, count, completedDate
+		return green, count, completedDate, "Completed"
 	} else if scheduledDate != "" {
-		return blue, count, scheduledDate
+		return blue, count, scheduledDate, "Scheduled"
 	}
-	return grey, count, ""
+	return grey, count, "", ""
 }
 
 func getCadColor(createdDate, completedDate, site_survey_completed_date string) (string, int64, string) {
@@ -1088,7 +1088,7 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 	return grey, count, ""
 }
 
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string) {
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
 	var count int64
 	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
 		count = 1
@@ -1109,18 +1109,18 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pv
 		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
 			latestCompletedDate = batteryCompleted
 		}
-		return green, count, latestCompletedDate
+		return green, count, latestCompletedDate, "Completed"
 	}
 
 	// Blue conditions
 	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
-		return blue, count, pvInstallCompletedDate
+		return blue, count, pvInstallCompletedDate, "Scheduled"
 	} else if !pvInstallCreatedateParsed.IsZero() {
-		return blue, count, pvInstallCreatedate
+		return blue, count, pvInstallCreatedate, "Scheduled"
 	}
 
 	// Default grey condition
-	return grey, count, ""
+	return grey, count, "", ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
