@@ -316,12 +316,14 @@ const PerformanceCalendar: React.FC = () => {
             onClick={() => handleDateClick(cloneDay)}
           >
             <span className="number">{formattedDate}</span>
-
-            {dayEvents.map((event, index) => (
-              <div key={index} className={`event-box event-${event.color}`}>
-                <span className='event-icon' style={{ color: event.idColor }}>{event.id}</span> <span className="event-text">{event.title}</span>
-              </div>
-            ))}
+            
+            <div className="cell-dots">
+              {dayEvents.map((event, index) => (
+                <div key={index} className={`event-box event-${event.color}`}>
+                  <span className='event-icon' style={{ color: event.idColor }}>{event.id}</span> <span className="event-text">{event.title}</span>
+                </div>
+              ))}
+            </div>
           </div>
         );
         day = addDays(day, 1);

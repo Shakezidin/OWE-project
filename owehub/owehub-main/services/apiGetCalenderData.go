@@ -12,6 +12,7 @@ import (
 	models "OWEApp/shared/models"
 	"encoding/json"
 	"io/ioutil"
+	"sort"
 	"strings"
 	"time"
 
@@ -152,7 +153,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			contractD = ""
 		} else {
-			contractD = ContractDate.Format("2006-01-02")
+			contractD = ContractDate.Format("2006-01-02 15:04:05")
 		}
 
 		PvInstallCreateDate, ok := item["pv_install_created_date"].(time.Time)
@@ -160,7 +161,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			PvInstallCreateD = ""
 		} else {
-			PvInstallCreateD = PvInstallCreateDate.Format("2006-01-02")
+			PvInstallCreateD = PvInstallCreateDate.Format("2006-01-02 15:04:05")
 		}
 
 		PvInstallCompleteDate, ok := item["pv_install_completed_date"].(time.Time)
@@ -168,7 +169,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			PvInstallCompleteD = ""
 		} else {
-			PvInstallCompleteD = PvInstallCompleteDate.Format("2006-01-02")
+			PvInstallCompleteD = PvInstallCompleteDate.Format("2006-01-02 15:04:05")
 		}
 
 		SiteSurevyDate, ok := item["site_survey_scheduled_date"].(time.Time)
@@ -176,7 +177,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			SiteSurevyD = ""
 		} else {
-			SiteSurevyD = SiteSurevyDate.Format("2006-01-02")
+			SiteSurevyD = SiteSurevyDate.Format("2006-01-02 15:04:05")
 		}
 
 		siteSurveyCmpletedDate, ok := item["site_survey_completed_date"].(time.Time)
@@ -184,7 +185,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			siteSurveyCmpletedD = ""
 		} else {
-			siteSurveyCmpletedD = siteSurveyCmpletedDate.Format("2006-01-02")
+			siteSurveyCmpletedD = siteSurveyCmpletedDate.Format("2006-01-02 15:04:05")
 		}
 
 		BatteryScheduleDate, ok := item["battery_scheduled_date"].(time.Time)
@@ -192,7 +193,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
 			BatteryScheduleD = ""
 		} else {
-			BatteryScheduleD = BatteryScheduleDate.Format("2006-01-02")
+			BatteryScheduleD = BatteryScheduleDate.Format("2006-01-02 15:04:05")
 		}
 
 		BatteryCompleteDate, ok := item["battery_complete_date"].(time.Time)
@@ -200,7 +201,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get active date for Unique ID %v. Item: %+v\n", UniqueId, item)
 			BatteryCompleteD = ""
 		} else {
-			BatteryCompleteD = BatteryCompleteDate.Format("2006-01-02")
+			BatteryCompleteD = BatteryCompleteDate.Format("2006-01-02 15:04:05")
 		}
 
 		PermitApprovedDate, ok := item["permit_approved_date"].(time.Time)
@@ -208,7 +209,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get InstallReadyDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			PermitApprovedD = ""
 		} else {
-			PermitApprovedD = PermitApprovedDate.Format("2006-01-02")
+			PermitApprovedD = PermitApprovedDate.Format("2006-01-02 15:04:05")
 		}
 
 		IcAPprovedDate, ok := item["ic_approved_date"].(time.Time)
@@ -216,7 +217,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			// log.FuncErrorTrace(0, "Failed to get roofing complete date for Unique ID %v. Item: %+v\n", UniqueId, item)
 			IcaprvdD = ""
 		} else {
-			IcaprvdD = IcAPprovedDate.Format("2006-01-02")
+			IcaprvdD = IcAPprovedDate.Format("2006-01-02 15:04:05")
 		}
 
 		if UniqueId == "OUR29424" {
@@ -237,6 +238,24 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 		calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
 	}
+
+	// Sort the calendar data by SurveyDate and then by InstallDate
+	sort.Slice(calenderDataList.CalenderDataList, func(i, j int) bool {
+		// Parse dates from strings to time.Time
+		date1, _ := time.Parse("2006-01-02 15:04:05", calenderDataList.CalenderDataList[i].SurveyDate)
+		date2, _ := time.Parse("2006-01-02 15:04:05", calenderDataList.CalenderDataList[j].SurveyDate)
+
+		// Compare SurveyDate first
+		if !date1.IsZero() && !date2.IsZero() {
+			return date1.Before(date2)
+		}
+
+		// If SurveyDate is not available, compare InstallDate
+		installDate1, _ := time.Parse("2006-01-02 15:04:05", calenderDataList.CalenderDataList[i].InstallDate)
+		installDate2, _ := time.Parse("2006-01-02 15:04:05", calenderDataList.CalenderDataList[j].InstallDate)
+
+		return installDate1.Before(installDate2)
+	})
 
 	RecordCount = int64(len(calenderDataList.CalenderDataList))
 
