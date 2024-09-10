@@ -171,8 +171,8 @@ function App() {
   const otherRoutes = () => {
     return (
       <Route>
-        <Route path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage />} />
-        <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
+        {/* <Route path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage />} />
+        <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} /> */}
 
         <Route path={ROUTES.REPORT} element={<Report />} />
         <Route
@@ -253,7 +253,7 @@ function App() {
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER) &&
-            configAndUserManagementRoutes()}
+            <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
