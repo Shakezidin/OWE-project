@@ -260,6 +260,10 @@
   margin-right: 0.5rem;
 }
 
+.mobile-calendar-text > *{
+  display: none;
+}
+
 @media (max-width: 768px) {
   .cell {
     min-width: unset;
@@ -275,19 +279,19 @@
     padding-bottom: 4px;
   }
 
-  .cell.selected{
+  .cell.selected {
     border: 2px solid #3372E2;
     border-radius: 6px;
     background-color: #3B80FA !important;
   }
 
-  .cell.selected .number{
-    background: unset ;
+  .cell.selected .number {
+    background: unset;
     width: unset;
     height: unset;
     display: block;
   }
-  
+
   .days {
     font-weight: 500;
     color: #A5A9AF;
@@ -350,7 +354,8 @@
     height: 2.5rem;
     width: 2.5rem;
   }
-  .calendar-date .icon svg{
+
+  .calendar-date .icon svg {
     width: 1.5rem;
     height: 1.5rem;
   }
@@ -373,7 +378,7 @@
     display: none;
   }
 
-  .cell-dots{
+  .cell-dots {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -382,6 +387,27 @@
 
   .event-box+.event-box {
     margin-top: unset;
+  }
+
+  .mobile-calendar-text{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem 0;
+  }
+
+  .mobile-calendar-text span {
+    display: block;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 50%;
+  }
+  .mobile-calendar-text .mob-cal-txt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
   }
 
 }
