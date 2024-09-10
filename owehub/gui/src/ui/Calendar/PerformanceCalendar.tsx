@@ -316,7 +316,7 @@ const PerformanceCalendar: React.FC = () => {
             onClick={() => handleDateClick(cloneDay)}
           >
             <span className="number">{formattedDate}</span>
-            
+
             <div className="cell-dots">
               {dayEvents.map((event, index) => (
                 <div key={index} className={`event-box event-${event.color}`}>
@@ -335,7 +335,13 @@ const PerformanceCalendar: React.FC = () => {
       );
       days = [];
     }
-    return <div className="body">{rows}</div>;
+    return <div className="body">
+      {rows}
+      <div className='mobile-calendar-text'>
+        <div className='mob-cal-txt'><span style={{background: "#57B3F1"}}></span>Survey Date</div>
+        <div className='mob-cal-txt'><span style={{background: "#C470C7"}}></span>Install PV Date</div>
+      </div>
+    </div>;
   };
 
   const nextMonth = (): void => {

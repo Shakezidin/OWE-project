@@ -140,6 +140,9 @@
         scroll-behavior: unset;
         min-width: unset;
     }
+    .user-sidebar .upper-section{
+        justify-content: flex-start;
+    }
     .upper-section .close-icon{
         display: none;
     }
