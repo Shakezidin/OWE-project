@@ -36,6 +36,10 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({ onClose, selectedDate
                     <div className="close-icon" onClick={onClose}><FaArrowRight /></div>
                     <p>{formattedDate}</p>
                 </div>
+                <div className="upper-section-status">
+                    <div style={{background: "#57B3F1"}}><span style={{color: "#57B3F1"}}>3</span>Survey Date</div>
+                    <div style={{background: "#C470C7"}}><span style={{color: "#C470C7"}}>3</span>Install PV Date</div>
+                </div>
                 <div className="main-section">
                     <div className='sidebar-cards'>
                         {calendarData.map((data) => (
