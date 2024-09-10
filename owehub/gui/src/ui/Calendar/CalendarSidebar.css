@@ -113,3 +113,38 @@
     margin-top: 10px;
     text-transform: capitalize;
 }
+
+@media screen and (max-width: 768px){
+    .sidebar-wrapper{
+        position: unset;
+        background-color: unset;
+        overflow-y: unset;
+        justify-content: center;
+        background: #fff;
+        border-radius: 10px;
+        margin-top: 1rem;
+    }
+    .upper-section{
+        padding-top: 1rem;
+    }
+    .sidebar-cards{
+        margin: 2rem 0;
+    }
+    .sidebar-cards .card-name{
+        margin-right: 10px;
+    }
+    .user-sidebar{
+        background: unset;
+        padding: 0 1rem;
+        height: unset !important;
+        scroll-behavior: unset;
+        min-width: unset;
+    }
+    .upper-section .close-icon{
+        display: none;
+    }
+    .user-sidebar .upper-section p{
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+}
