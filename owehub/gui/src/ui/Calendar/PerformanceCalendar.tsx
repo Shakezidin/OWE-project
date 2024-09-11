@@ -110,7 +110,7 @@ const PerformanceCalendar: React.FC = () => {
             newEvents.push({
               id: index * 2 + 1,
               date: new Date(item.survey_date),
-              color: 'blue',
+              color: '#57B3F1',
               title: 'Survey Date',
               idColor: '#57B3F1',
               address:item.address,
@@ -126,7 +126,7 @@ const PerformanceCalendar: React.FC = () => {
             newEvents.push({
               id: index * 2 + 2,
               date: new Date(item.install_date),
-              color: 'purple',
+              color: '#C470C7',
               title: 'Install PV Date',
               idColor: '#C470C7',
               address:item.address,
@@ -335,7 +335,7 @@ const PerformanceCalendar: React.FC = () => {
 
             <div className="cell-dots">
               {dayEvents.map((event, index) => (
-                <div key={index} className={`event-box event-${event.color}`}>
+                <div key={index} className={`event-box event-${event.color}`} style={{background: event.color}}>
                   <span className='event-icon' style={{ color: event.idColor }}>{event.id}</span> <span className="event-text">{event.title}</span>
                 </div>
               ))}

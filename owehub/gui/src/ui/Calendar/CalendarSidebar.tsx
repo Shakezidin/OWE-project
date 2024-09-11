@@ -45,13 +45,13 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({ onClose, selectedDate
                     <div className='sidebar-cards'>
                         {selectedEvents.map((data:any) => (
                             <div className="card">
-                                <p className='card-title' style={{ color: data.color }}><span style={{ background: data.color }}></span>{data.title} Date</p>
+                                <p className='card-title' style={{ color: data.color }}><span style={{ background: data.color }}></span>{data.title}</p>
                                 <div className='flex items-center justify-between' style={{width: "100%"}}>
                                     <p className='card-name'>{data.home_owner}</p>
                                     <p className='our-id'>{data.unique_id}</p>
                                 </div>
                                 <a href='#' className='card-address'>{data.address}</a>
-                                <button className='card-status' style={{ backgroundColor: data.status === "completed" ? "#63ACA3" : "#3C7AF1" }}>{data.status}</button>
+                                <button className='card-status' style={{ backgroundColor: data.status === "Completed" ? "#63ACA3" : "#3C7AF1" }}>{data.status}</button>
                             </div>
                         ))}
                     </div>
