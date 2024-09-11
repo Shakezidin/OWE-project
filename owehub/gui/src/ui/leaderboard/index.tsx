@@ -75,18 +75,19 @@ const Index = () => {
     });
 
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const role = authData?.role;
 
   useEffect(() => {
-    const role = authData?.role;
+    const role = localStorage.getItem("role");
+    const isAuth = localStorage.getItem("isPasswordChangeRequired")
     if (role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ADMIN) {
       setIsFetched(true);
     }
     setAuthenticated(
-      authData?.isPasswordChangeRequired?.toString() === 'false'
+      isAuth?.toString() === 'false'
     );
-  }, [authData]);
+  }, []);
 
   const showPartner = useMemo(() => {
     if (groupBy === 'region' || groupBy === 'state') {

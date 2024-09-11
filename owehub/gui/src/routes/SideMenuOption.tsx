@@ -18,12 +18,25 @@ const mob = {
     {
       path: ROUTES.PEINDING_QUEUE,
       sidebarProps: {
-        displayText: 'Pending Actions',
+        displayText: 'Pending Actions - (BETA)',
         icon: (
           <MdPendingActions
             size={20}
-            style={{ marginLeft: '3px' }}
+            style={{ marginLeft: '2px' }}
             color="black"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.COMMISSION_DASHBOARD,
+      sidebarProps: {
+        displayText: 'Dealer Pay',
+        icon: (
+          <MdOutlinePayment
+            size={20}
+            style={{ marginLeft: '5px' }}
+            className="hover-icon"
           />
         ),
       },
@@ -79,7 +92,13 @@ const mob = {
         icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
-
+    {
+      path: ROUTES.CONFIG_PAGE,
+      sidebarProps: {
+        displayText: 'Configure',
+        icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
+      },
+    },
     {
       path: ROUTES.TECHNICAL_SUPPORT,
       sidebarProps: {
@@ -87,6 +106,7 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
+   
     // {
     //   path: ROUTES.CALENDAR,
     //   sidebarProps: {

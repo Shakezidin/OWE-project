@@ -52,6 +52,7 @@ const BatteryAmp = () => {
   const [mainDisabled, setMainDisabled] = useState(true);
   const [mssg, setMssg] = useState('');
   const [totalAmp, setTotalAmp] = useState(0);
+  const [fullhomeBackup, setFullhomeBackup] = useState(true)
   const [lightHouseAmpSize, setLightHouseAmpSize] = useState<string | number>(
     0
   );
@@ -94,12 +95,36 @@ const BatteryAmp = () => {
     }
   };
 
+  const switchPratialBackup = () => {
+    Swal.fire({
+      title: `<p style="font-size:14px;padding-top:20px;padding-bottom:16px;">The batteries are capable of powering the full load. Would you like to switch to full home backup?<p>`,
+      showDenyButton: true,
+      confirmButtonText: "Yes, switch to full home backup",
+      denyButtonText: `No, stay on partial home backup.`,
+      focusDeny: true,
+      confirmButtonColor: "#0BAF11",
+      customClass: {
+        denyButton: "mt-13"
+      }
+    })
+      .then((result) => {
+        if (result.isDenied) {
+          setFullhomeBackup(false)
+        } else {
+          setFullhomeBackup(true)
+        }
+        setRequiredBattery(prev => prev + 1)
+      })
+     
+
+  }
+
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
     const ampValue = batteries[index].category_ampere * 0.6;
     const remain = avavilableAmpPercentage.remainingAmps - ampValue;
     const battery = batteries[index]
-    console.log(battery.amp, "ampppp", remain)
+   
     if ((battery.amp < 70 ? remain >= 0 : true) && !batteries[index].isOn) {
       if (battery.amp >= 70) {
         Swal.fire({
@@ -114,11 +139,16 @@ const BatteryAmp = () => {
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            setRequiredBattery(prev => prev + 1)
+            battery.isOn = true
+            const totalBattery = requiredBattery + 1
+            if (required <= totalBattery) {
+              switchPratialBackup()
+            }
           } else if (result.isDenied) {
             return
           }
         });
+        
       }
       else {
         batteries[index].isOn = true;
@@ -239,11 +269,11 @@ const BatteryAmp = () => {
   }, [id]);
 
   useEffect(() => {
-    if (requiredBattery >= required) {
+    if (requiredBattery >= required && fullhomeBackup) {
       setMainOn(true);
       setBatteryPower((prev) => prev.map((ba) => ({ ...ba, isOn: true })));
     }
-  }, [required, requiredBattery]);
+  }, [required, requiredBattery, fullhomeBackup]);
   return (
     <div
       ref={form}

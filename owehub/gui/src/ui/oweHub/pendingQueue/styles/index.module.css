@@ -16,13 +16,19 @@
   transition: all 0.5s;
 }
 
+.deco-text:hover{
+  text-decoration: underline;
+  color: #000;
+}
 .pending_card_inner {
   border: 1px solid #eba900;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   border-radius: 6px;
   padding: 28px 21px;
+  height: 107px;
   transition: all 0.5s;
 }
 .pending_card_hover:hover {
@@ -44,12 +50,13 @@
   color: #263747;
 }
 .pending_card_desc {
-  font-size: 14px;
+  font-size: 12px;
   margin-top: 4px;
   color: #263747;
 }
 .active_card {
   background-color: #eba900;
+  gap: 1rem;
 }
 .mandatory {
   position: absolute;
@@ -130,12 +137,7 @@
     display: none;
   }
 
-  .pending_card_wrapper{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+  
 
   .pending_card {
     padding: 1px;

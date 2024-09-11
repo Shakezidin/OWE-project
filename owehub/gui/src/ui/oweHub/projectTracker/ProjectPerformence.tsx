@@ -212,11 +212,11 @@ const ProjectPerformence = () => {
     setExportShow(false);
   };
 
-  useEffect(() => {
-    dispatch(getProjects());
+  // useEffect(() => {
+  //   dispatch(getProjects());
 
-    return () => toast.dismiss();
-  }, []);
+  //   return () => toast.dismiss();
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -271,6 +271,7 @@ const ProjectPerformence = () => {
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
+      setPage(1);
     }, 800),
     []
   );
@@ -296,7 +297,7 @@ const ProjectPerformence = () => {
       } finally {
       }
     })();
-  }, [ activeTab]);
+  }, [activeTab]);
 
   useEffect(() => {
     dispatch(
@@ -695,25 +696,33 @@ const ProjectPerformence = () => {
         <div className="pipeline-header-btns">
           <p
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Active Queue')}
+            onClick={() => {
+              handleActiveTab('Active Queue'), setPage(1);
+            }}
           >
             Active
           </p>
           <p
             className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Active Queue')}
+            onClick={() => {
+              handleActiveTab('Active Queue'), setPage(1);
+            }}
           >
             Active
           </p>
           <p
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Hold & Jeopardy')}
+            onClick={() => {
+              handleActiveTab('Hold & Jeopardy'), setPage(1);
+            }}
           >
             Hold & Jeopardy
           </p>
           <p
             className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
-            onClick={() => handleActiveTab('Hold & Jeopardy')}
+            onClick={() => {
+              handleActiveTab('Hold & Jeopardy'), setPage(1);
+            }}
           >
             H&J
           </p>
@@ -724,7 +733,7 @@ const ProjectPerformence = () => {
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
         </div>
         <div className="flex stats-card-wrapper">
-          <div className="project-card-container-1 mx-auto">
+          <div style={{width:"100%"}} className="project-card-container-1 ">
             {loading ? (
               <div
                 style={{
@@ -941,14 +950,12 @@ const ProjectPerformence = () => {
                                 <Link
                                   to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
                                 >
-                                  <>
-                                    <h3 className="customer-name">
-                                      {project.customer}
-                                    </h3>
+                                  <div className="deco-text">
+                                    <h3>{project.customer}</h3>
                                     <p className="install-update">
                                       {project.unqiue_id}
                                     </p>
-                                  </>
+                                  </div>
                                 </Link>
 
                                 <div className="milestone-status">

@@ -205,7 +205,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		Customer, ok := item["home_owner"].(string)
 		if !ok || UniqueId == "" {
 			log.FuncErrorTrace(0, "Failed to get Customer Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		SiteSurveyScheduleDate, ok := item["site_survey_scheduled_date"].(time.Time)

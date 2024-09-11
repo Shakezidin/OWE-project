@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import './srImageUpload.css';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import axios from 'axios';
 import { PiCircle } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 import { IoCheckmarkCircle } from 'react-icons/io5';
@@ -10,8 +9,6 @@ import { GoPlus } from 'react-icons/go';
 import { errorSwal } from '../../components/alert/ShowAlert';
 import { RiCloseLine } from 'react-icons/ri';
 import { sendMail } from '../../../utiles';
-import { FiInfo } from 'react-icons/fi';
-import { Tooltip } from 'react-tooltip';
 import s3Upload from '../../../utiles/s3Upload';
 const primaryApplicances = [
   { name: 'Water heater', id: 1 },
@@ -482,29 +479,14 @@ OWE Battery Calc
           </div>
 
           <div className="prospect-input-field relative mt2">
-            <input
-              type="text"
-              placeholder="Add Note"
+            <textarea
+            rows={4}
+              placeholder="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
-            <div className="absolute_info_icon">
-              <FiInfo
-                style={{ cursor: 'pointer' }}
-                role="button"
-                className="cursor-pointer"
-                data-tooltip-id="my-tooltip-1"
-                size={18}
-                color="rgb(165 158 158)"
-              />
-            </div>
-            <Tooltip
-              id="my-tooltip-1"
-              style={{ maxWidth: 300, zIndex: 10 }}
-              place="bottom-start"
-              content="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
-              openOnClick
-            />
+           
+            
           </div>
 
           <div
