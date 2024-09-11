@@ -85,6 +85,7 @@ import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
 import Calendar from './ui/Calendar/PerformanceCalendar';
 import PendingQueue from './ui/oweHub/pendingQueue';
+import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
@@ -137,6 +138,7 @@ function App() {
         <Route path={ROUTES.CONFIG_AR} element={<AR />} />
         <Route path={ROUTES.CONFIG_AR_SCHEDULE} element={<ARSchedule />} />
         <Route path={ROUTES.CONFIG_INSTALL_COST} element={<InstallCost />} />
+       
         <Route
           path={ROUTES.CONFIG_LEADER_OVERRIDE}
           element={<LeaderOverride />}
@@ -298,6 +300,7 @@ function App() {
             path={ROUTES.SALES_REP_SCHEDULER}
             element={<CustomersList />}
           />
+           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard/>} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
