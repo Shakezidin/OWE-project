@@ -14,7 +14,7 @@
 }
 
 .user-sidebar {
-    min-width: 500px;
+    max-width: 600px;
     min-height: 100vh;
     overflow-y: auto;
     background: #fff;
@@ -132,8 +132,12 @@
         overflow-y: unset;
         justify-content: center;
         background: #fff;
-        border-radius: 10px;
+        border-radius: 20px;
         margin-top: 1rem;
+    }
+
+    .sidebar-cards .card {
+        justify-content: space-between;
     }
 
     .upper-section {
@@ -169,10 +173,8 @@
         font-size: 1.3rem;
     }
 
-    .upper-section-status{
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+    .upper-section-status {
+        display: none;
     }
 
     .upper-section-status div {
@@ -195,5 +197,19 @@
         margin-right: 8px;
         font-weight: 500;
         background-color: #fff;
+    }
+
+    .main-sidebar {
+        margin: 10px;
+    }
+}
+
+@media (max-width: 500px) {
+    .sidebar-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-wrapper {
+        display: block;
     }
 }

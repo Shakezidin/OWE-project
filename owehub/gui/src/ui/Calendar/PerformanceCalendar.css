@@ -21,7 +21,7 @@
 }
 
 .calendar-close:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .calendar-date .icon {
@@ -70,6 +70,12 @@
   border-radius: 4px;
   width: 50%;
   padding: 2px;
+}
+
+.calendar-btn-close {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .header {
@@ -260,7 +266,7 @@
   margin-right: 0.5rem;
 }
 
-.mobile-calendar-text > *{
+.mobile-calendar-text>* {
   display: none;
 }
 
@@ -383,18 +389,22 @@
     align-items: center;
     gap: 4px;
     padding: 0 4px;
+    width: 100%;
+    overflow-y: hidden;
   }
 
   .event-box+.event-box {
     margin-top: unset;
   }
 
-  .mobile-calendar-text{
+  .mobile-calendar-text {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
     padding: 2rem 0;
+    padding-top: 1.5rem;
+    margin-bottom: 1.7rem;
   }
 
   .mobile-calendar-text span {
@@ -403,11 +413,19 @@
     width: 1rem;
     border-radius: 50%;
   }
+
   .mobile-calendar-text .mob-cal-txt {
     display: flex;
     align-items: center;
     gap: 8px;
     font-weight: 500;
+  }
+
+  .calendar-btn-close{
+    position: absolute;
+    top: 88%;
+    margin-top: 14px;
+    gap: 0;
   }
 
 }
