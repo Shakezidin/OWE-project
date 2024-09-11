@@ -65,7 +65,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 
 	if len(Dealerdata) == 0 {
 		log.FuncErrorTrace(0, "No dealer is found in podio")
-		return errors.New("no dealer is found in podio")
+		return errors.New("no dealer is found in podios")
 	}
 
 	dealerItemId, ok := Dealerdata[0]["item_id"].(int64)
