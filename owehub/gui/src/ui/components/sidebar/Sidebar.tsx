@@ -68,10 +68,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE)
         ) {
-        } else if (
-          item.path !== ROUTES.PROJECT_PERFORMANCE &&
-          item.path !== ROUTES.PROJECT_STATUS
-        ) {
+        } else {
           newArr[0].mob.push(item);
         }
       });
