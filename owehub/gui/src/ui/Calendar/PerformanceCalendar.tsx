@@ -307,19 +307,29 @@ const PerformanceCalendar: React.FC = () => {
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
     const endDate = addDays(startOfWeek(monthEnd), 6);
-
+  
     const rows: JSX.Element[] = [];
     let days: JSX.Element[] = [];
     let day = startDate;
     let formattedDate = '';
-
+  
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, 'd');
         const cloneDay = day;
-
+  
         const dayEvents = events.filter(event => isSameDay(day, event.date));
-
+        
+       
+        const eventCounts = dayEvents.reduce((acc, event) => {
+          if (acc[event.title]) {
+            acc[event.title].count += 1;
+          } else {
+            acc[event.title] = { color: event.color, count: 1 };
+          }
+          return acc;
+        }, {} as Record<string, { color: string; count: number }>);
+  
         days.push(
           <div
             className={`col cell ${!isSameMonth(day, monthStart)
@@ -332,11 +342,12 @@ const PerformanceCalendar: React.FC = () => {
             onClick={() => handleDateClick(cloneDay)}
           >
             <span className="number">{formattedDate}</span>
-
+  
             <div className="cell-dots">
-              {dayEvents.map((event, index) => (
-                <div key={index} className={`event-box event-${event.color}`} style={{background: event.color}}>
-                  <span className='event-icon' style={{ color: event.idColor }}>{event.id}</span> <span className="event-text">{event.title}</span>
+              {Object.entries(eventCounts).map(([title, { color, count }], index) => (
+                <div key={index} className={`event-box event-${color}`} style={{background: color}}>
+                  <span className='event-icon' style={{ color: color }}>{count}</span> 
+                  <span className="event-text">{title}</span>
                 </div>
               ))}
             </div>
@@ -359,6 +370,7 @@ const PerformanceCalendar: React.FC = () => {
       </div>
     </div>;
   };
+  
 
   const nextMonth = (): void => {
     setCurrentMonth(addMonths(currentMonth, 1));
