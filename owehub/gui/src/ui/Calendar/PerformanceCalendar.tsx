@@ -17,6 +17,7 @@ import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Papa from 'papaparse';
 import { FaUpload } from 'react-icons/fa';
 
 
@@ -43,6 +44,7 @@ const PerformanceCalendar: React.FC = () => {
   const [data, setData] = useState<any>("")
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>([]);
+  const [isExportingData, setIsExporting] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState<any[]>([
     {
       startDate: new Date(),
@@ -57,6 +59,69 @@ const PerformanceCalendar: React.FC = () => {
   const closeSidebar = () => {
     setSidebarVisible(false);
   };
+
+
+  const ExportCsv = async () => {
+    setIsExporting(true);
+    
+    try {
+      const headers = [
+        'UniqueId',
+        'Homeowner Name',
+        'Homeowner Contact Info',
+        'Address',
+        'State',
+        'Contract Total$',
+        'Sys Size',
+        'Sale Date',
+        'NTP Date',
+        'PTO Date'
+      ];
+  
+      const getAllData = await postCaller('get_calender_csv_download', {
+        start_date: '',
+        end_date: '',
+      });
+  
+      if (getAllData.status > 201) {
+        toast.error(getAllData.message);
+        setIsExporting(false);
+        return;
+      }
+  
+      const csvData = getAllData?.data?.map?.((item: any) => [
+        item.unique_id,
+        item.home_owner,
+        item.customer_phone_number,
+        item.address,
+        item.state,
+        item.contract_total,
+        item.system_size,
+        item.contract_date,
+        item.ntp_date,
+        item.pto_date,
+
+      ]);
+  
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+  
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'SalesRepCalendar.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  
+    } catch (error) {
+      toast.error('An error occurred during the CSV export.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+  
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -250,15 +315,15 @@ const PerformanceCalendar: React.FC = () => {
           <div className='calendar-btn-close'>
             <div className="perf-export-btn">
               <button
-                // disabled={isExportingData}
-                // onClick={ExportCsv}
-                // className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-                className={`performance-exportbtn`}
+                disabled={isExportingData}
+                onClick={ExportCsv}
+                className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+             
                 style={{ marginTop: "unset", padding: "8px 12px" }}
               >
                 <FaUpload size={12} className="mr1" />
-                {/* <span>{isExportingData ? ' Downloading... ' : ' Export '}</span> */}
-                <span>Export</span>
+                <span>{isExportingData ? ' Downloading... ' : ' Export '}</span>
+               
               </button>
             </div>
             <div onClick={handleCalcClose} style={{ height: "26px" }}>
