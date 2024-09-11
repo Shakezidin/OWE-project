@@ -11,10 +11,10 @@ import {
   isSameDay,
 } from 'date-fns';
 import './PerformanceCalendar.css';
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import CalendarSidebar from './CalendarSidebar';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { IoClose } from "react-icons/io5";
+import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -32,15 +32,15 @@ const PerformanceCalendar: React.FC = () => {
   const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
-  const [data,setData] = useState<any>("")
+  const [data, setData] = useState<any>('');
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedRanges, setSelectedRanges] = useState<any[]>([
     {
       startDate: new Date(),
       endDate: new Date(),
-      key: 'selection'
-    }
+      key: 'selection',
+    },
   ]);
 
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -52,12 +52,11 @@ const PerformanceCalendar: React.FC = () => {
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         closeSidebar();
         setShowCalendar(false);
         handleCalcClose();
       }
-
     };
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -70,20 +69,26 @@ const PerformanceCalendar: React.FC = () => {
       }
     };
 
-    window.addEventListener("keydown", handleEscape)
-    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener('keydown', handleEscape);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      window.removeEventListener("keydown", handleEscape)
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [])
+      window.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const startOfCurrentMonth = format(startOfMonth(currentMonth), 'yyyy-MM-dd');
-        const endOfCurrentMonth = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
+        const startOfCurrentMonth = format(
+          startOfMonth(currentMonth),
+          'yyyy-MM-dd'
+        );
+        const endOfCurrentMonth = format(
+          endOfMonth(currentMonth),
+          'yyyy-MM-dd'
+        );
 
         const calendardata = await postCaller('get_calender_data', {
           // start_date: startOfCurrentMonth,
@@ -99,27 +104,29 @@ const PerformanceCalendar: React.FC = () => {
 
         const newEvents: Event[] = [];
 
-        calendardata.data.calender_data_list.forEach((item: any, index: number) => {
-          if (item.survey_date) {
-            newEvents.push({
-              id: index * 2 + 1,
-              date: new Date(item.survey_date),
-              color: 'blue',
-              title: 'Survey Date',
-              idColor: '#57B3F1'
-            });
-          }
+        calendardata.data.calender_data_list.forEach(
+          (item: any, index: number) => {
+            if (item.survey_date) {
+              newEvents.push({
+                id: index * 2 + 1,
+                date: new Date(item.survey_date),
+                color: 'blue',
+                title: 'Survey Date',
+                idColor: '#57B3F1',
+              });
+            }
 
-          if (item.install_date) {
-            newEvents.push({
-              id: index * 2 + 2,
-              date: new Date(item.install_date),
-              color: 'purple',
-              title: 'Install PV Date',
-              idColor: '#C470C7'
-            });
+            if (item.install_date) {
+              newEvents.push({
+                id: index * 2 + 2,
+                date: new Date(item.install_date),
+                color: 'purple',
+                title: 'Install PV Date',
+                idColor: '#C470C7',
+              });
+            }
           }
-        });
+        );
 
         setEvents(newEvents);
       } catch (error) {
@@ -130,7 +137,7 @@ const PerformanceCalendar: React.FC = () => {
     })();
   }, [currentMonth]);
 
-  console.log(data, "newdata")
+  console.log(data, 'newdata');
   // const [events] = useState<Event[]>([
   //   { id: 1, date: new Date(2024, 8, 3), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
   //   { id: 2, date: new Date(2024, 8, 3), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
@@ -140,16 +147,13 @@ const PerformanceCalendar: React.FC = () => {
   //   { id: 6, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
   // ]);
 
-
-  
-
   const hasEvent = (day: Date): boolean => {
-    return events.some(event => isSameDay(event.date, day));
+    return events.some((event) => isSameDay(event.date, day));
   };
 
   const handleDateClick = (day: Date): void => {
     setSelectedDate(day);
-    setSelectedEvents(events.filter(event => isSameDay(event.date, day)));
+    setSelectedEvents(events.filter((event) => isSameDay(event.date, day)));
 
     if (hasEvent(day)) {
       setSidebarVisible(true);
@@ -168,21 +172,38 @@ const PerformanceCalendar: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
-  const yearRange = 75
+  const yearRange = 75;
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: yearRange * 2 + 1 }, (_, i) => currentYear - yearRange + i);
+  const years = Array.from(
+    { length: yearRange * 2 + 1 },
+    (_, i) => currentYear - yearRange + i
+  );
 
   const handleReset = () => {
-    setSelectedRanges([{ startDate: new Date(), endDate: new Date(), key: 'selection' }]);
+    setSelectedRanges([
+      { startDate: new Date(), endDate: new Date(), key: 'selection' },
+    ]);
     setSelectedMonth(new Date().getMonth());
     setSelectedYear(new Date().getFullYear());
   };
 
-  const [displayedDate, setDisplayedDate] = useState<string>(format(currentMonth, 'MMMM yyyy'));
+  const [displayedDate, setDisplayedDate] = useState<string>(
+    format(currentMonth, 'MMMM yyyy')
+  );
   const [isDefaultDate, setIsDefaultDate] = useState<boolean>(true);
 
   const handleApply = () => {
@@ -209,28 +230,45 @@ const PerformanceCalendar: React.FC = () => {
     setDisplayedDate(format(newDate, 'MMMM yyyy'));
   };
 
-
   const renderHeader = () => {
     const isCurrentMonth = isSameMonth(currentMonth, new Date());
     const dateFormat = isCurrentMonth ? 'd MMMM yyyy' : 'MMMM yyyy';
     return (
       <div className="header">
-        <div className="flex items-center justify-between sales-calendar" style={{ width: "99%" }}>
-          <div className='calendar-date flex items-center'>
+        <div
+          className="flex items-center justify-between sales-calendar"
+          style={{ width: '99%' }}
+        >
+          <div className="calendar-date flex items-center">
             <div className="prev-icon" onClick={handlePrevMonth}>
-              <div className="icon"><FiChevronLeft /></div>
+              <div className="icon">
+                <FiChevronLeft />
+              </div>
             </div>
-            <div className="date-format" onClick={() => setShowCalendar(!showCalendar)}>
-              <span style={{ display: "block", width: "180px", textAlign: "center" }}>
-                {isDefaultDate ? format(currentMonth, dateFormat) : displayedDate}
+            <div
+              className="date-format"
+              onClick={() => setShowCalendar(!showCalendar)}
+            >
+              <span
+                style={{
+                  display: 'block',
+                  width: '180px',
+                  textAlign: 'center',
+                }}
+              >
+                {isDefaultDate
+                  ? format(currentMonth, dateFormat)
+                  : displayedDate}
               </span>
             </div>
             <div className="next-icon" onClick={handleNextMonth}>
-              <div className="icon"><FiChevronRight /></div>
+              <div className="icon">
+                <FiChevronRight />
+              </div>
             </div>
           </div>
           <div onClick={handleCalcClose}>
-            <IoClose className='calendar-close' />
+            <IoClose className="calendar-close" />
           </div>
         </div>
         {showCalendar && (
@@ -241,7 +279,9 @@ const PerformanceCalendar: React.FC = () => {
                 onChange={(e) => setSelectedMonth(Number(e.target.value))}
               >
                 {months.map((month, index) => (
-                  <option key={month} value={index}>{month}</option>
+                  <option key={month} value={index}>
+                    {month}
+                  </option>
                 ))}
               </select>
 
@@ -250,7 +290,9 @@ const PerformanceCalendar: React.FC = () => {
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
               >
                 {years.map((year) => (
-                  <option key={year} value={year}>{year}</option>
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
               </select>
             </div>
@@ -302,16 +344,17 @@ const PerformanceCalendar: React.FC = () => {
         formattedDate = format(day, 'd');
         const cloneDay = day;
 
-        const dayEvents = events.filter(event => isSameDay(day, event.date));
+        const dayEvents = events.filter((event) => isSameDay(day, event.date));
 
         days.push(
           <div
-            className={`col cell ${!isSameMonth(day, monthStart)
-              ? 'non-month'
-              : isSameDay(day, selectedDate as Date)
-                ? 'selected active'
-                : ''
-              }`}
+            className={`col cell ${
+              !isSameMonth(day, monthStart)
+                ? 'non-month'
+                : isSameDay(day, selectedDate as Date)
+                  ? 'selected active'
+                  : ''
+            }`}
             key={day.toString()}
             onClick={() => handleDateClick(cloneDay)}
           >
@@ -320,7 +363,10 @@ const PerformanceCalendar: React.FC = () => {
             <div className="cell-dots">
               {dayEvents.map((event, index) => (
                 <div key={index} className={`event-box event-${event.color}`}>
-                  <span className='event-icon' style={{ color: event.idColor }}>{event.id}</span> <span className="event-text">{event.title}</span>
+                  <span className="event-icon" style={{ color: event.idColor }}>
+                    {event.id}
+                  </span>{' '}
+                  <span className="event-text">{event.title}</span>
                 </div>
               ))}
             </div>
@@ -335,13 +381,19 @@ const PerformanceCalendar: React.FC = () => {
       );
       days = [];
     }
-    return <div className="body">
-      {rows}
-      <div className='mobile-calendar-text'>
-        <div className='mob-cal-txt'><span style={{background: "#57B3F1"}}></span>Survey Date</div>
-        <div className='mob-cal-txt'><span style={{background: "#C470C7"}}></span>Install PV Date</div>
+    return (
+      <div className="body">
+        {rows}
+        <div className="mobile-calendar-text">
+          <div className="mob-cal-txt">
+            <span style={{ background: '#57B3F1' }}></span>Survey Date
+          </div>
+          <div className="mob-cal-txt">
+            <span style={{ background: '#C470C7' }}></span>Install PV Date
+          </div>
+        </div>
       </div>
-    </div>;
+    );
   };
 
   const nextMonth = (): void => {
@@ -352,14 +404,14 @@ const PerformanceCalendar: React.FC = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
   };
 
-
   return (
     <div className="calendar">
       {renderHeader()}
       {renderDays()}
       {renderCells()}
       {sidebarVisible && selectedDate && selectedEvents.length > 0 && (
-        <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} />)}
+        <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} />
+      )}
     </div>
   );
 };

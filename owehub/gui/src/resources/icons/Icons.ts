@@ -292,5 +292,5 @@ export const ICONS = {
   QCLine: QCLine,
   userSwap,
   Pendingqc: pendingqc,
-  SeeMore:seemore,
+  SeeMore: seemore,
 };

@@ -37,62 +37,62 @@ export interface ICustomer {
 }
 const customers = [
   {
-    "roof_type": "John Doe",
-    "home_owner": "John Doe",
-    "customer_email": "john.doe@example.com",
-    "customer_phone_number": "123-456-7890",
-    "system_size": 4.5,
-    "address": "123 Solar St."
+    roof_type: 'John Doe',
+    home_owner: 'John Doe',
+    customer_email: 'john.doe@example.com',
+    customer_phone_number: '123-456-7890',
+    system_size: 4.5,
+    address: '123 Solar St.',
   },
   {
-    "roof_type": "John Doe",
-    "home_owner": "John Doe",
-    "customer_email": "john.doe@example.com",
-    "customer_phone_number": "123-456-7890",
-    "system_size": 4.5,
-    "address": "123 Solar St."
+    roof_type: 'John Doe',
+    home_owner: 'John Doe',
+    customer_email: 'john.doe@example.com',
+    customer_phone_number: '123-456-7890',
+    system_size: 4.5,
+    address: '123 Solar St.',
   },
   {
-    "roof_type": "John Doe",
-    "home_owner": "John Doe",
-    "customer_email": "john.doe@example.com",
-    "customer_phone_number": "123-456-7890",
-    "system_size": 4.5,
-    "address": "123 Solar St."
-  }
+    roof_type: 'John Doe',
+    home_owner: 'John Doe',
+    customer_email: 'john.doe@example.com',
+    customer_phone_number: '123-456-7890',
+    system_size: 4.5,
+    address: '123 Solar St.',
+  },
 ];
 const CustomersList = ({ mapStyles = {} }) => {
   const navigate = useNavigate();
   const [openStates, setOpenStates] = useState<{ [key: number]: boolean }>({});
-  const [customer, setCustomers] = useState<ICustomer[]>(customers)
-  const [isPending, setIsPending] = useState(true)
-  const [page, setPage] = useState(1)
+  const [customer, setCustomers] = useState<ICustomer[]>(customers);
+  const [isPending, setIsPending] = useState(true);
+  const [page, setPage] = useState(1);
 
   const getCustomers = async () => {
     try {
-      setIsPending(true)
-      const data = await postCaller("scheduling_home", {
+      setIsPending(true);
+      const data = await postCaller('scheduling_home', {
         page_number: page,
         page_size: 10,
-        "queue": "priority",
-        "order": "asc",
-      })
+        queue: 'priority',
+        order: 'asc',
+      });
       if (data.status > 201) {
-        setIsPending(false)
-        toast.error((data as Error).message as string)
-        return
+        setIsPending(false);
+        toast.error((data as Error).message as string);
+        return;
       }
-      setCustomers(data?.data?.scheduling_list || customers)
-      setIsPending(false)
+      setCustomers(data?.data?.scheduling_list || customers);
+      setIsPending(false);
     } catch (error) {
-      setIsPending(false)
-      toast.error((error as Error).message as string)
+      setIsPending(false);
+      toast.error((error as Error).message as string);
     }
-  }
+  };
 
   useEffect(() => {
-    getCustomers()
-  }, [page,])
+    getCustomers();
+  }, [page]);
 
   const toggleOpen = (index: number) => {
     setOpenStates((prevStates) => ({
@@ -104,8 +104,6 @@ const CustomersList = ({ mapStyles = {} }) => {
   const handleAddClick = () => {
     navigate('/add-new-salesrep-schedule');
   };
-
-
 
   const defaultProps = {
     center: {
@@ -152,145 +150,147 @@ const CustomersList = ({ mapStyles = {} }) => {
           </div>
 
           <div className={styles.cust_det_list}>
-            {
-              isPending ?
-                <div className="flex items-center justify-center">
-                  <MicroLoader />
-                </div>
-                :
-                (!Boolean(customer.length) || !customer) ?
-                  <div className="flex items-center justify-center">
-                    <DataNotFound />
-                  </div>
-                  : customer.map((customer, index) => (
-                    <div
-                      key={index}
-                      className={`${styles.customer_details} ${openStates[index] ? styles.open : ''}`}
-                    >
-                      <div className={styles.cust_det_top}>
-                        <div className={styles.cust_name}>
-                          <div
-                            style={{ backgroundColor: '#FFEAEA' }}
-                            className={styles.name_icon}
-                          >
-                            <span>{customer.home_owner.slice(0, 2).toUpperCase()}</span>
-                          </div>
-                          <div className={styles.name}>{customer.home_owner}</div>
-                        </div>
-                        <div className={styles.cust_name}>
-                          <div
-                            style={{ backgroundColor: '#E8FFE7', color: '#8BC48A' }}
-                            className={styles.name_icon}
-                          >
-                            <CiMail size={14} />
-                          </div>
-                          <div className={styles.head_det}>
-                            <h2>Email</h2>
-                            <span>{customer.customer_email}</span>
-                          </div>
-                        </div>
-
-                        <div className={styles.cust_name}>
-                          <div
-                            style={{ backgroundColor: '#EEEBFF', color: '#8E81E0' }}
-                            className={styles.name_icon}
-                          >
-                            <BiPhone size={14} />
-                          </div>
-                          <div className={styles.head_det}>
-                            <h2>Phone Number</h2>
-                            <span>{customer.customer_phone_number}</span>
-                          </div>
-                        </div>
-
-                        <div className={styles.cust_name}>
-                          <div
-                            style={{ backgroundColor: '#EEEBFF', color: '#8E81E0' }}
-                            className={styles.name_icon}
-                          >
-                            <img src={ICONS.SystemSize} alt="img" />
-                          </div>
-                          <div className={styles.head_det}>
-                            <h2>System Size</h2>
-                            <span> {customer.system_size} </span>
-                          </div>
-                        </div>
-
-                        <div className={styles.cust_name}>
-                          <div
-                            style={{ backgroundColor: '#E8FFE7', color: '#8E81E0' }}
-                            className={styles.name_icon}
-                          >
-                            <img src={ICONS.RoofType} alt="img" />
-                          </div>
-                          <div className={styles.head_det}>
-                            <h2>Roof Type</h2>
-                            <span> {customer.roof_type} </span>
-                          </div>
-
-                          <TbChevronDown
-                            size={22}
-                            style={{
-                              marginTop: '-12px',
-                              cursor: 'pointer',
-                            }}
-                          />
-                        </div>
-
-                        <button
-                          className={styles.accordian_btn}
-                          onClick={() => toggleOpen(index)}
-                        >
-                          <TbChevronDown
-                            size={22}
-                            style={{
-                              transform: openStates[index]
-                                ? 'rotate(180deg)'
-                                : undefined,
-                              transition: 'all 500ms',
-                            }}
-                          />
-                        </button>
+            {isPending ? (
+              <div className="flex items-center justify-center">
+                <MicroLoader />
+              </div>
+            ) : !Boolean(customer.length) || !customer ? (
+              <div className="flex items-center justify-center">
+                <DataNotFound />
+              </div>
+            ) : (
+              customer.map((customer, index) => (
+                <div
+                  key={index}
+                  className={`${styles.customer_details} ${openStates[index] ? styles.open : ''}`}
+                >
+                  <div className={styles.cust_det_top}>
+                    <div className={styles.cust_name}>
+                      <div
+                        style={{ backgroundColor: '#FFEAEA' }}
+                        className={styles.name_icon}
+                      >
+                        <span>
+                          {customer.home_owner.slice(0, 2).toUpperCase()}
+                        </span>
                       </div>
-                      {openStates[index] && (
-                        <div className={styles.cust_det_bot}>
-                          <div className={styles.cust_det_map_sec}>
-                            <div className={styles.map_wrapper}>
-                              <GoogleMapReact
-                                bootstrapURLKeys={{ key: '' }}
-                                defaultCenter={defaultProps.center}
-                                defaultZoom={defaultProps.zoom}
-                              >
-                                <Marker
-                                  lat={59.955413}
-                                  lng={30.337844}
-                                  text="My Marker"
-                                />
-                              </GoogleMapReact>
-                            </div>
-                            <div className={styles.cust_name}>
-                              <div
-                                style={{
-                                  backgroundColor: '#EEEBFF',
-                                  color: '#8E81E0',
-                                }}
-                                className={styles.name_icon}
-                              >
-                                <IoLocationOutline />
-                              </div>
-                              <div className={styles.head_det}>
-                                <h2>103 backstreet, churchline, arizona,12544</h2>
-                              </div>
-                            </div>
-                          </div>
+                      <div className={styles.name}>{customer.home_owner}</div>
+                    </div>
+                    <div className={styles.cust_name}>
+                      <div
+                        style={{ backgroundColor: '#E8FFE7', color: '#8BC48A' }}
+                        className={styles.name_icon}
+                      >
+                        <CiMail size={14} />
+                      </div>
+                      <div className={styles.head_det}>
+                        <h2>Email</h2>
+                        <span>{customer.customer_email}</span>
+                      </div>
+                    </div>
 
-                          <div className={styles.cust_det_button}>
-                            <span>Schedule</span>
+                    <div className={styles.cust_name}>
+                      <div
+                        style={{ backgroundColor: '#EEEBFF', color: '#8E81E0' }}
+                        className={styles.name_icon}
+                      >
+                        <BiPhone size={14} />
+                      </div>
+                      <div className={styles.head_det}>
+                        <h2>Phone Number</h2>
+                        <span>{customer.customer_phone_number}</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.cust_name}>
+                      <div
+                        style={{ backgroundColor: '#EEEBFF', color: '#8E81E0' }}
+                        className={styles.name_icon}
+                      >
+                        <img src={ICONS.SystemSize} alt="img" />
+                      </div>
+                      <div className={styles.head_det}>
+                        <h2>System Size</h2>
+                        <span> {customer.system_size} </span>
+                      </div>
+                    </div>
+
+                    <div className={styles.cust_name}>
+                      <div
+                        style={{ backgroundColor: '#E8FFE7', color: '#8E81E0' }}
+                        className={styles.name_icon}
+                      >
+                        <img src={ICONS.RoofType} alt="img" />
+                      </div>
+                      <div className={styles.head_det}>
+                        <h2>Roof Type</h2>
+                        <span> {customer.roof_type} </span>
+                      </div>
+
+                      <TbChevronDown
+                        size={22}
+                        style={{
+                          marginTop: '-12px',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    </div>
+
+                    <button
+                      className={styles.accordian_btn}
+                      onClick={() => toggleOpen(index)}
+                    >
+                      <TbChevronDown
+                        size={22}
+                        style={{
+                          transform: openStates[index]
+                            ? 'rotate(180deg)'
+                            : undefined,
+                          transition: 'all 500ms',
+                        }}
+                      />
+                    </button>
+                  </div>
+                  {openStates[index] && (
+                    <div className={styles.cust_det_bot}>
+                      <div className={styles.cust_det_map_sec}>
+                        <div className={styles.map_wrapper}>
+                          <GoogleMapReact
+                            bootstrapURLKeys={{ key: '' }}
+                            defaultCenter={defaultProps.center}
+                            defaultZoom={defaultProps.zoom}
+                          >
+                            <Marker
+                              lat={59.955413}
+                              lng={30.337844}
+                              text="My Marker"
+                            />
+                          </GoogleMapReact>
+                        </div>
+                        <div className={styles.cust_name}>
+                          <div
+                            style={{
+                              backgroundColor: '#EEEBFF',
+                              color: '#8E81E0',
+                            }}
+                            className={styles.name_icon}
+                          >
+                            <IoLocationOutline />
+                          </div>
+                          <div className={styles.head_det}>
+                            <h2>103 backstreet, churchline, arizona,12544</h2>
                           </div>
                         </div>
-                      )}
+                      </div>
+
+                      <div className={styles.cust_det_button}>
+                        <span>Schedule</span>
+                      </div>
                     </div>
-                  ))}
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

@@ -173,7 +173,7 @@ const EditModal = ({
         setTimeout(() => {
           setRefetch((prev) => !prev);
         }, 100);
-          onClose();
+        onClose();
       }
 
       if (vdealer) {

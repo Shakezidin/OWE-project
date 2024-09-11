@@ -20,19 +20,22 @@ const Marker = ({
 interface propTypes {
   withSecondaryBtn?: boolean;
   mapStyles?: CSSProperties;
-  name: string,
-  email: string,
-  mobile: string,
-  sysSize: number,
-  roofType: string
-  address: string
+  name: string;
+  email: string;
+  mobile: string;
+  sysSize: number;
+  roofType: string;
+  address: string;
 }
-const Index = ({ withSecondaryBtn = false, mapStyles = {}, name,
+const Index = ({
+  withSecondaryBtn = false,
+  mapStyles = {},
+  name,
   email,
   mobile,
   sysSize,
   roofType,
-  address
+  address,
 }: propTypes) => {
   const [isOpen, setIsOpen] = useState(false);
   const defaultProps = {
@@ -53,10 +56,10 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {}, name,
           <div
             className={` flex items-center justify-center ${styles.bg_name} ${styles.avatar_circle}`}
           >
-            {name.slice(0, 2) || "N/A"}
+            {name.slice(0, 2) || 'N/A'}
           </div>
 
-          <h3 className={` ml1 ${styles.customer_name}`}> {name || "N/A"} </h3>
+          <h3 className={` ml1 ${styles.customer_name}`}> {name || 'N/A'} </h3>
         </div>
 
         <div className="flex items-start">
@@ -67,7 +70,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {}, name,
           </div>
           <div className="ml1">
             <h3 className={styles.customer_name}>Email</h3>
-            <p className={styles.sm_text}> {email || "N/A"} </p>
+            <p className={styles.sm_text}> {email || 'N/A'} </p>
           </div>
         </div>
 
@@ -80,7 +83,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {}, name,
 
           <div className="ml1">
             <h3 className={styles.customer_name}>Phone Number</h3>
-            <p className={styles.sm_text}> {mobile || "N/A"} </p>
+            <p className={styles.sm_text}> {mobile || 'N/A'} </p>
           </div>
         </div>
 
@@ -190,9 +193,7 @@ const Index = ({ withSecondaryBtn = false, mapStyles = {}, name,
             </div>
             <div className="flex items-center mt1">
               <IoLocationOutline className="mr1" />
-              <p className={styles.map_location}>
-                {address || "N/A"}
-              </p>
+              <p className={styles.map_location}>{address || 'N/A'}</p>
             </div>
           </div>
         </div>
