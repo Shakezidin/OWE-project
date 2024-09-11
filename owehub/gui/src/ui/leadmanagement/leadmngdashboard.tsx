@@ -209,7 +209,7 @@ const LeadManagementDashboard: React.FC = () => {
             </select>
           </div>
           <div className={styles.cardContent}>
-          <ResponsiveContainer width="100%" height={300}>
+          {/* <ResponsiveContainer width="100%" height={300}>
             <LineChart data={lineData}>
               <XAxis dataKey="name" />
               <YAxis />
@@ -218,7 +218,38 @@ const LeadManagementDashboard: React.FC = () => {
               <Line type="monotone" dataKey="won" stroke="#57B93A" strokeWidth={2} name="Total won" />
               <Line type="monotone" dataKey="lost" stroke="#CD4040" strokeWidth={2} name="Total Lost" />
             </LineChart>
-          </ResponsiveContainer>
+          </ResponsiveContainer> */}
+
+
+           <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={lineData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip 
+                  formatter={(value, name) => [
+                    name === 'won' ? 'Total won' : 'Total Lost', 
+                    value
+                  ]} 
+                />
+                <Legend 
+                  formatter={(value) => value === 'won' ? 'Total won' : 'Total Lost'} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="won" 
+                  stroke="#57B93A" 
+                  strokeWidth={2} 
+                  name="won" 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="lost" 
+                  stroke="#CD4040" 
+                  strokeWidth={2} 
+                  name="lost" 
+                />
+              </LineChart>
+            </ResponsiveContainer>
 
           </div>
         </div>
