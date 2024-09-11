@@ -24,6 +24,12 @@ interface Event {
   color: string;
   title: string;
   idColor: any;
+  address:string;
+  unique_id:string;
+  status:string;
+  home_owner:string;
+
+
 }
 
 const PerformanceCalendar: React.FC = () => {
@@ -106,7 +112,13 @@ const PerformanceCalendar: React.FC = () => {
               date: new Date(item.survey_date),
               color: 'blue',
               title: 'Survey Date',
-              idColor: '#57B3F1'
+              idColor: '#57B3F1',
+              address:item.address,
+              unique_id:item.unique_id,
+              status:item.survey_status,
+              home_owner:item.home_owner,
+              
+
             });
           }
 
@@ -116,7 +128,11 @@ const PerformanceCalendar: React.FC = () => {
               date: new Date(item.install_date),
               color: 'purple',
               title: 'Install PV Date',
-              idColor: '#C470C7'
+              idColor: '#C470C7',
+              address:item.address,
+              unique_id:item.unique_id,
+              status:item.install_status,
+              home_owner:item.home_owner,
             });
           }
         });
@@ -359,7 +375,7 @@ const PerformanceCalendar: React.FC = () => {
       {renderDays()}
       {renderCells()}
       {sidebarVisible && selectedDate && selectedEvents.length > 0 && (
-        <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} />)}
+      <CalendarSidebar   onClose={closeSidebar}  selectedDate={selectedDate} selectedEvents={selectedEvents}/>)}
     </div>
   );
 };
