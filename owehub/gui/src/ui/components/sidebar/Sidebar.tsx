@@ -43,7 +43,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const dealer = localStorage.getItem('dealer');
   console.log(dealer, 'sidebar dealer');
 
-  const filteredList=() => {
+  const filteredList = () => {
     let list = [...createSideMenuList()];
     const isStaging = process.env.REACT_APP_ENV;
 
@@ -51,7 +51,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
-          (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE)
         ) {
         } else {
           newArr[0].mob.push(item);
@@ -59,13 +61,29 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       });
       return newArr;
     } else if (role === TYPE_OF_USER.DEALER_OWNER) {
-      return list;
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE)
+        ) {
+        } else if (
+          item.path !== ROUTES.PROJECT_PERFORMANCE &&
+          item.path !== ROUTES.PROJECT_STATUS
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
     } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -81,7 +99,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.USER_MANAEMENT
         ) {
           if (
-            (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -99,7 +119,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.PROJECT_STATUS
         ) {
           if (
-            (isStaging !== 'staging' &&  (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -112,7 +134,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            (isStaging !== 'staging' && (item.path === ROUTES.COMMISSION_DASHBOARD  || item.path === ROUTES.CONFIG_PAGE)) 
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE)
           ) {
           } else {
             newArr[0].mob.push(item);
