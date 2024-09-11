@@ -43,7 +43,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const dealer = localStorage.getItem('dealer');
   console.log(dealer, 'sidebar dealer');
 
-  const filteredList = useMemo(() => {
+  const filteredList=() => {
     let list = [...createSideMenuList()];
     const isStaging = process.env.REACT_APP_ENV;
 
@@ -121,7 +121,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       });
       return newArr;
     }
-  }, [createSideMenuList, role]);
+  };
 
   const handleMouseover = (
     e: React.MouseEvent<HTMLAnchorElement | MouseEvent>,
@@ -175,7 +175,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
-        {filteredList.map((el: any, i: number) => (
+        {filteredList().map((el: any, i: number) => (
           <div className="" key={i}>
             {isMobile && (
               <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
