@@ -21,6 +21,7 @@ const (
 	GroupEveryOne        UserGroup = "GroupEveryOne"
 	GroupDb              UserGroup = "GroupDb"
 	GroupAdminDealer     UserGroup = "GroupAdminDealer"
+	GroupAdminAccounts   UserGroup = "GroupAdminAccounts"
 )
 
 var (
@@ -57,21 +58,27 @@ var (
 			RoleApptSetter,
 			RoleFinAdmin,
 			RoleDbUser,
+		}, GroupAdminAccounts: {
+			RoleAdmin,
+			RoleAccountManager,
+			RoleAccountExecutive,
 		},
 	}
 )
 
 const (
-	RoleAdmin           UserRoles = "Admin"
-	RoleDealerOwner     UserRoles = "Dealer Owner"
-	RoleSubDealerOwner  UserRoles = "SubDealer Owner"
-	RolePartner         UserRoles = "Partner"
-	RoleRegionalManager UserRoles = "Regional Manager"
-	RoleSalesManager    UserRoles = "Sales Manager"
-	RoleSalesRep        UserRoles = "Sale Representative"
-	RoleApptSetter      UserRoles = "Appointment Setter"
-	RoleFinAdmin        UserRoles = "Finance Admin"
-	RoleDbUser          UserRoles = "DB User"
+	RoleAdmin            UserRoles = "Admin"
+	RoleDealerOwner      UserRoles = "Dealer Owner"
+	RoleSubDealerOwner   UserRoles = "SubDealer Owner"
+	RolePartner          UserRoles = "Partner"
+	RoleRegionalManager  UserRoles = "Regional Manager"
+	RoleSalesManager     UserRoles = "Sales Manager"
+	RoleSalesRep         UserRoles = "Sale Representative"
+	RoleApptSetter       UserRoles = "Appointment Setter"
+	RoleFinAdmin         UserRoles = "Finance Admin"
+	RoleDbUser           UserRoles = "DB User"
+	RoleAccountManager   UserRoles = "Account Manager"
+	RoleAccountExecutive UserRoles = "Account Executive"
 )
 
 var (
