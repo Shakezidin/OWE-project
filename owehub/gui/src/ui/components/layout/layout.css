@@ -345,7 +345,7 @@
   z-index: 999999999 !important;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
   .header-logo {
     align-self: flex-start;
   }
