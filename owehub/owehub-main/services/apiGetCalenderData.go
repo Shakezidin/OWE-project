@@ -258,12 +258,8 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			IcaprvdD = IcAPprovedDate.Format("2006-01-02 15:04:05")
 		}
 
-		if UniqueId == "OUR29424" {
-			log.FuncErrorTrace(0, "data = %v", item)
-		}
-
 		_, _, surveyDate, surveryStatus := getSurveyColor(SiteSurevyD, siteSurveyCmpletedD, contractD)
-		_, _, installDate, installStatus := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
+		_, _, installDate, installStatus := CalenderInstallStatus(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 
 		calenderData := models.GetCalenderData{
 			UniqueId:      UniqueId,
