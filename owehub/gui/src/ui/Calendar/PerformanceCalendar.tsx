@@ -17,6 +17,8 @@ import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { FaUpload } from 'react-icons/fa';
+
 
 interface Event {
   id: number;
@@ -24,10 +26,10 @@ interface Event {
   color: string;
   title: string;
   idColor: any;
-  address:string;
-  unique_id:string;
-  status:string;
-  home_owner:string;
+  address: string;
+  unique_id: string;
+  status: string;
+  home_owner: string;
 
 
 }
@@ -38,7 +40,7 @@ const PerformanceCalendar: React.FC = () => {
   const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
-  const [data,setData] = useState<any>("")
+  const [data, setData] = useState<any>("")
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedRanges, setSelectedRanges] = useState<any[]>([
@@ -113,11 +115,11 @@ const PerformanceCalendar: React.FC = () => {
               color: '#57B3F1',
               title: 'Survey Date',
               idColor: '#57B3F1',
-              address:item.address,
-              unique_id:item.unique_id,
-              status:item.survey_status,
-              home_owner:item.home_owner,
-              
+              address: item.address,
+              unique_id: item.unique_id,
+              status: item.survey_status,
+              home_owner: item.home_owner,
+
 
             });
           }
@@ -129,10 +131,10 @@ const PerformanceCalendar: React.FC = () => {
               color: '#C470C7',
               title: 'Install PV Date',
               idColor: '#C470C7',
-              address:item.address,
-              unique_id:item.unique_id,
-              status:item.install_status,
-              home_owner:item.home_owner,
+              address: item.address,
+              unique_id: item.unique_id,
+              status: item.install_status,
+              home_owner: item.home_owner,
             });
           }
         });
@@ -157,7 +159,7 @@ const PerformanceCalendar: React.FC = () => {
   // ]);
 
 
-  
+
 
   const hasEvent = (day: Date): boolean => {
     return events.some(event => isSameDay(event.date, day));
@@ -245,8 +247,23 @@ const PerformanceCalendar: React.FC = () => {
               <div className="icon"><FiChevronRight /></div>
             </div>
           </div>
-          <div onClick={handleCalcClose}>
-            <IoClose className='calendar-close' />
+          <div className='calendar-btn-close'>
+            <div className="perf-export-btn">
+              <button
+                // disabled={isExportingData}
+                // onClick={ExportCsv}
+                // className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+                className={`performance-exportbtn`}
+                style={{marginTop: "unset", padding: "8px 12px"}}
+              >
+                <FaUpload size={12} className="mr1" />
+                {/* <span>{isExportingData ? ' Downloading... ' : ' Export '}</span> */}
+                <span>Export</span>
+              </button>
+            </div>
+            <div onClick={handleCalcClose} style={{height: "26px"}}>
+              <IoClose className='calendar-close' />
+            </div>
           </div>
         </div>
         {showCalendar && (
@@ -335,7 +352,7 @@ const PerformanceCalendar: React.FC = () => {
 
             <div className="cell-dots">
               {dayEvents.map((event, index) => (
-                <div key={index} className={`event-box event-${event.color}`} style={{background: event.color}}>
+                <div key={index} className={`event-box event-${event.color}`} style={{ background: event.color }}>
                   <span className='event-icon' style={{ color: event.idColor }}>{event.id}</span> <span className="event-text">{event.title}</span>
                 </div>
               ))}
@@ -354,8 +371,8 @@ const PerformanceCalendar: React.FC = () => {
     return <div className="body">
       {rows}
       <div className='mobile-calendar-text'>
-        <div className='mob-cal-txt'><span style={{background: "#57B3F1"}}></span>Survey Date</div>
-        <div className='mob-cal-txt'><span style={{background: "#C470C7"}}></span>Install PV Date</div>
+        <div className='mob-cal-txt'><span style={{ background: "#57B3F1" }}></span>Survey Date</div>
+        <div className='mob-cal-txt'><span style={{ background: "#C470C7" }}></span>Install PV Date</div>
       </div>
     </div>;
   };
@@ -375,7 +392,7 @@ const PerformanceCalendar: React.FC = () => {
       {renderDays()}
       {renderCells()}
       {sidebarVisible && selectedDate && selectedEvents.length > 0 && (
-      <CalendarSidebar   onClose={closeSidebar}  selectedDate={selectedDate} selectedEvents={selectedEvents}/>)}
+        <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} selectedEvents={selectedEvents} />)}
     </div>
   );
 };

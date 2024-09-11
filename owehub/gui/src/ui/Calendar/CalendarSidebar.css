@@ -14,7 +14,7 @@
 }
 
 .user-sidebar {
-    min-width: 500px;
+    max-width: 600px;
     min-height: 100vh;
     overflow-y: auto;
     background: #fff;
@@ -135,6 +135,9 @@
         border-radius: 10px;
         margin-top: 1rem;
     }
+    .sidebar-cards .card{
+        justify-content: space-between;
+    }
 
     .upper-section {
         padding: 1rem 0;
@@ -195,5 +198,14 @@
         margin-right: 8px;
         font-weight: 500;
         background-color: #fff;
+    }
+}
+
+@media (max-width: 500px){
+    .sidebar-cards{
+        grid-template-columns: 1fr;
+    }
+    .sidebar-wrapper{
+        display: block;
     }
 }
