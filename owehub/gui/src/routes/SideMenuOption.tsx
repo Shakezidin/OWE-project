@@ -82,14 +82,14 @@ const mob = {
     //   },
     // },
 
-    {
-      path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
+    // {
+    //   path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
-      sidebarProps: {
-        displayText: 'Teams',
-        icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
+    //   sidebarProps: {
+    //     displayText: 'Teams',
+    //     icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
+    //   },
+    // },
     {
       path: ROUTES.USER_MANAEMENT,
 
