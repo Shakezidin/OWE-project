@@ -254,14 +254,14 @@ const PerformanceCalendar: React.FC = () => {
                 // onClick={ExportCsv}
                 // className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
                 className={`performance-exportbtn`}
-                style={{marginTop: "unset", padding: "8px 12px"}}
+                style={{ marginTop: "unset", padding: "8px 12px" }}
               >
                 <FaUpload size={12} className="mr1" />
                 {/* <span>{isExportingData ? ' Downloading... ' : ' Export '}</span> */}
                 <span>Export</span>
               </button>
             </div>
-            <div onClick={handleCalcClose} style={{height: "26px"}}>
+            <div onClick={handleCalcClose} style={{ height: "26px" }}>
               <IoClose className='calendar-close' />
             </div>
           </div>
@@ -337,6 +337,16 @@ const PerformanceCalendar: React.FC = () => {
 
         const dayEvents = events.filter(event => isSameDay(day, event.date));
 
+
+        const eventCounts = dayEvents.reduce((acc, event) => {
+          if (acc[event.title]) {
+            acc[event.title].count += 1;
+          } else {
+            acc[event.title] = { color: event.color, count: 1 };
+          }
+          return acc;
+        }, {} as Record<string, { color: string; count: number }>);
+
         days.push(
           <div
             className={`col cell ${!isSameMonth(day, monthStart)
@@ -351,9 +361,10 @@ const PerformanceCalendar: React.FC = () => {
             <span className="number">{formattedDate}</span>
 
             <div className="cell-dots">
-              {dayEvents.map((event, index) => (
-                <div key={index} className={`event-box event-${event.color}`} style={{ background: event.color }}>
-                  <span className='event-icon' style={{ color: event.idColor }}>{event.id}</span> <span className="event-text">{event.title}</span>
+              {Object.entries(eventCounts).map(([title, { color, count }], index) => (
+                <div key={index} className={`event-box event-${color}`} style={{ background: color }}>
+                  <span className='event-icon' style={{ color: color }}>{count}</span>
+                  <span className="event-text">{title}</span>
                 </div>
               ))}
             </div>
@@ -377,6 +388,7 @@ const PerformanceCalendar: React.FC = () => {
     </div>;
   };
 
+
   const nextMonth = (): void => {
     setCurrentMonth(addMonths(currentMonth, 1));
   };
@@ -387,13 +399,15 @@ const PerformanceCalendar: React.FC = () => {
 
 
   return (
-    <div className="calendar">
-      {renderHeader()}
-      {renderDays()}
-      {renderCells()}
+    <>
+      <div className="calendar">
+        {renderHeader()}
+        {renderDays()}
+        {renderCells()}
+      </div>
       {sidebarVisible && selectedDate && selectedEvents.length > 0 && (
         <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} selectedEvents={selectedEvents} />)}
-    </div>
+    </>
   );
 };
 

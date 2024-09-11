@@ -132,10 +132,11 @@
         overflow-y: unset;
         justify-content: center;
         background: #fff;
-        border-radius: 10px;
+        border-radius: 20px;
         margin-top: 1rem;
     }
-    .sidebar-cards .card{
+
+    .sidebar-cards .card {
         justify-content: space-between;
     }
 
@@ -172,10 +173,8 @@
         font-size: 1.3rem;
     }
 
-    .upper-section-status{
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+    .upper-section-status {
+        display: none;
     }
 
     .upper-section-status div {
@@ -199,13 +198,18 @@
         font-weight: 500;
         background-color: #fff;
     }
+
+    .main-sidebar {
+        margin: 10px;
+    }
 }
 
-@media (max-width: 500px){
-    .sidebar-cards{
+@media (max-width: 500px) {
+    .sidebar-cards {
         grid-template-columns: 1fr;
     }
-    .sidebar-wrapper{
+
+    .sidebar-wrapper {
         display: block;
     }
 }
