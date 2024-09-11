@@ -10,7 +10,6 @@ const configSchema = object({
 
 const startChatSchema = object({
   issueType: string().oneOf(issueTypeEnum).required(),
-  message: string().required(),
   email: string().email(),
   name: string().required(),
   project_id: string().required(),

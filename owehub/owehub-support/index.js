@@ -18,6 +18,13 @@ const { Client } = require("pg");
 
 const client = new Client({
   user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: process.env.POSTGRES_PORT || 5432,
+});
+const client2 = new Client({
+  user: process.env.POSTGRES_USER,
   host: process.env.POSTGRES_HOST2,
   database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
@@ -95,6 +102,7 @@ slackApp.message(async ({ message }) => {
 slackApp.start();
 
 client.connect();
+client2.connect();
 
 io.on("connection", (socket) => {
   console.log("Connection", socket.id);
@@ -102,7 +110,8 @@ io.on("connection", (socket) => {
   socket.on("start-chat", async (data) => {
     try {
       console.log("start-chat", data);
-      const { name, email, message, issueType, project_id } = data;
+
+      const { name, email, issueType, project_id } = data;
 
       console.log("DATA", data);
       startChatSchema.validateSync(data);
@@ -144,16 +153,34 @@ io.on("connection", (socket) => {
 
       console.log("channelId", channelId);
 
-      const queryText = `SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  FROM sales_metrics_schema where unique_id = '${project_id}' AND primary_sales_rep='${primary_sales_rep}';`;
+      const userExists = await client.query(
+        `SELECT * from user_details where email_id='${email}'`
+      );
 
-      const res = await client.query(queryText);
+      if (!userExists?.rows?.length) {
+        throw new Error("User not found");
+      }
+
+      const user = userExists?.rows?.pop();
+      const res =
+        await client2.query(`SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  
+                            FROM sales_metrics_schema 
+                            where unique_id = '${project_id}' AND primary_sales_rep='${user.name}'`);
       if (res?.rows?.length) {
         // Notify a designated Slack channel about the new message
         const data = res.rows.pop();
         await web.chat.postMessage({
           channel: getSupportChannel(issueType),
-          text: `${data.primary_sales_rep} wants to query ${data.unique_id}  for customer ${data.customer} and  pod link is ${data.podio_link} 
-          Reply : <#${channelId}|${channelName}>`,
+          blocks: [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `:warning: *Issue in Project*\n*Sales Rep:* ${data.primary_sales_rep}\n*Project ID:* ${data.unique_id}\n*Customer:* ${data.customer}\n*Podio Link:* <${data.podio_link}|Project Podio>\n\nReply in channel: <#${channelId}|${channelName}>`,
+              },
+            },
+          ],
+          text: `${data.primary_sales_rep} has an issue in project ${data.unique_id}.`,
         });
       } else {
         throw new Error("Project not found");
