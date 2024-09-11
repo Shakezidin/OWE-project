@@ -1,11 +1,13 @@
 package models
 
 type GetCalenderDataReq struct {
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
-	Email     string
-	Role      string
-	Name      string
+	StartDate     string `json:"start_date"`
+	EndDate       string `json:"end_date"`
+	DealerName    interface{}
+	Email         string
+	Role          string
+	Name          string
+	ProjectStatus []string `json:"project_status"`
 }
 
 type GetCalenderData struct {
