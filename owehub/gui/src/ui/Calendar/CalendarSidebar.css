@@ -150,6 +150,10 @@
 
     .sidebar-cards .card-name {
         margin-right: 10px;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+        overflow-y: hidden;
+        width: 105px;
     }
 
     .user-sidebar {
@@ -211,5 +215,8 @@
 
     .sidebar-wrapper {
         display: block;
+    }
+    .sidebar-cards .card-name {
+        width: 200px;
     }
 }

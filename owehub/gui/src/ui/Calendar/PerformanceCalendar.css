@@ -409,8 +409,8 @@
 
   .mobile-calendar-text span {
     display: block;
-    height: 1rem;
-    width: 1rem;
+    height: 14px;
+    width: 14px;
     border-radius: 50%;
   }
 
