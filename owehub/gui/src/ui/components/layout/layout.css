@@ -356,4 +356,16 @@
     width: 120px;
     height: auto;
   }
+
+  .calendar-logo{
+    top: 0;
+    height: 2.4rem;
+    width: 2.4rem;
+  }
+  .calendar-logo p {
+    margin-top: 0;
+  }
+  .search-container{
+    gap: 1.5rem;
+  }
 }
