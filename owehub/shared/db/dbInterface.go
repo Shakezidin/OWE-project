@@ -220,6 +220,7 @@ const (
 	TableName_ap_pda                         string = "ap_pda"
 	TableName_ap_adv                         string = "ap_adv"
 	TableName_dba                            string = "dba"
+	TableName_slackconfig                    string = "slackconfig"
 	TableName_rep_incent                     string = "rep_incent"
 	TableName_rep_status                     string = "rep_status"
 	TableName_rep_credit                     string = "rep_credit"

@@ -10,8 +10,6 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"strings"
-
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -19,12 +17,12 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetDBADataRequest
+ * FUNCTION:		HandleGetSlackConfigRequest
  * DESCRIPTION:     handler for get Slack Config data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleGetDBADataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err             error
 		dataReq         models.DataRequestBody
@@ -37,8 +35,8 @@ func HandleGetDBADataRequest(resp http.ResponseWriter, req *http.Request) {
 		RecordCount     int64
 	)
 
-	log.EnterFn(0, "HandleGetDBADataRequest")
-	defer func() { log.ExitFn(0, "HandleGetDBADataRequest", err) }()
+	log.EnterFn(0, "HandleGetSlackConfigRequest")
+	defer func() { log.ExitFn(0, "HandleGetSlackConfigRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get Slack Config data request")
@@ -61,10 +59,10 @@ func HandleGetDBADataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tableName := db.TableName_dba
+	tableName := db.TableName_slackconfig
 	query = `SELECT 
 		 ap.id as record_id, ap.issue_type, ap.channel_name, ap.bot_token, ap.slack_app_config
-		 FROM ` + db.TableName_dba + ` ap`
+		 FROM ` + db.TableName_slackconfig + ` ap`
 
 	if filter != "" {
 		queryWithFiler = query + filter
@@ -96,7 +94,7 @@ func HandleGetDBADataRequest(resp http.ResponseWriter, req *http.Request) {
 			ChannelName = ""
 		}
 
-		SlackConfig := models.GetDBA{
+		SlackConfig := models.GetSlackConfig{
 			RecordId:      RecordId,
 			ChannelName:   ChannelName,
 			IssueType:     IssueType,
