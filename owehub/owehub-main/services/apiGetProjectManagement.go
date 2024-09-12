@@ -189,28 +189,30 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
-	if val, ok := data[0]["current_live_cad"].(string); ok {
-		projectList.CADLink = val
-	} else {
-		projectList.CADLink = "" // or a default value
-	}
+	if len(data) > 0 {
+		if val, ok := data[0]["current_live_cad"].(string); ok {
+			projectList.CADLink = val
+		} else {
+			projectList.CADLink = "" // or a default value
+		}
 
-	if val, ok := data[0]["system_sold_er"].(string); ok {
-		projectList.DATLink = val
-	} else {
-		projectList.DATLink = "" // or a default value
-	}
+		if val, ok := data[0]["system_sold_er"].(string); ok {
+			projectList.DATLink = val
+		} else {
+			projectList.DATLink = "" // or a default value
+		}
 
-	if val, ok := data[0]["podio_link"].(string); ok {
-		projectList.PodioLink = val
-	} else {
-		projectList.PodioLink = "" // or a default value
-	}
+		if val, ok := data[0]["podio_link"].(string); ok {
+			projectList.PodioLink = val
+		} else {
+			projectList.PodioLink = "" // or a default value
+		}
 
-	if val, ok := data[0]["change_order_status"].(string); ok {
-		projectList.CoStatus = val
-	} else {
-		projectList.CoStatus = "" // or a default value
+		if val, ok := data[0]["change_order_status"].(string); ok {
+			projectList.CoStatus = val
+		} else {
+			projectList.CoStatus = "" // or a default value
+		}
 	}
 
 	var ntp models.NTP
