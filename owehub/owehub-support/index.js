@@ -101,8 +101,14 @@ slackApp.message(async ({ message }) => {
 
 slackApp.start();
 
-client.connect();
-client2.connect();
+(async () => {
+  try {
+    await client.connect();
+    await client2.connect();
+  } catch (error) {
+    console.log(error);
+  }
+})();
 
 io.on("connection", (socket) => {
   console.log("Connection", socket.id);
