@@ -345,7 +345,7 @@
   z-index: 999999999 !important;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
   .header-logo {
     align-self: flex-start;
   }
@@ -355,5 +355,17 @@
     margin-left: -12px;
     width: 120px;
     height: auto;
+  }
+
+  .calendar-logo{
+    top: 0;
+    height: 2.4rem;
+    width: 2.4rem;
+  }
+  .calendar-logo p {
+    margin-top: 0;
+  }
+  .search-container{
+    gap: 1.5rem;
   }
 }

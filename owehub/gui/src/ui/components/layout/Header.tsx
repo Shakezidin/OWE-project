@@ -235,6 +235,20 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
 
       {isMobile && (
         <div className="search-container">
+
+          {isStaging === "staging" ?
+            (<div>
+              {userRole === TYPE_OF_USER.ADMIN || userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ? (
+                <div className='calendar-logo'>
+                  <Link to={ROUTES.CALENDAR}>
+                    <span></span>
+                    <p className=''>{dayOfMonth}</p>
+                  </Link>
+                </div>
+              ) : null}
+            </div>)
+            : null
+          }
           <div
             className="user-container relative"
             ref={dropdownRef}
