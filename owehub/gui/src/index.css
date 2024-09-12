@@ -398,7 +398,7 @@ br {
   transition: all 0.3s ease;
 }
 .fildelb-btn img:hover {
- transform: scale(1.09);
+  transform: scale(1.09);
 }
 .select-type-label {
   position: static !important;

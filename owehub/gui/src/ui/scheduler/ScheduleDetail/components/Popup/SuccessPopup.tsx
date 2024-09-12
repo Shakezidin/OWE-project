@@ -6,10 +6,8 @@ const SuccessPopup = ({
 }: {
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
 }) => {
-
-  
   useEffect(() => {
-    const handleEscKey = (event:any) => {
+    const handleEscKey = (event: any) => {
       if (event.key === 'Escape') {
         setIsOpen(false);
       }

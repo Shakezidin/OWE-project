@@ -19,7 +19,7 @@ const QCModal: React.FC<TableProps> = ({
     handleClose();
   };
 
-  console.log(projectDetail, "data to show")
+  console.log(projectDetail, 'data to show');
 
   const renderQCContent = (title: string, status: string) => {
     let backgroundColor = '';
@@ -114,20 +114,17 @@ const QCModal: React.FC<TableProps> = ({
                 </>
               )} */}
 
-              
-
-                  { qcData &&  Object.entries(qcData)
-                    .filter(
-                      ([key, value]) =>
-                        key !== 'qc_action_required_count' && value
-                    ) // Filter out empty values
-                    .map(([key, value]) => (
-                      <div key={key}>
-                        {renderQCContent(formatTitle(key), value as string)}
-                      </div>
-                    ))}
-
-          
+              {qcData &&
+                Object.entries(qcData)
+                  .filter(
+                    ([key, value]) =>
+                      key !== 'qc_action_required_count' && value
+                  ) // Filter out empty values
+                  .map(([key, value]) => (
+                    <div key={key}>
+                      {renderQCContent(formatTitle(key), value as string)}
+                    </div>
+                  ))}
             </div>
           </div>
         </div>

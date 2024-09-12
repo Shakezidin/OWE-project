@@ -328,8 +328,6 @@ const UserManagement: React.FC = () => {
     }
   };
 
- 
-
   /** render UI */
   return (
     <>
@@ -399,11 +397,11 @@ const UserManagement: React.FC = () => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)
               : deleteUserRequest(
-                [item.user_code],
-                item.role_name === 'DB User'
-                  ? [item.db_username]
-                  : [item.name.split(' ').join('_')]
-              );
+                  [item.user_code],
+                  item.role_name === 'DB User'
+                    ? [item.db_username]
+                    : [item.name.split(' ').join('_')]
+                );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(
@@ -463,7 +461,6 @@ const UserManagement: React.FC = () => {
             );
             setOpen(true);
           }}
-
         />
       </div>
     </>

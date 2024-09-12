@@ -17,7 +17,7 @@ import { LuChevronRight } from 'react-icons/lu';
 import AppliancePopup from './components/AppliancePopup';
 import { sendMail } from '../../utiles';
 import ImagePopup from './components/ImagePopup';
-import Switch from "../components/Switch"
+import Switch from '../components/Switch';
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
@@ -53,7 +53,7 @@ export interface IDetail {
   house_square: number;
   address: string;
   system_size: number;
-  add_notes: string
+  add_notes: string;
 }
 const apms = [
   '15 AMP',
@@ -91,7 +91,7 @@ const Index = () => {
   const [detail, setDetail] = useState({} as IDetail);
   const [activeImg, setActiveImg] = useState(-1);
   const [imgPopup, setImgPopup] = useState(false);
-  const [missingLabel, setMissingLabel] = useState(false)
+  const [missingLabel, setMissingLabel] = useState(false);
   const [batter, setBattery] = useState<
     {
       category: { name: string; ampere: number };
@@ -212,7 +212,6 @@ OWE Battery Calc
           ampere: battery.amp.includes('70')
             ? parseFloat(battery.amp.split('+')[0])
             : parseFloat(battery.amp.split(' ')[0]),
-        
         })),
       });
       await shareImage();
@@ -301,7 +300,7 @@ OWE Battery Calc
           </button>
           {applianceOpen && (
             <AppliancePopup
-              note={detail?.add_notes || ""}
+              note={detail?.add_notes || ''}
               systemSize={detail.system_size}
               primaryDetail={detail.primary_data}
               secondaryDetail={detail.secondary_data}
@@ -357,10 +356,16 @@ OWE Battery Calc
                 ''
               )}
             </div>
-            <div style={{ marginRight: "-2rem" }} className="flex missing_label_wrapper mt3 mb2 items-center  justify-between">
+            <div
+              style={{ marginRight: '-2rem' }}
+              className="flex missing_label_wrapper mt3 mb2 items-center  justify-between"
+            >
               <span>Missing Labels</span>
 
-              <Switch checked={missingLabel} onChange={() => setMissingLabel(prev => !prev)} />
+              <Switch
+                checked={missingLabel}
+                onChange={() => setMissingLabel((prev) => !prev)}
+              />
             </div>
           </div>
           <div className="lg-col-4 dashed-section  pb3 col-12">

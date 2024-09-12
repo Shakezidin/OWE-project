@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, Sector } from 'recharts';
 import styles from './styles/dashboard.module.css';
@@ -74,6 +75,7 @@ const renderActiveShape = (props: any) => {
 
 
   const lines = splitText(payload.name, 15);
+
 
   return (
     <g>

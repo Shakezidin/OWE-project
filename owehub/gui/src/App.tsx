@@ -86,6 +86,7 @@ import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/Schedule
 import Calendar from './ui/Calendar/PerformanceCalendar';
 import PendingQueue from './ui/oweHub/pendingQueue';
 import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
+import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
@@ -304,6 +305,7 @@ function App() {
             element={<CustomersList />}
           />
           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
+           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew/>} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}

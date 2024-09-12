@@ -79,14 +79,12 @@ const Index = () => {
   const role = authData?.role;
 
   useEffect(() => {
-    const role = localStorage.getItem("role");
-    const isAuth = localStorage.getItem("isPasswordChangeRequired")
+    const role = localStorage.getItem('role');
+    const isAuth = localStorage.getItem('isPasswordChangeRequired');
     if (role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ADMIN) {
       setIsFetched(true);
     }
-    setAuthenticated(
-      isAuth?.toString() === 'false'
-    );
+    setAuthenticated(isAuth?.toString() === 'false');
   }, []);
 
   const showPartner = useMemo(() => {
