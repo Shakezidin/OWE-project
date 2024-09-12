@@ -240,7 +240,6 @@ const FilterModal: React.FC<TableProps> = ({
               }}
               onClick={handleAddRow}
             >
-
               <img
                 src={ICONS.AddIcon}
                 alt=""

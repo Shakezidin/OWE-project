@@ -77,7 +77,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     (state) => state.userManagement
   );
 
-
   useEffect(() => {
     const data = {
       page_number: currentPage1,
@@ -316,7 +315,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-
           {(inactiveSalesRep || activeSalesRep) && (
             <img
               style={{ cursor: 'pointer' }}
@@ -332,8 +330,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           ) : (
             <h3>{selectedOption.label?.toUpperCase()}</h3>
           )}
-
-
         </div>
 
         <div className="delete-icon-container items-start mt2 ">
@@ -347,13 +343,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 setSearch(e.target.value);
               }}
             />
-            {!(inactiveSalesRep || activeSalesRep) && (
-            <div>{AddBtn}</div>
-            )}
+            {!(inactiveSalesRep || activeSalesRep) && <div>{AddBtn}</div>}
           </div>
 
           <div className="user_user-type">
-          {!(inactiveSalesRep || activeSalesRep) && (
+            {!(inactiveSalesRep || activeSalesRep) && (
               <div
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}

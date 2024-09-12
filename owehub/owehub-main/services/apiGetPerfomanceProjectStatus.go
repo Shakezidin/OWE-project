@@ -1061,6 +1061,16 @@ func parseDate(dateStr string) time.Time {
 	return t
 }
 
+func parseDateTime(dateStr string) time.Time {
+	layout := "2006-01-02 15:04:05"
+	t, err := time.Parse(layout, dateStr)
+	if err != nil {
+		// log.FuncErrorTrace(0, "Error parsing date:", err)
+		return time.Time{}
+	}
+	return t
+}
+
 func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
 	var count int64
 	if CadCompleteDate != "" && (permitApprovedDate == "" || IcApprovedDate == "") {
@@ -1109,6 +1119,42 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pv
 		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
 			latestCompletedDate = batteryCompleted
 		}
+		return green, count, latestCompletedDate, "Completed"
+	}
+
+	// Blue conditions
+	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+		return blue, count, pvInstallCompletedDate, "Scheduled"
+	} else if !pvInstallCreatedateParsed.IsZero() {
+		return blue, count, pvInstallCreatedate, "Scheduled"
+	}
+
+	// Default grey condition
+	return grey, count, "", ""
+}
+
+func CalenderInstallStatus(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
+	var count int64
+	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
+		count = 1
+	}
+
+	// Parse the dates
+	pvInstallCreatedateParsed := parseDateTime(pvInstallCreatedate)
+	batteryScheduleDateParsed := parseDateTime(batteryScheduleDate)
+	batteryCompletedParsed := parseDateTime(batteryCompleted)
+	pvInstallCompletedDateParsed := parseDateTime(pvInstallCompletedDate)
+	// Green conditions
+	if batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+
+		// Determine the latest date for green
+		latestCompletedDate := pvInstallCompletedDate
+		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
+			latestCompletedDate = batteryCompleted
+		}
+		log.FuncErrorTrace(0, "batterySchedule = %v, batteryComepleted = %v pvInstallcom = %v", batteryScheduleDate, batteryCompleted, pvInstallCompletedDate)
 		return green, count, latestCompletedDate, "Completed"
 	}
 

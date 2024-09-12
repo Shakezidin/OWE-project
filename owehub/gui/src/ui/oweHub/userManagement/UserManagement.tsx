@@ -49,9 +49,12 @@ const UserManagement: React.FC = () => {
   const [logoUrl, setLogoUrl] = useState('');
   const { authData } = useAuth();
 
+;
+  const [selectedOption, setSelectedOption] = useState(USERLIST[0]);
+
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
-    const userRole = authData?.role;
+    const userRole = localStorage.getItem("role");
     if (userRole === TYPE_OF_USER.DEALER_OWNER) {
       role = role.filter(
         (role) =>
@@ -60,10 +63,10 @@ const UserManagement: React.FC = () => {
           role.value !== TYPE_OF_USER.DB_USER &&
           role.value !== TYPE_OF_USER.PARTNER
       );
+      setSelectedOption(role[0])
     }
     return role;
-  }, [authData]);
-  const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
+  }, [])
   const {
     loading,
     userOnboardingList,
@@ -325,8 +328,6 @@ const UserManagement: React.FC = () => {
     }
   };
 
- 
-
   /** render UI */
   return (
     <>
@@ -396,11 +397,11 @@ const UserManagement: React.FC = () => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)
               : deleteUserRequest(
-                [item.user_code],
-                item.role_name === 'DB User'
-                  ? [item.db_username]
-                  : [item.name.split(' ').join('_')]
-              );
+                  [item.user_code],
+                  item.role_name === 'DB User'
+                    ? [item.db_username]
+                    : [item.name.split(' ').join('_')]
+                );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(
@@ -460,7 +461,6 @@ const UserManagement: React.FC = () => {
             );
             setOpen(true);
           }}
-
         />
       </div>
     </>

@@ -86,11 +86,13 @@ import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/Schedule
 import Calendar from './ui/Calendar/PerformanceCalendar';
 import PendingQueue from './ui/oweHub/pendingQueue';
 import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
+import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
     (state: RootState) => state.auth
   );
+  const isStaging = process.env.REACT_APP_ENV;
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -138,7 +140,7 @@ function App() {
         <Route path={ROUTES.CONFIG_AR} element={<AR />} />
         <Route path={ROUTES.CONFIG_AR_SCHEDULE} element={<ARSchedule />} />
         <Route path={ROUTES.CONFIG_INSTALL_COST} element={<InstallCost />} />
-       
+
         <Route
           path={ROUTES.CONFIG_LEADER_OVERRIDE}
           element={<LeaderOverride />}
@@ -173,8 +175,8 @@ function App() {
   const otherRoutes = () => {
     return (
       <Route>
-        {/* <Route path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage />} />
-        <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} /> */}
+        <Route path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage />} />
+        <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
 
         <Route path={ROUTES.REPORT} element={<Report />} />
         <Route
@@ -253,9 +255,6 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
-          {(role_name === TYPE_OF_USER.ADMIN ||
-            role_name === TYPE_OF_USER.DEALER_OWNER) &&
-            <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
@@ -269,6 +268,11 @@ function App() {
             role_name === TYPE_OF_USER.SALE_MANAGER ||
             role_name === TYPE_OF_USER.REGIONAL_MANGER) &&
             managerRoutes()}
+
+          {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER) &&
+            isStaging === 'staging' &&
+            configAndUserManagementRoutes()}
 
           {role_name === TYPE_OF_USER.DB_USER && (
             <Route>
@@ -300,7 +304,8 @@ function App() {
             path={ROUTES.SALES_REP_SCHEDULER}
             element={<CustomersList />}
           />
-           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard/>} />
+          <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
+           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew/>} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
