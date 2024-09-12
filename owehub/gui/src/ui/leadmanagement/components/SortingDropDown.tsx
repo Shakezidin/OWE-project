@@ -37,7 +37,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
         ref={dropdownRef}
         className={`flex items-center justify-center  sort_btn`}
       >
-        <PiSortAscendingLight size={26} />
+        <PiSortAscendingLight size={22} />
       </button>
 
       {isDropdownOpen && (
