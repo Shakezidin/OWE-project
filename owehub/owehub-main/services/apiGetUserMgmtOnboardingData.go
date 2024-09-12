@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -33,6 +34,8 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		query          string
 		activeRepQuery string
 		salesRep       []string
+		dealerName     string
+		dealerID       int64
 	)
 
 	log.EnterFn(0, "HandleGetUserMgmtOnboardingDataRequest")
@@ -59,6 +62,19 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
+	role, ok := req.Context().Value("rolename").(string)
+	if !ok || role == "" {
+		FormAndSendHttpResp(resp, "No role exists", http.StatusBadRequest, nil)
+		return
+	}
+
+	// Extract email from context (assume it's stored there)
+	email, ok := req.Context().Value("emailid").(string)
+	if !ok || email == "" {
+		FormAndSendHttpResp(resp, "Email not found in context", http.StatusBadRequest, nil)
+		return
+	}
+
 	query = ` 
 			WITH user_data AS (
     SELECT 
@@ -72,6 +88,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
         user_details u
     INNER JOIN 
         user_roles ur ON u.role_id = ur.role_id
+	%s  -- Placeholder for additional condition
     GROUP BY 
         ur.role_name
 ),
@@ -84,10 +101,27 @@ dealer_data AS (
         v_dealer
     WHERE 
         is_deleted = FALSE
+	%s  -- Placeholder for additional condition
 )
 SELECT * FROM user_data
 UNION ALL
-SELECT * FROM dealer_data;`
+SELECT * FROM dealer_data `
+
+	// Initialize the additional condition as empty
+	var conditionOne, conditionTwo string
+	if role == string(types.RoleDealerOwner) {
+
+		dealerID, dealerName, err = RetrieveDealerIDByEmail(email)
+		if err != nil {
+			FormAndSendHttpResp(resp, fmt.Sprintf("Failed to retrieve dealer ID: %v", err), http.StatusBadRequest, nil)
+			return
+		}
+
+		// Add condition to filter by dealer_id for dealer owners
+		conditionOne = fmt.Sprintf(" WHERE u.dealer_id = %v", dealerID)
+		conditionTwo = fmt.Sprintf("AND id = %v", dealerID)
+	}
+	query = fmt.Sprintf(query, conditionOne, conditionTwo)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -134,9 +168,12 @@ SELECT * FROM dealer_data;`
 	FROM
 		consolidated_data_view
 	WHERE
-		contract_date BETWEEN current_date - interval '90 day' AND current_date;
+		contract_date BETWEEN current_date - interval '90 day' AND current_date
 	`
 
+	if role == string(types.RoleDealerOwner) {
+		activeRepQuery += fmt.Sprintf(" AND dealer = '%v'", dealerName)
+	}
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, activeRepQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get active sales representatives from DB err: %v", err)
@@ -189,4 +226,20 @@ func ExtractKeys(m map[string]bool) []string {
 		}
 	}
 	return keys
+}
+
+// RetrieveDealerIDByEmail fetches the dealer ID using the user's email
+func RetrieveDealerIDByEmail(email string) (int64, string, error) {
+	var dealerID int64
+	var dealerName string
+	query := fmt.Sprintf("SELECT d.id,dealer_name FROM user_details u JOIN v_dealer d ON u.dealer_id = d.id WHERE u.email_id = '%v';", email)
+
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil || len(data) <= 0 {
+		return 0, "", fmt.Errorf("failed to retrieve dealer ID: %v", err)
+	}
+
+	dealerID = data[0]["id"].(int64)
+	dealerName = data[0]["dealer_name"].(string)
+	return dealerID, dealerName, nil
 }
