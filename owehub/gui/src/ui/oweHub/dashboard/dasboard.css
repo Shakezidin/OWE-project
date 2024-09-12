@@ -17,6 +17,11 @@
   text-align: left;
   color: #393851;
 }
+.rep-up .dropdown-toggle {
+  white-space: nowrap;
+  margin-left: 10px;
+  margin-top: 10px;
+}
 .date-button {
   border-radius: 0.4rem;
   border: none;

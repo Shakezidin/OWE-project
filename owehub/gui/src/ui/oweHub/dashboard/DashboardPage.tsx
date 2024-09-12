@@ -21,6 +21,7 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
+import DropdownCheckbox from '../../components/DropdownCheckBox';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
@@ -41,25 +42,20 @@ export const DashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [dealer, setDealer] = useState<{ label: string; value: string }>({
+  const [dealer, setDealer] = useState<{ label: string; value: string }[]>([{
     label: 'All',
     value: 'ALL',
-  });
+  }]);
   const [dealers, setDealers] = useState<string[]>([]);
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
-  /* const [selectedOption, setSelectedOption] = useState<string>(
-    payRollData[0].label
-  );*/
+
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[comissionValueData.length - 1].value
   );
   const { isActive } = useAppSelector((state) => state.filterSlice);
+  const [prefferedType,setPrefferedType] = useState<string>('')
   const { pathname } = useLocation();
-  /* const handleSelectChange = (
-    selectedOption: { value: string; label: string } | null
-  ) => {
-  setSelectedOption(selectedOption ? selectedOption.value : "");
-  };*/
+  const [isOptionsFetched, setIsOptionsFetched] = useState(false);
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -77,20 +73,23 @@ export const DashboardPage: React.FC = () => {
   const datePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dispatch(
-      getDealerPay({
-        page_number: currentPage,
-        page_size: itemsPerPage,
-        pay_roll_start_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
-        pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
-        use_cutoff: 'NO',
-        dealer_name: dealer.value,
-        sort_by: 'unique_id',
-        commission_model: selectedOption2,
-        filters,
-      })
-    );
-  }, [currentPage, selectedOption2, appliedDate, filters, dealer.value]);
+    if (isOptionsFetched) {
+      dispatch(
+        getDealerPay({
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          pay_roll_start_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
+          pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
+          use_cutoff: 'NO',
+          dealer_name: dealer.map((item) => item.value),
+          sort_by: 'unique_id',
+          commission_model: selectedOption2,
+          filters,
+          preffered_type:prefferedType
+        })
+      );
+    }
+  }, [currentPage, selectedOption2, appliedDate, filters, dealer, isOptionsFetched,prefferedType]);
 
   useEffect(() => {
     (async () => {
@@ -98,7 +97,11 @@ export const DashboardPage: React.FC = () => {
         tableNames: ['dealer'],
       };
       const res = await postCaller(EndPoints.get_newFormData, tableData);
+      if (res.status > 201) {
+        return
+      }
       setDealers([...res.data.dealer]);
+      setIsOptionsFetched(true);
     })();
   }, []);
 
@@ -123,13 +126,7 @@ export const DashboardPage: React.FC = () => {
     setFilters(req.filters);
   };
 
-  const dealerOptions = useMemo(
-    () => [
-      { label: 'All', value: 'ALL' },
-      ...dealers.map((item) => ({ label: item, value: item })),
-    ],
-    [dealers]
-  );
+
 
   return (
     <>
@@ -240,9 +237,9 @@ export const DashboardPage: React.FC = () => {
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    Select Dealer
+                    Sales Partner
                   </label>
-                  <Select
+                  {/* <Select
                     options={dealerOptions}
                     value={dealer}
                     onChange={(newValue) => {
@@ -320,6 +317,15 @@ export const DashboardPage: React.FC = () => {
                           borderRadius: '30px',
                         },
                       }),
+                    }}
+                  /> */}
+
+                  <DropdownCheckbox
+                    options={dealers?.map?.((item) => ({ label: item, value: item })) || []}
+                    selectedOptions={dealer}
+                    onChange={(selectedOptions) => {
+                      setDealer(selectedOptions)
+                      setCurrentPage(1);
                     }}
                   />
                 </div>
@@ -407,9 +413,8 @@ export const DashboardPage: React.FC = () => {
             <div className="dashboard-payroll">
               <div className="line-graph">
                 <div
-                  className={`filter-line ${
-                    active === 0 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
+                    }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -419,9 +424,8 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 1 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
+                    }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (
@@ -463,7 +467,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="">
-            <DashboardTotal />
+            <DashboardTotal setPrefferedType={setPrefferedType} />
             {/* <DonutChart /> */}
           </div>
         </div>

@@ -362,7 +362,7 @@ const Banner: React.FC<BannerProps> = ({
                     type="checkbox"
                     style={{ flexShrink: 0 }}
                     checked={
-                      leaderDealer(newFormData).length === selectDealer.length
+                      leaderDealer(newFormData)?.length === selectDealer.length
                     }
                     onChange={() => {
                       if (opts.length === selectDealer.length) {
