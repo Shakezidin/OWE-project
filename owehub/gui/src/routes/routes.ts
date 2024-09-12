@@ -77,4 +77,5 @@ export const ROUTES = {
   PEINDING_QUEUE: '/pending-actions',
   LEAD_MANAGEMENT:'/leadmng-dashboard',
   LEAD_MANAGEMENT_ADD_NEW:'/leadmgt-addnew'
+
 };

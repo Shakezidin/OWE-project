@@ -43,11 +43,16 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
       {isDropdownOpen && (
         <div className="pr-dropdown">
           <ul>
-            {/* <li onClick={() => {
-              setIsActive("all")
-              setIsDropdownOpen(false)
-              onChange?.("all")
-            }} className={isActive === "all" ? "active_sorting" : ""} >All</li> */}
+            <li
+              onClick={() => {
+                setIsActive('all');
+                setIsDropdownOpen(false);
+                onChange?.('all');
+              }}
+              className={isActive === 'all' ? 'active_sorting' : ''}
+            >
+              All
+            </li>
             <li
               onClick={() => {
                 setIsActive('desc');
@@ -56,7 +61,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
               }}
               className={isActive === 'desc' ? 'active_sorting' : ''}
             >
-              Old To New
+              Deal Loss
             </li>
             <li
               onClick={() => {
@@ -66,7 +71,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
               }}
               className={isActive === 'asc' ? 'active_sorting' : ''}
             >
-              New To Old
+              Deal Won
             </li>
           </ul>
         </div>
