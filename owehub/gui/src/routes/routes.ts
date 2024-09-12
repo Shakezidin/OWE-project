@@ -75,5 +75,5 @@ export const ROUTES = {
   ADD_NEW_SALES: '/add-new-salesrep-schedule',
   SCHEDULE_SALES_REP_SURVEY: '/schedule-sales-rep',
   PEINDING_QUEUE: '/pending-actions',
-  LEAD_MANAGEMENT:'/leadmng-dashboard'
+  LEAD_MANAGEMENT: '/leadmng-dashboard',
 };

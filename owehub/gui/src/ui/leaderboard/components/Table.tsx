@@ -100,7 +100,11 @@ const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming wee
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+const startOfThreeMonthsAgo = new Date(
+  today.getFullYear(),
+  today.getMonth() - 2,
+  1
+);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
 // Calculate the start and end of last week
@@ -301,12 +305,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -680,15 +684,15 @@ const Table = ({
       'Install Date',
       'Pto Date',
       'Cancel Date',
-      "Primary Sales Rep",
-      "Secondary Sales Rep"
+      'Primary Sales Rep',
+      'Secondary Sales Rep',
     ];
 
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
       dealer_name: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-      group_by: groupBy
+      group_by: groupBy,
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -709,7 +713,7 @@ const Table = ({
       item.pto_date,
       item.canceled_date,
       item.primary_sales_rep,
-      item.secondary_sales_rep
+      item.secondary_sales_rep,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -730,16 +734,14 @@ const Table = ({
 
   const getName = useMemo(() => {
     if (role === TYPE_OF_USER.DEALER_OWNER) {
-      return "Code Name"
+      return 'Code Name';
     }
     if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
-      return "Partner Name"
+      return 'Partner Name';
+    } else {
+      return 'Name';
     }
-    else {
-      return 'Name'
-    }
-
-  }, [role])
+  }, [role]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
@@ -862,8 +864,8 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -1014,10 +1016,7 @@ const Table = ({
               <tr>
                 <th>Rank</th>
 
-                <th>
-                  {
-                    getName}
-                </th>
+                <th>{getName}</th>
 
                 {showPartner && <th>Partner</th>}
                 <th>

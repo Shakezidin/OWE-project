@@ -27,7 +27,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   isClicked,
   setIsClicked,
   isClicked1,
-  setIsClicked1
+  setIsClicked1,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   // const [isClicked, setIsClicked] = useState(false);
@@ -44,7 +44,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
     setIsClicked1(false);
     setIsClicked(true);
     onActiveSlrpClick('Active Sales Rep');
-    
   };
 
   const [isHovered1, setIsHovered1] = useState(false);
@@ -54,7 +53,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
     setIsClicked(false);
     setIsClicked1(true);
     onInactiveSlrpClick('Inactive Sales Rep');
-    
   };
 
   const handleMouseEnter1 = () => {
@@ -244,7 +242,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={handleClick}
-                >
+              >
                 <div className="flex items-center act-top">
                   <div
                     className="flex items-center mr1 inner-circle"
@@ -253,12 +251,20 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       width: 18,
                       height: 18,
                       borderRadius: '50%',
-                      border: isHovered || isClicked ? '3px solid #fff' : '3px solid #D2FFF9',
+                      border:
+                        isHovered || isClicked
+                          ? '3px solid #fff'
+                          : '3px solid #D2FFF9',
                       flexShrink: 0,
                     }}
                   />
 
-                  <span className="bold upl" style={{ color: isHovered || isClicked  ? '#fff' : '#263747' }}>
+                  <span
+                    className="bold upl"
+                    style={{
+                      color: isHovered || isClicked ? '#fff' : '#263747',
+                    }}
+                  >
                     {userPerformanceList?.[0]?.value}
                   </span>
                 </div>
@@ -273,13 +279,12 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 </h3>
               </div>
 
-
               <div
                 className={`flex items-center inactive-slrp  ${isClicked1 ? 'clicked1' : ''}`}
                 onMouseEnter={handleMouseEnter1}
                 onMouseLeave={handleMouseLeave1}
                 onClick={handleClick1}
-               >
+              >
                 <div className="flex items-center">
                   <div
                     className="flex items-center mr1"
@@ -288,12 +293,20 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       width: 18,
                       height: 18,
                       borderRadius: '50%',
-                      border: isHovered1 || isClicked1 ? '3px solid #fff' : '3px solid rgb(253, 196, 209)',
+                      border:
+                        isHovered1 || isClicked1
+                          ? '3px solid #fff'
+                          : '3px solid rgb(253, 196, 209)',
                       flexShrink: 0,
                     }}
                   />
 
-                  <span className="bold" style={{ color: isHovered1 || isClicked1 ? '#fff' : '#263747' }}>
+                  <span
+                    className="bold"
+                    style={{
+                      color: isHovered1 || isClicked1 ? '#fff' : '#263747',
+                    }}
+                  >
                     {userPerformanceList?.[1]?.value}
                   </span>
                 </div>

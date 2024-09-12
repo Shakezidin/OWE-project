@@ -1,12 +1,8 @@
-import React from 'react'
+import React from 'react';
 import styles from './styles/dashboard.module.css';
 
 const LeadMngDashboard = () => {
-  return (
-    <div>
-        Lead Management
-    </div>
-  )
-}
+  return <div>Lead Management</div>;
+};
 
-export default LeadMngDashboard
+export default LeadMngDashboard;

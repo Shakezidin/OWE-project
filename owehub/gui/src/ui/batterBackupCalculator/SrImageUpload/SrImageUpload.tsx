@@ -480,13 +480,11 @@ OWE Battery Calc
 
           <div className="prospect-input-field relative mt2">
             <textarea
-            rows={4}
+              rows={4}
               placeholder="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
-           
-            
           </div>
 
           <div

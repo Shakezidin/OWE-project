@@ -168,19 +168,19 @@ const DashBoardTable = ({
                         'N/A'}
                     </td>
                     <td style={{ color: '#101828' }}>
-                     ${el.contract_value ?? 'N/A'}
+                      ${el.contract_value ?? 'N/A'}
                     </td>
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
-                     ${el.amount ?? 'N/A'}
+                      ${el.amount ?? 'N/A'}
                     </td>
                     <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
-                     ${el.amt_paid ?? 'N/A'}
+                      ${el.amt_paid ?? 'N/A'}
                     </td>
                     <td style={{ color: '#379DE3', fontWeight: '500' }}>
-                     ${el.balance ?? 'N/A'}
+                      ${el.balance ?? 'N/A'}
                     </td>
                     <td style={{ color: '#15C31B', fontWeight: '500' }}>
-                     {el.credit ?? 'N/A'}
+                      {el.credit ?? 'N/A'}
                     </td>
 
                     {/* <td>

@@ -19,7 +19,7 @@ const QCPopUp: React.FC<TableProps> = ({
     handleClose();
   };
 
-  console.log(projectDetail, "data showing for Pipeline")
+  console.log(projectDetail, 'data showing for Pipeline');
 
   const renderQCContent = (title: string, status: string) => {
     const isCompleted = status === 'Completed';
@@ -50,7 +50,7 @@ const QCPopUp: React.FC<TableProps> = ({
   };
 
   useEffect(() => {
-    const handleKeyDown = (event:any) => {
+    const handleKeyDown = (event: any) => {
       if (event.key === 'Escape') {
         handleClose();
       }
@@ -62,7 +62,6 @@ const QCPopUp: React.FC<TableProps> = ({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-
 
   const qcData = projectDetail;
 
@@ -85,7 +84,6 @@ const QCPopUp: React.FC<TableProps> = ({
           </div>
           <div className="qc-modal-body">
             <div className="createQualCust">
-
               {qcData && (
                 <>
                   {Object.entries(qcData)

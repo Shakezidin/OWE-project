@@ -16,7 +16,7 @@
   transition: all 0.5s;
 }
 
-.deco-text:hover{
+.deco-text:hover {
   text-decoration: underline;
   color: #000;
 }
@@ -137,12 +137,10 @@
     display: none;
   }
 
-  
-
   .pending_card {
     padding: 1px;
   }
-  .pending_stats{
+  .pending_stats {
     padding-right: 18px;
   }
 }
