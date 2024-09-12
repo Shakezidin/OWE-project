@@ -225,3 +225,6 @@
     height: 19px;
     width: 19px;
   }
+  .pieChart :focus {
+    outline: none;
+  }
