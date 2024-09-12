@@ -241,6 +241,9 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			SiteSurveyD = ""
 		} else {
 			SiteSurveyD = SiteSurveyScheduleDate.Format("2006-01-02")
+			if SiteSurveyD == "2199-12-30" {
+				SiteSurveyD = "" // Set to empty string if date matches the invalid date
+			}
 		}
 
 		SiteSurverCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
