@@ -97,33 +97,21 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
       </div>
       {isOpen && (
         <div className="dropdown-menu" style={{overflowX:"clip"}}>
-          <input
-            type="text"
-            className="input"
-            placeholder={placeholder}
-            value={search}
-            onChange={handleSearch}
-          />
-          {!search && (
-            <div className="dropdown-item">
-              <input
-                type="checkbox"
-                checked={isAllSelected}
-                onChange={handleSelectAll}
-              />
-              <span>All</span>
-            </div>
+          {/* Remove the input element */}
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option, index) => (
+              <div key={index} className="dropdown-item">
+                <input
+                  type="checkbox"
+                  checked={selectedOptions.some(item => item.value === option.value)}
+                  onChange={() => handleOptionChange(option)}
+                />
+                <span>{option.label}</span>
+              </div>
+            ))
+          ) : (
+            <div className="text-center h5 mt4 text-dark">No data found</div>
           )}
-          {filteredOptions.map((option, index) => (
-            <div key={index} className="dropdown-item">
-              <input
-                type="checkbox"
-                checked={selectedOptions.some(item => item.value === option.value)}
-                onChange={() => handleOptionChange(option)}
-              />
-              <span>{option.label}</span>
-            </div>
-          ))}
         </div>
       )}
     </div>
