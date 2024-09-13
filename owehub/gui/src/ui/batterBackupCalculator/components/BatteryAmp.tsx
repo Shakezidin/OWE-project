@@ -39,7 +39,7 @@ const BatteryAmp = () => {
     lra?: number;
     prospect_name?: string;
     SysSize?: number;
-    missing_labels?: string
+    missing_labels?: string;
   }>({});
   const [requiredBattery, setRequiredBattery] = useState(0);
   const [initial, setInitial] = useState(0);
@@ -52,7 +52,7 @@ const BatteryAmp = () => {
   const [mainDisabled, setMainDisabled] = useState(true);
   const [mssg, setMssg] = useState('');
   const [totalAmp, setTotalAmp] = useState(0);
-  const [fullhomeBackup, setFullhomeBackup] = useState(true)
+  const [fullhomeBackup, setFullhomeBackup] = useState(true);
   const [lightHouseAmpSize, setLightHouseAmpSize] = useState<string | number>(
     0
   );
@@ -99,63 +99,58 @@ const BatteryAmp = () => {
     Swal.fire({
       title: `<p style="font-size:14px;padding-top:20px;padding-bottom:16px;">The batteries are capable of powering the full load. Would you like to switch to full home backup?<p>`,
       showDenyButton: true,
-      confirmButtonText: "Yes, switch to full home backup",
+      confirmButtonText: 'Yes, switch to full home backup',
       denyButtonText: `No, stay on partial home backup.`,
       focusDeny: true,
-      confirmButtonColor: "#0BAF11",
+      confirmButtonColor: '#0BAF11',
       customClass: {
-        denyButton: "mt-13"
+        denyButton: 'mt-13',
+      },
+    }).then((result) => {
+      if (result.isDenied) {
+        setFullhomeBackup(false);
+      } else {
+        setFullhomeBackup(true);
       }
-    })
-      .then((result) => {
-        if (result.isDenied) {
-          setFullhomeBackup(false)
-        } else {
-          setFullhomeBackup(true)
-        }
-        setRequiredBattery(prev => prev + 1)
-      })
-     
-
-  }
+      setRequiredBattery((prev) => prev + 1);
+    });
+  };
 
   const toggle = (index: number) => {
     const batteries = [...batteryPower];
     const ampValue = batteries[index].category_ampere * 0.6;
     const remain = avavilableAmpPercentage.remainingAmps - ampValue;
-    const battery = batteries[index]
-   
+    const battery = batteries[index];
+
     if ((battery.amp < 70 ? remain >= 0 : true) && !batteries[index].isOn) {
       if (battery.amp >= 70) {
         Swal.fire({
           title: `<p style="font-size:14px;padding-top:20px;padding-bottom:16px;">This breaker exceeds the limits of a single Powerwall 3 if you would like to back up this load an additional battery is required.<p>`,
           showDenyButton: true,
-          confirmButtonText: "Add a battery and back-up this breaker",
+          confirmButtonText: 'Add a battery and back-up this breaker',
           denyButtonText: `I do not want to back-up this breaker`,
           focusDeny: true,
-          confirmButtonColor: "#0BAF11",
+          confirmButtonColor: '#0BAF11',
           customClass: {
-            denyButton: "mt-13"
-          }
+            denyButton: 'mt-13',
+          },
         }).then((result) => {
           if (result.isConfirmed) {
-            battery.isOn = true
-            const totalBattery = requiredBattery + 1
+            battery.isOn = true;
+            const totalBattery = requiredBattery + 1;
             if (required <= totalBattery) {
-              switchPratialBackup()
+              switchPratialBackup();
             }
           } else if (result.isDenied) {
-            return
+            return;
           }
         });
-        
-      }
-      else {
+      } else {
         batteries[index].isOn = true;
       }
     } else if (batteries[index].isOn) {
       if (battery.amp >= 70) {
-        setRequiredBattery(prev => prev - 1)
+        setRequiredBattery((prev) => prev - 1);
       }
       batteries[index].isOn = false;
     } else {
@@ -250,9 +245,9 @@ const BatteryAmp = () => {
           });
           setTotalAmp(
             Math.max(addedAmp, max, data?.data?.lra / 185) -
-            (typeof lightHouseAmpSize === 'string'
-              ? parseFloat(lightHouseAmpSize)
-              : lightHouseAmpSize)
+              (typeof lightHouseAmpSize === 'string'
+                ? parseFloat(lightHouseAmpSize)
+                : lightHouseAmpSize)
           );
 
           setOtherDeatil(data?.data);
@@ -298,9 +293,18 @@ const BatteryAmp = () => {
           {' '}
           Customise panel as per requirement
         </p>
-        {otherDeatil.missing_labels && <p style={{ color: '#d62222', fontSize: 12, fontWeight: 500 }} className='mt1'>
-          The breakers in your main panel were not properly labeled, our team has leveraged their extensive electrical experience to estimate the loads assigned to each breaker. While our team's experience is extensive without properly labeled breakers we cannot guarantee the accuracy of their estimate.
-        </p>}
+        {otherDeatil.missing_labels && (
+          <p
+            style={{ color: '#d62222', fontSize: 12, fontWeight: 500 }}
+            className="mt1"
+          >
+            The breakers in your main panel were not properly labeled, our team
+            has leveraged their extensive electrical experience to estimate the
+            loads assigned to each breaker. While our team's experience is
+            extensive without properly labeled breakers we cannot guarantee the
+            accuracy of their estimate.
+          </p>
+        )}
       </div>
       <div className="batter-amp-container ">
         <div className="py3  batter-amp-wrapper  ">

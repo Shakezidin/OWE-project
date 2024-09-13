@@ -17,6 +17,11 @@
   text-align: left;
   color: #393851;
 }
+.rep-up .dropdown-toggle {
+  white-space: nowrap;
+  margin-left: 10px;
+  margin-top: 10px;
+}
 .date-button {
   border-radius: 0.4rem;
   border: none;
@@ -74,11 +79,24 @@
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
+.calender-btn-wrapper {
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+  padding-right: 12px;
+}
+
+.calender-btn-wrapper .reset-calender,
+.calender-btn-wrapper .apply-calender {
+  position: relative !important;
+  left: auto !important;
+}
+
 .commission-section-dash {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-  /* flex-wrap: wrap; */
+  margin: 1rem;
 }
 .total-commisstion {
   display: flex;
@@ -88,13 +106,14 @@
   border-radius: 16px;
   padding: 1.2rem;
   width: 32%;
-  height: 132px;
+  height: 115px;
   margin-top: 5px;
   margin-bottom: 5px;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 .total-commisstion:hover {
-  box-shadow: 0px 4px 4px 0px rgba(74, 74, 74, 0.25);
+  box-shadow: 0px 4px 4px 0px rgba(74, 74, 74, 0.25) !important;
+  transform: scale(1.02) !important;
 }
 
 .total-section h4 {
@@ -303,7 +322,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0.5rem 0 1rem;
-  background: #0096d3;
+  color: #000;
 }
 
 .breakdown-img {
@@ -320,17 +339,24 @@
   font-size: 16px;
   font-weight: 500;
   text-align: left;
-  color: white;
+  color: #000;
 }
 .project-section h5 {
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
   text-align: left;
-  color: white;
+  color: #000;
   padding-bottom: 1rem;
 }
-
+.close-popup-btn {
+  filter: brightness(0.5);
+  transition: all 500ms;
+}
+.close-popup-btn:hover {
+  transform: scale(1.2);
+  transition: all 500ms;
+}
 .breakdown-table {
   display: block;
   height: 100%;
@@ -402,7 +428,7 @@
   border-radius: 16px;
   width: 40%;
   max-width: 900px;
-  height: 600px;
+  height: 500px;
   overflow: hidden;
 }
 

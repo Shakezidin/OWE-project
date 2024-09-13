@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './barchart.css';
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Cell } from 'recharts';
 import { OnboardingChartModel } from '../../../../core/models/api_models/UserManagementModel';
@@ -10,13 +10,60 @@ interface UserPieChartProps {
   onboardingList: OnboardingChartModel[];
   userPerformanceList: OnboardingChartModel[];
   loading: boolean;
+  onInactiveSlrpClick: (value: string) => void;
+  onActiveSlrpClick: (value: string) => void;
+  isClicked: boolean;
+  setIsClicked: (isClicked: boolean) => void;
+  isClicked1: boolean;
+  setIsClicked1: (isClicked: boolean) => void;
 }
 
 const UserPieChart: React.FC<UserPieChartProps> = ({
   onboardingList,
   userPerformanceList,
   loading,
+  onInactiveSlrpClick,
+  onActiveSlrpClick,
+  isClicked,
+  setIsClicked,
+  isClicked1,
+  setIsClicked1,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  // const [isClicked, setIsClicked] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const handleClick = () => {
+    setIsClicked1(false);
+    setIsClicked(true);
+    onActiveSlrpClick('Active');
+  };
+
+  const [isHovered1, setIsHovered1] = useState(false);
+  // const [isClicked1, setIsClicked1] = useState(false);
+
+  const handleClick1 = () => {
+    setIsClicked(false);
+    setIsClicked1(true);
+     onActiveSlrpClick('InActive');
+  
+  };
+
+  const handleMouseEnter1 = () => {
+    setIsHovered1(true);
+  };
+
+  const handleMouseLeave1 = () => {
+    setIsHovered1(false);
+  };
+
   const isTablet = useMatchMedia('(max-width: 1024px)');
   return (
     <div className="chart-view" style={{ marginTop: 12 }}>
@@ -191,35 +238,54 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
 
           {!!userPerformanceList.length && (
             <div className="flex stats-wrapper items-center justify-center pb2">
-              <div className="flex items-center">
-                <div className="flex items-center">
+              <div
+                className={`flex items-center active-slrp ${isClicked ? 'clicked' : ''}`}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleClick}
+              >
+                <div className="flex items-center act-top">
                   <div
-                    className="flex items-center mr1"
+                    className="flex items-center mr1 inner-circle"
                     style={{
                       background: '#63ACA3',
                       width: 18,
                       height: 18,
                       borderRadius: '50%',
-                      border: '3px solid #D2FFF9',
+                      border:
+                        isHovered || isClicked
+                          ? '3px solid #fff'
+                          : '3px solid #D2FFF9',
                       flexShrink: 0,
                     }}
                   />
 
-                  <span className="bold" style={{ color: '#263747' }}>
+                  <span
+                    className="bold upl"
+                    style={{
+                      color: isHovered || isClicked ? '#fff' : '#263747',
+                    }}
+                  >
                     {userPerformanceList?.[0]?.value}
                   </span>
                 </div>
+
                 <span className="mx1">-</span>
 
                 <h3
-                  className="h4"
+                  className="act-sr"
                   style={{ fontWeight: '500', lineHeight: '20px' }}
                 >
                   Active Sales Rep
                 </h3>
               </div>
 
-              <div className="flex items-center ">
+              <div
+                className={`flex items-center inactive-slrp  ${isClicked1 ? 'clicked1' : ''}`}
+                onMouseEnter={handleMouseEnter1}
+                onMouseLeave={handleMouseLeave1}
+                onClick={handleClick1}
+              >
                 <div className="flex items-center">
                   <div
                     className="flex items-center mr1"
@@ -228,19 +294,27 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       width: 18,
                       height: 18,
                       borderRadius: '50%',
-                      border: '3px solid rgb(253 196 209)',
+                      border:
+                        isHovered1 || isClicked1
+                          ? '3px solid #fff'
+                          : '3px solid rgb(253, 196, 209)',
                       flexShrink: 0,
                     }}
                   />
 
-                  <span className="bold" style={{ color: '#263747' }}>
+                  <span
+                    className="bold"
+                    style={{
+                      color: isHovered1 || isClicked1 ? '#fff' : '#263747',
+                    }}
+                  >
                     {userPerformanceList?.[1]?.value}
                   </span>
                 </div>
                 <span className="mx1">-</span>
 
                 <h3
-                  className="h4"
+                  className="inact-sr"
                   style={{ fontWeight: '500', lineHeight: '20px' }}
                 >
                   Inactive Sales Rep

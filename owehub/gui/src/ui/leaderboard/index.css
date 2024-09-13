@@ -36,7 +36,7 @@
   z-index: 11;
 }
 
-.calender-wrapper svg:hover{
+.calender-wrapper svg:hover {
   transform: scale(1.09);
   transition: transform 0.3s ease;
 }
@@ -417,8 +417,7 @@
   color: var(--orange-color);
 }
 
-
-.export-trigger{
+.export-trigger {
   margin-left: auto;
   width: fit-content;
   cursor: pointer;
@@ -428,7 +427,7 @@
   padding: 6px 12px;
   font-size: 12px;
   color: #f1f1f1;
-  transition:all 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .export-trigger:hover {
@@ -436,8 +435,6 @@
   background-color: #ec9d76;
   color: #fff;
 }
-
-
 
 .export-opt {
   overflow: hidden;
@@ -670,8 +667,8 @@
   }
 }
 
-@media (max-width: 400px){
-  .leaderboard-data__datepicker-content{
+@media (max-width: 400px) {
+  .leaderboard-data__datepicker-content {
     right: -20px;
   }
 }

@@ -117,7 +117,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			updateUserReq.EmailId,
 		)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-		if err != nil {
+		if err != nil || len(data) <= 0 {
 			log.FuncErrorTrace(0, "Failed to get old username from db with err %s", err)
 			FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
 			return

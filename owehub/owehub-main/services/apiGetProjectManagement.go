@@ -189,43 +189,46 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
-	if val, ok := data[0]["current_live_cad"].(string); ok {
-		projectList.CADLink = val
-	} else {
-		projectList.CADLink = "" // or a default value
-	}
+	if len(data) > 0 {
+		if val, ok := data[0]["current_live_cad"].(string); ok {
+			projectList.CADLink = val
+		} else {
+			projectList.CADLink = "" // or a default value
+		}
 
-	if val, ok := data[0]["system_sold_er"].(string); ok {
-		projectList.DATLink = val
-	} else {
-		projectList.DATLink = "" // or a default value
-	}
+		if val, ok := data[0]["system_sold_er"].(string); ok {
+			projectList.DATLink = val
+		} else {
+			projectList.DATLink = "" // or a default value
+		}
 
-	if val, ok := data[0]["podio_link"].(string); ok {
-		projectList.PodioLink = val
-	} else {
-		projectList.PodioLink = "" // or a default value
-	}
+		if val, ok := data[0]["podio_link"].(string); ok {
+			projectList.PodioLink = val
+		} else {
+			projectList.PodioLink = "" // or a default value
+		}
 
-	if val, ok := data[0]["change_order_status"].(string); ok {
-		projectList.CoStatus = val
-	} else {
-		projectList.CoStatus = "" // or a default value
+		if val, ok := data[0]["change_order_status"].(string); ok {
+			projectList.CoStatus = val
+		} else {
+			projectList.CoStatus = "" // or a default value
+		}
 	}
 
 	var ntp models.NTP
 	var qc models.QC
 	var actionRequiredCount, count int64
+	var prospectId string
 
 	// Assign values from the data map to the struct fields
 	if len(data) > 0 {
-		ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy", ntpDate)
+		ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy", ntpDate, prospectId)
 		actionRequiredCount += count
-		ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project", ntpDate)
+		ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project", ntpDate, prospectId)
 		actionRequiredCount += count
-		ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded", ntpDate)
+		ntp.UtilityBillUploaded, count = getStringValue(data[0], "utility_bill_uploaded", ntpDate, prospectId)
 		actionRequiredCount += count
-		ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete", ntpDate)
+		ntp.PowerClerkSignaturesComplete, count = getStringValue(data[0], "powerclerk_signatures_complete", ntpDate, prospectId)
 		actionRequiredCount += count
 		ntp.ActionRequiredCount = actionRequiredCount
 		actionRequiredCount = 0
@@ -289,19 +292,26 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	if len(data) > 0 {
-		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az", ntpDate)
+		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az", ntpDate, prospectId)
 		actionRequiredCount += count
-		qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only", ntpDate)
+		qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only", ntpDate, prospectId)
 		actionRequiredCount += count
-		qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only", ntpDate)
+		qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only", ntpDate, prospectId)
 		actionRequiredCount += count
-		qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease", ntpDate)
+		qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease", ntpDate, prospectId)
 		actionRequiredCount += count
-		qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease", ntpDate)
+		qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease", ntpDate, prospectId)
 		actionRequiredCount += count
-		qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed", ntpDate)
+		qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed", ntpDate, prospectId)
 		actionRequiredCount += count
 		qc.ActionRequiredCount = actionRequiredCount
+	} else {
+		qc.PowerClerk = "Completed"
+		qc.ACHWaiveSendandSignedCashOnly = "Completed"
+		qc.GreenAreaNMOnly = "Completed"
+		qc.FinanceCreditApprovalLoanorLease = "Completed"
+		qc.FinanceAgreementCompletedLoanorLease = "Completed"
+		qc.OWEDocumentsCompleted = "Completed"
 	}
 
 	projectList.Ntp = ntp
@@ -539,7 +549,7 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 	return filters, whereEleList
 }
 
-func getStringValue(data map[string]interface{}, key string, ntp_date string) (string, int64) {
+func getStringValue(data map[string]interface{}, key string, ntp_date string, prospectId string) (string, int64) {
 	if v, exists := data[key]; exists {
 		switch key {
 		case "production_discrepancy":
@@ -573,6 +583,9 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				return "Completed", 0
 			}
 		case "powerclerk_sent_az":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -586,6 +599,9 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				}
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -597,6 +613,9 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				}
 			}
 		case "green_area_nm_only":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -610,6 +629,9 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				}
 			}
 		case "finance_credit_approved_loan_or_lease":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -621,6 +643,9 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				}
 			}
 		case "finance_agreement_completed_loan_or_lease":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -632,6 +657,9 @@ func getStringValue(data map[string]interface{}, key string, ntp_date string) (s
 				}
 			}
 		case "owe_documents_completed":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0

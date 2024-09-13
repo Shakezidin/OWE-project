@@ -34,3 +34,29 @@ BEGIN
   RETURNING id INTO v_slackconfig_id;
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION update_slack_config(
+    p_record_id       INT,
+    p_issue_type      CHARACTER VARYING,
+    p_channel_name    CHARACTER VARYING,
+    p_bot_token       CHARACTER VARYING,
+    p_slack_app_token CHARACTER VARYING
+)
+RETURNS INT
+AS $$
+BEGIN
+  UPDATE slackconfig SET
+    issue_type = p_issue_type,
+    channel_name = p_channel_name,
+    bot_token = p_bot_token,
+    slack_app_token = p_slack_app_token
+  WHERE id = p_record_id;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Slack Config with record id % not found', p_record_id;
+  END IF;
+  RETURN 1;
+END;
+$$ LANGUAGE plpgsql;
+

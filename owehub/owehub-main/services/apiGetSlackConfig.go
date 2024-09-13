@@ -25,13 +25,11 @@ import (
 func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err             error
-		dataReq         models.DataRequestBody
+		dataReq         models.GetSlackConfigRequest
 		data            []map[string]interface{}
 		whereEleList    []interface{}
 		query           string
-		queryWithFiler  string
 		queryForAlldata string
-		filter          string
 		RecordCount     int64
 	)
 
@@ -59,15 +57,23 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	query = `SELECT 
-		 ap.id as record_id, ap.issue_type, ap.channel_name, ap.bot_token, ap.slack_app_token
-		 FROM ` + db.TableName_slackconfig + ` ap`
+	query = fmt.Sprintf(`
+		SELECT
+			id,
+			issue_type,
+			channel_name,
+			bot_token,
+			slack_app_token
+		FROM %s
+		LIMIT %d
+		OFFSET %d
+	`,
+		db.TableName_slackconfig,
+		dataReq.PageSize,
+		dataReq.PageSize*(dataReq.PageNumber-1),
+	)
 
-	if filter != "" {
-		queryWithFiler = query + filter
-	}
-
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Slack Config data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get Slack Config data from DB", http.StatusBadRequest, nil)
@@ -77,19 +83,29 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	SlackConfigList := models.GetSlackConfigList{}
 
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
+		RecordId, ok := item["id"].(int64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 		IssueType, ok := item["issue_type"].(string)
 		if !ok || IssueType == "" {
-			log.FuncErrorTrace(0, "Failed to get name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get issue_type for Record ID %v. Item: %+v\n", RecordId, item)
 			IssueType = ""
 		}
 		ChannelName, ok := item["channel_name"].(string)
 		if !ok || ChannelName == "" {
-			log.FuncErrorTrace(0, "Failed to get month for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get channel_name for Record ID %v. Item: %+v\n", RecordId, item)
+			ChannelName = ""
+		}
+		SlackAppToken, ok := item["slack_app_token"].(string)
+		if !ok || ChannelName == "" {
+			log.FuncErrorTrace(0, "Failed to get slack_app_token for Record ID %v. Item: %+v\n", RecordId, item)
+			SlackAppToken = ""
+		}
+		BotToken, ok := item["bot_token"].(string)
+		if !ok || ChannelName == "" {
+			log.FuncErrorTrace(0, "Failed to get bot_token for Record ID %v. Item: %+v\n", RecordId, item)
 			ChannelName = ""
 		}
 
@@ -97,14 +113,11 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 			RecordId:      RecordId,
 			ChannelName:   ChannelName,
 			IssueType:     IssueType,
+			SlackAppToken: SlackAppToken,
+			BotToken:      BotToken,
 		}
 
 		SlackConfigList.SlackConfigList = append(SlackConfigList.SlackConfigList, SlackConfig)
-	}
-
-
-	if filter != "" {
-		queryForAlldata = query + filter
 	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
@@ -118,5 +131,3 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	log.FuncInfoTrace(0, "Number of Slack Config List fetched : %v list %+v", len(SlackConfigList.SlackConfigList), SlackConfigList)
 	FormAndSendHttpResp(resp, "Slack Config Data", http.StatusOK, SlackConfigList, RecordCount)
 }
- 
- 

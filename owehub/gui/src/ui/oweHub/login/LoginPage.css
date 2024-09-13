@@ -77,14 +77,14 @@
 /* .battery-calc-button:hover {
   transform: scale(1.07);
 } */
- .battery-calc-button.disabled-battery-calc{
+.battery-calc-button.disabled-battery-calc {
   opacity: 0.6;
   cursor: not-allowed;
- }
- .coming-soon{
+}
+.coming-soon {
   margin-right: 20px;
   line-height: 1rem;
- }
+}
 .loginBox {
   background-color: transparent;
   display: flex;
