@@ -73,6 +73,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Iterate through table names
 	for _, tableName := range newFormDataReq.TableNames {
 		var items []string
+		var dbIndex uint8 = db.OweHubDbIndex
 
 		switch tableName {
 		case "partners":
@@ -120,6 +121,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				}
 				log.FuncInfoTrace(0, "logged user %v is %v", accountName, roleBase)
 				query = fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+				dbIndex = db.RowDataDBIndex
 			} else {
 				query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
 			}
@@ -131,7 +133,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+		data, err = db.ReteriveFromDB(dbIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get new form data for table name %v from DB err: %v", tableName, err)
 			FormAndSendHttpResp(resp, "Failed to get Data from DB", http.StatusBadRequest, nil)
