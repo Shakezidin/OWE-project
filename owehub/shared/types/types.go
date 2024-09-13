@@ -58,6 +58,8 @@ var (
 			RoleApptSetter,
 			RoleFinAdmin,
 			RoleDbUser,
+			RoleAccountExecutive,
+			RoleAccountManager,
 		}, GroupAdminAccounts: {
 			RoleAdmin,
 			RoleAccountManager,

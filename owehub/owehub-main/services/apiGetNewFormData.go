@@ -10,6 +10,8 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
+	"errors"
 
 	"encoding/json"
 	"fmt"
@@ -65,6 +67,8 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Prepare the response data
 	responseData := make(map[string]interface{})
+	role, _ := req.Context().Value("rolename").(string)
+	email, _ := req.Context().Value("emailid").(string)
 
 	// Iterate through table names
 	for _, tableName := range newFormDataReq.TableNames {
@@ -72,7 +76,24 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		switch tableName {
 		case "partners":
-			query = "SELECT partner_name as data FROM " + db.TableName_partners
+			
+			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive){
+				accountName, err := fetchAmAeName(email)
+				if err != nil {
+					FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+					return
+				}
+				var roleBase string
+				if role == "Account Manager" {
+					roleBase = "account_manager"
+				} else {
+					roleBase = "account_executive"
+				}
+				log.FuncInfoTrace(0, "logged user %v is %v", accountName, roleBase)
+				query = fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+			} else {
+				query = "SELECT partner_name as data FROM " + db.TableName_partners
+			}
 		case "installers":
 			query = "SELECT partner_name as data FROM " + db.TableName_partners
 			tableName = "installers"
@@ -132,4 +153,25 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Send the response
 	log.FuncInfoTrace(0, "Number of new form data List fetched : %v list %+v", len(responseData), responseData)
 	FormAndSendHttpResp(resp, "New Form Data", http.StatusOK, responseData)
+}
+
+/******************************************************************************
+ * FUNCTION:				fetchAmAeName
+ * DESCRIPTION:     handler to get of the logged in ae / am
+ * INPUT:						resp, req
+ * RETURNS:    			string, error
+ ******************************************************************************/
+func fetchAmAeName(email string) (string, error) {
+	var err error
+	log.EnterFn(0, "fetchAmAeName")
+	defer func() { log.ExitFn(0, "fetchAmAeName", err) }()
+
+	query := fmt.Sprintf("SELECT name FROM user_details WHERE email_id = '%s'", email)
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil || len(data) == 0 {
+		log.FuncErrorTrace(0, "unable to fetch name for account manager / account executive")
+		return "", errors.New("unable to fetch name for account manager / account executive")
+	}
+	userName := data[0]["name"].(string)
+	return userName, nil
 }
