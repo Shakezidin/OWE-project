@@ -43,7 +43,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   const handleClick = () => {
     setIsClicked1(false);
     setIsClicked(true);
-    onActiveSlrpClick('Active Sales Rep');
+    onActiveSlrpClick('Active');
   };
 
   const [isHovered1, setIsHovered1] = useState(false);
@@ -52,7 +52,8 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   const handleClick1 = () => {
     setIsClicked(false);
     setIsClicked1(true);
-    onInactiveSlrpClick('Inactive Sales Rep');
+     onActiveSlrpClick('InActive');
+  
   };
 
   const handleMouseEnter1 = () => {
