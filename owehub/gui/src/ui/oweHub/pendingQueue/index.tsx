@@ -9,16 +9,18 @@ import { Link } from 'react-router-dom';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
+import Switch from '../../components/Switch';
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
-  const [active, setActive] = useState<'all' | 'ntp' | 'co' | 'qc'>('qc');
+  const [active, setActive] = useState<'all' | 'ntp' | 'co' | 'qc'>('ntp');
   const [loading, setLoading] = useState(false);
   const [tileData, setTileData] = useState<any>('');
   const [load, setLoad] = useState(false);
   const [dataPending, setDataPending] = useState<any>([]);
   const [page, setPage] = useState(1);
   const [totalcount, setTotalcount] = useState(0);
+  const [pre, setPre] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -88,9 +90,23 @@ const PendingQueue = () => {
 
   return (
     <>
-      <h2 className={`my2 ${styles.pending_queue_title}`}>
-        Pending Actions - (BETA)
-      </h2>
+      <div style={{ borderRadius: 6 }} className="flex items-center bg-white px2 justify-between">
+
+        <h2 className={`my2 ${styles.pending_queue_title}`}>
+          Pending Actions - (BETA)
+        </h2>
+
+        <div className="flex items-center">
+          <label htmlFor="" className='mr2'>Pre</label>
+          <Switch checked={pre} onChange={() => {
+            if (pre && active === 'qc') {
+              setActive('ntp')
+            }
+            setPre(prev => !prev)
+
+          }} />
+        </div>
+      </div>
       {
         <div className={styles.pending_card_wrapper}>
           {load ? (
@@ -102,31 +118,7 @@ const PendingQueue = () => {
             </div>
           ) : (
             <>
-              <div
-                className={styles.pending_card}
-                onClick={() => {
-                  setActive('qc'), setPage(1), setSearch('');
-                }}
-              >
-                <div
-                  className={` ${active === 'qc' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
-                >
-                  <h5 className={styles.pending_stats}>
-                    {tileData.qc_pending_count || 'N/A'}
-                  </h5>
-                  <div style={{ lineHeight: '1.2rem' }}>
-                    <h5
-                      className={styles.pending_card_title}
-                      style={{ fontWeight: 500 }}
-                    >
-                      QC Pending
-                    </h5>
-                    <p className={styles.pending_card_desc}>
-                      Click to see all pending actions in QC
-                    </p>
-                  </div>
-                </div>
-              </div>
+
               <div
                 className={styles.pending_card}
                 onClick={() => {
@@ -134,7 +126,7 @@ const PendingQueue = () => {
                 }}
               >
                 <div
-                  className={` ${active === 'ntp' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
+                  className={` ${styles.disbaled_card} ${active === 'ntp' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
                 >
                   <h5 className={styles.pending_stats}>
                     {tileData.ntp_pending_count || 'N/A'}
@@ -173,6 +165,33 @@ const PendingQueue = () => {
                     </h5>
                     <p className={styles.pending_card_desc}>
                       Click to see all pending actions in C/O
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                className={styles.pending_card}
+                onClick={pre ? () => {
+                  setActive('qc')
+                  setPage(1)
+                  setSearch('');
+                } : undefined}
+              >
+                <div
+                  className={` ${pre ? "" : styles.disabled_card} ${active === 'qc' ? styles.active_card : pre ? styles.pending_card_hover : ""} ${styles.pending_card_inner}`}
+                >
+                  <h5 className={styles.pending_stats}>
+                    {tileData.qc_pending_count || 'N/A'}
+                  </h5>
+                  <div style={{ lineHeight: '1.2rem' }}>
+                    <h5
+                      className={styles.pending_card_title}
+                      style={{ fontWeight: 500 }}
+                    >
+                      QC Pending
+                    </h5>
+                    <p className={styles.pending_card_desc}>
+                      Click to see all pending actions in QC
                     </p>
                   </div>
                 </div>
@@ -338,7 +357,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                      'Pending (Action Required)'
+                                        'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'
