@@ -132,9 +132,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 				return
 			}
 			if len(dealerNames) == 0 {
-				perfomanceList := models.PerfomanceListResponse{}
-				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
+				log.FuncInfoTrace(0, "No dealer list present")
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 				return
 			}
 			filter, whereEleList = PrepareAeAmFilters(dealerNames, dataReq, false)

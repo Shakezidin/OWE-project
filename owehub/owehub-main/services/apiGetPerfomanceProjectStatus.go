@@ -141,9 +141,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			}
 
 			if len(dealerNames) == 0 {
-				perfomanceList := models.PerfomanceListResponse{}
-				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 				return
 			}
 			filter, whereEleList = PrepareProjectAeAmFilters(dealerNames, dataReq, false)
