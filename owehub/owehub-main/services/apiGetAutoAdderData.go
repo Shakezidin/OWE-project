@@ -170,7 +170,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		if strings.HasPrefix(Type, "MK") {
 			qry := `select fee_rate from marketing fee where state ilike 'MK'`
 			data3, err := db.ReteriveFromDB(db.OweHubDbIndex, qry, whereEleList)
-			if err != nil {
+			if err != nil || len(data3) <= 0 {
 				log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
 				FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
 				return
