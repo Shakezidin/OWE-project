@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 'react';
 import { ICONS } from '../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getDealerPayTileData } from '../../../redux/apiActions/dealerPayAction';
@@ -50,16 +50,30 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({ setPrefferedType }) => 
   ];
 
   const [activeCard, setActiveCard] = useState(null)
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleClick = (key: any) => {
-    setActiveCard(key)
+    setActiveCard((prevActiveCard) => (prevActiveCard === key ? null : key));
     setPrefferedType(key);
   }
+
+  const handleClickOutside = (e:any) => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      setActiveCard(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
       <div className="">
-        <div className="commission-section-dash">
+        <div className="commission-section-dash" ref={ref}>
           {data1.length > 0
             ? data1.map((el, i) => (
               <div
