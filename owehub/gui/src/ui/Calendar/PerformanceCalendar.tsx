@@ -163,8 +163,8 @@ const PerformanceCalendar: React.FC = () => {
         const endOfCurrentMonth = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
 
         const calendardata = await postCaller('get_calender_data', {
-          start_date: startOfCurrentMonth,
-          end_date: endOfCurrentMonth,
+          // start_date: startOfCurrentMonth,
+          // end_date: endOfCurrentMonth,
         });
 
         if (calendardata.status > 201) {
@@ -182,7 +182,7 @@ const PerformanceCalendar: React.FC = () => {
               id: index * 2 + 1,
               date: new Date(item.survey_date),
               color: '#57B3F1',
-              title: 'Survey Date',
+              title: 'Survey',
               idColor: '#57B3F1',
               address: item.address,
               unique_id: item.unique_id,
@@ -198,7 +198,7 @@ const PerformanceCalendar: React.FC = () => {
               id: index * 2 + 2,
               date: new Date(item.install_date),
               color: '#C470C7',
-              title: 'Install PV Date',
+              title: 'Install PV',
               idColor: '#C470C7',
               address: item.address,
               unique_id: item.unique_id,
@@ -439,8 +439,8 @@ const PerformanceCalendar: React.FC = () => {
     return <div className="body">
       {rows}
       <div className='mobile-calendar-text'>
-        <div className='mob-cal-txt'><span style={{ background: "#57B3F1" }}></span>Survey Date</div>
-        <div className='mob-cal-txt'><span style={{ background: "#C470C7" }}></span>Install PV Date</div>
+        <div className='mob-cal-txt'><span style={{ background: "#57B3F1" }}></span>Survey</div>
+        <div className='mob-cal-txt'><span style={{ background: "#C470C7" }}></span>Install PV </div>
       </div>
     </div>;
   };
