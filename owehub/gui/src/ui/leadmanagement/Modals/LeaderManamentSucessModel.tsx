@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import classes from "../styles/LeadManagementSucess.module.css"
-import { ICONS } from '../../../resources/icons/Icons';
+import React, { useState } from 'react';
+import classes from "../styles/LeadManagementSucess.module.css";
 import { useNavigate } from 'react-router-dom';
+import ConfirmationICON from "./ConfirmationICON.svg"
 
 // interface TableProps {
 //   handleClose: () => void;
@@ -16,6 +16,8 @@ import { useNavigate } from 'react-router-dom';
 // }
 ) => {
   const navigate = useNavigate();
+  // const [confirmModal, setConfirmModal]=useState(false);
+  const [visibleDiv, setVisibleDiv] = useState(1);
 
   // const handleClick = () => {
   //   navigate('/salesrep-schedule');
@@ -52,11 +54,11 @@ import { useNavigate } from 'react-router-dom';
           <div className={classes.DetailsMcontainer}>
             <div className={classes.Column1Details} >
                 <span className={classes.main_name}>Adam Samson</span>
-                <span>+91 8739273728</span>
+                <span className={classes.mobileNumber}>+91 8739273728</span>
             </div>
             <div className={classes.Column2Details}>
                 <span className={classes.addresshead}>12778 Domingo Ct, Parker, COLARDO, 2312</span>
-                <span>Sampletest@gmail.com  <span className={classes.verified}>
+                <span className={classes.emailStyle}>Sampletest@gmail.com  <span className={classes.verified}>
                 <svg className={classes.verifiedMarked} width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_6615_16896)">
                       <path d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z" fill="#20963A"/>
@@ -71,9 +73,8 @@ import { useNavigate } from 'react-router-dom';
                   Verified</span></span>
             </div>
           </div>
-      <div className={classes.createUserCrossButton} >
-          </div>
-          <div className={classes.success_not}>
+      {/* <div className={classes.createUserCrossButton} ></div> */}
+      {visibleDiv === 1 &&<>  <div className={classes.success_not}>
             <div className={classes.succicon}>
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -90,14 +91,32 @@ import { useNavigate } from 'react-router-dom';
 
           <div className={classes.survey_button}>
             
-            <button className={classes.self} style={{color: '#fff', border: 'none'}}>
+            <button className={classes.self} style={{color: '#fff', border: 'none'}} onClick={() => setVisibleDiv(2)}>
               Yes
             </button>
             <button id="otherButtonId" className={classes.other} > 
-              {/* onClick={handleClick} */}
               No
             </button>
-          </div>
+          </div></>}
+          { visibleDiv === 2 && <><div className={classes.success_not}>
+
+            <div ><img height="111px" width="111px" src={ConfirmationICON}/> </div>
+            <h2>Please confirm customer details </h2>
+            <p>
+            Ensure the email address and phone number are
+            correct before sending the appointment
+            </p>
+        </div>
+
+        <div className={classes.survey_button}>
+            
+            <button className={classes.self} style={{color: '#fff', border: 'none'}}>
+            Confirm, Sent Appointment
+            </button>
+            <button id="otherButtonId" className={classes.other} > 
+            Edit customer details
+            </button>
+          </div></> }
         </div>
       </div>
     </div>

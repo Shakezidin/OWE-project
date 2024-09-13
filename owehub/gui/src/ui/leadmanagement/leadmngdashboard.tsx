@@ -345,7 +345,7 @@ const LeadManagementDashboard: React.FC = () => {
                                 <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
                             </div>
                             <div className={styles.phone_number}>
-                             {lead.phone}
+                            {lead.phone}
                             </div>
                             <div className={styles.email}>
                                 <p>sanjusamson19@gmail.com</p>

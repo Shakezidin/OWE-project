@@ -141,6 +141,7 @@ import refreshLeadMgmt from '../../resources/assets/refresh-lead-mgmt.svg';
 import seemore from '../../resources/assets/see_more_lm.svg';
 
 
+
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
   LOGO: logo,
@@ -296,4 +297,5 @@ export const ICONS = {
   Pendingqc: pendingqc,
   refreshLeadMgmt: refreshLeadMgmt,
   SeeMore: seemore,
+  
 };

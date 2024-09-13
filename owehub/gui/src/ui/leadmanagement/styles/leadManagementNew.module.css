@@ -160,3 +160,16 @@
     /* border-top: 1px solid #d0d5dd; */
   }
   
+  .mobileNumber{
+    color:#4E4E4E;
+    font-weight: 400;
+
+}
+.emailStyle{
+    color:#4E4E4E;
+    font-weight: 400;
+}
+
+.addresshead {
+  color:#4E4E4E;
+}
