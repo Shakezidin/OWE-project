@@ -733,7 +733,7 @@ const ProjectPerformence = () => {
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
         </div>
         <div className="flex stats-card-wrapper">
-          <div style={{width:"100%"}} className="project-card-container-1 ">
+          <div style={{ width: '100%' }} className="project-card-container-1 ">
             {loading ? (
               <div
                 style={{

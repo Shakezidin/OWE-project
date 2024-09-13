@@ -70,26 +70,108 @@
   opacity: 0.6;
 }
 
+.iconsSection2-conan {
+  display: flex;
+  border: none;
+}
+
+.iconsSection2-conan img {
+  width: 18px;
+  height: 18px;
+}
+
+.iconsSection2-conan button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--primary-color);
+  padding: 0.4rem 1rem 0.4rem 1rem;
+  border: 1px solid var(--button-border-color);
+  font-size: 13px;
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--btn-text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.iconsSection2-conan button:hover {
+  background-color: #305eae;
+  border: 1px solid #305eae;
+  transform: scale(1.08);
+}
+
+.iconsSection2-confex {
+  display: flex;
+  border: none;
+}
+
+.iconsSection2-confex button:hover {
+  transform: scale(1.08);
+  background-color: #ddebff !important;
+}
+
+.iconsSection2-confex img {
+  width: 18px;
+  height: 18px;
+}
+
+.iconsSection2-confex button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--white-color);
+  padding: 0.4rem 1rem 0.4rem 1rem;
+  border: 1px solid var(--button-border-color);
+  font-size: 13px;
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--btn-text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.iconsSection2-confex button:disabled {
+  background-color: var(--row-bg-color);
+  transform: none;
+  pointer-events: none;
+}
+
+.iconsSection2-confex button:disabled button > svg {
+  fill: #fefefe;
+}
+
+.iconsSection2-confex .hover-btn:hover {
+  background-color: var(--active-text-color) !important;
+  border: 1px solid var(--active-text-color) !important;
+  color: var(--white-color) !important;
+  transition: 0.4s all linear;
+  opacity: 0.6;
+}
+
 .iconsSection-filter button {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
   border: none;
-  background-color: var(--white-color);
+  background-color: var(--primary-color);
   width: 32px;
   height: 32px;
   border-radius: 8px;
   font-weight: 500;
   color: var(--btn-text-color);
   cursor: pointer;
-  box-shadow: 2px 2px 10px rgba(148, 148, 148, 40);
+  /* box-shadow: 2px 2px 10px rgba(148, 148, 148, 40); */
   transition:
     transform 0.3s ease,
     background-color 0.3s ease;
 }
 
 .iconsSection-filter button:hover {
+  background-color: #305eae;
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }

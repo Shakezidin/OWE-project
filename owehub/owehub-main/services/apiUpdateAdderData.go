@@ -103,7 +103,7 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	query := `SELECT system_size FROM consolidated_data_view WHERE consolidated_data_view.unique_id = $1`
 	queryParameters = append(queryParameters, updateAdderDataReq.UniqueId)
 	dataOne, err := db.ReteriveFromDB(db.RowDataDBIndex, query, queryParameters)
-	if err != nil {
+	if err != nil || len(dataOne) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get Add adder data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get Add adder data from DB", http.StatusBadRequest, nil)
 		return

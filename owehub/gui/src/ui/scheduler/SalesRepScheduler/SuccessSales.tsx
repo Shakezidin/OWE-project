@@ -23,9 +23,8 @@ const SalesRepSchedulePage: React.FC<TableProps> = ({
     handleClose();
   };
 
-
   useEffect(() => {
-    const handleEscKey = (event:any) => {
+    const handleEscKey = (event: any) => {
       if (event.key === 'Escape') {
         handleClose();
       }
@@ -40,14 +39,13 @@ const SalesRepSchedulePage: React.FC<TableProps> = ({
     };
   }, [isOpen, handleClose]);
 
-
   return (
     <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
       <div className="transparent-model">
         <div className={styles.customer_wrapper_list}>
-        <div className={styles.createUserCrossButton} onClick={handleClose}>
-          <img src={ICONS.crossIconUser}/>
-        </div>
+          <div className={styles.createUserCrossButton} onClick={handleClose}>
+            <img src={ICONS.crossIconUser} />
+          </div>
           <div className={styles.success_not}>
             <div className={styles.succicon}>
               <img src={ICONS.QCTICK} alt="img" />
@@ -60,7 +58,9 @@ const SalesRepSchedulePage: React.FC<TableProps> = ({
           </div>
 
           <div className={styles.survey_button}>
-            <button className={styles.self} onClick={handleSchedule}>Self schedule this survey</button>
+            <button className={styles.self} onClick={handleSchedule}>
+              Self schedule this survey
+            </button>
             <button className={styles.other} onClick={handleClick}>
               Schedule this survey for me
             </button>

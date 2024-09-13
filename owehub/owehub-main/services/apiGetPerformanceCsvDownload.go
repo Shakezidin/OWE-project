@@ -241,6 +241,9 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			SiteSurveyD = ""
 		} else {
 			SiteSurveyD = SiteSurveyScheduleDate.Format("2006-01-02")
+			if SiteSurveyD == "2199-12-30" {
+				SiteSurveyD = "" // Set to empty string if date matches the invalid date
+			}
 		}
 
 		SiteSurverCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
@@ -434,7 +437,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		} else {
 			contractD = ContractDate.Format("2006-01-02")
 		}
-		_, SiteSurveyCountT, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
+		_, SiteSurveyCountT, _, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		_, CadDesignCountT, _ := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
@@ -442,7 +445,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		PerimittingCount += PerimittingCountT
 		_, RoofingCountT, _ := roofingColor(RoofingCreatedD, RoofingCompleteD)
 		RoofingCount += RoofingCountT
-		_, InstallCountT, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
+		_, InstallCountT, _, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
 		_, electricCountT, _ := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
 		ElectricalCount += electricCountT

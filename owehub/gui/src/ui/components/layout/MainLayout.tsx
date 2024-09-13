@@ -100,6 +100,10 @@ const MainLayout = () => {
 
   useEffect(() => {
     setToggleOpen(isTablet);
+    if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
+      localStorage.setItem('version', process.env.REACT_APP_VERSION!);
+      window.location.reload()
+    }
   }, [isTablet]);
 
   return isAuthenticated ? (

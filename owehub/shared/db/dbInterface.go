@@ -227,6 +227,7 @@ const (
 	TableName_rep_status                     string = "rep_status"
 	TableName_rep_credit                     string = "rep_credit"
 	TableName_rep_type                       string = "rep_type"
+	TableName_Sales_Rep_DBhub                string = "sales_rep_dbhub_schema"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
