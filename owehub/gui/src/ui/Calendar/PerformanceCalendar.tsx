@@ -163,8 +163,8 @@ const PerformanceCalendar: React.FC = () => {
         const endOfCurrentMonth = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
 
         const calendardata = await postCaller('get_calender_data', {
-          // start_date: startOfCurrentMonth,
-          // end_date: endOfCurrentMonth,
+          start_date: startOfCurrentMonth,
+          end_date: endOfCurrentMonth,
         });
 
         if (calendardata.status > 201) {
