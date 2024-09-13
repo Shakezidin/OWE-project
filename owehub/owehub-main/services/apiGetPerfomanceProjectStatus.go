@@ -139,6 +139,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
+
+			if len(dealerNames) == 0 {
+				perfomanceList := models.PerfomanceListResponse{}
+				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
+				return
+			}
 			filter, whereEleList = PrepareProjectAeAmFilters(dealerNames, dataReq, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
@@ -1309,20 +1316,22 @@ func PrepareProjectAeAmFilters(dealerList []string, dataFilter models.Perfomance
 		whereAdded = true
 	}
 
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
-	}
-
 	placeholders := []string{}
 	for i := range dealerList {
 		placeholders = append(placeholders, fmt.Sprintf("$%d", len(whereEleList)+i+1))
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
-	for _, dealer := range dealerList {
-		whereEleList = append(whereEleList, dealer)
+
+	if len(placeholders) != 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+		for _, dealer := range dealerList {
+			whereEleList = append(whereEleList, dealer)
+		}
 	}
 
 	if whereAdded {
