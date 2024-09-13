@@ -161,7 +161,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       </div>
       {!isMobile && (
         <div className="search-container">
-          {isStaging === 'staging' ? (
+           
             <div>
               {userRole === TYPE_OF_USER.DEALER_OWNER || userRole === TYPE_OF_USER.SALES_REPRESENTATIVE || userRole === TYPE_OF_USER.SALE_MANAGER || userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
                 <div className="calendar-logo">
@@ -172,7 +172,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 </div>
               ) : null}
             </div>
-          ) : null}
+    
           <div
             className="user-container relative"
             ref={dropdownRef}
