@@ -152,7 +152,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_users",
 		apiHandler.HandleGetUsersDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		[]types.UserGroup{types.GroupAdminDealerAccounts},
 	},
 	{
 		strings.ToUpper("POST"),
@@ -494,21 +494,21 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_users_onboarding",
 		apiHandler.HandleGetUserMgmtOnboardingDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		[]types.UserGroup{types.GroupAdminDealerAccounts},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_users_by_role",
 		apiHandler.HandleGetUsersByRoleDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		[]types.UserGroup{types.GroupAdminDealerAccounts},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_users_by_dealer",
 		apiHandler.HandleGetUsersByDealerRequest,
 		true,
-		[]types.UserGroup{types.GroupAdminDealer},
+		[]types.UserGroup{types.GroupAdminDealerAccounts},
 	},
 	{
 		strings.ToUpper("POST"),
