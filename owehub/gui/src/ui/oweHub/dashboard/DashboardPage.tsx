@@ -81,7 +81,7 @@ export const DashboardPage: React.FC = () => {
           pay_roll_start_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
           pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
           use_cutoff: 'NO',
-          dealer_name: dealer.map((item) => item.value),
+          dealer_name: dealer.map((item) => item.value).filter((item) => item !== 'ALL'),
           sort_by: 'unique_id',
           commission_model: selectedOption2,
           filters,
@@ -101,6 +101,7 @@ export const DashboardPage: React.FC = () => {
         return
       }
       setDealers([...res.data.dealer]);
+      setDealer([{ label: 'All', value: 'ALL' }, ...res.data.dealer.map((item:any)=>({label:item,value:item}))]);
       setIsOptionsFetched(true);
     })();
   }, []);
@@ -331,17 +332,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* <div className="dash-head-input">
-              <label className="inputLabel" style={{ color: '#344054' }}>
-                Set Default
-              </label>
-              <label
-                className="inputLabel dashboard-chart-view"
-                style={{ color: '#0493CE' }}
-              >
-                Chart View
-              </label>
-            </div> */}
+              
 
               <div className="dash-head-input" style={{ width: '250px' }}>
                 <div
