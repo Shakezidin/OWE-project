@@ -215,8 +215,8 @@ const DashBoardTable = ({
                         )}
                       </td> */}
                     <td>{el.epc || 'N/A'}</td>
-                    <td>{el.net_epc || 'N/A'}</td>
-                    <td>{el.net_rev || 'N/A'}</td>
+                    <td>{el.net_epc ? Number(el.net_epc).toFixed(3) : 'N/A'}</td>
+                    <td>{el.net_rev ? Number(el.net_rev).toFixed(3) : 'N/A'}</td>
                     <td>{el.current_status || 'N/A'}</td>
                     <td>{el.state || 'N/A'}</td>
                     <td>{el.dba || 'N/A'}</td>
