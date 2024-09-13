@@ -67,7 +67,9 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 			return
 		}
-		dataReq.DealerName = data[0]["dealer_name"].(string)
+		if len(data) > 0 {
+			dataReq.DealerName = data[0]["dealer_name"].(string)
+		}
 	}
 
 	/* If role is not passed then get users for all roles of dealer */

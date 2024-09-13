@@ -35,6 +35,7 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		filter            string
 		RecordCount       int64
 		SelectedTableName string
+		tableName         string
 	)
 
 	type Response struct {
@@ -67,7 +68,9 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tableName := dataReq.Filters[0].Data.(string)
+	if len(dataReq.Filters) > 0 {
+		tableName = dataReq.Filters[0].Data.(string)
+	}
 
 	switch tableName {
 	case "adder_data_cfg_schema":
@@ -102,11 +105,12 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	countquery := fmt.Sprintf("SELECT COUNT(*) AS record_count FROM %s", SelectedTableName)
 	countData, err := db.ReteriveFromDB(db.RowDataDBIndex, countquery, whereEleList)
-	if err != nil {
+	if err != nil || len(countData) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get count of table data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
 		return
 	}
+
 	countValue, ok := countData[0]["record_count"].(int64)
 	if !ok {
 		// Handle the case where the type assertion fails
