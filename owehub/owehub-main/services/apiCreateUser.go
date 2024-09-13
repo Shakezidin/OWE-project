@@ -60,8 +60,8 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// setup user info logging
-	logUserApi, closeUserLog := initUserApiLogging(req)
-	defer func() { closeUserLog(err) }()
+	// logUserApi, closeUserLog := initUserApiLogging(req)
+	// defer func() { closeUserLog(err) }()
 
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Designation) <= 0) ||
@@ -82,6 +82,15 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
+
+	err = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
+	if err != nil {
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, fmt.Sprintf("%v", err), http.StatusBadGateway, nil)
+		return
+	}
+	FormAndSendHttpResp(resp, "HURRAY ITS DONE", http.StatusOK, nil)
+	return
 
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
 	if err != nil || hashedPassBytes == nil {
@@ -246,21 +255,21 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			tablePermissionStringParts[i] = fmt.Sprintf("%s(%s)", perm.TableName, strings.ToLower(perm.PrivilegeType))
 		}
 
-		details := map[string]string{
-			"email_id":          createUserReq.EmailId,
-			"name":              createUserReq.Name,
-			"mobile_number":     createUserReq.MobileNumber,
-			"table_permissions": strings.Join(tablePermissionStringParts, ", "),
-			"db_username":       username,
-		}
-		logUserApi(fmt.Sprintf("Created user %s in owehubdb and owedb - %+v", createUserReq.EmailId, details))
+		// details := map[string]string{
+		// 	"email_id":          createUserReq.EmailId,
+		// 	"name":              createUserReq.Name,
+		// 	"mobile_number":     createUserReq.MobileNumber,
+		// 	"table_permissions": strings.Join(tablePermissionStringParts, ", "),
+		// 	"db_username":       username,
+		// }
+		// logUserApi(fmt.Sprintf("Created user %s in owehubdb and owedb - %+v", createUserReq.EmailId, details))
 	} else {
-		details := map[string]string{
-			"email_id":      createUserReq.EmailId,
-			"name":          createUserReq.Name,
-			"mobile_number": createUserReq.MobileNumber,
-		}
-		logUserApi(fmt.Sprintf("Created user %s in owehubdb - %+v", createUserReq.EmailId, details))
+		// details := map[string]string{
+		// 	"email_id":      createUserReq.EmailId,
+		// 	"name":          createUserReq.Name,
+		// 	"mobile_number": createUserReq.MobileNumber,
+		// }
+		// logUserApi(fmt.Sprintf("Created user %s in owehubdb - %+v", createUserReq.EmailId, details))
 	}
 
 	// Send email to client

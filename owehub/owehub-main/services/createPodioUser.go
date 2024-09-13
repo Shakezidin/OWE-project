@@ -35,6 +35,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 		query            string
 		userExists       bool
 		podioAccessToken string
+		itemId           int64
 	)
 
 	log.EnterFn(0, "HandleGetPodioDataRequest")
@@ -54,6 +55,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 		userExists = true
 	}
 
+	log.FuncInfoTrace(0, "<<<<<< userExists -> %v >>>>>>>>", userExists)
 	query = fmt.Sprintf(`SELECT item_id, partner_id 
 	 					FROM sales_partner_dbhub_schema 
 						WHERE sales_partner_name = '%s';`, reqData.Dealer)
@@ -65,7 +67,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 
 	if len(Dealerdata) == 0 {
 		log.FuncErrorTrace(0, "No dealer is found in podio")
-		return errors.New("no dealer is found in podios")
+		return errors.New("no dealer is found in podio")
 	}
 
 	dealerItemId, ok := Dealerdata[0]["item_id"].(int64)
@@ -73,17 +75,20 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 		log.FuncErrorTrace(0, "No dealer ItemId found in podio")
 		return errors.New("no dealer ItemId found in podio")
 	}
+
 	dealerId, ok := Dealerdata[0]["partner_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "No partner id found in podio")
 		return errors.New("no partner id found in podio")
 	}
-	itemId, ok := SaleRepdata[0]["item_id"].(int64)
-	if !ok {
-		if userExists {
+
+	if userExists {
+		itemId, ok = SaleRepdata[0]["item_id"].(int64)
+		if !ok {
 			log.FuncErrorTrace(0, "No item id for sales rep found in podio")
 			return errors.New("no item id for sales rep found in podio")
 		}
+		log.FuncInfoTrace(0, "<<<<<< itemId -> %v >>>>>>>>", itemId)
 	}
 
 	positionId := assignUserRoleToPodioId(userRole)
@@ -104,6 +109,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 		return err
 	}
 
+	log.FuncInfoTrace(0, "==>>> %s <<<==", podioAccessToken)
 	CreateOrUpdatePodioUser(reqData, podioData, podioAccessToken, userExists)
 	return err
 }
@@ -117,12 +123,12 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 func assignUserRoleToPodioId(role string) int {
 	var positionId int
 	switch role {
-	case "Sales Representative":
-		positionId = 1
-	case "Regional Manager":
+	case "Sale Representative":
 		positionId = 2
-	case "Sales Manager":
+	case "Regional Manager":
 		positionId = 3
+	case "Sales Manager":
+		positionId = 4
 	default:
 		positionId = 0
 	}
@@ -140,10 +146,10 @@ func generatePodioAccessCode() (string, error) {
 	log.EnterFn(0, "generatePodioAccessCode")
 	defer func() { log.ExitFn(0, "generatePodioAccessCode", err) }()
 
-	clientID := ""
-	clientSecret := ""
-	username := ""
-	password := ""
+	clientID := "owedb-4-javo3i"
+	clientSecret := "STpfrhytvCjQyPW1rdCvubSFQe3k4EjwSpZHp4acl04ucq4C8D75h0HaRT0XXAjL"
+	username := "cwarnock@ourworldenergy.com"
+	password := "Unr1valed_OW3!"
 
 	authURL := "https://podio.com/oauth/token"
 
@@ -188,7 +194,7 @@ func CreateOrUpdatePodioUser(userData models.CreateUserReq, podiodata models.Pod
 	defer func() { log.ExitFn(0, "CreateOrUpdatePodioUser", err) }()
 
 	if userExists {
-		log.FuncInfoTrace(0, "Updating existing user in Podio...")
+		log.FuncInfoTrace(0, "Updating existing user in Podio... with work_email %v", userData.EmailId)
 		err = updatePodioUser(userData, podioAccessToken, podiodata)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update user in Podio; err: %v", err)
@@ -217,7 +223,7 @@ func createPodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 	log.EnterFn(0, "createPodioUser")
 	defer func() { log.ExitFn(0, "createPodioUser", err) }()
 
-	appID := "" //* add Sales Rep DB app id here
+	appID := "26434622" //* add Sales Rep DB app id here
 	podioAPIURL := fmt.Sprintf("https://api.podio.com/item/app/%s/", appID)
 
 	itemPayload := models.CreateItemRequest{
@@ -317,7 +323,7 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 	log.EnterFn(0, "updatePodioUser")
 	defer func() { log.ExitFn(0, "updatePodioUser", err) }()
 
-	endpoint := fmt.Sprintf("https://api.podio.com/item/%v", podiodata.ItemId)
+	podioAPIURL := fmt.Sprintf("https://api.podio.com/item/%v", podiodata.ItemId)
 
 	itemPayload := models.UpdateItemRequest{
 		Fields: map[string]interface{}{},
@@ -386,7 +392,7 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 	}
 
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("PUT", podioAPIURL, bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		log.FuncErrorTrace(0, "Error creating new Podio user request: %v", err)
 		return err
@@ -408,17 +414,17 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 		return err
 	}
 
-	var createItemResponse models.CreateItemResponse
-	err = json.Unmarshal(body, &createItemResponse)
+	var podioResponse map[string]interface{}
+	err = json.Unmarshal(body, &podioResponse)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to parse item creation response")
+		log.FuncErrorTrace(0, "Error unmarshalling response: %v", err)
 		return err
 	}
-	itemPodioLink := createItemResponse.ItemPodioLink
 
-	if len(itemPodioLink) == 0 {
-		log.FuncErrorTrace(0, "Failed to create podio user")
-		return errors.New("failed to create podio user")
+	if errorValue, exists := podioResponse["error"]; exists {
+		errorDesc := podioResponse["error_description"]
+		return fmt.Errorf("podio api error: %v - %v", errorValue, errorDesc)
 	}
+
 	return nil
 }
