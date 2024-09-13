@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ICONS } from '../../../resources/icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { getDealerPayTileData } from '../../../redux/apiActions/dealerPayAction';
@@ -24,7 +24,8 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({ setPrefferedType }) => 
       border: '1px solid #63BC51',
       boxBorder: '0.5px solid #63BC51',
       background: ICONS.tot1,
-      key:"amount_prepaid"
+      key: "amount_prepaid",
+      color: "#8E81E0"
     },
     {
       doller: '$' + tileData?.pipeline_remaining?.toFixed(2),
@@ -33,7 +34,8 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({ setPrefferedType }) => 
       border: '1px solid #D768A8',
       boxBorder: '0.5px solid #D768A8',
       background: ICONS.tot2,
-      key:"pipeline_remaining"
+      key: "pipeline_remaining",
+      color: "#63ACA3"
     },
     {
       doller: '$' + tileData?.current_due?.toFixed(2),
@@ -42,9 +44,17 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({ setPrefferedType }) => 
       border: '1px solid #3993D0',
       boxBorder: '0.5px solid #3993D0',
       background: ICONS.tot3,
-      key:"current_due"
+      key: "current_due",
+      color: "#EE824D"
     },
   ];
+
+  const [activeCard, setActiveCard] = useState(null)
+
+  const handleClick = (key: any) => {
+    setActiveCard(key)
+    setPrefferedType(key);
+  }
 
   return (
     <>
@@ -52,35 +62,41 @@ const DashboardTotal: React.FC<DashboardTotalProps> = ({ setPrefferedType }) => 
         <div className="commission-section-dash">
           {data1.length > 0
             ? data1.map((el, i) => (
+              <div
+                key={el.key}
+                onClick={() => handleClick(el.key)}
+                className="total-commisstion"
+                style={{
+                  backgroundImage: `url(${el.background})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  cursor: "pointer",
+                  outline: activeCard === el.key ? `4px solid ${el.color}` : 'none',
+                  outlineOffset: activeCard === el.key ? '4px' : '0px',
+                  transform: activeCard === el.key ? 'scale(1.02)' : 'scale(1)',
+                  transition: 'transform 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease',
+                  boxShadow: activeCard === el.key ? '0px 4px 4px 0px rgba(74, 74, 74, 0.25)' : 'none',
+                }}
+              >
                 <div
-                onClick={()=>setPrefferedType(el.key)}
-                  className="total-commisstion"
-                  style={{
-                    backgroundImage: `url(${el.background})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    cursor:"pointer"
-                  }}
+                  className="total-section"
+                  style={{ marginBottom: '8px' }}
                 >
-                  <div
-                    className="total-section"
-                    style={{ marginBottom: '8px' }}
+                  <p>{el.paid}</p>
+                  <h4
+                    style={{
+                      wordBreak:
+                        el.doller.length > 5 ? 'break-all' : 'normal',
+                    }}
                   >
-                    <p>{el.paid}</p>
-                    <h4
-                      style={{
-                        wordBreak:
-                          el.doller.length > 5 ? 'break-all' : 'normal',
-                      }}
-                    >
-                      {el.doller}
-                    </h4>
-                  </div>
-                  <div className="teamImg">
-                    <img src={el.img} alt="" />
-                  </div>
+                    {el.doller}
+                  </h4>
                 </div>
-              ))
+                <div className="teamImg">
+                  <img src={el.img} alt="" />
+                </div>
+              </div>
+            ))
             : null}
         </div>
       </div>
