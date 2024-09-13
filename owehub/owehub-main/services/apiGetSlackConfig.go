@@ -59,9 +59,8 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	tableName := db.TableName_slackconfig
 	query = `SELECT 
-		 ap.id as record_id, ap.issue_type, ap.channel_name, ap.bot_token, ap.slack_app_config
+		 ap.id as record_id, ap.issue_type, ap.channel_name, ap.bot_token, ap.slack_app_token
 		 FROM ` + db.TableName_slackconfig + ` ap`
 
 	if filter != "" {
@@ -103,7 +102,7 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 		SlackConfigList.SlackConfigList = append(SlackConfigList.SlackConfigList, SlackConfig)
 	}
 
-	filter, whereEleList = PrepareDBAFilters(tableName, dataReq, true)
+
 	if filter != "" {
 		queryForAlldata = query + filter
 	}
@@ -119,5 +118,5 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	log.FuncInfoTrace(0, "Number of Slack Config List fetched : %v list %+v", len(SlackConfigList.SlackConfigList), SlackConfigList)
 	FormAndSendHttpResp(resp, "Slack Config Data", http.StatusOK, SlackConfigList, RecordCount)
 }
-
+ 
  
