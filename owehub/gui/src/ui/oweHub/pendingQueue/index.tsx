@@ -97,7 +97,7 @@ const PendingQueue = () => {
         </h2>
 
         <div className="flex items-center">
-          <label htmlFor="" className='mr2'>Pre</label>
+       
           <Switch checked={pre} onChange={() => {
             if (pre && active === 'qc') {
               setActive('ntp')
@@ -105,6 +105,7 @@ const PendingQueue = () => {
             setPre(prev => !prev)
 
           }} />
+             <label htmlFor="" className='ml2'>Pre Sales</label>
         </div>
       </div>
       {
