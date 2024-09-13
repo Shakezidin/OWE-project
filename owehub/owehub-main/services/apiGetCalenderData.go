@@ -46,8 +46,6 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		BatteryCompleteD    string
 		PermitApprovedD     string
 		IcaprvdD            string
-		dealerName          interface{}
-		rgnSalesMgrCheck    bool
 		SaleRepList         []interface{}
 	)
 
@@ -75,11 +73,11 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
-	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
-	query := (`SELECT contract_date, pv_install_created_date, pv_install_completed_date, home_owner, address, unique_id, site_survey_scheduled_date, site_survey_completed_date,
-		battery_scheduled_date, battery_complete_date, permit_approved_date, ic_approved_date
-		FROM consolidated_data_view `)
+	dataReq.Role = req.Context().Value("rolename").(string)
+	if dataReq.Role == "" {
+		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		return
+	}
 
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
@@ -87,69 +85,32 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	whereEleList = append(whereEleList, dataReq.Email)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
-	tableName := db.ViewName_ConsolidatedDataView
+	saleRepNameQuery := fmt.Sprintf("SELECT name FROM user_details where email_id = '%v'", dataReq.Email)
+	query := (`SELECT contract_date, pv_install_created_date, pv_install_completed_date, home_owner, address, unique_id, site_survey_scheduled_date, site_survey_completed_date,
+		battery_scheduled_date, battery_complete_date, permit_approved_date, ic_approved_date
+		FROM consolidated_data_view `)
 
-	// This checks if the user is admin, sale rep or dealer
-	if len(data) > 0 {
-		dealerName = data[0]["dealer_name"]
-		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
-		role, ok := data[0]["role_name"].(string)
-		if !ok || role == "" {
-			role = ""
-		}
-		name := data[0]["name"].(string)
-		if !ok || name == "" {
-			name = ""
-		}
-		dataReq.Name = name
-		dataReq.Role = role
-
-		switch role {
-		case string(types.RoleAdmin), string(types.RoleFinAdmin):
-			filter, whereEleList = PrepareAdminDlrCalenderFilters(tableName, dataReq, true, false)
-		case string(types.RoleDealerOwner):
-			filter, whereEleList = PrepareAdminDlrCalenderFilters(tableName, dataReq, false, false)
-		case string(types.RoleSalesRep):
-			SaleRepList = append(SaleRepList, name)
-			filter, whereEleList = PrepareSaleRepCalenderFilters(tableName, dataReq, SaleRepList)
-		// this is for the roles regional manager and sales manager
-		default:
-			SaleRepList = append(SaleRepList, name)
-			rgnSalesMgrCheck = true
-		}
-	} else {
-		log.FuncErrorTrace(0, "Failed to get Calender data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Calender data", http.StatusBadRequest, nil)
-		return
-	}
-
-	if rgnSalesMgrCheck {
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
-
-		// This is thrown if no sale rep are available and for other user roles
-		if len(SaleRepList) == 0 {
-			emptyPerfomanceList := models.PerfomanceListResponse{
-				PerfomanceList: []models.PerfomanceResponse{},
-			}
-			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+	// retrieving value from owe_db from here
+	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) {
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, saleRepNameQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
 			return
 		}
 
-		// this loops through sales rep under regional or sales manager
-		for _, item := range data {
-			SaleRepName, Ok := item["name"]
-			if !Ok || SaleRepName == "" {
-				log.FuncErrorTrace(0, "Failed to get name. Item: %+v\n", item)
-				continue
+		if len(data) > 0 {
+			name, ok := data[0]["name"].(string)
+			if !ok || name == "" {
+				name = ""
 			}
-			SaleRepList = append(SaleRepList, SaleRepName)
+			SaleRepList = append(SaleRepList, name)
 		}
-		filter, whereEleList = PrepareSaleRepCalenderFilters(tableName, dataReq, SaleRepList)
 	}
+
+	tableName := db.ViewName_ConsolidatedDataView
+
+	filter, whereEleList = PrepareCalenderFilters(tableName, dataReq, SaleRepList)
 
 	if filter != "" {
 		queryWithFiler = query + filter
@@ -157,7 +118,6 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		queryWithFiler = query
 	}
 
-	calenderDataList := models.GetCalenderDataList{}
 	// retrieving value from owe_db from here
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
@@ -166,6 +126,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	calenderDataList := models.GetCalenderDataList{}
 	for _, item := range data {
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
@@ -298,90 +259,14 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareAdminDlrCalenderFilters
+* FUNCTION:		PrepareCalenderFilters
 * DESCRIPTION:     handler for prepare filter
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
-
-func PrepareAdminDlrCalenderFilters(tableName string, dataFilter models.GetCalenderDataReq, adminCheck, filterCheck bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareAdminDlrCalenderFilters")
-	defer func() { log.ExitFn(0, "PrepareAdminDlrCalenderFilters", nil) }()
-
-	var filtersBuilder strings.Builder
-	whereAdded := false
-
-	// Check if StartDate and EndDate are provided
-	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
-		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
-		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
-
-		endDate = endDate.Add(24*time.Hour - time.Second)
-
-		whereEleList = append(whereEleList,
-			startDate.Format("02-01-2006 00:00:00"),
-			endDate.Format("02-01-2006 15:04:05"),
-		)
-
-		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
-		whereAdded = true
-	}
-
-	// Add dealer filter if not adminCheck and not filterCheck
-	if !adminCheck && !filterCheck {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND")
-		} else {
-			filtersBuilder.WriteString(" WHERE")
-			whereAdded = true
-		}
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
-	}
-
-	// Always add the following filters
-	if whereAdded {
-		filtersBuilder.WriteString(" AND")
-	} else {
-		filtersBuilder.WriteString(" WHERE")
-	}
-	filtersBuilder.WriteString(` unique_id IS NOT NULL
-			AND unique_id <> ''
-			AND system_size IS NOT NULL
-			AND system_size > 0`)
-
-	if len(dataFilter.ProjectStatus) > 0 {
-		// Prepare the values for the IN clause
-		var statusValues []string
-		for _, val := range dataFilter.ProjectStatus {
-			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
-		}
-		// Join the values with commas
-		statusList := strings.Join(statusValues, ", ")
-
-		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND project_status IN (%s)`, statusList))
-	} else {
-		filtersBuilder.WriteString(` AND project_status IN ('ACTIVE')`)
-
-	}
-
-	filters = filtersBuilder.String()
-
-	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-	return filters, whereEleList
-}
-
-/******************************************************************************
-* FUNCTION:		PrepareSaleRepCalenderFilters
-* DESCRIPTION:     handler for prepare filter
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
-func PrepareSaleRepCalenderFilters(tableName string, dataFilter models.GetCalenderDataReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareSaleRepCalenderFilters")
-	defer func() { log.ExitFn(0, "PrepareSaleRepCalenderFilters", nil) }()
+func PrepareCalenderFilters(tableName string, dataFilter models.GetCalenderDataReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareCalenderFilters")
+	defer func() { log.ExitFn(0, "PrepareCalenderFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -423,18 +308,14 @@ func PrepareSaleRepCalenderFilters(tableName string, dataFilter models.GetCalend
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
 	if whereAdded {
 		filtersBuilder.WriteString(" AND ")
 	} else {
 		filtersBuilder.WriteString(" WHERE ")
 		whereAdded = true
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
-
 	// Add the always-included filters
-	filtersBuilder.WriteString(` AND unique_id IS NOT NULL
+	filtersBuilder.WriteString(` unique_id IS NOT NULL
 			AND unique_id <> ''
 			AND system_size IS NOT NULL
 			AND system_size > 0`)
