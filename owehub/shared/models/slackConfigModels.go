@@ -40,6 +40,5 @@ type UpdateSlackConfig struct {
 }
 
 type DeleteSlackConfig struct {
-	RecordId  []int64 `json:"record_id"`
-	IsDeleted bool    `json:"is_archived"`
+	RecordId []int64 `json:"record_id"`
 }

@@ -1398,8 +1398,22 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_slack_config",
+		apiHandler.HandleUpdateSlackConfig,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_slack_config",
 		apiHandler.HandleGetSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/delete_slack_config",
+		apiHandler.HandleDeleteSlackConfigRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
