@@ -222,10 +222,10 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		_, _, surveyDate, surveryStatus := getSurveyColor(SiteSurevyD, siteSurveyCmpletedD, contractD)
 		_, _, installDate, installStatus := CalenderInstallStatus(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 
-		if dataReq.StartDate != "" && dataReq.EndDate != "" {
+		if dataReq.StartDate != "" && dataReq.EndDate != "" && (installDate != "" || surveyDate != "") {
 			// Parse StartDate and EndDate
-			startDate, err1 := time.Parse("2006-01-02", dataReq.StartDate)
-			endDate, err2 := time.Parse("2006-01-02", dataReq.EndDate)
+			startDate, err1 := time.Parse("02-01-2006", dataReq.StartDate)
+			endDate, err2 := time.Parse("02-01-2006", dataReq.EndDate)
 			if err1 != nil || err2 != nil {
 				log.FuncErrorTrace(0, "Error parsing dates:%v, %v", err1, err2)
 				FormAndSendHttpResp(resp, "Failed to get pending queue tile data, invalid date parsed", http.StatusBadRequest, nil)
@@ -233,14 +233,14 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 
 			if surveyDate != "" {
-				parsedSurveyDate, err := time.Parse("2006-01-02", surveyDate)
+				parsedSurveyDate, err := time.Parse("2006-01-02 15:04:05", surveyDate)
 				if err != nil || parsedSurveyDate.Before(startDate) || parsedSurveyDate.After(endDate) {
 					surveyDate = ""
 				}
 			}
 
 			if installDate != "" {
-				parsedInstallDate, err := time.Parse("2006-01-02", installDate)
+				parsedInstallDate, err := time.Parse("2006-01-02 15:04:05", installDate)
 				if err != nil || parsedInstallDate.Before(startDate) || parsedInstallDate.After(endDate) {
 					installDate = ""
 				}
