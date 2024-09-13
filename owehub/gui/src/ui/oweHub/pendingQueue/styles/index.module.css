@@ -138,6 +138,15 @@ color: #d9d9d9 !important;
   padding-inline: 2rem;
 }
 
+@media (max-width: 968px) {
+  .grid_3{
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  .grid_2{
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
 @media screen and (max-width: 768px) {
   .pending_card_wrapper{
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
