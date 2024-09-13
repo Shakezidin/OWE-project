@@ -8,6 +8,8 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import useAuth from '../../../../hooks/useAuth';
+import { useAppDispatch } from '../../../../redux/hooks';
+import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
@@ -36,38 +38,45 @@ const UserTable: React.FC<UserTableProps> = ({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [email, setEmail] = useState('');
   const { authData } = useAuth();
+  const dispatch = useAppDispatch()
 
   const handleSort = (key: string) => {
-    console.log(key);
+    const direction = sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc'
     if (sortKey === key) {
-      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+      setSortDirection(direction);
     } else {
       setSortKey(key);
-      setSortDirection('asc');
+      setSortDirection(direction);
     }
+    sortArray(key,direction)
   };
 
-  let sortedData = [...data]; // Create a shallow copy of the original data array
-  if (sortKey) {
-    sortedData.sort((a: any, b: any) => {
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
 
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc'
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      } else {
-        // Ensure numeric values for arithmetic operations
-        const numericAValue =
-          typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue =
-          typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc'
-          ? numericAValue - numericBValue
-          : numericBValue - numericAValue;
-      }
-    });
+  const sortArray = (sortKey: string,direction:string) => {
+    let sortedData = [...data];
+    if (sortKey) {
+      sortedData.sort((a: any, b: any) => {
+        const aValue = a[sortKey];
+        const bValue = b[sortKey];
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        } else {
+          // Ensure numeric values for arithmetic operations
+          const numericAValue =
+            typeof aValue === 'number' ? aValue : parseFloat(aValue);
+          const numericBValue =
+            typeof bValue === 'number' ? bValue : parseFloat(bValue);
+          return sortDirection === 'asc'
+            ? numericAValue - numericBValue
+            : numericBValue - numericAValue;
+        }
+      });
+    }
+    dispatch(shuffleArray(sortedData))
+
   }
 
   const UserManagementTableColumn = useMemo(() => {
@@ -126,8 +135,8 @@ const UserTable: React.FC<UserTableProps> = ({
         </thead>
 
         <tbody>
-          {sortedData?.length > 0 ? (
-            sortedData?.map((el: UserRoleBasedListModel, i: number) => (
+          {data?.length > 0 ? (
+            data?.map((el: UserRoleBasedListModel, i: number) => (
               <tr key={el.email_id}>
                 <td>
                   <div className="flex-check">

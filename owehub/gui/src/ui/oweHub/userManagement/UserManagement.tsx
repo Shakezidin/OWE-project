@@ -327,7 +327,7 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-
+  console.log(userRoleBasedList,"userRoleBasedList")
   /** render UI */
   return (
     <>
@@ -409,12 +409,13 @@ const UserManagement: React.FC = () => {
             );
             const usernames = Array.from(selectedRows).map((index) => {
               const user = userRoleBasedList[index];
-              return user.role_name === 'DB User'
+              return user.role_name === TYPE_OF_USER.DB_USER
                 ? user.db_username
                 : user.name.split(' ').join('_');
             });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);
+              console.log(deleteRows, usernames,userRoleBasedList,"deleteRows, usernames,userRoleBasedList")
             } else {
               toast.info('Please select user');
             }

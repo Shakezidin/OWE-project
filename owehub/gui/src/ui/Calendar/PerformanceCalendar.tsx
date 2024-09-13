@@ -56,8 +56,10 @@ const PerformanceCalendar: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
 
+  const navigate = useNavigate();
+
   const closeSidebar = () => {
-    setSidebarVisible(false);
+    setSidebarVisible(false)
   };
 
 
@@ -126,9 +128,13 @@ const PerformanceCalendar: React.FC = () => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        closeSidebar();
-        setShowCalendar(false);
-        handleCalcClose();
+        if(sidebarVisible){
+          setShowCalendar(false);
+          closeSidebar();
+        }else{
+          navigate(-1);
+          console.log("-1")
+        }
       }
 
     };
@@ -149,7 +155,7 @@ const PerformanceCalendar: React.FC = () => {
       window.removeEventListener("keydown", handleEscape)
       document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [])
+  }, [sidebarVisible])
 
   useEffect(() => {
     (async () => {
@@ -214,17 +220,6 @@ const PerformanceCalendar: React.FC = () => {
   }, [currentMonth]);
 
   console.log(data, "newdata")
-  // const [events] = useState<Event[]>([
-  //   { id: 1, date: new Date(2024, 8, 3), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-  //   { id: 2, date: new Date(2024, 8, 3), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
-  //   { id: 3, date: new Date(2024, 8, 21), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-  //   { id: 4, date: new Date(2024, 8, 21), color: 'blue', title: 'Survey Date', idColor: "#57B3F1" },
-  //   { id: 5, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-  //   { id: 6, date: new Date(2024, 9, 24), color: 'purple', title: 'Install PV Date', idColor: "#C470C7" },
-  // ]);
-
-
-
 
   const hasEvent = (day: Date): boolean => {
     return events.some(event => isSameDay(event.date, day));
@@ -241,10 +236,9 @@ const PerformanceCalendar: React.FC = () => {
     }
   };
 
-  const navigate = useNavigate();
-
   const handleCalcClose = () => {
     navigate(-1);
+    closeSidebar();
   };
 
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());

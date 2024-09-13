@@ -2,7 +2,7 @@
 
 -- Up Migration: Create Table
 CREATE TABLE IF NOT EXISTS sales_partner_dbhub_schema (
-    item_id BIGINT,
+    item_id bigint unique,
     podio_link TEXT,
     label TEXT,
     sales_partner_name TEXT,
@@ -69,8 +69,5 @@ CREATE TABLE IF NOT EXISTS sales_partner_dbhub_schema (
     dealer_pid_h TEXT,
     today TEXT
 );
-
--- Up Migration: Alter Table
-ALTER TABLE sales_partner_dbhub_schema REPLICA IDENTITY FULL;
 
 

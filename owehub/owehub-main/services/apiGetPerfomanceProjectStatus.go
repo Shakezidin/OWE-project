@@ -193,6 +193,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	RecordCount = int64(len(data))
 	perfomanceList := models.PerfomanceListResponse{}
+	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 
 	for _, item := range data {
 		// if no unique id is present we skip that project
@@ -209,11 +210,14 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 
 		SiteSurveyScheduleDate, ok := item["site_survey_scheduled_date"].(time.Time)
-		if !ok {
+		if !ok || SiteSurveyScheduleDate.Equal(invalidDate) {
 			// log.FuncErrorTrace(0, "Failed to get ContractDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			SiteSurveyD = ""
 		} else {
 			SiteSurveyD = SiteSurveyScheduleDate.Format("2006-01-02")
+			if SiteSurveyD == "2199-12-30" {
+				SiteSurveyD = "" // Set to empty string if date matches the invalid date
+			}
 		}
 
 		SiteSurverCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
