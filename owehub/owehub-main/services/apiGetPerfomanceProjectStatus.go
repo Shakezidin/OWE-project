@@ -1158,7 +1158,6 @@ func CalenderInstallStatus(pvInstallCreatedate, batteryScheduleDate, batteryComp
 		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
 			latestCompletedDate = batteryCompleted
 		}
-		log.FuncErrorTrace(0, "batterySchedule = %v, batteryComepleted = %v pvInstallcom = %v", batteryScheduleDate, batteryCompleted, pvInstallCompletedDate)
 		return green, count, latestCompletedDate, "Completed"
 	}
 
