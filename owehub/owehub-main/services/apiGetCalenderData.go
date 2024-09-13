@@ -222,7 +222,6 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		_, _, surveyDate, surveryStatus := getSurveyColor(SiteSurevyD, siteSurveyCmpletedD, contractD)
 		_, _, installDate, installStatus := CalenderInstallStatus(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 
-		log.FuncErrorTrace(0, "install date %v", installDate)
 		if dataReq.StartDate != "" && dataReq.EndDate != "" && (installDate != "" || surveyDate != "") {
 			// Parse StartDate and EndDate
 			startDate, err1 := time.Parse("2006-01-02", dataReq.StartDate)
