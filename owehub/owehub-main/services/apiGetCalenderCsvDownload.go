@@ -27,16 +27,14 @@ import (
 
 func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		dataReq          models.GetCalenderDataReq
-		data             []map[string]interface{}
-		whereEleList     []interface{}
-		queryWithFiler   string
-		filter           string
-		RecordCount      int64
-		dealerName       interface{}
-		rgnSalesMgrCheck bool
-		SaleRepList      []interface{}
+		err            error
+		dataReq        models.GetCalenderDataReq
+		data           []map[string]interface{}
+		whereEleList   []interface{}
+		queryWithFiler string
+		filter         string
+		RecordCount    int64
+		SaleRepList    []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetCalenderCsvDownloadRequest")
@@ -63,9 +61,11 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 		return
 	}
 
-	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
-	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
-	query := models.CsvDownloadRetrieveQueryFunc()
+	dataReq.Role = req.Context().Value("rolename").(string)
+	if dataReq.Role == "" {
+		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		return
+	}
 
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
@@ -73,69 +73,30 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 		return
 	}
 
-	whereEleList = append(whereEleList, dataReq.Email)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
-	tableName := db.ViewName_ConsolidatedDataView
+	saleRepNameQuery := fmt.Sprintf("SELECT name FROM user_details where email_id = '%v'", dataReq.Email)
+	query := models.CsvDownloadRetrieveQueryFunc()
 
-	// This checks if the user is admin, sale rep or dealer
-	if len(data) > 0 {
-		dealerName = data[0]["dealer_name"]
-		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
-		role, ok := data[0]["role_name"].(string)
-		if !ok || role == "" {
-			role = ""
-		}
-		name := data[0]["name"].(string)
-		if !ok || name == "" {
-			name = ""
-		}
-		dataReq.Name = name
-		dataReq.Role = role
-
-		switch role {
-		case string(types.RoleAdmin), string(types.RoleFinAdmin):
-			filter, whereEleList = PrepareAdminDlrCalenderFilters(tableName, dataReq, true, false)
-		case string(types.RoleDealerOwner):
-			filter, whereEleList = PrepareAdminDlrCalenderFilters(tableName, dataReq, false, false)
-		case string(types.RoleSalesRep):
-			SaleRepList = append(SaleRepList, name)
-			filter, whereEleList = PrepareSaleRepCalenderFilters(tableName, dataReq, SaleRepList)
-		// this is for the roles regional manager and sales manager
-		default:
-			SaleRepList = append(SaleRepList, name)
-			rgnSalesMgrCheck = true
-		}
-	} else {
-		log.FuncErrorTrace(0, "Failed to get Calender data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Calender data", http.StatusBadRequest, nil)
-		return
-	}
-
-	if rgnSalesMgrCheck {
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
-
-		// This is thrown if no sale rep are available and for other user roles
-		if len(SaleRepList) == 0 {
-			emptyPerfomanceList := models.PerfomanceListResponse{
-				PerfomanceList: []models.PerfomanceResponse{},
-			}
-			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+	log.FuncErrorTrace(0, "roleee = %v", dataReq.Role)
+	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) {
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, saleRepNameQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
 			return
 		}
 
-		// this loops through sales rep under regional or sales manager
-		for _, item := range data {
-			SaleRepName, Ok := item["name"]
-			if !Ok || SaleRepName == "" {
-				log.FuncErrorTrace(0, "Failed to get name. Item: %+v\n", item)
-				continue
+		if len(data) > 0 {
+			name, ok := data[0]["name"].(string)
+			if !ok || name == "" {
+				name = ""
 			}
-			SaleRepList = append(SaleRepList, SaleRepName)
+			SaleRepList = append(SaleRepList, name)
 		}
-		filter, whereEleList = PrepareSaleRepCalenderFilters(tableName, dataReq, SaleRepList)
 	}
+
+	tableName := db.ViewName_ConsolidatedDataView
+
+	filter, whereEleList = PrepareCalenderFilters(tableName, dataReq, SaleRepList)
 
 	if filter != "" {
 		queryWithFiler = query + filter
