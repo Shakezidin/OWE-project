@@ -47,7 +47,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     let list = [...createSideMenuList()];
     const isStaging = process.env.REACT_APP_ENV;
 
-    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role === TYPE_OF_USER.ACCOUNT_MANAGER) {
+    if (role === TYPE_OF_USER.ADMIN ) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -123,6 +123,24 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }
       });
       return newArr;
+    } else if (role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || TYPE_OF_USER.ACCOUNT_MANAGER) {
+        const newArr: any[] = [{ mob: [] }];
+        list[0].mob.forEach((item: any) => {
+          if (
+            
+            item.path !== ROUTES.USER_MANAEMENT
+          ) {
+            if (
+              isStaging !== 'staging' &&
+              (item.path === ROUTES.COMMISSION_DASHBOARD ||
+                item.path === ROUTES.CONFIG_PAGE)
+            ) {
+            } else if(item.path!==ROUTES.USER_MANAEMENT) {
+              newArr[0].mob.push(item);
+            }
+          }
+        });
+        return newArr;  
     } else if (role === TYPE_OF_USER.DB_USER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
