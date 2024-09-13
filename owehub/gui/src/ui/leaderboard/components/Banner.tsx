@@ -354,7 +354,7 @@ const Banner: React.FC<BannerProps> = ({
                 }`}
             >
               <span>
-                {selectDealer?.length}{' '}
+                {selectDealer?.length ?? "0"}{' '}
                 <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
               </span>
               <FaChevronDown className="ml1 fa-chevron-down" />
@@ -376,9 +376,9 @@ const Banner: React.FC<BannerProps> = ({
                   onChange={(e) => {
                     setSearch(e.target.value);
                     if (e.target.value.trim()) {
-                      const filtered = leaderDealer(newFormData).filter(
+                      const filtered = leaderDealer(newFormData)?.filter(
                         (item) =>
-                          item.value
+                          item?.value
                             .toLocaleLowerCase()
                             .includes(e.target.value.toLowerCase().trim())
                       );
@@ -395,10 +395,10 @@ const Banner: React.FC<BannerProps> = ({
                     type="checkbox"
                     style={{ flexShrink: 0 }}
                     checked={
-                      leaderDealer(newFormData)?.length === selectDealer.length
+                      leaderDealer(newFormData)?.length === selectDealer?.length
                     }
                     onChange={() => {
-                      if (opts.length === selectDealer.length) {
+                      if (opts.length === selectDealer?.length) {
                         setSelectDealer([]);
                       } else {
                         setSelectDealer([...opts]);
@@ -413,7 +413,7 @@ const Banner: React.FC<BannerProps> = ({
                   <input
                     type="checkbox"
                     style={{ flexShrink: 0 }}
-                    checked={selectDealer.some(
+                    checked={selectDealer?.some(
                       (item) => item.value === option.value
                     )}
                     onChange={() => handleChange(option)}
