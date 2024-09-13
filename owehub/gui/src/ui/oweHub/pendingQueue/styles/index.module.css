@@ -4,9 +4,18 @@
   padding: 19px 28px;
   margin-top: 15px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  justify-content: center;
+
   align-items: center;
   gap: 20px;
+}
+
+.grid_3{
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid_2{
+  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
 }
 .pending_card {
   padding: 5px;
@@ -130,6 +139,9 @@ color: #d9d9d9 !important;
 }
 
 @media screen and (max-width: 768px) {
+  .pending_card_wrapper{
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
   .pending_queue_title {
     padding-left: 2rem;
   }
