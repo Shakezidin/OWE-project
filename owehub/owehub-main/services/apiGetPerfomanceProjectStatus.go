@@ -1316,6 +1316,57 @@ func PrepareProjectAeAmFilters(dealerList []string, dataFilter models.Perfomance
 		whereAdded = true
 	}
 
+	// Check if there are filters
+	if len(dataFilter.UniqueIds) > 0 {
+		// Start with WHERE if none has been added
+		if whereAdded {
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
+		} else {
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
+			whereAdded = true
+		}
+
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
+			whereEleList = append(whereEleList, filter)
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(") ")
+
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
+	}
+
 	placeholders := []string{}
 	for i := range dealerList {
 		placeholders = append(placeholders, fmt.Sprintf("$%d", len(whereEleList)+i+1))
