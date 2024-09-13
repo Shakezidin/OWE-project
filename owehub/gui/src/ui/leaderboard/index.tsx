@@ -81,7 +81,12 @@ const Index = () => {
   useEffect(() => {
     const role = localStorage.getItem('role');
     const isAuth = localStorage.getItem('isPasswordChangeRequired');
-    if (role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ADMIN) {
+    if (
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      role !== TYPE_OF_USER.ADMIN &&
+      role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER
+    ) {
       setIsFetched(true);
     }
     setAuthenticated(isAuth?.toString() === 'false');
@@ -104,9 +109,9 @@ const Index = () => {
     if (
       role !== TYPE_OF_USER.ADMIN &&
       role !== TYPE_OF_USER.DEALER_OWNER &&
-      role !== TYPE_OF_USER.FINANCE_ADMIN
-      && role === TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-      role === TYPE_OF_USER.ACCOUNT_MANAGER
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER
     ) {
       return true;
     } else {
@@ -115,6 +120,7 @@ const Index = () => {
   }, [groupBy, role, authData]);
 
   useEffect(() => {
+
     if (isAuthenticated && isFetched) {
       (async () => {
         setIsLoading(true);
@@ -132,6 +138,7 @@ const Index = () => {
 
           if (data.status > 201) {
             toast.error(data.message);
+            setIsLoading(false);
             return;
           }
           setDetails(data.data?.ap_ded_list);

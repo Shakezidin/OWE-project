@@ -261,7 +261,9 @@ function App() {
             role_name === TYPE_OF_USER.FINANCE_ADMIN ||
             role_name === TYPE_OF_USER.SUB_DEALER_OWNER ||
             role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
-            role_name === TYPE_OF_USER.PARTNER) &&
+            role_name === TYPE_OF_USER.PARTNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
             otherRoutes()}
 
           {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
@@ -305,7 +307,7 @@ function App() {
             element={<CustomersList />}
           />
           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
-           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew/>} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}

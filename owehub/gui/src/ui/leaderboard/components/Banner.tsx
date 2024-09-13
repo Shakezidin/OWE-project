@@ -73,6 +73,8 @@ const Banner: React.FC<BannerProps> = ({
     if (
       role === 'Admin' ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
+      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+      role === TYPE_OF_USER.ACCOUNT_MANAGER ||
       isShowDropdown
     ) {
       getNewFormData();
