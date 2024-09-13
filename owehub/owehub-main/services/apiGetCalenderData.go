@@ -222,6 +222,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		_, _, surveyDate, surveryStatus := getSurveyColor(SiteSurevyD, siteSurveyCmpletedD, contractD)
 		_, _, installDate, installStatus := CalenderInstallStatus(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 
+		log.FuncErrorTrace(0, "install date %v", installDate)
 		if dataReq.StartDate != "" && dataReq.EndDate != "" && (installDate != "" || surveyDate != "") {
 			// Parse StartDate and EndDate
 			startDate, err1 := time.Parse("2006-01-02", dataReq.StartDate)
@@ -231,6 +232,9 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 				FormAndSendHttpResp(resp, "Failed to get calender data, invalid date parsed", http.StatusBadRequest, nil)
 				return
 			}
+
+			// Adjust endDate to include the entire day
+			endDate = endDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
 
 			if surveyDate != "" {
 				parsedSurveyDate, err := time.Parse("2006-01-02 15:04:05", surveyDate)
