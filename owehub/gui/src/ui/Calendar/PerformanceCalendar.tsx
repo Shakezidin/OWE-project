@@ -76,8 +76,7 @@ const PerformanceCalendar: React.FC = () => {
         'Contract Total$',
         'Sys Size',
         'Sale Date',
-        'NTP Date',
-        'PTO Date'
+         
       ];
   
       const getAllData = await postCaller('get_calender_csv_download', {
@@ -100,8 +99,7 @@ const PerformanceCalendar: React.FC = () => {
         item.contract_total,
         item.system_size,
         item.contract_date,
-        item.ntp_date,
-        item.pto_date,
+        
 
       ]);
   
@@ -165,8 +163,8 @@ const PerformanceCalendar: React.FC = () => {
         const endOfCurrentMonth = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
 
         const calendardata = await postCaller('get_calender_data', {
-          // start_date: startOfCurrentMonth,
-          // end_date: endOfCurrentMonth,
+          start_date: startOfCurrentMonth,
+          end_date: endOfCurrentMonth,
         });
 
         if (calendardata.status > 201) {
