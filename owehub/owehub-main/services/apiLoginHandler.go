@@ -92,7 +92,15 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if roleName != "Admin" && roleName != "Finance Admin" && roleName != "DB User" {
+	nonDealerRoles := map[string]bool{
+		"Admin":             true,
+		"Finance Admin":     true,
+		"DB User":           true,
+		"Account Manager":   true,
+		"Account Executive": true,
+	}
+
+	if !nonDealerRoles[roleName] {
 		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON vd.id = ud.dealer_id WHERE ud.email_id = '%v'", emailId)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
@@ -104,6 +112,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 			loginResp.DealerName = data[0]["dealer_name"].(string)
 		}
 	}
+
 	loginResp.EmailId = emailId
 	loginResp.UserName = userName
 	loginResp.RoleName = roleName

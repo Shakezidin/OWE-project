@@ -133,6 +133,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchProjectDealerForAmAe(dataReq, role)
+			if err != nil {
+				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+			filter, whereEleList = PrepareProjectAeAmFilters(dealerNames, dataReq, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
@@ -1220,4 +1227,126 @@ func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCom
 	}
 
 	return grey, 1, ""
+}
+
+/******************************************************************************
+* FUNCTION:		FetchProjectStatusDealerForAmAe
+* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE)
+*               based on the email provided in the request.
+* INPUT:		dataReq - contains the request details including email.
+*               role    - role of the user (Account Manager or Account Executive).
+* RETURNS:		[]string - list of sales partner names.
+*               error   - if any error occurs during the process.
+******************************************************************************/
+func FetchProjectDealerForAmAe(dataReq models.PerfomanceStatusReq, userRole interface{}) ([]string, error) {
+	log.EnterFn(0, "FetchProjectStatusDealerForAmAe")
+	defer func() { log.ExitFn(0, "FetchProjectStatusDealerForAmAe", nil) }()
+
+	var items []string
+
+	accountName, err := fetchAmAeName(dataReq.Email)
+	if err != nil {
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+	}
+
+	var roleBase string
+	role, _ := userRole.(string)
+	if role == "Account Manager" {
+		roleBase = "account_manager"
+	} else {
+		roleBase = "account_executive"
+	}
+
+	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)
+
+	query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+		return nil, fmt.Errorf("failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+	}
+
+	for _, item := range data {
+		name, ok := item["data"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to parse 'data' item: %+v", item)
+			continue
+		}
+		items = append(items, name)
+	}
+
+	return items, nil
+}
+
+/******************************************************************************
+* FUNCTION:		PrepareProjectAeAmFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+
+func PrepareProjectAeAmFilters(dealerList []string, dataFilter models.PerfomanceStatusReq, dataCount bool) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareAeAmFilters")
+	defer func() { log.ExitFn(0, "PrepareAeAmFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false
+
+	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+
+		endDate = endDate.Add(24*time.Hour - time.Second)
+
+		whereEleList = append(whereEleList,
+			startDate.Format("02-01-2006 00:00:00"),
+			endDate.Format("02-01-2006 15:04:05"),
+		)
+
+		filtersBuilder.WriteString(" WHERE")
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		whereAdded = true
+	}
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND ")
+	} else {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
+	}
+
+	placeholders := []string{}
+	for i := range dealerList {
+		placeholders = append(placeholders, fmt.Sprintf("$%d", len(whereEleList)+i+1))
+	}
+	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+	for _, dealer := range dealerList {
+		whereEleList = append(whereEleList, dealer)
+	}
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND")
+	} else {
+		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
+	}
+	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		statusList := strings.Join(statusValues, ", ")
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
+
+	filters = filtersBuilder.String()
+	return filters, whereEleList
 }
