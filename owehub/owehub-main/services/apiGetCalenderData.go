@@ -232,6 +232,9 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 				return
 			}
 
+			// Adjust endDate to include the entire day
+			endDate = endDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
+
 			if surveyDate != "" {
 				parsedSurveyDate, err := time.Parse("2006-01-02 15:04:05", surveyDate)
 				if err != nil || parsedSurveyDate.Before(startDate) || parsedSurveyDate.After(endDate) {
