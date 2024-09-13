@@ -418,7 +418,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   <SelectOption
                     options={userDropdownData}
                     value={selectedOption}
-                    menuStyles={{ width: 'fit-content', left: -54 }}
+                    menuStyles={{ width: 'fit-content', left: -30}}
                     controlStyles={{
                       boxShadow: 'none',
                       border: 'none',
@@ -441,7 +441,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                       setSelectedRows(new Set());
                       setSelectAllChecked(false);
                     }}
-                    menuWidth="130px"
+                    menuWidth="fit-content"
+                    menuListStyles={{
+                      width: "fit-content"
+                    }}
                     enableHoverEffect={false}
                   />
                 </div>
