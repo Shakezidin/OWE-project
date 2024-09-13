@@ -7,7 +7,7 @@ interface Ipaginate {
   pay_roll_start_date?: string;
   pay_roll_end_date?: string;
   use_cutoff?: string;
-  dealer_name?: string[];
+  dealer_name?: string;
   sort_by?: string;
   commission_model: string;
   filters: FilterModel[];

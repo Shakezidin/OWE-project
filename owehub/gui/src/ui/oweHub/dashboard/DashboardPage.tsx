@@ -42,10 +42,10 @@ export const DashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [dealer, setDealer] = useState<{ label: string; value: string }[]>([{
+  const [dealer, setDealer] = useState<{ label: string; value: string }>({
     label: 'All',
     value: 'ALL',
-  }]);
+  });
   const [dealers, setDealers] = useState<string[]>([]);
   const [appliedDate, setAppliedDate] = useState<Date | null>(null);
 
@@ -53,7 +53,7 @@ export const DashboardPage: React.FC = () => {
     comissionValueData[comissionValueData.length - 1].value
   );
   const { isActive } = useAppSelector((state) => state.filterSlice);
-  const [prefferedType,setPrefferedType] = useState<string>('')
+  const [prefferedType, setPrefferedType] = useState<string>('')
   const { pathname } = useLocation();
   const [isOptionsFetched, setIsOptionsFetched] = useState(false);
   const handleSelectChange2 = (
@@ -81,15 +81,15 @@ export const DashboardPage: React.FC = () => {
           pay_roll_start_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
           pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
           use_cutoff: 'NO',
-          dealer_name: dealer.map((item) => item.value).filter((item) => item !== 'ALL'),
+          dealer_name: dealer.value,
           sort_by: 'unique_id',
           commission_model: selectedOption2,
           filters,
-          preffered_type:prefferedType
+          preffered_type: prefferedType
         })
       );
     }
-  }, [currentPage, selectedOption2, appliedDate, filters, dealer, isOptionsFetched,prefferedType]);
+  }, [currentPage, selectedOption2, appliedDate, filters, dealer, isOptionsFetched, prefferedType]);
 
   useEffect(() => {
     (async () => {
@@ -101,7 +101,7 @@ export const DashboardPage: React.FC = () => {
         return
       }
       setDealers([...res.data.dealer]);
-      setDealer([{ label: 'All', value: 'ALL' }, ...res.data.dealer.map((item:any)=>({label:item,value:item}))]);
+      setDealer({ label: 'All', value: 'ALL' });
       setIsOptionsFetched(true);
     })();
   }, []);
@@ -240,8 +240,8 @@ export const DashboardPage: React.FC = () => {
                   >
                     Sales Partner
                   </label>
-                  {/* <Select
-                    options={dealerOptions}
+                  <Select
+                    options={[{ label: 'All', value: 'ALL' }, ...dealers?.map?.((item) => ({ label: item, value: item }))] || []}
                     value={dealer}
                     onChange={(newValue) => {
                       if (newValue) {
@@ -319,20 +319,20 @@ export const DashboardPage: React.FC = () => {
                         },
                       }),
                     }}
-                  /> */}
+                  />
 
-                  <DropdownCheckbox
+                  {/* <DropdownCheckbox
                     options={dealers?.map?.((item) => ({ label: item, value: item })) || []}
                     selectedOptions={dealer}
                     onChange={(selectedOptions) => {
                       setDealer(selectedOptions)
                       setCurrentPage(1);
                     }}
-                  />
+                  /> */}
                 </div>
               </div>
 
-              
+
 
               <div className="dash-head-input" style={{ width: '250px' }}>
                 <div
