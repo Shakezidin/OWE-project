@@ -3,6 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis
 import styles from './styles/dashboard.module.css';
 import { ICONS } from '../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
+import Pagination from '../../ui/components/pagination/Pagination'; // Assuming you have a Pagination component
 
 const pieData = [
   { name: 'Pending leads', value: 135, color: '#FF832A' },
@@ -131,11 +132,35 @@ const statusMap = {
   'Appointment declined': 'Declined'
 };
 
+const CustomTooltip = ({ active, payload, label }: {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+}) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        backgroundColor: 'white',
+        padding: '5px 10px',
+        // border: '1px solid #f0f0f0',
+        borderRadius: '4px',
+        // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        <p style={{ margin: '2px 0', color: '#57B93A', fontWeight: 'bold' }}>{`${payload[0].value} Closed Won`}</p>
+        <p style={{ margin: '2px 0', color: '#CD4040', fontWeight: 'bold' }}>{`${payload[1].value} Closed Lost`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const LeadManagementDashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState('Aug');
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [filteredLeads, setFilteredLeads] = useState(leads);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Adjust as needed
   const navigate = useNavigate();
 
   const handleHistory = () => {
@@ -166,6 +191,14 @@ const LeadManagementDashboard = () => {
   const getLeadCount = (status: string) => {
     return leads.filter(lead => lead.status === status).length;
   };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentLeads = filteredLeads.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredLeads.length / itemsPerPage)));
+  const goToPrevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
   return (
     <div className={styles.dashboard}>
@@ -221,7 +254,7 @@ const LeadManagementDashboard = () => {
             </select>
           </div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={300}>
+            {/* <ResponsiveContainer width="100%" height={300}>
               <LineChart data={lineData}>
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -231,6 +264,31 @@ const LeadManagementDashboard = () => {
                     value
                   ]} 
                 />
+                <Legend 
+                  formatter={(value) => value === 'won' ? 'Total won' : 'Total Lost'} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="won" 
+                  stroke="#57B93A" 
+                  strokeWidth={2} 
+                  name="won" 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="lost" 
+                  stroke="#CD4040" 
+                  strokeWidth={2} 
+                  name="lost" 
+                />
+              </LineChart>
+            </ResponsiveContainer> */}
+
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={lineData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
                 <Legend 
                   formatter={(value) => value === 'won' ? 'Total won' : 'Total Lost'} 
                 />
@@ -283,7 +341,7 @@ const LeadManagementDashboard = () => {
         <div className={styles.cardContent}>
           <table className={styles.table}>
             <tbody>
-              {filteredLeads.map((lead, index) => (
+              {currentLeads.map((lead, index) => (
                 <div key={index} className={styles.history_lists}>
                   <div className={styles.history_list_inner}>
                     <label>
@@ -317,6 +375,25 @@ const LeadManagementDashboard = () => {
               ))}
             </tbody>
           </table>
+          
+          <div className={styles.paginationContainer}>
+            {filteredLeads.length > 0 && (
+              <div className='p1'>
+                <p className={styles.pageHeading}>
+                  {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, filteredLeads.length)} of {filteredLeads.length} items
+                </p>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
+                  paginate={paginate}
+                  goToNextPage={goToNextPage}
+                  goToPrevPage={goToPrevPage}
+                  perPage={itemsPerPage}
+                  currentPageData={currentLeads}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
