@@ -47,7 +47,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     let list = [...createSideMenuList()];
     const isStaging = process.env.REACT_APP_ENV;
 
-    if (role === TYPE_OF_USER.ADMIN) {
+    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role === TYPE_OF_USER.ACCOUNT_MANAGER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (

@@ -270,7 +270,7 @@ function App() {
             managerRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
-            role_name === TYPE_OF_USER.DEALER_OWNER) &&
+            role_name === TYPE_OF_USER.DEALER_OWNER || role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
             isStaging === 'staging' &&
             configAndUserManagementRoutes()}
 
