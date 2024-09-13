@@ -108,7 +108,9 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
 			return
 		}
-		loginResp.DealerName = data[0]["dealer_name"].(string)
+		if len(data) > 0 {
+			loginResp.DealerName = data[0]["dealer_name"].(string)
+		}
 	}
 
 	loginResp.EmailId = emailId

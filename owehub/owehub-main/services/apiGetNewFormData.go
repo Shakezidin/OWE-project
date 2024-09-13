@@ -76,24 +76,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		switch tableName {
 		case "partners":
-			
-			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive){
-				accountName, err := fetchAmAeName(email)
-				if err != nil {
-					FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
-					return
-				}
-				var roleBase string
-				if role == "Account Manager" {
-					roleBase = "account_manager"
-				} else {
-					roleBase = "account_executive"
-				}
-				log.FuncInfoTrace(0, "logged user %v is %v", accountName, roleBase)
-				query = fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
-			} else {
-				query = "SELECT partner_name as data FROM " + db.TableName_partners
-			}
+			query = "SELECT partner_name as data FROM " + db.TableName_partners
 		case "installers":
 			query = "SELECT partner_name as data FROM " + db.TableName_partners
 			tableName = "installers"
@@ -123,7 +106,23 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "dealer":
 			query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
 		case "dealer_name":
-			query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
+			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive) {
+				accountName, err := fetchAmAeName(email)
+				if err != nil {
+					FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+					return
+				}
+				var roleBase string
+				if role == "Account Manager" {
+					roleBase = "account_manager"
+				} else {
+					roleBase = "account_executive"
+				}
+				log.FuncInfoTrace(0, "logged user %v is %v", accountName, roleBase)
+				query = fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+			} else {
+				query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
+			}
 		case "rep_type":
 			query = "SELECT rep_type as data FROM " + db.TableName_rep_type
 		default:
