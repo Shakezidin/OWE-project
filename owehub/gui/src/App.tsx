@@ -272,9 +272,11 @@ function App() {
             managerRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
-            role_name === TYPE_OF_USER.DEALER_OWNER || role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
-            isStaging === 'staging' &&
-            configAndUserManagementRoutes()}
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) && (
+            <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
+          )}
 
           {role_name === TYPE_OF_USER.DB_USER && (
             <Route>
@@ -307,7 +309,10 @@ function App() {
             element={<CustomersList />}
           />
           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew />} />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT_ADD_NEW}
+            element={<LeadManagementNew />}
+          />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
