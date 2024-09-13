@@ -224,11 +224,11 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		if dataReq.StartDate != "" && dataReq.EndDate != "" && (installDate != "" || surveyDate != "") {
 			// Parse StartDate and EndDate
-			startDate, err1 := time.Parse("02-01-2006", dataReq.StartDate)
-			endDate, err2 := time.Parse("02-01-2006", dataReq.EndDate)
+			startDate, err1 := time.Parse("2006-01-02", dataReq.StartDate)
+			endDate, err2 := time.Parse("2006-01-02", dataReq.EndDate)
 			if err1 != nil || err2 != nil {
 				log.FuncErrorTrace(0, "Error parsing dates:%v, %v", err1, err2)
-				FormAndSendHttpResp(resp, "Failed to get pending queue tile data, invalid date parsed", http.StatusBadRequest, nil)
+				FormAndSendHttpResp(resp, "Failed to get calender data, invalid date parsed", http.StatusBadRequest, nil)
 				return
 			}
 
