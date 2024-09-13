@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './sidebar.css';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Routes, useLocation } from 'react-router-dom';
 import { createSideMenuList } from '../../../routes/SideMenuOption';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
@@ -135,7 +135,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               (item.path === ROUTES.COMMISSION_DASHBOARD ||
                 item.path === ROUTES.CONFIG_PAGE)
             ) {
-            } else if(item.path!==ROUTES.USER_MANAEMENT) {
+            } else if(item.path!==ROUTES.USER_MANAEMENT && item.path!==ROUTES.CONFIG_PAGE) {
               newArr[0].mob.push(item);
             }
           }
