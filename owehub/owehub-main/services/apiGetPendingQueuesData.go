@@ -552,7 +552,7 @@ func FetchPendingQueueProjectDealerForAmAe(dataReq models.PendingQueueReq, userR
 	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)
 
 	query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
-	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
 		return nil, fmt.Errorf("failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
