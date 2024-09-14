@@ -76,39 +76,27 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 	}
 
 	query = ` 
-			WITH user_data AS (
-    SELECT 
-        ur.role_name, 
-        COUNT(u.user_id) AS user_count,
-        CASE
-            WHEN ur.role_name = 'Sale Representative' THEN string_agg(u.name, ', ')
-            ELSE NULL
-        END AS sales_representatives
-    FROM 
-        user_details u
-    INNER JOIN 
-        user_roles ur ON u.role_id = ur.role_id
-	%s  -- Placeholder for additional condition
-    GROUP BY 
-        ur.role_name
-),
-dealer_data AS (
-    SELECT 
-        'Partner' AS role_name,
-        COUNT(*) AS user_count,
-        NULL AS sales_representatives
-    FROM 
-        v_dealer
-    WHERE 
-        is_deleted = FALSE
-	%s  -- Placeholder for additional condition
-)
-SELECT * FROM user_data
-UNION ALL
-SELECT * FROM dealer_data `
+    WITH user_data AS (
+        SELECT 
+            ur.role_name, 
+            COUNT(u.user_id) AS user_count,
+            CASE
+                WHEN ur.role_name = 'Sale Representative' THEN string_agg(u.name, ', ')
+                ELSE NULL
+            END AS sales_representatives
+        FROM 
+            user_details u
+        INNER JOIN 
+            user_roles ur ON u.role_id = ur.role_id
+        %s  -- Placeholder for additional condition
+        GROUP BY 
+            ur.role_name
+    )
+    SELECT * FROM user_data;
+`
 
 	// Initialize the additional condition as empty
-	var conditionOne, conditionTwo string
+	var conditionOne string
 	if role == string(types.RoleDealerOwner) {
 
 		dealerID, dealerName, err = RetrieveDealerIDByEmail(email)
@@ -119,9 +107,8 @@ SELECT * FROM dealer_data `
 
 		// Add condition to filter by dealer_id for dealer owners
 		conditionOne = fmt.Sprintf(" WHERE u.dealer_id = %v", dealerID)
-		conditionTwo = fmt.Sprintf("AND id = %v", dealerID)
 	}
-	query = fmt.Sprintf(query, conditionOne, conditionTwo)
+	query = fmt.Sprintf(query, conditionOne)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
