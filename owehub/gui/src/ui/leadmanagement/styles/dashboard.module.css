@@ -17,12 +17,7 @@
     margin-bottom: 24px;
   }
 
-  /* For tablets and larger screens */
-  @media (min-width: 768px) {
-    .chartGrid {
-      grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
-    }
-  }
+
   
   .card {
     background-color: white;
@@ -63,19 +58,20 @@
   
   .legendColor {
     width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    height: 6.12px;
+    border-radius: 6.12px;
     margin-right: 8px;
+    
   }
   
   .legendText {
-    font-size: 14px;
+    font-size: 10.71px;
   }
   
   .monthSelect {
     background-color: #3b82f6;
     color: white;
-    border-radius: 4px;
+    border-radius: 20px;
     padding: 4px 8px;
     border: none;
   }
@@ -139,80 +135,23 @@
   .table th,
   .table td {
     text-align: left;
-    padding: 8px;
+    padding: 11px;
     border-bottom: 1px solid #e5e7eb;
   }
   
   .table th {
     font-weight: bold;
   }
+
+  table tbody tr:hover {
+    transition: 0.4s all linear;
+    background-color: #377df623;
+}
   
   .statusPending {
     color: #f59e0b;
   }
 
-
-  .history_list{
-    padding: 10px 16px 10px 16px;
-  }
-
-  .history_lists{
-    padding-top: 16px;
-    border-bottom: 1px solid #000;
-    padding-bottom: 18px;
-  }
-
-  .history_list_inner{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-  }
-  .email{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 6px;
-  }
-  .user_name{
-    display: flex;
-    flex-direction: column;
-  }
-  .user_name h2{
-    font-weight: 600;
-    font-size: 16px;
-  }
-  .user_name p{
-    font-weight: 500;
-    font-size: 12px;
-    color: #81A6E7;
-  }
-  .phone_number{
-    font-size: 12px;
-    font-weight: 400;
-  }
-  .email p{
-    font-size: 12px;
-    font-weight: 400;
-  }
-  .address{
-    font-size: 12px;
-    font-weight: 400;
-  }
-  .see_more{
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    align-items: center;
-    cursor: pointer;
-  }
-
-  .see_more p{
-    color: #377CF6;
-    font-size: 12px;
-    font-weight: 400;
-  }
   .filtericon {
     display: flex;
     justify-content: center;
@@ -229,9 +168,182 @@
     transform: scale(1.04);
   }
   .filtericon img {
-    height: 19px;
-    width: 19px;
+    height: 24px;
+    width: 24px;
   }
+
+ 
   .pieChart :focus {
     outline: none;
   }
+
+
+  /* For tablets and larger screens */
+@media (min-width: 768px) {
+  .chartGrid {
+    grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+  }
+  .lineCard {
+    margin-right:26px
+  }
+
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  /* border-spacing: 0 16px; */
+}
+
+.history_lists {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  /* margin-bottom: 16px; */
+}
+
+.history_list_inner {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1.5fr 1.5fr auto;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+}
+
+.user_name {
+  display: flex;
+  flex-direction: column;
+}
+
+.user_name h2 {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+}
+
+.user_name p {
+  font-weight: 500;
+  font-size: 12px;
+  color: #81A6E7;
+  margin: 4px 0 0 0;
+}
+
+.phone_number,
+.email,
+.address {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.email {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  border: 1px solid #797979;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px; /* Adds space between buttons */
+}
+
+.rescheduleButton {
+  background-color: #2979FF; /* Blue color */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.rescheduleButton:hover {
+  background-color: #1565C0; /* Darker blue on hover */
+}
+
+.archiveButton {
+  background-color: transparent;
+  color: #757575; /* Gray color */
+  border: 1px solid #757575;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.archiveButton:hover {
+  background-color: #757575;
+  color: white;
+}
+
+
+.selectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.selectionInfo {
+  display: flex;
+  align-items: center;
+}
+
+.closeIcon {
+  font-size: 24px;
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.closeIcon img {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.closeIcon img:hover {
+  transform: scale(1.09);
+}
+
+.closeIcon:hover{
+  background: #377cf630;
+  border-radius: 5px;
+}
+
+.removeButton {
+  background-color: #EE4747;
+  color: white;
+  border: none;
+  padding: 0px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 135px;
+  height: 38px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  
+}
+
+.removeButton:hover {
+  background-color: #EE4747;
+  transform: scale(1.05);
+}
+
+.paginationContainer{
+  display: flex;
+  justify-content: right;
+}
