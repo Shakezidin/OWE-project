@@ -91,6 +91,7 @@ import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
 import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
 import ConfirmaModel from './ui/leadmanagement/Modals/ConfirmModel';
 import RoutesForRole from './utiles/RoutesForRole';
+import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
@@ -385,6 +386,7 @@ function App() {
           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew/>} />
           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL} element={<ConfirmaModel/>} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_HISTORY} element={<LeradManagementHistory/>} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
