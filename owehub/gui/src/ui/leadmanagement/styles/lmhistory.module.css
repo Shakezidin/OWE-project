@@ -11,6 +11,7 @@
 }
 
 .history_list {
+  margin-top:10px ;
   padding: 10px 16px 10px 16px;
 }
 
@@ -23,8 +24,10 @@
 .history_list_inner {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 .email {
   display: flex;
@@ -70,6 +73,14 @@
   color: #377cf6;
   font-size: 12px;
   font-weight: 400;
+  transition: all 500ms ease;
+}
+
+.see_more p:hover {
+  transform: scale(1.06);
+}
+.see_more p:hover img{
+  transform: scale(1.06);
 }
 
 .history_list_activity {
@@ -80,6 +91,7 @@
   border-radius: 6px;
   margin-top: 20px;
   padding: 22px 0px 20px 0px;
+  
 }
 
 .history_list_activity_det {
@@ -108,7 +120,7 @@
   right: 22px;
   position: absolute;
   transform: translateY(-50%);
-  width: 170px;
+  width: 11vw;
   height: 1px;
   background-color: #929292;
 }
@@ -117,7 +129,7 @@
   right: 22px;
   position: absolute;
   transform: translateY(-50%);
-  width: 100px;
+  width: 6vw;
   height: 1px;
   background-color: #929292;
 }
@@ -145,11 +157,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .lm_history_header {
   display: flex;
   justify-content: space-between;
+  padding: 0px 15px;
 }
 .filters {
   display: flex;
@@ -168,4 +182,24 @@
 }
 .hist_ret img:hover {
   transform: scale(1.09);
+}
+
+.history_list_head{
+  color: #3E3E3E;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: -10px;
+}
+
+.lead_his_remove{
+  width: 135px;
+  height: 38px;
+  background-color: #EE4747;
+  font-weight: 500;
+  font-size: 16px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
 }
