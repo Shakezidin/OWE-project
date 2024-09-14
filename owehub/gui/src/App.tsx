@@ -99,7 +99,7 @@ function App() {
   }, [dispatch]);
 
   /**config and user manangement routes*/
-  const configAndUserManagementRoutes = () => {
+  const configRoutes = () => {
     return (
       <Route>
         <Route
@@ -157,7 +157,6 @@ function App() {
         <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
         <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData />} />
 
-        <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
         <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
         <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
         <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit />} />
@@ -271,6 +270,12 @@ function App() {
             role_name === TYPE_OF_USER.REGIONAL_MANGER) &&
             managerRoutes()}
 
+          {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
+            isStaging === 'staging' &&
+            configRoutes()}
           {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
             role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
