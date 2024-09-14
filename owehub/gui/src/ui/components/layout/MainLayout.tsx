@@ -17,8 +17,6 @@ import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 
-import ChatSupport from './ChatSupport';
-
 import useAuth from '../../../hooks/useAuth';
 
 const MainLayout = () => {
@@ -108,7 +106,6 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
-      <ChatSupport />
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
