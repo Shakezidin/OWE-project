@@ -60,7 +60,7 @@ const ChatSupport = () => {
   const email = localStorage.getItem('email');
   useEffect(() => {
     setTimeout(() => {
-      document.getElementById('need-assistace')?.classList.toggle('hide');
+      document.getElementById('need-assistace')?.classList.add('hide');
     }, 3000);
     socket.on('success', (event) => {
       console.log(event);
@@ -71,6 +71,7 @@ const ChatSupport = () => {
         }
         if (event_name === 'new_message') {
           addResponseMessage(message);
+          scrollToBottom();
         }
         if (event_name === 'channel_deleted') {
           addResponseMessage(

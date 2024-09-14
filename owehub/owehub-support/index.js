@@ -109,7 +109,12 @@ let allChannels = null;
   try {
     await client.connect();
     await client2.connect();
-    // allChannels = await client.query(`SELECT * from slackconfig`);
+    allChannels = await client.query(`SELECT * from slackconfig`);
+    // const res = await web.conversations.create({
+    //   name: "owe-technical-support",
+    //   is_private: false,
+    // });
+    // console.log(res, "RES");
   } catch (error) {
     console.log(error);
   }
@@ -119,8 +124,7 @@ function getChannelID(issueType) {
   if (!allChannels) {
     throw new Error("No channels are found");
   }
-  const channel = allChannels.find((c) => c.issue_type === issueType);
-  console.log("channel");
+  const channel = allChannels.rows.find((c) => c.issue_type === issueType);
   if (channel) {
     return channel.channel_name;
   }
@@ -185,13 +189,8 @@ io.on("connection", (socket) => {
       }
 
       const user = userExists?.rows?.pop();
-      const res =
-        await client2.query(`SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  
-                            FROM sales_metrics_schema 
-                            where unique_id = '${project_id}' AND primary_sales_rep='${user.name}'`);
-      if (res?.rows?.length) {
-        // Notify a designated Slack channel about the new message
-        const data = res.rows.pop();
+
+      if (issueType === "Technical Support") {
         await web.chat.postMessage({
           channel: getChannelID(issueType),
           blocks: [
@@ -199,14 +198,36 @@ io.on("connection", (socket) => {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `:warning: *Issue in Project*\n*Sales Rep:* ${data.primary_sales_rep}\n*Project ID:* ${data.unique_id}\n*Customer:* ${data.customer}\n*Podio Link:* <${data.podio_link}|Project Podio>\n\nReply in channel: <#${channelId}|${channelName}>`,
+                text: `:warning: *Issue in Project*\n*Sales Rep:* n*Project ID:* ${user.name}\n*Customer:* ${user.email_id}\n*Project Podio>\n\nReply in channel: <#${channelId}|${channelName}>`,
               },
             },
           ],
-          text: `${data.primary_sales_rep} has an issue in project ${data.unique_id}.`,
+          text: `has an issue in project ${user.name}.`,
         });
       } else {
-        throw new Error("Project not found");
+        const res =
+          await client2.query(`SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  
+                            FROM sales_metrics_schema 
+                            where unique_id = '${project_id}' AND primary_sales_rep='${user.name}'`);
+        if (res?.rows?.length) {
+          // Notify a designated Slack channel about the new message
+          const data = res.rows.pop();
+          await web.chat.postMessage({
+            channel: getChannelID(issueType),
+            blocks: [
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: `:warning: *Issue in Project*\n*Sales Rep:* ${data.primary_sales_rep}\n*Project ID:* ${data.unique_id}\n*Customer:* ${data.customer}\n*Podio Link:* <${data.podio_link}|Project Podio>\n\nReply in channel: <#${channelId}|${channelName}>`,
+                },
+              },
+            ],
+            text: `${data.primary_sales_rep} has an issue in project ${data.unique_id}.`,
+          });
+        } else {
+          throw new Error("Project not found");
+        }
       }
 
       const runAt = new Date(Date.now() + ms(config.noReplyRespondTime)); // 2 minutes in the future
