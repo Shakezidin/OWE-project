@@ -10,14 +10,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
 import botOpen from '../../../resources/assets/botOpen.png';
+import botOpenUp from '../../../resources/assets/botOpenUp.png';
 import send from '../../../resources/assets/send.png';
 import sendActive from '../../../resources/assets/send-active.png';
 import chat_logo from '../../../resources/assets/chat_logo.png';
+import cross from '../../../resources/assets/cross.png';
+import refresh from '../../../resources/assets/refresh.png';
+import need from '../../../resources/assets/need.png';
+import moment from 'moment';
 
 const socket = io('https://staging.owe-hub.com');
 const ChatSupport = () => {
   const [messages, setMessages] = useState<any>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [isChatOpen, setChatOpen] = useState(false);
 
   const messagesEndRef = useRef<any>(null);
 
@@ -34,11 +40,17 @@ const ChatSupport = () => {
   }, [newMessage]); // Empty dependency array means it runs only once on mount
 
   function addResponseMessage(message: string) {
-    setMessages((messages: any) => [...messages, { message, client: false }]);
+    setMessages((messages: any) => [
+      ...messages,
+      { message, client: false, time: moment().format('DD MMM, hh:mm a') },
+    ]);
   }
 
   function addUserMessage(message: string) {
-    setMessages((messages: any) => [...messages, { message, client: true }]);
+    setMessages((messages: any) => [
+      ...messages,
+      { message, client: true, time: moment().format('DD MMM, hh:mm a') },
+    ]);
   }
   //
   const [channelName, setChannelName] = useState(null);
@@ -100,10 +112,7 @@ const ChatSupport = () => {
 
   useEffect(() => {
     if (issueType) {
-      setMessages((messages: any) => [
-        ...messages,
-        { message: issueType, client: true },
-      ]);
+      addUserMessage(issueType);
       if (issueType === 'Technical Support') {
         addResponseMessage('How can I help you?');
       } else {
@@ -126,13 +135,20 @@ const ChatSupport = () => {
   }
 
   function handleChatHide() {
+    setChatOpen(!isChatOpen);
     document
       .getElementById('rcw-conversation-container')
       ?.classList.toggle('hide');
+    document.getElementById('need-assistace')?.classList.add('hide');
+  }
+  function handleRefresh() {
+    setMessages([]);
+    setIssueType(null);
+    setChannelName(null);
   }
 
   return (
-    <div className="rcw-widget-container ">
+    <div className="rcw-widget-container">
       <div
         id="rcw-conversation-container"
         className="rcw-conversation-container active hide"
@@ -140,10 +156,17 @@ const ChatSupport = () => {
       >
         {issueType && (
           <div className="rcw-header">
-            <button className="rcw-close-button">
-              <img src={botOpen} className="rcw-close" alt="close" />
-            </button>
-            <h4 className="rcw-title">OWE Bot Assitant</h4>
+            <div className="header-logo-title">
+              <div className="online-container">
+                <img src={chat_logo} alt="Open chat" />
+                <div className="online-dot" />
+              </div>
+              <h4 className="rcw-title">OWE BOT ASSISTANT</h4>
+            </div>
+            <div className="bot-icons">
+              <img src={refresh} alt="close" onClick={handleRefresh} />
+              <img src={cross} alt="close" onClick={handleChatHide} />
+            </div>
           </div>
         )}
 
@@ -170,13 +193,15 @@ const ChatSupport = () => {
                 </div>
 
                 <div
+                  style={{ pointerEvents: 'none', background: '#aaa' }}
                   className="rcs-option-container"
                   onClick={() => setIssueType('Commission Support')}
                 >
                   <h5>Commission Support</h5>
                   <h6>
-                    If you need assistance related to specific projects and its
-                    status
+                    Coming Soon
+                    {/* If you need assistance related to specific projects and its
+                    status */}
                   </h6>
                 </div>
 
@@ -196,16 +221,16 @@ const ChatSupport = () => {
 
           {issueType ? (
             <>
-              {messages.map(({ client, message }: any) => {
+              {messages.map(({ client, message, time }: any) => {
                 if (client) {
                   return (
                     <div className="rcw-message rcw-message-client">
-                      <div className="avatar">S</div>
+                      <div className="avatar">{name && name[0]}</div>
                       <div className="rcw-client">
                         <div className="rcw-message-text">
                           <p>{message}</p>
                         </div>
-                        <span className="rcw-timestamp">10:05</span>
+                        <span className="rcw-timestamp">{time}</span>
                       </div>
                     </div>
                   );
@@ -221,7 +246,7 @@ const ChatSupport = () => {
                       <div className="rcw-message-text">
                         <p>{message}</p>
                       </div>
-                      <span className="rcw-timestamp">09:53</span>
+                      <span className="rcw-timestamp">{time}</span>
                     </div>
                   </div>
                 );
@@ -269,11 +294,25 @@ const ChatSupport = () => {
         </div>
       </div>
       <div
-        className="rcw-launcher rcw-hide-sm"
+        className="rcw-launcher"
         aria-controls="rcw-chat-container"
         onClick={handleChatHide}
       >
-        <img src={botOpen} alt="Open chat" />
+        <img
+          src={isChatOpen ? botOpenUp : botOpen}
+          alt="Open chat"
+          className="bot-open"
+        />
+        <img
+          src={need}
+          id="need-assistace"
+          alt="Need assitance"
+          className="need-assistace"
+          onClick={(e) => {
+            e.stopPropagation();
+            document.getElementById('need-assistace')?.classList.toggle('hide');
+          }}
+        />
       </div>
     </div>
   );
