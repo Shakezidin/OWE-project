@@ -8,15 +8,16 @@ import {
   useState,
 } from 'react';
 import { DateRange } from 'react-date-range';
+
 import {
-  format,
+  endOfMonth,
   subDays,
   startOfMonth,
-  endOfMonth,
   startOfWeek,
   endOfWeek,
   startOfYear,
-} from 'date-fns';
+  format
+} from "date-fns"
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -35,6 +36,7 @@ import {
 } from './Icons';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
+import { toZonedTime } from 'date-fns-tz';
 
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
@@ -95,7 +97,18 @@ export const RankColumn = ({ rank }: { rank: number }) => {
 //
 // PERIOD FILTER
 //
-const today = new Date();
+
+function getUserTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+// Function to get current date in the user's timezone
+function getCurrentDateInUserTimezone() {
+  const now = new Date()
+  const userTimezone = getUserTimezone()
+  return toZonedTime(now, userTimezone)
+}
+const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
@@ -305,12 +318,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -650,7 +663,9 @@ const Table = ({
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
-        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER) &&
       groupBy !== 'dealer'
     ) {
       return true;
@@ -658,7 +673,9 @@ const Table = ({
     if (
       role !== TYPE_OF_USER.ADMIN &&
       role !== TYPE_OF_USER.DEALER_OWNER &&
-      role !== TYPE_OF_USER.FINANCE_ADMIN
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER
     ) {
       return true;
     } else {
@@ -736,7 +753,12 @@ const Table = ({
     if (role === TYPE_OF_USER.DEALER_OWNER) {
       return 'Code Name';
     }
-    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
+    if (
+      role === TYPE_OF_USER.ADMIN ||
+      role === TYPE_OF_USER.FINANCE_ADMIN ||
+      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+      role === TYPE_OF_USER.ACCOUNT_MANAGER
+    ) {
       return 'Partner Name';
     } else {
       return 'Name';
@@ -864,8 +886,10 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }

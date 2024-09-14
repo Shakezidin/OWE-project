@@ -61,6 +61,7 @@ import ApptSetters from './ui/oweHub/configure/apptSetters/ApptSetters';
 import { ARDashboardPage } from './ui/oweHub/ar/ardashboard/ardashboard';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
+import Slack from './ui/pages/configure/slack/slack';
 import AdderData from './ui/oweHub/configure/adderData/AdderData';
 import ApRep from './ui/oweHub/configure/apRep/ApRep';
 import BatteryBackup from './ui/batterBackupCalculator';
@@ -85,8 +86,10 @@ import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
 import Calendar from './ui/Calendar/PerformanceCalendar';
 import PendingQueue from './ui/oweHub/pendingQueue';
+
 import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
 import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
+
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
@@ -99,7 +102,7 @@ function App() {
   }, [dispatch]);
 
   /**config and user manangement routes*/
-  const configAndUserManagementRoutes = () => {
+  const configRoutes = () => {
     return (
       <Route>
         <Route
@@ -157,9 +160,9 @@ function App() {
         <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
         <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData />} />
 
-        <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
         <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
         <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
+        <Route path={ROUTES.CONFIG_SLACK} element={<Slack />} />
         <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit />} />
         <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus />} />
         <Route path={ROUTES.CONFIG_REPINCENT} element={<RepIncent />} />
@@ -261,7 +264,9 @@ function App() {
             role_name === TYPE_OF_USER.FINANCE_ADMIN ||
             role_name === TYPE_OF_USER.SUB_DEALER_OWNER ||
             role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
-            role_name === TYPE_OF_USER.PARTNER) &&
+            role_name === TYPE_OF_USER.PARTNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
             otherRoutes()}
 
           {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
@@ -270,9 +275,17 @@ function App() {
             managerRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
-            role_name === TYPE_OF_USER.DEALER_OWNER) &&
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
             isStaging === 'staging' &&
-            configAndUserManagementRoutes()}
+            configRoutes()}
+          {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) && (
+            <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
+          )}
 
           {role_name === TYPE_OF_USER.DB_USER && (
             <Route>
@@ -305,7 +318,10 @@ function App() {
             element={<CustomersList />}
           />
           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
-           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew/>} />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT_ADD_NEW}
+            element={<LeadManagementNew />}
+          />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}

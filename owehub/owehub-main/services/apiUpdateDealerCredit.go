@@ -106,7 +106,9 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	sysSize = data[0]["system_size"].(float64)
+	if len(data) > 0 {
+		sysSize = data[0]["system_size"].(float64)
+	}
 	if updateDealerCredit.ExactAmount > 0 {
 		totalAmount = updateDealerCredit.ExactAmount
 	} else if updateDealerCredit.PerKwAmount > 0 {

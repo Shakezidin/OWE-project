@@ -25,15 +25,9 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
     setFilteredOptions(options);
-    const isAllSelected = selectedOptions.some(option => option.value === "ALL") ||
-      selectedOptions.length === options.length;
-    if (isAllSelected && options.length) {
-      onChange(options);
-    }
-  }, [options, onChange, selectedOptions]);
+  }, [options]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -88,7 +82,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     onChange(selectedOptions.length === options.length ? [] : options);
   };
 
-  const isAllSelected = selectedOptions.length === options.length;
+  const isAllSelected = (selectedOptions.length === options.length || selectedOptions.some(item => item.value === "ALL"));
 
   return (
     <div className="dropdown-checkbox" ref={dropdownRef}>
@@ -96,8 +90,24 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
         {isAllSelected ? 'All selected' : `${selectedOptions.length}  selected`}
       </div>
       {isOpen && (
-        <div className="dropdown-menu" style={{overflowX:"clip"}}>
-          {/* Remove the input element */}
+        <div className="dropdown-menu scrollbar" style={{ overflowX: "clip" }}>
+          <input
+            type="text"
+            className="input"
+            placeholder={placeholder}
+            value={search}
+            onChange={handleSearch}
+          />
+          {!!(!search && options.length) && (
+            <div className="dropdown-item">
+              <input
+                type="checkbox"
+                checked={isAllSelected}
+                onChange={handleSelectAll}
+              />
+              <span>All</span>
+            </div>
+          )}
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option, index) => (
               <div key={index} className="dropdown-item">

@@ -25,10 +25,13 @@ import (
  ******************************************************************************/
 func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err     error
-		data    []map[string]interface{}
-		dataReq models.GetRepPayTileDataReq
-		query   string
+		err               error
+		data              []map[string]interface{}
+		dataReq           models.GetRepPayTileDataReq
+		query             string
+		amountPrepaid     float64
+		pipelineRemaining float64
+		currentDue        float64
 	)
 
 	log.EnterFn(0, "HandleManageRepPayTileDataRequest")
@@ -79,9 +82,11 @@ func HandleManageRepPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	amountPrepaid, _ := data[0]["amount_paid"].(float64)
-	pipelineRemaining, _ := data[0]["amt_paid"].(float64)
-	currentDue, _ := data[0]["current_due"].(float64)
+	if len(data) > 0 {
+		amountPrepaid, _ = data[0]["amount_paid"].(float64)
+		pipelineRemaining, _ = data[0]["amt_paid"].(float64)
+		currentDue, _ = data[0]["current_due"].(float64)
+	}
 
 	// Prepare response data structure
 	dealerPayTileData := models.GetRepPayTileData{

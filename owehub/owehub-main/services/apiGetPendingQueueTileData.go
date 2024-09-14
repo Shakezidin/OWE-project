@@ -35,7 +35,6 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		whereEleList     []interface{}
 		queryWithFiler   string
 		filter           string
-		dealerName       interface{}
 		rgnSalesMgrCheck bool
 		RecordCount      int64
 		SaleRepList      []interface{}
@@ -89,14 +88,31 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 	if len(data) > 0 {
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName = data[0]["dealer_name"]
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if !ok {
+			dealerName = ""
+		}
 		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
+		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
 
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
+			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchPendingQueueProjectDealerForAmAe(dataReq, role)
+			if err != nil {
+				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+
+			if len(dealerNames) == 0 {
+				perfomanceList := models.PerfomanceListResponse{}
+				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
+				return
+			}
 			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
@@ -237,14 +253,30 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 
 	// Add dealer filter if not adminCheck and not filterCheck
 	if !adminCheck && !filterCheck {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND")
-		} else {
-			filtersBuilder.WriteString(" WHERE")
-			whereAdded = true
+		if len(dataFilter.DealerNames) > 0 { // Check if there are any dealer names to filter
+			if whereAdded {
+				filtersBuilder.WriteString(" AND")
+			} else {
+				filtersBuilder.WriteString(" WHERE")
+				whereAdded = true
+			}
+
+			// Initialize a slice to store placeholders for each dealer
+			var placeholders []string
+
+			// Loop through the dealer names
+			for i, dealer := range dataFilter.DealerNames {
+				// Create a placeholder for each dealer name
+				placeholder := fmt.Sprintf("$%d", len(whereEleList)+i+1)
+				placeholders = append(placeholders, placeholder)
+
+				// Append each dealer name to the list of query parameters
+				whereEleList = append(whereEleList, dealer)
+			}
+
+			// Add the IN clause with the placeholders to the query
+			filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(placeholders, ",")))
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
 	// Always add the following filters
@@ -315,15 +347,25 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	if len(dataFilter.DealerNames) > 0 { // Check if there are dealer names to filter
+		if whereAdded {
+			filtersBuilder.WriteString(" AND")
+		} else {
+			filtersBuilder.WriteString(" WHERE")
+			whereAdded = true
+		}
+
+		// Prepare dealer names for SQL
+		var dealerNames []string
+		for _, dealer := range dataFilter.DealerNames {
+			// Sanitize dealer names to prevent SQL injection
+			sanitizedDealer := strings.ReplaceAll(dealer, "'", "''")
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", sanitizedDealer))
+		}
+
+		// Add the IN clause with dealer names directly in the query
+		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(dealerNames, ",")))
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND ips.unique_id IS NOT NULL

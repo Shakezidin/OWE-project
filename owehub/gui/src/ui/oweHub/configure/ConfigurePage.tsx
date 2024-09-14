@@ -100,6 +100,7 @@ const ConfigurePage: React.FC = () => {
         { title: 'Sales Type', route: ROUTES.CONFIG_SALE },
         { title: 'Loan Type', route: ROUTES.CONFIG_LOAN },
         { title: 'DBA', route: ROUTES.CONFIG_DBA },
+        { title: 'Slack Config', route: ROUTES.CONFIG_SLACK },
         { title: 'Rep Credit', route: ROUTES.CONFIG_REPCREDIT },
         { title: 'Rep Status', route: ROUTES.CONFIG_REPSTATUS },
       ],
