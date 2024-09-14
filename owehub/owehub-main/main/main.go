@@ -194,6 +194,9 @@ func createApiRouter() *mux.Router {
 			handler = apiHandler.AuthorizeAPIAccess(route.GroupAllowedAccess, handler)
 		}
 
+		/* Add Recovery Middle Ware for Panic Handling */
+		handler = apiHandler.RecoveryMiddleware(handler)
+
 		if types.CommGlbCfg.SvcSrvCfg.ValidateOAuthReq == "YES" {
 			//handler = OAuth2ReqValidatePlugin(handler)
 		}

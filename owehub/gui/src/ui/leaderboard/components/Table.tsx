@@ -8,15 +8,16 @@ import {
   useState,
 } from 'react';
 import { DateRange } from 'react-date-range';
+
 import {
-  format,
+  endOfMonth,
   subDays,
   startOfMonth,
-  endOfMonth,
   startOfWeek,
   endOfWeek,
   startOfYear,
-} from 'date-fns';
+  format
+} from "date-fns"
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -33,10 +34,10 @@ import {
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
-import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
-import { useAppSelector } from '../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-import jsPDF from 'jspdf';
+import useAuth, { AuthData } from '../../../hooks/useAuth';
+import { toZonedTime } from 'date-fns-tz';
+
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
@@ -69,8 +70,6 @@ const rankByOptions = [
   { label: 'Cancel', value: 'cancel' },
 ];
 
-const role = localStorage.getItem('role');
-
 const groupByOptionss = [
   { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
@@ -98,12 +97,27 @@ export const RankColumn = ({ rank }: { rank: number }) => {
 //
 // PERIOD FILTER
 //
-const today = new Date();
+
+function getUserTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+// Function to get current date in the user's timezone
+function getCurrentDateInUserTimezone() {
+  const now = new Date()
+  const userTimezone = getUserTimezone()
+  return toZonedTime(now, userTimezone)
+}
+const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+const startOfThreeMonthsAgo = new Date(
+  today.getFullYear(),
+  today.getMonth() - 2,
+  1
+);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
 // Calculate the start and end of last week
@@ -136,7 +150,7 @@ const periodFilterOptions: DateRangeWithLabel[] = [
     end: endOfLastMonth,
   },
   {
-    label: 'Last Quarter',
+    label: 'This Quarter',
     start: startOfThreeMonthsAgo,
     end: today,
   },
@@ -529,11 +543,18 @@ const Table = ({
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
+  const { authData, saveAuthData } = useAuth();
+
   const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 25;
-  const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
-  );
+  const [isAuthenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
 
   useEffect(() => {
     if (isAuthenticated && isFetched) {
@@ -609,7 +630,7 @@ const Table = ({
     if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
-  const role = localStorage.getItem('role');
+  const role = authData?.role;
   const getTotal = (column: keyof ILeaderBordUser): number => {
     return sortedPage.reduce((sum, item) => {
       const value = item[column];
@@ -642,7 +663,9 @@ const Table = ({
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
-        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER) &&
       groupBy !== 'dealer'
     ) {
       return true;
@@ -650,7 +673,9 @@ const Table = ({
     if (
       role !== TYPE_OF_USER.ADMIN &&
       role !== TYPE_OF_USER.DEALER_OWNER &&
-      role !== TYPE_OF_USER.FINANCE_ADMIN
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER
     ) {
       return true;
     } else {
@@ -662,16 +687,29 @@ const Table = ({
     // Define the headers for the CSV
 
     setIsExporting(true);
-    const headers = ['UniqueID', 'Homeowner Name', 'Homeowner Email', 'Homeowner Phone', 'Address', 'State','Contract $', 'Sys Size', 'Sale Date', 'NTP Date', 'Install Date', 'Pto Date', 'Cancel Date' ];
+    const headers = [
+      'UniqueID',
+      getName,
+      'Homeowner Email',
+      'Homeowner Phone',
+      'Address',
+      'State',
+      'Contract $',
+      'Sys Size',
+      'Sale Date',
+      'NTP Date',
+      'Install Date',
+      'Pto Date',
+      'Cancel Date',
+      'Primary Sales Rep',
+      'Secondary Sales Rep',
+    ];
 
-    
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
       dealer_name: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'), 
-      
-     
-
+      end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+      group_by: groupBy,
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -691,7 +729,8 @@ const Table = ({
       item.pv_install_completed_date,
       item.pto_date,
       item.canceled_date,
-    
+      item.primary_sales_rep,
+      item.secondary_sales_rep,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -710,11 +749,25 @@ const Table = ({
     setExportShow(false);
   };
 
+  const getName = useMemo(() => {
+    if (role === TYPE_OF_USER.DEALER_OWNER) {
+      return 'Code Name';
+    }
+    if (
+      role === TYPE_OF_USER.ADMIN ||
+      role === TYPE_OF_USER.FINANCE_ADMIN ||
+      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+      role === TYPE_OF_USER.ACCOUNT_MANAGER
+    ) {
+      return 'Partner Name';
+    } else {
+      return 'Name';
+    }
+  }, [role]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-
         <div className="export-trigger" onClick={toggleExportShow}>
           <FaUpload size={12} className="mr1" />
           <span> Export </span>
@@ -834,7 +887,9 @@ const Table = ({
             options={
               role === 'Admin' ||
                 role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -985,14 +1040,7 @@ const Table = ({
               <tr>
                 <th>Rank</th>
 
-                <th>
-                  {(role === TYPE_OF_USER.ADMIN ||
-                    role === TYPE_OF_USER.FINANCE_ADMIN ||
-                    role === TYPE_OF_USER.DEALER_OWNER) &&
-                    groupBy === 'dealer'
-                    ? 'Code Name'
-                    : 'Name'}
-                </th>
+                <th>{getName}</th>
 
                 {showPartner && <th>Partner</th>}
                 <th>

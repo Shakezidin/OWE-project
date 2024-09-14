@@ -16,6 +16,7 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import { showAlert } from '../../components/alert/ShowAlert';
 import { resetTeams } from '../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import useAuth from '../../../hooks/useAuth';
 
 interface AccordionSection {
   data: any;
@@ -38,6 +39,10 @@ const TeamManagement: React.FC = () => {
   const [isFetched, setIsFetched] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [isPending, setIspending] = useState(false);
+  const { authData } = useAuth();
+  const roleAdmin = authData?.role;
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
   const getnewformData = async () => {
     const tableData = {
       tableNames: ['dealer_name'],
@@ -140,8 +145,6 @@ const TeamManagement: React.FC = () => {
       console.error(error);
     }
   };
-  const roleAdmin = localStorage.getItem('role');
-  const isMobile = useMatchMedia('(max-width: 767px)');
 
   return (
     <>

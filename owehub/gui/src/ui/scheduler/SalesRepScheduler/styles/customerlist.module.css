@@ -96,7 +96,7 @@
 }
 .cust_det_top {
   display: grid;
-  grid-template-columns: repeat(5,1fr) auto;
+  grid-template-columns: repeat(5, 1fr) auto;
 }
 .name_icon {
   height: 24px;

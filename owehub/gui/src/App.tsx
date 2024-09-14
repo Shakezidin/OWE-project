@@ -61,6 +61,7 @@ import ApptSetters from './ui/oweHub/configure/apptSetters/ApptSetters';
 import { ARDashboardPage } from './ui/oweHub/ar/ardashboard/ardashboard';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
+import Slack from './ui/pages/configure/slack/slack';
 import AdderData from './ui/oweHub/configure/adderData/AdderData';
 import ApRep from './ui/oweHub/configure/apRep/ApRep';
 import BatteryBackup from './ui/batterBackupCalculator';
@@ -84,18 +85,24 @@ import CustomersList from './ui/scheduler/SalesRepScheduler/CustomersList';
 import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
 import Calendar from './ui/Calendar/PerformanceCalendar';
+import PendingQueue from './ui/oweHub/pendingQueue';
+
+import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
+import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
+
 function App() {
   const dispatch = useAppDispatch();
+  const { isAuthenticated, role_name } = useAppSelector(
+    (state: RootState) => state.auth
+  );
+  const isStaging = process.env.REACT_APP_ENV;
 
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-  const { isAuthenticated, role_name } = useAppSelector(
-    (state: RootState) => state.auth
-  );
 
   /**config and user manangement routes*/
-  const configAndUserManagementRoutes = () => {
+  const configRoutes = () => {
     return (
       <Route>
         <Route
@@ -136,6 +143,7 @@ function App() {
         <Route path={ROUTES.CONFIG_AR} element={<AR />} />
         <Route path={ROUTES.CONFIG_AR_SCHEDULE} element={<ARSchedule />} />
         <Route path={ROUTES.CONFIG_INSTALL_COST} element={<InstallCost />} />
+
         <Route
           path={ROUTES.CONFIG_LEADER_OVERRIDE}
           element={<LeaderOverride />}
@@ -152,9 +160,9 @@ function App() {
         <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
         <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData />} />
 
-        <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
         <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
         <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
+        <Route path={ROUTES.CONFIG_SLACK} element={<Slack />} />
         <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit />} />
         <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus />} />
         <Route path={ROUTES.CONFIG_REPINCENT} element={<RepIncent />} />
@@ -224,8 +232,8 @@ function App() {
               <Navigate
                 to={
                   role_name === TYPE_OF_USER.DB_USER
-                    ? ROUTES.LEADERBOARD
-                    : ROUTES.LEADERBOARD
+                    ? ROUTES.PEINDING_QUEUE
+                    : ROUTES.PEINDING_QUEUE
                 }
               />
             ) : (
@@ -238,7 +246,7 @@ function App() {
           path="/login"
           element={
             isAuthenticated ? (
-              <Navigate to={ROUTES.LEADERBOARD} />
+              <Navigate to={ROUTES.PEINDING_QUEUE} />
             ) : (
               <LoginPage />
             )
@@ -250,22 +258,34 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
-          {(role_name === TYPE_OF_USER.ADMIN ||
-            role_name === TYPE_OF_USER.DEALER_OWNER) &&
-            configAndUserManagementRoutes()}
 
           {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
             role_name === TYPE_OF_USER.FINANCE_ADMIN ||
             role_name === TYPE_OF_USER.SUB_DEALER_OWNER ||
             role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
-            role_name === TYPE_OF_USER.PARTNER) &&
+            role_name === TYPE_OF_USER.PARTNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
             otherRoutes()}
 
           {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
             role_name === TYPE_OF_USER.SALE_MANAGER ||
             role_name === TYPE_OF_USER.REGIONAL_MANGER) &&
             managerRoutes()}
+
+          {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
+            isStaging === 'staging' &&
+            configRoutes()}
+          {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) && (
+            <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
+          )}
 
           {role_name === TYPE_OF_USER.DB_USER && (
             <Route>
@@ -284,8 +304,8 @@ function App() {
               <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
             </Route>
           )}
-
-        <Route path={ROUTES.CALENDAR} element={<Calendar />} />
+          <Route path={ROUTES.PEINDING_QUEUE} element={<PendingQueue />} />
+          <Route path={ROUTES.CALENDAR} element={<Calendar />} />
 
           <Route
             path={ROUTES.TECHNICAL_SUPPORT}
@@ -296,6 +316,11 @@ function App() {
           <Route
             path={ROUTES.SALES_REP_SCHEDULER}
             element={<CustomersList />}
+          />
+          <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT_ADD_NEW}
+            element={<LeadManagementNew />}
           />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}

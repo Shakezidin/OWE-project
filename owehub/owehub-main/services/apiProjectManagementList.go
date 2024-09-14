@@ -75,11 +75,6 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	// this sets the response limit
-	dataReq.ProjectLimit = 100
-	// this sets the date interval bracket for which request is fetched
-	dataReq.IntervalDays = "90"
-
 	// Check whether the user is Admin, Dealer, Sales Rep
 	whereEleList = append(whereEleList, dataReq.Email)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
@@ -97,11 +92,24 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, true)
 		case "Dealer Owner":
 			filter, whereEleList = PreparePrjtAdminDlrFilters(tableName, dataReq, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchDealerForAmAeProjectList(dataReq, role)
+			if err != nil {
+				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+			if len(dealerNames) == 0 {
+				log.FuncInfoTrace(0, "No dealer list found")
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, 0)
+				return
+			}
+			filter, whereEleList = PrepareAeAmProjectFilters(dealerNames, dataReq, false)
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PreparePrjtSaleRepFilters(tableName, dataReq, SaleRepList)
 		// this is for roles regional manager & sales manager
 		default:
+			SaleRepList = append(SaleRepList, name)
 			rgnSalesMgrCheck = true
 		}
 	}
@@ -110,7 +118,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
 		// This is thrown is there are no sale rep are available under this particular user
-		if len(data) == 0 {
+		if len(SaleRepList) == 0 {
 			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
 			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, []string{}, int64(0))
 			return
@@ -126,8 +134,6 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 			SaleRepList = append(SaleRepList, SaleRepName)
 		}
 
-		dealerName := data[0]["dealer_name"]
-		dataReq.DealerName = dealerName
 		filter, whereEleList = PreparePrjtSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
@@ -174,11 +180,11 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 * RETURNS:    		void
 ******************************************************************************/
 func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatusReq, adminCheck bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareProjectAdminDlrFilters")
-	defer func() { log.ExitFn(0, "PrepareProjectAdminDlrFilters", nil) }()
+	log.EnterFn(0, "PreparePrjtAdminDlrFilters")
+	defer func() { log.ExitFn(0, "PreparePrjtAdminDlrFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := true
+	whereAdded := false
 
 	if !adminCheck {
 		if !whereAdded {
@@ -188,6 +194,38 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		}
 		filtersBuilder.WriteString(fmt.Sprintf("salMetSchema.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
+		whereAdded = true
+	}
+
+	if !whereAdded {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
+	} else {
+		filtersBuilder.WriteString(" AND ")
+	}
+	// Add the always-included filters
+	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		if !whereAdded {
+			filtersBuilder.WriteString(" WHERE ")
+		} else {
+			filtersBuilder.WriteString(" AND ")
+		}
+		whereAdded = true
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` salMetSchema.project_status IN (%s)`, statusList))
 	}
 
 	filters = filtersBuilder.String()
@@ -207,28 +245,186 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 	defer func() { log.ExitFn(0, "PrepareProjectSaleRepFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := true
+	whereAdded := false // Start with false, to determine if the WHERE clause should be added
 
+	// Handle the primary sales rep filter
+	if len(saleRepList) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString("salMetSchema.primary_sales_rep IN (")
+		for i, sale := range saleRepList {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, sale)
+
+			if i < len(saleRepList)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
+	}
+
+	// Handle the dealer filter
+	if dataFilter.DealerName != "" {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(fmt.Sprintf("salMetSchema.dealer = $%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, dataFilter.DealerName)
+	}
+
+	// Add additional conditions that don't depend on external inputs
 	if whereAdded {
 		filtersBuilder.WriteString(" AND ")
 	} else {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
 	}
 
-	filtersBuilder.WriteString(" salMetSchema.primary_sales_rep IN (")
-	for i, sale := range saleRepList {
-		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, sale)
+	filtersBuilder.WriteString(`
+		intOpsMetSchema.unique_id IS NOT NULL
+		AND intOpsMetSchema.unique_id <> ''
+		AND intOpsMetSchema.system_size IS NOT NULL
+		AND intOpsMetSchema.system_size > 0`)
 
-		if i < len(saleRepList)-1 {
-			filtersBuilder.WriteString(", ")
+	// Handle the project status filter
+	if len(dataFilter.ProjectStatus) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
 		}
+
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.project_status IN (%s)", statusList))
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+/******************************************************************************
+* FUNCTION:		PrepareAeAmProjectFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+
+func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectStatusReq, dataCount bool) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareAeAmProjectFilters")
+	defer func() { log.ExitFn(0, "PrepareAeAmProjectFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false
+
+	placeholders := []string{}
+	for i := range dealerList {
+		placeholders = append(placeholders, fmt.Sprintf("$%d", len(whereEleList)+i+1))
+	}
+
+	if len(placeholders) != 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+		for _, dealer := range dealerList {
+			whereEleList = append(whereEleList, dealer)
+		}
+	}
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND")
+	} else {
+		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
+	}
+	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		statusList := strings.Join(statusValues, ", ")
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
+
+	filters = filtersBuilder.String()
+	return filters, whereEleList
+}
+
+/******************************************************************************
+* FUNCTION:		FetchDealerForAmAe
+* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE)
+*               based on the email provided in the request.
+* INPUT:		dataReq - contains the request details including email.
+*               role    - role of the user (Account Manager or Account Executive).
+* RETURNS:		[]string - list of sales partner names.
+*               error   - if any error occurs during the process.
+******************************************************************************/
+func FetchDealerForAmAeProjectList(dataReq models.ProjectStatusReq, userRole interface{}) ([]string, error) {
+	log.EnterFn(0, "FetchDealerForAmAeProjectList")
+	defer func() { log.ExitFn(0, "FetchDealerForAmAeProjectList", nil) }()
+
+	var items []string
+
+	accountName, err := fetchAmAeName(dataReq.Email)
+	if err != nil {
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+	}
+
+	var roleBase string
+	role, _ := userRole.(string)
+	if role == "Account Manager" {
+		roleBase = "account_manager"
+	} else {
+		roleBase = "account_executive"
+	}
+
+	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)
+
+	query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+		return nil, fmt.Errorf("failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+	}
+
+	for _, item := range data {
+		name, ok := item["data"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to parse 'data' item: %+v", item)
+			continue
+		}
+		items = append(items, name)
+	}
+
+	return items, nil
 }

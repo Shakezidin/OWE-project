@@ -5,10 +5,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import {
-  getPerfomance,
-  getPerfomanceStatus,
-} from '../../../redux/apiSlice/perfomanceSlice';
+import { getPerfomanceStatus } from '../../../redux/apiSlice/perfomanceSlice';
 import { Calendar } from './ICONS';
 import Select from 'react-select';
 import { getProjects } from '../../../redux/apiSlice/projectManagement';
@@ -33,16 +30,14 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import useMatchMedia from '../../../hooks/useMatchMedia';
-import SelectOption from '../../components/selectOption/SelectOption';
 import { MdOutlineKeyboardDoubleArrowRight } from 'react-icons/md';
-import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { debounce } from '../../../utiles/debounce';
 import Input from '../../components/text_input/Input';
 import { IoClose } from 'react-icons/io5';
 import { ICONS } from '../../../resources/icons/Icons';
-// import { IoIosSearch } from 'react-icons/io';
-// import { MdFileDownloadDone } from "react-icons/md";
 import { MdDone } from 'react-icons/md';
+import useAuth from '../../../hooks/useAuth';
+import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
@@ -66,7 +61,9 @@ const ProjectPerformence = () => {
   const [selectedMilestone, setSelectedMilestone] = useState('');
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
-
+  const [activeTab, setActiveTab] = useState('Active Queue');
+  const [loading, setLoading] = useState(false);
+  const [titleData, setTileData] = useState<any>('');
   const [activeCardId, setActiveCardId] = useState(null);
   const [activeCardTitle, setActiveCardTitle] = useState<string>('');
 
@@ -75,10 +72,8 @@ const ProjectPerformence = () => {
     value: string;
   }>({} as Option);
 
-  const handleCancel = () => {
-    setSelectedProject({} as Option);
-  };
-  const role = localStorage.getItem('role');
+  const { authData } = useAuth();
+  const role = authData?.role;
 
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
@@ -118,7 +113,6 @@ const ProjectPerformence = () => {
     key: 'selection',
   });
 
-  const [tileData, setTileData] = useState<any>({});
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
@@ -218,11 +212,11 @@ const ProjectPerformence = () => {
     setExportShow(false);
   };
 
-  useEffect(() => {
-    dispatch(getProjects());
+  // useEffect(() => {
+  //   dispatch(getProjects());
 
-    return () => toast.dismiss();
-  }, []);
+  //   return () => toast.dismiss();
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -277,9 +271,33 @@ const ProjectPerformence = () => {
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
+      setPage(1);
     }, 800),
     []
   );
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await postCaller('get_perfomancetiledata', {
+          project_status:
+            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
+        });
+
+        if (data.status > 201) {
+          toast.error(data.message);
+          return;
+        }
+        console.log(data.data);
+        setTileData(data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    })();
+  }, [activeTab]);
 
   useEffect(() => {
     dispatch(
@@ -290,6 +308,8 @@ const ProjectPerformence = () => {
         endDate: '',
         uniqueId: searchValue ? searchValue : '',
         selected_milestone: selectedMilestone,
+        project_status:
+          activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
       })
     );
   }, [
@@ -299,6 +319,7 @@ const ProjectPerformence = () => {
     selectedProject.value,
     searchValue,
     selectedMilestone,
+    activeTab,
   ]);
 
   const calculateCompletionPercentage = (
@@ -331,43 +352,43 @@ const ProjectPerformence = () => {
     {
       id: 1,
       title: 'Site Survey',
-      value: datacount.site_survey_count,
+      value: titleData.site_survey_count,
       pending: 'survey',
     },
     {
       id: 2,
       title: 'CAD Design',
-      value: datacount.cad_design_count,
+      value: titleData.cad_design_count,
       pending: 'cad',
     },
     {
       id: 3,
       title: 'Permitting',
-      value: datacount.permitting_count,
+      value: titleData.permitting_count,
       pending: 'permit',
     },
     {
       id: 4,
       title: 'Roofing',
-      value: datacount.roofing_count,
+      value: titleData.roofing_count,
       pending: 'roof',
     },
     {
       id: 5,
       title: 'Install',
-      value: datacount.isntall_count,
+      value: titleData.isntall_count,
       pending: 'install',
     },
     {
       id: 6,
       title: 'Inspection',
-      value: datacount.inspection_count,
+      value: titleData.inspection_count,
       pending: 'inspection',
     },
     {
       id: 7,
       title: 'Activation',
-      value: datacount.activation_count,
+      value: titleData.activation_count,
       pending: 'activation',
     },
   ];
@@ -376,7 +397,6 @@ const ProjectPerformence = () => {
   const resetPage = () => {
     setPage(1);
   };
- 
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
@@ -657,98 +677,151 @@ const ProjectPerformence = () => {
     setNtpOPen(true);
   };
 
+  const handleActiveTab = (tab: any) => {
+    setActiveTab(tab);
+  };
+
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
     <div className="">
-      <Breadcrumb
-        head=""
-        linkPara="Pipeline"
-        route={''}
-        linkparaSecond="Dashboard"
-        marginLeftMobile="12px"
-      />
-      <div className="project-container">
-        {/* <div className="leaderboard-data__selected-dates performance-date">
-          {selectedRangeDate.start && selectedRangeDate.end ? (
-            <>
-              {format(selectedRangeDate.start, 'dd MMM yyyy')} -{' '}
-              {format(selectedRangeDate.end, 'dd MMM yyyy')}
-            </>
-          ) : null}
-        </div> */}
-        <div className="project-heading pipeline-heading">
-          <h2>Active Queue</h2>
+      <div className="flex justify-between p2 top-btns-wrapper">
+        <Breadcrumb
+          head=""
+          linkPara="Pipeline"
+          route={''}
+          linkparaSecond="Dashboard"
+          marginLeftMobile="12px"
+        />
+        <div className="pipeline-header-btns">
+          <p
+            className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+            onClick={() => {
+              handleActiveTab('Active Queue'), setPage(1);
+            }}
+          >
+            Active
+          </p>
+          <p
+            className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
+            onClick={() => {
+              handleActiveTab('Active Queue'), setPage(1);
+            }}
+          >
+            Active
+          </p>
+          <p
+            className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+            onClick={() => {
+              handleActiveTab('Hold & Jeopardy'), setPage(1);
+            }}
+          >
+            Hold & Jeopardy
+          </p>
+          <p
+            className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
+            onClick={() => {
+              handleActiveTab('Hold & Jeopardy'), setPage(1);
+            }}
+          >
+            H&J
+          </p>
         </div>
-
+      </div>
+      <div className="project-container">
+        <div className="project-heading pipeline-heading">
+          <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
+        </div>
         <div className="flex stats-card-wrapper">
-          <div className="project-card-container-1">
-            {topCardsData.map((card, index) => {
-              const cardColor = cardColors[index % cardColors.length];
-              const isActive = activeCardId === card.id;
-              const handleCardClick = (cardId: any, title: string) => {
-                setActiveCardId(activeCardId === cardId ? null : cardId);
-                setActiveCardTitle(activeCardId === cardId ? '' : title);
-              };
-              return (
-                <div
-                  className="flex items-center arrow-wrap"
-                  style={{ marginRight: '-20px' }}
-                >
-                  <div
-                    key={card.id}
-                    className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
-                    style={{
-                      backgroundColor: cardColor,
-                      outline:
-                        activeCardId === card.id
-                          ? `4px solid ${cardColor}`
-                          : `1px dotted ${cardColor}`,
-                      pointerEvents: card.pending === 'roof' ? 'none' : 'auto',   
-                      opacity: card.pending === 'roof' ? '0.3' : '',
-                    }}
-                    onClick={(e) => {
-                      handlePendingRequest(card?.pending);
-                      handleCardClick(card.id, card.title);
-                    }}
-                  >
-                    <span
-                      className="stages-numbers"
-                      style={{ color: cardColor, borderColor: cardColor }}
-                    >
-                      {activeCardId === card.id ? <MdDone /> : card.id}
-                    </span>
-                    <p>{card.title || 'N/A'}</p>
-                    { card.pending !== 'roof' ?
-                    <h2>{card.value || 'N/A'}</h2>
-                    : <small style={{color:'white'}}>Coming Soon</small>}
-                  </div>
-                  {index < topCardsData.length - 1 && (
+          <div style={{ width: '100%' }} className="project-card-container-1 ">
+            {loading ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  marginInline: 'auto',
+                }}
+              >
+                <MicroLoader />
+              </div>
+            ) : (
+              <>
+                {' '}
+                {topCardsData.map((card, index) => {
+                  const cardColor = cardColors[index % cardColors.length];
+                  const isActive = activeCardId === card.id;
+                  const handleCardClick = (cardId: any, title: string) => {
+                    setActiveCardId(activeCardId === cardId ? null : cardId);
+                    setActiveCardTitle(activeCardId === cardId ? '' : title);
+                  };
+                  return (
                     <div
-                      className="flex arrow-dir"
-                      style={{ padding: '0 5px' }}
+                      className="flex items-center arrow-wrap"
+                      style={{ marginRight: '-20px' }}
                     >
-                      <MdOutlineKeyboardDoubleArrowRight
+                      <div
+                        key={card.id}
+                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
                         style={{
-                          width: '1.5rem',
-                          height: '1.5rem',
-                          color: cardColor,
-                          marginLeft: activeCardId === card.id ? '8px' : '0px',
+                          backgroundColor: cardColor,
+                          outline:
+                            activeCardId === card.id
+                              ? `4px solid ${cardColor}`
+                              : `1px dotted ${cardColor}`,
+                          pointerEvents:
+                            card.pending === 'roof' ? 'none' : 'auto',
+                          opacity: card.pending === 'roof' ? '0.3' : '',
                         }}
-                      />
-                      <MdOutlineKeyboardDoubleArrowRight
-                        style={{
-                          marginLeft: '-10px',
-                          height: '1.5rem',
-                          width: '1.5rem',
-                          color: cardColors[(index + 1) % cardColors.length],
+                        onClick={(e) => {
+                          handlePendingRequest(card?.pending);
+                          handleCardClick(card.id, card.title);
                         }}
-                      />
+                      >
+                        <span
+                          className="stages-numbers"
+                          style={{ color: cardColor, borderColor: cardColor }}
+                        >
+                          {activeCardId === card.id ? <MdDone /> : card.id}
+                        </span>
+                        <p>{card.title || 'N/A'}</p>
+                        {card.pending !== 'roof' ? (
+                          <h2>{card.value || 'N/A'}</h2>
+                        ) : (
+                          <small style={{ color: 'white' }}>Coming Soon</small>
+                        )}
+                      </div>
+                      {index < topCardsData.length - 1 && (
+                        <div
+                          className="flex arrow-dir"
+                          style={{ padding: '0 5px' }}
+                        >
+                          <MdOutlineKeyboardDoubleArrowRight
+                            style={{
+                              width: '1.5rem',
+                              height: '1.5rem',
+                              color: cardColor,
+                              marginLeft:
+                                activeCardId === card.id ? '8px' : '0px',
+                            }}
+                          />
+                          <MdOutlineKeyboardDoubleArrowRight
+                            style={{
+                              marginLeft: '-10px',
+                              height: '1.5rem',
+                              width: '1.5rem',
+                              color:
+                                cardColors[(index + 1) % cardColors.length],
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  );
+                })}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -877,14 +950,12 @@ const ProjectPerformence = () => {
                                 <Link
                                   to={`/project-management?project_id=${project.unqiue_id}&customer-name=${project.customer}`}
                                 >
-                                  <>
-                                    <h3 className="customer-name">
-                                      {project.customer}
-                                    </h3>
+                                  <div className="deco-text">
+                                    <h3>{project.customer}</h3>
                                     <p className="install-update">
                                       {project.unqiue_id}
                                     </p>
-                                  </>
+                                  </div>
                                 </Link>
 
                                 <div className="milestone-status">
@@ -908,7 +979,11 @@ const ProjectPerformence = () => {
                                       width={16}
                                       alt="img"
                                     />
-                                    {project.qc.qc_action_required_count}
+                                    {Object.values(project.qc).every(
+                                      (value) => value !== 'Pending'
+                                    ) && project.qc.qc_action_required_count > 0
+                                      ? project.qc.qc_action_required_count
+                                      : ''}
                                   </div>
                                   <div
                                     className={`status-item click ${project.co_status === 'CO Complete' ? 'ntp' : ''}`}
@@ -930,7 +1005,11 @@ const ProjectPerformence = () => {
                                       width={16}
                                       alt="img"
                                     />
-                                    {project.ntp.action_required_count}
+                                    {Object.values(project.ntp).every(
+                                      (value) => value !== 'Pending'
+                                    ) && project.qc.qc_action_required_count > 0
+                                      ? project.ntp.action_required_count
+                                      : ''}
                                   </div>
                                   {project.co_status !== 'CO Complete' &&
                                     project.co_status && (
@@ -939,7 +1018,6 @@ const ProjectPerformence = () => {
                                         data-tooltip={project.co_status} // Custom tooltip
                                       >
                                         C/O
-                                        
                                       </div>
                                     )}
                                 </div>

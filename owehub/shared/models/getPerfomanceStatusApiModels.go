@@ -17,9 +17,31 @@ type PerfomanceStatusReq struct {
 	ProjectLimit      int
 	DealerName        interface{}
 	IntervalDays      string
-	ItemLastSeen      int64  `json:"item_last_seen"`
-	StartDate         string `json:"start_date"`
-	EndDate           string `json:"end_date"`
+	ItemLastSeen      int64    `json:"item_last_seen"`
+	StartDate         string   `json:"start_date"`
+	EndDate           string   `json:"end_date"`
+	ProjectStatus     []string `json:"project_status"`
+}
+
+type PerfomanceTileDataReq struct {
+	Email         string
+	ProjectLimit  int
+	DealerName    interface{}
+	IntervalDays  string
+	StartDate     string   `json:"start_date"`
+	EndDate       string   `json:"end_date"`
+	ProjectStatus []string `json:"project_status"`
+}
+
+type PerfomanceTileDataResponse struct {
+	SiteSurveyCount  int64 `json:"site_survey_count"`
+	CadDesignCount   int64 `json:"cad_design_count"`
+	PerimittingCount int64 `json:"permitting_count"`
+	RoofingCount     int64 `json:"roofing_count"`
+	InstallCount     int64 `json:"isntall_count"`
+	ElectricalCount  int64 `json:"electrical_count"`
+	InspectionCount  int64 `json:"inspection_count"`
+	ActivationCount  int64 `json:"activation_count"`
 }
 
 type PerfomanceResponse struct {
@@ -47,30 +69,23 @@ type PerfomanceResponse struct {
 	CoStatus          string `json:"co_status"`
 	Ntp               NTP    `json:"ntp"`
 	Qc                QC     `json:"qc"`
+	NTPdate           string `json:"ntp_date"`
 }
 
 type PerfomanceListResponse struct {
-	PerfomanceList   []PerfomanceResponse `json:"perfomance_response_list"`
-	SiteSurveyCount  int64                `json:"site_survey_count"`
-	CadDesignCount   int64                `json:"cad_design_count"`
-	PerimittingCount int64                `json:"permitting_count"`
-	RoofingCount     int64                `json:"roofing_count"`
-	InstallCount     int64                `json:"isntall_count"`
-	ElectricalCount  int64                `json:"electrical_count"`
-	InspectionCount  int64                `json:"inspection_count"`
-	ActivationCount  int64                `json:"activation_count"`
+	PerfomanceList []PerfomanceResponse `json:"perfomance_response_list"`
 }
 
 // shift the below struct to project
 
 type ProjectStatusReq struct {
-	Email        string
-	UniqueId     string `json:"unique_id"`
-	Customer     string `json:"customer"`
-	UniqueIds    []string
-	ProjectLimit int
-	DealerName   interface{}
-	IntervalDays string
+	Email         string
+	UniqueId      string `json:"unique_id"`
+	Customer      string `json:"customer"`
+	UniqueIds     []string
+	ProjectLimit  int
+	ProjectStatus []string `json:"project_status"`
+	DealerName    interface{}
 }
 
 // project management list

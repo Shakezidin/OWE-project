@@ -7,11 +7,11 @@ import { RiFilterLine } from 'react-icons/ri';
 import Switch from '../../components/Switch';
 interface TableProps {
   title: string;
-  onPressViewArchive: () => void;
+  onPressViewArchive: (() => void) | null;
   onPressArchive: () => void;
-  onPressFilter: () => void;
+  onPressFilter: (() => void) | null;
   onPressImport: () => void;
-  onpressExport: () => void;
+  onpressExport: (() => void) | null;
   onpressAddNew: () => void;
   isAnyRowSelected: boolean;
   checked: boolean;
@@ -37,22 +37,25 @@ const TableHeader = (props: TableProps) => {
       <h3>{title}</h3>
 
       <div className="iconContainer">
-        <div className="iconsSection2">
-          <div className="flex items-center">
-            <label
-              htmlFor="h6 "
-              style={{
-                marginRight: 13,
-                color: '#292929',
-                fontSize: 13,
-                fontWeight: 500,
-              }}
-            >
-              View Archive
-            </label>
-            <Switch checked={viewArchive} onChange={onPressViewArchive} />
+        {onPressViewArchive ? (
+          <div className="iconsSection2">
+            <div className="flex items-center">
+              <label
+                htmlFor="h6 "
+                style={{
+                  marginRight: 13,
+                  color: '#292929',
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              >
+                View Archive
+              </label>
+              <Switch checked={viewArchive} onChange={onPressViewArchive} />
+            </div>
           </div>
-        </div>
+        ) : null}
+
         {isAnyRowSelected === true && !viewArchive ? (
           <>
             <div className="iconsSection2">
@@ -73,7 +76,7 @@ const TableHeader = (props: TableProps) => {
             <img src={ICONS.importIcon} alt="" /> Import
           </button>
         </div> */}
-        <div className="iconsSection2">
+        <div className="iconsSection2-confex">
           <button type="button" disabled onClick={onpressExport}>
             <svg
               width="19"
@@ -87,11 +90,11 @@ const TableHeader = (props: TableProps) => {
             Export
           </button>
         </div>
-        <div className="iconsSection2">
+        <div className="iconsSection2-conan">
           <button
             type="button"
             style={{
-              background: `var(--primary-color)`,
+              // background: `var(--primary-color)`,
               color: 'white',
               border: '1px solid var(--primary-color)',
             }}
@@ -106,11 +109,10 @@ const TableHeader = (props: TableProps) => {
             Add New
           </button>
         </div>
-
         <div className="iconsSection-filter relative">
           <button
             style={{
-              backgroundColor: 'var(--primary-color)',
+              // backgroundColor: 'var(--primary-color)',
               borderRadius: 8,
             }}
             type="button"

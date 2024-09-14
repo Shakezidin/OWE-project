@@ -46,7 +46,7 @@ const MenuList = ({ options, children, maxHeight, getValue }: any) => {
       height={maxHeight}
       itemCount={options.length}
       itemSize={50}
-      className="scrollable-view-children"
+      className="scrollbar scrollable-view-children"
       width={'100%'}
       initialScrollOffset={initialOffset}
     >

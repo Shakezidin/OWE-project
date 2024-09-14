@@ -35,6 +35,7 @@ import {
   ALL_USER_ROLE_LIST as USERLIST,
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
+import useAuth from '../../../hooks/useAuth';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -46,10 +47,14 @@ const UserManagement: React.FC = () => {
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
+  const { authData } = useAuth();
+
+;
+  const [selectedOption, setSelectedOption] = useState(USERLIST[0]);
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
-    const userRole = localStorage.getItem('role');
+    const userRole = localStorage.getItem("role");
     if (userRole === TYPE_OF_USER.DEALER_OWNER) {
       role = role.filter(
         (role) =>
@@ -58,10 +63,10 @@ const UserManagement: React.FC = () => {
           role.value !== TYPE_OF_USER.DB_USER &&
           role.value !== TYPE_OF_USER.PARTNER
       );
+      setSelectedOption(role[0])
     }
     return role;
-  }, []);
-  const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
+  }, [])
   const {
     loading,
     userOnboardingList,
@@ -75,6 +80,29 @@ const UserManagement: React.FC = () => {
     createUserResult,
     deleteUserResult,
   } = useAppSelector((state) => state.createOnboardUser);
+
+  const [inactiveSalesRep, setInactiveSalesRep] = useState('');
+  const [activeSalesRep, setActiveSalesRep] = useState('');
+
+  const handleInactiveSlrpClick = (value: string) => {
+    setInactiveSalesRep(value);
+    setActiveSalesRep('');
+  };
+
+  const handleActiveSlrpClick = (value: string) => {
+    setActiveSalesRep(value);
+    setInactiveSalesRep('');
+  };
+
+  const handleCrossClick = () => {
+    setInactiveSalesRep('');
+    setActiveSalesRep('');
+    setIsClicked(false);
+    setIsClicked1(false);
+  };
+
+  const [isClicked, setIsClicked] = useState(false);
+  const [isClicked1, setIsClicked1] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -299,13 +327,7 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-
-  // useEffect(() => {
-  //   if(formData.assigned_Manager){
-  //     dispatch(updateUserForm({ field: 'assigned_Manager', value: '' }));
-  //   }
-  // },[formData.assigned_Manager])
-
+  console.log(userRoleBasedList,"userRoleBasedList")
   /** render UI */
   return (
     <>
@@ -337,6 +359,12 @@ const UserManagement: React.FC = () => {
           onboardingList={userOnboardingList}
           userPerformanceList={userPerformanceList}
           loading={loading}
+          onInactiveSlrpClick={handleInactiveSlrpClick}
+          onActiveSlrpClick={handleActiveSlrpClick}
+          isClicked={isClicked}
+          setIsClicked={setIsClicked}
+          isClicked1={isClicked1}
+          setIsClicked1={setIsClicked1}
         />
       </div>
 
@@ -350,6 +378,9 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
+          inactiveSalesRep={inactiveSalesRep}
+          activeSalesRep={activeSalesRep}
+          handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
           selectedRows={selectedRows}
@@ -378,12 +409,13 @@ const UserManagement: React.FC = () => {
             );
             const usernames = Array.from(selectedRows).map((index) => {
               const user = userRoleBasedList[index];
-              return user.role_name === 'DB User'
+              return user.role_name === TYPE_OF_USER.DB_USER
                 ? user.db_username
                 : user.name.split(' ').join('_');
             });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);
+              console.log(deleteRows, usernames,userRoleBasedList,"deleteRows, usernames,userRoleBasedList")
             } else {
               toast.info('Please select user');
             }

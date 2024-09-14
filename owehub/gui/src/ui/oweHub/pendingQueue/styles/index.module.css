@@ -1,0 +1,183 @@
+.pending_card_wrapper {
+  border-radius: 6px;
+  background-color: #fff;
+  padding: 19px 28px;
+  margin-top: 15px;
+  display: grid;
+  justify-content: center;
+
+  align-items: center;
+  gap: 20px;
+}
+
+.grid_3{
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid_2{
+  grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
+}
+.pending_card {
+  padding: 5px;
+  background-color: #f6f6f6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+.disabled_card{
+  border: 1px solid #d9d9d9 !important;
+  cursor: not-allowed;
+  
+}
+.disabled_card .pending_stats,
+.disabled_card .pending_card_desc{
+color: #d9d9d9 !important;
+}
+.disabled_card .pending_card_title{
+  color: #c0bfbf !important;
+}
+.deco-text:hover {
+  text-decoration: underline;
+  color: #000;
+}
+.pending_card_inner {
+  border: 1px solid #eba900;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 6px;
+  padding: 28px 21px;
+  height: 107px;
+  transition: all 0.5s;
+}
+.pending_card_hover:hover {
+  background-color: rgba(235, 169, 0, 0.3);
+  transition: all 0.5s;
+  border: 1px solid transparent;
+}
+.pending_card_hover:hover .pending_stats {
+  color: #000 !important;
+}
+.pending_stats {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #eba900;
+}
+.pending_card_title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #263747;
+}
+.pending_card_desc {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #263747;
+}
+.active_card {
+  background-color: #eba900;
+  gap: 1rem;
+}
+.mandatory {
+  position: absolute;
+  top: 4px;
+  right: 3px;
+  color: #e14514;
+}
+.active_card .pending_stats,
+.active_card .pending_card_title,
+.active_card .pending_card_desc {
+  color: #fff;
+}
+
+.pending_queue_title {
+  font-weight: 600;
+  font-size: 20px;
+}
+.no_hover:hover {
+  text-decoration: none;
+  cursor: default !important;
+}
+
+.outline_card_wrapper {
+  box-shadow: 2px 7px 12px rgba(172, 152, 99, 0.17);
+  height: 54px;
+  display: flex;
+  flex-basis: 152px;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: 5px;
+  padding-left: 9px;
+  padding-right: 5px;
+}
+
+.warning_card {
+  border: 1px solid #eba900;
+  background-color: #fdf6e5;
+}
+
+.success_card {
+  background-color: #e0fff0;
+  border: 1px solid #2eaf71;
+}
+
+.action_required_card {
+  background-color: #fcece7;
+  border: 2px solid #e14514;
+}
+
+.danger_card {
+  border: 1px solid #e14514;
+  background-color: #fcece7;
+}
+
+.search_wrapper {
+  flex-basis: 250px;
+}
+.pending_queue_table_header {
+  padding-inline: 2rem;
+}
+
+@media (max-width: 968px) {
+  .grid_3{
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  .grid_2{
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .pending_card_wrapper{
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  .pending_queue_title {
+    padding-left: 2rem;
+  }
+  .table_heading {
+    font-size: 15px !important;
+  }
+  .pending_queue_table_header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .search_wrapper {
+    flex: 1;
+    width: 100%;
+  }
+  .table_heading {
+    display: none;
+  }
+
+  .pending_card {
+    padding: 1px;
+  }
+  .pending_stats {
+    padding-right: 18px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .pending_queue_table_header {
+    padding-inline: 1rem;
+  }
+}

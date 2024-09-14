@@ -1,6 +1,6 @@
 /**************************************************************************
- * File       	   : apiGetPerfomanceProjectStatus.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
+ * File       	   : apiGetPerfomanceCsvDownload.go
+ * DESCRIPTION     : This file contains functions for download perofmance data handler
  * DATE            : 07-May-2024
  **************************************************************************/
 
@@ -72,7 +72,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	defer func() { log.ExitFn(0, "HandleGetPerformanceCsvDownloadRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get PerfomanceProjectStatus data request")
+		err = fmt.Errorf("HTTP Request body is null in get PerfomanceCsvDownload data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -80,15 +80,15 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get PerfomanceProjectStatus data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get PerfomanceCsvDownload data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get PerfomanceProjectStatus data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceProjectStatus data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get PerfomanceCsvDownload data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceCsvDownload data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -132,11 +132,12 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			filter, whereEleList = PrepareSaleRepCsvFilters(tableName, dataReq, SaleRepList)
 		// this is for the roles regional manager and sales manager
 		default:
+			SaleRepList = append(SaleRepList, name)
 			rgnSalesMgrCheck = true
 		}
 	} else {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get Perfomance Csv Download data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get Perfomance Csv Download data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -144,12 +145,12 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
 		// This is thrown if no sale rep are available and for other user roles
-		if len(data) == 0 {
+		if len(SaleRepList) == 0 {
 			emptyPerfomanceList := models.PerfomanceListResponse{
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
-			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			log.FuncErrorTrace(0, "No sale representatives: %v", err)
+			FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -176,8 +177,8 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	// retrieving value from owe_db from here
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get Perfomance Csv Download data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get Perfomance Csv Download data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -240,6 +241,9 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			SiteSurveyD = ""
 		} else {
 			SiteSurveyD = SiteSurveyScheduleDate.Format("2006-01-02")
+			if SiteSurveyD == "2199-12-30" {
+				SiteSurveyD = "" // Set to empty string if date matches the invalid date
+			}
 		}
 
 		SiteSurverCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
@@ -433,7 +437,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		} else {
 			contractD = ContractDate.Format("2006-01-02")
 		}
-		_, SiteSurveyCountT, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
+		_, SiteSurveyCountT, _, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		_, CadDesignCountT, _ := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
@@ -441,7 +445,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		PerimittingCount += PerimittingCountT
 		_, RoofingCountT, _ := roofingColor(RoofingCreatedD, RoofingCompleteD)
 		RoofingCount += RoofingCountT
-		_, InstallCountT, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
+		_, InstallCountT, _, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
 		_, electricCountT, _ := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
 		ElectricalCount += electricCountT
@@ -520,25 +524,21 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	}
 
-	// log.FuncInfoTrace(0, "Number of data List fetched : %v list %+v", len(data), data)
-	FormAndSendHttpResp(resp, "csv Data", http.StatusOK, perfomanceList, RecordCount)
+	log.FuncInfoTrace(0, "Number of data List fetched : %v list %+v", len(data), data)
+	FormAndSendHttpResp(resp, "Perfomance Csv Data", http.StatusOK, perfomanceList, RecordCount)
 }
 
 /*
 *****************************************************************************
-  - FUNCTION:		PrepareAdminDlrFilters
-  - DESCRIPTION:
-    PaginateData function paginates data directly from the returned data itself
-    without setting any offset value. For large data sizes, using an offset
-    was creating performance issues. This approach manages to keep the response
-    time under 2 seconds.
-
+  - FUNCTION:		PrepareAdminDlrCsvFilters
+  - DESCRIPTION: this function help to add filter condition in query
+  				for admin and dealer owner
 *****************************************************************************
 */
 
 func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownload, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareAdminDlrCsvFilters")
+	defer func() { log.ExitFn(0, "PrepareAdminDlrCsvFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false

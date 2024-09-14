@@ -66,7 +66,6 @@
   background-color: transparent;
 }
 
-
 .qc-content {
   display: flex;
   flex-direction: row;
@@ -136,7 +135,7 @@
   .qc-modal {
     margin: 10px;
   }
-  .qc-stat-comp{
+  .qc-stat-comp {
     margin-left: 1rem;
     width: 40%;
   }

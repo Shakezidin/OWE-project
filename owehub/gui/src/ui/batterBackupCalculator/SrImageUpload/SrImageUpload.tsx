@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import './srImageUpload.css';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import axios from 'axios';
 import { PiCircle } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 import { IoCheckmarkCircle } from 'react-icons/io5';
@@ -10,8 +9,7 @@ import { GoPlus } from 'react-icons/go';
 import { errorSwal } from '../../components/alert/ShowAlert';
 import { RiCloseLine } from 'react-icons/ri';
 import { sendMail } from '../../../utiles';
-import { FiInfo } from "react-icons/fi";
-import { Tooltip } from 'react-tooltip'
+import s3Upload from '../../../utiles/s3Upload';
 const primaryApplicances = [
   { name: 'Water heater', id: 1 },
   { name: 'Cooking appliances', id: 2 },
@@ -39,6 +37,7 @@ const FormComponent: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [squareFeet, setSquareFeet] = useState('');
   const [systemSize, setSystemSize] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<{
     email?: string;
     prospectName?: string;
@@ -48,7 +47,7 @@ const FormComponent: React.FC = () => {
     address?: string;
     systemSize?: string;
   }>({});
-  const [note, setNote] = useState("")
+  const [note, setNote] = useState('');
   const [randomKey, setRandomKey] = useState(Date.now());
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files?.length
@@ -120,7 +119,7 @@ const FormComponent: React.FC = () => {
           house_square: parseFloat(squareFeet),
           address,
           system_size: parseFloat(systemSize),
-          added_notes: note
+          added_notes: note,
         });
 
         if (response.status > 201) {
@@ -132,16 +131,16 @@ const FormComponent: React.FC = () => {
             message: ``,
             subject: 'Battery Calc Notification',
             html_content: `
-<p>  
+<p>
 Hi Electrical Team,
  <br>
 
 You have recieved a request from Sales Rep Team to fill the information in battery calculation form.
  <br>
 
-Please visit the below URL to complete the form 
+Please visit the below URL to complete the form
 </p>
-           
+
 <a clicktracking="off"  href="${`${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`}" >${`${window.location.protocol}//${window.location.host}/battery-backup-calulator/${response.data.prospect_id}`}</a>
 
 <strong style="display:block;">
@@ -174,7 +173,7 @@ OWE Battery Calc
               setAddress('');
               setSystemSize('');
               setSquareFeet('');
-              setNote("")
+              setNote('');
             },
             (error) => {
               toast.error(error.text as string);
@@ -190,27 +189,34 @@ OWE Battery Calc
     }
   };
 
+  async function fetchImage(url: string) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const contentDisposition = response.headers.get('content-disposition');
+    const filename = contentDisposition
+      ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+      : 'default.jpg'; // Fallback if filename is not provided
+
+    return { blob, filename };
+  }
   const uploadImages = async (imageArray: string[]): Promise<string[]> => {
     if (!imageArray || imageArray.length === 0) return [];
 
     try {
-      const uploadResponses = await Promise.all(
+      const uploadResponses = Promise.all(
         imageArray.map(async (imageSrc) => {
-          const blob = await fetch(imageSrc).then((r) => r.blob());
-          const formData = new FormData();
-          formData.append('file', blob);
-          formData.append('upload_preset', 'xdfcmcf4');
-          formData.append('cloud_name', 'duscqq0ii');
-
-          const response = await axios.post(
-            `https://api.cloudinary.com/v1_1/duscqq0ii/image/upload`,
-            formData
+          const file = await fetchImage(imageSrc);
+          const converted = new File([file.blob], file.filename, {
+            type: file.blob.type,
+          });
+          const uploaded = await s3Upload('/sr-images').uploadFile(
+            converted,
+            Date.now().toString()
           );
-          return response.data.secure_url;
+          return uploaded.location;
         })
       );
 
-      console.log('Images uploaded successfully:', uploadResponses);
       return uploadResponses;
     } catch (error) {
       console.error('Error uploading images to Cloudinary:', error);
@@ -473,23 +479,11 @@ OWE Battery Calc
           </div>
 
           <div className="prospect-input-field relative mt2">
-            <input
-              type="text"
-              placeholder="Add Note"
+            <textarea
+              rows={4}
+              placeholder="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-            />
-            <div className="absolute_info_icon">
-
-              <FiInfo style={{ cursor: "pointer" }} role='button' className='cursor-pointer' data-tooltip-id="my-tooltip-1" size={18} color='rgb(165 158 158)' />
-            </div>
-            <Tooltip
-              id="my-tooltip-1"
-              style={{maxWidth:300,zIndex:10}}
-              place="bottom-start"
-              content="If breakers are not properly labeled within the main panel please add any details you may have about which loads the breakers support"
-              openOnClick
-              
             />
           </div>
 

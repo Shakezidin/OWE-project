@@ -3,9 +3,11 @@
   flex-direction: column;
   font-size: 12px;
 }
-.pipeline-heading{
+
+.pipeline-heading {
   display: flex !important;
 }
+
 .performance-exportbtn {
   margin-left: auto;
   width: -moz-fit-content;
@@ -13,10 +15,9 @@
   cursor: pointer;
   z-index: 10;
   align-items: center;
-  height: 35px;
   border-radius: 5px;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: 12px;
   color: #f1f1f1;
   background-color: #377cf6 !important;
@@ -58,23 +59,27 @@
 
 .status-item.co {
   position: relative;
-  /* Add some padding if needed */
-  border-radius: 4px; /* Round the corners */
-  cursor: pointer; /* Change cursor to pointer */
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .status-item.co:hover::before {
-  content: attr(data-tooltip); /* Display tooltip content */
+  content: attr(data-tooltip);
   position: absolute;
-  top: 100%; /* Position below the element */
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #ff8934; /* Tooltip background color */
-  color: white; /* Tooltip text color */
+  background-color: #ff8934;
+  color: white;
   padding: 5px;
   padding-left: 6px;
   border-radius: 4px;
-  white-space: nowrap; /* Prevent line breaks */
+  white-space: nowrap;
   z-index: 10;
   opacity: 1;
   visibility: visible;
@@ -83,9 +88,10 @@
 }
 
 .status-item.co::before {
-  content: ''; /* Empty content to hide tooltip */
+  content: '';
   opacity: 0;
   visibility: hidden;
+  position: absolute;
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -94,15 +100,21 @@
   background-color: #ff8934;
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
-  padding-left: 6px;
-  padding-right: 6px;
+}
+
+.status-item.co:hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pending-co {
   color: #fff;
   background-color: #ff8934;
-  padding: 6px 1px;
   border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  padding: 0 3px;
 }
 
 .pending-coo {
@@ -172,6 +184,11 @@
 .project-info-details {
   width: 230px;
   line-height: 10px;
+}
+
+.deco-text:hover {
+  text-decoration: underline;
+  color: #000;
 }
 
 .performance-info-p {
@@ -309,7 +326,6 @@
 .performance-project {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .performance-milestone-table {
@@ -352,6 +368,41 @@
   overflow-x: scroll;
   padding: 1rem 1.25rem;
   scroll-behavior: smooth;
+}
+
+.pipeline-header-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pipeline-header-btns p {
+  font-weight: 500;
+  font-size: 16px;
+  border: 1.5px solid #377cf6;
+  background: #fff;
+  color: #377cf6;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pipeline-header-btns .active {
+  background: #377cf6;
+  color: #fff;
+}
+
+.pipeline-header-btns .mobile-btn {
+  display: none;
+}
+
+.pipeline-header-btns p:hover {
+  background: #377cf6;
+  color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
 }
 
 .last-card {
@@ -689,7 +740,7 @@
   cursor: pointer;
   position: absolute;
   right: 10px;
-  top: 57px;
+  top: 60px;
 }
 
 .view-flex img {
@@ -880,7 +931,7 @@
 
 .proper-select .input {
   height: 48px;
-  width: 250px;
+  width: 225px;
 }
 
 .search-icon {
@@ -1115,12 +1166,13 @@
   padding: 1rem;
   background: #f7f7f7;
   border-radius: 8px;
+  margin: 0 10px;
 }
 
 .progress-box-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 10px;
 }
 
 .status-indicator {
@@ -1142,6 +1194,7 @@
 .progress-box-body p {
   font-size: 14px;
   font-weight: 500;
+  text-wrap: nowrap;
 }
 
 .second-project-card {
@@ -1153,9 +1206,24 @@
     font-size: 11px;
   }
 }
+
 @media (max-width: 400px) {
   .status-btn {
-    right: 92px !important;
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 432px) {
+  .co-desktop {
+    display: none;
+  }
+
+  .co-mobile {
+    display: block !important;
+  }
+
+  .hover-text {
+    left: 20% !important;
   }
 }
 
@@ -1277,15 +1345,23 @@
   }
 
   .progress-box-body p {
-    font-size: 11px;
+    font-size: 10px;
+    text-wrap: nowrap;
   }
 
   .performance-box-container {
     gap: 0.5rem;
+    padding: 1rem 10px;
+  }
+
+  .performance-table-heading h3 {
+    font-size: 14px !important;
+    line-height: 1rem;
   }
 
   .status-indicator {
-    font-size: 11px;
+    font-size: 10px;
+    text-wrap: nowrap;
   }
 }
 
@@ -1293,13 +1369,16 @@
   .project-status-table-title1 {
     justify-content: flex-end;
   }
+
   .proj-status-tab-head {
     grid-row-start: 2;
   }
+
   .top-project-cards {
     flex-direction: column;
     margin: 10px;
   }
+
   .project-heading {
     grid-template-rows: auto auto;
   }
@@ -1361,8 +1440,8 @@
 
   .progress-qc-acre {
     position: absolute;
-    right: 56px;
-    top: 92px;
+    right: 14px;
+    top: 65px;
   }
 
   .status-indicator {
@@ -1459,12 +1538,6 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     margin-top: 1rem;
-  }
-
-  .co-status {
-    position: absolute;
-    right: 18px;
-    top: 18px;
   }
 
   .per-calender-container {
@@ -1586,7 +1659,7 @@
 }
 
 .progress-qc-acre {
-  margin-left: -7px;
+  margin-left: -10px;
   margin-top: -24px;
   z-index: 2;
   height: 16px;
@@ -1596,6 +1669,55 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.progress-co button {
+  height: 32px;
+  background-color: #eba900;
+  border: 1px solid #eba900;
+  font-weight: 500;
+  padding: 0 6px;
+  font-size: 12px;
+  margin-left: 10px;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.progress-co button:hover {
+  transform: scale(1.05);
+}
+
+.co-mobile {
+  display: none;
+}
+
+.co-button {
+  position: relative;
+  cursor: pointer;
+}
+
+.hover-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #eba900;
+  color: #fff;
+  padding: 5px;
+  margin-top: 3px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.co-button:hover .hover-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 .progress-qc-acre span {
@@ -1652,5 +1774,13 @@
 @media (max-width: 530px) {
   .status-boxes {
     margin-top: 1rem;
+  }
+
+  .pipeline-header-btns .desktop-btn {
+    display: none;
+  }
+
+  .pipeline-header-btns .mobile-btn {
+    display: block;
   }
 }

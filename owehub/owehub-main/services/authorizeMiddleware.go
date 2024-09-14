@@ -12,10 +12,31 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"runtime"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
+
+func RecoveryMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.EnterFn(0, "RecoveryMiddleware")
+		defer func() {
+			log.ExitFn(0, "RecoveryMiddleware", nil)
+			if rec := recover(); rec != nil {
+				// Log the panic and stack trace
+				buf := make([]byte, 1<<16)
+				runtime.Stack(buf, true)
+				log.FuncErrorTrace(0, "Recovered from panic: %v\nStack Trace: %s", rec, buf)
+
+				// Send a generic internal server error response
+				FormAndSendHttpResp(w, "Internal Server Error", http.StatusInternalServerError, nil)
+			}
+		}()
+		// Call the next handler
+		next.ServeHTTP(w, r)
+	})
+}
 
 func AuthorizeAPIAccess(groupsAccessAllowed []types.UserGroup, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

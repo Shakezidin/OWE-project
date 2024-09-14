@@ -235,13 +235,13 @@ const FilterModal: React.FC<TableProps> = ({
             <button
               type="button"
               style={{
-                color: 'black',
+                color: 'white',
                 border: '1px solid #ACACAC',
               }}
               onClick={handleAddRow}
             >
               <img
-                src={ICONS.BlackAddIcon}
+                src={ICONS.AddIcon}
                 alt=""
                 style={{ width: '14px', height: '14px' }}
               />{' '}

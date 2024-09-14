@@ -1,6 +1,6 @@
 /**************************************************************************
  * File       	   : apiGetPerfomanceProjectStatus.go
- * DESCRIPTION     : This file contains functions for get InstallCost data handler
+ * DESCRIPTION     : This file contains functions for get perfomance status data handler
  * DATE            : 07-May-2024
  **************************************************************************/
 
@@ -23,7 +23,7 @@ import (
 
 /******************************************************************************
 * FUNCTION:		HandleGetPerfomanceProjectStatusRequest
-* DESCRIPTION:     handler for get InstallCost data request
+* DESCRIPTION:     handler for get perfomance status data request
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
@@ -78,6 +78,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		InspectionCount    int64
 		ActivationCount    int64
 		contractD          string
+		ntpD               string
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -115,9 +116,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-	// this sets the data interval bracket for querying
-	dataReq.IntervalDays = "90"
-	// Check whether the user is Admin, Dealer, Sales Rep
 
 	whereEleList = append(whereEleList, dataReq.Email)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
@@ -135,11 +133,24 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchProjectDealerForAmAe(dataReq, role)
+			if err != nil {
+				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+
+			if len(dealerNames) == 0 {
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				return
+			}
+			filter, whereEleList = PrepareProjectAeAmFilters(dealerNames, dataReq, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
 		// this is for the roles regional manager and sales manager
 		default:
+			SaleRepList = append(SaleRepList, name)
 			rgnSalesMgrCheck = true
 		}
 	} else {
@@ -152,12 +163,12 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
 		// This is thrown if no sale rep are available and for other user roles
-		if len(data) == 0 {
+		if len(SaleRepList) == 0 {
 			emptyPerfomanceList := models.PerfomanceListResponse{
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
-			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
+			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -194,6 +205,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	RecordCount = int64(len(data))
 	perfomanceList := models.PerfomanceListResponse{}
+	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 
 	for _, item := range data {
 		// if no unique id is present we skip that project
@@ -206,15 +218,18 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		Customer, ok := item["home_owner"].(string)
 		if !ok || UniqueId == "" {
 			log.FuncErrorTrace(0, "Failed to get Customer Item: %+v\n", item)
-			continue
+			// continue
 		}
 
 		SiteSurveyScheduleDate, ok := item["site_survey_scheduled_date"].(time.Time)
-		if !ok {
+		if !ok || SiteSurveyScheduleDate.Equal(invalidDate) {
 			// log.FuncErrorTrace(0, "Failed to get ContractDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			SiteSurveyD = ""
 		} else {
 			SiteSurveyD = SiteSurveyScheduleDate.Format("2006-01-02")
+			if SiteSurveyD == "2199-12-30" {
+				SiteSurveyD = "" // Set to empty string if date matches the invalid date
+			}
 		}
 
 		SiteSurverCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
@@ -408,7 +423,15 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		} else {
 			contractD = ContractDate.Format("2006-01-02")
 		}
-		surveyColor, SiteSurveyCountT, SiteSurevyDate := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
+
+		ntpDate, ok := item["ntp_date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
+			ntpD = ""
+		} else {
+			ntpD = ntpDate.Format("2006-01-02")
+		}
+		surveyColor, SiteSurveyCountT, SiteSurevyDate, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
@@ -416,7 +439,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		PerimittingCount += PerimittingCountT
 		roofingColor, RoofingCountT, RoofingDate := roofingColor(RoofingCreatedD, RoofingCompleteD)
 		RoofingCount += RoofingCountT
-		installColor, InstallCountT, InstallDate := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
+		installColor, InstallCountT, InstallDate, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
 		electricColor, electricCountT, ElectricalDate := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
 		ElectricalCount += electricCountT
@@ -444,6 +467,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			ElectricalColour:  electricColor,
 			InspectionsColour: inspectionColor,
 			ActivationColour:  activationColor,
+			NTPdate:           ntpD,
 		}
 		switch dataReq.SelectedMilestone {
 		case "survey":
@@ -503,14 +527,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	}
 	paginatedData := PaginateData(perfomanceList, dataReq)
 	perfomanceList.PerfomanceList = paginatedData
-	perfomanceList.SiteSurveyCount = SiteSurveyCount
-	perfomanceList.CadDesignCount = CadDesignCount
-	perfomanceList.PerimittingCount = PerimittingCount
-	perfomanceList.RoofingCount = RoofingCount
-	perfomanceList.InstallCount = InstallCount
-	perfomanceList.ElectricalCount = ElectricalCount
-	perfomanceList.InspectionCount = InspectionCount
-	perfomanceList.ActivationCount = ActivationCount
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
@@ -528,6 +544,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 *****************************************************************************
 */
 func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatusReq) []models.PerfomanceResponse {
+	log.EnterFn(0, "PaginateData")
+	defer func() { log.ExitFn(0, "PaginateData", nil) }()
 	paginatedData := make([]models.PerfomanceResponse, 0, req.PageSize)
 
 	startIndex := (req.PageNumber - 1) * req.PageSize
@@ -549,60 +567,80 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(
 		`WITH base_query AS (
-            SELECT c.unique_id, c.current_live_cad, c.system_sold_er, c.podio_link,
-                   n.production_discrepancy, n.finance_ntp_of_project, n.utility_bill_uploaded, 
-                   n.powerclerk_signatures_complete, n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status
-            FROM customers_customers_schema c
-            LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id
-            WHERE c.unique_id IN ('`)
-
-	filtersBuilder.WriteString(strings.Join(uniqueIds, "','"))
-	filtersBuilder.WriteString(`')
-        ), extracted_values AS (
-            SELECT unique_id, utility_company, state,
-                   split_part(prospectid_dealerid_salesrepid, ',', 1) AS first_value
-            FROM consolidated_data_view
-            WHERE unique_id IN ('`)
-
-	filtersBuilder.WriteString(strings.Join(uniqueIds, "','"))
-	filtersBuilder.WriteString(`')
-        )
-        SELECT b.*, 
-               e.first_value,
-               CASE 
-                   WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
-                   ELSE 'Not Needed' 
-               END AS powerclerk_sent_az,
-               CASE 
-                   WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
-                   ELSE 'Not Needed'
-               END AS ach_waiver_sent_and_signed_cash_only,
-               CASE 
-                   WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
-                   ELSE 'Not Needed'
-               END AS green_area_nm_only,
-               CASE 
-                   WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
-                   ELSE 'Not Needed'
-               END AS finance_credit_approved_loan_or_lease,
-               CASE 
-                   WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
-                   ELSE 'Not Needed'
-               END AS finance_agreement_completed_loan_or_lease,
-               CASE 
-                   WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
-                   ELSE 'Not Needed'
-               END AS owe_documents_completed
-        FROM base_query b
-        LEFT JOIN extracted_values e ON b.unique_id = e.unique_id
-        LEFT JOIN prospects_customers_schema p ON e.first_value = p.item_id::text;`)
+        SELECT 
+            ips.unique_id, 
+            c.current_live_cad, 
+            c.system_sold_er, 
+            c.podio_link,
+            n.production_discrepancy, 
+            n.finance_ntp_of_project, 
+            n.utility_bill_uploaded, 
+            n.powerclerk_signatures_complete, 
+            n.over_net_3point6_per_w, 
+            n.premium_panel_adder_10c, 
+            n.change_order_status
+        FROM 
+            internal_ops_metrics_schema ips
+        LEFT JOIN 
+            customers_customers_schema c ON ips.unique_id = c.unique_id
+        LEFT JOIN 
+            ntp_ntp_schema n ON ips.unique_id = n.unique_id
+        WHERE 
+            ips.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
+    ), 
+    extracted_values AS (
+        SELECT 
+            ips.unique_id, 
+            ips.utility_company, 
+            ss.state,
+            split_part(ss.prospectid_dealerid_salesrepid, ',', 1) AS first_value
+        FROM 
+            internal_ops_metrics_schema ips
+        LEFT JOIN 
+            sales_metrics_schema ss ON ips.unique_id = ss.unique_id
+        WHERE 
+            ips.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
+    )
+    SELECT 
+        b.*, 
+        e.first_value,
+        CASE 
+            WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
+            ELSE 'Not Needed' 
+        END AS powerclerk_sent_az,
+        CASE 
+            WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
+            ELSE 'Not Needed'
+        END AS ach_waiver_sent_and_signed_cash_only,
+        CASE 
+            WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
+            ELSE 'Not Needed'
+        END AS green_area_nm_only,
+        CASE 
+            WHEN p.payment_method IN ('Lease', 'Loan') THEN p.finance_credit_approved_loan_or_lease
+            ELSE 'Not Needed'
+        END AS finance_credit_approved_loan_or_lease,
+        CASE 
+            WHEN p.payment_method IN ('Lease', 'Loan') THEN p.finance_agreement_completed_loan_or_lease
+            ELSE 'Not Needed'
+        END AS finance_agreement_completed_loan_or_lease,
+        CASE 
+            WHEN p.payment_method IN ('Cash', 'Loan') THEN p.owe_documents_completed
+            ELSE 'Not Needed'
+        END AS owe_documents_completed
+    FROM 
+        base_query b
+    LEFT JOIN 
+        extracted_values e ON b.unique_id = e.unique_id
+    LEFT JOIN 
+        prospects_customers_schema p ON e.first_value = p.item_id::text;`)
 
 	linkQuery := filtersBuilder.String()
 
 	// Execute the Query
 	result, err := db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get qc and ntp data from DB err: %v", err)
 		return paginatedData
 	}
 
@@ -616,8 +654,9 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	// actionRequiredCount = 0
 
 	// Step 3: Map Result to `PerfomanceResponse` structs
-	for i := range paginatedData {
+	for i, datas := range paginatedData {
 		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
+			var prospectId string
 			if val, ok := row["current_live_cad"].(string); ok {
 				paginatedData[i].CADLink = val
 			} else {
@@ -642,16 +681,22 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 				paginatedData[i].CoStatus = "" // or a default value
 			}
 
+			if val, ok := row["first_value"].(string); ok {
+				prospectId = val
+			} else {
+				prospectId = "" // or a default value
+			}
+
 			var actionRequiredCount int64
 
 			// Assign values from the data map to the struct fields
-			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy")
+			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project")
+			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded")
+			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete")
+			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			paginatedData[i].Ntp = models.NTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -660,17 +705,17 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
 				ActionRequiredCount:          actionRequiredCount,
 			}
-			PowerClerk, count := getStringValue(row, "powerclerk_sent_az")
+			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only")
+			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only")
+			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease")
+			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease")
+			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed")
+			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			paginatedData[i].Qc = models.QC{
 				PowerClerk:                           PowerClerk,
@@ -694,8 +739,8 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 ******************************************************************************/
 
 func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, filterCheck, dataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareAdminDlrFilters")
+	defer func() { log.ExitFn(0, "PrepareAdminDlrFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -719,13 +764,16 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 && !filterCheck {
+		// Start with WHERE if none has been added
 		if whereAdded {
-			filtersBuilder.WriteString(" AND")
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
 		} else {
-			filtersBuilder.WriteString(" WHERE")
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
+
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -735,17 +783,21 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			}
 		}
 		filtersBuilder.WriteString(") ")
-	}
 
-	if len(dataFilter.UniqueIds) > 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" OR ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
 		}
+		filtersBuilder.WriteString("])")
 
-		filtersBuilder.WriteString(" intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -756,6 +808,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			}
 		}
 		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
 	}
 
 	// Add dealer filter if not adminCheck and not filterCheck
@@ -779,8 +834,23 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+
+	}
 
 	filters = filtersBuilder.String()
 
@@ -789,14 +859,14 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareInstallCostFilters
+* FUNCTION:		PrepareSaleRepFilters
 * DESCRIPTION:     handler for prepare filter
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
 func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareStatusFilters")
-	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+	log.EnterFn(0, "PrepareSaleRepFilters")
+	defer func() { log.ExitFn(0, "PrepareSaleRepFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false
@@ -817,15 +887,18 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		whereAdded = true
 	}
 
+	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
+		// Start with WHERE if none has been added
 		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
 		} else {
-			filtersBuilder.WriteString(" WHERE ")
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" LOWER(intOpsMetSchema.unique_id) IN (")
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -835,6 +908,34 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			}
 		}
 		filtersBuilder.WriteString(") ")
+
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
 	}
 
 	// Add sales representative filter
@@ -872,8 +973,22 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
 
 	filters = filtersBuilder.String()
 
@@ -881,17 +996,17 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
-func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string) {
+func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string, string) {
 	var count int64
 	if contract_date != "" && completedDate == "" {
 		count = 1
 	}
 	if completedDate != "" {
-		return green, count, completedDate
+		return green, count, completedDate, "Completed"
 	} else if scheduledDate != "" {
-		return blue, count, scheduledDate
+		return blue, count, scheduledDate, "Scheduled"
 	}
-	return grey, count, ""
+	return grey, count, "", ""
 }
 
 func getCadColor(createdDate, completedDate, site_survey_completed_date string) (string, int64, string) {
@@ -962,6 +1077,16 @@ func parseDate(dateStr string) time.Time {
 	return t
 }
 
+func parseDateTime(dateStr string) time.Time {
+	layout := "2006-01-02 15:04:05"
+	t, err := time.Parse(layout, dateStr)
+	if err != nil {
+		// log.FuncErrorTrace(0, "Error parsing date:", err)
+		return time.Time{}
+	}
+	return t
+}
+
 func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
 	var count int64
 	if CadCompleteDate != "" && (permitApprovedDate == "" || IcApprovedDate == "") {
@@ -989,26 +1114,74 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 	return grey, count, ""
 }
 
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, PvInstallcompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string) {
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
 	var count int64
-	if permittedcompletedDate != "" && iccompletedDate != "" && PvInstallcompletedDate == "" {
+	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
 		count = 1
 	}
+
+	// Parse the dates
 	pvInstallCreatedateParsed := parseDate(pvInstallCreatedate)
 	batteryScheduleDateParsed := parseDate(batteryScheduleDate)
 	batteryCompletedParsed := parseDate(batteryCompleted)
-	PvInstallcompletedDateParsed := parseDate(PvInstallcompletedDate)
+	pvInstallCompletedDateParsed := parseDate(pvInstallCompletedDate)
+	// Green conditions
+	if batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
 
-	if !batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !PvInstallcompletedDateParsed.IsZero() {
-		latestCompletedDate := batteryCompleted
-		if PvInstallcompletedDateParsed.After(batteryCompletedParsed) {
-			latestCompletedDate = PvInstallcompletedDate
+		// Determine the latest date for green
+		latestCompletedDate := pvInstallCompletedDate
+		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
+			latestCompletedDate = batteryCompleted
 		}
-		return green, count, latestCompletedDate
-	} else if !pvInstallCreatedateParsed.IsZero() {
-		return blue, count, pvInstallCreatedate
+		return green, count, latestCompletedDate, "Completed"
 	}
-	return grey, count, ""
+
+	// Blue conditions
+	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+		return blue, count, pvInstallCompletedDate, "Scheduled"
+	} else if !pvInstallCreatedateParsed.IsZero() {
+		return blue, count, pvInstallCreatedate, "Scheduled"
+	}
+
+	// Default grey condition
+	return grey, count, "", ""
+}
+
+func CalenderInstallStatus(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
+	var count int64
+	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
+		count = 1
+	}
+
+	// Parse the dates
+	pvInstallCreatedateParsed := parseDateTime(pvInstallCreatedate)
+	batteryScheduleDateParsed := parseDateTime(batteryScheduleDate)
+	batteryCompletedParsed := parseDateTime(batteryCompleted)
+	pvInstallCompletedDateParsed := parseDateTime(pvInstallCompletedDate)
+	// Green conditions
+	if batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+
+		// Determine the latest date for green
+		latestCompletedDate := pvInstallCompletedDate
+		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
+			latestCompletedDate = batteryCompleted
+		}
+		return green, count, latestCompletedDate, "Completed"
+	}
+
+	// Blue conditions
+	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+		return blue, count, pvInstallCompletedDate, "Scheduled"
+	} else if !pvInstallCreatedateParsed.IsZero() {
+		return blue, count, pvInstallCreatedate, "Scheduled"
+	}
+
+	// Default grey condition
+	return grey, count, "", ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
@@ -1059,4 +1232,179 @@ func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCom
 	}
 
 	return grey, 1, ""
+}
+
+/******************************************************************************
+* FUNCTION:		FetchProjectStatusDealerForAmAe
+* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE)
+*               based on the email provided in the request.
+* INPUT:		dataReq - contains the request details including email.
+*               role    - role of the user (Account Manager or Account Executive).
+* RETURNS:		[]string - list of sales partner names.
+*               error   - if any error occurs during the process.
+******************************************************************************/
+func FetchProjectDealerForAmAe(dataReq models.PerfomanceStatusReq, userRole interface{}) ([]string, error) {
+	log.EnterFn(0, "FetchProjectStatusDealerForAmAe")
+	defer func() { log.ExitFn(0, "FetchProjectStatusDealerForAmAe", nil) }()
+
+	var items []string
+
+	accountName, err := fetchAmAeName(dataReq.Email)
+	if err != nil {
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+	}
+
+	var roleBase string
+	role, _ := userRole.(string)
+	if role == "Account Manager" {
+		roleBase = "account_manager"
+	} else {
+		roleBase = "account_executive"
+	}
+
+	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)
+
+	query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+		return nil, fmt.Errorf("failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+	}
+
+	for _, item := range data {
+		name, ok := item["data"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to parse 'data' item: %+v", item)
+			continue
+		}
+		items = append(items, name)
+	}
+
+	return items, nil
+}
+
+/******************************************************************************
+* FUNCTION:		PrepareProjectAeAmFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+
+func PrepareProjectAeAmFilters(dealerList []string, dataFilter models.PerfomanceStatusReq, dataCount bool) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareAeAmFilters")
+	defer func() { log.ExitFn(0, "PrepareAeAmFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false
+
+	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+
+		endDate = endDate.Add(24*time.Hour - time.Second)
+
+		whereEleList = append(whereEleList,
+			startDate.Format("02-01-2006 00:00:00"),
+			endDate.Format("02-01-2006 15:04:05"),
+		)
+
+		filtersBuilder.WriteString(" WHERE")
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		whereAdded = true
+	}
+
+	// Check if there are filters
+	if len(dataFilter.UniqueIds) > 0 {
+		// Start with WHERE if none has been added
+		if whereAdded {
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
+		} else {
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
+			whereAdded = true
+		}
+
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
+			whereEleList = append(whereEleList, filter)
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(") ")
+
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
+	}
+
+	placeholders := []string{}
+	for i := range dealerList {
+		placeholders = append(placeholders, fmt.Sprintf("$%d", len(whereEleList)+i+1))
+	}
+
+	if len(placeholders) != 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+		for _, dealer := range dealerList {
+			whereEleList = append(whereEleList, dealer)
+		}
+	}
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND")
+	} else {
+		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
+	}
+	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		statusList := strings.Join(statusValues, ", ")
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
+
+	filters = filtersBuilder.String()
+	return filters, whereEleList
 }

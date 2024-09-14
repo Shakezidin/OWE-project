@@ -137,6 +137,9 @@ import QCTICK from '../../resources/assets/qctick.svg';
 import QCLine from '../../resources/assets/QCLine.svg';
 import userSwap from '../../resources/assets/user_swap.png';
 import pendingqc from '../../resources/assets/pendingqcntp.svg';
+import refreshLeadMgmt from '../../resources/assets/refresh-lead-mgmt.svg';
+import seemore from '../../resources/assets/see_more_lm.svg';
+
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -291,4 +294,6 @@ export const ICONS = {
   QCLine: QCLine,
   userSwap,
   Pendingqc: pendingqc,
+  refreshLeadMgmt: refreshLeadMgmt,
+  SeeMore: seemore,
 };

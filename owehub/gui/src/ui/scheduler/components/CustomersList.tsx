@@ -3,7 +3,7 @@ import styles from '../styles/index.module.css';
 import Customer from './Customer';
 import SortingDropDown from './SortingDropdown/SortingDropDown';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { toast } from "react-toastify"
+import { toast } from 'react-toastify';
 import DataNotFound from '../../components/loader/DataNotFound';
 import MicroLoader from '../../components/loader/MicroLoader';
 export interface ICustomer {
@@ -14,41 +14,49 @@ export interface ICustomer {
   system_size: number;
   address: string;
 }
-const CustomersList = ({ page = 1, setPage, setTotalCount }: { page: number, setPage: React.Dispatch<SetStateAction<number>>, setTotalCount: React.Dispatch<SetStateAction<number>> }) => {
+const CustomersList = ({
+  page = 1,
+  setPage,
+  setTotalCount,
+}: {
+  page: number;
+  setPage: React.Dispatch<SetStateAction<number>>;
+  setTotalCount: React.Dispatch<SetStateAction<number>>;
+}) => {
   const [active, setActive] = useState<'priority' | 'travel' | 'regular'>(
     'priority'
   );
-  const [isPending, setIsPending] = useState(true)
-  const itemsPerPage = 10
-  const [customer, setCustomers] = useState<ICustomer[]>([])
-  const [order, setOrder] = useState("asc")
+  const [isPending, setIsPending] = useState(true);
+  const itemsPerPage = 10;
+  const [customer, setCustomers] = useState<ICustomer[]>([]);
+  const [order, setOrder] = useState('asc');
   const getCustomers = async () => {
     try {
-      setIsPending(true)
-      setTotalCount(0)
-      const data = await postCaller("scheduling_home", {
+      setIsPending(true);
+      setTotalCount(0);
+      const data = await postCaller('scheduling_home', {
         page_number: page,
         page_size: itemsPerPage,
-        "queue": active,
-        "order": order,
-      })
+        queue: active,
+        order: order,
+      });
       if (data.status > 201) {
-        setIsPending(false)
-        toast.error((data as Error).message as string)
-        return
+        setIsPending(false);
+        toast.error((data as Error).message as string);
+        return;
       }
-      setCustomers(data?.data?.scheduling_list || [])
-      setIsPending(false)
-      setTotalCount(data?.dbRecCount || 0)
+      setCustomers(data?.data?.scheduling_list || []);
+      setIsPending(false);
+      setTotalCount(data?.dbRecCount || 0);
     } catch (error) {
-      setIsPending(false)
-      toast.error((error as Error).message as string)
+      setIsPending(false);
+      toast.error((error as Error).message as string);
     }
-  }
+  };
 
   useEffect(() => {
-    getCustomers()
-  }, [page, active, itemsPerPage, order])
+    getCustomers();
+  }, [page, active, itemsPerPage, order]);
   return (
     <>
       <div className="flex items-center justify-between">
@@ -57,8 +65,8 @@ const CustomersList = ({ page = 1, setPage, setTotalCount }: { page: number, set
             role="button"
             className={`${styles.schedule_tab} ${active === 'priority' ? styles.active : ''} items-center flex `}
             onClick={() => {
-              setActive('priority')
-              setPage(1)
+              setActive('priority');
+              setPage(1);
             }}
           >
             <div
@@ -99,32 +107,29 @@ const CustomersList = ({ page = 1, setPage, setTotalCount }: { page: number, set
       </div>
 
       <div style={{ marginTop: 15 }}>
-        {
-          isPending ?
-            <div className="flex my3 items-center justify-center">
-              <MicroLoader />
-            </div>
-            :
-            (!Boolean(customer.length) || !customer) ?
-              <div className="flex mb4 items-center justify-center">
-                <DataNotFound />
-              </div>
-              :
-
-              customer.map((item, index) => {
-                return <Customer
-                  roofType={item.roof_type}
-                  name={item.home_owner}
-                  email={item.customer_email}
-                  mobile={item.customer_phone_number}
-                  sysSize={item.system_size}
-                  key={index}
-                  address={item.address}
-                />
-              })
-
-
-        }
+        {isPending ? (
+          <div className="flex my3 items-center justify-center">
+            <MicroLoader />
+          </div>
+        ) : !Boolean(customer.length) || !customer ? (
+          <div className="flex mb4 items-center justify-center">
+            <DataNotFound />
+          </div>
+        ) : (
+          customer.map((item, index) => {
+            return (
+              <Customer
+                roofType={item.roof_type}
+                name={item.home_owner}
+                email={item.customer_email}
+                mobile={item.customer_phone_number}
+                sysSize={item.system_size}
+                key={index}
+                address={item.address}
+              />
+            );
+          })
+        )}
       </div>
     </>
   );
