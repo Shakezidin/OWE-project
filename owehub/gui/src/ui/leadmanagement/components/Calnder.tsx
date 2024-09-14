@@ -1,9 +1,17 @@
 import React, { useRef, useState } from 'react'
 import './index.css'
 
-const LeadCalender = () => {
+interface LeadCalendarProps {
+    onDateSelect: (date: Date | null) => void;
+    setIsCalendarOpen: (isOpen: boolean) => void;
+  }
+  
+  
+  const LeadCalender = ({ onDateSelect, setIsCalendarOpen }: LeadCalendarProps) => {
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
 
     const calendarRef = useRef<HTMLDivElement>(null);
 
@@ -14,7 +22,22 @@ const LeadCalender = () => {
     const yearRange = 75
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: yearRange * 2 + 1 }, (_, i) => currentYear - yearRange + i);
-
+   
+    const handleApply = () => {
+        const selectedDateObj = new Date(selectedYear, selectedMonth);
+        setSelectedDate(selectedDateObj);
+        onDateSelect(selectedDateObj);
+        setIsCalendarOpen(false);
+      };
+    
+      const handleReset = () => {
+        setSelectedDate(null);
+        setSelectedMonth(new Date().getMonth());
+        setSelectedYear(new Date().getFullYear());
+        onDateSelect(null);
+        setIsCalendarOpen(false);
+      };
+    
     return (
         <div>
             <div className="lead-cal-content">
@@ -38,11 +61,11 @@ const LeadCalender = () => {
                     </select>
                 </div>
                 <div className="lead-cal-btns">
-                    <button className="lead-reset-calender" >
-                        Reset
+                    <button className="lead-reset-calender" onClick={handleApply}>
+                       Apply
                     </button>
-                    <button className="lead-apply-calender">
-                        Apply
+                    <button className="lead-apply-calender" onClick={handleReset}>
+                        Reset
                     </button>
                 </div>
             </div>
