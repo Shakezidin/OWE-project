@@ -89,7 +89,7 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
-		ChannelId, ok := item["string"].(string)
+		ChannelId, ok := item["channel_id"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get channel id for Record ID %v. Item: %+v\n", RecordId, item)
 			ChannelId = ""
