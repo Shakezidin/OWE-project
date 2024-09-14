@@ -171,15 +171,14 @@ io.on("connection", (socket) => {
       const channelId = channels[channelName].id;
 
       // Send a message to the created Slack channel
-      // await web.chat.postMessage({
-      //   channel: channelId,
-      //   text: message,
-      // });
+      await web.chat.postMessage({
+        channel: channelId,
+        text: "Hi",
+      });
 
       userSockets.set(channelId, socket.id);
 
       console.log("channelId", channelId);
-
       const userExists = await client.query(
         `SELECT * from user_details where email_id='${email}'`
       );
@@ -198,11 +197,11 @@ io.on("connection", (socket) => {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `:warning: *Issue in Project*\n*Sales Rep:* n*Project ID:* ${user.name}\n*Customer:* ${user.email_id}\n*Project Podio>\n\nReply in channel: <#${channelId}|${channelName}>`,
+                text: `:warning: *Need Technical Support*\n*Sales Rep:* ${user.name}\n*Email:* ${user.email_id}\n\nReply in channel: <#${channelId}|${channelName}>`,
               },
             },
           ],
-          text: `has an issue in project ${user.name}.`,
+          text: `${user.name} need technical support.`,
         });
       } else {
         const res =
