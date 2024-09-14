@@ -125,11 +125,17 @@ const ChatSupport = () => {
     setNewMessage('');
   }
 
+  function handleChatHide() {
+    document
+      .getElementById('rcw-conversation-container')
+      ?.classList.toggle('hide');
+  }
+
   return (
-    <div className="rcw-widget-container">
+    <div className="rcw-widget-container ">
       <div
         id="rcw-conversation-container"
-        className="rcw-conversation-container active"
+        className="rcw-conversation-container active hide"
         aria-live="polite"
       >
         {issueType && (
@@ -265,6 +271,7 @@ const ChatSupport = () => {
       <div
         className="rcw-launcher rcw-hide-sm"
         aria-controls="rcw-chat-container"
+        onClick={handleChatHide}
       >
         <img src={botOpen} alt="Open chat" />
       </div>

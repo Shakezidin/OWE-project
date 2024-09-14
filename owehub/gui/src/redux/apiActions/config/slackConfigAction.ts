@@ -50,7 +50,7 @@ export const updateSlackConfig = createAsyncThunk(
   '/update_slack_config',
   async (param: IUpdateSlackConfig, { rejectWithValue }) => {
     try {
-      const data = await postCaller('update_dba', param);
+      const data = await postCaller('update_slack_config', param);
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

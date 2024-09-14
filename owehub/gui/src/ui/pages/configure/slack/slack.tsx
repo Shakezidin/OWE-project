@@ -298,11 +298,26 @@ const Slack = () => {
                             )
                           }
                         />
-                        {el.preferred_name || 'N/A'}
+                        {el.issue_type || 'N/A'}
                       </div>
                     </td>
 
-                    <td>{el.dba || 'N/A'}</td>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        {el.channel_name || 'N/A'}
+                      </div>
+                    </td>
+
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">{el.bot_token || 'N/A'}</div>
+                    </td>
+
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        {el.slack_app_token || 'N/A'}
+                      </div>
+                    </td>
+
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
