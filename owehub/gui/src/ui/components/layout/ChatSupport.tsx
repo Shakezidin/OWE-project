@@ -59,6 +59,9 @@ const ChatSupport = () => {
   const name = localStorage.getItem('userName');
   const email = localStorage.getItem('email');
   useEffect(() => {
+    setTimeout(() => {
+      document.getElementById('need-assistace')?.classList.toggle('hide');
+    }, 3000);
     socket.on('success', (event) => {
       console.log(event);
       if (event) {

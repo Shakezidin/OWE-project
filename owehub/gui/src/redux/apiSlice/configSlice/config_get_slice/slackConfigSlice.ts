@@ -11,6 +11,7 @@ interface SlackConfigItem {
   issue_type: string;
   channel_name: string;
   bot_token: string;
+  channel_id: string;
   slack_app_token: string;
 }
 

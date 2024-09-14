@@ -31,11 +31,11 @@ const CreateSlackConfig: React.FC<payScheduleProps> = ({
   const [createSlackConfigData, setCreateArData] = useState({
     issue_type: editData?.issue_type || '',
     channel_name: editData?.channel_name || '',
+    channel_id: editData?.channel_id || '',
     record_id: editData?.record_id || '',
     bot_token: editData?.bot_token || '',
     slack_app_token: editData?.slack_app_token || '',
   });
-
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -59,6 +59,24 @@ const CreateSlackConfig: React.FC<payScheduleProps> = ({
         {
           condition: (value: any) => !!value,
           message: 'Channel name is required',
+        },
+      ],
+      channel_id: [
+        {
+          condition: (value: any) => !!value,
+          message: 'Channel ID is required',
+        },
+      ],
+      bot_token: [
+        {
+          condition: (value: any) => !!value,
+          message: 'Bot token is required',
+        },
+      ],
+      slack_app_token: [
+        {
+          condition: (value: any) => !!value,
+          message: 'Slack app token is required',
         },
       ],
     };
@@ -85,6 +103,7 @@ const CreateSlackConfig: React.FC<payScheduleProps> = ({
           ...createSlackConfigData,
           issue_type: createSlackConfigData.issue_type,
           channel_name: createSlackConfigData.channel_name,
+          channel_id: createSlackConfigData.channel_id,
           bot_token: createSlackConfigData.bot_token,
           slack_app_token: createSlackConfigData.slack_app_token,
         })
@@ -94,6 +113,7 @@ const CreateSlackConfig: React.FC<payScheduleProps> = ({
         createSlackConfig({
           issue_type: createSlackConfigData.issue_type,
           channel_name: createSlackConfigData.channel_name,
+          channel_id: createSlackConfigData.channel_id,
           bot_token: createSlackConfigData.bot_token,
           slack_app_token: createSlackConfigData.slack_app_token,
         })
@@ -150,6 +170,20 @@ const CreateSlackConfig: React.FC<payScheduleProps> = ({
                   />
                   {errors.channel_name && (
                     <span className="error">{errors.channel_name}</span>
+                  )}
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Channel ID"
+                    value={createSlackConfigData.channel_id}
+                    name="channel_id"
+                    placeholder={'Enter channel ID'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors.channel_id && (
+                    <span className="error">{errors.channel_id}</span>
                   )}
                 </div>
               </div>

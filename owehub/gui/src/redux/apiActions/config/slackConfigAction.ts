@@ -13,6 +13,7 @@ interface ICreateSlackConfig {
   channel_name: string;
   bot_token: string;
   slack_app_token: string;
+  channel_id: string;
 }
 
 interface IUpdateSlackConfig extends ICreateSlackConfig {
@@ -62,7 +63,9 @@ export const deleteSlackConfig = createAsyncThunk(
   '/delete_slack_config',
   async (recordId: string, { rejectWithValue }) => {
     try {
-      const data = await postCaller('archive_dba', { record_id: recordId });
+      const data = await postCaller('update_slack_config_archive', {
+        record_id: recordId,
+      });
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

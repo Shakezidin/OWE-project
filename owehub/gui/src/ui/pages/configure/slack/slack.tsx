@@ -186,7 +186,7 @@ const Slack = () => {
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller('update_slack_config', newValue);
+      const res = await postCaller('update_slack_config_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
@@ -306,6 +306,10 @@ const Slack = () => {
                       <div className="flex-check">
                         {el.channel_name || 'N/A'}
                       </div>
+                    </td>
+
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">{el.channel_id || 'N/A'}</div>
                     </td>
 
                     <td style={{ fontWeight: '500', color: 'black' }}>
