@@ -77,7 +77,11 @@ const TableHeader = (props: TableProps) => {
           </button>
         </div> */}
         <div className="iconsSection2-confex">
-          <button type="button" disabled onClick={onpressExport}>
+          <button
+            type="button"
+            disabled
+            onClick={onpressExport ? onpressExport : () => {}}
+          >
             <svg
               width="19"
               height="19"
@@ -116,7 +120,7 @@ const TableHeader = (props: TableProps) => {
               borderRadius: 8,
             }}
             type="button"
-            onClick={onPressFilter}
+            onClick={onPressFilter ? onPressFilter : () => {}}
           >
             {isActive[pathname] && (
               <span

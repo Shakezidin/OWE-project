@@ -14,33 +14,6 @@ import send from '../../../resources/assets/send.png';
 import sendActive from '../../../resources/assets/send-active.png';
 import chat_logo from '../../../resources/assets/chat_logo.png';
 
-const ButtonSelection = ({ options, onSelect }: any) => (
-  <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}>
-    Please choose type of issue you are facing:
-    <div
-      style={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}
-    >
-      {options.map((option: any, index: any) => (
-        <button
-          key={index}
-          onClick={() => onSelect(option)}
-          style={{
-            margin: '5px 0',
-            padding: '10px',
-            border: 'none',
-            borderRadius: '5px',
-            backgroundColor: '#007bff',
-            color: '#fff',
-            cursor: 'pointer',
-          }}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
-  </div>
-);
-
 const socket = io('http://localhost:3005');
 const ChatSupport = () => {
   //
@@ -51,12 +24,14 @@ const ChatSupport = () => {
   const messagesEndRef = useRef<any>(null);
 
   const scrollToBottom = () => {
+    console.log(messagesEndRef.current);
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   useEffect(() => {
+    console.log('NEW MESSAE');
     scrollToBottom(); // Scroll to bottom when the component mounts
   }, [newMessage]); // Empty dependency array means it runs only once on mount
 
@@ -96,14 +71,9 @@ const ChatSupport = () => {
     });
   }, []);
 
-  const handleSelectOption = (option: any) => {
-    setIssueType(option.value);
-    addResponseMessage('Please enter the project Id');
-  };
-
   const handleNewUserMessage = (newMessage: any) => {
     let project_id;
-    if (!projectId) {
+    if (!projectId && issueType !== 'Technical Support') {
       if (!newMessage.startsWith('OUR')) {
         return addResponseMessage('Plese enter valid Project ID');
       } else {
@@ -136,7 +106,11 @@ const ChatSupport = () => {
         ...messages,
         { message: issueType, client: true },
       ]);
-      addResponseMessage('Please provide project ID');
+      if (issueType === 'Technical Support') {
+        addResponseMessage('How can I help you?');
+      } else {
+        addResponseMessage('Please provide project ID');
+      }
     }
   }, [issueType]);
   // return (
@@ -169,15 +143,11 @@ const ChatSupport = () => {
           </div>
         )}
 
-        <div
-          id="messages"
-          className="rcw-messages-container"
-          ref={messagesEndRef}
-        >
+        <div id="messages" className="rcw-messages-container">
           {!issueType ? (
             <div className="greeting-container">
               <div className="greeting">
-                <h3>Hello, Ajay Negi</h3>
+                <h3>Hello, {name}</h3>
                 <h4>How can i assist you today?</h4>
               </div>
               <h4 className="choose-option">
@@ -261,6 +231,7 @@ const ChatSupport = () => {
               <span className="loader-dots"></span>
             </div>
           </div> */}
+          <div ref={messagesEndRef} />
         </div>
         <div className="rcw-sender">
           <button className="rcw-picker-btn" type="submit">
