@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"strings"
 
 	"encoding/json"
@@ -66,6 +67,16 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	// setup user info logging
 	logUserApi, closeUserLog := initUserApiLogging(req)
 	defer func() { closeUserLog(err) }()
+
+	//* logic to delte users from podio
+	role := req.Context().Value("rolename").(string)
+	if role == string(types.RoleSalesManager) || role == string(types.RoleRegionalManager) ||
+		role == string(types.RoleSalesRep) {
+		err = DeletePodioUsersByCodes(deleteUsersReq.UserCodes)
+		if err != nil {
+			log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
+		}
+	}
 
 	//
 	// NEW LOGIC: Delete By Email

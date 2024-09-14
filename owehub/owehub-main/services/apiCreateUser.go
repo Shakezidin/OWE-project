@@ -83,14 +83,11 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	//* logic to create / update user to podio
 	err = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
 	if err != nil {
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, fmt.Sprintf("%v", err), http.StatusBadGateway, nil)
-		return
 	}
-	FormAndSendHttpResp(resp, "HURRAY ITS DONE", http.StatusOK, nil)
-	return
 
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
 	if err != nil || hashedPassBytes == nil {

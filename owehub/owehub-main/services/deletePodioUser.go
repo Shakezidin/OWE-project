@@ -69,6 +69,11 @@ func DeletePodioUsersByCodes(userCodes []string) error {
 			return err
 		}
 
+		if len(SaleRepdata) == 0 {
+			log.FuncErrorTrace(0, "user %v does not exist in podio", email)
+			return fmt.Errorf("user %v does not exist in podio", email)
+		}
+
 		itemId, ok := SaleRepdata[0]["item_id"].(int64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get itemId data from DB for user_code %v; err: %v", userCode, err)
@@ -89,7 +94,7 @@ func DeletePodioUsersByCodes(userCodes []string) error {
 		return err
 	}
 	deletePodioUserByCode(podioAccessToken, itemIds)
-	
+
 	return nil
 }
 
