@@ -37,7 +37,7 @@ const ChatSupport = () => {
   useEffect(() => {
     console.log('NEW MESSAE');
     scrollToBottom(); // Scroll to bottom when the component mounts
-  }, [newMessage]); // Empty dependency array means it runs only once on mount
+  }, [messages]); // Empty dependency array means it runs only once on mount
 
   function addResponseMessage(message: string) {
     setMessages((messages: any) => [
@@ -71,7 +71,6 @@ const ChatSupport = () => {
         }
         if (event_name === 'new_message') {
           addResponseMessage(message);
-          scrollToBottom();
         }
         if (event_name === 'channel_deleted') {
           addResponseMessage(
