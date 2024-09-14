@@ -41,8 +41,8 @@ const Slack = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const { dba_list, count, isSuccess, isLoading } = useAppSelector(
-    (state) => state.dba
+  const { slack_config_list, count, isSuccess, isLoading } = useAppSelector(
+    (state) => state.slackConfig
   );
   const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
@@ -86,9 +86,9 @@ const Slack = () => {
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
 
-  const currentPageData = dba_list?.slice();
+  const currentPageData = slack_config_list?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dba_list?.length;
+  const isAllRowsSelected = selectedRows.size === slack_config_list?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -138,7 +138,7 @@ const Slack = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => dba_list[index].record_id
+        (index) => slack_config_list[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -152,7 +152,7 @@ const Slack = () => {
           filters,
         };
 
-        const res = await postCaller('update_dba_archive', newValue);
+        const res = await postCaller('update_slack_config', newValue);
         if (res.status === HTTP_STATUS.OK) {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
@@ -186,7 +186,7 @@ const Slack = () => {
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller('update_dba_archive', newValue);
+      const res = await postCaller('update_slack_config', newValue);
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
@@ -202,7 +202,7 @@ const Slack = () => {
   //     return <div>Loading...</div>;
   //   }
 
-  console.log(dba_list, 'data dba');
+  console.log(slack_config_list, 'data dba');
   console.log(count, totalPages, 'count');
 
   return (
@@ -246,7 +246,7 @@ const Slack = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={dba_list}
+                    data={slack_config_list}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -298,11 +298,26 @@ const Slack = () => {
                             )
                           }
                         />
-                        {el.preferred_name || 'N/A'}
+                        {el.issue_type || 'N/A'}
                       </div>
                     </td>
 
-                    <td>{el.dba || 'N/A'}</td>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        {el.channel_name || 'N/A'}
+                      </div>
+                    </td>
+
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">{el.bot_token || 'N/A'}</div>
+                    </td>
+
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        {el.slack_app_token || 'N/A'}
+                      </div>
+                    </td>
+
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
@@ -343,7 +358,7 @@ const Slack = () => {
             </p>
           )}
 
-          {dba_list?.length > 0 ? (
+          {slack_config_list?.length > 0 ? (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages

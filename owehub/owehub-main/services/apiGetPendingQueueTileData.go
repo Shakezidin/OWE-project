@@ -35,7 +35,6 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		whereEleList     []interface{}
 		queryWithFiler   string
 		filter           string
-		dealerName       interface{}
 		rgnSalesMgrCheck bool
 		RecordCount      int64
 		SaleRepList      []interface{}
@@ -43,6 +42,7 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 		QcPendingCount   int64
 		NTPPendingCount  int64
 		CoPendingCount   int64
+		prospectId       string
 	)
 
 	log.EnterFn(0, "HandleGetPendingQuesTileDataRequest")
@@ -88,14 +88,31 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 	if len(data) > 0 {
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName = data[0]["dealer_name"]
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if !ok {
+			dealerName = ""
+		}
 		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
+		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
 
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
+			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchPendingQueueProjectDealerForAmAe(dataReq, role)
+			if err != nil {
+				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+
+			if len(dealerNames) == 0 {
+				perfomanceList := models.PerfomanceListResponse{}
+				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
+				return
+			}
 			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
@@ -163,27 +180,33 @@ func HandleGetPendingQuesTileDataRequest(resp http.ResponseWriter, req *http.Req
 			ntpD = ntpDate.Format("2006-01-02")
 		}
 
-		_, count := getPendingQueueStringValue(item, "production_discrepancy", ntpD)
+		if val, ok := item["first_value"].(string); ok {
+			prospectId = val
+		} else {
+			prospectId = "" // or a default value
+		}
+
+		_, count := getPendingQueueStringValue(item, "production_discrepancy", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD)
+		_, count = getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
+		_, count = getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
+		_, count = getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD, prospectId)
 		NTPPendingCount += count
-		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
+		_, count = getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
+		_, count = getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "green_area_nm_only", ntpD)
+		_, count = getPendingQueueStringValue(item, "green_area_nm_only", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD)
+		_, count = getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD)
+		_, count = getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "owe_documents_completed", ntpD)
+		_, count = getPendingQueueStringValue(item, "owe_documents_completed", ntpD, prospectId)
 		QcPendingCount += count
-		_, count = getPendingQueueStringValue(item, "change_order_status", ntpD)
+		_, count = getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		CoPendingCount += count
 	}
 
@@ -230,14 +253,30 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 
 	// Add dealer filter if not adminCheck and not filterCheck
 	if !adminCheck && !filterCheck {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND")
-		} else {
-			filtersBuilder.WriteString(" WHERE")
-			whereAdded = true
+		if len(dataFilter.DealerNames) > 0 { // Check if there are any dealer names to filter
+			if whereAdded {
+				filtersBuilder.WriteString(" AND")
+			} else {
+				filtersBuilder.WriteString(" WHERE")
+				whereAdded = true
+			}
+
+			// Initialize a slice to store placeholders for each dealer
+			var placeholders []string
+
+			// Loop through the dealer names
+			for i, dealer := range dataFilter.DealerNames {
+				// Create a placeholder for each dealer name
+				placeholder := fmt.Sprintf("$%d", len(whereEleList)+i+1)
+				placeholders = append(placeholders, placeholder)
+
+				// Append each dealer name to the list of query parameters
+				whereEleList = append(whereEleList, dealer)
+			}
+
+			// Add the IN clause with the placeholders to the query
+			filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(placeholders, ",")))
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
 	// Always add the following filters
@@ -308,15 +347,25 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	if len(dataFilter.DealerNames) > 0 { // Check if there are dealer names to filter
+		if whereAdded {
+			filtersBuilder.WriteString(" AND")
+		} else {
+			filtersBuilder.WriteString(" WHERE")
+			whereAdded = true
+		}
+
+		// Prepare dealer names for SQL
+		var dealerNames []string
+		for _, dealer := range dataFilter.DealerNames {
+			// Sanitize dealer names to prevent SQL injection
+			sanitizedDealer := strings.ReplaceAll(dealer, "'", "''")
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", sanitizedDealer))
+		}
+
+		// Add the IN clause with dealer names directly in the query
+		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(dealerNames, ",")))
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND ips.unique_id IS NOT NULL
@@ -331,7 +380,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 	return filters, whereEleList
 }
 
-func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_date string) (string, int64) {
+func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_date string, prospectId string) (string, int64) {
 	if v, exists := data[key]; exists {
 		switch key {
 		case "production_discrepancy":
@@ -365,6 +414,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				return "Completed", 0
 			}
 		case "powerclerk_sent_az":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -378,6 +430,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "ach_waiver_sent_and_signed_cash_only":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -389,6 +444,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "green_area_nm_only":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -402,6 +460,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "finance_credit_approved_loan_or_lease":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -413,6 +474,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "finance_agreement_completed_loan_or_lease":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0
@@ -424,6 +488,9 @@ func getPendingQueueStringValue(data map[string]interface{}, key string, ntp_dat
 				}
 			}
 		case "owe_documents_completed":
+			if prospectId == "" {
+				return "Completed", 0
+			}
 			if v != "Not Needed" {
 				if ntp_date != "" {
 					return "Completed", 0

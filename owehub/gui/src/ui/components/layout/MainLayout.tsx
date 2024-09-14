@@ -17,9 +17,8 @@ import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 
-import ChatSupport from './ChatSupport';
-
 import useAuth from '../../../hooks/useAuth';
+import ChatSupport from './ChatSupport';
 
 const MainLayout = () => {
   const { authData, filterAuthData } = useAuth();
@@ -100,6 +99,10 @@ const MainLayout = () => {
 
   useEffect(() => {
     setToggleOpen(isTablet);
+    if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
+      localStorage.setItem('version', process.env.REACT_APP_VERSION!);
+      window.location.reload();
+    }
   }, [isTablet]);
 
   return isAuthenticated ? (

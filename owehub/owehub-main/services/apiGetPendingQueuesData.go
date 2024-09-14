@@ -35,12 +35,12 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		whereEleList     []interface{}
 		queryWithFiler   string
 		filter           string
-		dealerName       interface{}
 		rgnSalesMgrCheck bool
 		RecordCount      int64
 		SaleRepList      []interface{}
 		ntpD             string
 		CoStatus         string
+		prospectId       string
 	)
 
 	log.EnterFn(0, "HandleGetPendingQuesDataRequest")
@@ -86,14 +86,32 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 	if len(data) > 0 {
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName = data[0]["dealer_name"]
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if !ok {
+			dealerName = ""
+		}
 		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
+		dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
 
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
+			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchPendingQueueProjectDealerForAmAe(dataReq, role)
+			if err != nil {
+				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+
+			if len(dealerNames) == 0 {
+				perfomanceList := models.PerfomanceListResponse{}
+				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
+				return
+			}
+			dataReq.DealerNames = dealerNames
 			filter, whereEleList = PrepareAdminDlrPendingQueueFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
@@ -183,17 +201,23 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 			ntpD = ntpDate.Format("2006-01-02")
 		}
 
-		ProductionDiscrepancy, ntpProductionDiscripencyCount := getPendingQueueStringValue(item, "production_discrepancy", ntpD)
-		FinanceNTPOfProject, ntpFinanceNtpOfProjectCount := getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD)
-		UtilityBillUploaded, ntputilityBillUploadedCount := getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD)
-		PowerClerkSignaturesComplete, ntpPowerClerkSignatutreCount := getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD)
-		PowerClerk, QcPowerclerkSentAz := getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD)
-		ACHWaiveSendandSignedCashOnly, QcAchWaiverSendAndSignedCount := getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD)
-		GreenAreaNMOnly, QcGreenAreaNmOnlyCount := getPendingQueueStringValue(item, "green_area_nm_only", ntpD)
-		FinanceCreditApprovalLoanorLease, QcFinanceCreditAPprovedCount := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD)
-		FinanceAgreementCompletedLoanorLease, QcFinanceAggrementCount := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD)
-		OWEDocumentsCompleted, qcOweDocumentCount := getPendingQueueStringValue(item, "owe_documents_completed", ntpD)
-		_, coStatusCount := getPendingQueueStringValue(item, "change_order_status", ntpD)
+		if val, ok := item["first_value"].(string); ok {
+			prospectId = val
+		} else {
+			prospectId = "" // or a default value
+		}
+
+		ProductionDiscrepancy, ntpProductionDiscripencyCount := getPendingQueueStringValue(item, "production_discrepancy", ntpD, prospectId)
+		FinanceNTPOfProject, ntpFinanceNtpOfProjectCount := getPendingQueueStringValue(item, "finance_ntp_of_project", ntpD, prospectId)
+		UtilityBillUploaded, ntputilityBillUploadedCount := getPendingQueueStringValue(item, "utility_bill_uploaded", ntpD, prospectId)
+		PowerClerkSignaturesComplete, ntpPowerClerkSignatutreCount := getPendingQueueStringValue(item, "powerclerk_signatures_complete", ntpD, prospectId)
+		PowerClerk, QcPowerclerkSentAz := getPendingQueueStringValue(item, "powerclerk_sent_az", ntpD, prospectId)
+		ACHWaiveSendandSignedCashOnly, QcAchWaiverSendAndSignedCount := getPendingQueueStringValue(item, "ach_waiver_sent_and_signed_cash_only", ntpD, prospectId)
+		GreenAreaNMOnly, QcGreenAreaNmOnlyCount := getPendingQueueStringValue(item, "green_area_nm_only", ntpD, prospectId)
+		FinanceCreditApprovalLoanorLease, QcFinanceCreditAPprovedCount := getPendingQueueStringValue(item, "finance_credit_approved_loan_or_lease", ntpD, prospectId)
+		FinanceAgreementCompletedLoanorLease, QcFinanceAggrementCount := getPendingQueueStringValue(item, "finance_agreement_completed_loan_or_lease", ntpD, prospectId)
+		OWEDocumentsCompleted, qcOweDocumentCount := getPendingQueueStringValue(item, "owe_documents_completed", ntpD, prospectId)
+		_, coStatusCount := getPendingQueueStringValue(item, "change_order_status", ntpD, prospectId)
 		PendingQueue := models.GetPendingQueue{
 			UniqueId:  UniqueId,
 			HomeOwner: HomeOwner,
@@ -322,16 +346,26 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
 	if !adminCheck && !filterCheck {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND")
-		} else {
-			filtersBuilder.WriteString(" WHERE")
-			whereAdded = true
+		if len(dataFilter.DealerNames) > 0 { // Check if there are dealer names to filter
+			if whereAdded {
+				filtersBuilder.WriteString(" AND")
+			} else {
+				filtersBuilder.WriteString(" WHERE")
+				whereAdded = true
+			}
+
+			// Prepare dealer names for SQL
+			var dealerNames []string
+			for _, dealer := range dataFilter.DealerNames {
+				// Sanitize dealer names to prevent SQL injection
+				sanitizedDealer := strings.ReplaceAll(dealer, "'", "''")
+				dealerNames = append(dealerNames, fmt.Sprintf("'%s'", sanitizedDealer))
+			}
+
+			// Add the IN clause with dealer names directly in the query
+			filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(dealerNames, ",")))
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
 	// Always add the following filters
@@ -453,15 +487,25 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	if len(dataFilter.DealerNames) > 0 { // Check if there are dealer names to filter
+		if whereAdded {
+			filtersBuilder.WriteString(" AND")
+		} else {
+			filtersBuilder.WriteString(" WHERE")
+			whereAdded = true
+		}
+
+		// Prepare dealer names for SQL
+		var dealerNames []string
+		for _, dealer := range dataFilter.DealerNames {
+			// Sanitize dealer names to prevent SQL injection
+			sanitizedDealer := strings.ReplaceAll(dealer, "'", "''")
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", sanitizedDealer))
+		}
+
+		// Add the IN clause with dealer names directly in the query
+		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(dealerNames, ",")))
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND ips.unique_id IS NOT NULL
@@ -474,4 +518,54 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
+}
+
+/******************************************************************************
+* FUNCTION:		FetchPendingQueueProjectDealerForAmAe
+* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE)
+*               based on the email provided in the request.
+* INPUT:		dataReq - contains the request details including email.
+*               role    - role of the user (Account Manager or Account Executive).
+* RETURNS:		[]string - list of sales partner names.
+*               error   - if any error occurs during the process.
+******************************************************************************/
+func FetchPendingQueueProjectDealerForAmAe(dataReq models.PendingQueueReq, userRole interface{}) ([]string, error) {
+	log.EnterFn(0, "FetchPendingQueueProjectDealerForAmAe")
+	defer func() { log.ExitFn(0, "FetchPendingQueueProjectDealerForAmAe", nil) }()
+
+	var items []string
+
+	accountName, err := fetchAmAeName(dataReq.Email)
+	if err != nil {
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+	}
+
+	var roleBase string
+	role, _ := userRole.(string)
+	if role == "Account Manager" {
+		roleBase = "account_manager"
+	} else {
+		roleBase = "account_executive"
+	}
+
+	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)
+
+	query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+		return nil, fmt.Errorf("failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+	}
+
+	for _, item := range data {
+		name, ok := item["data"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to parse 'data' item: %+v", item)
+			continue
+		}
+		items = append(items, name)
+	}
+
+	return items, nil
 }

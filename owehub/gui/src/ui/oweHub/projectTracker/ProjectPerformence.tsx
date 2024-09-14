@@ -733,7 +733,7 @@ const ProjectPerformence = () => {
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
         </div>
         <div className="flex stats-card-wrapper">
-          <div style={{width:"100%"}} className="project-card-container-1 ">
+          <div style={{ width: '100%' }} className="project-card-container-1 ">
             {loading ? (
               <div
                 style={{
@@ -787,7 +787,7 @@ const ProjectPerformence = () => {
                         </span>
                         <p>{card.title || 'N/A'}</p>
                         {card.pending !== 'roof' ? (
-                          <h2>{card.value || 'N/A'}</h2>
+                          <h2>{card.value || '0'}</h2>
                         ) : (
                           <small style={{ color: 'white' }}>Coming Soon</small>
                         )}

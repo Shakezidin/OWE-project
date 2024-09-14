@@ -143,7 +143,7 @@ func HandleManagePerformanceTileDataRequest(resp http.ResponseWriter, req *http.
 	}
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
-	if err != nil {
+	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get reppay tile data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get reppay tile data from DB", http.StatusBadRequest, nil)
 		return

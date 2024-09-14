@@ -408,6 +408,10 @@ br {
 .fildelb-btn img {
   width: 19px;
   height: 20px;
+  transition: all 0.3s ease;
+}
+.fildelb-btn img:hover {
+  transform: scale(1.09);
 }
 .select-type-label {
   position: static !important;

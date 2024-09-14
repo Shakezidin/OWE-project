@@ -17,7 +17,7 @@
   align-items: center;
   border-radius: 5px;
   border: none;
-  padding: 10px 12px;
+  padding: 8px 12px;
   font-size: 12px;
   color: #f1f1f1;
   background-color: #377cf6 !important;
@@ -185,8 +185,6 @@
   width: 230px;
   line-height: 10px;
 }
-
-
 
 .deco-text:hover {
   text-decoration: underline;
@@ -381,9 +379,9 @@
 .pipeline-header-btns p {
   font-weight: 500;
   font-size: 16px;
-  border: 1.5px solid #377CF6;
+  border: 1.5px solid #377cf6;
   background: #fff;
-  color: #377CF6;
+  color: #377cf6;
   padding: 5px 14px;
   border-radius: 6px;
   font-size: 15px;
@@ -392,7 +390,7 @@
 }
 
 .pipeline-header-btns .active {
-  background: #377CF6;
+  background: #377cf6;
   color: #fff;
 }
 
@@ -401,7 +399,7 @@
 }
 
 .pipeline-header-btns p:hover {
-  background: #377CF6;
+  background: #377cf6;
   color: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   transform: scale(1.05);
@@ -1675,8 +1673,8 @@
 
 .progress-co button {
   height: 32px;
-  background-color: #EBA900;
-  border: 1px solid #EBA900;
+  background-color: #eba900;
+  border: 1px solid #eba900;
   font-weight: 500;
   padding: 0 6px;
   font-size: 12px;
@@ -1708,7 +1706,7 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #EBA900;
+  background-color: #eba900;
   color: #fff;
   padding: 5px;
   margin-top: 3px;
@@ -1748,7 +1746,6 @@
 }
 
 @media (max-width: 768px) {
-
   .select-container .css-1n894bm-control,
   .select-container .css-xego5g-control {
     margin-top: 1rem;

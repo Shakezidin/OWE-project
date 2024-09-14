@@ -133,6 +133,18 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchProjectDealerForAmAe(dataReq, role)
+			if err != nil {
+				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+
+			if len(dealerNames) == 0 {
+				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				return
+			}
+			filter, whereEleList = PrepareProjectAeAmFilters(dealerNames, dataReq, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
@@ -193,6 +205,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	RecordCount = int64(len(data))
 	perfomanceList := models.PerfomanceListResponse{}
+	invalidDate, _ := time.Parse("2006-01-02", "2199-01-01")
 
 	for _, item := range data {
 		// if no unique id is present we skip that project
@@ -209,11 +222,14 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 
 		SiteSurveyScheduleDate, ok := item["site_survey_scheduled_date"].(time.Time)
-		if !ok {
+		if !ok || SiteSurveyScheduleDate.Equal(invalidDate) {
 			// log.FuncErrorTrace(0, "Failed to get ContractDate for Unique ID %v. Item: %+v\n", UniqueId, item)
 			SiteSurveyD = ""
 		} else {
 			SiteSurveyD = SiteSurveyScheduleDate.Format("2006-01-02")
+			if SiteSurveyD == "2199-12-30" {
+				SiteSurveyD = "" // Set to empty string if date matches the invalid date
+			}
 		}
 
 		SiteSurverCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
@@ -415,7 +431,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		} else {
 			ntpD = ntpDate.Format("2006-01-02")
 		}
-		surveyColor, SiteSurveyCountT, SiteSurevyDate := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
+		surveyColor, SiteSurveyCountT, SiteSurevyDate, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
@@ -423,7 +439,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		PerimittingCount += PerimittingCountT
 		roofingColor, RoofingCountT, RoofingDate := roofingColor(RoofingCreatedD, RoofingCompleteD)
 		RoofingCount += RoofingCountT
-		installColor, InstallCountT, InstallDate := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
+		installColor, InstallCountT, InstallDate, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
 		electricColor, electricCountT, ElectricalDate := electricalColor(MpuCreateD, DerateCreateD, TrechingWSOpenD, DerateCompleteD, MpucompleteD, TrenchingComD)
 		ElectricalCount += electricCountT
@@ -640,6 +656,7 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	// Step 3: Map Result to `PerfomanceResponse` structs
 	for i, datas := range paginatedData {
 		if row, ok := resultMap[paginatedData[i].UniqueId]; ok {
+			var prospectId string
 			if val, ok := row["current_live_cad"].(string); ok {
 				paginatedData[i].CADLink = val
 			} else {
@@ -664,16 +681,22 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 				paginatedData[i].CoStatus = "" // or a default value
 			}
 
+			if val, ok := row["first_value"].(string); ok {
+				prospectId = val
+			} else {
+				prospectId = "" // or a default value
+			}
+
 			var actionRequiredCount int64
 
 			// Assign values from the data map to the struct fields
-			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate)
+			ProductionDiscrepancy, count := getStringValue(row, "production_discrepancy", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate)
+			FinanceNTPOfProject, count := getStringValue(row, "finance_ntp_of_project", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate)
+			UtilityBillUploaded, count := getStringValue(row, "utility_bill_uploaded", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate)
+			PowerClerkSignaturesComplete, count := getStringValue(row, "powerclerk_signatures_complete", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			paginatedData[i].Ntp = models.NTP{
 				ProductionDiscrepancy:        ProductionDiscrepancy,
@@ -682,17 +705,17 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 				PowerClerkSignaturesComplete: PowerClerkSignaturesComplete,
 				ActionRequiredCount:          actionRequiredCount,
 			}
-			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate)
+			PowerClerk, count := getStringValue(row, "powerclerk_sent_az", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate)
+			ACHWaiveSendandSignedCashOnly, count := getStringValue(row, "ach_waiver_sent_and_signed_cash_only", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate)
+			GreenAreaNMOnly, count := getStringValue(row, "green_area_nm_only", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate)
+			FinanceCreditApprovalLoanorLease, count := getStringValue(row, "finance_credit_approved_loan_or_lease", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate)
+			FinanceAgreementCompletedLoanorLease, count := getStringValue(row, "finance_agreement_completed_loan_or_lease", datas.NTPdate, prospectId)
 			actionRequiredCount += count
-			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate)
+			OWEDocumentsCompleted, count := getStringValue(row, "owe_documents_completed", datas.NTPdate, prospectId)
 			actionRequiredCount += count
 			paginatedData[i].Qc = models.QC{
 				PowerClerk:                           PowerClerk,
@@ -973,17 +996,17 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	return filters, whereEleList
 }
 
-func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string) {
+func getSurveyColor(scheduledDate, completedDate, contract_date string) (string, int64, string, string) {
 	var count int64
 	if contract_date != "" && completedDate == "" {
 		count = 1
 	}
 	if completedDate != "" {
-		return green, count, completedDate
+		return green, count, completedDate, "Completed"
 	} else if scheduledDate != "" {
-		return blue, count, scheduledDate
+		return blue, count, scheduledDate, "Scheduled"
 	}
-	return grey, count, ""
+	return grey, count, "", ""
 }
 
 func getCadColor(createdDate, completedDate, site_survey_completed_date string) (string, int64, string) {
@@ -1054,6 +1077,16 @@ func parseDate(dateStr string) time.Time {
 	return t
 }
 
+func parseDateTime(dateStr string) time.Time {
+	layout := "2006-01-02 15:04:05"
+	t, err := time.Parse(layout, dateStr)
+	if err != nil {
+		// log.FuncErrorTrace(0, "Error parsing date:", err)
+		return time.Time{}
+	}
+	return t
+}
+
 func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate, IcApprovedDate, CadCompleteDate string) (string, int64, string) {
 	var count int64
 	if CadCompleteDate != "" && (permitApprovedDate == "" || IcApprovedDate == "") {
@@ -1081,7 +1114,7 @@ func getPermittingColor(permitSubmittedDate, IcSubmittedDate, permitApprovedDate
 	return grey, count, ""
 }
 
-func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string) {
+func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
 	var count int64
 	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
 		count = 1
@@ -1102,18 +1135,53 @@ func installColor(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pv
 		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
 			latestCompletedDate = batteryCompleted
 		}
-		return green, count, latestCompletedDate
+		return green, count, latestCompletedDate, "Completed"
 	}
 
 	// Blue conditions
 	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
-		return blue, count, pvInstallCompletedDate
+		return blue, count, pvInstallCompletedDate, "Scheduled"
 	} else if !pvInstallCreatedateParsed.IsZero() {
-		return blue, count, pvInstallCreatedate
+		return blue, count, pvInstallCreatedate, "Scheduled"
 	}
 
 	// Default grey condition
-	return grey, count, ""
+	return grey, count, "", ""
+}
+
+func CalenderInstallStatus(pvInstallCreatedate, batteryScheduleDate, batteryCompleted, pvInstallCompletedDate, permittedcompletedDate, iccompletedDate string) (string, int64, string, string) {
+	var count int64
+	if permittedcompletedDate != "" && iccompletedDate != "" && pvInstallCompletedDate == "" {
+		count = 1
+	}
+
+	// Parse the dates
+	pvInstallCreatedateParsed := parseDateTime(pvInstallCreatedate)
+	batteryScheduleDateParsed := parseDateTime(batteryScheduleDate)
+	batteryCompletedParsed := parseDateTime(batteryCompleted)
+	pvInstallCompletedDateParsed := parseDateTime(pvInstallCompletedDate)
+	// Green conditions
+	if batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() ||
+		batteryScheduleDateParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+
+		// Determine the latest date for green
+		latestCompletedDate := pvInstallCompletedDate
+		if batteryCompletedParsed.After(pvInstallCompletedDateParsed) {
+			latestCompletedDate = batteryCompleted
+		}
+		return green, count, latestCompletedDate, "Completed"
+	}
+
+	// Blue conditions
+	if !batteryScheduleDateParsed.IsZero() && batteryCompletedParsed.IsZero() && !pvInstallCompletedDateParsed.IsZero() {
+		return blue, count, pvInstallCompletedDate, "Scheduled"
+	} else if !pvInstallCreatedateParsed.IsZero() {
+		return blue, count, pvInstallCreatedate, "Scheduled"
+	}
+
+	// Default grey condition
+	return grey, count, "", ""
 }
 
 func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCompleteDate, mpuCompletedDate, TrenchingCompleted string) (string, int64, string) {
@@ -1164,4 +1232,179 @@ func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCom
 	}
 
 	return grey, 1, ""
+}
+
+/******************************************************************************
+* FUNCTION:		FetchProjectStatusDealerForAmAe
+* DESCRIPTION:  Retrieves a list of dealers for an Account Manager (AM) or Account Executive (AE)
+*               based on the email provided in the request.
+* INPUT:		dataReq - contains the request details including email.
+*               role    - role of the user (Account Manager or Account Executive).
+* RETURNS:		[]string - list of sales partner names.
+*               error   - if any error occurs during the process.
+******************************************************************************/
+func FetchProjectDealerForAmAe(dataReq models.PerfomanceStatusReq, userRole interface{}) ([]string, error) {
+	log.EnterFn(0, "FetchProjectStatusDealerForAmAe")
+	defer func() { log.ExitFn(0, "FetchProjectStatusDealerForAmAe", nil) }()
+
+	var items []string
+
+	accountName, err := fetchAmAeName(dataReq.Email)
+	if err != nil {
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+	}
+
+	var roleBase string
+	role, _ := userRole.(string)
+	if role == "Account Manager" {
+		roleBase = "account_manager"
+	} else {
+		roleBase = "account_executive"
+	}
+
+	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)
+
+	query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+		return nil, fmt.Errorf("failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+	}
+
+	for _, item := range data {
+		name, ok := item["data"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to parse 'data' item: %+v", item)
+			continue
+		}
+		items = append(items, name)
+	}
+
+	return items, nil
+}
+
+/******************************************************************************
+* FUNCTION:		PrepareProjectAeAmFilters
+* DESCRIPTION:     handler for prepare filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+
+func PrepareProjectAeAmFilters(dealerList []string, dataFilter models.PerfomanceStatusReq, dataCount bool) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareAeAmFilters")
+	defer func() { log.ExitFn(0, "PrepareAeAmFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false
+
+	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+
+		endDate = endDate.Add(24*time.Hour - time.Second)
+
+		whereEleList = append(whereEleList,
+			startDate.Format("02-01-2006 00:00:00"),
+			endDate.Format("02-01-2006 15:04:05"),
+		)
+
+		filtersBuilder.WriteString(" WHERE")
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		whereAdded = true
+	}
+
+	// Check if there are filters
+	if len(dataFilter.UniqueIds) > 0 {
+		// Start with WHERE if none has been added
+		if whereAdded {
+			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
+		} else {
+			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
+			whereAdded = true
+		}
+
+		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
+		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
+			whereEleList = append(whereEleList, filter)
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(") ")
+
+		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("])")
+
+		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
+		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.UniqueIds {
+			// Wrap the filter in wildcards for pattern matching
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+
+		// Close the OR group
+		filtersBuilder.WriteString(")")
+	}
+
+	placeholders := []string{}
+	for i := range dealerList {
+		placeholders = append(placeholders, fmt.Sprintf("$%d", len(whereEleList)+i+1))
+	}
+
+	if len(placeholders) != 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+		for _, dealer := range dealerList {
+			whereEleList = append(whereEleList, dealer)
+		}
+	}
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND")
+	} else {
+		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
+	}
+	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
+			AND intOpsMetSchema.unique_id <> ''
+			AND intOpsMetSchema.system_size IS NOT NULL
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		statusList := strings.Join(statusValues, ", ")
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
+
+	filters = filtersBuilder.String()
+	return filters, whereEleList
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { UserRoleBasedListModel } from '../../../../core/models/api_models/UserManagementModel';
@@ -6,6 +6,8 @@ import { UserSaleRepresentTableColumn } from '../../../../resources/static_data/
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { useAppDispatch } from '../../../../redux/hooks';
+import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 
 interface SalesRepresentativeProps {
   data: UserRoleBasedListModel[];
@@ -28,38 +30,47 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
 }) => {
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-
+  const dispatch = useAppDispatch()
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-  let sortedData = [...data];
-  const handleSort = (key: any) => {
+ 
+  const handleSort = (key: string) => {
+    const direction = sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc'
     if (sortKey === key) {
-      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+      setSortDirection(direction);
     } else {
       setSortKey(key);
-      setSortDirection('asc');
+      setSortDirection(direction);
     }
+    sortArray(key,direction)
   };
 
-  if (sortKey) {
-    sortedData?.sort((a: any, b: any) => {
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc'
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      } else {
-        // Ensure numeric values for arithmetic operations
-        const numericAValue =
-          typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue =
-          typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc'
-          ? numericAValue - numericBValue
-          : numericBValue - numericAValue;
-      }
-    });
+
+  const sortArray = (sortKey: string,direction:string) => {
+    let sortedData = [...data];
+    if (sortKey) {
+      sortedData.sort((a: any, b: any) => {
+        const aValue = a[sortKey];
+        const bValue = b[sortKey];
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        } else {
+          // Ensure numeric values for arithmetic operations
+          const numericAValue =
+            typeof aValue === 'number' ? aValue : parseFloat(aValue);
+          const numericBValue =
+            typeof bValue === 'number' ? bValue : parseFloat(bValue);
+          return sortDirection === 'asc'
+            ? numericAValue - numericBValue
+            : numericBValue - numericAValue;
+        }
+      });
+    }
+    dispatch(shuffleArray(sortedData))
+
   }
   return (
     <>
@@ -97,8 +108,8 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
           </thead>
 
           <tbody>
-            {sortedData?.length > 0 ? (
-              sortedData?.map((el: UserRoleBasedListModel, i: number) => (
+            {data?.length > 0 ? (
+              data?.map((el: UserRoleBasedListModel, i: number) => (
                 <tr key={el.email_id}>
                   <td>
                     <div className="flex-check">

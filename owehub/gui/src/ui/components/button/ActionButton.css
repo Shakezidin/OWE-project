@@ -1,3 +1,4 @@
+
 .loginButton,
 .cancel {
   flex-shrink: 0;
@@ -76,8 +77,8 @@
 }
 
 .iconsSection2 button:hover {
-  transform: scale(1.07);
-  background-color: #002970;
+  transform: scale(1.05);
+  background-color: #1b407f;
   border-color: rgb(255, 255, 255);
 }
 
