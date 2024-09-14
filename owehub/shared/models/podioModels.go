@@ -29,3 +29,7 @@ type PodioDatas struct {
 	PositionId   int
 	ItemId       int64
 }
+
+type PodioDeleteRequest struct {
+	ItemIDs []int64 `json:"item_ids"`
+}
