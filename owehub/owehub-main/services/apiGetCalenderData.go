@@ -222,16 +222,56 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		_, _, surveyDate, surveryStatus := getSurveyColor(SiteSurevyD, siteSurveyCmpletedD, contractD)
 		_, _, installDate, installStatus := CalenderInstallStatus(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 
-		calenderData := models.GetCalenderData{
-			UniqueId:      UniqueId,
-			SurveyStatus:  surveryStatus,
-			Address:       Address,
-			HomeOwner:     HomeOwner,
-			InstallStatus: installStatus,
-			SurveyDate:    surveyDate,
-			InstallDate:   installDate,
+		if dataReq.StartDate != "" && dataReq.EndDate != "" && (installDate != "" || surveyDate != "") {
+			// Parse StartDate and EndDate
+			startDate, err1 := time.Parse("2006-01-02", dataReq.StartDate)
+			endDate, err2 := time.Parse("2006-01-02", dataReq.EndDate)
+			if err1 != nil || err2 != nil {
+				log.FuncErrorTrace(0, "Error parsing dates:%v, %v", err1, err2)
+				FormAndSendHttpResp(resp, "Failed to get calender data, invalid date parsed", http.StatusBadRequest, nil)
+				return
+			}
+
+			// Adjust endDate to include the entire day
+			endDate = endDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
+
+			if surveyDate != "" {
+				parsedSurveyDate, err := time.Parse("2006-01-02 15:04:05", surveyDate)
+				if err != nil || parsedSurveyDate.Before(startDate) || parsedSurveyDate.After(endDate) {
+					surveyDate = ""
+				}
+			}
+
+			if installDate != "" {
+				parsedInstallDate, err := time.Parse("2006-01-02 15:04:05", installDate)
+				if err != nil || parsedInstallDate.Before(startDate) || parsedInstallDate.After(endDate) {
+					installDate = ""
+				}
+			}
+
+			// Create and append to the calendar data list
+			calenderData := models.GetCalenderData{
+				UniqueId:      UniqueId,
+				SurveyStatus:  surveryStatus,
+				Address:       Address,
+				HomeOwner:     HomeOwner,
+				InstallStatus: installStatus,
+				SurveyDate:    surveyDate,
+				InstallDate:   installDate,
+			}
+			calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
+		} else {
+			calenderData := models.GetCalenderData{
+				UniqueId:      UniqueId,
+				SurveyStatus:  surveryStatus,
+				Address:       Address,
+				HomeOwner:     HomeOwner,
+				InstallStatus: installStatus,
+				SurveyDate:    surveyDate,
+				InstallDate:   installDate,
+			}
+			calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
 		}
-		calenderDataList.CalenderDataList = append(calenderDataList.CalenderDataList, calenderData)
 	}
 
 	// Sort the calendar data by SurveyDate and then by InstallDate
@@ -271,21 +311,21 @@ func PrepareCalenderFilters(tableName string, dataFilter models.GetCalenderDataR
 	var filtersBuilder strings.Builder
 	whereAdded := false
 
-	// Start constructing the WHERE clause if the date range is provided
-	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
-		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
-		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+	// // Start constructing the WHERE clause if the date range is provided
+	// if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+	// 	startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+	// 	endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
 
-		endDate = endDate.Add(24*time.Hour - time.Second)
+	// 	endDate = endDate.Add(24*time.Hour - time.Second)
 
-		whereEleList = append(whereEleList,
-			startDate.Format("02-01-2006 00:00:00"),
-			endDate.Format("02-01-2006 15:04:05"),
-		)
+	// 	whereEleList = append(whereEleList,
+	// 		startDate.Format("02-01-2006 00:00:00"),
+	// 		endDate.Format("02-01-2006 15:04:05"),
+	// 	)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
-		whereAdded = true
-	}
+	// 	filtersBuilder.WriteString(fmt.Sprintf(" WHERE contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+	// 	whereAdded = true
+	// }
 
 	// Add sales representative filter
 	if len(saleRepList) > 0 {

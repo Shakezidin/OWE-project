@@ -11,7 +11,7 @@ type PendingQueueReq struct {
 	PageSize             int `json:"page_size"`
 	Email                string
 	UniqueIds            []string `json:"unique_ids"`
-	DealerName           interface{}
+	DealerNames          []string
 	SelectedPendingStage string `json:"selected_pending_stage"`
 	StartDate            string `json:"start_date"`
 	EndDate              string `json:"end_date"`
