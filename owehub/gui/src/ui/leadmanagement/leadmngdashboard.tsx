@@ -369,6 +369,7 @@ const LeadManagementDashboard = () => {
                     </div>
                     <div className={styles.address}>
                       {lead.address}
+
                     </div>
                   </div>
                 </div>
