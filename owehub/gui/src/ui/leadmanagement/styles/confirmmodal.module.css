@@ -1,0 +1,289 @@
+.succicon {
+    height: 76px;
+    width: 76px;
+    background-color: #F55B5B;
+    border: 3px solid #333333;
+    border-radius: 50%;
+    display: flex;
+    margin-top: 6.7%;
+    justify-content: center;
+    align-items: center;
+}
+
+.succicon img {
+    width: 27px;
+    height: 19px;
+}
+
+.success_not {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.success_not h2 {
+    font-weight: 600;
+    font-size: 18px;
+    color: #333333;
+}
+
+.success_not p {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 18px;
+    color: #6d6d6d;
+    max-width: 305px;
+}
+
+.survey_button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 48px;
+    gap: 9px;
+}
+
+.survey_button button {
+    width: 335px;
+    height: 38px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(125, 125, 125, 1);
+    /* border: none; */
+    cursor: pointer;
+}
+
+.self {
+    background-color: #377CF6;
+    ;
+    transition: all 0.3s ease;
+}
+
+.self:hover {
+    background-color: #377CF6;
+    transform: scale(1.03);
+}
+
+.other {
+    color: rgba(125, 125, 125, 1);
+    transition: all 0.3s ease;
+    background-color: #fff;
+    border: 1px solid rgba(125, 125, 125, 1);
+}
+
+.other:hover {
+    background-color: #fff;
+    transform: scale(1.03);
+}
+
+.createUserCrossButton {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+
+.createUserCrossButton img {
+    transition: transform 0.3s ease;
+}
+
+.customer_wrapper_list {
+    flex-basis: calc(100%);
+    border-radius: 8px;
+    background-color: #fff;
+    max-width: 593px;
+    height: 530px;
+}
+
+.DetailsMcontainer {
+    display: flex;
+    justify-content: space-between;
+    width: auto;
+    height: auto;
+    height: 112px;
+    padding: 12px;
+    border: 1px solid #377CF6;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: #EEF5FF;
+}
+
+.main_name {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 3.7%;
+}
+
+.Column1Details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    flex-basis: auto;
+    padding: 14px;
+    font-size: 14px;
+
+}
+
+.verified {
+    color: #20963A;
+    margin-left: 5px;
+}
+
+.Column2Details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    flex-basis: auto;
+    padding: 14px;
+    font-size: 14px;
+    margin-bottom: 1.5%;
+}
+
+.addresshead {
+    margin-bottom: 3.7%;
+    color:#4E4E4E;
+}
+.mobileNumber{
+    color:#4E4E4E;
+    font-weight: 400;
+
+}
+.emailStyle{
+    color:#4E4E4E;
+    font-weight: 400;
+}
+.ApptSentConfirm {
+    font-weight: 600;
+    font-size: 18px;
+    color : #FF9801;
+}
+
+.ApptSentSuccess{
+    font-weight: 600;
+    font-size: 18px;
+    color : #20963A;
+}
+
+.ApptSentDate{
+    font-weight: 500;
+    font-size: 18px;
+    color : #1F2937;
+    
+}
+.AppSentDate2{
+    font-size: 14px;
+    color: #6F6F6F;
+    font-weight: 500;
+
+}
+
+.thumbsImg{
+    cursor: pointer;
+}
+
+
+.remaningDate{
+    font-size: 12px;
+    font-weight: 500;
+    color: #6F6F6F;
+}
+.getConfirmation{
+    color:#959595;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.getDate{
+    color:#959595;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.hoursBefore{
+    color: #414141;
+
+}
+
+.Questmarks{
+    cursor: pointer;
+}
+
+.notAvailableCtmr{
+    color:#6F6F6F;
+    font-weight: 500;
+    font-size: 12;
+
+}
+
+.getAppointment{
+    color: #1F2937;
+    font-size: 14px;
+    font-weight: 500;
+    padding-top: 15px;
+    margin-bottom: -8.5px;
+
+}
+.notAvailableCtmr{
+    color:#6F6F6F;
+    font-size: 12px;
+    font-weight: 12px;
+    margin-top: 0px;
+    padding-top: 0px;
+    
+}
+
+.congratulations{
+    padding-left: 37.5%;
+    font-weight: 600;
+    font-size: 18px;
+    color: #3AC759;
+
+
+}
+
+.ctmracquired{
+    padding-left: 35.6%;
+    font-weight: 500;
+    font-size: 18px;
+    color: #1F2937;
+
+}
+
+.dropdownContainerModal{
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+
+}
+
+.dropdownModal {
+    width: 80%;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.ohNo{
+    color: #CD4040;
+    font-size: 18px;
+    font-weight: 600;
+
+}
+
+.deniedCust{
+color: #6F6F6F;
+font-size: 12px;
+font-weight: 500;
+}
+
+.whydenied{
+    margin-left: 11.7%;
+
+}
