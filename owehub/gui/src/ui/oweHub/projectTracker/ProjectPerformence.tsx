@@ -787,7 +787,7 @@ const ProjectPerformence = () => {
                         </span>
                         <p>{card.title || 'N/A'}</p>
                         {card.pending !== 'roof' ? (
-                          <h2>{card.value || 'N/A'}</h2>
+                          <h2>{card.value || '0'}</h2>
                         ) : (
                           <small style={{ color: 'white' }}>Coming Soon</small>
                         )}

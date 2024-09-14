@@ -130,7 +130,7 @@ const PendingQueue = () => {
                   className={` ${styles.disbaled_card} ${active === 'ntp' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
                 >
                   <h5 className={styles.pending_stats}>
-                    {tileData.ntp_pending_count || 'N/A'}
+                    {tileData.ntp_pending_count || '0'}
                   </h5>
                   <div style={{ lineHeight: '1.2rem' }}>
                     <h5
@@ -155,7 +155,7 @@ const PendingQueue = () => {
                   className={` ${active === 'co' ? styles.active_card : styles.pending_card_hover} ${styles.pending_card_inner}`}
                 >
                   <h5 className={styles.pending_stats}>
-                    {tileData.co_pending_count || 'N/A'}
+                    {tileData.co_pending_count || '0'}
                   </h5>
                   <div style={{ lineHeight: '1.2rem' }}>
                     <h5
@@ -182,7 +182,7 @@ const PendingQueue = () => {
                   className={` ${pre ? "" : styles.disabled_card} ${active === 'qc' ? styles.active_card : pre ? styles.pending_card_hover : ""} ${styles.pending_card_inner}`}
                 >
                   {pre && <h5 className={styles.pending_stats}>
-                    {tileData.qc_pending_count || 'N/A'}
+                    {tileData.qc_pending_count || '0'}
                   </h5>}
                   <div style={{ lineHeight: '1.2rem' }}>
                     <h5
