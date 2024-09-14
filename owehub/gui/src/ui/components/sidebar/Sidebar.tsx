@@ -47,7 +47,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     let list = [...createSideMenuList()];
     const isStaging = process.env.REACT_APP_ENV;
 
-    if (role === TYPE_OF_USER.ADMIN ) {
+    if (role === TYPE_OF_USER.ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -68,12 +68,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE)
         ) {
-        } else if(item.path!==ROUTES.CONFIG_PAGE) {
+        } else if (item.path !== ROUTES.CONFIG_PAGE) {
           newArr[0].mob.push(item);
         }
       });
       return newArr;
-    } 
+    }
 
     else if (role === TYPE_OF_USER.SALES_REPRESENTATIVE) {
       const newArr: any[] = [{ mob: [] }];
@@ -83,13 +83,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
             item.path === ROUTES.CONFIG_PAGE)
         ) {
-        } else if(item.path!==ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path!==ROUTES.COMMISSION_DASHBOARD) {
+        } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.COMMISSION_DASHBOARD) {
           newArr[0].mob.push(item);
         }
       });
       return newArr;
-    } 
-    
+    }
+
     else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
@@ -117,30 +117,32 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
               item.path === ROUTES.CONFIG_PAGE)
           ) {
-          } else if(item.path!==ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path!==ROUTES.COMMISSION_DASHBOARD) {
+          } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.COMMISSION_DASHBOARD) {
             newArr[0].mob.push(item);
           }
         }
       });
       return newArr;
     } else if (role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || TYPE_OF_USER.ACCOUNT_MANAGER) {
-        const newArr: any[] = [{ mob: [] }];
-        list[0].mob.forEach((item: any) => {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+
+          item.path !== ROUTES.USER_MANAEMENT
+        ) {
           if (
-            
-            item.path !== ROUTES.USER_MANAEMENT
-          ) {
-            if (
-              isStaging !== 'staging' &&
-              (item.path === ROUTES.COMMISSION_DASHBOARD ||
-                item.path === ROUTES.CONFIG_PAGE)
-            ) {
-            } else if(item.path!==ROUTES.USER_MANAEMENT && item.path!==ROUTES.CONFIG_PAGE) {
-              newArr[0].mob.push(item);
-            }
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE)
+          ) 
+
+          {
+          } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path!==ROUTES.TEAM_MANAGEMENT_DASHBOARD) {
+            newArr[0].mob.push(item);
           }
-        });
-        return newArr;  
+        }
+      });
+      return newArr;
     } else if (role === TYPE_OF_USER.DB_USER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
@@ -226,9 +228,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       className={`side-bar-container ${toggleOpen ? 'side-bar-active hidden' : 'show'}`}
     >
       <div
-        className={`side-bar-content ${
-          toggleOpen ? 'side-bar-content-active' : ''
-        }`}
+        className={`side-bar-content ${toggleOpen ? 'side-bar-content-active' : ''
+          }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
         {filteredList().map((el: any, i: number) => (
@@ -256,11 +257,10 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
                       }, 500);
                     }}
-                    className={`side-icon-container ${
-                      location.pathname === oth.path
+                    className={`side-icon-container ${location.pathname === oth.path
                         ? 'active-link-bg'
                         : 'not-active-link'
-                    }`}
+                      }`}
                   >
                     <div
                       className={

@@ -151,7 +151,7 @@ function App() {
   }
 
   const ManageRoutesWithRole = (role: string) => {
-    const routes = RoutesForRole.filter(route => route.available.includes(role) && route.stagingOnly ? (isStaging === 'staging') : true);
+    const routes = RoutesForRole.filter(route => (route.available.includes(role) && (route.stagingOnly ? isStaging === "staging" : true)));
     const availableRoutes = routes.map((route) => (
       <Route key={route.route} path={route.route} element={<route.element />} />
     ));
@@ -319,13 +319,13 @@ function App() {
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
-        {/* {
-          ManageRoutesWithRole(role_name!)
-        } */}
-          <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
-          
-          {(role_name === TYPE_OF_USER.ADMIN ||
+          {
+            ManageRoutesWithRole(role_name!)
+          }
+          {/* <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} /> */}
+
+          {/* {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
             role_name === TYPE_OF_USER.FINANCE_ADMIN ||
             role_name === TYPE_OF_USER.SUB_DEALER_OWNER ||
@@ -333,27 +333,27 @@ function App() {
             role_name === TYPE_OF_USER.PARTNER ||
             role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
             role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
-            otherRoutes()}
+            otherRoutes()} */}
 
-          {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+          {/* {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
             role_name === TYPE_OF_USER.SALE_MANAGER ||
             role_name === TYPE_OF_USER.REGIONAL_MANGER) &&
-            managerRoutes()}
+            managerRoutes()} */}
 
-          {(role_name === TYPE_OF_USER.ADMIN ||
+          {/* {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
             role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
             role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
             isStaging === 'staging' &&
-            configRoutes()}
-          {(role_name === TYPE_OF_USER.ADMIN ||
+            configRoutes()} */}
+          {/* {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
             role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
             role_name === TYPE_OF_USER.ACCOUNT_MANAGER) && (
             <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
-          )}
+          )} */}
 
-          {role_name === TYPE_OF_USER.DB_USER && (
+          {/* {role_name === TYPE_OF_USER.DB_USER && (
             <Route>
               <Route
                 path={ROUTES.DB_MANAGER_DASHBOARD}
@@ -369,14 +369,23 @@ function App() {
               />
               <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
             </Route>
-          )}
-          <Route path={ROUTES.PEINDING_QUEUE} element={<PendingQueue />} />
-          <Route path={ROUTES.CALENDAR} element={<Calendar />} />
+          )} */}
+          {/* <Route path={ROUTES.PEINDING_QUEUE} element={<PendingQueue />} />
+          <Route path={ROUTES.CALENDAR} element={<Calendar />} /> */}
 
-          <Route
+          {/* <Route
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
+          /> */}
+
+          {/* <Route
+            path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
+            element={<TeamManagement />}
           />
+          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} /> */}
+
+
+
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
           <Route
@@ -384,19 +393,15 @@ function App() {
             element={<CustomersList />}
           />
           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew/>} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL} element={<ConfirmaModel/>} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_HISTORY} element={<LeradManagementHistory/>} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL} element={<ConfirmaModel />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_HISTORY} element={<LeradManagementHistory />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
-          <Route
-            path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
-            element={<TeamManagement />}
-          />
-          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} />
+
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
