@@ -88,8 +88,6 @@ export default [
             TYPE_OF_USER.ADMIN,
             TYPE_OF_USER.DEALER_OWNER,
             TYPE_OF_USER.SUB_DEALER_OWNER,
-            TYPE_OF_USER.SALE_MANAGER,
-            TYPE_OF_USER.REGIONAL_MANGER
         ],
         stagingOnly: false
     },
