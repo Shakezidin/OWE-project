@@ -61,6 +61,7 @@ import ApptSetters from './ui/oweHub/configure/apptSetters/ApptSetters';
 import { ARDashboardPage } from './ui/oweHub/ar/ardashboard/ardashboard';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
+import Slack from './ui/pages/configure/slack/slack';
 import AdderData from './ui/oweHub/configure/adderData/AdderData';
 import ApRep from './ui/oweHub/configure/apRep/ApRep';
 import BatteryBackup from './ui/batterBackupCalculator';
@@ -85,8 +86,10 @@ import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
 import Calendar from './ui/Calendar/PerformanceCalendar';
 import PendingQueue from './ui/oweHub/pendingQueue';
+
 import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
 import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
+
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
@@ -159,6 +162,7 @@ function App() {
 
         <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
         <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
+        <Route path={ROUTES.CONFIG_SLACK} element={<Slack />} />
         <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit />} />
         <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus />} />
         <Route path={ROUTES.CONFIG_REPINCENT} element={<RepIncent />} />

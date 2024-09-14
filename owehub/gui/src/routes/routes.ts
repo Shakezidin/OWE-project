@@ -41,6 +41,7 @@ export const ROUTES = {
   CONFIG_ADDERDATA: '/config/adder-data',
   CONFIG_APREP: '/config/ap-rep',
   CONFIG_DBA: '/config/dba',
+  CONFIG_SLACK: '/config/slack',
   CONFIG_REPCREDIT: '/config/repcredit',
   CONFIG_REPSTATUS: '/config/repstatus',
   CONFIG_REPINCENT: '/config/rep-incent',
