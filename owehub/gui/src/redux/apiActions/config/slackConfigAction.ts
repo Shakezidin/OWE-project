@@ -25,7 +25,7 @@ export const fetchSlackConfigList = createAsyncThunk(
     try {
       const data = await postCaller('get_slack_config', param);
       console.log('dba action', data);
-      const list = data?.data?.dba_list;
+      const list = data?.data?.slack_config_list;
       return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
