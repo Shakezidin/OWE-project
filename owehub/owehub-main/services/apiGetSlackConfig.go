@@ -24,13 +24,12 @@ import (
  ******************************************************************************/
 func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		dataReq         models.GetSlackConfigRequest
-		data            []map[string]interface{}
-		whereEleList    []interface{}
-		query           string
-		queryForAlldata string
-		RecordCount     int64
+		err          error
+		dataReq      models.GetSlackConfigRequest
+		data         []map[string]interface{}
+		whereEleList []interface{}
+		query        string
+		RecordCount  int64
 	)
 
 	log.EnterFn(0, "HandleGetSlackConfigRequest")
@@ -65,6 +64,7 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 			bot_token,
 			slack_app_token
 		FROM %s
+		WHERE is_archived = false
 		LIMIT %d
 		OFFSET %d
 	`,
@@ -120,12 +120,6 @@ func HandleGetSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 		SlackConfigList.SlackConfigList = append(SlackConfigList.SlackConfigList, SlackConfig)
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Slack Config data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Slack Config data from DB", http.StatusBadRequest, nil)
-		return
-	}
 	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of Slack Config List fetched : %v list %+v", len(SlackConfigList.SlackConfigList), SlackConfigList)

@@ -19,12 +19,12 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:				HandleUpdateSlackConfig
+ * FUNCTION:				HandleUpdateSlackConfigRequest
  * DESCRIPTION:     handler to update Slack Config request
  * INPUT:						resp, req
  * RETURNS:    			void
  ******************************************************************************/
-func HandleUpdateSlackConfig(resp http.ResponseWriter, req *http.Request) {
+func HandleUpdateSlackConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                  error
 		updateSlackConfigReq models.UpdateSlackConfig

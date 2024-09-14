@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS slackconfig (
     issue_type varchar,
     channel_name varchar,
     bot_token varchar,    
-    is_archived boolean,
     slack_app_token varchar,
+    is_archived boolean DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone
 );
@@ -60,3 +60,25 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+CREATE OR REPLACE FUNCTION update_slack_config_archive(
+    p_ids BIGINT[],
+    p_is_archived BOOLEAN
+)
+RETURNS INT
+AS $$
+DECLARE
+sc_id BIGINT;
+  BEGIN
+  FOR sc_id IN SELECT unnest(p_ids)
+  LOOP
+    UPDATE slackconfig SET is_archived = p_is_archived, updated_at = CURRENT_TIMESTAMP WHERE id = sc_id;
+
+    IF NOT FOUND THEN
+                RAISE EXCEPTION 'Record with ID % not found in slackconfig table', sc_id;
+    END IF;
+  END LOOP;
+  RETURN 1;
+END;
+$$ LANGUAGE plpgsql;
