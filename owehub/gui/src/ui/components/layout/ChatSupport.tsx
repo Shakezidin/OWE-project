@@ -43,7 +43,7 @@ const ChatSupport = () => {
   //
   const [channelName, setChannelName] = useState(null);
   const [issueType, setIssueType] = useState<any>(null);
-  const [projectId, setProjectId] = useState(null);
+  const [projectId, setProjectId] = useState<any>(null);
   const name = localStorage.getItem('userName');
   const email = localStorage.getItem('email');
   useEffect(() => {
@@ -70,7 +70,7 @@ const ChatSupport = () => {
   }, []);
 
   const handleNewUserMessage = (newMessage: any) => {
-    let project_id='Technical Support';
+    let project_id = 'Technical Support';
     if (!projectId && issueType !== 'Technical Support') {
       if (!newMessage.startsWith('OUR')) {
         return addResponseMessage('Plese enter valid Project ID');
