@@ -181,7 +181,7 @@ const ChatSupport = () => {
                 <h4>How can i assist you today?</h4>
               </div>
               <h4 className="choose-option">
-                Choose one of the option from below.
+                Please select one of the following options:
               </h4>
               <div className="rcs-options-container">
                 <div
@@ -278,6 +278,7 @@ const ChatSupport = () => {
               className="rcw-input"
               role="textbox"
               value={newMessage}
+              disabled={!issueType}
               placeholder="Ask me anything"
               onChange={(e) => setNewMessage(e.target.value)}
             />
