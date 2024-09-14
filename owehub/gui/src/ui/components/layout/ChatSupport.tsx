@@ -14,7 +14,7 @@ import send from '../../../resources/assets/send.png';
 import sendActive from '../../../resources/assets/send-active.png';
 import chat_logo from '../../../resources/assets/chat_logo.png';
 
-const socket = io('http://localhost:3005');
+const socket = io('https://staging.owe-hub.com');
 const ChatSupport = () => {
   //
 
