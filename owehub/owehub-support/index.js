@@ -7,7 +7,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const createUniqueChannelName = require("./src/utils/createUniqueChannelName");
-const getSupportChannel = require("./src/utils/getSupportChannel");
 
 const { startChatSchema } = require("./src/validations");
 const config = require("./src/config");
@@ -105,14 +104,28 @@ try {
   }, 3000);
 } catch (error) {}
 
+let allChannels = null;
 (async () => {
   try {
     await client.connect();
     await client2.connect();
+    // allChannels = await client.query(`SELECT * from slackconfig`);
   } catch (error) {
     console.log(error);
   }
 })();
+
+function getChannelID(issueType) {
+  if (!allChannels) {
+    throw new Error("No channels are found");
+  }
+  const channel = allChannels.find((c) => c.issue_type === issueType);
+  console.log("channel");
+  if (channel) {
+    return channel.channel_name;
+  }
+  throw new Error("No channels are found");
+}
 
 io.on("connection", (socket) => {
   console.log("Connection", socket.id);
@@ -180,7 +193,7 @@ io.on("connection", (socket) => {
         // Notify a designated Slack channel about the new message
         const data = res.rows.pop();
         await web.chat.postMessage({
-          channel: getSupportChannel(issueType),
+          channel: getChannelID(issueType),
           blocks: [
             {
               type: "section",

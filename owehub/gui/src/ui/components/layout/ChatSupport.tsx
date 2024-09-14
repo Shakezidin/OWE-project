@@ -16,8 +16,6 @@ import chat_logo from '../../../resources/assets/chat_logo.png';
 
 const socket = io('https://staging.owe-hub.com');
 const ChatSupport = () => {
-  //
-
   const [messages, setMessages] = useState<any>([]);
   const [newMessage, setNewMessage] = useState('');
 

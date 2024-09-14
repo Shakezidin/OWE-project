@@ -2,8 +2,6 @@ const { object, string, number, date, InferType } = require("yup");
 const { issueTypeEnum } = require("./enums");
 
 const configSchema = object({
-  oweDealerSupportChannelId: string().required(),
-  oweSalesSupportChannelId: string().required(),
   slackAppToken: string().required(),
   botToken: string().required(),
 });
