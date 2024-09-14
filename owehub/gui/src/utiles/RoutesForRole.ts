@@ -56,7 +56,7 @@ export default [
             TYPE_OF_USER.FINANCE_ADMIN,
             TYPE_OF_USER.ACCOUNT_EXCUTIVE,
             TYPE_OF_USER.ACCOUNT_MANAGER,
-            // TYPE_OF_USER.DEALER_OWNER,
+            TYPE_OF_USER.DEALER_OWNER,
             // TYPE_OF_USER.SUB_DEALER_OWNER,
             // TYPE_OF_USER.REGIONAL_MANGER,
             // TYPE_OF_USER.SALE_MANAGER,
