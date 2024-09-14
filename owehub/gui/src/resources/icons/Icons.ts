@@ -139,6 +139,8 @@ import userSwap from '../../resources/assets/user_swap.png';
 import pendingqc from '../../resources/assets/pendingqcntp.svg';
 import refreshLeadMgmt from '../../resources/assets/refresh-lead-mgmt.svg';
 import seemore from '../../resources/assets/see_more_lm.svg';
+import leadMngExport from '../../resources/assets/export-lead.svg';
+
 
 
 
@@ -297,5 +299,5 @@ export const ICONS = {
   Pendingqc: pendingqc,
   refreshLeadMgmt: refreshLeadMgmt,
   SeeMore: seemore,
-  
+  LeadMngExport:leadMngExport
 };

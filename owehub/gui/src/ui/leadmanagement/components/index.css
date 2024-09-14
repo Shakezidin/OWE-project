@@ -61,7 +61,8 @@
   position: absolute;
   z-index: 99;
   top: 140px;
-  left: 59rem;
+  /* left: 59rem; */
+  right: 260px;
   background-color: var(--white-color);
   border: 1.5px solid #c1ccd7;
   display: flex;
@@ -106,6 +107,11 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+.lead-reset-calender:hover{
+  transform: scale(1.06);
+  background-color: #1a44ae;
 }
 
 .lead-apply-calender{
@@ -117,4 +123,19 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+.lead-apply-calender:hover{
+  transform: scale(1.06);
+  background-color: #1a44ae;
+}
+
+@media screen and (max-width: 767px) {
+  .lead-cal-content {
+    width: 300px;
+    position: absolute;
+    z-index: 99;
+    top: 125px;
+    right: 5px;
+  }
 }
