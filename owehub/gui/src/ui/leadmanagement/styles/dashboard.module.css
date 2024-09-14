@@ -12,10 +12,17 @@
   
   .chartGrid {
     display: grid;
-    grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+    grid-template-columns: 1fr; /* Default to single column for mobile */
     gap: 24px;
     margin-bottom: 24px;
-}
+  }
+
+  /* For tablets and larger screens */
+  @media (min-width: 768px) {
+    .chartGrid {
+      grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+    }
+  }
   
   .card {
     background-color: white;
@@ -224,4 +231,7 @@
   .filtericon img {
     height: 19px;
     width: 19px;
+  }
+  .pieChart :focus {
+    outline: none;
   }
