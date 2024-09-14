@@ -108,8 +108,8 @@ export default [
         available: [
             TYPE_OF_USER.ADMIN,
             TYPE_OF_USER.FINANCE_ADMIN,
-            TYPE_OF_USER.DEALER_OWNER,
-            TYPE_OF_USER.SUB_DEALER_OWNER,
+            // TYPE_OF_USER.DEALER_OWNER,
+            // TYPE_OF_USER.SUB_DEALER_OWNER,
 
         ],
         stagingOnly: false
