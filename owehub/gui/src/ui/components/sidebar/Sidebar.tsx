@@ -48,6 +48,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     const isStaging = process.env.REACT_APP_ENV;
 
     if (role === TYPE_OF_USER.ADMIN) {
+  
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -61,6 +62,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       });
       return newArr;
     } else if (role === TYPE_OF_USER.DEALER_OWNER) {
+
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -76,6 +78,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     }
 
     else if (role === TYPE_OF_USER.SALES_REPRESENTATIVE) {
+    
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -89,8 +92,23 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       });
       return newArr;
     }
-
+    else if (role === TYPE_OF_USER.REGIONAL_MANGER||role===TYPE_OF_USER.SALE_MANAGER) {
+    
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE)
+        ) {
+        } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.COMMISSION_DASHBOARD) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    }
     else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
+     
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
@@ -106,6 +124,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       });
       return newArr;
     } else if (role === TYPE_OF_USER.APPOINTMENT_SETTER) {
+   
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -123,7 +142,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }
       });
       return newArr;
-    } else if (role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || TYPE_OF_USER.ACCOUNT_MANAGER) {
+    } else if (role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role=== TYPE_OF_USER.ACCOUNT_MANAGER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -144,6 +163,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       });
       return newArr;
     } else if (role === TYPE_OF_USER.DB_USER) {
+      
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -163,7 +183,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }
       });
       return newArr;
-    } else {
+    } 
+    else {
+      console.log( 'list working else');
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
