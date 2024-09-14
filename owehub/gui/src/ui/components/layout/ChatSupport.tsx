@@ -70,7 +70,7 @@ const ChatSupport = () => {
   }, []);
 
   const handleNewUserMessage = (newMessage: any) => {
-    let project_id;
+    let project_id='Technical Support';
     if (!projectId && issueType !== 'Technical Support') {
       if (!newMessage.startsWith('OUR')) {
         return addResponseMessage('Plese enter valid Project ID');
