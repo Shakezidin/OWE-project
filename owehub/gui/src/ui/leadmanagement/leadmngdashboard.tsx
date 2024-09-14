@@ -1,9 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, Sector } from 'recharts';
 import styles from './styles/dashboard.module.css';
-import {ICONS} from '../../resources/icons/Icons';
+import { ICONS } from '../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
+import Pagination from '../../ui/components/pagination/Pagination'; // Assuming you have a Pagination component
+
 const pieData = [
   { name: 'Pending leads', value: 135, color: '#FF832A' },
   { name: 'Appointment accepted', value: 21, color: '#52B650' },
@@ -28,14 +29,14 @@ const lineData = [
 
 const leads = [
   { name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { name: 'Kilewan ditcho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { name: 'Paul mark', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { name: 'Kilewan ditcho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
+  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
+  { name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
+  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
   { name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
   { name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { name: 'Kilewan ditcho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { name: 'Paul mark', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { name: 'Kilewan ditcho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Accepted' },
+  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
+  { name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
+  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Accepted' },
   { name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Declined' },
 ];
 
@@ -57,7 +58,7 @@ const renderActiveShape = (props: any) => {
     const lines = [];
     let line = '';
 
-    words.forEach(word => {
+    words.forEach((word: string) => {
       const testLine = line + word + ' ';
       if (testLine.length > width) {
         lines.push(line.trim());
@@ -70,18 +71,13 @@ const renderActiveShape = (props: any) => {
     return lines;
   };
 
-
-
-
-
   const lines = splitText(payload.name, 15);
-
 
   return (
     <g>
       <text x={cx} y={cy - (lines.length - 1) * 6} textAnchor="middle" fill={fill}>
         {lines.map((line, index) => (
-          <tspan key={index} x={cx} dy={index ? 15 : 0} style={{fontSize: '12px',wordBreak: 'break-word'}}>
+          <tspan key={index} x={cx} dy={index ? 15 : 0} style={{fontSize: '12px', wordBreak: 'break-word'}}>
             {line}
           </tspan>
         ))}
@@ -129,45 +125,92 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const LeadManagementDashboard: React.FC = () => {
+const statusMap = {
+  'Pending leads': 'Pending',
+  'Appointment accepted': 'Accepted',
+  'Appointment sent': 'Sent',
+  'Appointment declined': 'Declined'
+};
+
+const CustomTooltip = ({ active, payload, label }: {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+}) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        backgroundColor: 'white',
+        padding: '5px 10px',
+        // border: '1px solid #f0f0f0',
+        borderRadius: '4px',
+        // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        <p style={{ margin: '2px 0', color: '#57B93A', fontWeight: 'bold' }}>{`${payload[0].value} Closed Won`}</p>
+        <p style={{ margin: '2px 0', color: '#CD4040', fontWeight: 'bold' }}>{`${payload[1].value} Closed Lost`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const LeadManagementDashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState('Aug');
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [filteredLeads, setFilteredLeads] = useState(leads);
-  const navigate = useNavigate(); 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Adjust as needed
+  const navigate = useNavigate();
+
   const handleHistory = () => {
     navigate('/leadmng-history');
   };
+
   const handleAddLead = () => {
     navigate('/leadmgt-addnew');
   };
 
   useEffect(() => {
-    setFilteredLeads(leads.filter(lead => lead.status === currentFilter));
-  }, [currentFilter]);
+    const pieName = pieData[activeIndex].name;
+    const newFilter = statusMap[pieName as keyof typeof statusMap];
+    setCurrentFilter(newFilter);
+    setFilteredLeads(leads.filter(lead => lead.status === newFilter));
+  }, [activeIndex]);
+
+  const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
+    setActiveIndex(index);
+  };
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
+    setFilteredLeads(leads.filter(lead => lead.status === filter));
+    setActiveIndex(pieData.findIndex(item => statusMap[item.name as keyof typeof statusMap] === filter));
   };
 
   const getLeadCount = (status: string) => {
     return leads.filter(lead => lead.status === status).length;
   };
 
-  const onPieEnter = (_: any, index: number) => {
-    setActiveIndex(index);
-  };
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentLeads = filteredLeads.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredLeads.length / itemsPerPage)));
+  const goToPrevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
   return (
     <div className={styles.dashboard}>
       <div className={styles.chartGrid}>
         <div className={styles.card}>
-          <div className={styles.cardHeader}>Overview
-          <div>Total leads: 200</div>
+          <div className={styles.cardHeader}>
+            Overview
+            <div>Total leads: 200</div>
           </div>
           <div className={styles.cardContent}>
             <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
+              <PieChart className={styles.pieChart}>
                 <Pie
                   activeIndex={activeIndex}
                   activeShape={renderActiveShape}
@@ -178,7 +221,7 @@ const LeadManagementDashboard: React.FC = () => {
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  onMouseEnter={onPieEnter}
+                  onClick={handlePieClick}
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -211,19 +254,7 @@ const LeadManagementDashboard: React.FC = () => {
             </select>
           </div>
           <div className={styles.cardContent}>
-          {/* <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={lineData}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip formatter={(value, name) => name === 'won' ? ['Total won', value] : ['Total Lost', value]} />
-              <Legend formatter={(value) => value === 'won' ? 'Total won' : 'Total Lost'} />
-              <Line type="monotone" dataKey="won" stroke="#57B93A" strokeWidth={2} name="Total won" />
-              <Line type="monotone" dataKey="lost" stroke="#CD4040" strokeWidth={2} name="Total Lost" />
-            </LineChart>
-          </ResponsiveContainer> */}
-
-
-           <ResponsiveContainer width="100%" height={300}>
+            {/* <ResponsiveContainer width="100%" height={300}>
               <LineChart data={lineData}>
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -251,114 +282,118 @@ const LeadManagementDashboard: React.FC = () => {
                   name="lost" 
                 />
               </LineChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer> */}
 
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={lineData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend 
+                  formatter={(value) => value === 'won' ? 'Total won' : 'Total Lost'} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="won" 
+                  stroke="#57B93A" 
+                  strokeWidth={2} 
+                  name="won" 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="lost" 
+                  stroke="#CD4040" 
+                  strokeWidth={2} 
+                  name="lost" 
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
       
       <div className={styles.card}>
-      <div className={styles.cardHeader}>
-        <div className={styles.buttonGroup}>
-          <button 
-            className={`${styles.button} ${currentFilter === 'Pending' ? styles.buttonActive : ''}`}
-            onClick={() => handleFilterClick('Pending')}
-          >
-            <p className={`${styles.status} ${currentFilter !== 'Pending' ? styles.statusInactive : ''}`}>
-              {getLeadCount('Pending')}
-            </p> 
-            Pending
-          </button>
-          <button 
-            className={`${styles.button} ${currentFilter === 'Sent' ? styles.buttonActive : ''}`}
-            onClick={() => handleFilterClick('Sent')}
-          >
-            <p className={`${styles.status} ${currentFilter !== 'Sent' ? styles.statusInactive : ''}`}>
-              {getLeadCount('Sent')}
-            </p> 
-            Sent
-          </button>
-          <button 
-            className={`${styles.button} ${currentFilter === 'Accepted' ? styles.buttonActive : ''}`}
-            onClick={() => handleFilterClick('Accepted')}
-          >
-            <p className={`${styles.status} ${currentFilter !== 'Accepted' ? styles.statusInactive : ''}`}>
-              {getLeadCount('Accepted')}
-            </p> 
-            Accepted
-          </button>
-          <button 
-            className={`${styles.button} ${currentFilter === 'Declined' ? styles.buttonActive : ''}`}
-            onClick={() => handleFilterClick('Declined')}
-          >
-            <p className={`${styles.status} ${currentFilter !== 'Declined' ? styles.statusInactive : ''}`}>
-              {getLeadCount('Declined')}
-            </p> 
-            Declined
-          </button>
+        <div className={styles.cardHeader}>
+          <div className={styles.buttonGroup}>
+            {['Pending', 'Accepted', 'Sent', 'Declined'].map((status) => (
+              <button 
+                key={status}
+                className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}`}
+                onClick={() => handleFilterClick(status)}
+              >
+                <p className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}>
+                  {getLeadCount(status)}
+                </p> 
+                {status}
+              </button>
+            ))}
+          </div>
+          <div style={{display:'flex', gap:'10px'}}>
+            <div className={styles.filtericon} onClick={handleHistory}>
+              <img src={ICONS.refreshLeadMgmt} alt="" />
+            </div>
+            <div className={styles.filtericon} onClick={handleAddLead}>
+              <img src={ICONS.AddIconSr} alt="" />
+            </div>
+          </div>
         </div>
-        <div style={{display:'flex',gap:'10px'}}>
-          <div className={styles.filtericon} onClick={handleHistory}>
-                  <img src={ICONS.refreshLeadMgmt} alt="" />
-          </div>
-
-          <div className={styles.filtericon} onClick={handleAddLead} >
-                  <img src={ICONS.AddIconSr} alt="" />
-          </div>
-         </div>
-      </div>
 
         <div className={styles.cardContent}>
           <table className={styles.table}>
-            {/* <thead>
-              <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Address</th>
-              </tr>
-            </thead> */}
             <tbody>
-              {filteredLeads.map((lead, index) => (
-                // <tr key={index}>
-                //   <td>{lead.name}</td>
-                //   <td>{lead.phone}</td>
-                //   <td>{lead.email}</td>
-                //   <td>{lead.address}</td>
-                // </tr>
-                <div className={styles.history_lists}>
-                        <div className={styles.history_list_inner}>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    style={{
-                                        width: '16.42px',
-                                        height: '16px',
-                                        gap: '0px',
-                                        borderRadius: '6px 0px 0px 0px',
-                                        border: '1px solid #797979',
-                                    }}
-                                />
-                            </label>
-                            <div className={styles.user_name}>
-                                <h2>Sanju samson</h2>
-                                <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
-                            </div>
-                            <div className={styles.phone_number}>
-                            {lead.phone}
-                            </div>
-                            <div className={styles.email}>
-                                <p>sanjusamson19@gmail.com</p>
-                                <img height={15} width={15} src={ICONS.complete} alt='img' />
-                            </div>
-                            <div className={styles.address}>
-                            {lead.address}
-                            </div>
-                        </div>
+              {currentLeads.map((lead, index) => (
+                <div key={index} className={styles.history_lists}>
+                  <div className={styles.history_list_inner}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        style={{
+                          width: '16.42px',
+                          height: '16px',
+                          gap: '0px',
+                          borderRadius: '6px 0px 0px 0px',
+                          border: '1px solid #797979',
+                        }}
+                      />
+                    </label>
+                    <div className={styles.user_name}>
+                      <h2>{lead.name}</h2>
+                      <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
                     </div>
+                    <div className={styles.phone_number}>
+                      {lead.phone}
+                    </div>
+                    <div className={styles.email}>
+                      <p>{lead.email}</p>
+                      <img height={15} width={15} src={ICONS.complete} alt='img' />
+                    </div>
+                    <div className={styles.address}>
+                      {lead.address}
+                    </div>
+                  </div>
+                </div>
               ))}
             </tbody>
           </table>
+          
+          <div className={styles.paginationContainer}>
+            {filteredLeads.length > 0 && (
+              <div className='p1'>
+                <p className={styles.pageHeading}>
+                  {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, filteredLeads.length)} of {filteredLeads.length} items
+                </p>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
+                  paginate={paginate}
+                  goToNextPage={goToNextPage}
+                  goToPrevPage={goToPrevPage}
+                  perPage={itemsPerPage}
+                  currentPageData={currentLeads}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
