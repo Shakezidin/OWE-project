@@ -663,7 +663,9 @@ const Table = ({
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
-        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER) &&
       groupBy !== 'dealer'
     ) {
       return true;
@@ -671,7 +673,9 @@ const Table = ({
     if (
       role !== TYPE_OF_USER.ADMIN &&
       role !== TYPE_OF_USER.DEALER_OWNER &&
-      role !== TYPE_OF_USER.FINANCE_ADMIN
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER
     ) {
       return true;
     } else {
@@ -749,7 +753,12 @@ const Table = ({
     if (role === TYPE_OF_USER.DEALER_OWNER) {
       return 'Code Name';
     }
-    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
+    if (
+      role === TYPE_OF_USER.ADMIN ||
+      role === TYPE_OF_USER.FINANCE_ADMIN ||
+      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+      role === TYPE_OF_USER.ACCOUNT_MANAGER
+    ) {
       return 'Partner Name';
     } else {
       return 'Name';
@@ -878,7 +887,9 @@ const Table = ({
             options={
               role === 'Admin' ||
                 role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }

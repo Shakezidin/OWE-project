@@ -93,11 +93,11 @@ const PendingQueue = () => {
       <div style={{ borderRadius: 6 }} className="flex items-center bg-white px2 justify-between">
 
         <h2 className={`my2 ${styles.pending_queue_title}`}>
-          Pending Actions - (BETA)
+          Pending Actions
         </h2>
 
         <div className="flex items-center">
-          <label htmlFor="" className='mr2'>Pre</label>
+       
           <Switch checked={pre} onChange={() => {
             if (pre && active === 'qc') {
               setActive('ntp')
@@ -105,10 +105,11 @@ const PendingQueue = () => {
             setPre(prev => !prev)
 
           }} />
+             <label htmlFor="" className='ml2'>Pre Sales</label>
         </div>
       </div>
       {
-        <div className={styles.pending_card_wrapper}>
+        <div className={` ${pre?styles.grid_3:styles.grid_2} ${styles.pending_card_wrapper}`}>
           {load ? (
             <div
               style={{ gridTemplateColumns: '1/4' }}
@@ -169,7 +170,7 @@ const PendingQueue = () => {
                   </div>
                 </div>
               </div>
-              <div
+              {pre && <div
                 className={styles.pending_card}
                 onClick={pre ? () => {
                   setActive('qc')
@@ -180,9 +181,9 @@ const PendingQueue = () => {
                 <div
                   className={` ${pre ? "" : styles.disabled_card} ${active === 'qc' ? styles.active_card : pre ? styles.pending_card_hover : ""} ${styles.pending_card_inner}`}
                 >
-                  <h5 className={styles.pending_stats}>
+                  {pre && <h5 className={styles.pending_stats}>
                     {tileData.qc_pending_count || 'N/A'}
-                  </h5>
+                  </h5>}
                   <div style={{ lineHeight: '1.2rem' }}>
                     <h5
                       className={styles.pending_card_title}
@@ -195,7 +196,7 @@ const PendingQueue = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div>}
             </>
           )}
         </div>

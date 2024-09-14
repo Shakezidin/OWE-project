@@ -5,6 +5,8 @@ import UserTable from '../userManagerAllTable/UserTable';
 import AppointmentSetterTable from '../userManagerAllTable/AppointmentSetterTable';
 import PartnerTable from '../userManagerAllTable/PartnerTable';
 import SalesManagerTable from '../userManagerAllTable/SalesManagerTable';
+import AccountManagerTable from '../userManagerAllTable/AccountManagerTable'
+import AccountExecutiveTable from '../userManagerAllTable/AccountExecutiveTable';
 import SalesRepresentativeTable from '../userManagerAllTable/SalesRepresentativeTable';
 import DealerOwnerTable from '../userManagerAllTable/DealerOwnerTable';
 import RegionalManagerTable from '../userManagerAllTable/RegionalManagerTable';
@@ -299,6 +301,54 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
+        case TYPE_OF_USER.ACCOUNT_MANAGER:
+          return (
+            <AccountManagerTable
+              data={userRoleBasedList}
+              onClickEdit={(item: UserRoleBasedListModel) => {
+                onClickEdit(item);
+              }}
+              onClickDelete={(item: UserRoleBasedListModel) => {
+                onClickDelete(item);
+              }}
+              selectedRows={selectedRows}
+              selectAllChecked={selectAllChecked}
+              setSelectedRows={setSelectedRows}
+              setSelectAllChecked={setSelectAllChecked}
+            />
+          );
+          case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
+            return (
+              <AccountManagerTable
+                data={userRoleBasedList}
+                onClickEdit={(item: UserRoleBasedListModel) => {
+                  onClickEdit(item);
+                }}
+                onClickDelete={(item: UserRoleBasedListModel) => {
+                  onClickDelete(item);
+                }}
+                selectedRows={selectedRows}
+                selectAllChecked={selectAllChecked}
+                setSelectedRows={setSelectedRows}
+                setSelectAllChecked={setSelectAllChecked}
+              />
+            );
+               case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
+            return (
+              <AccountExecutiveTable
+                data={userRoleBasedList}
+                onClickEdit={(item: UserRoleBasedListModel) => {
+                  onClickEdit(item);
+                }}
+                onClickDelete={(item: UserRoleBasedListModel) => {
+                  onClickDelete(item);
+                }}
+                selectedRows={selectedRows}
+                selectAllChecked={selectAllChecked}
+                setSelectedRows={setSelectedRows}
+                setSelectAllChecked={setSelectAllChecked}
+              />
+            );
       default:
         return null;
     }
@@ -368,7 +418,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   <SelectOption
                     options={userDropdownData}
                     value={selectedOption}
-                    menuStyles={{ width: 'fit-content', left: -54 }}
+                    menuStyles={{ width: 'fit-content', left: -30}}
                     controlStyles={{
                       boxShadow: 'none',
                       border: 'none',
@@ -391,7 +441,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                       setSelectedRows(new Set());
                       setSelectAllChecked(false);
                     }}
-                    menuWidth="130px"
+                    menuWidth="fit-content"
+                    menuListStyles={{
+                      width: "fit-content"
+                    }}
                     enableHoverEffect={false}
                   />
                 </div>

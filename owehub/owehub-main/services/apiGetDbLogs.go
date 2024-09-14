@@ -100,7 +100,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		adminCheck = false
 	} else {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, roleQuery, whereEleList)
-		if err != nil {
+		if err != nil || len(data) <= 0 {
 			log.FuncErrorTrace(0, "Failed to get user from DB err: %v", err)
 			FormAndSendHttpResp(resp, "No user exists", http.StatusBadRequest, nil)
 			return

@@ -7,11 +7,11 @@ import { RiFilterLine } from 'react-icons/ri';
 import Switch from '../../components/Switch';
 interface TableProps {
   title: string;
-  onPressViewArchive: () => void;
+  onPressViewArchive: (() => void) | null;
   onPressArchive: () => void;
-  onPressFilter: () => void;
+  onPressFilter: (() => void) | null;
   onPressImport: () => void;
-  onpressExport: () => void;
+  onpressExport: (() => void) | null;
   onpressAddNew: () => void;
   isAnyRowSelected: boolean;
   checked: boolean;
@@ -37,22 +37,25 @@ const TableHeader = (props: TableProps) => {
       <h3>{title}</h3>
 
       <div className="iconContainer">
-        <div className="iconsSection2">
-          <div className="flex items-center">
-            <label
-              htmlFor="h6 "
-              style={{
-                marginRight: 13,
-                color: '#292929',
-                fontSize: 13,
-                fontWeight: 500,
-              }}
-            >
-              View Archive
-            </label>
-            <Switch checked={viewArchive} onChange={onPressViewArchive} />
+        {onPressViewArchive ? (
+          <div className="iconsSection2">
+            <div className="flex items-center">
+              <label
+                htmlFor="h6 "
+                style={{
+                  marginRight: 13,
+                  color: '#292929',
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              >
+                View Archive
+              </label>
+              <Switch checked={viewArchive} onChange={onPressViewArchive} />
+            </div>
           </div>
-        </div>
+        ) : null}
+
         {isAnyRowSelected === true && !viewArchive ? (
           <>
             <div className="iconsSection2">
@@ -106,7 +109,6 @@ const TableHeader = (props: TableProps) => {
             Add New
           </button>
         </div>
-
         <div className="iconsSection-filter relative">
           <button
             style={{

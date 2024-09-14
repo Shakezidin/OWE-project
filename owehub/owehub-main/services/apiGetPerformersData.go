@@ -116,7 +116,9 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	performerData.OwnerName, _ = data[0]["name"].(string)
+	if len(data) > 0 {
+		performerData.OwnerName, _ = data[0]["name"].(string)
+	}
 
 	query = `SELECT
     (SELECT COUNT(DISTINCT t.team_id)
@@ -136,8 +138,10 @@ func HandlePerformerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	performerData.TeamStrength, _ = data[0]["total_team_strength"].(int64)
-	performerData.TotalTeams, _ = data[0]["total_teams"].(int64)
+	if len(data) > 0 {
+		performerData.TeamStrength, _ = data[0]["total_team_strength"].(int64)
+		performerData.TotalTeams, _ = data[0]["total_teams"].(int64)
+	}
 
 	// Send the response
 	log.FuncInfoTrace(0, "data fetched for performer data: %v", performerData)

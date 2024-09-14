@@ -96,7 +96,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-  /* flex-wrap: wrap; */
+  margin: 1rem;
 }
 .total-commisstion {
   display: flex;
@@ -109,10 +109,11 @@
   height: 115px;
   margin-top: 5px;
   margin-bottom: 5px;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 .total-commisstion:hover {
-  box-shadow: 0px 4px 4px 0px rgba(74, 74, 74, 0.25);
+  box-shadow: 0px 4px 4px 0px rgba(74, 74, 74, 0.25) !important;
+  transform: scale(1.02) !important;
 }
 
 .total-section h4 {
