@@ -1,4 +1,4 @@
-.loader {
+.micro-loader {
   width: 50px;
   aspect-ratio: 1;
   display: grid;
@@ -7,8 +7,8 @@
   border-right-color: #25b09b;
   animation: l15 1s infinite linear;
 }
-.loader::before,
-.loader::after {
+.micro-loader::before,
+.micro-loader::after {
   content: '';
   grid-area: 1/1;
   margin: 2px;
@@ -16,7 +16,7 @@
   border-radius: 50%;
   animation: l15 2s infinite;
 }
-.loader::after {
+.micro-loader::after {
   margin: 8px;
   animation-duration: 3s;
 }
