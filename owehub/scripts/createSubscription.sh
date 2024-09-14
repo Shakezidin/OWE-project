@@ -11,14 +11,14 @@ FOURTH_OCTET=$(echo $IP_ADDRESS | cut -d'.' -f4)
 SUBSCRIPTION_NAME="sub_${FIRST_OCTET}_${FOURTH_OCTET}_dealer"
 
 # Write the SQL command to a file
-cat << EOF > ./migrations/00006_create_subscription.up.sql
+cat << EOF > ./migrations/00007_create_subscription.up.sql
 CREATE SUBSCRIPTION ${SUBSCRIPTION_NAME}
 CONNECTION 'host=149.248.3.82 port=5432 dbname=owe_db user=OwePostgres password=OwePostgres'
 PUBLICATION sales_partner_pub
 WITH (create_slot = true);
 EOF
 
-cat << EOF > ./migrations/00006_create_subscription.down.sql
+cat << EOF > ./migrations/00007_create_subscription.down.sql
 -- Drop the subscription
 DROP SUBSCRIPTION IF EXISTS ${SUBSCRIPTION_NAME};
 EOF
