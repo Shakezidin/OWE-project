@@ -99,7 +99,11 @@ slackApp.message(async ({ message }) => {
   }
 });
 
-slackApp.start();
+try {
+  setTimeout(() => {
+    slackApp.start();
+  }, 3000);
+} catch (error) {}
 
 (async () => {
   try {
