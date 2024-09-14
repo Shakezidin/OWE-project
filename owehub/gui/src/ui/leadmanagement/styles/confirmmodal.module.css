@@ -21,8 +21,19 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin-top: 28px;
+    margin-top: 48px;
 }
+
+
+.success_not_Edited4Model {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 0px;
+}
+
 
 .success_not h2 {
     font-weight: 600;
@@ -44,9 +55,37 @@
     align-items: center;
     justify-content: center;
     margin-top: 48px;
-    gap: 9px;
+    gap: 11px;
 }
 
+.AfterAppointment{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 48px;
+    gap: 0px;
+
+}
+
+.closedButtonQuestionmark{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12%;
+    gap: 11px;
+}
+
+.closedButtonQuestionmark button {
+    width: 335px;
+    height: 38px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(125, 125, 125, 1);
+    cursor: pointer;
+}
 .survey_button button {
     width: 335px;
     height: 38px;
@@ -54,13 +93,30 @@
     font-size: 16px;
     font-weight: 600;
     color: rgba(125, 125, 125, 1);
-    /* border: none; */
+    cursor: pointer;
+}
+
+.suceesButtonAfterProposal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12%;
+    gap: 11px;
+}
+
+.suceesButtonAfterProposal button {
+    width: 335px;
+    height: 38px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(125, 125, 125, 1);
     cursor: pointer;
 }
 
 .self {
     background-color: #377CF6;
-    ;
     transition: all 0.3s ease;
 }
 
@@ -97,7 +153,27 @@
     border-radius: 8px;
     background-color: #fff;
     max-width: 593px;
-    height: 530px;
+    height: 580px;
+}
+
+.customer_wrapper_list_Edited{
+    flex-basis: calc(100%);
+    border-radius: 8px;
+    background-color: #fff;
+    max-width: 593px;
+    height: 468px;
+    background-color: #EDFFF0;
+}
+
+
+.customer_wrapper_list_Edited2{
+    flex-basis: calc(100%);
+    border-radius: 8px;
+    background-color: #fff;
+    max-width: 593px;
+    height: 468px;
+    background-color: #FFEDED;
+
 }
 
 .DetailsMcontainer {
@@ -163,11 +239,13 @@
     font-weight: 600;
     font-size: 18px;
     color : #FF9801;
+    padding-top: 9%;
 }
 
 .ApptSentSuccess{
     font-weight: 600;
     font-size: 18px;
+    padding-top: 7%;
     color : #20963A;
 }
 
@@ -175,6 +253,7 @@
     font-weight: 500;
     font-size: 18px;
     color : #1F2937;
+    padding-top: 0%;
     
 }
 .AppSentDate2{
@@ -214,6 +293,12 @@
 .Questmarks{
     cursor: pointer;
 }
+.HandShakeLogo{
+    cursor: pointer;
+    padding-top: 9%;
+    margin-top: 38px;
+
+}
 
 .notAvailableCtmr{
     color:#6F6F6F;
@@ -244,6 +329,7 @@
     font-weight: 600;
     font-size: 18px;
     color: #3AC759;
+    padding-top: 7%;
 
 
 }
