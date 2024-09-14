@@ -14,8 +14,8 @@
 }
 
 .user-sidebar {
-    max-width: 600px;
-    min-width: 600px;
+    max-width: 580px;
+    min-width: 580px;
     min-height: 100vh;
     overflow-y: auto;
     background: #fff;
@@ -56,13 +56,13 @@
   margin-top: 2rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 18px;
 }
 
 .sidebar-cards .card {
   border: 1.5px solid #377cf6;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -71,12 +71,16 @@
 }
 
 .sidebar-cards .card:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
   box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-cards .card-name {
   font-weight: 500;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow-x: hidden;
+  width: 150px;
 }
 
 .sidebar-cards .card-title {
@@ -96,6 +100,13 @@
 .sidebar-cards .card-address {
   font-size: 14px;
   color: #1f2937;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow-x: hidden;
+  width: 230px;
+}
+.sidebar-cards .card-address:hover {
+  color: #3C7AF1;
 }
 
 .sidebar-cards .card-address:hover {
@@ -115,7 +126,6 @@
 .sidebar-cards .card-status {
   border-radius: 1rem;
   border: none;
-  cursor: pointer;
   padding: 3px 12px;
   color: #fff;
   margin-top: 10px;
@@ -126,7 +136,7 @@
   display: none;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 915px) {
     .sidebar-wrapper {
         position: unset;
         background-color: unset;
@@ -135,6 +145,11 @@
         background: #fff;
         border-radius: 20px;
         margin-top: 1rem;
+    }
+
+    .user-sidebar{
+      max-width: unset;
+      width: 100%;
     }
 
     .sidebar-cards .card {
@@ -151,10 +166,6 @@
 
     .sidebar-cards .card-name {
         margin-right: 10px;
-        text-overflow: ellipsis;
-        text-wrap: nowrap;
-        overflow-y: hidden;
-        width: 105px;
     }
 
   .user-sidebar {
@@ -203,13 +214,15 @@
         font-weight: 500;
         background-color: #fff;
     }
-
-    .main-sidebar {
-        margin: 10px;
-    }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 768px){
+  .main-sidebar{
+    margin: 10px;
+  }
+}
+
+@media (max-width: 590px) {
     .sidebar-cards {
         grid-template-columns: 1fr;
     }
