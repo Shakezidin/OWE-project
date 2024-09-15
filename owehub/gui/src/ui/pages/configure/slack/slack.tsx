@@ -153,7 +153,7 @@ const Slack = () => {
           filters,
         };
 
-        const res = await postCaller('update_slack_config', newValue);
+        const res = await postCaller('update_slack_config_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
