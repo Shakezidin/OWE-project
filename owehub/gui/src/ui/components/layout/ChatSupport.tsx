@@ -6,8 +6,8 @@ import send from '../../../resources/assets/send.png';
 import sendActive from '../../../resources/assets/send-active.png';
 import chat_logo from '../../../resources/assets/chat_logo.png';
 import need from '../../../resources/assets/need.png';
-import { ReactComponent as CrossIcon } from '../../../resources/assets/cross-w.svg';
-import { ReactComponent as RefreshIcon } from '../../../resources/assets/refresh.svg';
+import { ReactComponent as CrossIcon } from '../../../resources/assets/cross.svg';
+import { ReactComponent as RefreshIcon } from '../../../resources/assets/cross2.svg';
 import moment from 'moment';
 
 const socket = io('https://staging.owe-hub.com');
@@ -15,18 +15,17 @@ const ChatSupport = () => {
   const [messages, setMessages] = useState<any>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isChatOpen, setChatOpen] = useState(false);
+  const [channels, setChannels] = useState([]);
 
   const messagesEndRef = useRef<any>(null);
 
   const scrollToBottom = () => {
-    console.log(messagesEndRef.current);
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   useEffect(() => {
-    console.log('NEW MESSAE');
     scrollToBottom(); // Scroll to bottom when the component mounts
   }, [messages]); // Empty dependency array means it runs only once on mount
 
@@ -57,6 +56,10 @@ const ChatSupport = () => {
 
     socket.on('connect', () => {
       setBotOnline(true);
+      socket.emit('channels', {
+        channelName,
+        message: newMessage,
+      });
     });
 
     socket.on('disconnect', () => {
@@ -69,8 +72,12 @@ const ChatSupport = () => {
       setBotOnline(false);
     });
 
+    socket.on('channels', (event) => {
+      console.log('channels', event);
+    });
+
     socket.on('success', (event) => {
-      console.log(event);
+      console.log(event, 'EVENT');
       if (event) {
         const { data, event_name, message } = event;
         if (event_name === 'start-chat') {
@@ -83,6 +90,14 @@ const ChatSupport = () => {
           addResponseMessage(
             'Channel is deleted, Please restart the window for further discussion'
           );
+        }
+        if (event_name === 'channels') {
+          console.log('channels', message);
+          if (message?.length) {
+            try {
+              setChannels(message);
+            } catch (error) {}
+          }
         }
       }
     });
@@ -166,7 +181,12 @@ const ChatSupport = () => {
     setChannelName(null);
   }
 
-  const style: any = { position: 'absolute', width: '100%', height: '100%' };
+  const style: any = {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: 10000000,
+  };
   return (
     <div style={isChatOpen ? style : {}} onClick={handleChatHide}>
       <div
@@ -178,65 +198,68 @@ const ChatSupport = () => {
           className="rcw-conversation-container active hide"
           aria-live="polite"
         >
-          <div className="rcw-header">
-            <div className="header-logo-title">
-              <div className="online-container">
-                <img src={chat_logo} alt="Open chat" />
-                <div
+          {issueType ? (
+            <div className="rcw-header">
+              <div className="header-logo-title">
+                <h4 className="rcw-title">
+                  OWE {issueType?.toUpperCase() || 'BOT'} ASSISTANT
+                </h4>
+                {/* <div
                   className={`online-dot ${!botOnline ? 'offline-dot' : ''}`}
-                />
+                /> */}
               </div>
-              <h4 className="rcw-title">
-                OWE {issueType?.toUpperCase() || 'BOT'} ASSISTANT
-              </h4>
-            </div>
-            <div className="bot-icons">
-              <div className="popconfirm-container">
-                {issueType ? (
-                  <RefreshIcon
-                    id="trigger-btn"
-                    onClick={() =>
-                      document
-                        .getElementById('popconfirm')
-                        ?.classList.toggle('hidden')
-                    }
-                    height={18}
-                    width={18}
-                    style={{ marginTop: 3, cursor: 'pointer' }}
-                  />
-                ) : null}
-                <div id="popconfirm" className="popconfirm hidden">
-                  <p>Are you sure you want refresh?</p>
-                  <p style={{ marginTop: -10 }}>Chat history will be lost.</p>
-                  <button
-                    className="no-btn"
-                    onClick={() =>
-                      document
-                        .getElementById('popconfirm')
-                        ?.classList.toggle('hidden')
-                    }
-                  >
-                    No
-                  </button>
-                  <button
-                    className="confirm"
-                    onClick={() => {
-                      handleRefresh();
-                      document
-                        .getElementById('popconfirm')
-                        ?.classList.toggle('hidden');
-                    }}
-                  >
-                    Yes
-                  </button>
+              <div className="bot-icons">
+                <div className="popconfirm-container">
+                  {issueType ? (
+                    <RefreshIcon
+                      id="trigger-btn"
+                      onClick={() =>
+                        document
+                          .getElementById('popconfirm')
+                          ?.classList.toggle('hidden')
+                      }
+                      height={18}
+                      width={18}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  ) : null}
+                  <div id="popconfirm" className="popconfirm hidden">
+                    <p>Are you sure you want refresh?</p>
+                    <p style={{ marginTop: -10 }}>Chat history will be lost.</p>
+                    <button
+                      className="no-btn"
+                      onClick={() =>
+                        document
+                          .getElementById('popconfirm')
+                          ?.classList.toggle('hidden')
+                      }
+                    >
+                      No
+                    </button>
+                    <button
+                      className="confirm"
+                      onClick={() => {
+                        handleRefresh();
+                        document
+                          .getElementById('popconfirm')
+                          ?.classList.toggle('hidden');
+                      }}
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  className="popconfirm-container"
+                  style={{ cursor: 'pointer' }}
+                  onClick={handleChatHide}
+                >
+                  <CrossIcon height={25} width={25} />
                 </div>
               </div>
-
-              <div style={{ cursor: 'pointer' }} onClick={handleChatHide}>
-                <CrossIcon height={16} width={16} />
-              </div>
             </div>
-          </div>
+          ) : null}
 
           <div id="messages" className="rcw-messages-container">
             {!issueType ? (
@@ -249,39 +272,20 @@ const ChatSupport = () => {
                   Please select one of the following options:
                 </h4>
                 <div className="rcs-options-container">
-                  <div
-                    className="rcs-option-container"
-                    onClick={() => setIssueType('Project Support')}
-                  >
-                    <h5>Project Support</h5>
-                    <h6>
-                      If you need assistance related to specific projects and
-                      its status
-                    </h6>
-                  </div>
-
-                  <div
-                    style={{ pointerEvents: 'none', background: '#aaa' }}
-                    className="rcs-option-container"
-                    onClick={() => setIssueType('Commission Support')}
-                  >
-                    <h5>Commission Support</h5>
-                    <h6>
-                      Coming Soon
-                      {/* If you need assistance related to specific projects and its
-                    status */}
-                    </h6>
-                  </div>
-
-                  <div
-                    className="rcs-option-container"
-                    onClick={() => setIssueType('Technical Support')}
-                  >
-                    <h5>IT Support</h5>
-                    <h6>
-                      If you need assistance realated to Information Technology
-                    </h6>
-                  </div>
+                  {channels?.map(({ name, issueType }) => (
+                    <div
+                      className="rcs-option-container"
+                      onClick={() => setIssueType(issueType)}
+                      style={
+                        name === 'Coming Soon'
+                          ? { pointerEvents: 'none', background: '#aaa' }
+                          : {}
+                      }
+                    >
+                      <h5>{issueType}</h5>
+                      <h6>{name}</h6>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : null}

@@ -525,7 +525,7 @@
   color: #fff;
 }
 .rcw-conversation-container .rcw-header {
-  background-color: #1950b0;
+  background-color: #f3f3f3;
   border-radius: 10px 10px 0 0;
   color: #000;
   display: flex;
@@ -554,9 +554,6 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  position: absolute;
-  bottom: 0;
-  right: 0;
   border: 1px solid white;
 }
 .offline-dot {
@@ -573,7 +570,7 @@
   font-size: 16px;
   margin: 0;
   font-weight: 500;
-  color: #fff;
+  color: #000;
 }
 
 .rcw-conversation-container .avatar {
@@ -602,7 +599,7 @@
     position: relative;
   }
   .rcw-conversation-container .rcw-title {
-    padding: 0 0 15px;
+    font-size: 14px;
   }
   .rcw-conversation-container .rcw-close {
     width: 20px;
@@ -1103,6 +1100,9 @@
 
 .popconfirm-container {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #trigger-btn {
