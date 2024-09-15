@@ -217,9 +217,11 @@ return (
                 <span className={classes.ohNo}>Oh No!</span>
                 <span className={classes.deniedCust}>Customer denied</span>
                 </div>
-                <span className={classes.whydenied}>
-                Why did customer denied?
-                </span>
+                <div className={classes.whydeniedDiv}>
+                    <span className={classes.whydenied}>
+                        Why did customer denied?
+                    </span>
+                </div>
                 <div className={classes.dropdownContainerModal}>
                 <select className={classes.dropdownModal}>
                     <option value="option1">
@@ -258,11 +260,12 @@ return (
                     />{' '}
                 </div>
                 </div>
-                <span className={classes.congratulations}>
+                <div className={classes.congratulationLetter}> 
+                    <span className={classes.congratulations}>
                 Congratulations!
-                </span>
-                <br />
-                <span className={classes.ctmracquired}>Customer acquired</span>
+                </span></div>
+            <br />
+                <div className={classes.ctmracquiredDiv}><span className={classes.ctmracquired}>Customer acquired</span></div>
                 <div className={classes.suceesButtonAfterProposal}>
                 <button
                     className={classes.self}
