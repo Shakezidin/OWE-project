@@ -420,7 +420,7 @@
 }
 .rcs-option-container:hover {
   background-color: #377cf6;
-  border: none;
+  border-color: #377cf6;
 }
 .rcs-option-container:hover h5,
 .rcs-option-container:hover h6 {
@@ -558,6 +558,9 @@
   bottom: 0;
   right: 0;
   border: 1px solid white;
+}
+.offline-dot {
+  background: red;
 }
 .bot-icons {
   display: flex;
@@ -750,6 +753,9 @@
   background: transparent;
   border: 0;
   cursor: pointer;
+}
+.rcw-send:hover {
+  transform: scale(1.2);
 }
 .rcw-picker-btn .rcw-send-icon,
 .rcw-send .rcw-send-icon {

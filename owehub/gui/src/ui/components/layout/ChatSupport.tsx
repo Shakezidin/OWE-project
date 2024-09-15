@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-// import {
-//   Widget,
-//   addResponseMessage,
-//   addLinkSnippet,
-//   toggleInputDisabled,
-//   renderCustomComponent,
-// } from 'react-chat-widget';
-// import 'react-chat-widget/lib/styles.css';
 import { io } from 'socket.io-client';
-
 import botOpen from '../../../resources/assets/botOpen.png';
 import botOpenUp from '../../../resources/assets/botOpenUp.png';
 import send from '../../../resources/assets/send.png';
@@ -56,12 +47,28 @@ const ChatSupport = () => {
   const [channelName, setChannelName] = useState(null);
   const [issueType, setIssueType] = useState<any>(null);
   const [projectId, setProjectId] = useState<any>(null);
+  const [botOnline, setBotOnline] = useState(false);
   const name = localStorage.getItem('userName');
   const email = localStorage.getItem('email');
   useEffect(() => {
     setTimeout(() => {
       document.getElementById('need-assistace')?.classList.add('hide');
     }, 3000);
+
+    socket.on('connect', () => {
+      setBotOnline(true);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('disconnect');
+      setBotOnline(false);
+    });
+
+    socket.on('connect_error', () => {
+      console.log('connect_error');
+      setBotOnline(false);
+    });
+
     socket.on('success', (event) => {
       console.log(event);
       if (event) {
@@ -82,6 +89,10 @@ const ChatSupport = () => {
     socket.on('error', (data) => {
       alert(JSON.stringify(data));
     });
+
+    () => {
+      socket.disconnect();
+    };
   }, []);
 
   const handleNewUserMessage = (newMessage: any) => {
@@ -136,6 +147,11 @@ const ChatSupport = () => {
     handleNewUserMessage(newMessage);
     setNewMessage('');
   }
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      handleSend();
+    }
+  };
 
   function handleChatHide() {
     setChatOpen(!isChatOpen);
@@ -166,7 +182,9 @@ const ChatSupport = () => {
             <div className="header-logo-title">
               <div className="online-container">
                 <img src={chat_logo} alt="Open chat" />
-                <div className="online-dot" />
+                <div
+                  className={`online-dot ${!botOnline ? 'offline-dot' : ''}`}
+                />
               </div>
               <h4 className="rcw-title">
                 OWE {issueType?.toUpperCase() || 'BOT'} ASSISTANT
@@ -327,6 +345,7 @@ const ChatSupport = () => {
                 disabled={!issueType}
                 placeholder="Ask me anything"
                 onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </div>
             <button
