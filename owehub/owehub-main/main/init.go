@@ -1399,7 +1399,14 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_slack_config",
-		apiHandler.HandleUpdateSlackConfig,
+		apiHandler.HandleUpdateSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_slack_config_archive",
+		apiHandler.HandleArchiveSlackConfigRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},

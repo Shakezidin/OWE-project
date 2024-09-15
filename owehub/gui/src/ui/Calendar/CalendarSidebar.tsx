@@ -125,6 +125,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
                     className="card-address"
                   >
                     {data.address}
+                    <span className="tooltip">{data.address}</span>
                   </a>
                   <button
                     className="card-status"

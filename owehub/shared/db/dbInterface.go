@@ -75,6 +75,7 @@ const (
 	CreateRepCreditFuntion                   string = "create_rep_credit"
 	CreateDBAFuntion                         string = "create_dba"
 	CreateSlackConfigFuntion                 string = "create_slack_config"
+	UpdateSlackConfigArchiveFuntion          string = "update_slack_config_archive"
 	UpdateSlackConfigFuntion                 string = "update_slack_config"
 	AddTeamMembers                           string = "add_team_members"
 	DeleteTeamMember                         string = "delete_team_member"

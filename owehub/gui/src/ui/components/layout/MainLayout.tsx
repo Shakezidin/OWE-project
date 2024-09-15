@@ -18,6 +18,7 @@ import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
 
 import useAuth from '../../../hooks/useAuth';
+import ChatSupport from './ChatSupport';
 
 const MainLayout = () => {
   const { authData, filterAuthData } = useAuth();
@@ -100,12 +101,13 @@ const MainLayout = () => {
     setToggleOpen(isTablet);
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
       localStorage.setItem('version', process.env.REACT_APP_VERSION!);
-      window.location.reload()
+      window.location.reload();
     }
   }, [isTablet]);
 
   return isAuthenticated ? (
     <div className="main-container">
+      <ChatSupport />
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}

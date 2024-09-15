@@ -11,10 +11,11 @@ interface SlackConfigItem {
   issue_type: string;
   channel_name: string;
   bot_token: string;
+  channel_id: string;
   slack_app_token: string;
 }
 
-interface DBAState {
+interface SlackConfigState {
   slack_config_list: SlackConfigItem[];
   count: number;
   isSuccess: boolean;
@@ -23,7 +24,7 @@ interface DBAState {
   isFormSubmitting: boolean;
 }
 
-const initialState: DBAState = {
+const initialState: SlackConfigState = {
   slack_config_list: [],
   count: 0,
   isSuccess: false,

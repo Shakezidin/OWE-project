@@ -13,6 +13,12 @@ export const SlackColumn: Column[] = [
     isCheckbox: false,
   },
   {
+    name: 'channel_id',
+    displayName: 'Channel ID',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
     name: 'bot_token',
     displayName: 'Bot Token',
     type: 'string',

@@ -26,10 +26,10 @@ import (
  ******************************************************************************/
 func HandleCreateSlackConfig(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		createSlackConfigReq    models.CreateSlackConfig
-		queryParameters []interface{}
-		result          []interface{}
+		err                  error
+		createSlackConfigReq models.CreateSlackConfig
+		queryParameters      []interface{}
+		result               []interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateSlackConfig")
@@ -64,6 +64,7 @@ func HandleCreateSlackConfig(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	queryParameters = append(queryParameters, createSlackConfigReq.IssueType)
+	queryParameters = append(queryParameters, createSlackConfigReq.ChannelId)
 	queryParameters = append(queryParameters, createSlackConfigReq.ChannelName)
 	queryParameters = append(queryParameters, createSlackConfigReq.BotToken)
 	queryParameters = append(queryParameters, createSlackConfigReq.SlackAppToken)
