@@ -105,16 +105,18 @@ try {
 } catch (error) {}
 
 let allChannels = null;
+
+async function getChannels() {
+  allChannels = await client.query(
+    "SELECT * from slackconfig where is_archived=false"
+  );
+  allChannels = allChannels?.rows;
+}
 (async () => {
   try {
     await client.connect();
     await client2.connect();
-    allChannels = await client.query(`SELECT * from slackconfig`);
-    // const res = await web.conversations.create({
-    //   name: "owe-technical-support",
-    //   is_private: false,
-    // });
-    // console.log(res, "RES");
+    getChannels();
   } catch (error) {
     console.log(error);
   }
@@ -124,7 +126,7 @@ function getChannelID(issueType) {
   if (!allChannels) {
     throw new Error("No channels are found");
   }
-  const channel = allChannels.rows.find((c) => c.issue_type === issueType);
+  const channel = allChannels.find((c) => c.issue_type === issueType);
   if (channel) {
     return channel.channel_name;
   }
@@ -134,6 +136,27 @@ function getChannelID(issueType) {
 io.on("connection", (socket) => {
   console.log("Connection", socket.id);
   // Handle incoming chat messages from the client
+
+  socket.on("update-channels", () => {
+    getChannels();
+    socket.emit("success", {
+      event_name: "update-channels",
+      message: "Channels Updated",
+    });
+  });
+
+  socket.on("channels", () => {
+    console.log(allChannels, "allChannels");
+    socket.emit("success", {
+      event_name: "channels",
+      message: allChannels?.length
+        ? allChannels.map((c) => {
+            return { name: c.channel_name, issueType: c.issue_type };
+          })
+        : [],
+    });
+  });
+
   socket.on("start-chat", async (data) => {
     try {
       console.log("start-chat", data);
@@ -171,10 +194,10 @@ io.on("connection", (socket) => {
       const channelId = channels[channelName].id;
 
       // Send a message to the created Slack channel
-      await web.chat.postMessage({
-        channel: channelId,
-        text: "Hi",
-      });
+      // await web.chat.postMessage({
+      //   channel: channelId,
+      //   text: "Hi",
+      // });
 
       userSockets.set(channelId, socket.id);
 
