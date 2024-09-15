@@ -19,6 +19,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { SlackColumn } from '../../../../resources/static_data/configureHeaderData/SlackColumn';
 import CreateSlackConfig from './createsSlackConfig';
+import { socket } from '../../../components/layout/ChatSupport';
 
 const Slack = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -161,6 +162,7 @@ const Slack = () => {
 
           setSelectAllChecked(false);
           setSelectedRows(new Set());
+          socket.emit('update-channels');
           await successSwal('Archived', 'The data has been archived ');
         } else {
           await successSwal('Archived', 'The data has been archived ');
@@ -191,6 +193,7 @@ const Slack = () => {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         dispatch(fetchSlackConfigList(pageNumber));
+        socket.emit('update-channels');
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -286,20 +289,7 @@ const Slack = () => {
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                        {el.issue_type || 'N/A'}
-                      </div>
+                      <div className="flex-check">{el.issue_type || 'N/A'}</div>
                     </td>
 
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -330,7 +320,7 @@ const Slack = () => {
                             style={{ cursor: 'pointer' }}
                             onClick={() => handleArchiveClick(el.record_id)}
                           >
-                            <img src={ICONS.ARCHIVE} alt="" />
+                            <img src={ICONS.deleteIcon} alt="" />
                           </div>
                           <div
                             className=""

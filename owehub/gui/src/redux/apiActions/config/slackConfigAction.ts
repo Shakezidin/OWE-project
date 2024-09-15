@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
+import { socket } from '../../../ui/components/layout/ChatSupport';
 
 interface IPaginate {
   page_number: number;
@@ -40,6 +41,7 @@ export const createSlackConfig = createAsyncThunk(
     try {
       const data = await postCaller('create_slack_config', param);
       toast.success(data?.message);
+      socket.emit('update-channels');
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

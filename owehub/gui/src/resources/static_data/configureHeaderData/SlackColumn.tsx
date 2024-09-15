@@ -4,7 +4,7 @@ export const SlackColumn: Column[] = [
     name: 'issue_type',
     displayName: 'Issue Type',
     type: 'string',
-    isCheckbox: true,
+    isCheckbox: false,
   },
   {
     name: 'channel_name',

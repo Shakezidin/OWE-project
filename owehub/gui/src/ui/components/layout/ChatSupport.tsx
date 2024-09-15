@@ -91,7 +91,7 @@ const ChatSupport = () => {
             'Channel is deleted, Please restart the window for further discussion'
           );
         }
-        if (event_name === 'channels') {
+        if (event_name === 'channels' || event_name === 'update-channels') {
           console.log('channels', message);
           if (message?.length) {
             try {
@@ -401,4 +401,5 @@ const ChatSupport = () => {
     </div>
   );
 };
+export { socket };
 export default ChatSupport;
