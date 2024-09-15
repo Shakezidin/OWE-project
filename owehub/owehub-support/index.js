@@ -137,11 +137,16 @@ io.on("connection", (socket) => {
   console.log("Connection", socket.id);
   // Handle incoming chat messages from the client
 
-  socket.on("update-channels", () => {
-    getChannels();
+  socket.on("update-channels", async () => {
+    await getChannels();
+    console.log("update-channels");
     socket.emit("success", {
       event_name: "update-channels",
-      message: "Channels Updated",
+      message: allChannels?.length
+        ? allChannels.map((c) => {
+            return { name: c.channel_name, issueType: c.issue_type };
+          })
+        : [],
     });
   });
 
