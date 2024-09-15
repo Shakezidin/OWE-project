@@ -9,6 +9,7 @@ package models
 
 type CreateSlackConfig struct {
 	IssueType     string `json:"issue_type"`
+	ChannelId     string `json:"channel_id"`
 	ChannelName   string `json:"channel_name"`
 	BotToken      string `json:"bot_token"`
 	SlackAppToken string `json:"slack_app_token"`
@@ -22,6 +23,7 @@ type GetSlackConfigRequest struct {
 type GetSlackConfig struct {
 	RecordId      int64  `json:"record_id"`
 	IssueType     string `json:"issue_type"`
+	ChannelId     string `json:"channel_id"`
 	ChannelName   string `json:"channel_name"`
 	BotToken      string `json:"bot_token"`
 	SlackAppToken string `json:"slack_app_token"`
@@ -41,4 +43,9 @@ type UpdateSlackConfig struct {
 
 type DeleteSlackConfig struct {
 	RecordId []int64 `json:"record_id"`
+}
+
+type ArchiveSlackConfig struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
 }
