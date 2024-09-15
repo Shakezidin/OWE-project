@@ -133,7 +133,7 @@ const Slack = () => {
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This Action will archive your data',
+      'This Action will delete your data',
       'Yes',
       'No'
     );
@@ -163,9 +163,9 @@ const Slack = () => {
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           socket.emit('update-channels');
-          await successSwal('Archived', 'The data has been archived ');
+          await successSwal('Deleted', 'The data has been deleted');
         } else {
-          await successSwal('Archived', 'The data has been archived ');
+          await successSwal('Deleted', 'The data has been deleted');
         }
       }
     }
@@ -173,7 +173,7 @@ const Slack = () => {
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This Action will archive your data',
+      'This Action will delete your data',
       'Yes',
       'No'
     );
@@ -194,9 +194,9 @@ const Slack = () => {
         setSelectAllChecked(false);
         dispatch(fetchSlackConfigList(pageNumber));
         socket.emit('update-channels');
-        await successSwal('Archived', 'The data has been archived ');
+        await successSwal('Deleted', 'The data has been deleted');
       } else {
-        await successSwal('Archived', 'The data has been archived ');
+        await successSwal('Deleted', 'The data has been deleted');
       }
     }
   };
@@ -228,6 +228,7 @@ const Slack = () => {
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={null}
           onpressAddNew={() => handleTimeLineSla()}
+          archiveText="Delete"
         />
 
         {open && (
@@ -289,7 +290,21 @@ const Slack = () => {
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">{el.issue_type || 'N/A'}</div>
+                      <div className="flex-check">
+                        {' '}
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.issue_type || 'N/A'}
+                      </div>
                     </td>
 
                     <td style={{ fontWeight: '500', color: 'black' }}>

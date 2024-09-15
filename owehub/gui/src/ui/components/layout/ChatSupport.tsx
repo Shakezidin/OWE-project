@@ -116,7 +116,7 @@ const ChatSupport = () => {
       if (!newMessage.startsWith('OUR')) {
         return addResponseMessage('Plese enter valid Project ID');
       } else {
-        project_id = newMessage.trim();
+        project_id = newMessage;
         setProjectId(project_id);
         addResponseMessage(
           'Thanks, Please wait a while, we will connect you...'
@@ -158,6 +158,7 @@ const ChatSupport = () => {
   // );
 
   function handleSend() {
+    if (!newMessage.trim()) return;
     addUserMessage(newMessage);
     handleNewUserMessage(newMessage);
     setNewMessage('');
@@ -201,12 +202,15 @@ const ChatSupport = () => {
           {issueType ? (
             <div className="rcw-header">
               <div className="header-logo-title">
+                <div className="online-container">
+                  <img src={chat_logo} alt="logo" />
+                  <div
+                    className={`online-dot ${!botOnline ? 'offline-dot' : ''}`}
+                  />
+                </div>
                 <h4 className="rcw-title">
-                  OWE {issueType?.toUpperCase() || 'BOT'} ASSISTANT
+                  {issueType?.toUpperCase() || 'BOT'} ASSISTANT
                 </h4>
-                {/* <div
-                  className={`online-dot ${!botOnline ? 'offline-dot' : ''}`}
-                /> */}
               </div>
               <div className="bot-icons">
                 <div className="popconfirm-container">
@@ -259,7 +263,15 @@ const ChatSupport = () => {
                 </div>
               </div>
             </div>
-          ) : null}
+          ) : (
+            <div
+              className="greet-cross"
+              style={{ cursor: 'pointer' }}
+              onClick={handleChatHide}
+            >
+              <CrossIcon height={25} width={25} />
+            </div>
+          )}
 
           <div id="messages" className="rcw-messages-container">
             {!issueType ? (

@@ -2,13 +2,13 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 export const SlackColumn: Column[] = [
   {
     name: 'issue_type',
-    displayName: 'Issue Type',
+    displayName: 'Channel Type',
     type: 'string',
-    isCheckbox: false,
+    isCheckbox: true,
   },
   {
     name: 'channel_name',
-    displayName: 'Channel Name',
+    displayName: 'Channel Description',
     type: 'string',
     isCheckbox: false,
   },

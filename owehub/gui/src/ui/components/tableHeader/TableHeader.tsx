@@ -16,6 +16,7 @@ interface TableProps {
   isAnyRowSelected: boolean;
   checked: boolean;
   viewArchive: boolean;
+  archiveText?: string;
 }
 
 const TableHeader = (props: TableProps) => {
@@ -29,6 +30,7 @@ const TableHeader = (props: TableProps) => {
     onpressExport,
     onpressAddNew,
     isAnyRowSelected,
+    archiveText,
   } = props;
   const { isActive } = useAppSelector((state) => state.filterSlice);
   const { pathname } = useLocation();
@@ -64,8 +66,13 @@ const TableHeader = (props: TableProps) => {
                 onClick={onPressArchive}
                 style={{ cursor: isAnyRowSelected ? 'pointer' : 'not-allowed' }}
               >
-                <img src={ICONS.ARCHIVE} alt="" />
-                <span>Archive</span>
+                {archiveText === 'Delete' ? (
+                  <img src={ICONS.deleteIcon} alt="" />
+                ) : (
+                  <img src={ICONS.ARCHIVE} alt="" />
+                )}
+
+                <span>{archiveText || 'Archive'}</span>
               </button>
             </div>
           </>
