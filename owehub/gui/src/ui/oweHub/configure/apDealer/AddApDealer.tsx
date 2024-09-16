@@ -247,82 +247,13 @@ const AddApDealer = () => {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={ApRepColumns.length}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <MicroLoader />
-                    </div>
-                  </td>
-                </tr>
-              ) : currentPageData?.length > 0 ? (
-                currentPageData?.map((el: any, i: number) => (
-                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
-                    <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                        {el.pay_scale}
-                      </div>
-                    </td>
-                    <td>{el.type}</td>
-                    <td>{el.min_rate}</td>
-                    <td>{el.max_rate}</td>
-
-                    <td>
-                      <div className="action-icon">
-                        <div
-                          className=""
-                          style={{
-                            cursor:
-                              !viewArchived && selectedRows.size < 2
-                                ? 'pointer'
-                                : 'not-allowed',
-                          }}
-                          onClick={() =>
-                            !viewArchived &&
-                            selectedRows.size < 2 &&
-                            handleArchiveClick([el.record_id])
-                          }
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div
-                          className=""
-                          onClick={() =>
-                            !viewArchived &&
-                            selectedRows.size < 2 &&
-                            handleEdit(el)
-                          }
-                          style={{
-                            cursor:
-                              !viewArchived && selectedRows.size < 2
-                                ? 'pointer'
-                                : 'not-allowed',
-                          }}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+             
                 <tr>
                   <td colSpan={ApRepColumns.length}>
                     <DataNotFound />
                   </td>
                 </tr>
-              )}
+               
             </tbody>
           </table>
         </div>
