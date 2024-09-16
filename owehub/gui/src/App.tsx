@@ -92,6 +92,8 @@ import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
 import ConfirmaModel from './ui/leadmanagement/Modals/ConfirmModel';
 import RoutesForRole from './utiles/RoutesForRole';
 import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
+import LibraryHomepage from './ui/Library/LibraryHomepage';
+
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
@@ -385,6 +387,7 @@ function App() {
           <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} /> */}
 
 
+          <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
 
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
