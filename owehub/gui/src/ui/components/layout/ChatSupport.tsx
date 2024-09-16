@@ -118,9 +118,6 @@ const ChatSupport = () => {
       } else {
         project_id = newMessage;
         setProjectId(project_id);
-        addResponseMessage(
-          'Thanks, Please wait a while, we will connect you...'
-        );
       }
     }
     if (!channelName) {

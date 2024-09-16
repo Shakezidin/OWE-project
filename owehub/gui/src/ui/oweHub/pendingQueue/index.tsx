@@ -96,7 +96,7 @@ const PendingQueue = () => {
           Pending Actions
         </h2>
 
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
        
           <Switch checked={pre} onChange={() => {
             if (pre && active === 'qc') {
@@ -106,7 +106,7 @@ const PendingQueue = () => {
 
           }} />
              <label htmlFor="" className='ml2'>Pre Sales</label>
-        </div>
+        </div> */}
       </div>
       {
         <div className={` ${pre?styles.grid_3:styles.grid_2} ${styles.pending_card_wrapper}`}>
