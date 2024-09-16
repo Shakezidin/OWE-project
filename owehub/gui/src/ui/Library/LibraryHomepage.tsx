@@ -1,5 +1,5 @@
 import { AddNewButton } from "../components/button/AddNewButton"
-import "./LibraryHomepage.css"
+import "./LibraryHomepage.module.css"
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
 import { ICONS } from '../../resources/icons/Icons';
 
