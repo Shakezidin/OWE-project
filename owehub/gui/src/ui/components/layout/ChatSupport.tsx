@@ -10,8 +10,10 @@ import { ReactComponent as CrossIcon } from '../../../resources/assets/cross.svg
 import { ReactComponent as RefreshIcon } from '../../../resources/assets/cross2.svg';
 import moment from 'moment';
 
-const socket = io('https://staging.owe-hub.com');
-const ChatSupport = () => {
+const socket = io('https://staging.owe-hub.com', {
+  autoConnect: false,
+});
+const ChatSupport = ({ isAuthenticated }: any) => {
   const [messages, setMessages] = useState<any>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isChatOpen, setChatOpen] = useState(false);
@@ -50,65 +52,65 @@ const ChatSupport = () => {
   const name = localStorage.getItem('userName');
   const email = localStorage.getItem('email');
   useEffect(() => {
-    setTimeout(() => {
-      document.getElementById('need-assistace')?.classList.add('hide');
-    }, 3000);
+    if (isAuthenticated) {
+      socket.connect();
+      setTimeout(() => {
+        document.getElementById('need-assistace')?.classList.add('hide');
+      }, 3000);
 
-    socket.on('connect', () => {
-      setBotOnline(true);
-      socket.emit('channels', {
-        channelName,
-        message: newMessage,
+      socket.on('connect', () => {
+        setBotOnline(true);
+        socket.emit('channels');
       });
-    });
 
-    socket.on('disconnect', () => {
-      console.log('disconnect');
-      setBotOnline(false);
-    });
+      socket.on('disconnect', () => {
+        console.log('disconnect');
+        setBotOnline(false);
+      });
 
-    socket.on('connect_error', () => {
-      console.log('connect_error');
-      setBotOnline(false);
-    });
+      socket.on('connect_error', () => {
+        console.log('connect_error');
+        setBotOnline(false);
+      });
 
-    socket.on('channels', (event) => {
-      console.log('channels', event);
-    });
+      socket.on('channels', (event) => {
+        console.log('channels', event);
+      });
 
-    socket.on('success', (event) => {
-      console.log(event, 'EVENT');
-      if (event) {
-        const { data, event_name, message } = event;
-        if (event_name === 'start-chat') {
-          setChannelName(data.channelName);
-        }
-        if (event_name === 'new_message') {
-          addResponseMessage(message);
-        }
-        if (event_name === 'channel_deleted') {
-          addResponseMessage(
-            'Channel is deleted, Please restart the window for further discussion'
-          );
-        }
-        if (event_name === 'channels' || event_name === 'update-channels') {
-          console.log('channels', message);
-          if (message?.length) {
-            try {
-              setChannels(message);
-            } catch (error) {}
+      socket.on('success', (event) => {
+        console.log(event, 'EVENT');
+        if (event) {
+          const { data, event_name, message } = event;
+          if (event_name === 'start-chat') {
+            setChannelName(data.channelName);
+          }
+          if (event_name === 'new_message') {
+            addResponseMessage(message);
+          }
+          if (event_name === 'channel_deleted') {
+            addResponseMessage(
+              'Channel is deleted, Please restart the window for further discussion'
+            );
+          }
+          if (event_name === 'channels' || event_name === 'update-channels') {
+            console.log('channels', message);
+            if (message?.length) {
+              try {
+                setChannels(message);
+              } catch (error) {}
+            }
           }
         }
-      }
-    });
-    socket.on('error', (data) => {
-      alert(JSON.stringify(data));
-    });
+      });
+      socket.on('error', (data) => {
+        alert(JSON.stringify(data));
+      });
+    }
 
-    () => {
+    return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [isAuthenticated]);
 
   const handleNewUserMessage = (newMessage: any) => {
     let project_id = 'IT Support';

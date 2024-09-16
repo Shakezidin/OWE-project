@@ -159,7 +159,6 @@ const Slack = () => {
           setSelectAllChecked(false);
           // If API call is successful, refetch commissions
           dispatch(fetchSlackConfigList(pageNumber));
-
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           socket.emit('update-channels');
@@ -193,6 +192,7 @@ const Slack = () => {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
         dispatch(fetchSlackConfigList(pageNumber));
+
         socket.emit('update-channels');
         await successSwal('Deleted', 'The data has been deleted');
       } else {

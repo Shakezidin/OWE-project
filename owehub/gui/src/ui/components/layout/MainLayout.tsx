@@ -44,7 +44,7 @@ const MainLayout = () => {
   useEffect(() => {
     const user = localStorage.getItem('authData');
     const userData = user ? JSON.parse(user) : {};
-   
+
     const token = userData?.token;
     const expirationTime = userData?.expirationTime;
     const expirationTimeInMin = userData?.expirationTimeInMin;
@@ -110,7 +110,7 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
-      <ChatSupport />
+      <ChatSupport isAuthenticated={isAuthenticated} />
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
