@@ -55,6 +55,8 @@ function startSlackListner(slackAppToken, botToken) {
     token: botToken,
   });
 
+  slackApp.start();
+
   slackApp.event("member_joined_channel", async ({ event }) => {
     console.log("User joined channel:", event);
   });
@@ -64,6 +66,7 @@ function startSlackListner(slackAppToken, botToken) {
   });
 
   slackApp.event("channel_deleted", async ({ event }) => {
+    console.log("event", event);
     if (event.type === "channel_deleted") {
       delete channels[event.channel];
       if (!userSockets.get(event.channel)) {
@@ -77,6 +80,7 @@ function startSlackListner(slackAppToken, botToken) {
   });
 
   slackApp.message(async ({ message }) => {
+    console.log("message", message);
     if (message.subtype === undefined) {
       console.log("Message received:", message);
       const job = jobs[message.channel];
@@ -84,7 +88,6 @@ function startSlackListner(slackAppToken, botToken) {
         job.cancel();
         delete jobs[message.channel];
       }
-
       if (!userSockets.get(message.channel)) {
         console.log("Channel does not exists");
         return;
@@ -95,7 +98,6 @@ function startSlackListner(slackAppToken, botToken) {
       });
     }
   });
-  slackApp.start();
 }
 let allChannels = null;
 
@@ -110,11 +112,14 @@ async function getChannels() {
     await client.connect();
     await client2.connect();
     await getChannels();
-    if (allChannels?.length)
-      startSlackListner(
-        allChannels[0].slack_app_token,
-        allChannels[0].bot_token
-      );
+    console.log("allChannels", allChannels);
+    setTimeout(() => {
+      if (allChannels?.length)
+        startSlackListner(
+          allChannels[0].slack_app_token,
+          allChannels[0].bot_token
+        );
+    }, 4000);
   } catch (error) {
     console.log(error);
   }
@@ -231,8 +236,8 @@ io.on("connection", (socket) => {
         });
       } else {
         const res =
-          await client2.query(`SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  
-                            FROM sales_metrics_schema 
+          await client2.query(`SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep
+                            FROM sales_metrics_schema
                             where unique_id = '${project_id}' AND primary_sales_rep='${user.name}'`);
         if (res?.rows?.length) {
           // Notify a designated Slack channel about the new message
