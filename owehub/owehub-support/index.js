@@ -215,7 +215,7 @@ io.on("connection", (socket) => {
 
       const user = userExists?.rows?.pop();
 
-      if (issueType === "Technical Support") {
+      if (issueType === "IT Support") {
         await web.chat.postMessage({
           channel: getChannelID(issueType),
           blocks: [
@@ -223,7 +223,7 @@ io.on("connection", (socket) => {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `:warning: *Need Technical Support*\n*Sales Rep:* ${user.name}\n*Email:* ${user.email_id}\n\nReply in channel: <#${channelId}|${channelName}>`,
+                text: `:warning: *Need IT Support*\n*Sales Rep:* ${user.name}\n*Email:* ${user.email_id}\n\nReply in channel: <#${channelId}|${channelName}>`,
               },
             },
           ],

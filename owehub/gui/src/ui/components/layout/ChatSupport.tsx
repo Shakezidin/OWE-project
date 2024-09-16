@@ -111,8 +111,8 @@ const ChatSupport = () => {
   }, []);
 
   const handleNewUserMessage = (newMessage: any) => {
-    let project_id = 'Technical Support';
-    if (!projectId && issueType !== 'Technical Support') {
+    let project_id = 'IT Support';
+    if (!projectId && issueType !== 'IT Support') {
       if (!newMessage.startsWith('OUR')) {
         return addResponseMessage('Plese enter valid Project ID');
       } else {
@@ -142,7 +142,7 @@ const ChatSupport = () => {
   useEffect(() => {
     if (issueType) {
       addUserMessage(issueType);
-      if (issueType === 'Technical Support') {
+      if (issueType === 'IT Support') {
         addResponseMessage('How can I help you?');
       } else {
         addResponseMessage('Please provide project ID');
