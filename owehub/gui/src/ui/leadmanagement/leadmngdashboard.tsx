@@ -4,6 +4,8 @@ import styles from './styles/dashboard.module.css';
 import { ICONS } from '../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../../ui/components/pagination/Pagination';
+import ArchiveModal from '../../ui/leadmanagement/Modals/LeaderManamentSucessModel';
+import ConfirmModel from '../../ui/leadmanagement/Modals/ConfirmModel';
 
 type Lead = {
   name: string;
@@ -172,6 +174,10 @@ const LeadManagementDashboard = () => {
   const [filteredLeads, setFilteredLeads] = useState(leads);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
+  const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
 
   const itemsPerPage = 5;
   const navigate = useNavigate();
@@ -226,8 +232,37 @@ const LeadManagementDashboard = () => {
     setSelectedLeads([]);
   };
 
+  const handleReschedule = (lead: any) => {
+    console.log(`Lead ${lead.name} is being rescheduled`);
+    handleFilterClick('Pending'); // Switch to the "Pending" tab
+  };
+  
+
+  const handleArchive = (lead: Lead) => {
+    setLeadToArchive(lead); // Store the lead to be archived
+    setShowArchiveModal(true); // Show the modal
+  };
+
+  const handleDetailModal= (lead: Lead) => {
+    setShowConfirmModal(true); // Show detail modal
+  };
+  console.log("currentFilter",currentFilter)
+  
+
   return (
     <div className={styles.dashboard}>
+      {showConfirmModal && (
+        <ConfirmModel
+        // isOpen={filterOPen} handleClose={filterClose}
+        />
+      )}
+
+      {showArchiveModal && (
+        <ArchiveModal
+        // isOpen={filterOPen} handleClose={filterClose}
+        />
+      )}
+
       <div className={styles.chartGrid}>
         <div className={styles.card}>
           <div className={styles.cardHeader}>
@@ -306,36 +341,10 @@ const LeadManagementDashboard = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-
         </div>
       </div>
       
       <div className={styles.card}>
-        {/* <div className={styles.cardHeader}>
-          <div className={styles.buttonGroup}>
-            {['Pending', 'Accepted', 'Sent', 'Declined'].map((status) => (
-              <button
-                key={status}
-                className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}`}
-                onClick={() => handleFilterClick(status)}
-              >
-                <p className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}>
-                  {getLeadCount(status)}
-                </p>
-                {status}
-              </button>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <div className={styles.filtericon} onClick={handleHistory}>
-              <img src={ICONS.refreshLeadMgmt} alt="" />
-            </div>
-            <div className={styles.filtericon} onClick={handleAddLead}>
-              <img src={ICONS.AddIconSr} alt="" />
-            </div>
-          </div>
-        </div> */}
-
         <div className={styles.cardHeader}>
           {selectedLeads.length === 0 ? (
             <>
@@ -385,7 +394,7 @@ const LeadManagementDashboard = () => {
         <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}>
+                <tr key={index} className={styles.history_lists} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
                   <td className={styles.history_list_inner}>
                     <label>
                       <input
@@ -408,8 +417,9 @@ const LeadManagementDashboard = () => {
                     
                     {lead.status === 'Declined' && (
                       <div className={styles.actionButtons}>
-                        <button onClick={() => {}} className={styles.rescheduleButton}>Reschedule</button>
-                        <button onClick={() => {}} className={styles.archiveButton}>Archive</button>
+                        <button onClick={() => handleReschedule(lead)} className={styles.rescheduleButton}>Reschedule</button>
+                        <button onClick={() => handleArchive(lead)} className={styles.archiveButton}>Archive</button>
+
                       </div>
                     )}
                   </td>
@@ -438,7 +448,6 @@ const LeadManagementDashboard = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };
