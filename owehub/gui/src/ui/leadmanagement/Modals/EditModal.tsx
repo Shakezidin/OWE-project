@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classes from '../styles/confirmmodal.module.css';
 import Input from '../../components/text_input/Input';
 import { validateEmail } from '../../../utiles/Validation';
@@ -14,10 +14,18 @@ interface EditModalProps {
 }
 
 const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
-    const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [emailError, setEmailError] = useState('');
-    
-   
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            setIsVisible(true);
+        } else {
+            setTimeout(() => setIsVisible(false), 300);
+        }
+    }, [isOpen]);
+
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -63,11 +71,28 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
             setErrors(err);
         }
     };
+    const handleConfrm = () => {
+        onClose();
+    }
+
+    useEffect(() => {
+        const handleEscapeKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleEscapeKey);
+
+        return () => {
+            document.removeEventListener('keydown', handleEscapeKey);
+        };
+    }, [isOpen, onClose]);
 
     return (
         <>
-            {isOpen && (
-                <div className={classes.editmodal_transparent_model}>
+            {(isOpen || isVisible) && (
+                <div className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}>
                     <div className={classes.customer_wrapper_list_edit}>
 
                         <div className={classes.Edit_DetailsMcontainer}>
@@ -127,7 +152,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
                                     onChange={handleInputChange}
                                     name="first_name"
                                     maxLength={100}
-                                    // backgroundColor="#9cc3fb"
+                                // backgroundColor="#9cc3fb"
                                 />
                                 <Input
                                     type="text"
@@ -136,7 +161,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
                                     onChange={handleInputChange}
                                     name="first_name"
                                     maxLength={100}
-                                    // backgroundColor="#9cc3fb"
+                                // backgroundColor="#9cc3fb"
                                 />
                                 <Input
                                     type="text"
@@ -145,7 +170,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
                                     onChange={handleInputChange}
                                     name="first_name"
                                     maxLength={100}
-                                    // backgroundColor="#9cc3fb"
+                                // backgroundColor="#9cc3fb"
                                 />
                             </div>
 
@@ -153,6 +178,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
                                 <button
                                     className={classes.self}
                                     style={{ color: '#fff', border: 'none', fontWeight: "500", fontSize: "14px" }}
+                                    onClick={handleConfrm}
                                 >
                                     CONFIRM
                                 </button>
