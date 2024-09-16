@@ -178,17 +178,19 @@
 
 .DetailsMcontainer {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     width: auto;
     height: auto;
-    height: 112px;
     padding: 12px;
     border: 1px solid #377CF6;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
     background-color: #EEF5FF;
+}
+
+.pers_det_top{
+    display: flex;
+    justify-content: space-between;
 }
 
 .main_name {
@@ -389,4 +391,74 @@ font-weight: 500;
 
 .whydeniedDiv{
     margin-top: 6.7%;
+}
+
+.notEditable{
+    display: flex;
+    justify-content: space-between;
+}
+.Edit_DetailsMcontainer {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    border: 1px solid #377CF6;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #EEF5FF;
+}
+.editmodal_transparent_model {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.553);
+    justify-content: center;
+    align-items: center;
+    z-index: 102;
+    transition: all 0.3s ease;
+  }
+
+  .customer_wrapper_list_edit {
+    flex-basis: calc(100%);
+    border-radius: 8px;
+    max-width: 593px;
+    height: 580px;
+}
+
+.edit_closeicon{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+.edit_modal_button{
+    width: 60px;
+    display: flex;
+    flex-direction: row;
+    padding: 2px 8px 2px 8px;
+    border-radius: 12px;
+    background-color: #377CF6;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    margin-top: -18px;
+    transition: all 0.3s ease;
+}
+.edit_modal_button:hover{
+    transform: scale(1.06);
+    background-color: #0054e4;
+}
+.edit_modal_open{
+    display: flex;
+    justify-content: flex-end;
+}
+.inputFields{
+    padding: 0px 14px 0px 14px;
+    
 }
