@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import classes from "../styles/LeadManagementSucess.module.css";
 import { useNavigate } from 'react-router-dom';
-import ConfirmationICON from "./ConfirmationICON.svg"
+import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
+
 
 // interface TableProps {
 //   handleClose: () => void;

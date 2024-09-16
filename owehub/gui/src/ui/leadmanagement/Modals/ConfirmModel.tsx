@@ -9,10 +9,11 @@ import DoneLogo from './Modalimages/DoneLogo.png';
 import FileAttach from "./Modalimages/FileAttach.png"
 import EditModal from './EditModal';
 import { RiEdit2Line } from 'react-icons/ri';
+import AppointmentScheduler from './AppointmentScheduler';
 
 // const LeadManamentSucessModel: React.FC<TableProps> = ({
 const ConfirmaModel = () => {
-    const [visibleDiv, setVisibleDiv] = useState(1);
+    const [visibleDiv, setVisibleDiv] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleOpenModal = () => {
@@ -79,7 +80,8 @@ const ConfirmaModel = () => {
                             </div>
                         </div>
                     </div>
-                   
+                    {visibleDiv === 0 && <AppointmentScheduler setVisibleDiv={setVisibleDiv} />}
+
                     {visibleDiv === 1 && (
                         <>
                             {' '}
