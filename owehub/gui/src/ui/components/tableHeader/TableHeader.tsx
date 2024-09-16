@@ -5,6 +5,7 @@ import { useAppSelector } from '../../../redux/hooks';
 import { useLocation } from 'react-router-dom';
 import { RiFilterLine } from 'react-icons/ri';
 import Switch from '../../components/Switch';
+import { RiDeleteBinLine } from 'react-icons/ri';
 interface TableProps {
   title: string;
   onPressViewArchive: (() => void) | null;
@@ -67,7 +68,11 @@ const TableHeader = (props: TableProps) => {
                 style={{ cursor: isAnyRowSelected ? 'pointer' : 'not-allowed' }}
               >
                 {archiveText === 'Delete' ? (
-                  <img src={ICONS.deleteIcon} alt="" />
+                  <RiDeleteBinLine
+                    color="white"
+                    style={{ marginBottom: 2, marginRight: 2 }}
+                    size={18}
+                  />
                 ) : (
                   <img src={ICONS.ARCHIVE} alt="" />
                 )}
