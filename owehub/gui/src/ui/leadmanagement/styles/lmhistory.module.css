@@ -130,7 +130,8 @@
   right: 22px;
   position: absolute;
   transform: translateY(-50%);
-  width: 11vw;
+  /* width: 9vw; */
+  min-width: 9vw;
   height: 1px;
   background-color: #929292;
 }
