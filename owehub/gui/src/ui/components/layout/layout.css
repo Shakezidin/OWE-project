@@ -22,6 +22,11 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+.greet-cross {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
 
 .calendar-logo {
   height: 2.6rem;
@@ -362,6 +367,7 @@
 .greeting-container {
   padding: 15px;
   padding-top: 0;
+  margin-top: 20px;
 }
 .greeting h3 {
   background: linear-gradient(90deg, #377cf6 0%, #129dbb 13%, #7ac522 50%);
@@ -419,14 +425,14 @@
 }
 .rcs-option-container:hover {
   background-color: #377cf6;
-  border: none;
+  border-color: #377cf6;
 }
 .rcs-option-container:hover h5,
 .rcs-option-container:hover h6 {
   color: #fff !important;
 }
 .rcw-message {
-  margin: 10px;
+  margin: 5px;
   display: flex;
   align-items: end;
   white-space: pre-wrap;
@@ -450,7 +456,7 @@
   border-radius: 12px;
   border-bottom-right-radius: 0px;
   max-width: 215px;
-  padding: 10px 15px;
+  padding: 8px 12px;
   text-align: left;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -469,12 +475,12 @@
   background-color: #e3e8ef;
   border-radius: 10px;
   max-width: 215px;
-  padding: 10px 15px;
+  padding: 8px 12px;
   text-align: left;
   border-bottom-left-radius: 0px;
 }
 .rcw-message-text p {
-  font-size: 14px;
+  font-size: 12px;
   margin: 0;
 }
 .rcw-message-text img {
@@ -524,7 +530,7 @@
   color: #fff;
 }
 .rcw-conversation-container .rcw-header {
-  background-color: #1950b0;
+  background-color: #f3f3f3;
   border-radius: 10px 10px 0 0;
   color: #000;
   display: flex;
@@ -540,8 +546,8 @@
 }
 .online-container {
   position: relative;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
 }
 .online-container img {
   width: 100%;
@@ -550,38 +556,29 @@
 }
 .online-dot {
   background: #39d10d;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  border: 1px solid white;
   position: absolute;
   bottom: 0;
   right: 0;
-  border: 1px solid white;
+}
+.offline-dot {
+  background: red;
 }
 .bot-icons {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
-.bot-icons img {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  cursor: pointer;
-  padding: 2px;
-}
-
-.bot-icons img:first-child {
-  width: 24px;
-  height: 24px;
-}
 .rcw-conversation-container .rcw-title {
   font-size: 16px;
   margin: 0;
   font-weight: 500;
-  color: #fff;
+  color: #000;
 }
 
 .rcw-conversation-container .avatar {
@@ -610,7 +607,7 @@
     position: relative;
   }
   .rcw-conversation-container .rcw-title {
-    padding: 0 0 15px;
+    font-size: 14px;
   }
   .rcw-conversation-container .rcw-close {
     width: 20px;
@@ -761,6 +758,9 @@
   background: transparent;
   border: 0;
   cursor: pointer;
+}
+.rcw-send:hover {
+  transform: scale(1.2);
 }
 .rcw-picker-btn .rcw-send-icon,
 .rcw-send .rcw-send-icon {
@@ -1104,4 +1104,68 @@
 }
 .search-container {
   gap: 1.5rem;
+}
+
+.popconfirm-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#trigger-btn {
+  border: none;
+  cursor: pointer;
+}
+
+#popconfirm {
+  position: absolute;
+  top: 30px;
+  right: -40px;
+  background-color: white;
+  padding: 12px 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  width: 220px;
+  text-align: center;
+  z-index: 1000;
+}
+
+#popconfirm p {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 12px;
+}
+
+.confirm {
+  background-color: #1950b0;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.no-btn {
+  color: #1950b0;
+  background-color: transparent;
+  border: 1px solid #1950b0;
+  padding: 3px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.confirm:hover,
+.no-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+.popconfirm-container svg:hover,
+.greet-cross svg:hover {
+  transform: scale(1.15);
+}
+
+.hidden {
+  display: none;
 }

@@ -148,10 +148,10 @@ const CreateSlackConfig: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Issue Type"
+                    label="Channel Type"
                     value={createSlackConfigData.issue_type}
                     name="issue_type"
-                    placeholder={'Enter issue type'}
+                    placeholder={'Enter channel type'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors.issue_type && (
@@ -162,10 +162,10 @@ const CreateSlackConfig: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Channel Name"
+                    label="Channel Description"
                     value={createSlackConfigData.channel_name}
                     name="channel_name"
-                    placeholder={'Enter channel name'}
+                    placeholder={'Enter channel description'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors.channel_name && (
