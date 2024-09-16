@@ -63,6 +63,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   const handleMouseLeave1 = () => {
     setIsHovered1(false);
   };
+  const totalOnboarding = onboardingList.reduce((acc, curr) => acc + curr.value, 0);
 
   const isTablet = useMatchMedia('(max-width: 1024px)');
   return (
@@ -146,15 +147,19 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
 
           <div>
             {!!onboardingList.length && (
+              <div className='flex items-center mb2 justify-between'>
+ 
               <h4
-                className={`${isTablet ? '' : 'h4'} mb2 text-dark`}
+                className={`${isTablet ? '' : 'h4'}  text-dark`}
                 style={{
                   fontWeight: '600',
                   fontSize: isTablet ? 14 : undefined,
                 }}
               >
-                Number of users
+            {totalOnboarding}  -      Number of users  
               </h4>
+            
+              </div>
             )}
             {onboardingList.map((user) => {
               return (
