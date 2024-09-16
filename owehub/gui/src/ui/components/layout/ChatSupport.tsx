@@ -9,6 +9,7 @@ import need from '../../../resources/assets/need.png';
 import { ReactComponent as CrossIcon } from '../../../resources/assets/cross.svg';
 import { ReactComponent as RefreshIcon } from '../../../resources/assets/cross2.svg';
 import moment from 'moment';
+import Loading from '../loader/Loading';
 
 const socket = io('https://staging.owe-hub.com', {
   autoConnect: false,
@@ -49,10 +50,12 @@ const ChatSupport = ({ isAuthenticated }: any) => {
   const [issueType, setIssueType] = useState<any>(null);
   const [projectId, setProjectId] = useState<any>(null);
   const [botOnline, setBotOnline] = useState(false);
+  const [loading, setLoading] = useState(false);
   const name = localStorage.getItem('userName');
   const email = localStorage.getItem('email');
   useEffect(() => {
     if (isAuthenticated) {
+      setLoading(true);
       socket.connect();
       setTimeout(() => {
         document.getElementById('need-assistace')?.classList.add('hide');
@@ -66,11 +69,13 @@ const ChatSupport = ({ isAuthenticated }: any) => {
       socket.on('disconnect', () => {
         console.log('disconnect');
         setBotOnline(false);
+        setLoading(false);
       });
 
       socket.on('connect_error', () => {
         console.log('connect_error');
         setBotOnline(false);
+        setLoading(false);
       });
 
       socket.on('channels', (event) => {
@@ -93,7 +98,7 @@ const ChatSupport = ({ isAuthenticated }: any) => {
             );
           }
           if (event_name === 'channels' || event_name === 'update-channels') {
-            console.log('channels', message);
+            setLoading(false);
             if (message?.length) {
               try {
                 setChannels(message);
@@ -104,6 +109,7 @@ const ChatSupport = ({ isAuthenticated }: any) => {
       });
       socket.on('error', (data) => {
         alert(JSON.stringify(data));
+        setLoading(false);
       });
     }
 
@@ -289,26 +295,28 @@ const ChatSupport = ({ isAuthenticated }: any) => {
                   </h4>
                 ) : null}
                 <div className="rcs-options-container">
-                  {!channels?.length ? (
+                  {loading ? <Loading /> : null}
+                  {!loading && !channels?.length ? (
                     <h4 className="choose-option">
                       No communication channel is configured. Please contact
                       your IT administrator for further assistance.
                     </h4>
                   ) : null}
-                  {channels?.map(({ name, issueType }) => (
-                    <div
-                      className="rcs-option-container"
-                      onClick={() => setIssueType(issueType)}
-                      style={
-                        name === 'Coming Soon'
-                          ? { pointerEvents: 'none', background: '#aaa' }
-                          : {}
-                      }
-                    >
-                      <h5>{issueType}</h5>
-                      <h6>{name}</h6>
-                    </div>
-                  ))}
+                  {!loading &&
+                    channels?.map(({ name, issueType }) => (
+                      <div
+                        className="rcs-option-container"
+                        onClick={() => setIssueType(issueType)}
+                        style={
+                          name === 'Coming Soon'
+                            ? { pointerEvents: 'none', background: '#aaa' }
+                            : {}
+                        }
+                      >
+                        <h5>{issueType}</h5>
+                        <h6>{name}</h6>
+                      </div>
+                    ))}
                 </div>
               </div>
             ) : null}
