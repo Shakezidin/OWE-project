@@ -8,7 +8,8 @@
 
 import React from 'react';
 import './ActionButton.css';
-import { ICONS } from '../../../resources/icons/Icons';
+// import { ICONS } from '../../../resources/icons/Icons';
+import { MdAdd } from "react-icons/md";
 
 interface ActionButtonProps {
   title: string;
@@ -25,11 +26,12 @@ export const AddNewButton = (props: ActionButtonProps) => {
         // className="hover-btn"
         onClick={onClick}
       >
-        <img
+        {/* <img
           src={ICONS.AddIcon}
           alt=""
-          style={{ width: '14px', height: '14px' }}
-        />{' '}
+          style={{ width: '12px', height: '12px' }}
+        /> */}
+        <MdAdd size={16} />
         <span className="mobileTitle">{title}</span>
       </button>
     </div>

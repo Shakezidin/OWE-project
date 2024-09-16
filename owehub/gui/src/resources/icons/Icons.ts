@@ -139,8 +139,7 @@ import userSwap from '../../resources/assets/user_swap.png';
 import pendingqc from '../../resources/assets/pendingqcntp.svg';
 import refreshLeadMgmt from '../../resources/assets/refresh-lead-mgmt.svg';
 import seemore from '../../resources/assets/see_more_lm.svg';
-
-
+import pdf from '../../resources/assets/pdf.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -297,5 +296,5 @@ export const ICONS = {
   Pendingqc: pendingqc,
   refreshLeadMgmt: refreshLeadMgmt,
   SeeMore: seemore,
-  
+  pdf: pdf,
 };

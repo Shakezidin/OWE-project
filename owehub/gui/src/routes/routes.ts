@@ -51,6 +51,7 @@ export const ROUTES = {
   CONFIG_APPDA: '/config/ap-pda',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
+  LIBRARY: '/library',
 
   // other routes
   REPORT: '/report',
