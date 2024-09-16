@@ -20,6 +20,7 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import { SlackColumn } from '../../../../resources/static_data/configureHeaderData/SlackColumn';
 import CreateSlackConfig from './createsSlackConfig';
 import { socket } from '../../../components/layout/ChatSupport';
+import SecurityToken from './SecurityToken';
 
 const Slack = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -318,12 +319,14 @@ const Slack = () => {
                     </td>
 
                     <td style={{ fontWeight: '500', color: 'black' }}>
-                      <div className="flex-check">{el.bot_token || 'N/A'}</div>
+                      <div className="flex-check">
+                        <SecurityToken token={el.bot_token || 'N/A'} />
+                      </div>
                     </td>
 
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
-                        {el.slack_app_token || 'N/A'}
+                        <SecurityToken token={el.slack_app_token || 'N/A'} />
                       </div>
                     </td>
 

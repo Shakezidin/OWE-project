@@ -1148,3 +1148,18 @@
 .hidden {
   display: none;
 }
+
+.copy_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.copy_container svg {
+  cursor: pointer;
+}
+
+.copy_container svg:hover {
+  color: #377cf6;
+  transform: scale(1.2);
+}
