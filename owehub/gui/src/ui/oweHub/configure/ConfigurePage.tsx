@@ -61,6 +61,7 @@ const ConfigurePage: React.FC = () => {
         { title: 'Ap Adv', route: ROUTES.CONFIG_APADV },
         { title: 'Ap Ded', route: ROUTES.CONFIG_APDED },
         { title: 'Ap Oth', route: ROUTES.CONFIG_APOTH },
+        { title: 'Ap Dealer', route: ROUTES.CONFIG_APDEALER },
       ],
       state: useState<boolean>(true),
     },

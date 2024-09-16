@@ -50,7 +50,7 @@ const UserManagement: React.FC = () => {
   const { authData } = useAuth();
 
 ;
-  const [selectedOption, setSelectedOption] = useState(USERLIST[0]);
+  const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
@@ -99,6 +99,7 @@ const UserManagement: React.FC = () => {
     setActiveSalesRep('');
     setIsClicked(false);
     setIsClicked1(false);
+    
   };
 
   const [isClicked, setIsClicked] = useState(false);
@@ -175,10 +176,17 @@ const UserManagement: React.FC = () => {
   const handleSelectChange = useCallback(
     (selectOption: UserDropdownModel) => {
       setSelectedOption(selectOption);
+    
     },
     [selectedOption]
   );
 
+  useEffect(() => {
+    if (activeSalesRep) {
+      const salesRepOption = ALL_USER_ROLE_LIST.find(option => option.value === 'Sale Representative');
+      setSelectedOption(salesRepOption);
+    }
+  }, [activeSalesRep]);
   /** check role  */
   const onChangeRole = async (role: string, value: string) => {
     console.log('working on first change');

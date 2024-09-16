@@ -76,6 +76,7 @@ import ApAdv from './ui/oweHub/configure/apAdv/ApAdv';
 import ApDed from './ui/oweHub/configure/apDed/ApDed';
 import ApOth from './ui/oweHub/configure/apOth/ApOth';
 import ApPda from './ui/oweHub/configure/apPda/ApPda';
+import ApDealer from './ui/oweHub/configure/apDealer/AddApDealer';
 import TeamManagement from './ui/oweHub/teammanagement/dashboard';
 import TeamTable from './ui/oweHub/teammanagement/teamtable';
 import Leaderboard from './ui/leaderboard';
@@ -149,6 +150,8 @@ function App() {
       { path: ROUTES.CONFIG_APDED, element: <ApDed /> },
       { path: ROUTES.CONFIG_APOTH, element: <ApOth /> },
       { path: ROUTES.CONFIG_APPDA, element: <ApPda /> },
+      { path: ROUTES.CONFIG_APPDA, element: <ApPda /> },
+      {path:ROUTES.CONFIG_APDEALER, element:<ApDealer/>},
     ];
   }
 

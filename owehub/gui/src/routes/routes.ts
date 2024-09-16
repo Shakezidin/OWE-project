@@ -49,6 +49,7 @@ export const ROUTES = {
   CONFIG_APDED: '/config/ap-ded',
   CONFIG_APOTH: '/config/ap-oth',
   CONFIG_APPDA: '/config/ap-pda',
+  CONFIG_APDEALER:'/config/ap-dealer',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',

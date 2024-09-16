@@ -83,6 +83,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     const data = {
       page_number: currentPage1,
       page_size: pageSize1,
+      sales_rep_status: activeSalesRep,
       filters: [
         {
           Column: 'role_name',
@@ -103,7 +104,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     return () => {
       dispatch(resetOpt());
     };
-  }, [dispatch, currentPage1, pageSize1]);
+  }, [dispatch, currentPage1, pageSize1, activeSalesRep]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
@@ -376,7 +377,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           {inactiveSalesRep ? (
             <h3>{inactiveSalesRep.toUpperCase()}</h3>
           ) : activeSalesRep ? (
-            <h3>{activeSalesRep.toUpperCase()}</h3>
+            <h3>{activeSalesRep } Sales Rep</h3>
           ) : (
             <h3>{selectedOption.label?.toUpperCase()}</h3>
           )}
@@ -397,7 +398,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           </div>
 
           <div className="user_user-type">
-            {!(inactiveSalesRep || activeSalesRep) && (
+            {!(inactiveSalesRep ) && (
               <div
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}
