@@ -174,6 +174,9 @@ const ChatSupport = () => {
     document
       .getElementById('rcw-conversation-container')
       ?.classList.toggle('hide');
+    document
+      .getElementById('rcw-widget-container')
+      ?.classList.toggle('rcs-full-screen');
     document.getElementById('need-assistace')?.classList.add('hide');
   }
   function handleRefresh() {
@@ -191,6 +194,7 @@ const ChatSupport = () => {
   return (
     <div style={isChatOpen ? style : {}} onClick={handleChatHide}>
       <div
+        id="rcw-widget-container"
         className="rcw-widget-container"
         onClick={(e) => e.stopPropagation()}
       >
@@ -280,10 +284,18 @@ const ChatSupport = () => {
                   <h3>Hello, {name}</h3>
                   <h4>How can i assist you today?</h4>
                 </div>
-                <h4 className="choose-option">
-                  Please select one of the following options:
-                </h4>
+                {channels?.length ? (
+                  <h4 className="choose-option">
+                    Please select one of the following options:
+                  </h4>
+                ) : null}
                 <div className="rcs-options-container">
+                  {!channels?.length ? (
+                    <h4 className="choose-option">
+                      No communication channel is configured. Please contact
+                      your IT administrator for further assistance.
+                    </h4>
+                  ) : null}
                   {channels?.map(({ name, issueType }) => (
                     <div
                       className="rcs-option-container"

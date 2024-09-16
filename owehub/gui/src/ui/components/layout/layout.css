@@ -26,6 +26,7 @@
   position: absolute;
   right: 10px;
   top: 5px;
+  z-index: 1000;
 }
 
 .calendar-logo {
@@ -588,19 +589,7 @@
   margin-right: 10px;
   vertical-align: middle;
 }
-.rcw-full-screen .rcw-header {
-  border-radius: 0;
-  flex-shrink: 0;
-  position: relative;
-}
-.rcw-full-screen .rcw-title {
-  padding: 0 0 15px;
-}
 
-.rcw-full-screen .rcw-close {
-  width: 20px;
-  height: 20px;
-}
 @media screen and (max-width: 800px) {
   .rcw-conversation-container .rcw-header {
     flex-shrink: 0;
@@ -694,10 +683,7 @@
 .avatar-2 {
   background-color: transparent !important;
 }
-.rcw-full-screen .rcw-messages-container {
-  height: 100%;
-  max-height: none;
-}
+
 @media screen and (max-width: 800px) {
   .rcw-messages-container {
     height: 100%;
@@ -832,17 +818,13 @@
 .emoji-mart-preview {
   display: none;
 }
-.rcw-full-screen .rcw-conversation-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+
 @media screen and (max-width: 800px) {
   .rcw-conversation-container {
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-width: 365px;
+    min-width: calc(100% - 40px);
   }
 }
 .rcw-launcher .rcw-badge {
@@ -1061,24 +1043,21 @@
   right: 0;
   z-index: 9999;
 }
-.rcw-full-screen {
-  height: 100vh;
-  margin: 0;
-  max-width: none;
-  width: 100%;
-}
+
 @media screen and (max-width: 800px) {
   .rcw-widget-container {
-    margin: 0 10px 10px 0;
     max-width: none;
     width: 100%;
-    height: calc(100vh - 70px);
     display: flex;
     justify-content: center;
     align-items: end;
     background-color: transparent;
     padding: 20px 0;
-    bottom: auto;
+    bottom: 0;
+    margin: 0 20px 20px 0;
+  }
+  .rcs-full-screen {
+    height: calc(100vh - 70px);
   }
 }
 .rcw-previewer .rcw-message-img {
