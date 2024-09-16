@@ -3,8 +3,9 @@ import styles from './styles/lmhistory.module.css';
 import { ICONS } from '../../resources/icons/Icons';
 import SortingDropDown from './components/SortingDropDown';
 import { useNavigate } from 'react-router-dom';
-import LeadCalender from './components/Calnder';
+import LeadCalender from './components/Calender';
 import Pagination from '../components/pagination/Pagination';
+import useMatchMedia from '../../hooks/useMatchMedia';
 
 interface LeadCalendarProps {
   onDateSelect: (date: Date | null) => void;
@@ -70,6 +71,9 @@ const LeradManagementHistory = () => {
     };
   }, []);
 
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
+
 
   return (
     <div className={`flex justify-between mt2 ${styles.h_screen}`}>
@@ -100,7 +104,12 @@ const LeradManagementHistory = () => {
               <div className={styles.sort_drop}>
                 <SortingDropDown />
               </div>
-
+              {(isMobile && 
+              <div className={styles.calender}>
+                <img src={ICONS.LeadMngExport} style={{marginTop:"-2px"}} alt="" height={22} width={22}/>
+              </div>
+              )}
+              {(!isMobile && 
               <div className="iconsSection2-confex">
                 <button type="button">
                   <svg
@@ -115,6 +124,7 @@ const LeradManagementHistory = () => {
                   Export
                 </button>
               </div>
+              )}
               <div className={styles.hist_ret} onClick={handleCross}>
                 <img
                   src={ICONS.cross}
@@ -132,38 +142,47 @@ const LeradManagementHistory = () => {
         <div className={styles.history_list}>
           <div style={see ? { width: "100%", backgroundColor: '#EEF5FF', borderTopLeftRadius: "8px", borderTopRightRadius: "8px" } : {}} className={styles.history_lists}>
             <div className={styles.history_list_inner}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={handleCheckboxChange}
-                  style={{
-                    width: '16.42px',
-                    height: '16px',
-                    gap: '0px',
-                    borderRadius: '16px',
-                    border: '1px solid #797979',
-                  }}
-                />
-              </label>
-              <div className={styles.user_name}>
-                <h2>Sanju samson</h2>
-                <p>Appointment Sent</p>
+              <div className={styles.hist_checkname}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                    style={{
+                      width: '16.42px',
+                      height: '16px',
+                      gap: '0px',
+                      borderRadius: '16px',
+                      border: '1px solid #797979',
+                    }}
+                  />
+                </label>
+                <div className={styles.user_name}>
+                  <h2>Sanju samson</h2>
+                  <p>Appointment Sent</p>
+                </div>
               </div>
-              <div className={styles.phone_number}>+1 82-26-2356445</div>
-              <div className={styles.email}>
-                <p>sanjusamson19@gmail.com</p>
-                <img height={15} width={15} src={ICONS.complete} alt="img" />
-              </div>
-              <div className={styles.address}>
-                12778 Domingo Ct, Parker, Arizona .CO 12312
-              </div>
+
+              {(!isMobile &&
+                <>
+                  <div className={styles.phone_number}>+1 82-26-2356445</div>
+                  <div className={styles.email}>
+                    <p>sanjusamson19@gmail.com</p>
+                    <img height={15} width={15} src={ICONS.complete} alt="img" />
+                  </div>
+                  <div className={styles.address}>
+                    12778 Domingo Ct, Parker, Arizona .CO 12312
+                  </div>
+                </>
+              )}
+
+
               <div className={styles.see_more} onClick={handlesee}>
                 <p>{see ? 'See Less' : 'See More'}</p>
                 <img src={ICONS.SeeMore} alt="img" style={{ transform: see ? 'rotate(180deg)' : 'none' }} />
               </div>
             </div>
-            {see && (
+            {!isMobile && see && (
               <>
                 <div style={{ padding: "0px 12px" }}>
                   <div style={{ backgroundColor: "#fff" }} className={styles.history_list_activity}>
@@ -226,9 +245,83 @@ const LeradManagementHistory = () => {
                 </div>
               </>
             )}
+            {isMobile && see && (
+              <>
+                <div className={styles.personal_info_mob}>
+                  <div className={styles.phone_number}>+1 82-26-2356445</div>
+                  <div className={styles.email}>
+                    <p>sanjusamson19@gmail.com</p>
+                    <img height={15} width={15} src={ICONS.complete} alt="img" />
+                  </div>
+                  <div className={styles.address}>
+                    12778 Domingo Ct, Parker, Arizona .CO 12312
+                  </div>
+                </div>
+
+                <div style={{ padding: "0px 12px" }}>
+                  <div style={{ backgroundColor: "#fff" }} className={styles.history_list_activity_mob}>
+                    <div className={styles.history_list_head}>Activity</div>
+
+                    <div className={styles.history_list_activity_det}>
+                      <div className={styles.circle_with_line}>
+                        <div className={styles.line_mob}></div>
+                        <div className={styles.circle_mob}></div>
+                      </div>
+                      <div className={styles.activity_info}>
+                        <div className={styles.act_head}>Appointment Schedule</div>
+                        <div className={styles.act_date}>27 Aug, 2024</div>
+                      </div>
+                    </div>
+                    <div className={styles.history_list_activity_det}>
+                      <div className={styles.circle_with_line}>
+                        <div className={styles.circle_mob}></div>
+                        <div className={styles.line_mob}></div>
+                      </div>
+                      <div className={styles.activity_info}>
+                        <div className={styles.act_head}>Appointment Schedule</div>
+                        <div className={styles.act_date}>27 Aug, 2024</div>
+                      </div>
+                    </div>
+
+                    <div className={styles.history_list_activity_det}>
+                      <div className={styles.circle_with_line}>
+                        <div className={styles.circle_mob}></div>
+                        <div className={styles.line_mob}></div>
+                      </div>
+                      <div className={styles.activity_info}>
+                        <div className={styles.act_head}>Appointment Accepted</div>
+                        <div className={styles.act_date}>29 Aug, 2024</div>
+                      </div>
+                    </div>
+
+                    <div className={styles.history_list_activity_det}>
+                      <div className={styles.circle_with_line}>
+                        <div className={styles.circle_mob}></div>
+                        <div className={styles.line_mob}></div>
+                      </div>
+                      <div className={styles.activity_info}>
+                        <div className={styles.act_head}>Appointment Date</div>
+                        <div className={styles.act_date}>30 Aug, 2024</div>
+                      </div>
+                    </div>
+
+                    <div className={styles.history_list_activity_det}>
+                      <div className={styles.circle_with_line}>
+                        <div className={styles.circle_mob}></div>
+                        <div className={styles.line_mob}></div>
+                      </div>
+                      <div className={styles.activity_info}>
+                        <div className={styles.act_head}>Deal Won</div>
+                        <div className={styles.act_date}>1 Sep, 2024</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
-          <div className={styles.history_lists}>
+          {/* <div className={styles.history_lists}>
             <div className={styles.history_list_inner}>
               <label>
                 <input
@@ -410,7 +503,7 @@ const LeradManagementHistory = () => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
 
 

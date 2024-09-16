@@ -7,7 +7,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const createUniqueChannelName = require("./src/utils/createUniqueChannelName");
-const getSupportChannel = require("./src/utils/getSupportChannel");
 
 const { startChatSchema } = require("./src/validations");
 const config = require("./src/config");
@@ -48,71 +47,118 @@ const channels = {};
 const userSockets = new Map();
 const jobs = {};
 
-const slackApp = new App({
-  appToken: config.slackAppToken,
-  socketMode: true,
-  token: config.botToken,
-});
+function startSlackListner(slackAppToken, botToken) {
+  if (!slackAppToken || !botToken) return;
+  const slackApp = new App({
+    appToken: slackAppToken,
+    socketMode: true,
+    token: botToken,
+  });
 
-slackApp.event("member_joined_channel", async ({ event }) => {
-  console.log("User joined channel:", event);
-});
+  slackApp.event("member_joined_channel", async ({ event }) => {
+    console.log("User joined channel:", event);
+  });
 
-slackApp.event("channel_joined", async ({ event }) => {
-  console.log("Channel joined:", event);
-});
+  slackApp.event("channel_joined", async ({ event }) => {
+    console.log("Channel joined:", event);
+  });
 
-slackApp.event("channel_deleted", async ({ event }) => {
-  console.log("Channel deleted:", event);
-  if (event.type === "channel_deleted") {
-    delete channels[event.channel];
-    if (!userSockets.get(event.channel)) {
-      console.log("Channel does not exists");
-      return;
+  slackApp.event("channel_deleted", async ({ event }) => {
+    if (event.type === "channel_deleted") {
+      delete channels[event.channel];
+      if (!userSockets.get(event.channel)) {
+        console.log("Channel does not exists");
+        return;
+      }
+      io.to(userSockets.get(event.channel)).emit("success", {
+        event_name: "channel_deleted",
+      });
     }
-    io.to(userSockets.get(event.channel)).emit("success", {
-      event_name: "channel_deleted",
-    });
-  }
-});
+  });
 
-slackApp.message(async ({ message }) => {
-  console.log(message);
-  if (message.subtype === undefined) {
-    console.log("Message received:", message);
-    const job = jobs[message.channel];
-    if (job) {
-      job.cancel();
-      console.log(jobs);
-      delete jobs[message.channel];
-      console.log(jobs);
+  slackApp.message(async ({ message }) => {
+    if (message.subtype === undefined) {
+      console.log("Message received:", message);
+      const job = jobs[message.channel];
+      if (job) {
+        job.cancel();
+        delete jobs[message.channel];
+      }
+
+      if (!userSockets.get(message.channel)) {
+        console.log("Channel does not exists");
+        return;
+      }
+      io.to(userSockets.get(message.channel)).emit("success", {
+        event_name: "new_message",
+        message: message.text,
+      });
     }
+  });
+  slackApp.start();
+}
+let allChannels = null;
 
-    if (!userSockets.get(message.channel)) {
-      console.log("Channel does not exists");
-      return;
-    }
-    io.to(userSockets.get(message.channel)).emit("success", {
-      event_name: "new_message",
-      message: message.text,
-    });
-  }
-});
-
-slackApp.start();
-
+async function getChannels() {
+  allChannels = await client.query(
+    "SELECT * from slackconfig where is_archived=false"
+  );
+  allChannels = allChannels?.rows;
+}
 (async () => {
   try {
     await client.connect();
     await client2.connect();
+    await getChannels();
+    if (allChannels?.length)
+      startSlackListner(
+        allChannels[0].slack_app_token,
+        allChannels[0].bot_token
+      );
   } catch (error) {
     console.log(error);
   }
 })();
 
+function getChannelID(issueType) {
+  if (!allChannels) {
+    throw new Error("No channels are found");
+  }
+  const channel = allChannels.find((c) => c.issue_type === issueType);
+  if (channel) {
+    return channel.channel_id;
+  }
+  throw new Error("No channels are found");
+}
+
 io.on("connection", (socket) => {
   console.log("Connection", socket.id);
   // Handle incoming chat messages from the client
+
+  socket.on("update-channels", async () => {
+    await getChannels();
+    console.log("update-channels");
+    socket.emit("success", {
+      event_name: "update-channels",
+      message: allChannels?.length
+        ? allChannels.map((c) => {
+            return { name: c.channel_name, issueType: c.issue_type };
+          })
+        : [],
+    });
+  });
+
+  socket.on("channels", () => {
+    socket.emit("success", {
+      event_name: "channels",
+      message: allChannels?.length
+        ? allChannels.map((c) => {
+            return { name: c.channel_name, issueType: c.issue_type };
+          })
+        : [],
+    });
+  });
+
   socket.on("start-chat", async (data) => {
     try {
       console.log("start-chat", data);
@@ -131,6 +177,7 @@ io.on("connection", (socket) => {
         // get info
         const result = await web.conversations.list();
 
+        console.log(result);
         // Filter channels by name
         const channel = result.channels.find((c) => c.name === channelName);
 
@@ -146,19 +193,18 @@ io.on("connection", (socket) => {
           channels[channelName] = result.channel;
         }
       }
-      console.log(channels);
       const channelId = channels[channelName].id;
 
       // Send a message to the created Slack channel
       // await web.chat.postMessage({
       //   channel: channelId,
-      //   text: message,
+      //   text: "Hi",
       // });
 
+      console.log(issueType);
       userSockets.set(channelId, socket.id);
 
       console.log("channelId", channelId);
-
       const userExists = await client.query(
         `SELECT * from user_details where email_id='${email}'`
       );
@@ -168,28 +214,50 @@ io.on("connection", (socket) => {
       }
 
       const user = userExists?.rows?.pop();
-      const res =
-        await client2.query(`SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  
-                            FROM sales_metrics_schema 
-                            where unique_id = '${project_id}' AND primary_sales_rep='${user.name}'`);
-      if (res?.rows?.length) {
-        // Notify a designated Slack channel about the new message
-        const data = res.rows.pop();
+
+      if (issueType === "Technical Support") {
         await web.chat.postMessage({
-          channel: getSupportChannel(issueType),
+          channel: getChannelID(issueType),
           blocks: [
             {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `:warning: *Issue in Project*\n*Sales Rep:* ${data.primary_sales_rep}\n*Project ID:* ${data.unique_id}\n*Customer:* ${data.customer}\n*Podio Link:* <${data.podio_link}|Project Podio>\n\nReply in channel: <#${channelId}|${channelName}>`,
+                text: `:warning: *Need Technical Support*\n*Sales Rep:* ${user.name}\n*Email:* ${user.email_id}\n\nReply in channel: <#${channelId}|${channelName}>`,
               },
             },
           ],
-          text: `${data.primary_sales_rep} has an issue in project ${data.unique_id}.`,
+          text: `${user.name} need technical support.`,
         });
       } else {
-        throw new Error("Project not found");
+        const res =
+          await client2.query(`SELECT unique_id, home_owner, customer, podio_link, primary_sales_rep  
+                            FROM sales_metrics_schema 
+                            where unique_id = '${project_id}' AND primary_sales_rep='${user.name}'`);
+        if (res?.rows?.length) {
+          // Notify a designated Slack channel about the new message
+          const data = res.rows.pop();
+          await web.chat.postMessage({
+            channel: getChannelID(issueType),
+            blocks: [
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: `:warning: *Issue in Project*\n*Sales Rep:* ${data.primary_sales_rep}\n*Project ID:* ${data.unique_id}\n*Customer:* ${data.customer}\n*Podio Link:* <${data.podio_link}|Project Podio>\n\nReply in channel: <#${channelId}|${channelName}>`,
+                },
+              },
+            ],
+            text: `${data.primary_sales_rep} has an issue in project ${data.unique_id}.`,
+          });
+        } else {
+          socket.emit("success", {
+            event_name: "new_message",
+            message:
+              "Sorry, We did'nt find any project with the provided Id, please try again.",
+          });
+          return;
+        }
       }
 
       const runAt = new Date(Date.now() + ms(config.noReplyRespondTime)); // 2 minutes in the future
