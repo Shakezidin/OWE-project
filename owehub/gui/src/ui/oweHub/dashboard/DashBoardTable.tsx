@@ -133,9 +133,7 @@ const DashBoardTable = ({
                   <tr key={index}>
                     <td
                       style={{ fontWeight: '500' }}
-                      onClick={() => {
-                        setOpen(true);
-                      }}
+                      
                     >
                       <div className="flex-check">
                         <CheckBox
@@ -154,7 +152,9 @@ const DashBoardTable = ({
                             }
                           }}
                         />
-                        <span className="zoom-out-td">{el.unique_id}</span>
+                        <span className="zoom-out-td" onClick={() => {
+                        setOpen(true);
+                      }}>{el.unique_id}</span>
                       </div>
                     </td>
 

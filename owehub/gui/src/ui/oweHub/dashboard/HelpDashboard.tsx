@@ -41,7 +41,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
 
-  console.log(data, "dangfk")
+  
   return (
     <>
       <div className="transparent-model-down">
