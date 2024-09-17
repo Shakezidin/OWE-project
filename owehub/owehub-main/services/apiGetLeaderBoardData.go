@@ -47,6 +47,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		totalSale             float64
 		totalInstall          float64
 		totalCancel           float64
+		ownerdealerName       string
 	)
 
 	log.EnterFn(0, "HandleGetLeaderBoardDataRequest")
@@ -138,6 +139,35 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	if dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer" {
+		dealerOwnerFetchQuery = fmt.Sprintf(`
+			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
+			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			where ud.email_id = '%v';
+		`, dataReq.Email)
+
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+			FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
+			return
+		}
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
+			FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+			return
+		}
+
+		dealerName1, ok := data[0]["dealer_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to convert dealer_name to string for data: %v", data[0])
+			FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
+			return
+		}
+
+		ownerdealerName = dealerName1
+	}
+
 	dealerIn = "dealer IN("
 	for i, data := range dataReq.DealerName {
 		if i > 0 {
@@ -208,9 +238,19 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 
 			// Step 3: Update the data in a single loop
+			// for i := range data {
+			// 	if dealerName, ok := data[i]["dealer"].(string); ok {
+			// 		if dealerCode, ok := dealerCodes[dealerName]; ok {
+			// 			data[i]["name"] = dealerCode
+			// 		}
+			// 	}
+			// }
+
 			for i := range data {
 				if dealerName, ok := data[i]["dealer"].(string); ok {
-					if dealerCode, ok := dealerCodes[dealerName]; ok {
+					if dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer" && ownerdealerName == dealerName {
+						data[i]["name"] = dealerName
+					} else if dealerCode, ok := dealerCodes[dealerName]; ok {
 						data[i]["name"] = dealerCode
 					}
 				}
