@@ -560,17 +560,15 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		whereAdded = true
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
-	if !adminCheck && !filterCheck {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND")
-		} else {
-			filtersBuilder.WriteString(" WHERE")
-			whereAdded = true
-		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
+	// Add dealer filter
+	if whereAdded {
+		filtersBuilder.WriteString(" AND ")
+	} else {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
 	}
+	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.Dealer)
 
 	// Always add the following filters
 	if whereAdded {
@@ -648,7 +646,7 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 		whereAdded = true
 	}
 	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
+	whereEleList = append(whereEleList, dataFilter.Dealer)
 
 	// Always add the following filters
 	if whereAdded {
