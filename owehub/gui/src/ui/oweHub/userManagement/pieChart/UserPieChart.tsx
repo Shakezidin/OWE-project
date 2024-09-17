@@ -51,6 +51,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
       setSelectedOption({ label: TYPE_OF_USER.SALES_REPRESENTATIVE, value: TYPE_OF_USER.SALES_REPRESENTATIVE });
     } else {
       setSelectedOption({ label: value, value: value });
+      onValueChange("")
     }
   }
 
