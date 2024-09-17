@@ -290,12 +290,9 @@ const DashBoardTable = ({
       )}
       {openIcon && (
         <HelpDashboard
-          data={{
-            id: editData.unique_id,
-            name: editData.dealer,
-            state: editData.state,
-            status: editData.current_status,
-          }}
+          data={
+            editData
+          }
           handleClose={handleIconClose}
         />
       )}
