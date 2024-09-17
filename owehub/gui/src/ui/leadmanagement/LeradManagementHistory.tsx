@@ -218,78 +218,102 @@ const LeradManagementHistory = () => {
           )}
           {(!isChecked &&
             <>
-              <div className={styles.filters}>
+              <div className={styles.top_filters}>
+                <div>
+                  {
+                    isMobile && selectedDates.startDate && selectedDates.endDate ? (
+                      <div className={styles.hist_date}>
+                        <span>
+                          {selectedDates.startDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                          {' - '}
+                          {selectedDates.endDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                    ) : null
+                  }
+                </div>
+                <div className={styles.filters}>
 
-                {isCalendarOpen && (
-                  <div className={styles.lead__datepicker_content} ref={dateRangeRef}>
-                    <DateRange
-                      editableDateInputs={true}
-                      onChange={handleRangeChange}
-                      moveRangeOnFirstSelection={false}
-                      ranges={selectedRanges}
-                    />
-                    <div className={styles.lead__datepicker_btns} >
-                      <button className="reset-calender" onClick={onReset}>
-                        Reset
-                      </button>
-                      <button className="apply-calender" onClick={onApply}>
-                        Apply
-                      </button>
+                  {isCalendarOpen && (
+                    <div className={styles.lead__datepicker_content} ref={dateRangeRef}>
+                      <DateRange
+                        editableDateInputs={true}
+                        onChange={handleRangeChange}
+                        moveRangeOnFirstSelection={false}
+                        ranges={selectedRanges}
+                      />
+                      <div className={styles.lead__datepicker_btns} >
+                        <button className="reset-calender" onClick={onReset}>
+                          Reset
+                        </button>
+                        <button className="apply-calender" onClick={onApply}>
+                          Apply
+                        </button>
+                      </div>
                     </div>
+                  )}
+
+                  {
+                    !isMobile && selectedDates.startDate && selectedDates.endDate ? (
+                      <div className={styles.hist_date}>
+                        <span>
+                          {selectedDates.startDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                          {' - '}
+                          {selectedDates.endDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                    ) : null
+                  }
+
+                  <select
+                    value={selectedPeriod?.label || ''}
+                    onChange={handlePeriodChange}
+                    className={`${styles.monthSelect} ${styles.customSelect}`}
+                  >
+                    {periodFilterOptions.map((option) => (
+                      <option
+                        key={option.label}
+                        value={option.label}
+                        selected={selectedPeriod?.label === option.label}
+                        className={styles.selectOption}
+                      >
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className={styles.calender} onClick={toggleCalendar} ref={calendarRef}>
+                    <img src={ICONS.includes_icon} alt="" />
                   </div>
-                )}
+                  <div className={styles.sort_drop}>
+                    <SortingDropDown />
+                  </div>
+                  <div className={styles.calender}>
+                    <img src={ICONS.LeadMngExport} style={{ marginTop: "-2px" }} alt="" height={22} width={22} />
+                  </div>
 
-                {
-                  !isMobile && selectedDates.startDate && selectedDates.endDate ? (
-                    <div className={styles.hist_date}>
-                      <span>
-                        {selectedDates.startDate.toLocaleDateString('en-US', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
-                        {' - '}
-                        {selectedDates.endDate.toLocaleDateString('en-US', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
-                      </span>
-                    </div>
-                  ) : null
-                }
-
-                <select
-                  value={selectedPeriod?.label || ''}
-                  onChange={handlePeriodChange}
-                  className={`${styles.monthSelect} ${styles.customSelect}`}
-                >
-                  {periodFilterOptions.map((option) => (
-                    <option
-                      key={option.label}
-                      value={option.label}
-                      selected={selectedPeriod?.label === option.label}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div className={styles.calender} onClick={toggleCalendar} ref={calendarRef}>
-                  <img src={ICONS.includes_icon} alt="" />
-                </div>
-                <div className={styles.sort_drop}>
-                  <SortingDropDown />
-                </div>
-                <div className={styles.calender}>
-                  <img src={ICONS.LeadMngExport} style={{ marginTop: "-2px" }} alt="" height={22} width={22} />
-                </div>
-
-                <div className={styles.hist_ret} onClick={handleCross}>
-                  <img
-                    src={ICONS.cross}
-                    alt=""
-                    height="26" width="26"
-                  />
+                  <div className={styles.hist_ret} onClick={handleCross}>
+                    <img
+                      src={ICONS.cross}
+                      alt=""
+                      height="26" width="26"
+                    />
+                  </div>
                 </div>
               </div>
             </>

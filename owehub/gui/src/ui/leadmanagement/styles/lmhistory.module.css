@@ -280,6 +280,7 @@
   .customer_wrapper_list {
     margin-left: 4px;
     min-height: 100vh;
+    padding-inline: 4px;
   }
 
   .history_list {
@@ -322,17 +323,16 @@
     border-radius: 50%;
     border: 1px solid #292929;
   }
+  .lm_history_header {
+    align-items: center;
+  }
 
   .line_mob {
     position: absolute;
     top: 0;
-    /* Position the line vertically at the center of the circle */
     right: 7px;
-    /* Adjust the horizontal position to align with the circle */
     transform: translateY(-50%) rotate(90deg);
-    /* Rotate the line 90 degrees clockwise */
     transform-origin: right center;
-    /* Set the transform origin to the right center of the line */
     width: 11vw;
     height: 1.3px;
     background-color: #929292;
@@ -366,6 +366,12 @@
   .hist_date{
     font-weight: 500;
     font-size: 12px;
+  }
+  .top_filters{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
   }
 
 }
@@ -421,4 +427,15 @@
 
 .lead__datepicker_btns button:first-child {
   margin-right: 0.5rem;
+}
+
+
+@media screen and (max-width: 767px) {
+    .monthSelect{
+      width: 90px;
+    }
+    .lead__datepicker_content{
+      margin-top: 5px;
+      right: 0;
+    }
 }
