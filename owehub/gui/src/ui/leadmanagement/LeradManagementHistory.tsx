@@ -3,14 +3,19 @@ import styles from './styles/lmhistory.module.css';
 import { ICONS } from '../../resources/icons/Icons';
 import SortingDropDown from './components/SortingDropDown';
 import { useNavigate } from 'react-router-dom';
-import LeadCalender from './components/Calender';
 import Pagination from '../components/pagination/Pagination';
 import useMatchMedia from '../../hooks/useMatchMedia';
-import Select from 'react-select';
+import { DateRange } from 'react-date-range';
+import { toZonedTime } from 'date-fns-tz';
+import { endOfWeek, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns';
 
-interface LeadCalendarProps {
-  onDateSelect: (date: Date | null) => void;
-}
+
+
+export type DateRangeWithLabel = {
+  label?: string;
+  start: Date;
+  end: Date;
+};
 
 
 const LeradManagementHistory = () => {
@@ -24,6 +29,118 @@ const LeradManagementHistory = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [checkedCount, setCheckedCount] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const dateRangeRef = useRef<HTMLDivElement>(null);
+
+  function getUserTimezone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  // Function to get current date in the user's timezone
+  function getCurrentDateInUserTimezone() {
+    const now = new Date()
+    const userTimezone = getUserTimezone()
+    return toZonedTime(now, userTimezone)
+  }
+  const today = getCurrentDateInUserTimezone();
+  const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
+  const startOfThisMonth = startOfMonth(today);
+  const startOfThisYear = startOfYear(today);
+  const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+  const startOfThreeMonthsAgo = new Date(
+    today.getFullYear(),
+    today.getMonth() - 2,
+    1
+  );
+  const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+  // Calculate the start and end of last week
+  const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
+    weekStartsOn: 1,
+  });
+  const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
+    weekStartsOn: 1,
+  });
+
+  const periodFilterOptions: DateRangeWithLabel[] = [
+    {
+      label: 'This Week',
+      start: startOfThisWeek,
+      end: today,
+    },
+    {
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
+    },
+    {
+      label: 'This Month',
+      start: startOfThisMonth,
+      end: today,
+    },
+    {
+      label: 'Last Month',
+      start: startOfLastMonth,
+      end: endOfLastMonth,
+    },
+    {
+      label: 'This Quarter',
+      start: startOfThreeMonthsAgo,
+      end: today,
+    },
+    {
+      label: 'This Year',
+      start: startOfThisYear,
+      end: today,
+    },
+  ];
+
+  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
+
+
+
+  const [selectedRanges, setSelectedRanges] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection',
+    },
+  ]);
+
+  const [selectedDates, setSelectedDates] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleRangeChange = (ranges: any) => {
+    setSelectedRanges([ranges.selection]);
+  };
+
+  const onReset = () => {
+    setSelectedDates({ startDate: new Date(), endDate: new Date() });
+    setIsCalendarOpen(false)
+  };
+
+  const onApply = () => {
+    const startDate = selectedRanges[0].startDate;
+    const endDate = selectedRanges[0].endDate;
+    setSelectedDates({ startDate, endDate });
+    setIsCalendarOpen(false);
+  };
+
+  const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedLabel = e.target.value;
+    const selectedOption = periodFilterOptions.find((option) => option.label === selectedLabel);
+    if (selectedOption) {
+      setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
+      setSelectedPeriod(selectedOption || null);
+    } else {
+      setSelectedDates({ startDate: null, endDate: null });
+    }
+  };
+
 
   const handleCrossClick = () => {
     setIsChecked(false);
@@ -38,19 +155,12 @@ const LeradManagementHistory = () => {
     console.log('Selected date:', date);
   };
 
-  const options1 = [
-    { value: 'today', label: 'Table 1 Data' },
-    { value: 'this_week', label: 'Table 2 Data' },
-    { value: 'all', label: 'Table 3 Data' },
-  ];
-
 
   const handleCross = () => {
     navigate('/leadmng-dashboard');
   };
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const calendarRef = useRef<HTMLDivElement | null>(null);
 
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
@@ -65,8 +175,9 @@ const LeradManagementHistory = () => {
     setIsChecked(event.target.checked);
   };
 
+
   const handleClickOutside = (event: MouseEvent) => {
-    if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+    if (dateRangeRef.current && !dateRangeRef.current.contains(event.target as Node)) {
       setIsCalendarOpen(false);
     }
   };
@@ -77,10 +188,24 @@ const LeradManagementHistory = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  const lineData = [
+    { name: 'This Week' },
+    { name: 'Last week' },
+    { name: 'This Month' },
+    { name: 'Last Month' },
+    { name: 'This Year' }
+  ];
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
-
+  console.log(selectedPeriod, "hghjgjhgjg");
 
   return (
     <div className={`flex justify-between mt2 ${styles.h_screen}`}>
@@ -98,71 +223,62 @@ const LeradManagementHistory = () => {
           {(!isChecked &&
             <div className={styles.filters}>
               {isCalendarOpen && (
-                <div ref={calendarRef}>
-                  <LeadCalender onDateSelect={handleDateSelect} setIsCalendarOpen={setIsCalendarOpen} />
+                <div className={styles.lead__datepicker_content}>
+                  <DateRange
+                    editableDateInputs={true}
+                    onChange={handleRangeChange}
+                    moveRangeOnFirstSelection={false}
+                    ranges={selectedRanges}
+                  />
+                  <div className={styles.lead__datepicker_btns}>
+                    <button className="reset-calender" onClick={onReset}>
+                      Reset
+                    </button>
+                    <button className="apply-calender" onClick={onApply}>
+                      Apply
+                    </button>
+                  </div>
                 </div>
               )}
-
-              <div className={styles.hist_date}>{selectedDate && <p>{selectedDate.toLocaleString('default', { month: 'short', year: 'numeric' })}</p>}</div>
-              {/* <Select
-                options={options1}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    marginTop: 'px',
-                    borderRadius: '16px',
-                    outline: 'none',
-                    color: 'white',
-                    width: 'fit-content',
-                    height: '28px',
-                    fontSize: '12px',
-                    border: '1px solid #d0d5dd',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    alignContent: 'center',
-                    backgroundColor: '#377CF6',
-                    boxShadow: 'none',
-                  }),
-                  placeholder: (baseStyles) => ({
-                    ...baseStyles,
-                    color: '#292929',
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#ffffff',
-                    '&:hover': {
-                      color: '#ffffff',
-                    },
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    color: state.isSelected ? '#ffffff' : '#ffffff',
-                    backgroundColor: state.isSelected ? '#377CF6' : '#377CF6',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
-                    },
-                    cursor: 'pointer',
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#292929',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '150px',
-                  }),
-                }}
-              /> */}
+              {selectedDates.startDate && selectedDates.endDate ? (
+                <div className={styles.hist_date}>
+                  <span>
+                    {selectedDates.startDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                    {' - '}
+                    {selectedDates.endDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </div>
+              ) : null}
+              <select
+                value={selectedPeriod?.label || ''}
+                onChange={handlePeriodChange}
+                className={styles.monthSelect}
+              > 
+                {periodFilterOptions.map((option) => (
+                  <option
+                    key={option.label}
+                    value={option.label}
+                    selected={selectedPeriod?.label === option.label}
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </select>
               <div className={styles.calender} onClick={toggleCalendar}>
                 <img src={ICONS.includes_icon} alt="" />
               </div>
               <div className={styles.sort_drop}>
                 <SortingDropDown />
               </div>
+
 
               <div className={styles.calender}>
                 <img src={ICONS.LeadMngExport} style={{ marginTop: "-2px" }} alt="" height={22} width={22} />
