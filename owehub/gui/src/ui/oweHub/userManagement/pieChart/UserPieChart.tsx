@@ -140,7 +140,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               />
             </div>
           ) : (
-            <div className="data-not-found " style={{ width: '100%' }}>
+            !loading && <div className="data-not-found " style={{ width: '100%' }}>
               <DataNotFound
                 title={loading ? 'Searching..' : 'No SaleRep Found'}
               />
@@ -239,7 +239,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               <img src={perfomance_mask} alt="" className="mask-chart-img" />
             </div>
           ) : (
-            <div className="data-not-found">
+            !loading && <div className="data-not-found">
               <DataNotFound
                 title={loading ? 'Searching..' : 'No SaleRep Found'}
               />

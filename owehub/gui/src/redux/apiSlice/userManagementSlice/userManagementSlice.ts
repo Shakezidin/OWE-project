@@ -13,7 +13,7 @@ const initialState: UserOnboardingStateModel = {
   dealerList: [],
   userPerformanceList: [],
   dbTables: [],
-  loading: false,
+  loading: true,
   error: null,
   totalCount: 0,
   dealerCount: 0,

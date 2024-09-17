@@ -28,6 +28,7 @@ import { resetOpt } from '../../../../redux/apiSlice/DbManager/dataTableSlice';
 import UserIcon from '../lib/UserIcon';
 import { debounce } from '../../../../utiles/debounce';
 import { ICONS } from '../../../../resources/icons/Icons';
+import MicroLoader from '../../../components/loader/MicroLoader';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -76,6 +77,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const { loading, dealerList, dealerCount } = useAppSelector(
     (state) => state.userManagement
   );
+
 
   useEffect(() => {
     const data = {
@@ -300,54 +302,54 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
-        case TYPE_OF_USER.ACCOUNT_MANAGER:
-          return (
-            <AccountManagerTable
-              data={userRoleBasedList}
-              onClickEdit={(item: UserRoleBasedListModel) => {
-                onClickEdit(item);
-              }}
-              onClickDelete={(item: UserRoleBasedListModel) => {
-                onClickDelete(item);
-              }}
-              selectedRows={selectedRows}
-              selectAllChecked={selectAllChecked}
-              setSelectedRows={setSelectedRows}
-              setSelectAllChecked={setSelectAllChecked}
-            />
-          );
-          case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
-            return (
-              <AccountManagerTable
-                data={userRoleBasedList}
-                onClickEdit={(item: UserRoleBasedListModel) => {
-                  onClickEdit(item);
-                }}
-                onClickDelete={(item: UserRoleBasedListModel) => {
-                  onClickDelete(item);
-                }}
-                selectedRows={selectedRows}
-                selectAllChecked={selectAllChecked}
-                setSelectedRows={setSelectedRows}
-                setSelectAllChecked={setSelectAllChecked}
-              />
-            );
-               case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
-            return (
-              <AccountExecutiveTable
-                data={userRoleBasedList}
-                onClickEdit={(item: UserRoleBasedListModel) => {
-                  onClickEdit(item);
-                }}
-                onClickDelete={(item: UserRoleBasedListModel) => {
-                  onClickDelete(item);
-                }}
-                selectedRows={selectedRows}
-                selectAllChecked={selectAllChecked}
-                setSelectedRows={setSelectedRows}
-                setSelectAllChecked={setSelectAllChecked}
-              />
-            );
+      case TYPE_OF_USER.ACCOUNT_MANAGER:
+        return (
+          <AccountManagerTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
+      case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
+        return (
+          <AccountManagerTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
+      case TYPE_OF_USER.ACCOUNT_EXCUTIVE:
+        return (
+          <AccountExecutiveTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
       default:
         return null;
     }
@@ -364,7 +366,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          {( activeSalesRep) && (
+          {(activeSalesRep) && (
             <img
               style={{ cursor: 'pointer' }}
               src={ICONS.cross}
@@ -372,9 +374,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
           )}
 
-         {activeSalesRep &&
-           <h3>{activeSalesRep } Sales Rep</h3>
-         }
+          {activeSalesRep &&
+            <h3>{activeSalesRep} Sales Rep</h3>
+          }
         </div>
 
         <div className="delete-icon-container items-start mt2 ">
@@ -388,11 +390,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 setSearch(e.target.value);
               }}
             />
-            {!( activeSalesRep) && <div>{AddBtn}</div>}
+            {!(activeSalesRep) && <div>{AddBtn}</div>}
           </div>
 
           <div className="user_user-type">
-            {!(activeSalesRep ) && (
+            {!(activeSalesRep) && (
               <div
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}
@@ -413,7 +415,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   <SelectOption
                     options={userDropdownData}
                     value={selectedOption}
-                    menuStyles={{ width: 'fit-content', left: -30}}
+                    menuStyles={{ width: 'fit-content', left: -30 }}
                     controlStyles={{
                       boxShadow: 'none',
                       border: 'none',
@@ -478,11 +480,15 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         </div>
       </div>
 
-      {selectedOption && renderComponent()}
+      {selectedOption && loading ?
+        <div className="flex my3 justify-center items-center">
+          <MicroLoader />
+        </div>
+        : renderComponent()}
 
       {selectedOption.value !== 'Partner' ? (
         <div className="user-page-heading-container">
-          {userRoleBasedList?.length > 0 ? (
+          {userRoleBasedList?.length > 0 && !loading  ? (
             <>
               <p className="page-heading">
                 {startIndex} - {endIndex > count! ? count : endIndex} of {count}{' '}
@@ -499,7 +505,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           ) : null}
         </div>
       ) : null}
-      {selectedOption.value === 'Partner' ? (
+      {selectedOption.value === 'Partner' && !loading ? (
         <div className="user-page-heading-container">
           <>
             <p className="page-heading">
