@@ -45,6 +45,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
     setSelectedOption({ label: TYPE_OF_USER.SALES_REPRESENTATIVE, value: TYPE_OF_USER.SALES_REPRESENTATIVE });
   };
   const handleChartClick = (value: string, type: "sales" | string) => {
+    console.log('value', value);
     if (type === "sales") {
       onValueChange(value)
       setSelectedOption({ label: TYPE_OF_USER.SALES_REPRESENTATIVE, value: TYPE_OF_USER.SALES_REPRESENTATIVE });
@@ -117,6 +118,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       style={{ outline: 'none' }}
                       id={`${index}`}
                       key={`cell-${index}`}
+                      data-svg-id={entry.name}
                       data-value={entry.name}
                       fill={entry.fill}
                     />
@@ -212,7 +214,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     paddingAngle={2}
                     dataKey="value"
                     strokeWidth={3}
-                    onClick={(e: any) => handleChartClick(e["data-value"].split(" ")[0].replace("Inactive", "InActive"), "all")}
+                    onClick={(e: any) => handleChartClick(e["data-value"].split(" ")[0].replace("Inactive", "InActive"), "sales")}
                   >
                     {userPerformanceList.map((entry, index) => (
                       <Cell
