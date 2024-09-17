@@ -1,13 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, Sector } from 'recharts';
 import styles from './styles/dashboard.module.css';
+import './styles/mediaQuery.css';
 import { ICONS } from '../../resources/icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../../ui/components/pagination/Pagination';
 import ArchiveModal from '../../ui/leadmanagement/Modals/LeaderManamentSucessModel';
 import ConfirmModel from '../../ui/leadmanagement/Modals/ConfirmModel';
 
+// shams start
+import { DateRange } from 'react-date-range';
+import { toZonedTime } from 'date-fns-tz';
+import { endOfWeek, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns';
+// import styles from './styles/lmhistory.module.css';
+ 
+export type DateRangeWithLabel = {
+  label?: string;
+  start: Date;
+  end: Date;
+};
+ 
+function getUserTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+ 
+function getCurrentDateInUserTimezone() {
+  const now = new Date();
+  const userTimezone = getUserTimezone();
+  return toZonedTime(now, userTimezone);
+}
+ 
+const today = getCurrentDateInUserTimezone();
+const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
+const startOfThisMonth = startOfMonth(today);
+const startOfThisYear = startOfYear(today);
+const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+ 
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
+ 
+const periodFilterOptions: DateRangeWithLabel[] = [
+  { label: 'This Week', start: startOfThisWeek, end: today },
+  { label: 'Last Week', start: startOfLastWeek, end: endOfLastWeek },
+  { label: 'This Month', start: startOfThisMonth, end: today },
+  { label: 'Last Month', start: startOfLastMonth, end: endOfLastMonth },
+  { label: 'This Quarter', start: startOfThreeMonthsAgo, end: today },
+  { label: 'This Year', start: startOfThisYear, end: today },
+];
+// shams end
+
+
 type Lead = {
+  id: string;
   name: string;
   phone: string;
   email: string;
@@ -17,8 +63,8 @@ type Lead = {
 
 const pieData = [
   { name: 'Pending leads', value: 135, color: '#FF832A' },
-  { name: 'Appointment accepted', value: 21, color: '#52B650' },
   { name: 'Appointment sent', value: 29, color: '#81A6E7' },
+  { name: 'Appointment accepted', value: 21, color: '#52B650' },
   { name: 'Appointment declined', value: 15, color: '#CD4040' },
 ];
 
@@ -38,16 +84,16 @@ const lineData = [
 ];
 
 const leads = [
-  { name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Accepted' },
-  { name: 'Adam', phone: '+00 876472822', email: 'adam8772@gmail.com', address: '12778 Domingo Ct', status: 'Declined' },
+  { id: '1', name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
+  { id: '2', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
+  { id: '3', name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
+  { id: '4', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
+  { id: '5', name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
+  { id: '6', name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
+  { id: '7', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
+  { id: '8', name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
+  { id: '9', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Accepted' },
+  { id: '10', name: 'Adam', phone: '+00 876472822', email: 'adam8772@gmail.com', address: '12778 Domingo Ct', status: 'Declined' },
 ];
 
 const renderActiveShape = (props: any) => {
@@ -179,6 +225,76 @@ const LeadManagementDashboard = () => {
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
 
+  // shams start
+  const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
+  // const [selectedPeriod, setSelectedPeriod] = useState('This Week');
+  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
+  const [selectedRanges, setSelectedRanges] = useState([
+    { startDate: new Date(), endDate: new Date(), key: 'selection' },
+  ]);
+
+  const [selectedDates, setSelectedDates] = useState<{ startDate: Date | null; endDate: Date | null }>({
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleRangeChange = (ranges: any) => {
+    setSelectedRanges([ranges.selection]);
+  };
+
+  const onReset = () => {
+    setSelectedDates({ startDate: new Date(), endDate: new Date() });
+    setIsCalendarOpen(false);
+  };
+
+  const onApply = () => {
+    const startDate = selectedRanges[0].startDate;
+    const endDate = selectedRanges[0].endDate;
+    setSelectedDates({ startDate, endDate });
+    setIsCalendarOpen(false);
+  };
+
+  const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedLabel = e.target.value;
+    const selectedOption = periodFilterOptions.find((option) => option.label === selectedLabel);
+    if (selectedOption) {
+      setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
+      setSelectedPeriod(selectedOption || null);
+    } else {
+      setSelectedDates({ startDate: null, endDate: null });
+    }
+  };
+
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const dateRangeRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLDivElement>(null);
+
+  const toggleCalendar = () => {
+    setIsCalendarOpen((prevState) => !prevState);
+  };
+
+  const handleClickOutside = (event: Event) => {
+    if (
+      calendarRef.current &&
+      !calendarRef.current.contains(event.target as Node) &&
+      toggleRef.current &&
+      !toggleRef.current.contains(event.target as Node)
+    ) {
+      setIsCalendarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
+// shams end
   const itemsPerPage = 5;
   const navigate = useNavigate();
 
@@ -247,6 +363,14 @@ const LeadManagementDashboard = () => {
     setShowConfirmModal(true); // Show detail modal
   };
   console.log("currentFilter",currentFilter)
+
+  const toggleLeadExpansion = (leadId: string) => {
+    setExpandedLeads(prev => 
+      prev.includes(leadId) 
+        ? prev.filter(id => id !== leadId) 
+        : [...prev, leadId]
+    );
+  };
   
 
   return (
@@ -302,19 +426,51 @@ const LeadManagementDashboard = () => {
         </div>
         
         <div className={`${styles.card} ${styles.lineCard}`}>
+          {/* shams start */}
           <div className={styles.cardHeader}>
-            <span>Total Won Lost</span>
-            <select 
-              value={selectedMonth} 
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className={styles.monthSelect}
-            >
-              {lineData.map((item) => (
-                <option key={item.name} value={item.name}>{item.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className={styles.cardContent}>
+              <span>Total Won Lost</span>
+              <div className={styles.date_calendar}>
+                {isCalendarOpen && (
+                  <div ref={calendarRef} className={styles.lead__datepicker_content}>
+                    <DateRange
+                      editableDateInputs={true}
+                      onChange={handleRangeChange}
+                      moveRangeOnFirstSelection={false}
+                      ranges={selectedRanges}
+                    />
+                    <div className={styles.lead__datepicker_btns}>
+                      <button className="reset-calender" onClick={onReset}>
+                        Reset
+                      </button>
+                      <button className="apply-calender" onClick={onApply}>
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {selectedDates.startDate && selectedDates.endDate && (
+                  <div className={styles.hist_date}>
+                    <span>
+                      {selectedDates.startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {' - '}
+                      {selectedDates.endDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
+                  </div>
+                )}
+                <select value={selectedPeriod?.label || ''} onChange={handlePeriodChange} className={styles.monthSelect}>
+                  {periodFilterOptions.map((option) => (
+                    <option key={option.label} value={option.label}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div ref={toggleRef} className={styles.calender} onClick={toggleCalendar}>
+                  <img src={ICONS.includes_icon} alt="" />
+                </div>
+              </div>
+            </div>
+          {/* shams end */}
+          <div className={`${styles.cardContent} lineChart-wrapper`}>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={lineData}>
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
@@ -362,7 +518,7 @@ const LeadManagementDashboard = () => {
                   </button>
                 ))}
               </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div className={styles.filterCallToAction}>
                 <div className={styles.filtericon} onClick={handleHistory}>
                   <img src={ICONS.historyLeadMgmt} alt="" width="100" height="100" />
                 </div>
@@ -391,10 +547,10 @@ const LeadManagementDashboard = () => {
         </div>
 
         <div className={styles.cardContent}>
-        <table className={styles.table}>
+        {/* <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
+                <tr key={index} className={styles.history_lists}>
                   <td className={styles.history_list_inner}>
                     <label>
                       <input
@@ -403,10 +559,48 @@ const LeadManagementDashboard = () => {
                         onChange={() => handleLeadSelection(lead)}
                       />
                     </label>
-                    <div className={styles.user_name}>
+                    <div className={styles.user_name} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
                       <h2>{lead.name}</h2>
                       <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
                     </div>
+                    <>
+                      <div className={styles.phone_number}>{lead.phone}</div>
+                      <div className={styles.email}>
+                        <span>{lead.email}
+                          <img className='ml1' height={15} width={15} src={ICONS.complete} alt="verified" />
+                        </span>
+                      </div>
+                      <div className={styles.address}>{lead.address}</div>
+                      
+                      {lead.status === 'Declined' && (
+                        <div className={styles.actionButtons}>
+                          <button onClick={() => handleReschedule(lead)} className={styles.rescheduleButton}>Reschedule</button>
+                          <button onClick={() => handleArchive(lead)} className={styles.archiveButton}>Archive</button>
+                        </div>
+                      )}
+                    </>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table> */}
+
+        <table className={styles.table}>
+          <tbody>
+            {currentLeads.map((lead, index) => (
+              <tr key={index} className={styles.history_lists}>
+                <td className={styles.history_list_inner}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedLeads.includes(lead)}
+                      onChange={() => handleLeadSelection(lead)}
+                    />
+                  </label>
+                  <div className={styles.user_name} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
+                    <h2>{lead.name}</h2>
+                    <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
+                  </div>
                     <div className={styles.phone_number}>{lead.phone}</div>
                     <div className={styles.email}>
                       <span>{lead.email}
@@ -419,14 +613,14 @@ const LeadManagementDashboard = () => {
                       <div className={styles.actionButtons}>
                         <button onClick={() => handleReschedule(lead)} className={styles.rescheduleButton}>Reschedule</button>
                         <button onClick={() => handleArchive(lead)} className={styles.archiveButton}>Archive</button>
-
                       </div>
                     )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                 
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
           <div className={styles.paginationContainer} style={{ textAlign: 'right' }}>
             {filteredLeads.length > 0 && (

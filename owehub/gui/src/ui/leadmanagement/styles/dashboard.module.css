@@ -68,12 +68,14 @@
     font-size: 10.71px;
   }
   
+  /* Shams */
   .monthSelect {
-    background-color: #3b82f6;
+    background-color: #377CF6;
     color: white;
     border-radius: 20px;
-    padding: 4px 8px;
+    padding: 6px 10px;
     border: none;
+    padding-right:0;
   }
   
   .stats {
@@ -85,16 +87,29 @@
     margin-right: 16px;
   }
   
-  .buttonGroup {
+  /* .buttonGroup {
     display: flex;
     gap: 8px;
+    width: 70%;
+    overflow: scroll;
+    flex-wrap: wrap;
+  } */
+  .buttonGroup {
+    display: flex;
+    padding: 5px;
+    gap: 8px;
+    width: 70%;
+    overflow: scroll;
+    /* flex-wrap: wrap; */
+    box-shadow: inset -3px 0px 5px 2px #0000000d;
+    border-radius: 22px 0 0 22px;
   }
   
   .button {
     border: 1px solid #858585 !important;
     color: #858585;
     background-color: #fff;
-    padding: 5px 10px 5px 10px;
+    padding: 5px;
     border-radius: 26px;
     border: none;
     cursor: pointer;
@@ -171,6 +186,14 @@
     height: 24px;
     width: 24px;
   }
+  .filterCallToAction{
+    display: flex;
+    gap: 10px;
+    transform: scale(0.7);
+    position: relative;
+    /* top: -2pc; */
+    right: -8px;
+  }
 
  
   .pieChart :focus {
@@ -178,16 +201,6 @@
   }
 
 
-  /* For tablets and larger screens */
-@media (min-width: 768px) {
-  .chartGrid {
-    grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
-  }
-  .lineCard {
-    margin-right:26px
-  }
-
-}
 
 .table {
   width: 100%;
@@ -346,4 +359,179 @@ input[type="checkbox"]:checked {
 .paginationContainer{
   display: flex;
   justify-content: right;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
+
+
+  /* For tablets and larger screens */
+  @media (min-width: 768px) {
+    .chartGrid {
+      grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+    }
+    .lineCard {
+      margin-right:26px
+    }
+    .buttonGroup {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      flex-wrap: nowrap;
+      display: flex;
+      flex-direction: row;
+      box-shadow: unset;
+    }
+    .filterCallToAction{
+      display: flex;
+      gap: 10px;
+      transform: scale(1);
+      position: unset;
+    }
+    .mobile_view_table{
+      display: flex;
+      flex:1
+    }
+  }
+  
+  /* Smartphones in both portrait and landscape */
+  @media only screen and (min-width: 320px) and (max-width: 480px) {
+    /* Styles for smartphones */
+    .button{
+      transform: scale(0.9);
+    }
+    .phone_number,
+    .email,
+    .address {
+      display: none;
+    }
+    .history_list_inner {
+      display: grid;
+      grid-template-columns: auto 2fr 0 0 0 auto !important;
+  }
+
+   
+  }
+  
+  /* Tablets in both portrait and landscape */
+  @media only screen and (min-width: 481px) and (max-width: 768px) {
+    /* Styles for tablets */
+    
+  }
+  
+  /* Laptops and small desktops */
+  @media only screen and (min-width: 769px) and (max-width: 1024px) {
+    /* Styles for small desktops */
+   
+  }
+  
+  
+  /* Large desktops and monitors */
+  @media only screen and (min-width: 1025px) and (max-width: 1200px) {
+    /* Styles for large desktops */
+   
+  }
+  
+  
+  /* Extra large desktops */
+  @media only screen and (min-width: 1201px) {
+    /* Styles for extra-large screens */
+
+  }
+    
+
+
+  /* Shams */
+
+   
+.lead__datepicker_content {
+  position: absolute;
+  right: 26px;
+  z-index: 10;
+  background-color: var(--white-color);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  top: 160px;
+  right: 60px;
+}
+ 
+.lead__datepicker_btns {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+}
+ 
+.lead__datepicker_btns button {
+  position: static;
+}
+ 
+.lead__datepicker_btns button:first-child {
+  margin-right: 0.5rem;
+}
+ 
+ 
+.hist_date {
+  font-weight: 600;
+  font-size: 14px;
+  color: #377CF6;
+}
+ 
+.monthSelect {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+ 
+.monthSelect option {
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+ 
+.monthSelect :hover {
+  border: none;
+}
+ 
+.monthSelect option:hover {
+  transform: scale(1.06);
+}
+ 
+ 
+.calender {
+  background-color: #377cf6;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 500ms ease;
+}
+ 
+.calender:hover {
+  transform: scale(1.06);
+  background-color: #0b4cbd;
+}
+ 
+.date_calendar{
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
 }
