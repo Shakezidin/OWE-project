@@ -370,3 +370,55 @@
   }
 
 }
+
+.monthSelect {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+.monthSelect option{
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+.monthSelect :hover{
+  border: none;
+}
+.monthSelect option:hover {
+  transform: scale(1.06);
+}
+
+
+
+.lead__datepicker_wrapper:hover {
+  z-index: 11;
+}
+
+.lead__datepicker_content {
+  position: absolute;
+  right: 26px;
+  z-index: 10;
+  background-color: var(--white-color);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  top: 140px;
+}
+
+.lead__datepicker_btns {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.lead__datepicker_btns button {
+  position: static;
+}
+
+.lead__datepicker_btns button:first-child {
+  margin-right: 0.5rem;
+}
