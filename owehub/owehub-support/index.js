@@ -36,11 +36,12 @@ const port = process.env.PORT;
 app.use(cors({ origin: "*" }));
 // Create an HTTP server for socket.io
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-const web = new WebClient(config.botToken);
+let web;
 
 // Database
 const channels = {};
@@ -48,7 +49,9 @@ const userSockets = new Map();
 const jobs = {};
 
 function startSlackListner(slackAppToken, botToken) {
+  web = new WebClient(botToken);
   if (!slackAppToken || !botToken) return;
+  console.log(slackAppToken, botToken);
   const slackApp = new App({
     appToken: slackAppToken,
     socketMode: true,
@@ -119,7 +122,7 @@ async function getChannels() {
           allChannels[0].slack_app_token,
           allChannels[0].bot_token
         );
-    }, 4000);
+    }, 10000);
   } catch (error) {
     console.log(error);
   }

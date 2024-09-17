@@ -99,7 +99,7 @@ const MainLayout = () => {
         });
     }
   }, [dispatch, navigate, authData]);
-
+  const isStaging = process.env.REACT_APP_ENV;
   useEffect(() => {
     setToggleOpen(isTablet);
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
@@ -110,7 +110,9 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
+      { isStaging === "staging" ?
       <ChatSupport isAuthenticated={isAuthenticated} />
+       : null}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
