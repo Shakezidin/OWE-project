@@ -175,9 +175,17 @@ const LeradManagementHistory = () => {
     setIsChecked(event.target.checked);
   };
 
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dateRangeRef.current && !dateRangeRef.current.contains(event.target as Node)) {
+    if (
+      dateRangeRef.current &&
+      !dateRangeRef.current.contains(event.target as Node) &&
+      calendarRef.current &&
+      !calendarRef.current.contains(event.target as Node)
+    ) {
       setIsCalendarOpen(false);
     }
   };
@@ -188,20 +196,8 @@ const LeradManagementHistory = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  const lineData = [
-    { name: 'This Week' },
-    { name: 'Last week' },
-    { name: 'This Month' },
-    { name: 'Last Month' },
-    { name: 'This Year' }
-  ];
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
@@ -221,77 +217,106 @@ const LeradManagementHistory = () => {
             </div>
           )}
           {(!isChecked &&
-            <div className={styles.filters}>
-              {isCalendarOpen && (
-                <div className={styles.lead__datepicker_content}>
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={handleRangeChange}
-                    moveRangeOnFirstSelection={false}
-                    ranges={selectedRanges}
-                  />
-                  <div className={styles.lead__datepicker_btns}>
-                    <button className="reset-calender" onClick={onReset}>
-                      Reset
-                    </button>
-                    <button className="apply-calender" onClick={onApply}>
-                      Apply
-                    </button>
+            <>
+              <div className={styles.top_filters}>
+                <div>
+                  {
+                    isMobile && selectedDates.startDate && selectedDates.endDate ? (
+                      <div className={styles.hist_date}>
+                        <span>
+                          {selectedDates.startDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                          {' - '}
+                          {selectedDates.endDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                    ) : null
+                  }
+                </div>
+                <div className={styles.filters}>
+
+                  {isCalendarOpen && (
+                    <div className={styles.lead__datepicker_content} ref={dateRangeRef}>
+                      <DateRange
+                        editableDateInputs={true}
+                        onChange={handleRangeChange}
+                        moveRangeOnFirstSelection={false}
+                        ranges={selectedRanges}
+                      />
+                      <div className={styles.lead__datepicker_btns} >
+                        <button className="reset-calender" onClick={onReset}>
+                          Reset
+                        </button>
+                        <button className="apply-calender" onClick={onApply}>
+                          Apply
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {
+                    !isMobile && selectedDates.startDate && selectedDates.endDate ? (
+                      <div className={styles.hist_date}>
+                        <span>
+                          {selectedDates.startDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                          {' - '}
+                          {selectedDates.endDate.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                    ) : null
+                  }
+
+                  <select
+                    value={selectedPeriod?.label || ''}
+                    onChange={handlePeriodChange}
+                    className={`${styles.monthSelect} ${styles.customSelect}`}
+                  >
+                    {periodFilterOptions.map((option) => (
+                      <option
+                        key={option.label}
+                        value={option.label}
+                        selected={selectedPeriod?.label === option.label}
+                        className={styles.selectOption}
+                      >
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className={styles.calender} onClick={toggleCalendar} ref={calendarRef}>
+                    <img src={ICONS.includes_icon} alt="" />
+                  </div>
+                  <div className={styles.sort_drop}>
+                    <SortingDropDown />
+                  </div>
+                  <div className={styles.calender}>
+                    <img src={ICONS.LeadMngExport} style={{ marginTop: "-2px" }} alt="" height={22} width={22} />
+                  </div>
+
+                  <div className={styles.hist_ret} onClick={handleCross}>
+                    <img
+                      src={ICONS.cross}
+                      alt=""
+                      height="26" width="26"
+                    />
                   </div>
                 </div>
-              )}
-              {selectedDates.startDate && selectedDates.endDate ? (
-                <div className={styles.hist_date}>
-                  <span>
-                    {selectedDates.startDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                    {' - '}
-                    {selectedDates.endDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </div>
-              ) : null}
-              <select
-                value={selectedPeriod?.label || ''}
-                onChange={handlePeriodChange}
-                className={styles.monthSelect}
-              > 
-                {periodFilterOptions.map((option) => (
-                  <option
-                    key={option.label}
-                    value={option.label}
-                    selected={selectedPeriod?.label === option.label}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <div className={styles.calender} onClick={toggleCalendar}>
-                <img src={ICONS.includes_icon} alt="" />
               </div>
-              <div className={styles.sort_drop}>
-                <SortingDropDown />
-              </div>
-
-
-              <div className={styles.calender}>
-                <img src={ICONS.LeadMngExport} style={{ marginTop: "-2px" }} alt="" height={22} width={22} />
-              </div>
-
-              <div className={styles.hist_ret} onClick={handleCross}>
-                <img
-                  src={ICONS.cross}
-                  alt=""
-                  height="26" width="26"
-                />
-              </div>
-            </div>
+            </>
           )}
           {(isChecked &&
             <div className={styles.lead_his_remove}>Remove</div>

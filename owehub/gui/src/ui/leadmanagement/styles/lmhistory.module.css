@@ -245,8 +245,8 @@
 }
 
 .hist_date {
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 12px;
   color: #377CF6;
 }
 
@@ -279,13 +279,13 @@
 
   .customer_wrapper_list {
     margin-left: 4px;
-
     min-height: 100vh;
+    padding-inline: 4px;
   }
 
   .history_list {
     margin-top: 10px;
-    padding: 10px 2px 10px 2px;
+    padding: 10px 0px 10px 0px;
   }
 
   .hist_checkname {
@@ -323,17 +323,16 @@
     border-radius: 50%;
     border: 1px solid #292929;
   }
+  .lm_history_header {
+    align-items: center;
+  }
 
   .line_mob {
     position: absolute;
     top: 0;
-    /* Position the line vertically at the center of the circle */
     right: 7px;
-    /* Adjust the horizontal position to align with the circle */
     transform: translateY(-50%) rotate(90deg);
-    /* Rotate the line 90 degrees clockwise */
     transform-origin: right center;
-    /* Set the transform origin to the right center of the line */
     width: 11vw;
     height: 1.3px;
     background-color: #929292;
@@ -349,7 +348,7 @@
   }
 
   .lm_history_header {
-    padding: 0px 4px;
+    padding: 0px 1px;
   }
   .filters{
     gap: 4px;
@@ -368,6 +367,12 @@
     font-weight: 500;
     font-size: 12px;
   }
+  .top_filters{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
 
 }
 
@@ -375,10 +380,11 @@
   background-color: #3b82f6;
   color: white;
   border-radius: 20px;
-  padding: 4px 8px;
+  padding: 7px 4px;
   border: none;
   font-size: 12px;
   font-weight: 500;
+  width: 104px;
 }
 .monthSelect option{
   font-weight: 500;
@@ -421,4 +427,15 @@
 
 .lead__datepicker_btns button:first-child {
   margin-right: 0.5rem;
+}
+
+
+@media screen and (max-width: 767px) {
+    .monthSelect{
+      width: 90px;
+    }
+    .lead__datepicker_content{
+      margin-top: 5px;
+      right: 0;
+    }
 }
