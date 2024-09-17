@@ -32,4 +32,5 @@ type DeleteUsers struct {
 	UserCodes []string `json:"user_codes"`
 	Usernames []string `json:"usernames"`
 	EmailIds  []string `json:"email_id"`
+	DeleteFromPodio bool `json:"delete_from_podio"`
 }

@@ -11,7 +11,6 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"OWEApp/shared/types"
 	"strings"
 
 	"encoding/json"
@@ -32,6 +31,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		reqBody          []byte
+		podioDeleteCount int
 		deleteUsersReq   models.DeleteUsers
 		whereEleList     []interface{}
 		query            string
@@ -69,10 +69,9 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { closeUserLog(err) }()
 
 	//* logic to delte users from podio
-	role := req.Context().Value("rolename").(string)
-	if role == string(types.RoleSalesManager) || role == string(types.RoleRegionalManager) ||
-		role == string(types.RoleSalesRep) {
-		err = DeletePodioUsersByCodes(deleteUsersReq.UserCodes)
+
+	if deleteUsersReq.DeleteFromPodio {
+		err, podioDeleteCount = DeletePodioUsersByCodes(deleteUsersReq.UserCodes)
 		if err != nil {
 			log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
 		}
@@ -202,6 +201,6 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v", rowsAffected, deleteUsersReq.UserCodes)
-	FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
+	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v and Podio Count %v", rowsAffected, deleteUsersReq.UserCodes, podioDeleteCount)
+	FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) from OweHub app and %d from Podio deleted Successfully", rowsAffected, podioDeleteCount), http.StatusOK, rowsAffected)
 }

@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-func DeletePodioUsersByCodes(userCodes []string) error {
+func DeletePodioUsersByCodes(userCodes []string) (error, int) {
 	var (
 		err         error
 		userDetails []map[string]interface{}
@@ -29,13 +29,13 @@ func DeletePodioUsersByCodes(userCodes []string) error {
 
 	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", stringJoin(userCodes, "','"))
 
-	query := fmt.Sprintf(`SELECT name, email_id, user_code
+	query := fmt.Sprintf(`SELECT name, email_id, user_code, role_id
 							 FROM user_details %s;`, whereClause)
 
 	userDetails, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get user details from DB err: %v", err)
-		return err
+		return err, 0
 	}
 
 	var itemIds []int64
@@ -58,6 +58,17 @@ func DeletePodioUsersByCodes(userCodes []string) error {
 			continue
 		}
 
+		RoleId, ok := user["role_id"].(int64)
+		if !ok || email == "" {
+			log.FuncInfoTrace("User with code %s does not have a valid role id", userCode)
+			continue
+		}
+
+		if RoleId != 5 && RoleId != 6 && RoleId != 7 {
+			log.FuncErrorTrace(0, "Non podio user; email: %v", email)
+			continue
+		}
+
 		query := fmt.Sprintf(`
 			SELECT name, item_id, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id 
 			FROM sales_rep_dbhub_schema 
@@ -66,12 +77,12 @@ func DeletePodioUsersByCodes(userCodes []string) error {
 		SaleRepdata, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get sales_rep_dbhub_schema data from DB err: %v", err)
-			return err
+			return err, 0
 		}
 
 		if len(SaleRepdata) == 0 {
 			log.FuncErrorTrace(0, "user %v does not exist in podio", email)
-			return fmt.Errorf("user %v does not exist in podio", email)
+			return fmt.Errorf("user %v does not exist in podio", email), 0
 		}
 
 		itemId, ok := SaleRepdata[0]["item_id"].(int64)
@@ -91,11 +102,11 @@ func DeletePodioUsersByCodes(userCodes []string) error {
 	podioAccessToken, err := generatePodioAccessCode()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to generate podio access token; err: %v", err)
-		return err
+		return err, 0
 	}
 	deletePodioUserByCode(podioAccessToken, itemIds)
 
-	return nil
+	return nil, len(itemIds)
 }
 
 func stringJoin(elements []string, delimiter string) string {

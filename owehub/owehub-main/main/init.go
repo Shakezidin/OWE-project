@@ -1748,6 +1748,12 @@ func init() {
 		log.ConfDebugTrace(0, "Database Configuration fatched Successfully from file.")
 	}
 
+	//* For initial setting up podio
+	err = apiHandler.InitPodioUsers()
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to insert users to PODIO err: %+v", err)
+	}
+
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 

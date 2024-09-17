@@ -28,6 +28,7 @@ import (
 func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                   error
+		podioError            error
 		createUserReq         models.CreateUserReq
 		queryParameters       []interface{}
 		tablesPermissionsJSON []byte
@@ -66,7 +67,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Designation) <= 0) ||
 		(len(createUserReq.RoleName) <= 0) {
-		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
+		err = fmt.Errorf("empty input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
@@ -84,9 +85,11 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	//* logic to create / update user to podio
-	err = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
-	if err != nil {
-		log.FuncErrorTrace(0, "%v", err)
+	if createUserReq.AddToPodio {
+		podioError = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
+		if podioError != nil {
+			log.FuncErrorTrace(0, "%v", podioError)
+		}
 	}
 
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
@@ -277,6 +280,13 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Send HTTP response
+	if podioError != nil {
+		FormAndSendHttpResp(
+			resp, 
+			fmt.Sprintf("User Created Successfully, Failed to create in podio; err: %v", podioError), 
+			http.StatusOK, 
+			nil)
+	}
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
 }
 
