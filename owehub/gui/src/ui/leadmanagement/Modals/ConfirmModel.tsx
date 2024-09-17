@@ -28,6 +28,7 @@ const ConfirmaModel = () => {
             <div className="transparent-model">
                 <div className={classes.customer_wrapper_list}>
                     <div className={classes.DetailsMcontainer}>
+                        {/* <div > */}
                         <div className={classes.pers_det_top}>
                             <div className={classes.Column1Details}>
                                 <span className={classes.main_name}>Adam Samson</span>
@@ -68,18 +69,21 @@ const ConfirmaModel = () => {
                                                 </clipPath>
                                             </defs>
                                         </svg>{' '}
-                                        Verified
+                                    <span className={classes.verifyLetter}> Verified</span>
                                     </span>
                                 </span>
                             </div>
                         </div>
-                        <div className={classes.edit_modal_open} onClick={handleOpenModal}>
-                            <div className={classes.edit_modal_button}>
+                       <div>
+                       <div className={classes.edit_modal_open} onClick={handleOpenModal}>
                                 <RiEdit2Line style={{ color: "#fff" }} />
-                                <span>Edit</span>
+                                <span className={classes.edit_modal_button}>Edit</span>
                             </div>
-                        </div>
-                    </div>
+                       </div>
+                        
+                    </div> 
+                    <EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
+
                     {visibleDiv === 0 && <AppointmentScheduler setVisibleDiv={setVisibleDiv} />}
 
                     {visibleDiv === 1 && (

@@ -31,7 +31,7 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin-top: 0px;
+    margin-top: 1px;
 }
 
 
@@ -163,7 +163,9 @@
     border-radius: 8px;
     background-color: #fff;
     max-width: 593px;
-    height: 468px;
+    height: auto;
+    /* height: 468px; */
+    margin-bottom: -15px;
     background-color: #EDFFF0;
 }
 
@@ -173,8 +175,9 @@
     border-radius: 8px;
     background-color: #fff;
     max-width: 593px;
-    height: 468px;
+    height: auto;
     background-color: #FFEDED;
+    margin-bottom: -15px;
 
 }
 
@@ -192,7 +195,7 @@
 
 .pers_det_top {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
 
 .main_name {
@@ -423,7 +426,7 @@
     flex-basis: calc(100%);
     border-radius: 8px;
     max-width: 593px;
-    height: 580px;
+    height: auto;
 }
 
 .edit_closeicon {
@@ -433,22 +436,6 @@
     cursor: pointer;
 }
 
-.edit_modal_button {
-    width: 60px;
-    display: flex;
-    flex-direction: row;
-    padding: 2px 8px 2px 8px;
-    border-radius: 12px;
-    background-color: #377CF6;
-    color: #fff;
-    font-weight: 600;
-    font-size: 12px;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    margin-top: -18px;
-    transition: all 0.3s ease;
-}
 
 .edit_modal_button:hover {
     transform: scale(1.06);
@@ -487,4 +474,81 @@
 
 .editmodal_transparent_model.close {
     opacity: 0;
+}
+
+@media (min-width: 276px) and (max-width: 512px) and (min-height: 600px) and (max-height: 1146px) {
+
+    .verifyLetter{
+        font-size: 10px;
+    }
+    .customer_wrapper_list {
+        flex-basis: 100%;
+        margin-top: 20px;
+        border-radius: 8px;
+        background-color: #fff;
+        max-width: 356px; 
+        height: auto; 
+    }
+    .pers_det_top {
+        display: flex;
+        flex-direction: column; /* Stack Column1Details and Column2Details vertically */
+        gap: 10px; /* Optional: adds space between the columns */
+      }
+      
+      .Column1Details {
+        display: flex;
+        flex-direction: column; /* Keep items in Column1Details stacked */
+      }
+      
+      .Column2Details {
+        display: flex;
+        flex-direction: column; /* Keep items in Column2Details stacked */
+      }
+      
+    .DetailsMcontainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;  
+        height: auto; 
+        padding: 16px;
+        border: 1px solid #377CF6;
+        border-top-left-radius: 8px; 
+        border-top-right-radius: 8px;
+        border-bottom-left-radius: 0px; 
+        border-bottom-right-radius: 0px;
+        background-color: #EEF5FF;
+      } 
+
+.main_name {
+    font-weight:600;
+    font-size: 18px;
+    margin-top: -13px;
+    margin-bottom: 0.9%;
+    }
+    .mobileNumber {
+        color: #4E4E4E;
+        font-weight: 400;
+        text-align: left; 
+        font-size: 14px;
+    
+    }
+
+
+    .addresshead {
+        margin-bottom: 3.7%;
+        margin-top: -15px;
+        font-size: 14px;
+    }
+    .emailStyle {
+        color: #4E4E4E;
+        font-weight: 400;
+    }
+    .verified {
+        color: #20963A;
+        margin-left: 5px;
+    }
+    
+    
 }

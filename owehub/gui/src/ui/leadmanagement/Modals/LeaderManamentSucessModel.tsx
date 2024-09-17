@@ -54,7 +54,7 @@ import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
         <div className={classes.customer_wrapper_list}>
           <div className={classes.DetailsMcontainer}>
             <div className={classes.Column1Details} >
-                <span className={classes.main_name}>Adam Samson</span>
+                <span className={classes.main_name} >Adam Samson</span>
                 <span className={classes.mobileNumber}>+91 8739273728</span>
             </div>
             <div className={classes.Column2Details}>
@@ -71,7 +71,9 @@ import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
                       </clipPath>
                   </defs>
                 </svg>{" "}
-                  Verified</span></span>
+                  Verified
+                  </span>
+                </span>
             </div>
           </div>
       {/* <div className={classes.createUserCrossButton} ></div> */}

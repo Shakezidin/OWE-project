@@ -95,7 +95,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
                 <div className={`${classes.editmodal_transparent_model} ${isOpen ? classes.open : classes.close}`}>
                     <div className={classes.customer_wrapper_list_edit}>
 
-                        <div className={classes.Edit_DetailsMcontainer}>
+                         <div className={classes.Edit_DetailsMcontainer}>
                             <div className={classes.edit_closeicon} onClick={onClose}>
                                 <RiArrowDropDownLine style={{ height: "34px", width: "34px", fontWeight: "400" }} />
                             </div>
@@ -143,7 +143,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
                                         </span>
                                     </span>
                                 </div>
-                            </div>
+                            </div> 
                             <div className={classes.inputFields}>
                                 <Input
                                     type="text"

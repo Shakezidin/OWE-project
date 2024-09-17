@@ -94,6 +94,7 @@ import ConfirmaModel from './ui/leadmanagement/Modals/ConfirmModel';
 import RoutesForRole from './utiles/RoutesForRole';
 import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
 import LibraryHomepage from './ui/Library/LibraryHomepage';
+import LeadManamentSucessModel from './ui/leadmanagement/Modals/LeaderManamentSucessModel';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -402,6 +403,7 @@ function App() {
           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew />} />
           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL} element={<ConfirmaModel />} />
           <Route path={ROUTES.LEAD_MANAGEMENT_HISTORY} element={<LeradManagementHistory />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_SUCCESS_MODAl} element={<LeadManamentSucessModel />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
