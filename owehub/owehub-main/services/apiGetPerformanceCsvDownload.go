@@ -561,14 +561,16 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 	}
 
 	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	if !adminCheck && !filterCheck {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, dataFilter.Dealer)
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.Dealer)
 
 	// Always add the following filters
 	if whereAdded {
