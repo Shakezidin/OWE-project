@@ -16,7 +16,9 @@ import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePass
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
+
 import useAuth from '../../../hooks/useAuth';
+import ChatSupport from './ChatSupport';
 
 const MainLayout = () => {
   const { authData, filterAuthData } = useAuth();
@@ -40,10 +42,13 @@ const MainLayout = () => {
 
   /** TODO: temp solution for session logout. Need to change in future */
   useEffect(() => {
-    const token = authData?.token;
-    const expirationTime = authData?.expirationTime;
-    const expirationTimeInMin = authData?.expirationTimeInMin;
+    const user = localStorage.getItem('authData');
+    const userData = user ? JSON.parse(user) : {};
 
+    const token = userData?.token;
+    const expirationTime = userData?.expirationTime;
+    const expirationTimeInMin = userData?.expirationTimeInMin;
+    console.log('userData', userData);
     if (token && expirationTime && expirationTimeInMin) {
       const currentTime = Date.now();
       if (currentTime < parseInt(expirationTime, 10)) {
@@ -70,7 +75,7 @@ const MainLayout = () => {
         toast.error('Session time expired. Please login again..');
       }
     }
-  }, [dispatch, isAuthenticated, authData]);
+  }, [dispatch, isAuthenticated]);
 
   /** check whether user exist or not */
   useEffect(() => {
@@ -99,12 +104,13 @@ const MainLayout = () => {
     setToggleOpen(isTablet);
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
       localStorage.setItem('version', process.env.REACT_APP_VERSION!);
-      window.location.reload()
+      window.location.reload();
     }
   }, [isTablet]);
 
   return isAuthenticated ? (
     <div className="main-container">
+      <ChatSupport isAuthenticated={isAuthenticated} />
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}

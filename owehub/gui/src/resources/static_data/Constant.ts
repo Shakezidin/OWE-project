@@ -18,7 +18,7 @@ export const ALL_USER_ROLE_LIST = [
   { value: 'Finance Admin', label: 'Finance Admin' },
   { value: 'DB User', label: 'DB User' },
   { value: 'SubDealer Owner', label: 'SubDealer Owner' },
-  { value: 'Partner', label: 'Partner' },
+  // { value: 'Partner', label: 'Partner' },
   { value: 'Appointment Setter', label: 'Appointment Setter' },
   { value: 'Dealer Owner', label: 'Dealer Owner' },
   { value: 'Regional Manager', label: 'Regional Manager' },

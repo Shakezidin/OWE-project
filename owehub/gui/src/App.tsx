@@ -61,6 +61,7 @@ import ApptSetters from './ui/oweHub/configure/apptSetters/ApptSetters';
 import { ARDashboardPage } from './ui/oweHub/ar/ardashboard/ardashboard';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
+import Slack from './ui/pages/configure/slack/slack';
 import AdderData from './ui/oweHub/configure/adderData/AdderData';
 import ApRep from './ui/oweHub/configure/apRep/ApRep';
 import BatteryBackup from './ui/batterBackupCalculator';
@@ -75,6 +76,7 @@ import ApAdv from './ui/oweHub/configure/apAdv/ApAdv';
 import ApDed from './ui/oweHub/configure/apDed/ApDed';
 import ApOth from './ui/oweHub/configure/apOth/ApOth';
 import ApPda from './ui/oweHub/configure/apPda/ApPda';
+import ApDealer from './ui/oweHub/configure/apDealer/AddApDealer';
 import TeamManagement from './ui/oweHub/teammanagement/dashboard';
 import TeamTable from './ui/oweHub/teammanagement/teamtable';
 import Leaderboard from './ui/leaderboard';
@@ -85,8 +87,14 @@ import AddNew from './ui/scheduler/SalesRepScheduler/AddNew';
 import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/SchedulerBar';
 import Calendar from './ui/Calendar/PerformanceCalendar';
 import PendingQueue from './ui/oweHub/pendingQueue';
+
 import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
 import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
+import ConfirmaModel from './ui/leadmanagement/Modals/ConfirmModel';
+import RoutesForRole from './utiles/RoutesForRole';
+import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
+import LibraryHomepage from './ui/Library/LibraryHomepage';
+
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, role_name } = useAppSelector(
@@ -97,6 +105,69 @@ function App() {
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
+
+
+  function getConfigChildRoute() {
+    return [
+      { path: ROUTES.CONFIG_COMMISSION_RATE, element: <CommissionRate /> },
+      { path: ROUTES.CONFIG_DEALER_OVER, element: <DealerOverRides /> },
+      { path: ROUTES.CONFIG_MARKETING, element: <MarketingFees /> },
+      { path: ROUTES.CONFIG_DEALER_TIER, element: <DealerTier /> },
+      { path: ROUTES.CONFIG_LOAN, element: <LoanType /> },
+      { path: ROUTES.CONFIG_SALE, element: <SaleType /> },
+      { path: ROUTES.CONFIG_ADDER, element: <AdderValidation /> },
+      { path: ROUTES.CONFIG_PAYMENT_SCHEDULE, element: <PaymentSchedule /> },
+      { path: ROUTES.CONFIG_TIER_LOAN_FEE, element: <TierLoanFee /> },
+      { path: ROUTES.CONFIG_TIMELINE, element: <TimeLine /> },
+      { path: ROUTES.CONFIG_AUTO_ADDER, element: <AutoAdder /> },
+      { path: ROUTES.CONFIG_DEALER_CREDIT, element: <DealerCredit /> },
+      { path: ROUTES.CONFIG_REBET_DATA, element: <RebateData /> },
+      { path: ROUTES.CONFIG_REFERAL_DATA, element: <ReferalData /> },
+      { path: ROUTES.CONFIG_DLE_OTH_PAY, element: <DlrOthPay /> },
+      { path: ROUTES.CONFIG_NON_COMM_DLR_PAY, element: <NonCommDlrPay /> },
+      { path: ROUTES.CONFIG_LOAN_FEE, element: <LoanFeeAddr /> },
+      { path: ROUTES.CONFIG_REP_PAY_SETTINGS, element: <RepPaySettings /> },
+      { path: ROUTES.CONFIG_RATE_ADJUSTMENTS, element: <RateAdjustments /> },
+      { path: ROUTES.CONFIG_AR, element: <AR /> },
+      { path: ROUTES.CONFIG_AR_SCHEDULE, element: <ARSchedule /> },
+      { path: ROUTES.CONFIG_INSTALL_COST, element: <InstallCost /> },
+      { path: ROUTES.CONFIG_LEADER_OVERRIDE, element: <LeaderOverride /> },
+      { path: ROUTES.CONFIG_ADDER_CREDITS, element: <AdderCredit /> },
+      { path: ROUTES.CONFIG_ADDER_RESPONSIBILITY, element: <AdderResponsibility /> },
+      { path: ROUTES.CONFIG_LOAN_FEES, element: <LoanFee /> },
+      { path: ROUTES.CONFIG_AR_IMPORT, element: <ArImport /> },
+      { path: ROUTES.CONFIG_ADJUSTMENTS, element: <Adjustments /> },
+      { path: ROUTES.CONFIG_RECONCILE, element: <Reconcile /> },
+      { path: ROUTES.CONFIG_APPSETTERS, element: <ApptSetters /> },
+      { path: ROUTES.CONFIG_ADDERDATA, element: <AdderData /> },
+      { path: ROUTES.CONFIG_APREP, element: <ApRep /> },
+      { path: ROUTES.CONFIG_DBA, element: <Dba /> },
+      { path: ROUTES.CONFIG_SLACK, element: <Slack /> },
+      { path: ROUTES.CONFIG_REPCREDIT, element: <RepCredit /> },
+      { path: ROUTES.CONFIG_REPSTATUS, element: <RepStatus /> },
+      { path: ROUTES.CONFIG_REPINCENT, element: <RepIncent /> },
+      { path: ROUTES.CONFIG_APADV, element: <ApAdv /> },
+      { path: ROUTES.CONFIG_APDED, element: <ApDed /> },
+      { path: ROUTES.CONFIG_APOTH, element: <ApOth /> },
+      { path: ROUTES.CONFIG_APPDA, element: <ApPda /> },
+      { path: ROUTES.CONFIG_APPDA, element: <ApPda /> },
+      {path:ROUTES.CONFIG_APDEALER, element:<ApDealer/>},
+    ];
+  }
+
+  const ManageRoutesWithRole = (role: string) => {
+    const routes = RoutesForRole.filter(route => (route.available.includes(role) && (route.stagingOnly ? isStaging === "staging" : true)));
+    const availableRoutes = routes.map((route) => (
+      <Route key={route.route} path={route.route} element={<route.element />} />
+    ));
+    if (RoutesForRole.some(route => route.route === ROUTES.CONFIG_PAGE)) {
+      const childRoutes = getConfigChildRoute().map((route) => (
+        <Route key={route.path} path={route.path} element={route.element} />
+      ));
+      availableRoutes.push(...childRoutes);
+    }
+    return availableRoutes
+  }
 
   /**config and user manangement routes*/
   const configAndUserManagementRoutes = () => {
@@ -160,6 +231,7 @@ function App() {
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
         <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
         <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
+        <Route path={ROUTES.CONFIG_SLACK} element={<Slack />} />
         <Route path={ROUTES.CONFIG_REPCREDIT} element={<RepCredit />} />
         <Route path={ROUTES.CONFIG_REPSTATUS} element={<RepStatus />} />
         <Route path={ROUTES.CONFIG_REPINCENT} element={<RepIncent />} />
@@ -253,10 +325,13 @@ function App() {
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
-          <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
+          {
+            ManageRoutesWithRole(role_name!)
+          }
+          {/* <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} /> */}
 
-          {(role_name === TYPE_OF_USER.ADMIN ||
+          {/* {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
             role_name === TYPE_OF_USER.FINANCE_ADMIN ||
             role_name === TYPE_OF_USER.SUB_DEALER_OWNER ||
@@ -264,21 +339,27 @@ function App() {
             role_name === TYPE_OF_USER.PARTNER ||
             role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
             role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
-            otherRoutes()}
+            otherRoutes()} */}
 
-          {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+          {/* {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
             role_name === TYPE_OF_USER.SALE_MANAGER ||
             role_name === TYPE_OF_USER.REGIONAL_MANGER) &&
-            managerRoutes()}
+            managerRoutes()} */}
 
-          {(role_name === TYPE_OF_USER.ADMIN ||
+          {/* {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+            role_name === TYPE_OF_USER.ACCOUNT_MANAGER) &&
+            isStaging === 'staging' &&
+            configRoutes()} */}
+          {/* {(role_name === TYPE_OF_USER.ADMIN ||
             role_name === TYPE_OF_USER.DEALER_OWNER ||
             role_name === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
             role_name === TYPE_OF_USER.ACCOUNT_MANAGER) && (
             <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
-          )}
+          )} */}
 
-          {role_name === TYPE_OF_USER.DB_USER && (
+          {/* {role_name === TYPE_OF_USER.DB_USER && (
             <Route>
               <Route
                 path={ROUTES.DB_MANAGER_DASHBOARD}
@@ -294,14 +375,24 @@ function App() {
               />
               <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
             </Route>
-          )}
-          <Route path={ROUTES.PEINDING_QUEUE} element={<PendingQueue />} />
-          <Route path={ROUTES.CALENDAR} element={<Calendar />} />
+          )} */}
+          {/* <Route path={ROUTES.PEINDING_QUEUE} element={<PendingQueue />} />
+          <Route path={ROUTES.CALENDAR} element={<Calendar />} /> */}
 
-          <Route
+          {/* <Route
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
+          /> */}
+
+          {/* <Route
+            path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
+            element={<TeamManagement />}
           />
+          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} /> */}
+
+
+          <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
+
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
           <Route
@@ -309,20 +400,15 @@ function App() {
             element={<CustomersList />}
           />
           <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
-          <Route
-            path={ROUTES.LEAD_MANAGEMENT_ADD_NEW}
-            element={<LeadManagementNew />}
-          />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL} element={<ConfirmaModel />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT_HISTORY} element={<LeradManagementHistory />} />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
-          <Route
-            path={ROUTES.TEAM_MANAGEMENT_DASHBOARD}
-            element={<TeamManagement />}
-          />
-          <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} />
+
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />

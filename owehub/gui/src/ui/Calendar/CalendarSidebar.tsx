@@ -17,7 +17,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
     if (!date) return 'No date selected';
     const options: Intl.DateTimeFormatOptions = {
       day: 'numeric',
-      month: 'short',
+      month: 'long',
       year: 'numeric',
     };
     const formatter = new Intl.DateTimeFormat('en-GB', options);
@@ -125,6 +125,7 @@ const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
                     className="card-address"
                   >
                     {data.address}
+                    <span className="tooltip">{data.address}</span>
                   </a>
                   <button
                     className="card-status"

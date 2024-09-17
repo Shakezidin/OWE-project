@@ -25,7 +25,7 @@ interface Option {
 }
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 
 const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   const dispatch = useAppDispatch();
@@ -198,6 +198,10 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       validationErrors.managers = 'Please select at least one manager';
     }
 
+    if (selectedOption3.length === 0) {
+      validationErrors.dealer = 'Please select at least one dealer';
+    }
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setIsSubmitting(false); // Set submitting state back to false
@@ -209,11 +213,11 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
       sale_rep_ids: selectedOptions.map((option) => option.value),
       manager_ids:
         roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
-        roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
+          roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
           ? [
-              userCode?.rep_code,
-              ...selectedOptions2.map((option) => option.value),
-            ]
+            userCode?.rep_code,
+            ...selectedOptions2.map((option) => option.value),
+          ]
           : selectedOptions2.map((option) => option.value),
       description: formData.description,
       dealer_name: selectedOption3 || undefined,
@@ -271,34 +275,47 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     };
   }, [isSuccess]);
 
-  const handleClose = () => {};
-
+  const handleClose = () => { };
   const handleSelectChange3 = async (selectedOption3: Option | null) => {
-    setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
+    const selectedValue = selectedOption3 ? selectedOption3.value : '';
+    setSelectedOption3(selectedValue);
+  
+    // validation for dealer
+    if (!selectedValue) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        dealer: '',
+      }));
+    }
+
     if (selectedOption3?.value) {
-      const data: { [key: string]: any } = await getUsersByDealer(
-        selectedOption3.value
-      );
+      const data: { [key: string]: any } = await getUsersByDealer(selectedOption3.value);
+  
       if (data?.data?.sale_rep_list) {
         const managers =
           data?.data?.sale_rep_list
             ?.filter(
-              (item: any) =>
-                item.user_roles !== TYPE_OF_USER.SALES_REPRESENTATIVE
+              (item: any) => item.user_roles !== TYPE_OF_USER.SALES_REPRESENTATIVE
             )
-            .map((item: any) => ({ label: item.name, value: item.rep_code })) ||
-          [];
-
+            .map((item: any) => ({ label: item.name, value: item.rep_code })) || [];
+  
         const members =
           data?.data?.sale_rep_list.map((item: any) => ({
             label: item.name,
             value: item.rep_code,
           })) || [];
+  
         setManagerOptions(managers);
         setMembersOption(members);
       }
     }
   };
+  
+
   const selectedDealer = newFormData.find(
     (option) => option === selectedOption3
   );
@@ -340,41 +357,41 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
                   {(userRole === 'Admin' ||
                     userRole === TYPE_OF_USER.FINANCE_ADMIN) && (
-                    <div className="tm-new-create-input-field">
-                      <label
-                        className="inputLabel-select"
-                        style={{ fontWeight: 400 }}
-                      >
-                        Dealer Name
-                      </label>
-                      <SelectOption
-                        menuPosition="fixed"
-                        options={newFormData.map((item) => ({
-                          label: item,
-                          value: item,
-                        }))}
-                        value={
-                          selectedDealer
-                            ? {
+                      <div className="tm-new-create-input-field">
+                        <label
+                          className="inputLabel-select"
+                          style={{ fontWeight: 400 }}
+                        >
+                          Dealer Name
+                        </label>
+                        <SelectOption
+                          menuPosition="fixed"
+                          options={newFormData.map((item) => ({
+                            label: item,
+                            value: item,
+                          }))}
+                          value={
+                            selectedDealer
+                              ? {
                                 label: selectedDealer,
                                 value: selectedDealer,
                               }
-                            : undefined
-                        }
-                        onChange={handleSelectChange3}
-                      />
-                      {errors.dealer && (
-                        <span
-                          style={{
-                            display: 'block',
-                          }}
-                          className="error"
-                        >
-                          {errors.dealer}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                              : undefined
+                          }
+                          onChange={handleSelectChange3}
+                        />
+                        {errors.dealer && (
+                          <span
+                            style={{
+                              display: 'block',
+                            }}
+                            className="error"
+                          >
+                            {errors.dealer}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   <div className="tm-new-create-input-field">
                     <label
                       className="inputLabel-select"

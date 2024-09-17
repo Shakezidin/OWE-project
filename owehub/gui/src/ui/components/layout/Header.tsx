@@ -166,6 +166,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               {userRole === TYPE_OF_USER.DEALER_OWNER ||
               userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
               userRole === TYPE_OF_USER.SALE_MANAGER ||
+              userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
               userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
                 <div className="calendar-logo">
                   <Link to={ROUTES.CALENDAR}>
@@ -242,6 +243,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               {userRole === TYPE_OF_USER.DEALER_OWNER ||
               userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
               userRole === TYPE_OF_USER.SALE_MANAGER ||
+              userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
               userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
                 <div className="calendar-logo">
                   <Link to={ROUTES.CALENDAR}>

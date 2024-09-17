@@ -132,7 +132,7 @@
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  height: 140px;
+  height: 107px;
   display: flex;
   flex-direction: column;
   border: 1px solid #c1ccd7;
@@ -140,7 +140,6 @@
   background-color: white;
   position: relative;
   flex: 1;
-  min-width: 135px;
 }
 
 .cell.selected {
@@ -165,7 +164,7 @@
 }
 
 .cell .number {
-  margin-bottom: 1rem;
+  margin-bottom: 7px;
   font-size: 12px;
   font-weight: 600;
   color: #333;
@@ -184,7 +183,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 120px;
+  width: 112px;
   display: flex;
   align-items: center;
   gap: 2px;
@@ -268,6 +267,35 @@
 
 .mobile-calendar-text>* {
   display: none;
+}
+
+@media (max-width: 870px){
+  .cell{
+    width: 100px;
+    height: 95px;
+    padding: 7px;
+  }
+  .days{
+    font-size: 12px;
+  }
+  .event-box .event-icon {
+    font-size: 10px;
+    width: 1rem;
+    height: 1rem;
+  }
+  .event-text{
+    font-size: 11px;
+  }
+  .date-format{
+    font-size: 1rem;
+  }
+  .cell-dots .event-box{
+    width: 85px;
+    gap: 0;
+  }
+  .calendar-btn-close .calendar-head-btn{
+    padding: 6px 10px !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -370,7 +398,7 @@
     justify-content: center !important;
   }
 
-  .event-box {
+  .cell-dots .event-box {
     height: 8px;
     width: 8px;
     border-radius: 50%;

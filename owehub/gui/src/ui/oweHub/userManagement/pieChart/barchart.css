@@ -5,14 +5,23 @@
 .recharts-layer {
   outline: none !important;
 }
-
+.grid-wrapper-list {
+  display: grid;
+  grid-template-columns: 15% 10% auto;
+  width: 100%;
+  align-items: center;
+}
 .pieChart-section h2 {
   font-size: 1.125rem;
   font-weight: 600;
   text-align: left;
   color: var(--page-heading-color);
 }
-
+.grid-split-wrapper{
+  display: grid;
+  grid-template-columns: 10% 10% auto;
+  width: 100%;
+}
 .text-dark {
   color: var(--page-heading-color);
 }
@@ -39,6 +48,7 @@
   width: 175px;
   left: 41%;
   z-index: 10;
+  pointer-events: none;
 }
 
 .onboarding-pie {

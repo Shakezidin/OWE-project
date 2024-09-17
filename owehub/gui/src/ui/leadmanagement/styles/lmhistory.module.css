@@ -3,7 +3,8 @@
 }
 
 .customer_wrapper_list {
-  flex-basis: calc(100%);
+  /* flex-basis: 100%; */
+  width: 100%;
   border-radius: 8px;
   background-color: #fff;
   padding-top: 15px;
@@ -11,6 +12,7 @@
 }
 
 .history_list {
+  margin-top: 10px;
   padding: 10px 16px 10px 16px;
 }
 
@@ -23,9 +25,12 @@
 .history_list_inner {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  padding-left: 6px;
+  padding-right: 6px;
 }
+
 .email {
   display: flex;
   flex-direction: row;
@@ -33,31 +38,38 @@
   align-items: center;
   gap: 6px;
 }
+
 .user_name {
   display: flex;
   flex-direction: column;
 }
+
 .user_name h2 {
   font-weight: 600;
   font-size: 16px;
 }
+
 .user_name p {
   font-weight: 500;
   font-size: 12px;
   color: #81a6e7;
 }
+
 .phone_number {
   font-size: 12px;
   font-weight: 400;
 }
+
 .email p {
   font-size: 12px;
   font-weight: 400;
 }
+
 .address {
   font-size: 12px;
   font-weight: 400;
 }
+
 .see_more {
   display: flex;
   flex-direction: row;
@@ -70,6 +82,15 @@
   color: #377cf6;
   font-size: 12px;
   font-weight: 400;
+  transition: all 500ms ease;
+}
+
+.see_more p:hover {
+  transform: scale(1.06);
+}
+
+.see_more p:hover img {
+  transform: scale(1.06);
 }
 
 .history_list_activity {
@@ -80,6 +101,7 @@
   border-radius: 6px;
   margin-top: 20px;
   padding: 22px 0px 20px 0px;
+
 }
 
 .history_list_activity_det {
@@ -108,7 +130,8 @@
   right: 22px;
   position: absolute;
   transform: translateY(-50%);
-  width: 170px;
+  /* width: 9vw; */
+  min-width: 9vw;
   height: 1px;
   background-color: #929292;
 }
@@ -117,7 +140,7 @@
   right: 22px;
   position: absolute;
   transform: translateY(-50%);
-  width: 100px;
+  width: 6vw;
   height: 1px;
   background-color: #929292;
 }
@@ -137,6 +160,7 @@
   font-size: 12px;
   font-weight: 400;
 }
+
 .calender {
   background-color: #377cf6;
   width: 32px;
@@ -145,18 +169,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  transition: all 500ms ease;
+}
+
+.calender:hover {
+  transform: scale(1.06);
+  background-color: #0b4cbd;
 }
 
 .lm_history_header {
   display: flex;
   justify-content: space-between;
+  padding: 0px 15px;
 }
+
 .filters {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 13px;
 }
+
 .lm_history_header h1 {
   font-size: 20px;
   font-weight: 600;
@@ -166,6 +200,242 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .hist_ret img:hover {
   transform: scale(1.09);
+}
+
+.history_list_head {
+  color: #3E3E3E;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: -10px;
+}
+
+.lead_his_remove {
+  width: 135px;
+  height: 38px;
+  background-color: #EE4747;
+  font-weight: 500;
+  font-size: 16px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lead_his_remove:hover {
+  transform: scale(1.04);
+  background-color: #f21010;
+}
+
+.hist_checkbox_count {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+}
+
+.hist_checkbox_count h1 {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.hist_date {
+  font-weight: 500;
+  font-size: 12px;
+  color: #377CF6;
+}
+
+.hist_checkbox_count img {
+  transition: all 0.3s ease;
+}
+
+.hist_checkbox_count img:hover {
+  transform: scale(1.1);
+}
+
+.lm_history_details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hist_checkname {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+
+@media screen and (max-width: 767px) {
+  .h_screen {
+    display: flex;
+    align-items: center;
+
+  }
+
+  .customer_wrapper_list {
+    margin-left: 4px;
+    min-height: 100vh;
+    padding-inline: 4px;
+  }
+
+  .history_list {
+    margin-top: 10px;
+    padding: 10px 0px 10px 0px;
+  }
+
+  .hist_checkname {
+    gap: 12px;
+  }
+
+  .history_list_activity_mob {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #377cf6;
+    border-radius: 6px;
+    margin-top: 20px;
+    gap: 29px;
+    padding: 22px 0px 20px 60px;
+  }
+
+  .history_list_activity_det {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .history_list_head {
+    margin-left: -9px;
+  }
+
+  .circle_mob {
+    position: absolute;
+    top: 60%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #292929;
+  }
+  .lm_history_header {
+    align-items: center;
+  }
+
+  .line_mob {
+    position: absolute;
+    top: 0;
+    right: 7px;
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: right center;
+    width: 11vw;
+    height: 1.3px;
+    background-color: #929292;
+  }
+
+  .personal_info_mob {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-top: 14px;
+    padding-left: 17px;
+    gap: 4px;
+  }
+
+  .lm_history_header {
+    padding: 0px 1px;
+  }
+  .filters{
+    gap: 4px;
+  }
+  .hist_checkbox_count h1 {
+    font-size: 16px;
+  }
+
+  .lead_his_remove {
+    width: 114px;
+    height: 32px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .hist_date{
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .top_filters{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+}
+
+.monthSelect {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 20px;
+  padding: 7px 4px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  width: 104px;
+}
+.monthSelect option{
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+.monthSelect :hover{
+  border: none;
+}
+.monthSelect option:hover {
+  transform: scale(1.06);
+}
+
+
+
+.lead__datepicker_wrapper:hover {
+  z-index: 11;
+}
+
+.lead__datepicker_content {
+  position: absolute;
+  right: 26px;
+  z-index: 10;
+  background-color: var(--white-color);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  top: 140px;
+}
+
+.lead__datepicker_btns {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.lead__datepicker_btns button {
+  position: static;
+}
+
+.lead__datepicker_btns button:first-child {
+  margin-right: 0.5rem;
+}
+
+
+@media screen and (max-width: 767px) {
+    .monthSelect{
+      width: 90px;
+    }
+    .lead__datepicker_content{
+      margin-top: 5px;
+      right: 0;
+    }
 }
