@@ -45,7 +45,6 @@ interface UserTableProos {
   AddBtn?: React.ReactNode;
   currentPage1: number;
   setCurrentPage1: React.Dispatch<SetStateAction<number>>;
-  inactiveSalesRep: string;
   activeSalesRep: string;
   handleCrossClick: () => void;
 }
@@ -66,7 +65,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   currentPage1,
   searchTerm,
   setSearchTerm,
-  inactiveSalesRep,
   activeSalesRep,
   handleCrossClick,
 }) => {
@@ -366,7 +364,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          {(inactiveSalesRep || activeSalesRep) && (
+          {( activeSalesRep) && (
             <img
               style={{ cursor: 'pointer' }}
               src={ICONS.cross}
@@ -374,13 +372,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
           )}
 
-          {inactiveSalesRep ? (
-            <h3>{inactiveSalesRep.toUpperCase()}</h3>
-          ) : activeSalesRep ? (
-            <h3>{activeSalesRep } Sales Rep</h3>
-          ) : (
-            <h3>{selectedOption.label?.toUpperCase()}</h3>
-          )}
+         {activeSalesRep &&
+           <h3>{activeSalesRep } Sales Rep</h3>
+         }
         </div>
 
         <div className="delete-icon-container items-start mt2 ">
@@ -394,11 +388,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 setSearch(e.target.value);
               }}
             />
-            {!(inactiveSalesRep || activeSalesRep) && <div>{AddBtn}</div>}
+            {!( activeSalesRep) && <div>{AddBtn}</div>}
           </div>
 
           <div className="user_user-type">
-            {!(inactiveSalesRep ) && (
+            {!(activeSalesRep ) && (
               <div
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}

@@ -247,7 +247,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   return (
     <div
       style={{ zIndex: '30' }}
-      className={`side-bar-container ${toggleOpen ? 'side-bar-active hidden' : 'show'}`}
+      className={`side-bar-container ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div
         className={`side-bar-content ${toggleOpen ? 'side-bar-content-active' : ''

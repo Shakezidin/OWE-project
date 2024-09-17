@@ -81,24 +81,13 @@ const UserManagement: React.FC = () => {
     deleteUserResult,
   } = useAppSelector((state) => state.createOnboardUser);
 
-  const [inactiveSalesRep, setInactiveSalesRep] = useState('');
   const [activeSalesRep, setActiveSalesRep] = useState('');
 
-  const handleInactiveSlrpClick = (value: string) => {
-    setInactiveSalesRep(value);
-    setActiveSalesRep('');
-  };
-
-  const handleActiveSlrpClick = (value: string) => {
-    setActiveSalesRep(value);
-    setInactiveSalesRep('');
-  };
+ 
 
   const handleCrossClick = () => {
-    setInactiveSalesRep('');
     setActiveSalesRep('');
-    setIsClicked(false);
-    setIsClicked1(false);
+
     
   };
 
@@ -181,12 +170,7 @@ const UserManagement: React.FC = () => {
     [selectedOption]
   );
 
-  useEffect(() => {
-    if (activeSalesRep) {
-      const salesRepOption = ALL_USER_ROLE_LIST.find(option => option.value === 'Sale Representative');
-      setSelectedOption(salesRepOption);
-    }
-  }, [activeSalesRep]);
+
   /** check role  */
   const onChangeRole = async (role: string, value: string) => {
     console.log('working on first change');
@@ -217,6 +201,9 @@ const UserManagement: React.FC = () => {
       }
     }
   };
+  const handleValueChange=(value:string)=>{
+    setActiveSalesRep(value)
+  }
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
@@ -367,12 +354,9 @@ const UserManagement: React.FC = () => {
           onboardingList={userOnboardingList}
           userPerformanceList={userPerformanceList}
           loading={loading}
-          onInactiveSlrpClick={handleInactiveSlrpClick}
-          onActiveSlrpClick={handleActiveSlrpClick}
-          isClicked={isClicked}
-          setIsClicked={setIsClicked}
-          isClicked1={isClicked1}
-          setIsClicked1={setIsClicked1}
+          setSelectedOption={setSelectedOption}
+          onValueChange={handleValueChange}
+        activeSalesRep={activeSalesRep}
         />
       </div>
 
@@ -386,7 +370,6 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
-          inactiveSalesRep={inactiveSalesRep}
           activeSalesRep={activeSalesRep}
           handleCrossClick={handleCrossClick}
           currentPage1={page}
