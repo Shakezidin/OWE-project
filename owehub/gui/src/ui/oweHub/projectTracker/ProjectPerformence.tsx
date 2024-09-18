@@ -413,12 +413,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-            {
-              startDate: selected.start,
-              endDate: selected.end,
-              key: 'selection',
-            },
-          ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
         : []
     );
 
@@ -882,8 +882,12 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
+                <div className='pipeline-googlemap'>
+                  <img src={ICONS.PinMap} alt="pin map" />
+                </div>
               </div>
             </div>
+
             <div className="perf-export-btn">
               <button
                 disabled={isExportingData}
@@ -972,7 +976,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.qc.qc_action_required_count > 0
+                                          project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -998,7 +1002,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.ntp.action_required_count > 0
+                                          project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
