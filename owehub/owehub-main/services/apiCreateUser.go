@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"strconv"
 	"strings"
 
@@ -112,7 +113,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if createUserReq.Dealer == "" {
+	if createUserReq.RoleName != string(types.RoleAccountExecutive) &&
+		createUserReq.RoleName != string(types.RoleAccountManager) &&
+		createUserReq.Dealer == "" {
+
 		log.FuncErrorTrace(0, "dealer name can't be null")
 		FormAndSendHttpResp(resp, "Dealer name can't be null for dealer owner", http.StatusBadRequest, nil)
 		return
