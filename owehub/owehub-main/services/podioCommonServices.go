@@ -299,7 +299,7 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 
 	payloadBytes, err := json.Marshal(itemPayload)
 	if err != nil {
-		fmt.Println("Error marshalling payload:; email %v; err: %v", userData.EmailId, err)
+		log.FuncInfoTrace(0, "Error marshalling payload:; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 

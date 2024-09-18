@@ -10,7 +10,6 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"errors"
 
 	"fmt"
 )
@@ -42,7 +41,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 						AND name = '%s';`, reqData.EmailId, reqData.Name)
 	SaleRepdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get sales_rep_dbhub_schema data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get sales_rep_dbhub_schema data from DB; email: %v; err: %v", reqData.EmailId, err)
 		return err
 	}
 
@@ -55,39 +54,44 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 						WHERE sales_partner_name = '%s';`, reqData.Dealer)
 	Dealerdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get sales_partner_dbhub_schema data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get sales_partner_dbhub_schema data from DB  email: %v; err: %v", reqData.EmailId, err)
 		return err
 	}
 
 	if len(Dealerdata) == 0 {
-		log.FuncErrorTrace(0, "No dealer is found in podio")
-		return errors.New("no dealer is found in podio")
+		log.FuncErrorTrace(0, "No dealer is found in podio email: %v", reqData.EmailId)
+		err = fmt.Errorf("no dealer is found in podio email: %v", reqData.EmailId)
+		return err
 	}
 
 	dealerItemId, ok := Dealerdata[0]["item_id"].(int64)
 	if !ok {
-		log.FuncErrorTrace(0, "No dealer ItemId found in podio")
-		return errors.New("no dealer ItemId found in podio")
+		log.FuncErrorTrace(0, "No dealer ItemId found in podio email: %v", reqData.EmailId)
+		err = fmt.Errorf("no dealer ItemId found in podio email: %v", reqData.EmailId)
+		return err
 	}
 
 	dealerId, ok := Dealerdata[0]["partner_id"].(string)
 	if !ok {
-		log.FuncErrorTrace(0, "No partner id found in podio")
-		return errors.New("no partner id found in podio")
+		log.FuncErrorTrace(0, "No partner id found in podio email: %v", reqData.EmailId)
+		err = fmt.Errorf("no partner id found in podio email: %v", reqData.EmailId)
+		return err
 	}
 
 	if userExists {
 		itemId, ok = SaleRepdata[0]["item_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "No item id for sales rep found in podio")
-			return errors.New("no item id for sales rep found in podio")
+			log.FuncErrorTrace(0, "No item id for sales rep found in podio email: %v", reqData.EmailId)
+			err = fmt.Errorf("no item id for sales rep found in podio email: %v", reqData.EmailId)
+			return err
 		}
 	}
 
 	positionId := assignUserRoleToPodioId(userRole)
 	if positionId == 0 {
-		log.FuncErrorTrace(0, "User role not authorized to be added to podio")
-		return errors.New("user role not authorized to be added to podio")
+		log.FuncErrorTrace(0, "User role not authorized to be added to podio email: %v", reqData.EmailId)
+		err = fmt.Errorf("user role not authorized to be added to podio email: %v", reqData.EmailId)
+		return err
 	}
 
 	podioData := models.PodioDatas{}
@@ -98,7 +102,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 
 	podioAccessToken, err = generatePodioAccessCode()
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to generate podio access token; err: %v", err)
+		log.FuncErrorTrace(0, "Failed to generate podio access token; email: %v err: %v", reqData.EmailId, err)
 		return err
 	}
 
