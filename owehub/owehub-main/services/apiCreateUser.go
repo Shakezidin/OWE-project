@@ -101,7 +101,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	userEmail, _ := req.Context().Value("emailid").(string)
 	role, _ := req.Context().Value("rolename").(string)
-	
+
 	if role == "Dealer Owner" {
 		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -222,6 +222,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.TeamName)
 	queryParameters = append(queryParameters, createUserReq.Dealer)
 	queryParameters = append(queryParameters, createUserReq.DealerLogo)
+	queryParameters = append(queryParameters, createUserReq.AddToPodio)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the stored procedure or function to create the user

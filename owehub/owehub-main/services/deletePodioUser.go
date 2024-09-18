@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -38,7 +39,7 @@ func DeletePodioUsers(userCodes []string) (error, int) {
 	query := fmt.Sprintf(`SELECT name, email_id, user_code, role_id
 							 FROM user_details %s;`, whereClause)
 
-	userDetails, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	userDetails, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get user details from DB err: %v", err)
 		return err, 0
@@ -58,14 +59,14 @@ func DeletePodioUsers(userCodes []string) (error, int) {
 			continue
 		}
 
-		email, ok := user["email"].(string)
+		email, ok := user["email_id"].(string)
 		if !ok || email == "" {
 			log.FuncInfoTrace("User with code %s does not have a valid email", userCode)
 			continue
 		}
 
 		RoleId, ok := user["role_id"].(int64)
-		if !ok || email == "" {
+		if !ok {
 			log.FuncInfoTrace("User with code %s does not have a valid role id", userCode)
 			continue
 		}
@@ -117,6 +118,7 @@ func DeletePodioUsers(userCodes []string) (error, int) {
 		return err, 0
 	}
 
+	log.FuncErrorTrace(0, "Item deleted succedfuly from podio;")
 	return nil, itemsDeleted
 }
 
@@ -125,7 +127,7 @@ func deletePodioUsers(podioAccessToken string, itemIds []int64) (error, int) {
 	log.EnterFn(0, "deletePodioUserByCode")
 	defer func() { log.ExitFn(0, "deletePodioUserByCode", err) }()
 
-	appID := "29406203" //* app id for sales rep db in podio
+	appID := types.CommGlbCfg.PodioAppCfg.AppId
 	podioAPIURL := fmt.Sprintf("https://api.podio.com/item/app/%v/delete", appID)
 
 	requestBody := models.PodioDeleteRequest{

@@ -34,17 +34,11 @@ func SyncHubUsersToPodioOnInit() error {
 	)
 
 	//* fetch all users from OWE-HUB
-	// allUsersQuery = `SELECT ud.user_code, ud.name, ud.email_id, ud.mobile_number, vd.dealer_name, ur.role_name
-	// 		FROM user_details ud
-	// 		JOIN v_dealer vd ON ud.dealer_id = vd.id
-	//           JOIN user_roles ur ON ud.role_id = ur.role_id
-	// `
-
-	allUsersQuery = `SELECT ud.user_code, ud.name, ud.email_id, ud.mobile_number, vd.dealer_name, ur.role_name
+	allUsersQuery = `SELECT ud.user_code, ud.name, ud.email_id, ud.mobile_number, vd.dealer_name, ur.role_name, ud.podio_user
 			FROM user_details ud
 			JOIN v_dealer vd ON ud.dealer_id = vd.id
-            JOIN user_roles ur ON ud.role_id = ur.role_id
-            WHERE ud.name = 'AAA Test Auto Raed' AND ud.email_id = 'auto.raed.test@gmail.com'
+      JOIN user_roles ur ON ud.role_id = ur.role_id
+      WHERE podio_user = True
 	`
 
 	oweHubData, err = db.ReteriveFromDB(db.OweHubDbIndex, allUsersQuery, nil)

@@ -212,6 +212,8 @@ func createPodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 		log.FuncErrorTrace(0, "Failed to create podio user")
 		return errors.New("failed to create podio user")
 	}
+
+	log.FuncInfoTrace(0, "User created in podio succesfully: %v; email: ", userData.Name, userData.EmailId)
 	return nil
 }
 
@@ -329,5 +331,6 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 		return fmt.Errorf("podio api error: %v - %v", errorValue, errorDesc)
 	}
 
+	log.FuncInfoTrace(0, "User updated in podio succesfully: %v; email: %v", userData.Name, userData.EmailId)
 	return nil
 }
