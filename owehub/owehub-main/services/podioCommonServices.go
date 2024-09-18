@@ -6,7 +6,6 @@ import (
 	"OWEApp/shared/types"
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -42,45 +41,52 @@ func assignUserRoleToPodioId(role string) int {
  * INPUT:						resp, req
  * RETURNS:    			string
  ******************************************************************************/
-func generatePodioAccessCode() (string, error) {
+ func generatePodioAccessCode() (string, error) {
 	var err error
 	log.EnterFn(0, "generatePodioAccessCode")
 	defer func() { log.ExitFn(0, "generatePodioAccessCode", err) }()
 
-	clientID := types.CommGlbCfg.PodioCfg.PodioConfigs[1].ClientId
-	clientSecret := types.CommGlbCfg.PodioCfg.PodioConfigs[1].ClientSecret
-	username := types.CommGlbCfg.PodioCfg.PodioConfigs[1].Username
-	password := types.CommGlbCfg.PodioCfg.PodioConfigs[1].Password
-
 	authURL := "https://podio.com/oauth/token"
 
-	data := url.Values{}
-	data.Set("grant_type", "password")
-	data.Set("username", username)
-	data.Set("password", password)
-	data.Set("client_id", clientID)
-	data.Set("client_secret", clientSecret)
+	for _, podioConfig := range types.CommGlbCfg.PodioCfg.PodioConfigs {
+			clientID := podioConfig.ClientId
+			clientSecret := podioConfig.ClientSecret
+			username := podioConfig.Username
+			password := podioConfig.Password
 
-	resp, err := http.PostForm(authURL, data)
-	if err != nil {
-		fmt.Println("Error making authentication request:", err)
-		return "", err
+			data := url.Values{}
+			data.Set("grant_type", "password")
+			data.Set("username", username)
+			data.Set("password", password)
+			data.Set("client_id", clientID)
+			data.Set("client_secret", clientSecret)
+
+			resp, err := http.PostForm(authURL, data)
+			if err != nil {
+					fmt.Printf("Error making authentication request for config %s: %v\n", podioConfig.ClientId, err)
+					continue
+			}
+			defer resp.Body.Close()
+
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+					fmt.Printf("Error reading response body for config %s: %v\n", podioConfig.ClientId, err)
+					continue
+			}
+
+			var tokenResponse models.AccessTokenResponse
+			if err := json.Unmarshal(body, &tokenResponse); err != nil {
+					fmt.Printf("Error parsing access token response for config %s: %v\n", podioConfig.ClientId, err)
+					continue
+			}
+
+			if tokenResponse.AccessToken != "" {
+					return tokenResponse.AccessToken, nil
+			}
 	}
-	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading response body:", err)
-		return "", err
-	}
-
-	var tokenResponse models.AccessTokenResponse
-	if err := json.Unmarshal(body, &tokenResponse); err != nil {
-		fmt.Println("Error parsing access token response:", err)
-		return "", err
-	}
-
-	return tokenResponse.AccessToken, nil
+	err = fmt.Errorf("failed to generate Podio access code with any configuration")
+	return "", err
 }
 
 /******************************************************************************
@@ -180,7 +186,7 @@ func createPodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", podioAPIURL, bytes.NewBuffer(payloadBytes))
 	if err != nil {
-		log.FuncErrorTrace(0, "Error creating new Podio user request: %v", err)
+		log.FuncErrorTrace(0, "Error creating new Podio user request; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 
@@ -189,31 +195,32 @@ func createPodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create Podio user: %v", err)
+		log.FuncErrorTrace(0, "Failed to create Podio user; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Error reading response body")
+		log.FuncErrorTrace(0, "Error reading response body; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 
 	var createItemResponse models.CreateItemResponse
 	err = json.Unmarshal(body, &createItemResponse)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to parse item creation response")
+		log.FuncErrorTrace(0, "Failed to parse item creation response; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 	itemPodioLink := createItemResponse.ItemPodioLink
 
 	if len(itemPodioLink) == 0 {
-		log.FuncErrorTrace(0, "Failed to create podio user")
-		return errors.New("failed to create podio user")
+		log.FuncErrorTrace(0, "Failed to create podio user; email %v err: %v", userData.EmailId, err)
+		err = fmt.Errorf("failed to create podio user; email %v", userData.EmailId)
+		return err
 	}
 
-	log.FuncInfoTrace(0, "User created in podio succesfully: %v; email: ", userData.Name, userData.EmailId)
+	log.FuncInfoTrace(0, "User created in podio succesfully: %v; email: %v", userData.Name, userData.EmailId)
 	return nil
 }
 
@@ -292,14 +299,14 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 
 	payloadBytes, err := json.Marshal(itemPayload)
 	if err != nil {
-		fmt.Println("Error marshalling payload:", err)
+		fmt.Println("Error marshalling payload:; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 
 	client := &http.Client{}
 	req, err := http.NewRequest("PUT", podioAPIURL, bytes.NewBuffer(payloadBytes))
 	if err != nil {
-		log.FuncErrorTrace(0, "Error creating new Podio user request: %v", err)
+		log.FuncErrorTrace(0, "Error creating new Podio user request: ; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 
@@ -308,27 +315,28 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to create Podio user: %v", err)
+		log.FuncErrorTrace(0, "Failed to create Podio user: ; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Error reading response body")
+		log.FuncErrorTrace(0, "Error reading response body; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 
 	var podioResponse map[string]interface{}
 	err = json.Unmarshal(body, &podioResponse)
 	if err != nil {
-		log.FuncErrorTrace(0, "Error unmarshalling response: %v", err)
+		log.FuncErrorTrace(0, "Error unmarshalling response; email %v; err: %v", userData.EmailId, err)
 		return err
 	}
 
 	if errorValue, exists := podioResponse["error"]; exists {
 		errorDesc := podioResponse["error_description"]
-		return fmt.Errorf("podio api error: %v - %v", errorValue, errorDesc)
+		err = fmt.Errorf("podio api error: %v - %v", errorValue, errorDesc)
+		return err
 	}
 
 	log.FuncInfoTrace(0, "User updated in podio succesfully: %v; email: %v", userData.Name, userData.EmailId)
