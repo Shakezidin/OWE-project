@@ -110,12 +110,12 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			}
 			createUserReq.Dealer = DealerName
 		}
+	}
 
-		if createUserReq.Dealer == "" {
-			log.FuncErrorTrace(0, "dealer name can't be null")
-			FormAndSendHttpResp(resp, "Dealer name can't be null for dealer owner", http.StatusBadRequest, nil)
-			return
-		}
+	if createUserReq.Dealer == "" {
+		log.FuncErrorTrace(0, "dealer name can't be null")
+		FormAndSendHttpResp(resp, "Dealer name can't be null for dealer owner", http.StatusBadRequest, nil)
+		return
 	}
 
 	/**
