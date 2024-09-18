@@ -88,7 +88,7 @@ import SchedulerBar from './ui/scheduler/SalesRepScheduler/SchedulerBar/Schedule
 import Calendar from './ui/Calendar/PerformanceCalendar';
 import PendingQueue from './ui/oweHub/pendingQueue';
 
-import LeadMngDashboard from './ui/leadmanagement/leadmngdashboard';
+import LeadManagementDashboard from './ui/leadmanagement/LeadManagementDashboard';
 import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
 import ConfirmaModel from './ui/leadmanagement/Modals/ConfirmModel';
 import RoutesForRole from './utiles/RoutesForRole';
@@ -398,7 +398,7 @@ function App() {
             path={ROUTES.SALES_REP_SCHEDULER}
             element={<CustomersList />}
           />
-          <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadMngDashboard />} />
+          <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadManagementDashboard />} />
           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew />} />
           <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL} element={<ConfirmaModel />} />
           <Route path={ROUTES.LEAD_MANAGEMENT_HISTORY} element={<LeradManagementHistory />} />
