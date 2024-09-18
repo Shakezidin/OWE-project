@@ -1,5 +1,7 @@
 import React from 'react'
 import classes from "./styles/leadManagementNew.module.css"
+// import './styles/leadManagementNew.module.css';
+
 // import SalesRepSchedulePage from '../scheduler/SalesRepScheduler/SuccessSales';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -83,7 +85,7 @@ const LeadManagementNew = () => {
 
 
   return (
-    <><div className={classes.main_head}>Create New Lead</div>
+    <><div className={`${classes.main_head} ${classes.form_header}`}>Create New Lead</div>
 
       
       {/* <SalesRepSchedulePage isOpen={filterOPen} handleClose={filterClose}/> Filter Modal */}
