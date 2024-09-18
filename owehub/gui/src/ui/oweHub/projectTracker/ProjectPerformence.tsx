@@ -240,14 +240,7 @@ const ProjectPerformence = () => {
       item.FinCreateDate,
       item.FinPassDate,
       item.PtoSubmittedDate,
-      item.PtoDate
-      
-      
-
-
-
-      
-      
+      item.PtoDate    
       
     ]);
 
