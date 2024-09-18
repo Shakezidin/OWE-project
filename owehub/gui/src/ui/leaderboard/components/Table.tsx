@@ -128,38 +128,7 @@ const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
   weekStartsOn: 1,
 });
 
-const periodFilterOptions: DateRangeWithLabel[] = [
-  {
-    label: 'This Week',
-    start: startOfThisWeek,
-    end: today,
-  },
-  {
-    label: 'Last Week',
-    start: startOfLastWeek,
-    end: endOfLastWeek,
-  },
-  {
-    label: 'This Month',
-    start: startOfThisMonth,
-    end: today,
-  },
-  {
-    label: 'Last Month',
-    start: startOfLastMonth,
-    end: endOfLastMonth,
-  },
-  {
-    label: 'This Quarter',
-    start: startOfThreeMonthsAgo,
-    end: today,
-  },
-  {
-    label: 'This Year',
-    start: startOfThisYear,
-    end: today,
-  },
-];
+
 
 const PeriodFilter = ({
   period,
@@ -170,6 +139,39 @@ const PeriodFilter = ({
   setPeriod: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
 }) => {
+  const periodFilterOptions: DateRangeWithLabel[] = [
+    {
+      label: 'This Week',
+      start: startOfThisWeek,
+      end: today,
+    },
+    {
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
+    },
+    {
+      label: 'This Month',
+      start: startOfThisMonth,
+      end: new Date(),
+    },
+    {
+      label: 'Last Month',
+      start: startOfLastMonth,
+      end: endOfLastMonth,
+    },
+    {
+      label: 'This Quarter',
+      start: startOfThreeMonthsAgo,
+      end: today,
+    },
+    {
+      label: 'This Year',
+      start: startOfThisYear,
+      end: today,
+    },
+  ];
+
   return (
     <ul className="leaderboard-data__btn-group">
       {periodFilterOptions.map((item) => (
@@ -381,6 +383,38 @@ const DateFilter = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+  const periodFilterOptions: DateRangeWithLabel[] = [
+    {
+      label: 'This Week',
+      start: startOfThisWeek,
+      end: today,
+    },
+    {
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
+    },
+    {
+      label: 'This Month',
+      start: startOfThisMonth,
+      end: new Date(),
+    },
+    {
+      label: 'Last Month',
+      start: startOfLastMonth,
+      end: endOfLastMonth,
+    },
+    {
+      label: 'This Quarter',
+      start: startOfThreeMonthsAgo,
+      end: today,
+    },
+    {
+      label: 'This Year',
+      start: startOfThisYear,
+      end: today,
+    },
+  ];
 
   return (
     <div className="flex items-center justify-end">
@@ -681,7 +715,7 @@ const Table = ({
     } else {
       return false;
     }
-  }, [groupBy, role]);
+  }, [groupBy, role, authData]);
 
   const exportCsv = async () => {
     // Define the headers for the CSV
@@ -689,7 +723,7 @@ const Table = ({
     setIsExporting(true);
     const headers = [
       'UniqueID',
-      getName,
+      "Homeowner Name",
       'Homeowner Email',
       'Homeowner Phone',
       'Address',
@@ -763,7 +797,7 @@ const Table = ({
     } else {
       return 'Name';
     }
-  }, [role]);
+  }, [role, authData]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}

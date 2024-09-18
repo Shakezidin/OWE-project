@@ -434,7 +434,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </div>
                   </div>
                 </div>
-                {(formData.role_name === TYPE_OF_USER.SALE_MANAGER || formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE || formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) && <div
+                {(formData.role_name === TYPE_OF_USER.SALE_MANAGER || formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE || formData.role_name === TYPE_OF_USER.REGIONAL_MANGER || formData.role_name===TYPE_OF_USER.DEALER_OWNER) && <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
