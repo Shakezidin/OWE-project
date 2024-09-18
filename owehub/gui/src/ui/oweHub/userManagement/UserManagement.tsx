@@ -27,7 +27,6 @@ import {
   userResetForm,
 } from '../../../redux/apiSlice/userManagementSlice/createUserSlice';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
-import Loading from '../../components/loader/Loading';
 import { toast } from 'react-toastify';
 import { unwrapResult } from '@reduxjs/toolkit';
 import {
@@ -36,8 +35,7 @@ import {
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
-import MicroLoader from '../../components/loader/MicroLoader';
-import Swal from 'sweetalert2';
+
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -276,23 +274,7 @@ const UserManagement: React.FC = () => {
       'No'
     );
 
-    // const { value: accept } = await Swal.fire({
-    //   title: "Delete User",
-    //   input: "checkbox",
-    //   inputValue: 1,
-    //   inputPlaceholder: `
-    //    Delete user from podio
-    //   `,
-    //   confirmButtonText: `
-    //     Continue&nbsp;<i class="fa fa-arrow-right"></i>
-    //   `,
-    //   inputValidator: (result) => {
-    //     return !result && "You need to agree with T&C";
-    //   }
-    // });
-    // if (accept) {
-    //   Swal.fire("You agreed with T&C :)");
-    // }
+
 
     if (confirmed) {
       const actionResult = await dispatch(
