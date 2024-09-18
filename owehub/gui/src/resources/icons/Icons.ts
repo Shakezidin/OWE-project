@@ -141,6 +141,9 @@ import historyLeadMgmt from '../../resources/assets/history-lead-mgmt.svg';
 import seemore from '../../resources/assets/see_more_lm.svg';
 import pdf from '../../resources/assets/pdf.svg';
 import leadMngExport from '../../resources/assets/export-lead.svg';
+import chevronDown from '../assets/chevron-down.svg'
+import chevronUp from '../assets/chevron-Up.svg'
+
 
 
 
@@ -302,4 +305,7 @@ export const ICONS = {
   SeeMore: seemore,
   pdf: pdf,
   LeadMngExport:leadMngExport,
+  chevronDown:chevronDown,
+  chevronUp:chevronUp
+
 };

@@ -173,3 +173,35 @@
 .addresshead {
   color:#4E4E4E;
 }
+
+.form_header{
+margin-left: 20px;
+}
+
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .customer_wrapper_list{
+    height: auto;
+  }
+  .form_header{
+    margin-top: 10px;
+    }
+
+  .salrep_input_container {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .srs_new_create {
+    width: 100%; 
+  }
+
+  .submitbut {
+    width: 95%; 
+  }
+
+  .create_input_field_note textarea {
+    width: 100%;
+  }
+}
