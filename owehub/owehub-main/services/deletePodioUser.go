@@ -89,7 +89,8 @@ func DeletePodioUsers(userCodes []string) (error, int) {
 
 		if len(SaleRepdata) == 0 {
 			log.FuncErrorTrace(0, "user %v does not exist in podio", email)
-			return fmt.Errorf("user %v does not exist in podio", email), 0
+			err = fmt.Errorf("user %v does not exist in podio", email)
+			return err, 0
 		}
 
 		itemId, ok := SaleRepdata[0]["item_id"].(int64)
@@ -136,12 +137,14 @@ func deletePodioUsers(podioAccessToken string, itemIds []int64) (error, int) {
 
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
-		return fmt.Errorf("failed to marshal request body: %v", err), 0
+		err = fmt.Errorf("failed to marshal request body: %v", err)
+		return err, 0
 	}
 
 	req, err := http.NewRequest("POST", podioAPIURL, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return fmt.Errorf("failed to create HTTP request: %v", err), 0
+		err = fmt.Errorf("failed to create HTTP request: %v", err)
+		return err, 0
 	}
 
 	req.Header.Set("Authorization", "OAuth2 "+podioAccessToken)
@@ -150,23 +153,27 @@ func deletePodioUsers(podioAccessToken string, itemIds []int64) (error, int) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed to send request: %v", err), 0
+		err = fmt.Errorf("failed to send request: %v", err)
+		return err, 0
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("received non-OK response: %d", resp.StatusCode), 0
+		err = fmt.Errorf("received non-OK response: %d", resp.StatusCode)
+		return err, 0
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return fmt.Errorf("error reading response: %v", err), 0
+		err = fmt.Errorf("error reading response: %v", err)
+		return err, 0
 	}
 	var response DeleteResponse
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return fmt.Errorf("error parsing JSON: %v", err), 0
+		err = fmt.Errorf("error parsing JSON: %v", err)
+		return err, 0
 	}
 
 	return nil, len(response.Deleted)
