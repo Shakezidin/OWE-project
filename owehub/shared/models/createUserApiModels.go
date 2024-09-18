@@ -33,5 +33,5 @@ type CreateUserReq struct {
 	Dealer            string            `json:"dealer"`
 	DealerLogo        string            `json:"dealer_logo"`
 	TablesPermissions []TablePermission `json:"tables_permissions"`
-	AddToPodio        bool              `json:"add_to_podio"`
+	AddToPodio        bool              `json:"podio_checked"`
 }

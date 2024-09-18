@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"fmt"
 )
 
@@ -18,10 +19,10 @@ type User struct {
 	EmailID    string
 	Phone      string
 	DealerName string
-	RoleId     int64
+	UserRole   string
 }
 
-func InitPodioUsers() error {
+func SyncHubUsersToPodioOnInit() error {
 	var (
 		err              error
 		oweHubData       []map[string]interface{}
@@ -33,14 +34,28 @@ func InitPodioUsers() error {
 	)
 
 	//* fetch all users from OWE-HUB
-	allUsersQuery = `SELECT ud.user_code, ud.name, ud.email_id, ud.mobile_number, vd.dealer_name, ud.role_id
+	// allUsersQuery = `SELECT ud.user_code, ud.name, ud.email_id, ud.mobile_number, vd.dealer_name, ur.role_name
+	// 		FROM user_details ud
+	// 		JOIN v_dealer vd ON ud.dealer_id = vd.id
+	//           JOIN user_roles ur ON ud.role_id = ur.role_id
+	// `
+
+	allUsersQuery = `SELECT ud.user_code, ud.name, ud.email_id, ud.mobile_number, vd.dealer_name, ur.role_name
 			FROM user_details ud
 			JOIN v_dealer vd ON ud.dealer_id = vd.id
+            JOIN user_roles ur ON ud.role_id = ur.role_id
+            WHERE ud.name = 'AAA Test Auto Raed' AND ud.email_id = 'auto.raed.test@gmail.com'
 	`
+
 	oweHubData, err = db.ReteriveFromDB(db.OweHubDbIndex, allUsersQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get users_details data from DB for podio insert err: %v", err)
 		return err
+	}
+
+	if len(oweHubData) == 0 {
+		log.FuncErrorTrace(0, "No users to be inserted to podio")
+		return nil
 	}
 
 	var oweHubusers []User
@@ -50,14 +65,16 @@ func InitPodioUsers() error {
 		emailId, ok2 := data["email_id"].(string)
 		phone, _ := data["mobile_number"].(string)
 		dealerName, _ := data["dealer_name"].(string)
-		RoleId, _ := data["role_id"].(int64)
+		userRole, _ := data["role_name"].(string)
 
 		if !ok1 || !ok2 {
 			log.FuncErrorTrace(0, "Failed to fetch name or email id for user_code: %v", user_code)
 			continue
 		}
 
-		if RoleId != 5 && RoleId != 6 && RoleId != 7 {
+		//* this rejects roles other than sale manager, regional manager, sales rep
+		if userRole != string(types.RoleSalesManager) && userRole != string(types.RoleRegionalManager) && 
+		userRole != string(types.RoleSalesRep) && userRole != string(types.RoleDealerOwner) {
 			log.FuncErrorTrace(0, "Non podio user; user_code: %v", user_code)
 			continue
 		}
@@ -67,7 +84,7 @@ func InitPodioUsers() error {
 			EmailID:    emailId,
 			Phone:      phone,
 			DealerName: dealerName,
-			RoleId:     RoleId,
+			UserRole:   userRole,
 		}
 		oweHubusers = append(oweHubusers, user)
 	}
@@ -99,16 +116,25 @@ func InitPodioUsers() error {
 	}
 
 	var userDoesNotExist []User
-	oweDbUserMap := make(map[string]bool)
+	oweDbUserMap := make(map[string]string)
 	for _, dbUser := range oweDbusers {
-		oweDbUserMap[dbUser.EmailID] = true
+		oweDbUserMap[dbUser.EmailID] = dbUser.Name
 	}
 
 	//* checking user alreay exists or not
 	for _, hubUser := range oweHubusers {
 		if _, exists := oweDbUserMap[hubUser.EmailID]; !exists {
+			log.FuncInfoTrace(0, "User %v to be added to Podio; emai: %v", hubUser.Name, hubUser.EmailID)
+			userDoesNotExist = append(userDoesNotExist, hubUser)
+		} else if oweDbUserMap[hubUser.EmailID] != hubUser.Name {
+			log.FuncInfoTrace(0, "User %v to be added to Podio; emai: %v", hubUser.Name, hubUser.EmailID)
 			userDoesNotExist = append(userDoesNotExist, hubUser)
 		}
+	}
+
+	if len(oweHubusers) == 0 {
+		log.FuncInfoTrace(0, "No user to be added to Podio, all the users exists")
+		return nil
 	}
 
 	podioAccessToken, err = generatePodioAccessCode()
@@ -144,7 +170,7 @@ func InitPodioUsers() error {
 			continue
 		}
 
-		positionId := assignRoleToPodioId(hubUser.RoleId)
+		positionId := assignUserRoleToPodioId(hubUser.UserRole)
 		if positionId == 0 {
 			log.FuncErrorTrace(0, "User role not authorized to be added to podio for email: %v", hubUser.EmailID)
 			continue
@@ -164,28 +190,10 @@ func InitPodioUsers() error {
 		err = CreateOrUpdatePodioUser(userData, podioData, podioAccessToken, false)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to create user in podio for email: %v", hubUser.EmailID)
+			continue
 		}
+
+		log.FuncInfoTrace(0, "User %v created succesfully in Podio; email: %v", hubUser.Name, hubUser.EmailID)
 	}
 	return nil
-}
-
-/******************************************************************************
- * FUNCTION:				assignUserRoleToPodioId
- * DESCRIPTION:     to assign the category id in podio based on user role
- * INPUT:						resp, req
- * RETURNS:    			int
- ******************************************************************************/
-func assignRoleToPodioId(role int64) int {
-	var positionId int
-	switch role {
-	case 7: // sale representative
-		positionId = 2
-	case 5: // regional manager
-		positionId = 3
-	case 6: // sales manager
-		positionId = 4
-	default:
-		positionId = 0
-	}
-	return positionId
 }

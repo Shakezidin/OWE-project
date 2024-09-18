@@ -99,8 +99,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	userEmail := req.Context().Value("emailid").(string)
-	role := req.Context().Value("rolename").(string)
+	userEmail, _ := req.Context().Value("emailid").(string)
+	role, _ := req.Context().Value("rolename").(string)
+	
 	if role == "Dealer Owner" {
 		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -280,13 +281,15 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Send HTTP response
-	if podioError != nil {
+	if podioError != nil && createUserReq.AddToPodio {
 		FormAndSendHttpResp(
-			resp, 
-			fmt.Sprintf("User Created Successfully, Failed to create in podio; err: %v", podioError), 
-			http.StatusOK, 
+			resp,
+			fmt.Sprintf("User Created Successfully, Failed to create in podio; err: %v", podioError),
+			http.StatusOK,
 			nil)
+		return
 	}
+
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
 }
 

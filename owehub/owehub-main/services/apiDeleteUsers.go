@@ -31,7 +31,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		reqBody          []byte
-		podioDeleteCount int
+		// podioDeleteCount int
 		deleteUsersReq   models.DeleteUsers
 		whereEleList     []interface{}
 		query            string
@@ -70,11 +70,9 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 
 	//* logic to delte users from podio
 
-	if deleteUsersReq.DeleteFromPodio {
-		err, podioDeleteCount = DeletePodioUsersByCodes(deleteUsersReq.UserCodes)
-		if err != nil {
-			log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
-		}
+	err, _ = DeletePodioUsers(deleteUsersReq.UserCodes)
+	if err != nil {
+		log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
 	}
 
 	//
@@ -201,6 +199,6 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v and Podio Count %v", rowsAffected, deleteUsersReq.UserCodes, podioDeleteCount)
-	FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) from OweHub app and %d from Podio deleted Successfully", rowsAffected, podioDeleteCount), http.StatusOK, rowsAffected)
+	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v ", rowsAffected, deleteUsersReq.UserCodes)
+	FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) from OweHub app deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
 }

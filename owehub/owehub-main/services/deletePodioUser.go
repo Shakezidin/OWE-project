@@ -13,11 +13,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 )
 
-func DeletePodioUsersByCodes(userCodes []string) (error, int) {
+type DeleteResponse struct {
+	Deleted []int64 `json:"deleted"`
+	Pending []int64 `json:"pending"`
+}
+
+func DeletePodioUsers(userCodes []string) (error, int) {
 	var (
 		err         error
 		userDetails []map[string]interface{}
@@ -27,7 +33,7 @@ func DeletePodioUsersByCodes(userCodes []string) (error, int) {
 	log.EnterFn(0, "DeletePodioUsersByCodes")
 	defer func() { log.ExitFn(0, "DeletePodioUsersByCodes", err) }()
 
-	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", stringJoin(userCodes, "','"))
+	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", strings.Join(userCodes, ","))
 
 	query := fmt.Sprintf(`SELECT name, email_id, user_code, role_id
 							 FROM user_details %s;`, whereClause)
@@ -64,7 +70,7 @@ func DeletePodioUsersByCodes(userCodes []string) (error, int) {
 			continue
 		}
 
-		if RoleId != 5 && RoleId != 6 && RoleId != 7 {
+		if RoleId != 5 && RoleId != 6 && RoleId != 7 && RoleId != 2 {
 			log.FuncErrorTrace(0, "Non podio user; email: %v", email)
 			continue
 		}
@@ -104,16 +110,21 @@ func DeletePodioUsersByCodes(userCodes []string) (error, int) {
 		log.FuncErrorTrace(0, "Failed to generate podio access token; err: %v", err)
 		return err, 0
 	}
-	deletePodioUserByCode(podioAccessToken, itemIds)
 
-	return nil, len(itemIds)
+	err, itemsDeleted := deletePodioUsers(podioAccessToken, itemIds)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to delete user from podio; err: %v", err)
+		return err, 0
+	}
+
+	return nil, itemsDeleted
 }
 
-func stringJoin(elements []string, delimiter string) string {
-	return strings.Join(elements, delimiter)
-}
+func deletePodioUsers(podioAccessToken string, itemIds []int64) (error, int) {
+	var err error
+	log.EnterFn(0, "deletePodioUserByCode")
+	defer func() { log.ExitFn(0, "deletePodioUserByCode", err) }()
 
-func deletePodioUserByCode(podioAccessToken string, itemIds []int64) error {
 	appID := "29406203" //* app id for sales rep db in podio
 	podioAPIURL := fmt.Sprintf("https://api.podio.com/item/app/%v/delete", appID)
 
@@ -123,12 +134,12 @@ func deletePodioUserByCode(podioAccessToken string, itemIds []int64) error {
 
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
-		return fmt.Errorf("failed to marshal request body: %v", err)
+		return fmt.Errorf("failed to marshal request body: %v", err), 0
 	}
 
 	req, err := http.NewRequest("POST", podioAPIURL, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return fmt.Errorf("failed to create HTTP request: %v", err)
+		return fmt.Errorf("failed to create HTTP request: %v", err), 0
 	}
 
 	req.Header.Set("Authorization", "OAuth2 "+podioAccessToken)
@@ -137,13 +148,24 @@ func deletePodioUserByCode(podioAccessToken string, itemIds []int64) error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed to send request: %v", err)
+		return fmt.Errorf("failed to send request: %v", err), 0
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("received non-OK response: %d", resp.StatusCode)
+		return fmt.Errorf("received non-OK response: %d", resp.StatusCode), 0
 	}
 
-	return nil
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("error reading response: %v", err), 0
+	}
+	var response DeleteResponse
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return fmt.Errorf("error parsing JSON: %v", err), 0
+	}
+
+	return nil, len(response.Deleted)
 }
