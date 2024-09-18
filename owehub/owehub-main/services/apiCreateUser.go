@@ -112,6 +112,12 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	if createUserReq.Dealer == "" {
+		log.FuncErrorTrace(0, "dealer name can't be null")
+		FormAndSendHttpResp(resp, "Dealer name can't be null for dealer owner", http.StatusBadRequest, nil)
+		return
+	}
+
 	/**
 			If the user role is "DB User" or "Admin"
 			this if condition statements helps in
