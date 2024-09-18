@@ -37,7 +37,7 @@ export const DashboardPage: React.FC = () => {
     setSelectionRange(new Date());
   };
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 25;
   const [currentPage, setCurrentPage] = useState(1);
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);

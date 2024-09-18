@@ -31,7 +31,7 @@ export const AddNewButton = (props: ActionButtonProps) => {
           alt=""
           style={{ width: '12px', height: '12px' }}
         /> */}
-        <MdAdd size={16} />
+        <MdAdd style={{flexShrink:0}} size={16} />
         <span className="mobileTitle">{title}</span>
       </button>
     </div>
