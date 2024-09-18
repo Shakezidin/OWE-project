@@ -20,15 +20,39 @@ type GetCsvDownload struct {
 }
 
 type GetCsvPerformance struct {
-	UniqueId       string
-	HomeOwner      string
-	Email          string
-	PhoneNumber    string
-	Address        string
-	State          string
-	ContractAmount float64
-	SystemSize     float64
-	ContractDate   string
+	UniqueId                string
+	HomeOwner               string
+	Email                   string
+	PhoneNumber             string
+	Address                 string
+	State                   string
+	ContractAmount          float64
+	SystemSize              float64
+	ContractDate            string
+	SiteSurevyScheduleDate  string
+	SiteSurveyCompletedDate string
+	CadReadyDate            string
+	CadCompletedDate        string
+	PermitSubmittedDate     string
+	IcSubmittedDate         string
+	PermitApprovedDate      string
+	IcApprovedDate          string
+	RoofingCreatedDate      string
+	RoofingCompleteDate     string
+	PvInstallCreatedDate    string
+	BatteryScheduledDate    string
+	BatteryCompletedDate    string
+	PvInstallCompletedDate  string
+	MpuCreatedDate          string
+	DerateCreateDate        string
+	TrenchingWSOpenDate     string
+	DerateCompleteDate      string
+	MpucompleteDate         string
+	TrenchingCompleteDate   string
+	FinCreateDate           string
+	FinPassDate             string
+	PtoSubmittedDate        string
+	PtoDate                 string
 }
 
 type GetCsvPerformanceList struct {
