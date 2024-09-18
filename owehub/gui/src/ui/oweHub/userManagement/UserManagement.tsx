@@ -37,6 +37,7 @@ import {
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
 import MicroLoader from '../../components/loader/MicroLoader';
+import Swal from 'sweetalert2';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -275,6 +276,24 @@ const UserManagement: React.FC = () => {
       'No'
     );
 
+    // const { value: accept } = await Swal.fire({
+    //   title: "Delete User",
+    //   input: "checkbox",
+    //   inputValue: 1,
+    //   inputPlaceholder: `
+    //    Delete user from podio
+    //   `,
+    //   confirmButtonText: `
+    //     Continue&nbsp;<i class="fa fa-arrow-right"></i>
+    //   `,
+    //   inputValidator: (result) => {
+    //     return !result && "You need to agree with T&C";
+    //   }
+    // });
+    // if (accept) {
+    //   Swal.fire("You agreed with T&C :)");
+    // }
+
     if (confirmed) {
       const actionResult = await dispatch(
         deleteUserOnboarding({ user_codes: deleteRows, usernames })
@@ -359,98 +378,98 @@ const UserManagement: React.FC = () => {
 
       <div className="onboardrow">
         <UserManagementTable
-              AddBtn={
-                <AddNewButton
-                  title={'Add New'}
-                  onClick={() => {
-                    handleOpen();
-                  }}
-                />
-              }
-              activeSalesRep={activeSalesRep}
-              handleCrossClick={handleCrossClick}
-              currentPage1={page}
-              setCurrentPage1={setPage}
-              selectedRows={selectedRows}
-              selectAllChecked={selectAllChecked}
-              setSelectedRows={setSelectedRows}
-              setSearchTerm={setSearchTerm}
-              searchTerm={searchTerm}
-              setSelectAllChecked={setSelectAllChecked}
-              userRoleBasedList={userRoleBasedList}
-              userDropdownData={ALL_USER_ROLE_LIST}
-              selectedOption={selectedOption}
-              handleSelectChange={handleSelectChange}
-              onClickDelete={(item: any) => {
-                selectedOption.value === 'Partner'
-                  ? deleteDealerRequest(item)
-                  : deleteUserRequest(
-                    [item.user_code],
-                    item.role_name === 'DB User'
-                      ? [item.db_username]
-                      : [item.name.split(' ').join('_')]
-                  );
-              }}
-              onClickMultiDelete={() => {
-                const deleteRows = Array.from(selectedRows).map(
-                  (index) => userRoleBasedList[index].user_code
-                );
-                const usernames = Array.from(selectedRows).map((index) => {
-                  const user = userRoleBasedList[index];
-                  return user.role_name === TYPE_OF_USER.DB_USER
-                    ? user.db_username
-                    : user.name.split(' ').join('_');
-                });
-                if (deleteRows.length > 0) {
-                  deleteUserRequest(deleteRows, usernames);
-                  console.log(deleteRows, usernames, userRoleBasedList, "deleteRows, usernames,userRoleBasedList")
-                } else {
-                  toast.info('Please select user');
-                }
-              }}
-              onClickEdit={(item: UserRoleBasedListModel) => {
-                // console.log("row data",item)
-                const [firstName, lastName] = item.name.split(' ');
-
-                dispatch(updateUserForm({ field: 'isEdit', value: true }));
-                dispatch(updateUserForm({ field: 'first_name', value: firstName }));
-                dispatch(updateUserForm({ field: 'last_name', value: lastName }));
-                dispatch(
-                  updateUserForm({ field: 'email_id', value: item.email_id })
-                );
-                dispatch(
-                  updateUserForm({
-                    field: 'mobile_number',
-                    value: item.mobile_number,
-                  })
-                );
-                dispatch(
-                  updateUserForm({
-                    field: 'assigned_dealer_name',
-                    value: item.dealer_owner,
-                  })
-                );
-                dispatch(
-                  updateUserForm({ field: 'role_name', value: item.role_name })
-                );
-                dispatch(
-                  updateUserForm({ field: 'add_region', value: item.region })
-                );
-                dispatch(
-                  updateUserForm({ field: 'team_name', value: item.team_name })
-                );
-                dispatch(
-                  updateUserForm({ field: 'description', value: item.description })
-                );
-                dispatch(
-                  updateUserForm({
-                    field: 'report_to',
-                    value: item.reporting_manager,
-                  })
-                );
-                setOpen(true);
+          AddBtn={
+            <AddNewButton
+              title={'Add New'}
+              onClick={() => {
+                handleOpen();
               }}
             />
+          }
+          activeSalesRep={activeSalesRep}
+          handleCrossClick={handleCrossClick}
+          currentPage1={page}
+          setCurrentPage1={setPage}
+          selectedRows={selectedRows}
+          selectAllChecked={selectAllChecked}
+          setSelectedRows={setSelectedRows}
+          setSearchTerm={setSearchTerm}
+          searchTerm={searchTerm}
+          setSelectAllChecked={setSelectAllChecked}
+          userRoleBasedList={userRoleBasedList}
+          userDropdownData={ALL_USER_ROLE_LIST}
+          selectedOption={selectedOption}
+          handleSelectChange={handleSelectChange}
+          onClickDelete={(item: any) => {
+            selectedOption.value === 'Partner'
+              ? deleteDealerRequest(item)
+              : deleteUserRequest(
+                [item.user_code],
+                item.role_name === 'DB User'
+                  ? [item.db_username]
+                  : [item.name.split(' ').join('_')]
+              );
+          }}
+          onClickMultiDelete={() => {
+            const deleteRows = Array.from(selectedRows).map(
+              (index) => userRoleBasedList[index].user_code
+            );
+            const usernames = Array.from(selectedRows).map((index) => {
+              const user = userRoleBasedList[index];
+              return user.role_name === TYPE_OF_USER.DB_USER
+                ? user.db_username
+                : user.name.split(' ').join('_');
+            });
+            if (deleteRows.length > 0) {
+              deleteUserRequest(deleteRows, usernames);
+              console.log(deleteRows, usernames, userRoleBasedList, "deleteRows, usernames,userRoleBasedList")
+            } else {
+              toast.info('Please select user');
+            }
+          }}
+          onClickEdit={(item: UserRoleBasedListModel) => {
+            // console.log("row data",item)
+            const [firstName, lastName] = item.name.split(' ');
+
+            dispatch(updateUserForm({ field: 'isEdit', value: true }));
+            dispatch(updateUserForm({ field: 'first_name', value: firstName }));
+            dispatch(updateUserForm({ field: 'last_name', value: lastName }));
+            dispatch(
+              updateUserForm({ field: 'email_id', value: item.email_id })
+            );
+            dispatch(
+              updateUserForm({
+                field: 'mobile_number',
+                value: item.mobile_number,
+              })
+            );
+            dispatch(
+              updateUserForm({
+                field: 'assigned_dealer_name',
+                value: item.dealer_owner,
+              })
+            );
+            dispatch(
+              updateUserForm({ field: 'role_name', value: item.role_name })
+            );
+            dispatch(
+              updateUserForm({ field: 'add_region', value: item.region })
+            );
+            dispatch(
+              updateUserForm({ field: 'team_name', value: item.team_name })
+            );
+            dispatch(
+              updateUserForm({ field: 'description', value: item.description })
+            );
+            dispatch(
+              updateUserForm({
+                field: 'report_to',
+                value: item.reporting_manager,
+              })
+            );
+            setOpen(true);
+          }}
+        />
       </div>
     </>
   );

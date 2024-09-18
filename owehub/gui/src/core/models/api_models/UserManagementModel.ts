@@ -74,6 +74,7 @@ export interface CreateUserModel {
   assigned_Manager: string;
   preferred_name: string;
   dealer_code: string;
+  podioChecked: boolean;
 }
 
 export interface CreateUserParamModel {
@@ -91,6 +92,7 @@ export interface CreateUserParamModel {
   tables_permissions?: any;
   dealer_logo?: string;
   dealer?: string;
+  podio_checked?: boolean;
 }
 
 export interface DeleteUserModel {
