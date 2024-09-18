@@ -361,6 +361,16 @@ input[type="checkbox"]:checked {
   justify-content: right;
 }
 
+.chevron_down{
+  display: none !important;
+  height: 24px;
+  width: 24px;
+  background-color: #EAECF0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
 
 
 
@@ -418,6 +428,16 @@ input[type="checkbox"]:checked {
       display: grid;
       grid-template-columns: auto 2fr 0 0 0 auto !important;
   }
+      .chevron_down{
+      display: block !important;
+      height: 24px !important;
+      width: 24px !important;
+      background-color: #EAECF0;
+      display: flex!important;
+      justify-content: center!important;
+      align-items: center!important;
+      border-radius: 5px;
+    }
 
    
   }

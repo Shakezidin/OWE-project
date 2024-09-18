@@ -8,6 +8,19 @@
   display: flex !important;
 }
 
+.pipeline-googlemap{
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #CDDEFC;
+  border-radius: 6px;
+  cursor: pointer;
+  position: absolute;
+  right: -60px;
+}
+
 .performance-exportbtn {
   margin-left: auto;
   width: -moz-fit-content;
@@ -1167,6 +1180,7 @@
   background: #f7f7f7;
   border-radius: 8px;
   margin: 0 10px;
+  position: relative;
 }
 
 .progress-box-container {

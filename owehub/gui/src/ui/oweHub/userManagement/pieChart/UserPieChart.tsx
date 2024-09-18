@@ -116,9 +116,10 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 >
                   {onboardingList.map((entry, index) => (
                     <Cell
-                      style={{ outline: 'none' }}
+                      style={{ outline: 'none',cursor:"pointer" }}
                       id={`${index}`}
                       key={`cell-${index}`}
+                      className='cursor-pointer'
                       data-svg-id={entry.name}
                       data-value={entry.name}
                       fill={entry.fill}
@@ -219,7 +220,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   >
                     {userPerformanceList.map((entry, index) => (
                       <Cell
-                        style={{ outline: 'none' }}
+                        style={{ outline: 'none',cursor:"pointer" }}
                         id={`${index}`}
                         data-value={entry.name}
                         key={`cell-${index}`}
