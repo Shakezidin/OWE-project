@@ -118,10 +118,10 @@ func SyncHubUsersToPodioOnInit() error {
 	//* checking user alreay exists or not
 	for _, hubUser := range oweHubusers {
 		if _, exists := oweDbUserMap[hubUser.EmailID]; !exists {
-			log.FuncInfoTrace(0, "User %v to be added to Podio; emai: %v", hubUser.Name, hubUser.EmailID)
+			log.FuncInfoTrace(0, "User %v to be added to Podio; email: %v", hubUser.Name, hubUser.EmailID)
 			userDoesNotExist = append(userDoesNotExist, hubUser)
 		} else if oweDbUserMap[hubUser.EmailID] != hubUser.Name {
-			log.FuncInfoTrace(0, "User %v to be added to Podio; emai: %v", hubUser.Name, hubUser.EmailID)
+			log.FuncInfoTrace(0, "User %v to be added to Podio; email: %v", hubUser.Name, hubUser.EmailID)
 			userDoesNotExist = append(userDoesNotExist, hubUser)
 		}
 	}
@@ -140,7 +140,7 @@ func SyncHubUsersToPodioOnInit() error {
 	for _, hubUser := range userDoesNotExist {
 		query = fmt.Sprintf(`SELECT item_id, partner_id 
 	 					FROM sales_partner_dbhub_schema 
-						WHERE sales_partner_name = '%s';`, hubUser.DealerName)
+						WHERE LOWER(sales_partner_name) = LOWER('%s');`, hubUser.DealerName)
 		Dealerdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get sales_partner_dbhub_schema data from DB for email %v err: %v", hubUser.EmailID, err)

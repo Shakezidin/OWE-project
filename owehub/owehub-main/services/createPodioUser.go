@@ -37,8 +37,9 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 
 	query = fmt.Sprintf(`SELECT name, item_id, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id 
 	 					FROM sales_rep_dbhub_schema 
-						WHERE work_email = '%s'
-						AND name = '%s';`, reqData.EmailId, reqData.Name)
+						WHERE LOWER(work_email) = LOWER('%s')
+						AND LOWER(name) = LOWER('%s');`, reqData.EmailId, reqData.Name)
+	
 	SaleRepdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get sales_rep_dbhub_schema data from DB; email: %v; err: %v", reqData.EmailId, err)
@@ -51,7 +52,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 
 	query = fmt.Sprintf(`SELECT item_id, partner_id 
 	 					FROM sales_partner_dbhub_schema 
-						WHERE sales_partner_name = '%s';`, reqData.Dealer)
+						WHERE LOWER(sales_partner_name) = LOWER('%s');`, reqData.Dealer)
 	Dealerdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get sales_partner_dbhub_schema data from DB  email: %v; err: %v", reqData.EmailId, err)

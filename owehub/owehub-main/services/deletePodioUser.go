@@ -79,7 +79,7 @@ func DeletePodioUsers(userCodes []string) (error, int) {
 		query := fmt.Sprintf(`
 			SELECT name, item_id, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id 
 			FROM sales_rep_dbhub_schema 
-			WHERE work_email = '%s' AND name = '%s';`, email, name)
+			WHERE LOWER(work_email) = LOWER('%s') AND LOWER(name) = LOWER('%s');`, email, name)
 
 		SaleRepdata, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
