@@ -729,6 +729,8 @@ const ProjectPerformence = () => {
     setActiveTab(tab);
   };
 
+  const isStaging = process.env.REACT_APP_ENV;
+
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
@@ -930,9 +932,11 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
+                { isStaging === 'staging' ? 
                 <div className='pipeline-googlemap'>
                   <img src={ICONS.PinMap} alt="pin map" />
                 </div>
+              : null }
               </div>
             </div>
 
