@@ -829,15 +829,18 @@ const ProjectStatus = () => {
                         <p style={{ color: "#2EAF71" }}>{otherlinks.co_status !== 'CO Complete' && otherlinks.co_status && <span className='pending-coo'>{otherlinks.co_status} <img src={ICONS.QCLine} width={16} alt="img" className='pending-co' /> </span>}</p>
                       </div>
                     } */}
-                   {otherlinks.co_status !== 'CO Complete' && otherlinks.co_status &&  
-                <div className="progress-co mt0">
-                  <button className="co-button">
-                    <p className='co-desktop'>C/O Status</p>
-                    <p className='co-mobile'>C/O</p>
-                    <span className="hover-text">{otherlinks.co_status}</span>
-                  </button>
-                </div>
-                }
+                {otherlinks.co_status !== 'CO Complete' &&
+                  otherlinks.co_status && (
+                    <div className="progress-co mt0">
+                      <button className="co-button">
+                        <p className="co-desktop">C/O Status</p>
+                        <p className="co-mobile">C/O</p>
+                        <span className="hover-text">
+                          {otherlinks.co_status}
+                        </span>
+                      </button>
+                    </div>
+                  )}
               </div>
             </div>
             <div className="project-management-table ">

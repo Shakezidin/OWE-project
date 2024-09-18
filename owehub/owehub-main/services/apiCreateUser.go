@@ -111,13 +111,15 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		DealerName, dealerNameOk := data[0]["dealer_name"].(string)
-		if !dealerNameOk || DealerName == "" {
-			log.FuncErrorTrace(0, "empty dealer name")
-			FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
-			return
+		if len(data) > 0 {
+			DealerName, dealerNameOk := data[0]["dealer_name"].(string)
+			if !dealerNameOk || DealerName == "" {
+				log.FuncErrorTrace(0, "empty dealer name")
+				FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
+				return
+			}
+			createUserReq.Dealer = DealerName
 		}
-		createUserReq.Dealer = DealerName
 	}
 
 	/**

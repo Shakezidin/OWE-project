@@ -8,15 +8,16 @@ import {
   useState,
 } from 'react';
 import { DateRange } from 'react-date-range';
+
 import {
-  format,
+  endOfMonth,
   subDays,
   startOfMonth,
-  endOfMonth,
   startOfWeek,
   endOfWeek,
   startOfYear,
-} from 'date-fns';
+  format
+} from "date-fns"
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -35,6 +36,7 @@ import {
 } from './Icons';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
+import { toZonedTime } from 'date-fns-tz';
 
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
@@ -95,12 +97,27 @@ export const RankColumn = ({ rank }: { rank: number }) => {
 //
 // PERIOD FILTER
 //
-const today = new Date();
+
+function getUserTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+// Function to get current date in the user's timezone
+function getCurrentDateInUserTimezone() {
+  const now = new Date()
+  const userTimezone = getUserTimezone()
+  return toZonedTime(now, userTimezone)
+}
+const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+const startOfThreeMonthsAgo = new Date(
+  today.getFullYear(),
+  today.getMonth() - 2,
+  1
+);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
 // Calculate the start and end of last week
@@ -111,38 +128,7 @@ const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
   weekStartsOn: 1,
 });
 
-const periodFilterOptions: DateRangeWithLabel[] = [
-  {
-    label: 'This Week',
-    start: startOfThisWeek,
-    end: today,
-  },
-  {
-    label: 'Last Week',
-    start: startOfLastWeek,
-    end: endOfLastWeek,
-  },
-  {
-    label: 'This Month',
-    start: startOfThisMonth,
-    end: today,
-  },
-  {
-    label: 'Last Month',
-    start: startOfLastMonth,
-    end: endOfLastMonth,
-  },
-  {
-    label: 'This Quarter',
-    start: startOfThreeMonthsAgo,
-    end: today,
-  },
-  {
-    label: 'This Year',
-    start: startOfThisYear,
-    end: today,
-  },
-];
+
 
 const PeriodFilter = ({
   period,
@@ -153,6 +139,39 @@ const PeriodFilter = ({
   setPeriod: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
 }) => {
+  const periodFilterOptions: DateRangeWithLabel[] = [
+    {
+      label: 'This Week',
+      start: startOfThisWeek,
+      end: today,
+    },
+    {
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
+    },
+    {
+      label: 'This Month',
+      start: startOfThisMonth,
+      end: new Date(),
+    },
+    {
+      label: 'Last Month',
+      start: startOfLastMonth,
+      end: endOfLastMonth,
+    },
+    {
+      label: 'This Quarter',
+      start: startOfThreeMonthsAgo,
+      end: today,
+    },
+    {
+      label: 'This Year',
+      start: startOfThisYear,
+      end: today,
+    },
+  ];
+
   return (
     <ul className="leaderboard-data__btn-group">
       {periodFilterOptions.map((item) => (
@@ -364,6 +383,38 @@ const DateFilter = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+  const periodFilterOptions: DateRangeWithLabel[] = [
+    {
+      label: 'This Week',
+      start: startOfThisWeek,
+      end: today,
+    },
+    {
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
+    },
+    {
+      label: 'This Month',
+      start: startOfThisMonth,
+      end: new Date(),
+    },
+    {
+      label: 'Last Month',
+      start: startOfLastMonth,
+      end: endOfLastMonth,
+    },
+    {
+      label: 'This Quarter',
+      start: startOfThreeMonthsAgo,
+      end: today,
+    },
+    {
+      label: 'This Year',
+      start: startOfThisYear,
+      end: today,
+    },
+  ];
 
   return (
     <div className="flex items-center justify-end">
@@ -646,7 +697,9 @@ const Table = ({
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
-        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER) &&
       groupBy !== 'dealer'
     ) {
       return true;
@@ -654,13 +707,15 @@ const Table = ({
     if (
       role !== TYPE_OF_USER.ADMIN &&
       role !== TYPE_OF_USER.DEALER_OWNER &&
-      role !== TYPE_OF_USER.FINANCE_ADMIN
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER
     ) {
       return true;
     } else {
       return false;
     }
-  }, [groupBy, role]);
+  }, [groupBy, role, authData]);
 
   const exportCsv = async () => {
     // Define the headers for the CSV
@@ -668,7 +723,7 @@ const Table = ({
     setIsExporting(true);
     const headers = [
       'UniqueID',
-      getName,
+      "Homeowner Name",
       'Homeowner Email',
       'Homeowner Phone',
       'Address',
@@ -680,15 +735,15 @@ const Table = ({
       'Install Date',
       'Pto Date',
       'Cancel Date',
-      "Primary Sales Rep",
-      "Secondary Sales Rep"
+      'Primary Sales Rep',
+      'Secondary Sales Rep',
     ];
 
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
       dealer_name: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-      group_by: groupBy
+      group_by: groupBy,
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
@@ -709,7 +764,7 @@ const Table = ({
       item.pto_date,
       item.canceled_date,
       item.primary_sales_rep,
-      item.secondary_sales_rep
+      item.secondary_sales_rep,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -730,16 +785,19 @@ const Table = ({
 
   const getName = useMemo(() => {
     if (role === TYPE_OF_USER.DEALER_OWNER) {
-      return "Code Name"
+      return 'Code Name';
     }
-    if (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN) {
-      return "Partner Name"
+    if (
+      role === TYPE_OF_USER.ADMIN ||
+      role === TYPE_OF_USER.FINANCE_ADMIN ||
+      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+      role === TYPE_OF_USER.ACCOUNT_MANAGER
+    ) {
+      return 'Partner Name';
+    } else {
+      return 'Name';
     }
-    else {
-      return 'Name'
-    }
-
-  }, [role])
+  }, [role, authData]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
@@ -863,7 +921,9 @@ const Table = ({
             options={
               role === 'Admin' ||
                 role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -1014,10 +1074,7 @@ const Table = ({
               <tr>
                 <th>Rank</th>
 
-                <th>
-                  {
-                    getName}
-                </th>
+                <th>{getName}</th>
 
                 {showPartner && <th>Partner</th>}
                 <th>

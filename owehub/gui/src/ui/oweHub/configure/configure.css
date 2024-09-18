@@ -39,12 +39,11 @@
   height: 18px;
 }
 
-
 .iconsSection2 button {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  gap: 4px;
   background-color: var(--white-color);
   padding: 0.4rem 1rem 0.4rem 1rem;
   border: 1px solid var(--button-border-color);
@@ -71,8 +70,6 @@
   opacity: 0.6;
 }
 
-
-
 .iconsSection2-conan {
   display: flex;
   border: none;
@@ -82,7 +79,6 @@
   width: 18px;
   height: 18px;
 }
-
 
 .iconsSection2-conan button {
   display: flex;
@@ -100,16 +96,11 @@
   transition: all 0.3s ease;
 }
 
-.iconsSection2-conan button:hover{
+.iconsSection2-conan button:hover {
   background-color: #305eae;
   border: 1px solid #305eae;
   transform: scale(1.08);
 }
-
-
-
-
-
 
 .iconsSection2-confex {
   display: flex;
@@ -125,7 +116,6 @@
   width: 18px;
   height: 18px;
 }
-
 
 .iconsSection2-confex button {
   display: flex;
@@ -160,15 +150,6 @@
   transition: 0.4s all linear;
   opacity: 0.6;
 }
-
-
-
-
-
-
-
-
-
 
 .iconsSection-filter button {
   display: flex;

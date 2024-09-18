@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"OWEApp/shared/types"
 	"encoding/json"
 	"io/ioutil"
 
@@ -33,6 +34,7 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 		queryWithFiler string
 		filter         string
 		RecordCount    int64
+		SaleRepList    []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetCalenderCsvDownloadRequest")
@@ -59,7 +61,11 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 		return
 	}
 
-	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
+	dataReq.Role = req.Context().Value("rolename").(string)
+	if dataReq.Role == "" {
+		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		return
+	}
 
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
@@ -67,37 +73,30 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 		return
 	}
 
-	whereEleList = append(whereEleList, dataReq.Email)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
-
-	// This checks if the user is admin, sale rep or dealer
-	if len(data) > 0 {
-		role, ok := data[0]["role_name"].(string)
-		if !ok || role == "" {
-			role = ""
-		}
-		name := data[0]["name"].(string)
-		if !ok || name == "" {
-			name = ""
-		}
-		dataReq.Name = name
-		dataReq.Role = role
-	}
-
-	if dataReq.Name == "" {
-		log.FuncErrorTrace(0, "Failed to get calender csv download data  user not exist as sales rep")
-		FormAndSendHttpResp(resp, "Failed to get calender csv download data  user not exist as sales rep", http.StatusBadRequest, nil)
-		return
-	}
-	// change table name here
-	tableName := db.ViewName_ConsolidatedDataView
-	whereEleList = nil
-
+	saleRepNameQuery := fmt.Sprintf("SELECT name FROM user_details where email_id = '%v'", dataReq.Email)
 	query := models.CsvDownloadRetrieveQueryFunc()
 
-	query += fmt.Sprintf("where primary_sales_rep = '%v'", dataReq.Name)
+	log.FuncErrorTrace(0, "roleee = %v", dataReq.Role)
+	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) {
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, saleRepNameQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
+			return
+		}
 
-	filter, whereEleList = PrepareCalenderFilters(tableName, dataReq, true)
+		if len(data) > 0 {
+			name, ok := data[0]["name"].(string)
+			if !ok || name == "" {
+				name = ""
+			}
+			SaleRepList = append(SaleRepList, name)
+		}
+	}
+
+	tableName := db.ViewName_ConsolidatedDataView
+
+	filter, whereEleList = PrepareCalenderFilters(tableName, dataReq, SaleRepList)
 
 	if filter != "" {
 		queryWithFiler = query + filter

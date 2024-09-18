@@ -27,7 +27,6 @@ import {
   userResetForm,
 } from '../../../redux/apiSlice/userManagementSlice/createUserSlice';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
-import Loading from '../../components/loader/Loading';
 import { toast } from 'react-toastify';
 import { unwrapResult } from '@reduxjs/toolkit';
 import {
@@ -36,6 +35,7 @@ import {
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
+
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -49,9 +49,12 @@ const UserManagement: React.FC = () => {
   const [logoUrl, setLogoUrl] = useState('');
   const { authData } = useAuth();
 
+  ;
+  const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
+
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
-    const userRole = authData?.role;
+    const userRole = localStorage.getItem("role");
     if (userRole === TYPE_OF_USER.DEALER_OWNER) {
       role = role.filter(
         (role) =>
@@ -60,10 +63,10 @@ const UserManagement: React.FC = () => {
           role.value !== TYPE_OF_USER.DB_USER &&
           role.value !== TYPE_OF_USER.PARTNER
       );
+      setSelectedOption(role[0])
     }
     return role;
-  }, [authData]);
-  const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
+  }, [])
   const {
     loading,
     userOnboardingList,
@@ -78,24 +81,14 @@ const UserManagement: React.FC = () => {
     deleteUserResult,
   } = useAppSelector((state) => state.createOnboardUser);
 
-  const [inactiveSalesRep, setInactiveSalesRep] = useState('');
   const [activeSalesRep, setActiveSalesRep] = useState('');
 
-  const handleInactiveSlrpClick = (value: string) => {
-    setInactiveSalesRep(value);
-    setActiveSalesRep('');
-  };
 
-  const handleActiveSlrpClick = (value: string) => {
-    setActiveSalesRep(value);
-    setInactiveSalesRep('');
-  };
 
   const handleCrossClick = () => {
-    setInactiveSalesRep('');
     setActiveSalesRep('');
-    setIsClicked(false);
-    setIsClicked1(false);
+
+
   };
 
   const [isClicked, setIsClicked] = useState(false);
@@ -172,9 +165,11 @@ const UserManagement: React.FC = () => {
   const handleSelectChange = useCallback(
     (selectOption: UserDropdownModel) => {
       setSelectedOption(selectOption);
+
     },
     [selectedOption]
   );
+
 
   /** check role  */
   const onChangeRole = async (role: string, value: string) => {
@@ -206,6 +201,9 @@ const UserManagement: React.FC = () => {
       }
     }
   };
+  const handleValueChange = (value: string) => {
+    setActiveSalesRep(value)
+  }
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
@@ -276,6 +274,8 @@ const UserManagement: React.FC = () => {
       'No'
     );
 
+
+
     if (confirmed) {
       const actionResult = await dispatch(
         deleteUserOnboarding({ user_codes: deleteRows, usernames })
@@ -324,17 +324,11 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-
- 
-
+  console.log(userRoleBasedList, "userRoleBasedList")
   /** render UI */
   return (
     <>
-      {loading && (
-        <div>
-          <Loading /> {loading}
-        </div>
-      )}
+
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}
@@ -358,12 +352,9 @@ const UserManagement: React.FC = () => {
           onboardingList={userOnboardingList}
           userPerformanceList={userPerformanceList}
           loading={loading}
-          onInactiveSlrpClick={handleInactiveSlrpClick}
-          onActiveSlrpClick={handleActiveSlrpClick}
-          isClicked={isClicked}
-          setIsClicked={setIsClicked}
-          isClicked1={isClicked1}
-          setIsClicked1={setIsClicked1}
+          setSelectedOption={setSelectedOption}
+          onValueChange={handleValueChange}
+          activeSalesRep={activeSalesRep}
         />
       </div>
 
@@ -377,7 +368,6 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
-          inactiveSalesRep={inactiveSalesRep}
           activeSalesRep={activeSalesRep}
           handleCrossClick={handleCrossClick}
           currentPage1={page}
@@ -408,12 +398,13 @@ const UserManagement: React.FC = () => {
             );
             const usernames = Array.from(selectedRows).map((index) => {
               const user = userRoleBasedList[index];
-              return user.role_name === 'DB User'
+              return user.role_name === TYPE_OF_USER.DB_USER
                 ? user.db_username
                 : user.name.split(' ').join('_');
             });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);
+              console.log(deleteRows, usernames, userRoleBasedList, "deleteRows, usernames,userRoleBasedList")
             } else {
               toast.info('Please select user');
             }
@@ -460,7 +451,6 @@ const UserManagement: React.FC = () => {
             );
             setOpen(true);
           }}
-
         />
       </div>
     </>

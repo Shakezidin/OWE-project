@@ -43,7 +43,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const isMobile = width < 768;
   const currentDate = new Date();
   const dayOfMonth = currentDate.getDate();
-  const isStaging = process.env.REACT_APP_ENV
+  const isStaging = process.env.REACT_APP_ENV;
 
   const handleLogout = () => {
     // clearAuthData();
@@ -161,18 +161,21 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       </div>
       {!isMobile && (
         <div className="search-container">
-          {isStaging === "staging" ?
-            (<div>
-              {userRole === TYPE_OF_USER.ADMIN || userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ? (
-                <div className='calendar-logo'>
+          {
+            <div>
+              {userRole === TYPE_OF_USER.DEALER_OWNER ||
+              userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+              userRole === TYPE_OF_USER.SALE_MANAGER ||
+              userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
+              userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
+                <div className="calendar-logo">
                   <Link to={ROUTES.CALENDAR}>
                     <span></span>
-                    <p className=''>{dayOfMonth}</p>
+                    <p className="">{dayOfMonth}</p>
                   </Link>
                 </div>
               ) : null}
-            </div>)
-            : null
+            </div>
           }
           <div
             className="user-container relative"
@@ -235,6 +238,22 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
 
       {isMobile && (
         <div className="search-container">
+          {
+            <div>
+              {userRole === TYPE_OF_USER.DEALER_OWNER ||
+              userRole === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+              userRole === TYPE_OF_USER.SALE_MANAGER ||
+              userRole === TYPE_OF_USER.APPOINTMENT_SETTER ||
+              userRole === TYPE_OF_USER.REGIONAL_MANGER ? (
+                <div className="calendar-logo">
+                  <Link to={ROUTES.CALENDAR}>
+                    <span></span>
+                    <p className="">{dayOfMonth}</p>
+                  </Link>
+                </div>
+              ) : null}
+            </div>
+          }
           <div
             className="user-container relative"
             ref={dropdownRef}

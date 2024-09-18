@@ -41,6 +41,7 @@ export const ROUTES = {
   CONFIG_ADDERDATA: '/config/adder-data',
   CONFIG_APREP: '/config/ap-rep',
   CONFIG_DBA: '/config/dba',
+  CONFIG_SLACK: '/config/slack',
   CONFIG_REPCREDIT: '/config/repcredit',
   CONFIG_REPSTATUS: '/config/repstatus',
   CONFIG_REPINCENT: '/config/rep-incent',
@@ -48,8 +49,10 @@ export const ROUTES = {
   CONFIG_APDED: '/config/ap-ded',
   CONFIG_APOTH: '/config/ap-oth',
   CONFIG_APPDA: '/config/ap-pda',
+  CONFIG_APDEALER:'/config/ap-dealer',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
+  LIBRARY: '/library',
 
   // other routes
   REPORT: '/report',
@@ -75,5 +78,8 @@ export const ROUTES = {
   ADD_NEW_SALES: '/add-new-salesrep-schedule',
   SCHEDULE_SALES_REP_SURVEY: '/schedule-sales-rep',
   PEINDING_QUEUE: '/pending-actions',
-  LEAD_MANAGEMENT:'/leadmng-dashboard'
+  LEAD_MANAGEMENT:'/leadmng-dashboard',
+  LEAD_MANAGEMENT_ADD_NEW:'/leadmgt-addnew',
+  LEAD_MANAGEMENT_ADD_NEW_MODAL:'/leadmgt-addnew-model',
+  LEAD_MANAGEMENT_HISTORY:'/leadmng-history'
 };

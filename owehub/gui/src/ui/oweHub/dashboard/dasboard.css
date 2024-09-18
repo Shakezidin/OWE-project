@@ -17,6 +17,11 @@
   text-align: left;
   color: #393851;
 }
+.rep-up .dropdown-toggle {
+  white-space: nowrap;
+  margin-left: 10px;
+  margin-top: 10px;
+}
 .date-button {
   border-radius: 0.4rem;
   border: none;
@@ -74,7 +79,7 @@
   transform: scale(1.07);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
-.calender-btn-wrapper{
+.calender-btn-wrapper {
   display: flex;
   gap: 14px;
   justify-content: flex-end;
@@ -91,7 +96,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-  /* flex-wrap: wrap; */
+  margin: 1rem;
 }
 .total-commisstion {
   display: flex;
@@ -104,10 +109,11 @@
   height: 115px;
   margin-top: 5px;
   margin-bottom: 5px;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 .total-commisstion:hover {
-  box-shadow: 0px 4px 4px 0px rgba(74, 74, 74, 0.25);
+  box-shadow: 0px 4px 4px 0px rgba(74, 74, 74, 0.25) !important;
+  transform: scale(1.02) !important;
 }
 
 .total-section h4 {
@@ -343,11 +349,11 @@
   color: #000;
   padding-bottom: 1rem;
 }
-.close-popup-btn{
-  filter:brightness(0.5);
+.close-popup-btn {
+  filter: brightness(0.5);
   transition: all 500ms;
 }
-.close-popup-btn:hover{
+.close-popup-btn:hover {
   transform: scale(1.2);
   transition: all 500ms;
 }
@@ -415,7 +421,7 @@
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 150;
 }
 .modal-down-break {
   background-color: #fefefe;

@@ -1,0 +1,557 @@
+.dashboard {
+    padding: 24px;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+  }
+  
+  .chartGrid {
+    display: grid;
+    grid-template-columns: 1fr; /* Default to single column for mobile */
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+
+  
+  .card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cardHeader {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .cardContent {
+    padding: 16px;
+  }
+  
+  .totalLeads {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+  }
+  
+  .legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .legendItem {
+    display: flex;
+    align-items: center;
+  }
+  
+  .legendColor {
+    width: 12px;
+    height: 6.12px;
+    border-radius: 6.12px;
+    margin-right: 8px;
+    
+  }
+  
+  .legendText {
+    font-size: 10.71px;
+  }
+  
+  /* Shams */
+  .monthSelect {
+    background-color: #377CF6;
+    color: white;
+    border-radius: 20px;
+    padding: 6px 10px;
+    border: none;
+    padding-right:0;
+  }
+  
+  .stats {
+    margin-top: 16px;
+    font-size: 14px;
+  }
+  
+  .statItem {
+    margin-right: 16px;
+  }
+  
+  /* .buttonGroup {
+    display: flex;
+    gap: 8px;
+    width: 70%;
+    overflow: scroll;
+    flex-wrap: wrap;
+  } */
+  .buttonGroup {
+    display: flex;
+    padding: 5px;
+    gap: 8px;
+    width: 70%;
+    overflow: scroll;
+    /* flex-wrap: wrap; */
+    box-shadow: inset -3px 0px 5px 2px #0000000d;
+    border-radius: 22px 0 0 22px;
+  }
+  
+  .button {
+    border: 1px solid #858585 !important;
+    color: #858585;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 26px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    transition: all 500ms;
+  }
+
+  .status{
+    background: #fff;
+    border-radius: 50%;
+    padding: 4px;
+    color: #377CF6;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 14px;
+  }
+  .statusInactive {
+    background: #DFDFDF !important;
+    color: #929292 !important;
+  }
+  
+  
+  .buttonActive {
+    background-color: #3b82f6;
+    color: white;
+    border:unset !important;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th,
+  .table td {
+    text-align: left;
+    padding: 11px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .table th {
+    font-weight: bold;
+  }
+
+  table tbody tr:hover {
+    transition: 0.4s all linear;
+    background-color: #377df623;
+}
+  
+  .statusPending {
+    color: #f59e0b;
+  }
+
+  .filtericon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 39px;
+    width: 39px;
+    border-radius: 50%;
+    background-color: #377cf6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .filtericon:hover {
+    background-color: #005eff;
+    transform: scale(1.04);
+  }
+  .filtericon img {
+    height: 24px;
+    width: 24px;
+  }
+  .filterCallToAction{
+    display: flex;
+    gap: 10px;
+    transform: scale(0.7);
+    position: relative;
+    /* top: -2pc; */
+    right: -8px;
+  }
+
+ 
+  .pieChart :focus {
+    outline: none;
+  }
+
+
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  /* border-spacing: 0 16px; */
+}
+
+.history_lists {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  /* margin-bottom: 16px; */
+}
+
+.history_list_inner {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1.5fr 1.5fr auto;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+}
+
+.user_name {
+  display: flex;
+  flex-direction: column;
+}
+
+.user_name h2 {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+}
+
+.user_name p {
+  font-weight: 500;
+  font-size: 12px;
+  color: #81A6E7;
+  margin: 4px 0 0 0;
+}
+
+.phone_number,
+.email,
+.address {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.email {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  border: 1px solid #797979;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px; /* Adds space between buttons */
+}
+
+.rescheduleButton {
+  background-color: #2979FF; /* Blue color */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.rescheduleButton:hover {
+  background-color: #1565C0; /* Darker blue on hover */
+}
+
+.archiveButton {
+  background-color: transparent;
+  color: #757575; /* Gray color */
+  border: 1px solid #757575;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.archiveButton:hover {
+  background-color: #757575;
+  color: white;
+}
+
+
+.selectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.selectionInfo {
+  display: flex;
+  align-items: center;
+}
+
+.closeIcon {
+  font-size: 24px;
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.closeIcon img {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.closeIcon img:hover {
+  transform: scale(1.09);
+}
+
+.closeIcon:hover{
+  background: #377cf630;
+  border-radius: 5px;
+}
+
+.removeButton {
+  background-color: #EE4747;
+  color: white;
+  border: none;
+  padding: 0px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 135px;
+  height: 38px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  
+}
+
+.removeButton:hover {
+  background-color: #EE4747;
+  transform: scale(1.05);
+}
+
+.paginationContainer{
+  display: flex;
+  justify-content: right;
+}
+
+.chevron_down{
+  display: none !important;
+  height: 24px;
+  width: 24px;
+  background-color: #EAECF0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+/* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
+
+
+  /* For tablets and larger screens */
+  @media (min-width: 768px) {
+    .chartGrid {
+      grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+    }
+    .lineCard {
+      margin-right:26px
+    }
+    .buttonGroup {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      flex-wrap: nowrap;
+      display: flex;
+      flex-direction: row;
+      box-shadow: unset;
+    }
+    .filterCallToAction{
+      display: flex;
+      gap: 10px;
+      transform: scale(1);
+      position: unset;
+    }
+    .mobile_view_table{
+      display: flex;
+      flex:1
+    }
+  }
+  
+  /* Smartphones in both portrait and landscape */
+  @media only screen and (min-width: 320px) and (max-width: 480px) {
+    /* Styles for smartphones */
+    .button{
+      transform: scale(0.9);
+    }
+    .phone_number,
+    .email,
+    .address {
+      display: none;
+    }
+    .history_list_inner {
+      display: grid;
+      grid-template-columns: auto 2fr 0 0 0 auto !important;
+  }
+      .chevron_down{
+      display: block !important;
+      height: 24px !important;
+      width: 24px !important;
+      background-color: #EAECF0;
+      display: flex!important;
+      justify-content: center!important;
+      align-items: center!important;
+      border-radius: 5px;
+    }
+
+   
+  }
+  
+  /* Tablets in both portrait and landscape */
+  @media only screen and (min-width: 481px) and (max-width: 768px) {
+    /* Styles for tablets */
+    
+  }
+  
+  /* Laptops and small desktops */
+  @media only screen and (min-width: 769px) and (max-width: 1024px) {
+    /* Styles for small desktops */
+   
+  }
+  
+  
+  /* Large desktops and monitors */
+  @media only screen and (min-width: 1025px) and (max-width: 1200px) {
+    /* Styles for large desktops */
+   
+  }
+  
+  
+  /* Extra large desktops */
+  @media only screen and (min-width: 1201px) {
+    /* Styles for extra-large screens */
+
+  }
+    
+
+
+  /* Shams */
+
+   
+.lead__datepicker_content {
+  position: absolute;
+  right: 26px;
+  z-index: 10;
+  background-color: var(--white-color);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  top: 160px;
+  right: 60px;
+}
+ 
+.lead__datepicker_btns {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+}
+ 
+.lead__datepicker_btns button {
+  position: static;
+}
+ 
+.lead__datepicker_btns button:first-child {
+  margin-right: 0.5rem;
+}
+ 
+ 
+.hist_date {
+  font-weight: 600;
+  font-size: 14px;
+  color: #377CF6;
+}
+ 
+.monthSelect {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+ 
+.monthSelect option {
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+ 
+.monthSelect :hover {
+  border: none;
+}
+ 
+.monthSelect option:hover {
+  transform: scale(1.06);
+}
+ 
+ 
+.calender {
+  background-color: #377cf6;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 500ms ease;
+}
+ 
+.calender:hover {
+  transform: scale(1.06);
+  background-color: #0b4cbd;
+}
+ 
+.date_calendar{
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+}

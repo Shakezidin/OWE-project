@@ -6,6 +6,19 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif !important;
 }
+.loader {
+  display: none !important;
+}
+.rcw-picker-btn .rcw-send-icon,
+.rcw-send .rcw-send-icon {
+  margin-left: 10px;
+}
+.rcw-picker-btn {
+  display: none;
+}
+.rcw-new-message {
+  width: calc(100% - 15px);
+}
 /* color config */
 :root {
   --white-color: #fff;
@@ -398,7 +411,7 @@ br {
   transition: all 0.3s ease;
 }
 .fildelb-btn img:hover {
- transform: scale(1.09);
+  transform: scale(1.09);
 }
 .select-type-label {
   position: static !important;

@@ -241,6 +241,9 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 			SiteSurveyD = ""
 		} else {
 			SiteSurveyD = SiteSurveyScheduleDate.Format("2006-01-02")
+			if SiteSurveyD == "2199-12-30" {
+				SiteSurveyD = "" // Set to empty string if date matches the invalid date
+			}
 		}
 
 		SiteSurverCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
@@ -452,15 +455,39 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		ActivationCount += actiovationCountT
 
 		perfomanceCsvResponse := models.GetCsvPerformance{
-			UniqueId:       UniqueId,
-			HomeOwner:      HomeOwner,
-			Email:          CustomerEmail,
-			PhoneNumber:    CustomerPhoneNumber,
-			Address:        Address,
-			State:          State,
-			ContractAmount: ContractTotal,
-			SystemSize:     SystemSize,
-			ContractDate:   contractD,
+			UniqueId:                UniqueId,
+			HomeOwner:               HomeOwner,
+			Email:                   CustomerEmail,
+			PhoneNumber:             CustomerPhoneNumber,
+			Address:                 Address,
+			State:                   State,
+			ContractAmount:          ContractTotal,
+			SystemSize:              SystemSize,
+			ContractDate:            contractD,
+			SiteSurevyScheduleDate:  SiteSurveyD,
+			SiteSurveyCompletedDate: SiteSurveyComD,
+			CadReadyDate:            CadD,
+			CadCompletedDate:        CadCompleteD,
+			PermitSubmittedDate:     permitSubmittedD,
+			IcSubmittedDate:         IcSubmitD,
+			PermitApprovedDate:      PermitApprovedD,
+			IcApprovedDate:          IcaprvdD,
+			RoofingCreatedDate:      RoofingCreatedD,
+			RoofingCompleteDate:     RoofingCompleteD,
+			PvInstallCreatedDate:    PvInstallCreateD,
+			BatteryScheduledDate:    BatteryScheduleD,
+			BatteryCompletedDate:    BatteryCompleteD,
+			PvInstallCompletedDate:  PvInstallCompleteD,
+			MpuCreatedDate:          MpuCreateD,
+			DerateCreateDate:        DerateCreateD,
+			TrenchingWSOpenDate:     TrechingWSOpenD,
+			DerateCompleteDate:      DerateCompleteD,
+			MpucompleteDate:         MpucompleteD,
+			TrenchingCompleteDate:   TrenchingComD,
+			FinCreateDate:           FinCreateD,
+			FinPassDate:             FinPassD,
+			PtoSubmittedDate:        PTOSubmitD,
+			PtoDate:                 PTOD,
 		}
 
 		switch dataReq.SelectedMilestone {
@@ -557,16 +584,16 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		whereAdded = true
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
+	// Add dealer filter
 	if !adminCheck && !filterCheck {
 		if whereAdded {
-			filtersBuilder.WriteString(" AND")
+			filtersBuilder.WriteString(" AND ")
 		} else {
-			filtersBuilder.WriteString(" WHERE")
+			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
 		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
+		whereEleList = append(whereEleList, dataFilter.Dealer)
 	}
 
 	// Always add the following filters
@@ -645,7 +672,7 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 		whereAdded = true
 	}
 	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
+	whereEleList = append(whereEleList, dataFilter.Dealer)
 
 	// Always add the following filters
 	if whereAdded {

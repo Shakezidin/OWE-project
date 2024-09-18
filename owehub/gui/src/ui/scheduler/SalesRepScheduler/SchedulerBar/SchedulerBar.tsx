@@ -1,7 +1,7 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react';
 import styles from '../styles/schedule.module.css';
 import Pagination from '../../../components/pagination/Pagination';
-import sharedStyles from "../../ScheduleDetail/styles/index.module.css"
+import sharedStyles from '../../ScheduleDetail/styles/index.module.css';
 import { format, addDays, isEqual, parse } from 'date-fns';
 import { generateTimeArray, timeDifference } from '../../../../utiles';
 import { PiPhone } from 'react-icons/pi';
@@ -12,59 +12,52 @@ import { RxCalendar } from 'react-icons/rx';
 const current = new Date();
 const timeRange = [
   {
-    label: "6:00 AM - 9:00 AM",
-    startTime: "6:00 AM",
-    endTime: "9:00 AM",
+    label: '6:00 AM - 9:00 AM',
+    startTime: '6:00 AM',
+    endTime: '9:00 AM',
     id: 1,
   },
   {
-    label: "9:00 AM - 12:00 PM",
-    startTime: "9:00 AM",
-    endTime: "12:00 PM",
+    label: '9:00 AM - 12:00 PM',
+    startTime: '9:00 AM',
+    endTime: '12:00 PM',
     id: 2,
   },
   {
-    label: "12:00 PM - 3:00 PM",
-    startTime: "12:00 PM",
-    endTime: "3:00 PM",
+    label: '12:00 PM - 3:00 PM',
+    startTime: '12:00 PM',
+    endTime: '3:00 PM',
     id: 3,
   },
   {
-    label: "3:00 PM - 6:00 PM",
-    startTime: "3:00 PM",
-    endTime: "6:00 PM",
+    label: '3:00 PM - 6:00 PM',
+    startTime: '3:00 PM',
+    endTime: '6:00 PM',
     id: 4,
   },
-]
+];
 
-const mockedData
-  = [
-    {
-      id: 3,
-      name: 'John Doe',
-      availableSlot: [
-        { startTime: '6:00 AM', endTime: '9:00 AM', id: '!2444' },
-      ],
-    },
-    {
-      id: 5,
-      name: 'Peter Doe',
+const mockedData = [
+  {
+    id: 3,
+    name: 'John Doe',
+    availableSlot: [{ startTime: '6:00 AM', endTime: '9:00 AM', id: '!2444' }],
+  },
+  {
+    id: 5,
+    name: 'Peter Doe',
 
-      availableSlot: [{ startTime: '9:00 AM', endTime: '12:00 PM', id: '!221' }],
-
-
-    },
-    {
-      id: 9,
-      name: 'Sandra Doe',
-      availableSlot: [
-        { startTime: '12:00 PM', endTime: '3:00 PM', id: '24383' },
-        { startTime: '3:00 PM', endTime: '6:00 PM', id: '28383' },
-      ],
-
-
-    },
-  ];
+    availableSlot: [{ startTime: '9:00 AM', endTime: '12:00 PM', id: '!221' }],
+  },
+  {
+    id: 9,
+    name: 'Sandra Doe',
+    availableSlot: [
+      { startTime: '12:00 PM', endTime: '3:00 PM', id: '24383' },
+      { startTime: '3:00 PM', endTime: '6:00 PM', id: '28383' },
+    ],
+  },
+];
 const arr = [
   current,
   addDays(current, 1),
@@ -79,7 +72,9 @@ const timeSlots = generateTimeArray('6:00 AM', '6:00 PM').map((item) => ({
   value: item,
 }));
 const SchedulerBar = () => {
-  const [selectedRange, setSelectedRange] = useState<{ start: string, end: string } | "all">("all");
+  const [selectedRange, setSelectedRange] = useState<
+    { start: string; end: string } | 'all'
+  >('all');
   const [activeDate, setActiveDate] = useState(arr[0]);
   const [submitFormCords, setSubmitFormCords] = useState({
     top: 0,
@@ -99,9 +94,9 @@ const SchedulerBar = () => {
           parse(time, 'h:mm aa', new Date())
         )
       ) {
-        console.log(ind, time, item.value, "filteredTime", filteredTime);
+        console.log(ind, time, item.value, 'filteredTime', filteredTime);
 
-        init = ind
+        init = ind;
         return;
       }
     });
@@ -109,12 +104,10 @@ const SchedulerBar = () => {
   }, []);
 
   const getScheduledInfo = (
-    e: React.MouseEvent<HTMLDivElement | HTMLButtonElement, MouseEvent>,
-
+    e: React.MouseEvent<HTMLDivElement | HTMLButtonElement, MouseEvent>
   ) => {
     const elm = e.currentTarget as HTMLDivElement | HTMLButtonElement;
-    const infoCardObj =
-      scheduleRef.current!
+    const infoCardObj = scheduleRef.current!;
     infoCardObj.style.opacity = '0';
     const { left, top, height } = elm.getBoundingClientRect();
     const cardWidth = infoCardObj.clientWidth || 0;
@@ -140,13 +133,11 @@ const SchedulerBar = () => {
   const handleSchudule = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsSuccess(true);
     const id = setTimeout(() => {
-      setSubmitFormCords((prev) => ({ ...prev, opacity: 0 }))
+      setSubmitFormCords((prev) => ({ ...prev, opacity: 0 }));
       setIsSuccess(false);
     }, 2000);
     timeOutIds.current.push(id);
-  }
-
-
+  };
 
   return (
     <div>
@@ -166,24 +157,25 @@ const SchedulerBar = () => {
 
         <div className={styles.avail}>
           <button
-            className={`${styles.time_range} ${selectedRange === "all" ? styles.selected : ''}`}
-            onClick={() => setSelectedRange("all")}
+            className={`${styles.time_range} ${selectedRange === 'all' ? styles.selected : ''}`}
+            onClick={() => setSelectedRange('all')}
           >
             All time slots
           </button>
 
           {timeRange.map((time) => {
-            return <button
-              key={time.id}
-              onClick={() => setSelectedRange({ start: time.startTime, end: time.endTime })}
-              className={`${styles.time_range} ${typeof selectedRange !== "string" && selectedRange.start === time.startTime && selectedRange.end === time.endTime ? styles.selected : ''}`}
-            >
-              {time.label}
-            </button>
-          })
-
-          }
-
+            return (
+              <button
+                key={time.id}
+                onClick={() =>
+                  setSelectedRange({ start: time.startTime, end: time.endTime })
+                }
+                className={`${styles.time_range} ${typeof selectedRange !== 'string' && selectedRange.start === time.startTime && selectedRange.end === time.endTime ? styles.selected : ''}`}
+              >
+                {time.label}
+              </button>
+            );
+          })}
 
           <div className={styles.percent_status}>
             <span>45%</span>
@@ -201,13 +193,13 @@ const SchedulerBar = () => {
               >
                 <div className="flex items-center">
                   <h5 style={{ color: '#377CF6' }}>Surveyor</h5>
-
-
                 </div>
               </div>
 
               <div className={sharedStyles.date_wrapper}>
-                <div className={`px2 items-center   ${sharedStyles.date_grid_container}`}>
+                <div
+                  className={`px2 items-center   ${sharedStyles.date_grid_container}`}
+                >
                   {arr.map((item, ind) => {
                     return (
                       <div className="date_container" key={ind}>
@@ -245,7 +237,7 @@ const SchedulerBar = () => {
                             fontSize: 14,
                             transform: ind > 0 ? 'translateX(-10px)' : '',
                           }}
-                          className={` ${typeof selectedRange !== "string" && (selectedRange.start === time.value || selectedRange.end === time.value) ? sharedStyles.text_primary : ''} `}
+                          className={` ${typeof selectedRange !== 'string' && (selectedRange.start === time.value || selectedRange.end === time.value) ? sharedStyles.text_primary : ''} `}
                         >
                           {' '}
                           {time.value.replaceAll(':00', '')}{' '}
@@ -257,7 +249,6 @@ const SchedulerBar = () => {
               </div>
             </div>
 
-
             {mockedData.map((person, idx) => {
               return (
                 <div
@@ -265,13 +256,14 @@ const SchedulerBar = () => {
                   data-time-parent={person.id}
                   className={sharedStyles.survey_progress_container}
                 >
-                  <div className={sharedStyles.surveyor_name}>{person.name}</div>
+                  <div className={sharedStyles.surveyor_name}>
+                    {person.name}
+                  </div>
                   <div className={sharedStyles.progress_wrapper}>
                     <div className={styles.progress_bar}>
                       {person.availableSlot.map((avail, index) => {
                         const startPoint = getTimeIndex(avail.startTime);
                         const endPoint = getTimeIndex(avail.endTime);
-
 
                         return (
                           <div
@@ -282,18 +274,17 @@ const SchedulerBar = () => {
                             }}
                             className={` relative ${sharedStyles.bg_available_slot}`}
                           >
-                            <div
-                              className={styles.schdule_btn_wrapper}
-                            >
-                              <button onClick={getScheduledInfo} className={` ${styles.sales_rep_book_btn} ${sharedStyles.swap_btn}`} >
+                            <div className={styles.schdule_btn_wrapper}>
+                              <button
+                                onClick={getScheduledInfo}
+                                className={` ${styles.sales_rep_book_btn} ${sharedStyles.swap_btn}`}
+                              >
                                 Book Schedule
                               </button>
                             </div>
                           </div>
                         );
                       })}
-
-
                     </div>
                   </div>
                 </div>
@@ -310,7 +301,9 @@ const SchedulerBar = () => {
               ref={scheduleRef}
               className={sharedStyles.schedule_form_wrapper}
             >
-              <h4 className={sharedStyles.form_schedule_heading}>Add Schedule</h4>
+              <h4 className={sharedStyles.form_schedule_heading}>
+                Add Schedule
+              </h4>
               <div className="mt1">
                 <div className="input-wrapper">
                   <input
@@ -322,7 +315,9 @@ const SchedulerBar = () => {
                 <div style={{ marginTop: 14 }} className="flex  items-center">
                   <div className="flex  items-center">
                     <RxCalendar size={16} color="rgb(48, 48, 48,0.4)" />
-                    <p className={` ml2 ${sharedStyles.text_sm}`}>Friday, 29 July </p>
+                    <p className={` ml2 ${sharedStyles.text_sm}`}>
+                      Friday, 29 July{' '}
+                    </p>
                   </div>
 
                   <div className="flex ml3 items-center">
@@ -359,7 +354,11 @@ const SchedulerBar = () => {
                     <div className="flex items-center">
                       <FaUser size={10} color="#303030" />
                       <p
-                        style={{ color: '#303030', fontSize: 12, marginLeft: 3 }}
+                        style={{
+                          color: '#303030',
+                          fontSize: 12,
+                          marginLeft: 3,
+                        }}
                       >
                         Person 5
                       </p>
@@ -367,7 +366,11 @@ const SchedulerBar = () => {
                     <div className="flex items-center">
                       <MdOutlineEmail size={10} color="#303030" />
                       <p
-                        style={{ color: '#303030', fontSize: 12, marginLeft: 3 }}
+                        style={{
+                          color: '#303030',
+                          fontSize: 12,
+                          marginLeft: 3,
+                        }}
                       >
                         simonalone341@gmail.com
                       </p>
@@ -375,7 +378,11 @@ const SchedulerBar = () => {
                     <div className="flex items-center">
                       <PiPhone size={10} color="#303030" />
                       <p
-                        style={{ color: '#303030', fontSize: 12, marginLeft: 3 }}
+                        style={{
+                          color: '#303030',
+                          fontSize: 12,
+                          marginLeft: 3,
+                        }}
                       >
                         +01 9834433456
                       </p>
@@ -384,22 +391,24 @@ const SchedulerBar = () => {
                 </div>
 
                 <div className="flex mt2 justify-center items-center">
-                  {!isSuccess && <button
-                    onClick={() =>
-                      setSubmitFormCords((prev) => ({ ...prev, opacity: 0 }))
-                    }
-                    className={sharedStyles.secondary_schdeule_btn}
-                  >
-                    Cancel
-                  </button>}
+                  {!isSuccess && (
+                    <button
+                      onClick={() =>
+                        setSubmitFormCords((prev) => ({ ...prev, opacity: 0 }))
+                      }
+                      className={sharedStyles.secondary_schdeule_btn}
+                    >
+                      Cancel
+                    </button>
+                  )}
                   <button
                     style={{
-                      width: isSuccess ? "100%" : undefined
+                      width: isSuccess ? '100%' : undefined,
                     }}
                     className={sharedStyles.primary_schdeule_btn}
                     onClick={handleSchudule}
                   >
-                    {isSuccess ? "Submit Successfully" : "Schedule"}
+                    {isSuccess ? 'Submit Successfully' : 'Schedule'}
                   </button>
                 </div>
               </div>
@@ -419,11 +428,9 @@ const SchedulerBar = () => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
+  );
+};
 
-  )
-}
-
-export default SchedulerBar
+export default SchedulerBar;

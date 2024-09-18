@@ -21,6 +21,7 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
+import DropdownCheckbox from '../../components/DropdownCheckBox';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
@@ -36,7 +37,7 @@ export const DashboardPage: React.FC = () => {
     setSelectionRange(new Date());
   };
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 25;
   const [currentPage, setCurrentPage] = useState(1);
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
@@ -46,20 +47,15 @@ export const DashboardPage: React.FC = () => {
     value: 'ALL',
   });
   const [dealers, setDealers] = useState<string[]>([]);
-  const [appliedDate, setAppliedDate] = useState<Date | null>(null)
-  /* const [selectedOption, setSelectedOption] = useState<string>(
-    payRollData[0].label
-  );*/
+  const [appliedDate, setAppliedDate] = useState<Date | null>(null);
+
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[comissionValueData.length - 1].value
   );
   const { isActive } = useAppSelector((state) => state.filterSlice);
+  const [prefferedType, setPrefferedType] = useState<string>('')
   const { pathname } = useLocation();
-  /* const handleSelectChange = (
-    selectedOption: { value: string; label: string } | null
-  ) => {
-  setSelectedOption(selectedOption ? selectedOption.value : "");
-  };*/
+  const [isOptionsFetched, setIsOptionsFetched] = useState(false);
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -70,31 +66,30 @@ export const DashboardPage: React.FC = () => {
     setFilterModal(false);
   };
   const handleToggleDatePicker = () => {
-    setAppliedDate(selectionRange)
+    setAppliedDate(selectionRange);
     setShowDatePicker(!showDatePicker);
   };
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dispatch(
-      getDealerPay({
-        page_number: currentPage,
-        page_size: itemsPerPage,
-        pay_roll_start_date: moment(appliedDate).format(
-          'YYYY-MM-DD HH:mm:ss'
-        ),
-        pay_roll_end_date: moment(appliedDate).format(
-          'YYYY-MM-DD HH:mm:ss'
-        ),
-        use_cutoff: 'NO',
-        dealer_name: dealer.value,
-        sort_by: 'unique_id',
-        commission_model: selectedOption2,
-        filters,
-      })
-    );
-  }, [currentPage, selectedOption2, appliedDate, filters, dealer.value]);
+    if (isOptionsFetched) {
+      dispatch(
+        getDealerPay({
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          pay_roll_start_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
+          pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
+          use_cutoff: 'NO',
+          dealer_name: dealer.value,
+          sort_by: 'unique_id',
+          commission_model: selectedOption2,
+          filters,
+          preffered_type: prefferedType
+        })
+      );
+    }
+  }, [currentPage, selectedOption2, appliedDate, filters, dealer, isOptionsFetched, prefferedType]);
 
   useEffect(() => {
     (async () => {
@@ -102,7 +97,12 @@ export const DashboardPage: React.FC = () => {
         tableNames: ['dealer'],
       };
       const res = await postCaller(EndPoints.get_newFormData, tableData);
+      if (res.status > 201) {
+        return
+      }
       setDealers([...res.data.dealer]);
+      setDealer({ label: 'All', value: 'ALL' });
+      setIsOptionsFetched(true);
     })();
   }, []);
 
@@ -127,13 +127,7 @@ export const DashboardPage: React.FC = () => {
     setFilters(req.filters);
   };
 
-  const dealerOptions = useMemo(
-    () => [
-      { label: 'All', value: 'ALL' },
-      ...dealers.map((item) => ({ label: item, value: item })),
-    ],
-    [dealers]
-  );
+
 
   return (
     <>
@@ -244,10 +238,10 @@ export const DashboardPage: React.FC = () => {
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    Select Dealer
+                    Sales Partner
                   </label>
                   <Select
-                    options={dealerOptions}
+                    options={[{ label: 'All', value: 'ALL' }, ...dealers?.map?.((item) => ({ label: item, value: item }))] || []}
                     value={dealer}
                     onChange={(newValue) => {
                       if (newValue) {
@@ -326,20 +320,19 @@ export const DashboardPage: React.FC = () => {
                       }),
                     }}
                   />
+
+                  {/* <DropdownCheckbox
+                    options={dealers?.map?.((item) => ({ label: item, value: item })) || []}
+                    selectedOptions={dealer}
+                    onChange={(selectedOptions) => {
+                      setDealer(selectedOptions)
+                      setCurrentPage(1);
+                    }}
+                  /> */}
                 </div>
               </div>
 
-              {/* <div className="dash-head-input">
-              <label className="inputLabel" style={{ color: '#344054' }}>
-                Set Default
-              </label>
-              <label
-                className="inputLabel dashboard-chart-view"
-                style={{ color: '#0493CE' }}
-              >
-                Chart View
-              </label>
-            </div> */}
+
 
               <div className="dash-head-input" style={{ width: '250px' }}>
                 <div
@@ -377,7 +370,9 @@ export const DashboardPage: React.FC = () => {
                       onClick={handleToggleDatePicker}
                       style={{ color: '#292929' }}
                     >
-                      {appliedDate ? format(appliedDate, "dd-MM-yyyy") : 'Select Date'}
+                      {appliedDate
+                        ? format(appliedDate, 'dd-MM-yyyy')
+                        : 'Select Date'}
                     </label>
                     {showDatePicker && (
                       <div className="calender-container">
@@ -455,18 +450,15 @@ export const DashboardPage: React.FC = () => {
                     style={{ height: '15px', width: '15px' }}
                   />
                 </div>
-                <button
-                  className={`performance-exportbtn  mt0 `}
-                >
+                <button className={`performance-exportbtn  mt0 `}>
                   <FaUpload size={12} className="mr-1" />
                   <span>{' Export '}</span>
                 </button>
               </div>
-
             </div>
           </div>
           <div className="">
-            <DashboardTotal />
+            <DashboardTotal setPrefferedType={setPrefferedType} />
             {/* <DonutChart /> */}
           </div>
         </div>
