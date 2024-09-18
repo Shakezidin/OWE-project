@@ -10,11 +10,16 @@ import FileAttach from "./Modalimages/FileAttach.png"
 import EditModal from './EditModal';
 import { RiEdit2Line } from 'react-icons/ri';
 import AppointmentScheduler from './AppointmentScheduler';
-
+import CrossIcon from "../Modals/Modalimages/crossIcon.png"
+import Pen from "../Modals/Modalimages/Vector.png"
 // const LeadManamentSucessModel: React.FC<TableProps> = ({
 const ConfirmaModel = () => {
     const [visibleDiv, setVisibleDiv] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalOpen, setModalClose] = useState(true);
+    const HandleModal=()=>{
+        setModalClose(false)
+    }
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -24,14 +29,14 @@ const ConfirmaModel = () => {
         setIsModalOpen(false);
     };
     return (
-        <div>
-            <div className="transparent-model">
-                <div className={classes.customer_wrapper_list}>
-                    <div className={classes.DetailsMcontainer}>
-                        {/* <div > */}
+        <div >
+            {modalOpen && <div className="transparent-model">
+             <div className={classes.customer_wrapper_list} >
+                     <div className={classes.DetailsMcontainer}>
+                        <div className={classes.parentSpanBtn} onClick={HandleModal}><img className={classes.crossBtn} src={CrossIcon}  /></div>
                         <div className={classes.pers_det_top}>
                             <div className={classes.Column1Details}>
-                                <span className={classes.main_name}>Adam Samson</span>
+                                <div className={classes.main_name}>Adam Samson <img onClick={HandleModal} className={classes.crossIconImg}  src={CrossIcon}  /></div>
                                 <span className={classes.mobileNumber}>+91 8739273728</span>
                             </div>
                             <div className={classes.Column2Details}>
@@ -72,16 +77,22 @@ const ConfirmaModel = () => {
                                     <span className={classes.verifyLetter}> Verified</span>
                                     </span>
                                 </span>
+                                <div>
+                        <div className={classes.edit_modal_openMediaScreen} onClick={handleOpenModal}>
+                                <RiEdit2Line style={{ color: "#fff" }} />
+                                <span className={classes.edit_modal_button}><img src={Pen}></img>{" "}Edit</span>
+                            </div>
+                    </div>
                             </div>
                         </div>
-                       <div>
-                       <div className={classes.edit_modal_open} onClick={handleOpenModal}>
+                <div>
+                        <div className={classes.edit_modal_open} onClick={handleOpenModal}>
                                 <RiEdit2Line style={{ color: "#fff" }} />
-                                <span className={classes.edit_modal_button}>Edit</span>
+                                <span className={classes.edit_modal_button}><img src={Pen}></img>{" "}Edit</span>
                             </div>
-                       </div>
+                    </div>
                         
-                    </div> 
+                    </div>
                     <EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
 
                     {visibleDiv === 0 && <AppointmentScheduler setVisibleDiv={setVisibleDiv} />}
@@ -309,7 +320,7 @@ const ConfirmaModel = () => {
                         </>
                     )}{' '}
                 </div>
-            </div>
+            </div> }
         </div>
     );
 };
