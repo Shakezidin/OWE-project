@@ -208,7 +208,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 
 	err, _ = DeletePodioUsers(userDetailsResult)
 	if err != nil {
-		log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
+		log.FuncInfoTrace(0, "error deleting users from podio; err: %v", err)
 	}
 
 	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v ", rowsAffected, deleteUsersReq.UserCodes)
