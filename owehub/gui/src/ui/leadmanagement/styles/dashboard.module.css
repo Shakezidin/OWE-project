@@ -387,7 +387,7 @@ input[type="checkbox"]:checked {
   /* For tablets and larger screens */
   @media (min-width: 768px) {
     .chartGrid {
-      grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+      grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
     }
     .lineCard {
       margin-right:26px
@@ -449,9 +449,68 @@ input[type="checkbox"]:checked {
   }
   
   /* Laptops and small desktops */
-  @media only screen and (min-width: 769px) and (max-width: 1024px) {
+  @media only screen and (min-width: 767px) and (max-width: 1025px) {
     /* Styles for small desktops */
-   
+    /* .chart_main_grid {
+      display: flex;
+      flex-direction: row;
+    } */
+    .chartGrid {
+      grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
+    }
+    .lineChart_div{
+      position: relative;
+      /* top: 50px; */
+      align-items: center;
+      justify-content: center;
+      /* margin-top: 30px;
+      margin-right: 40px; */
+      right: 30px;
+    }
+
+    .lineChart_legend {
+      display: none;
+    }
+
+      .hist_date{
+    font-weight: 500 !important;
+    font-size: 12px !important;
+  }
+
+  .date_display{
+    position: relative;
+  }
+
+  .date_calendar{
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: right !important;
+  }
+
+  .date_parent{
+    display: flex;
+    gap: 10px;
+  }
+
+  .history_list_inner{
+    display: grid;
+    grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .paginationContainer {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    gap: 50px !important;
+  }
+  
+  .lead_pagination {
+    align-items: flex-start; /* Optional: vertically center the items */
+  }
+  
   }
   
   
