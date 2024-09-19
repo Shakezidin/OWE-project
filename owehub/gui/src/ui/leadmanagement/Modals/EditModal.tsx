@@ -100,11 +100,11 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose }) => {
                                 <RiArrowDropDownLine style={{ height: "34px", width: "34px", fontWeight: "400" }} />
                             </div>
                             <div className={classes.notEditable}>
-                                <div className={classes.Column1Details}>
+                                <div className={classes.Column1DetailsEdited_Mode}>
                                     <span className={classes.main_name}>Adam Samson</span>
                                     <span className={classes.mobileNumber}>+91 8739273728</span>
                                 </div>
-                                <div className={classes.Column2Details}>
+                                <div className={classes.Column2Details_Edited_Mode}>
                                     <span className={classes.addresshead}>
                                         12778 Domingo Ct, Parker, COLARDO, 2312
                                     </span>

@@ -8,9 +8,12 @@
     background-color: #fff;
     padding-top: 15px;
     padding-inline: 20px;
-    max-width: 1131px;
+    max-width: auto;
+    align-items: center;
+    justify-content: center;
     height: 561px;
     margin-left: 20px;
+    /* margin:0 auto; */
   }
 
   .createProfileTextView {

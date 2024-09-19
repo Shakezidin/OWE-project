@@ -18,6 +18,7 @@ const initialState: CreateOnboardUserStateModel = {
     last_name: '',
     email_id: '',
     mobile_number: '',
+    zip_code:'',
     assigned_dealer_name: '',
     role_name: 'Admin',
     add_region: '',

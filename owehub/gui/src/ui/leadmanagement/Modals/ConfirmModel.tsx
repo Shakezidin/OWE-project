@@ -31,8 +31,8 @@ const ConfirmaModel = () => {
     return (
         <div >
             {modalOpen && <div className="transparent-model">
-             <div className={classes.customer_wrapper_list} >
-                     <div className={classes.DetailsMcontainer}>
+            <div className={classes.customer_wrapper_list} >
+                    <div className={classes.DetailsMcontainer}>
                         <div className={classes.parentSpanBtn} onClick={HandleModal}><img className={classes.crossBtn} src={CrossIcon}  /></div>
                         <div className={classes.pers_det_top}>
                             <div className={classes.Column1Details}>
@@ -79,21 +79,22 @@ const ConfirmaModel = () => {
                                 </span>
                                 <div>
                         <div className={classes.edit_modal_openMediaScreen} onClick={handleOpenModal}>
-                                <RiEdit2Line style={{ color: "#fff" }} />
-                                <span className={classes.edit_modal_button}><img src={Pen}></img>{" "}Edit</span>
+                                {/* <RiEdit2Line  />  I have USed Custom PNG Image instead of Library for PEN <img src={Pen}> in the EDIT BUTTON */}
+                                <span className={classes.edit_modal_button2}><img src={Pen} />{" "}Edit</span>
                             </div>
                     </div>
                             </div>
                         </div>
                 <div>
                         <div className={classes.edit_modal_open} onClick={handleOpenModal}>
-                                <RiEdit2Line style={{ color: "#fff" }} />
-                                <span className={classes.edit_modal_button}><img src={Pen}></img>{" "}Edit</span>
+                                
+                                <span className={classes.edit_modal_button}><img src={Pen} />{" "}Edit</span>
                             </div>
                     </div>
                         
-                    </div>
-                    <EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
+                    </div><EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
+
+                   {/* <div style={{marginTop:"-308px"}}> </div> */}
 
                     {visibleDiv === 0 && <AppointmentScheduler setVisibleDiv={setVisibleDiv} />}
 
@@ -126,6 +127,9 @@ const ConfirmaModel = () => {
                             </div>
                         </>
                     )}
+
+                    {/* FROM HERE  WE DO NOT NEED EDIT BUTTON */}
+
                     {visibleDiv === 2 && (
                         <>
                             <div className={classes.success_not}>
