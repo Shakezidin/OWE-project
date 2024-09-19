@@ -455,13 +455,14 @@ const LeadManagementDashboard = () => {
                 )}
                 {selectedDates.startDate && selectedDates.endDate && (
                   <div className={styles.hist_date}>
-                    <span>
+                    <span className={styles.date_display}>
                       {selectedDates.startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                       {' - '}
                       {selectedDates.endDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </span>
                   </div>
                 )}
+                <div className={styles.date_parent}>
                 <select value={selectedPeriod?.label || ''} onChange={handlePeriodChange} className={styles.monthSelect}>
                   {periodFilterOptions.map((option) => (
                     <option key={option.label} value={option.label}>
@@ -472,16 +473,17 @@ const LeadManagementDashboard = () => {
                 <div ref={toggleRef} className={styles.calender} onClick={toggleCalendar}>
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
+                </div>
               </div>
             </div>
           {/* shams end */}
-          <div className={`${styles.cardContent} lineChart-wrapper`}>
-            <ResponsiveContainer width="100%" height={300}>
+          <div className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}>
+          <ResponsiveContainer className={styles.chart_main_grid} width="100%" height={300}>
               <LineChart data={lineData}>
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend 
+                <Legend className={styles.lineChart_legend}
                   formatter={(value) => value === 'won' ? 'Total won' : 'Total Lost'}
                   wrapperStyle={{ fontSize: '12px'}} 
                 />
@@ -635,7 +637,7 @@ const LeadManagementDashboard = () => {
 
           <div className={styles.paginationContainer} style={{ textAlign: 'right' }}>
             {filteredLeads.length > 0 && (
-              <div className="p1 lead-pagination">
+              <div className={styles.lead_pagination} >
                 <p className={styles.pageHeading}>
                   {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, filteredLeads.length)} of {filteredLeads.length} items
                 </p>
