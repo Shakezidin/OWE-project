@@ -29,8 +29,8 @@ import (
  ******************************************************************************/
 func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		reqBody          []byte
+		err     error
+		reqBody []byte
 		// podioDeleteCount int
 		deleteUsersReq   models.DeleteUsers
 		whereEleList     []interface{}
@@ -67,13 +67,6 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	// setup user info logging
 	logUserApi, closeUserLog := initUserApiLogging(req)
 	defer func() { closeUserLog(err) }()
-
-	//* logic to delte users from podio
-
-	err, _ = DeletePodioUsers(deleteUsersReq.UserCodes)
-	if err != nil {
-		log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
-	}
 
 	//
 	// NEW LOGIC: Delete By Email
@@ -197,6 +190,13 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		log.DBTransDebugTrace(0, "No User(s) deleted with User codes: %v", deleteUsersReq.UserCodes)
 		FormAndSendHttpResp(resp, "No User(s) deleted, user(s) not present with provided user codes", http.StatusNotFound, nil)
 		return
+	}
+
+	//* logic to delte users from podio
+
+	err, _ = DeletePodioUsers(deleteUsersReq.UserCodes)
+	if err != nil {
+		log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
 	}
 
 	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v ", rowsAffected, deleteUsersReq.UserCodes)

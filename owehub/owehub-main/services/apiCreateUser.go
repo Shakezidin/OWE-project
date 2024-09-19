@@ -10,7 +10,6 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"strconv"
 	"strings"
 
 	"encoding/json"
@@ -81,14 +80,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "Failed to marshall table permission while create user,  err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to marshall table permissions", http.StatusBadRequest, nil)
 			return
-		}
-	}
-
-	//* logic to create / update user to podio
-	if createUserReq.AddToPodio {
-		podioError = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
-		if podioError != nil {
-			log.FuncErrorTrace(0, "%v", podioError)
 		}
 	}
 
@@ -276,6 +267,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		// logUserApi(fmt.Sprintf("Created user %s in owehubdb - %+v", createUserReq.EmailId, details))
 	}
 
+	//* logic to create / update user to podio
+	if createUserReq.AddToPodio {
+		podioError = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
+		if podioError != nil {
+			log.FuncErrorTrace(0, "%v", podioError)
+		}
+	}
+
 	// Send email to client
 	err = SendMailToClient(createUserReq.EmailId, createUserReq.Name)
 	if err != nil {
@@ -294,25 +293,4 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
-}
-
-func getNumberAfterSecondUnderscore(s string) (int, error) {
-	parts := strings.Split(s, "_")
-	if len(parts) < 3 {
-		return 0, fmt.Errorf("string doesn't contain at least two underscores")
-	}
-	numStr := parts[2]
-	num, err := strconv.Atoi(numStr)
-	if err != nil {
-		return 0, err
-	}
-	return num, nil
-}
-
-func getNameWithoutNumber(s string) string {
-	parts := strings.Split(s, "_")
-	if len(parts) < 3 {
-		return s // Return original string if it doesn't contain at least two underscores
-	}
-	return strings.Join(parts[:2], "_")
 }
