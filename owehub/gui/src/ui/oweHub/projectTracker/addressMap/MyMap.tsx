@@ -101,8 +101,11 @@ const MyMapComponent: React.FC = () => {
           <InfoWindow 
             position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }}
             onCloseClick={() => debouncedSetSelectedLocation(null)}
+            options={{
+              pixelOffset: new window.google.maps.Size(0, -50),
+            }}
           >
-            <div>
+            <div  className='flex flex-column pb2 pr2 items-center justify-center'  >
               <h4>Location Data</h4>
               <p>{selectedLocation.info}</p>
             </div>
