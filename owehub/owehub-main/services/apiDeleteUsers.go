@@ -29,11 +29,14 @@ import (
  ******************************************************************************/
 func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		reqBody          []byte
+		err     error
+		reqBody []byte
+		userDetailsResult []map[string]interface{}
+		whereClause string
 		deleteUsersReq   models.DeleteUsers
 		whereEleList     []interface{}
 		query            string
+		userQuery string
 		userDetails      []map[string]interface{}
 		tablePermissions []models.TablePermission
 		rowsAffected     int64
@@ -66,6 +69,16 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	// setup user info logging
 	logUserApi, closeUserLog := initUserApiLogging(req)
 	defer func() { closeUserLog(err) }()
+
+	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", strings.Join(deleteUsersReq.UserCodes, ","))
+
+	userQuery = fmt.Sprintf(`SELECT name, email_id, user_code, role_id
+							 FROM user_details %s;`, whereClause)
+
+	userDetailsResult, err = db.ReteriveFromDB(db.OweHubDbIndex, userQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user details from DB for podio err: %v", err)
+	}
 
 	//
 	// NEW LOGIC: Delete By Email
@@ -191,6 +204,13 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v", rowsAffected, deleteUsersReq.UserCodes)
-	FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
+	//* logic to delte users from podio
+
+	err, _ = DeletePodioUsers(userDetailsResult)
+	if err != nil {
+		log.FuncInfoTrace(0, "error deleting users from podio; err: %v", err)
+	}
+
+	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v ", rowsAffected, deleteUsersReq.UserCodes)
+	FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) from OweHub app deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
 }

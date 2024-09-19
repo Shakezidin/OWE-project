@@ -53,7 +53,7 @@ export const DashboardPage: React.FC = () => {
     comissionValueData[comissionValueData.length - 1].value
   );
   const { isActive } = useAppSelector((state) => state.filterSlice);
-  const [prefferedType, setPrefferedType] = useState<string>('')
+  const [prefferedType, setPrefferedType] = useState<string>('');
   const { pathname } = useLocation();
   const [isOptionsFetched, setIsOptionsFetched] = useState(false);
   const handleSelectChange2 = (
@@ -78,18 +78,28 @@ export const DashboardPage: React.FC = () => {
         getDealerPay({
           page_number: currentPage,
           page_size: itemsPerPage,
-          pay_roll_start_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
+          pay_roll_start_date: moment(appliedDate).format(
+            'YYYY-MM-DD HH:mm:ss'
+          ),
           pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
           use_cutoff: 'NO',
           dealer_name: dealer.value,
           sort_by: 'unique_id',
           commission_model: selectedOption2,
           filters,
-          preffered_type: prefferedType
+          preffered_type: prefferedType,
         })
       );
     }
-  }, [currentPage, selectedOption2, appliedDate, filters, dealer, isOptionsFetched, prefferedType]);
+  }, [
+    currentPage,
+    selectedOption2,
+    appliedDate,
+    filters,
+    dealer,
+    isOptionsFetched,
+    prefferedType,
+  ]);
 
   useEffect(() => {
     (async () => {
@@ -98,7 +108,7 @@ export const DashboardPage: React.FC = () => {
       };
       const res = await postCaller(EndPoints.get_newFormData, tableData);
       if (res.status > 201) {
-        return
+        return;
       }
       setDealers([...res.data.dealer]);
       setDealer({ label: 'All', value: 'ALL' });
@@ -126,8 +136,6 @@ export const DashboardPage: React.FC = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
-
-
 
   return (
     <>
@@ -241,7 +249,15 @@ export const DashboardPage: React.FC = () => {
                     Sales Partner
                   </label>
                   <Select
-                    options={[{ label: 'All', value: 'ALL' }, ...dealers?.map?.((item) => ({ label: item, value: item }))] || []}
+                    options={
+                      [
+                        { label: 'All', value: 'ALL' },
+                        ...dealers?.map?.((item) => ({
+                          label: item,
+                          value: item,
+                        })),
+                      ] || []
+                    }
                     value={dealer}
                     onChange={(newValue) => {
                       if (newValue) {
@@ -332,8 +348,6 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-
-
               <div className="dash-head-input" style={{ width: '250px' }}>
                 <div
                   className="rep-drop_label"
@@ -404,8 +418,9 @@ export const DashboardPage: React.FC = () => {
             <div className="dashboard-payroll">
               <div className="line-graph">
                 <div
-                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-line ${
+                    active === 0 ? 'active-filter-line' : ''
+                  }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -415,8 +430,9 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-disable ${
+                    active === 1 ? 'active-filter-line' : ''
+                  }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (

@@ -399,13 +399,20 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		} else {
 			contractD = ContractDate.Format("2006-01-02")
 		}
+
+		RoofingStatus, ok := item["roofing_status"].(string)
+		if !ok || RoofingStatus == "" {
+			log.FuncErrorTrace(0, "Failed to get roofing status Item: %+v\n", item)
+			// continue
+		}
+
 		_, SiteSurveyCountT, _, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		_, CadDesignCountT, _ := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
 		_, PerimittingCountT, _ := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, CadCompleteD)
 		PerimittingCount += PerimittingCountT
-		_, RoofingCountT, _ := roofingColor(RoofingCreatedD, RoofingCompleteD)
+		_, RoofingCountT, _ := roofingColor(RoofingCreatedD, RoofingCompleteD, RoofingStatus)
 		RoofingCount += RoofingCountT
 		_, InstallCountT, _, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
