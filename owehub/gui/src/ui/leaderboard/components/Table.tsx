@@ -654,8 +654,12 @@ const Table = ({
   };
 
   const sortedPage = leaderTable
-    .slice()
-    .sort((a, b) => (a.hightlight || b.hightlight ? -1 : 1));
+  .slice()
+  .sort((a, b) => {
+    if (a.hightlight && !b.hightlight) return -1;
+    if (!a.hightlight && b.hightlight) return 1;
+    return 0;
+  });
 
   function formatSaleValue(value: any) {
     if (value === null || value === undefined) return ''; // Handle null or undefined values
