@@ -11,7 +11,6 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"OWEApp/shared/types"
-	"strconv"
 	"strings"
 
 	"encoding/json"
@@ -29,6 +28,7 @@ import (
 func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                   error
+		podioError            error
 		createUserReq         models.CreateUserReq
 		queryParameters       []interface{}
 		tablesPermissionsJSON []byte
@@ -61,13 +61,13 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// setup user info logging
-	logUserApi, closeUserLog := initUserApiLogging(req)
-	defer func() { closeUserLog(err) }()
+	// logUserApi, closeUserLog := initUserApiLogging(req)
+	// defer func() { closeUserLog(err) }()
 
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Designation) <= 0) ||
 		(len(createUserReq.RoleName) <= 0) {
-		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
+		err = fmt.Errorf("empty input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
@@ -91,8 +91,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	userEmail := req.Context().Value("emailid").(string)
-	role := req.Context().Value("rolename").(string)
+	userEmail, _ := req.Context().Value("emailid").(string)
+	role, _ := req.Context().Value("rolename").(string)
+
 	if role == "Dealer Owner" {
 		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -222,6 +223,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.TeamName)
 	queryParameters = append(queryParameters, createUserReq.Dealer)
 	queryParameters = append(queryParameters, createUserReq.DealerLogo)
+	queryParameters = append(queryParameters, createUserReq.AddToPodio)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the stored procedure or function to create the user
@@ -258,21 +260,29 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			tablePermissionStringParts[i] = fmt.Sprintf("%s(%s)", perm.TableName, strings.ToLower(perm.PrivilegeType))
 		}
 
-		details := map[string]string{
-			"email_id":          createUserReq.EmailId,
-			"name":              createUserReq.Name,
-			"mobile_number":     createUserReq.MobileNumber,
-			"table_permissions": strings.Join(tablePermissionStringParts, ", "),
-			"db_username":       username,
-		}
-		logUserApi(fmt.Sprintf("Created user %s in owehubdb and owedb - %+v", createUserReq.EmailId, details))
+		// details := map[string]string{
+		// 	"email_id":          createUserReq.EmailId,
+		// 	"name":              createUserReq.Name,
+		// 	"mobile_number":     createUserReq.MobileNumber,
+		// 	"table_permissions": strings.Join(tablePermissionStringParts, ", "),
+		// 	"db_username":       username,
+		// }
+		// logUserApi(fmt.Sprintf("Created user %s in owehubdb and owedb - %+v", createUserReq.EmailId, details))
 	} else {
-		details := map[string]string{
-			"email_id":      createUserReq.EmailId,
-			"name":          createUserReq.Name,
-			"mobile_number": createUserReq.MobileNumber,
+		// details := map[string]string{
+		// 	"email_id":      createUserReq.EmailId,
+		// 	"name":          createUserReq.Name,
+		// 	"mobile_number": createUserReq.MobileNumber,
+		// }
+		// logUserApi(fmt.Sprintf("Created user %s in owehubdb - %+v", createUserReq.EmailId, details))
+	}
+
+	//* logic to create / update user to podio
+	if createUserReq.AddToPodio {
+		podioError = HandleCreatePodioDataRequest(createUserReq, createUserReq.RoleName)
+		if podioError != nil {
+			log.FuncErrorTrace(0, "%v", podioError)
 		}
-		logUserApi(fmt.Sprintf("Created user %s in owehubdb - %+v", createUserReq.EmailId, details))
 	}
 
 	// Send email to client
@@ -283,26 +293,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Send HTTP response
+	if podioError != nil && createUserReq.AddToPodio {
+		FormAndSendHttpResp(
+			resp,
+			fmt.Sprintf("User Created Successfully, Failed to create in podio; err: %v", podioError),
+			http.StatusOK,
+			nil)
+		return
+	}
+
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
-}
-
-func getNumberAfterSecondUnderscore(s string) (int, error) {
-	parts := strings.Split(s, "_")
-	if len(parts) < 3 {
-		return 0, fmt.Errorf("string doesn't contain at least two underscores")
-	}
-	numStr := parts[2]
-	num, err := strconv.Atoi(numStr)
-	if err != nil {
-		return 0, err
-	}
-	return num, nil
-}
-
-func getNameWithoutNumber(s string) string {
-	parts := strings.Split(s, "_")
-	if len(parts) < 3 {
-		return s // Return original string if it doesn't contain at least two underscores
-	}
-	return strings.Join(parts[:2], "_")
 }
