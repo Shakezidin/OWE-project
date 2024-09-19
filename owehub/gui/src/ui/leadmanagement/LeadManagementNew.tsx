@@ -1,5 +1,5 @@
-import React from 'react'
-import classes from "./styles/leadManagementNew.module.css"
+import React from 'react';
+import classes from './styles/leadManagementNew.module.css';
 // import './styles/leadManagementNew.module.css';
 
 // import SalesRepSchedulePage from '../scheduler/SalesRepScheduler/SuccessSales';
@@ -47,58 +47,46 @@ const LeadManagementNew = () => {
         delete err[name];
         setErrors(err);
       }
-    }  
-    
-   
-    else if (name === 'email_id') {
-                            const isValidEmail = validateEmail(value.trim());
-                            if (!isValidEmail) {
-                              setEmailError('Please enter a valid email address.');
-                            } else {
-                              setEmailError('');
-                            }
-                            const trimmedValue = value.replace(/\s/g, '');
+    } else if (name === 'email_id') {
+      const isValidEmail = validateEmail(value.trim());
+      if (!isValidEmail) {
+        setEmailError('Please enter a valid email address.');
+      } else {
+        setEmailError('');
+      }
+      const trimmedValue = value.replace(/\s/g, '');
 
       setFormData((prevData) => ({
         ...prevData,
         [name]: trimmedValue,
       }));
-    } 
-    
-    
-        
-    else if (name === 'zip_code') {
+    } else if (name === 'zip_code') {
       const isValidZipCode = validateZipCode(value.trim());
       if (!isValidZipCode) {
-        setZip_codeError('Please enter a valid ZipCode number (only numbers, 6-12 digits).');
+        setZip_codeError(
+          'Please enter a valid ZipCode number (only numbers, 6-12 digits).'
+        );
       } else {
         setZip_codeError('');
       }
-    
+
       const CorrectValue = value.replace(/\s/g, '');
       setFormData((prevData) => ({
         ...prevData,
         [name]: CorrectValue,
       }));
-    
     } else {
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
       }));
-    
+
       // Clear any existing error for this field
       const err = { ...errors };
       delete err[name];
       setErrors(err);
     }
-    
-
-  }
-
-
-
-  
+  };
 
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
@@ -110,15 +98,16 @@ const LeadManagementNew = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(formData)
+    console.log(formData);
     // filter();
   };
 
-
   return (
-    <><div className={`${classes.main_head} ${classes.form_header}`}>Create New Lead</div>
+    <>
+      <div className={`${classes.main_head} ${classes.form_header}`}>
+        Create New Lead
+      </div>
 
-      
       {/* <SalesRepSchedulePage isOpen={filterOPen} handleClose={filterClose}/> Filter Modal */}
       <div className={`flex justify-between mt2 ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
@@ -180,7 +169,7 @@ const LeadManagementNew = () => {
                         // style={{ marginTop: '-4px' }}
                       >
                         <label className="inputLabel">Phone Number</label>
-                        <PhoneInput 
+                        <PhoneInput
                           countryCodeEditable={false}
                           country={'us'}
                           disableCountryGuess={true}
@@ -197,21 +186,21 @@ const LeadManagementNew = () => {
                       </div>
 
                       <div className={classes.srs_new_create}>
-                        <Input 
-                        type={'text'}
-                                              label="Email ID"
-                                              value={formData.email_id}
-                                              placeholder={'email@mymail.com'}
-                                              onChange={(e) => handleInputChange(e)}
-                                              name={'email_id'}
-                                              // disabled={formData.isEdit}
-                                            />
-                                            {emailError && (
-                                              <div className="error-message">{emailError}</div>
-                                            )}
+                        <Input
+                          type={'text'}
+                          label="Email ID"
+                          value={formData.email_id}
+                          placeholder={'email@mymail.com'}
+                          onChange={(e) => handleInputChange(e)}
+                          name={'email_id'}
+                          // disabled={formData.isEdit}
+                        />
+                        {emailError && (
+                          <div className="error-message">{emailError}</div>
+                        )}
                       </div>
-                      </div>
-                      <div className={classes.salrep_input_container}>
+                    </div>
+                    <div className={classes.salrep_input_container}>
                       <div className={classes.srs_new_create}>
                         <Input
                           type="text"
@@ -233,7 +222,7 @@ const LeadManagementNew = () => {
                           </span>
                         )}
                       </div>
-                    <div className={classes.srs_new_create}>
+                      <div className={classes.srs_new_create}>
                         <Input
                           type="number"
                           label="Zip Code"
@@ -241,36 +230,37 @@ const LeadManagementNew = () => {
                           placeholder="Zip Code"
                           onChange={(e) => handleInputChange(e)}
                           name="zip_code"
-                          maxLength={15}  
+                          maxLength={15}
                         />
                         {zip_codeError && (
-                          <div className="error-message">{zip_codeError}</div>)}
+                          <div className="error-message">{zip_codeError}</div>
+                        )}
                       </div>
-                      
+
                       <div className={classes.create_input_field_note}>
-                  <label htmlFor="" className="inputLabel">
-                    Notes
-                  </label>{' '}
-                  <br />
-                  <textarea
-                    name="notes"
-                    id=""
-                    rows={3}
-                    maxLength={500}
-                    value={formData.notes}
-                    onChange={(e) => handleInputChange(e)}
-                    placeholder="Write"
-                  ></textarea>
-                  <p
-                    className={`character-count ${
-                      formData.notes.trim().length >= 500
-                        ? 'exceeded'
-                        : ''
-                    }`}
-                  >
-                    {/* {formData.notes.trim().length}/500 characters */}
-                  </p>
-                </div>
+                        <label htmlFor="" className="inputLabel">
+                          Notes
+                        </label>{' '}
+                        <br />
+                        <textarea
+                          name="notes"
+                          id=""
+                          rows={3}
+                          maxLength={500}
+                          value={formData.notes}
+                          onChange={(e) => handleInputChange(e)}
+                          placeholder="Write"
+                        ></textarea>
+                        <p
+                          className={`character-count ${
+                            formData.notes.trim().length >= 500
+                              ? 'exceeded'
+                              : ''
+                          }`}
+                        >
+                          {/* {formData.notes.trim().length}/500 characters */}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -282,9 +272,8 @@ const LeadManagementNew = () => {
           </form>
         </div>
       </div>
-      
     </>
-  )
-}
+  );
+};
 
 export default LeadManagementNew;

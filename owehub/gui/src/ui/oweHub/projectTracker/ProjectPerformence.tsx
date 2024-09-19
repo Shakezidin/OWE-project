@@ -195,9 +195,7 @@ const ProjectPerformence = () => {
       'FinCreate Date',
       'FinPass Date',
       'Pto Submitted Date',
-      'Pto Date'
-
-
+      'Pto Date',
     ];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
@@ -240,8 +238,7 @@ const ProjectPerformence = () => {
       item.FinCreateDate,
       item.FinPassDate,
       item.PtoSubmittedDate,
-      item.PtoDate    
-      
+      item.PtoDate,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -461,12 +458,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+            {
+              startDate: selected.start,
+              endDate: selected.end,
+              key: 'selection',
+            },
+          ]
         : []
     );
 
@@ -932,11 +929,11 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
-                { isStaging === 'staging' ? 
-                <div className='pipeline-googlemap'>
-                  <img src={ICONS.PinMap} alt="pin map" />
-                </div>
-              : null }
+                {isStaging === 'staging' ? (
+                  <div className="pipeline-googlemap">
+                    <img src={ICONS.PinMap} alt="pin map" />
+                  </div>
+                ) : null}
               </div>
             </div>
 
@@ -1028,7 +1025,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.qc.qc_action_required_count > 0
+                                        project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1054,7 +1051,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.ntp.action_required_count > 0
+                                        project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }

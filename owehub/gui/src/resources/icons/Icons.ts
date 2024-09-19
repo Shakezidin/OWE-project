@@ -142,12 +142,8 @@ import seemore from '../../resources/assets/see_more_lm.svg';
 import pdf from '../../resources/assets/pdf.svg';
 import leadMngExport from '../../resources/assets/export-lead.svg';
 import PinMap from '../../resources/assets/pinmap.svg';
-import chevronDown from '../assets/chevron-down.svg'
-import chevronUp from '../assets/chevron-Up.svg'
-
-
-
-
+import chevronDown from '../assets/chevron-down.svg';
+import chevronUp from '../assets/chevron-Up.svg';
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -305,8 +301,8 @@ export const ICONS = {
   historyLeadMgmt: historyLeadMgmt,
   SeeMore: seemore,
   pdf: pdf,
-  LeadMngExport:leadMngExport,
+  LeadMngExport: leadMngExport,
   PinMap: PinMap,
-  chevronDown:chevronDown,
-  chevronUp:chevronUp,
+  chevronDown: chevronDown,
+  chevronUp: chevronUp,
 };

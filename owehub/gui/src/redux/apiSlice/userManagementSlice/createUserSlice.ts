@@ -18,7 +18,7 @@ const initialState: CreateOnboardUserStateModel = {
     last_name: '',
     email_id: '',
     mobile_number: '',
-    zip_code:'',
+    zip_code: '',
     assigned_dealer_name: '',
     role_name: 'Admin',
     add_region: '',
@@ -30,7 +30,7 @@ const initialState: CreateOnboardUserStateModel = {
     assigned_Manager: '',
     dealer_code: '',
     preferred_name: '',
-    podioChecked:false
+    podioChecked: false,
   },
   dealerOwenerList: [],
   regionList: [],

@@ -247,13 +247,11 @@ const AddApDealer = () => {
               </tr>
             </thead>
             <tbody>
-             
-                <tr>
-                  <td colSpan={ApRepColumns.length}>
-                    <DataNotFound />
-                  </td>
-                </tr>
-               
+              <tr>
+                <td colSpan={ApRepColumns.length}>
+                  <DataNotFound />
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

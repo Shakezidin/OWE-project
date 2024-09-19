@@ -264,7 +264,6 @@ export const UserSaleRepresentTableColumn: Column[] = [
   },
 ];
 
-
 export const AccountManagerTableColumn: Column[] = [
   { name: 'user_code', displayName: 'Code', type: 'string', isCheckbox: true },
   { name: 'name', displayName: 'Name', type: 'string', isCheckbox: false },

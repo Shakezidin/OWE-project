@@ -90,11 +90,11 @@ const PendingQueue = () => {
 
   return (
     <>
-      <div style={{ borderRadius: 6 }} className="flex items-center bg-white px2 justify-between">
-
-        <h2 className={`my2 ${styles.pending_queue_title}`}>
-          Pending Actions
-        </h2>
+      <div
+        style={{ borderRadius: 6 }}
+        className="flex items-center bg-white px2 justify-between"
+      >
+        <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions</h2>
 
         {/* <div className="flex items-center">
        
@@ -109,7 +109,9 @@ const PendingQueue = () => {
         </div> */}
       </div>
       {
-        <div className={` ${pre?styles.grid_3:styles.grid_2} ${styles.pending_card_wrapper}`}>
+        <div
+          className={` ${pre ? styles.grid_3 : styles.grid_2} ${styles.pending_card_wrapper}`}
+        >
           {load ? (
             <div
               style={{ gridTemplateColumns: '1/4' }}
@@ -119,7 +121,6 @@ const PendingQueue = () => {
             </div>
           ) : (
             <>
-
               <div
                 className={styles.pending_card}
                 onClick={() => {
@@ -170,33 +171,41 @@ const PendingQueue = () => {
                   </div>
                 </div>
               </div>
-              {pre && <div
-                className={styles.pending_card}
-                onClick={pre ? () => {
-                  setActive('qc')
-                  setPage(1)
-                  setSearch('');
-                } : undefined}
-              >
+              {pre && (
                 <div
-                  className={` ${pre ? "" : styles.disabled_card} ${active === 'qc' ? styles.active_card : pre ? styles.pending_card_hover : ""} ${styles.pending_card_inner}`}
+                  className={styles.pending_card}
+                  onClick={
+                    pre
+                      ? () => {
+                          setActive('qc');
+                          setPage(1);
+                          setSearch('');
+                        }
+                      : undefined
+                  }
                 >
-                  {pre && <h5 className={styles.pending_stats}>
-                    {tileData.qc_pending_count || '0'}
-                  </h5>}
-                  <div style={{ lineHeight: '1.2rem' }}>
-                    <h5
-                      className={styles.pending_card_title}
-                      style={{ fontWeight: 500 }}
-                    >
-                      QC Pending
-                    </h5>
-                    <p className={styles.pending_card_desc}>
-                      Click to see all pending actions in QC
-                    </p>
+                  <div
+                    className={` ${pre ? '' : styles.disabled_card} ${active === 'qc' ? styles.active_card : pre ? styles.pending_card_hover : ''} ${styles.pending_card_inner}`}
+                  >
+                    {pre && (
+                      <h5 className={styles.pending_stats}>
+                        {tileData.qc_pending_count || '0'}
+                      </h5>
+                    )}
+                    <div style={{ lineHeight: '1.2rem' }}>
+                      <h5
+                        className={styles.pending_card_title}
+                        style={{ fontWeight: 500 }}
+                      >
+                        QC Pending
+                      </h5>
+                      <p className={styles.pending_card_desc}>
+                        Click to see all pending actions in QC
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>}
+              )}
             </>
           )}
         </div>
@@ -358,7 +367,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                        'Pending (Action Required)'
+                                      'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'

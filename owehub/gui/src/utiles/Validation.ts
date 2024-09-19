@@ -17,12 +17,9 @@ export const validateZipCode = (zipCode: string): boolean => {
   return /^[0-9]{6,12}$/.test(zipCode.trim());
 };
 
-
-
 export const validateMobileNumber = (mobileNumber: string): boolean => {
   return /^\+?[0-9]{10,16}$/.test(mobileNumber.trim());
 };
-
 
 export const validateForm = (
   formData: CreateUserModel

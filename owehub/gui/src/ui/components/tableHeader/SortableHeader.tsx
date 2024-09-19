@@ -41,9 +41,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
         {isCheckbox ? (
           <div>
             <CheckBox
-              checked={
-                data?.length ? isAllRowsSelected : false
-              }
+              checked={data?.length ? isAllRowsSelected : false}
               onChange={() => {
                 if (data?.length === 0) {
                   setSelectAllChecked(false);

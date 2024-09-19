@@ -36,7 +36,6 @@ import {
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
 
-
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -49,12 +48,11 @@ const UserManagement: React.FC = () => {
   const [logoUrl, setLogoUrl] = useState('');
   const { authData } = useAuth();
 
-  ;
   const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
-    const userRole = localStorage.getItem("role");
+    const userRole = localStorage.getItem('role');
     if (userRole === TYPE_OF_USER.DEALER_OWNER) {
       role = role.filter(
         (role) =>
@@ -63,10 +61,10 @@ const UserManagement: React.FC = () => {
           role.value !== TYPE_OF_USER.DB_USER &&
           role.value !== TYPE_OF_USER.PARTNER
       );
-      setSelectedOption(role[0])
+      setSelectedOption(role[0]);
     }
     return role;
-  }, [])
+  }, []);
   const {
     loading,
     userOnboardingList,
@@ -83,12 +81,8 @@ const UserManagement: React.FC = () => {
 
   const [activeSalesRep, setActiveSalesRep] = useState('');
 
-
-
   const handleCrossClick = () => {
     setActiveSalesRep('');
-
-
   };
 
   const [isClicked, setIsClicked] = useState(false);
@@ -165,11 +159,9 @@ const UserManagement: React.FC = () => {
   const handleSelectChange = useCallback(
     (selectOption: UserDropdownModel) => {
       setSelectedOption(selectOption);
-
     },
     [selectedOption]
   );
-
 
   /** check role  */
   const onChangeRole = async (role: string, value: string) => {
@@ -202,8 +194,8 @@ const UserManagement: React.FC = () => {
     }
   };
   const handleValueChange = (value: string) => {
-    setActiveSalesRep(value)
-  }
+    setActiveSalesRep(value);
+  };
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
@@ -274,8 +266,6 @@ const UserManagement: React.FC = () => {
       'No'
     );
 
-
-
     if (confirmed) {
       const actionResult = await dispatch(
         deleteUserOnboarding({ user_codes: deleteRows, usernames })
@@ -324,11 +314,10 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-  console.log(userRoleBasedList, "userRoleBasedList")
+  console.log(userRoleBasedList, 'userRoleBasedList');
   /** render UI */
   return (
     <>
-
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}
@@ -386,11 +375,11 @@ const UserManagement: React.FC = () => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)
               : deleteUserRequest(
-                [item.user_code],
-                item.role_name === 'DB User'
-                  ? [item.db_username]
-                  : [item.name.split(' ').join('_')]
-              );
+                  [item.user_code],
+                  item.role_name === 'DB User'
+                    ? [item.db_username]
+                    : [item.name.split(' ').join('_')]
+                );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(
@@ -404,7 +393,12 @@ const UserManagement: React.FC = () => {
             });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);
-              console.log(deleteRows, usernames, userRoleBasedList, "deleteRows, usernames,userRoleBasedList")
+              console.log(
+                deleteRows,
+                usernames,
+                userRoleBasedList,
+                'deleteRows, usernames,userRoleBasedList'
+              );
             } else {
               toast.info('Please select user');
             }

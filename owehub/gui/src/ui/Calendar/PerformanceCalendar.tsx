@@ -11,15 +11,14 @@ import {
   isSameDay,
 } from 'date-fns';
 import './PerformanceCalendar.css';
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import CalendarSidebar from './CalendarSidebar';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { IoClose } from "react-icons/io5";
+import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Papa from 'papaparse';
 import { FaUpload } from 'react-icons/fa';
-
 
 interface Event {
   id: number;
@@ -31,8 +30,6 @@ interface Event {
   unique_id: string;
   status: string;
   home_owner: string;
-
-
 }
 
 const PerformanceCalendar: React.FC = () => {
@@ -41,7 +38,7 @@ const PerformanceCalendar: React.FC = () => {
   const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
-  const [data, setData] = useState<any>("")
+  const [data, setData] = useState<any>('');
   const [showCalendar, setShowCalendar] = useState<boolean>(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [isExportingData, setIsExporting] = useState(false);
@@ -49,8 +46,8 @@ const PerformanceCalendar: React.FC = () => {
     {
       startDate: new Date(),
       endDate: new Date(),
-      key: 'selection'
-    }
+      key: 'selection',
+    },
   ]);
 
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -59,13 +56,12 @@ const PerformanceCalendar: React.FC = () => {
   const navigate = useNavigate();
 
   const closeSidebar = () => {
-    setSidebarVisible(false)
+    setSidebarVisible(false);
   };
-
 
   const ExportCsv = async () => {
     setIsExporting(true);
-    
+
     try {
       const headers = [
         'UniqueId',
@@ -76,20 +72,19 @@ const PerformanceCalendar: React.FC = () => {
         'Contract Total$',
         'Sys Size',
         'Sale Date',
-         
       ];
-  
+
       const getAllData = await postCaller('get_calender_csv_download', {
         start_date: '',
         end_date: '',
       });
-  
+
       if (getAllData.status > 201) {
         toast.error(getAllData.message);
         setIsExporting(false);
         return;
       }
-  
+
       const csvData = getAllData?.data?.map?.((item: any) => [
         item.unique_id,
         item.home_owner,
@@ -99,13 +94,11 @@ const PerformanceCalendar: React.FC = () => {
         item.contract_total,
         item.system_size,
         item.contract_date,
-        
-
       ]);
-  
+
       const csvRows = [headers, ...csvData];
       const csvString = Papa.unparse(csvRows);
-  
+
       const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -114,27 +107,24 @@ const PerformanceCalendar: React.FC = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-  
     } catch (error) {
       toast.error('An error occurred during the CSV export.');
     } finally {
       setIsExporting(false);
     }
   };
-  
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if(sidebarVisible){
+      if (e.key === 'Escape') {
+        if (sidebarVisible) {
           setShowCalendar(false);
           closeSidebar();
-        }else{
+        } else {
           navigate(-1);
-          console.log("-1")
+          console.log('-1');
         }
       }
-
     };
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -147,20 +137,26 @@ const PerformanceCalendar: React.FC = () => {
       }
     };
 
-    window.addEventListener("keydown", handleEscape)
-    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener('keydown', handleEscape);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      window.removeEventListener("keydown", handleEscape)
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [sidebarVisible])
+      window.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [sidebarVisible]);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const startOfCurrentMonth = format(startOfMonth(currentMonth), 'yyyy-MM-dd');
-        const endOfCurrentMonth = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
+        const startOfCurrentMonth = format(
+          startOfMonth(currentMonth),
+          'yyyy-MM-dd'
+        );
+        const endOfCurrentMonth = format(
+          endOfMonth(currentMonth),
+          'yyyy-MM-dd'
+        );
 
         const calendardata = await postCaller('get_calender_data', {
           start_date: startOfCurrentMonth,
@@ -176,37 +172,37 @@ const PerformanceCalendar: React.FC = () => {
 
         const newEvents: Event[] = [];
 
-        calendardata.data.calender_data_list.forEach((item: any, index: number) => {
-          if (item.survey_date) {
-            newEvents.push({
-              id: index * 2 + 1,
-              date: new Date(item.survey_date),
-              color: '#57B3F1',
-              title: 'Survey',
-              idColor: '#57B3F1',
-              address: item.address,
-              unique_id: item.unique_id,
-              status: item.survey_status,
-              home_owner: item.home_owner,
+        calendardata.data.calender_data_list.forEach(
+          (item: any, index: number) => {
+            if (item.survey_date) {
+              newEvents.push({
+                id: index * 2 + 1,
+                date: new Date(item.survey_date),
+                color: '#57B3F1',
+                title: 'Survey',
+                idColor: '#57B3F1',
+                address: item.address,
+                unique_id: item.unique_id,
+                status: item.survey_status,
+                home_owner: item.home_owner,
+              });
+            }
 
-
-            });
+            if (item.install_date) {
+              newEvents.push({
+                id: index * 2 + 2,
+                date: new Date(item.install_date),
+                color: '#C470C7',
+                title: 'Install PV',
+                idColor: '#C470C7',
+                address: item.address,
+                unique_id: item.unique_id,
+                status: item.install_status,
+                home_owner: item.home_owner,
+              });
+            }
           }
-
-          if (item.install_date) {
-            newEvents.push({
-              id: index * 2 + 2,
-              date: new Date(item.install_date),
-              color: '#C470C7',
-              title: 'Install PV',
-              idColor: '#C470C7',
-              address: item.address,
-              unique_id: item.unique_id,
-              status: item.install_status,
-              home_owner: item.home_owner,
-            });
-          }
-        });
+        );
 
         setEvents(newEvents);
       } catch (error) {
@@ -217,15 +213,15 @@ const PerformanceCalendar: React.FC = () => {
     })();
   }, [currentMonth]);
 
-  console.log(data, "newdata")
+  console.log(data, 'newdata');
 
   const hasEvent = (day: Date): boolean => {
-    return events.some(event => isSameDay(event.date, day));
+    return events.some((event) => isSameDay(event.date, day));
   };
 
   const handleDateClick = (day: Date): void => {
     setSelectedDate(day);
-    setSelectedEvents(events.filter(event => isSameDay(event.date, day)));
+    setSelectedEvents(events.filter((event) => isSameDay(event.date, day)));
 
     if (hasEvent(day)) {
       setSidebarVisible(true);
@@ -243,21 +239,38 @@ const PerformanceCalendar: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
-  const yearRange = 75
+  const yearRange = 75;
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: yearRange * 2 + 1 }, (_, i) => currentYear - yearRange + i);
+  const years = Array.from(
+    { length: yearRange * 2 + 1 },
+    (_, i) => currentYear - yearRange + i
+  );
 
   const handleReset = () => {
-    setSelectedRanges([{ startDate: new Date(), endDate: new Date(), key: 'selection' }]);
+    setSelectedRanges([
+      { startDate: new Date(), endDate: new Date(), key: 'selection' },
+    ]);
     setSelectedMonth(new Date().getMonth());
     setSelectedYear(new Date().getFullYear());
   };
 
-  const [displayedDate, setDisplayedDate] = useState<string>(format(currentMonth, 'MMMM yyyy'));
+  const [displayedDate, setDisplayedDate] = useState<string>(
+    format(currentMonth, 'MMMM yyyy')
+  );
   const [isDefaultDate, setIsDefaultDate] = useState<boolean>(true);
 
   const handleApply = () => {
@@ -284,42 +297,57 @@ const PerformanceCalendar: React.FC = () => {
     setDisplayedDate(format(newDate, 'MMMM yyyy'));
   };
 
-
   const renderHeader = () => {
     const isCurrentMonth = isSameMonth(currentMonth, new Date());
     const dateFormat = isCurrentMonth ? 'd MMMM yyyy' : 'MMMM yyyy';
     return (
       <div className="header">
-        <div className="flex items-center justify-between sales-calendar" style={{ width: "99%" }}>
-          <div className='calendar-date flex items-center'>
+        <div
+          className="flex items-center justify-between sales-calendar"
+          style={{ width: '99%' }}
+        >
+          <div className="calendar-date flex items-center">
             <div className="prev-icon" onClick={handlePrevMonth}>
-              <div className="icon"><FiChevronLeft /></div>
+              <div className="icon">
+                <FiChevronLeft />
+              </div>
             </div>
-            <div className="date-format" onClick={() => setShowCalendar(!showCalendar)}>
-              <span style={{ display: "block", width: "180px", textAlign: "center" }}>
-                {isDefaultDate ? format(currentMonth, dateFormat) : displayedDate}
+            <div
+              className="date-format"
+              onClick={() => setShowCalendar(!showCalendar)}
+            >
+              <span
+                style={{
+                  display: 'block',
+                  width: '180px',
+                  textAlign: 'center',
+                }}
+              >
+                {isDefaultDate
+                  ? format(currentMonth, dateFormat)
+                  : displayedDate}
               </span>
             </div>
             <div className="next-icon" onClick={handleNextMonth}>
-              <div className="icon"><FiChevronRight /></div>
+              <div className="icon">
+                <FiChevronRight />
+              </div>
             </div>
           </div>
-          <div className='calendar-btn-close'>
+          <div className="calendar-btn-close">
             <div className="perf-export-btn">
               <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
                 className={`performance-exportbtn calendar-head-btn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-             
-                style={{ marginTop: "unset", padding: "8px 12px" }}
+                style={{ marginTop: 'unset', padding: '8px 12px' }}
               >
                 <FaUpload size={12} className="mr1" />
                 <span>{isExportingData ? ' Downloading... ' : ' Export '}</span>
-               
               </button>
             </div>
-            <div onClick={handleCalcClose} style={{ height: "26px" }}>
-              <IoClose className='calendar-close' />
+            <div onClick={handleCalcClose} style={{ height: '26px' }}>
+              <IoClose className="calendar-close" />
             </div>
           </div>
         </div>
@@ -331,7 +359,9 @@ const PerformanceCalendar: React.FC = () => {
                 onChange={(e) => setSelectedMonth(Number(e.target.value))}
               >
                 {months.map((month, index) => (
-                  <option key={month} value={index}>{month}</option>
+                  <option key={month} value={index}>
+                    {month}
+                  </option>
                 ))}
               </select>
 
@@ -340,7 +370,9 @@ const PerformanceCalendar: React.FC = () => {
                 onChange={(e) => setSelectedYear(Number(e.target.value))}
               >
                 {years.map((year) => (
-                  <option key={year} value={year}>{year}</option>
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
                 ))}
               </select>
             </div>
@@ -392,38 +424,49 @@ const PerformanceCalendar: React.FC = () => {
         formattedDate = format(day, 'd');
         const cloneDay = day;
 
-        const dayEvents = events.filter(event => isSameDay(day, event.date));
+        const dayEvents = events.filter((event) => isSameDay(day, event.date));
 
-
-        const eventCounts = dayEvents.reduce((acc, event) => {
-          if (acc[event.title]) {
-            acc[event.title].count += 1;
-          } else {
-            acc[event.title] = { color: event.color, count: 1 };
-          }
-          return acc;
-        }, {} as Record<string, { color: string; count: number }>);
+        const eventCounts = dayEvents.reduce(
+          (acc, event) => {
+            if (acc[event.title]) {
+              acc[event.title].count += 1;
+            } else {
+              acc[event.title] = { color: event.color, count: 1 };
+            }
+            return acc;
+          },
+          {} as Record<string, { color: string; count: number }>
+        );
 
         days.push(
           <div
-            className={`col cell ${!isSameMonth(day, monthStart)
-              ? 'non-month'
-              : isSameDay(day, selectedDate as Date)
-                ? 'selected active'
-                : ''
-              }`}
+            className={`col cell ${
+              !isSameMonth(day, monthStart)
+                ? 'non-month'
+                : isSameDay(day, selectedDate as Date)
+                  ? 'selected active'
+                  : ''
+            }`}
             key={day.toString()}
             onClick={() => handleDateClick(cloneDay)}
           >
             <span className="number">{formattedDate}</span>
 
             <div className="cell-dots">
-              {Object.entries(eventCounts).map(([title, { color, count }], index) => (
-                <div key={index} className={`event-box event-${color}`} style={{ background: color }}>
-                  <span className='event-icon' style={{ color: color }}>{count}</span>
-                  <span className="event-text">{title}</span>
-                </div>
-              ))}
+              {Object.entries(eventCounts).map(
+                ([title, { color, count }], index) => (
+                  <div
+                    key={index}
+                    className={`event-box event-${color}`}
+                    style={{ background: color }}
+                  >
+                    <span className="event-icon" style={{ color: color }}>
+                      {count}
+                    </span>
+                    <span className="event-text">{title}</span>
+                  </div>
+                )
+              )}
             </div>
           </div>
         );
@@ -436,15 +479,20 @@ const PerformanceCalendar: React.FC = () => {
       );
       days = [];
     }
-    return <div className="body">
-      {rows}
-      <div className='mobile-calendar-text'>
-        <div className='mob-cal-txt'><span style={{ background: "#57B3F1" }}></span>Survey</div>
-        <div className='mob-cal-txt'><span style={{ background: "#C470C7" }}></span>Install PV </div>
+    return (
+      <div className="body">
+        {rows}
+        <div className="mobile-calendar-text">
+          <div className="mob-cal-txt">
+            <span style={{ background: '#57B3F1' }}></span>Survey
+          </div>
+          <div className="mob-cal-txt">
+            <span style={{ background: '#C470C7' }}></span>Install PV{' '}
+          </div>
+        </div>
       </div>
-    </div>;
+    );
   };
-
 
   const nextMonth = (): void => {
     setCurrentMonth(addMonths(currentMonth, 1));
@@ -454,7 +502,6 @@ const PerformanceCalendar: React.FC = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
   };
 
-
   return (
     <>
       <div className="calendar">
@@ -463,7 +510,12 @@ const PerformanceCalendar: React.FC = () => {
         {renderCells()}
       </div>
       {sidebarVisible && selectedDate && selectedEvents.length > 0 && (
-        <CalendarSidebar onClose={closeSidebar} selectedDate={selectedDate} selectedEvents={selectedEvents} />)}
+        <CalendarSidebar
+          onClose={closeSidebar}
+          selectedDate={selectedDate}
+          selectedEvents={selectedEvents}
+        />
+      )}
     </>
   );
 };

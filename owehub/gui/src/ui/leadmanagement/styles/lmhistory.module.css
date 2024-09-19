@@ -101,7 +101,6 @@
   border-radius: 6px;
   margin-top: 20px;
   padding: 22px 0px 20px 0px;
-
 }
 
 .history_list_activity_det {
@@ -206,7 +205,7 @@
 }
 
 .history_list_head {
-  color: #3E3E3E;
+  color: #3e3e3e;
   font-weight: 600;
   font-size: 16px;
   margin-top: -10px;
@@ -215,7 +214,7 @@
 .lead_his_remove {
   width: 135px;
   height: 38px;
-  background-color: #EE4747;
+  background-color: #ee4747;
   font-weight: 500;
   font-size: 16px;
   color: #fff;
@@ -247,7 +246,7 @@
 .hist_date {
   font-weight: 500;
   font-size: 12px;
-  color: #377CF6;
+  color: #377cf6;
 }
 
 .hist_checkbox_count img {
@@ -269,12 +268,10 @@
   gap: 18px;
 }
 
-
 @media screen and (max-width: 767px) {
   .h_screen {
     display: flex;
     align-items: center;
-
   }
 
   .customer_wrapper_list {
@@ -350,7 +347,7 @@
   .lm_history_header {
     padding: 0px 1px;
   }
-  .filters{
+  .filters {
     gap: 4px;
   }
   .hist_checkbox_count h1 {
@@ -363,17 +360,16 @@
     font-size: 14px;
     font-weight: 500;
   }
-  .hist_date{
+  .hist_date {
     font-weight: 500;
     font-size: 12px;
   }
-  .top_filters{
+  .top_filters {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
   }
-
 }
 
 .monthSelect {
@@ -386,19 +382,17 @@
   font-weight: 500;
   width: 104px;
 }
-.monthSelect option{
+.monthSelect option {
   font-weight: 500;
   font-size: 12px;
   transition: all 0.3s ease;
 }
-.monthSelect :hover{
+.monthSelect :hover {
   border: none;
 }
 .monthSelect option:hover {
   transform: scale(1.06);
 }
-
-
 
 .lead__datepicker_wrapper:hover {
   z-index: 11;
@@ -429,13 +423,12 @@
   margin-right: 0.5rem;
 }
 
-
 @media screen and (max-width: 767px) {
-    .monthSelect{
-      width: 90px;
-    }
-    .lead__datepicker_content{
-      margin-top: 5px;
-      right: 0;
-    }
+  .monthSelect {
+    width: 90px;
+  }
+  .lead__datepicker_content {
+    margin-top: 5px;
+    right: 0;
+  }
 }

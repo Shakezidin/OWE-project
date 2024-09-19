@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "../../leaderboard/components/Banner.css"
-import "../text_input/Input.css"
+import '../../leaderboard/components/Banner.css';
+import '../text_input/Input.css';
 
 interface Option {
   label: string;
@@ -31,7 +31,10 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
         setSearch('');
         setFilteredOptions(options);
@@ -44,7 +47,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
 
   useEffect(() => {
     // Check if "ALL" option is present and select all options by default
-    if (options.some(option => option.value === "ALL")) {
+    if (options.some((option) => option.value === 'ALL')) {
       onChange(options);
     }
   }, [options, onChange]);
@@ -54,7 +57,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     setSearch(searchTerm);
 
     if (searchTerm) {
-      const filtered = options.filter(item =>
+      const filtered = options.filter((item) =>
         item.label.toLowerCase().includes(searchTerm)
       );
       setFilteredOptions(filtered);
@@ -62,16 +65,24 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
       setFilteredOptions(options);
     }
   };
-  console.log(options, "topionsss")
+  console.log(options, 'topionsss');
   const handleOptionChange = (option: Option) => {
     let updatedSelection: Option[];
-    if (option.value === "ALL") {
-      updatedSelection = selectedOptions.length === options.length ? [] : options;
+    if (option.value === 'ALL') {
+      updatedSelection =
+        selectedOptions.length === options.length ? [] : options;
     } else {
-      updatedSelection = selectedOptions.some(item => item.value === option.value)
-        ? selectedOptions.filter(item => item.value !== option.value && item.value !== "ALL")
-        : [...selectedOptions.filter(item => item.value !== "ALL"), option];
-      if (updatedSelection.length === options.length - 1 && options.some(opt => opt.value === "ALL")) {
+      updatedSelection = selectedOptions.some(
+        (item) => item.value === option.value
+      )
+        ? selectedOptions.filter(
+            (item) => item.value !== option.value && item.value !== 'ALL'
+          )
+        : [...selectedOptions.filter((item) => item.value !== 'ALL'), option];
+      if (
+        updatedSelection.length === options.length - 1 &&
+        options.some((opt) => opt.value === 'ALL')
+      ) {
         updatedSelection = options;
       }
     }
@@ -82,7 +93,9 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     onChange(selectedOptions.length === options.length ? [] : options);
   };
 
-  const isAllSelected = (selectedOptions.length === options.length || selectedOptions.some(item => item.value === "ALL"));
+  const isAllSelected =
+    selectedOptions.length === options.length ||
+    selectedOptions.some((item) => item.value === 'ALL');
 
   return (
     <div className="dropdown-checkbox" ref={dropdownRef}>
@@ -90,7 +103,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
         {isAllSelected ? 'All selected' : `${selectedOptions.length}  selected`}
       </div>
       {isOpen && (
-        <div className="dropdown-menu scrollbar" style={{ overflowX: "clip" }}>
+        <div className="dropdown-menu scrollbar" style={{ overflowX: 'clip' }}>
           <input
             type="text"
             className="input"
@@ -113,7 +126,9 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
               <div key={index} className="dropdown-item">
                 <input
                   type="checkbox"
-                  checked={selectedOptions.some(item => item.value === option.value)}
+                  checked={selectedOptions.some(
+                    (item) => item.value === option.value
+                  )}
                   onChange={() => handleOptionChange(option)}
                 />
                 <span>{option.label}</span>
