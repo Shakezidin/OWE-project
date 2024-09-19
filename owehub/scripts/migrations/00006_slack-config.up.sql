@@ -42,6 +42,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION update_slack_config(
     p_record_id       INT,
+    p_channel_id      CHARACTER VARYING,
     p_issue_type      CHARACTER VARYING,
     p_channel_name    CHARACTER VARYING,
     p_bot_token       CHARACTER VARYING,
@@ -53,6 +54,7 @@ BEGIN
   UPDATE slackconfig SET
     issue_type = p_issue_type,
     channel_name = p_channel_name,
+    channel_id = p_channel_id,
     bot_token = p_bot_token,
     slack_app_token = p_slack_app_token
   WHERE id = p_record_id;

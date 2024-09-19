@@ -37,6 +37,7 @@ type UpdateSlackConfig struct {
 	RecordId      int    `json:"record_id"`
 	IssueType     string `json:"issue_type"`
 	ChannelName   string `json:"channel_name"`
+	ChannelId     string `json:"channel_id"`
 	BotToken      string `json:"bot_token"`
 	SlackAppToken string `json:"slack_app_token"`
 }

@@ -172,6 +172,32 @@ const ProjectPerformence = () => {
       'Contract $',
       'Sys Size',
       'Sale Date',
+      'Site Survey Schedule Date',
+      'Site Survey Completed Date',
+      'Cad Ready Date',
+      'Cad Completed Date',
+      'Permit Submitted Date',
+      'Ic Submitted Date',
+      'Permit Approved Date',
+      'Ic Approved Date',
+      'Roofing Created Date',
+      'Roofing Complete Date',
+      'Pv Install Created Date',
+      'Battery Scheduled Date',
+      'Battery Completed Date',
+      'Pv Install Completed Date',
+      'Mpu Created Date',
+      'Mpu complete Date',
+      'Derate Create Date',
+      'Derate Complete Date',
+      'Trenching WSOpen Date',
+      'Trenching Complete Date',
+      'FinCreate Date',
+      'FinPass Date',
+      'Pto Submitted Date',
+      'Pto Date'
+
+
     ];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
@@ -194,6 +220,28 @@ const ProjectPerformence = () => {
       item.ContractAmount,
       item.SystemSize,
       item.ContractDate,
+      item.SiteSurevyScheduleDate,
+      item.SiteSurveyCompletedDate,
+      item.CadReadyDate,
+      item.CadCompletedDate,
+      item.PermitSubmittedDate,
+      item.IcSubmittedDate,
+      item.PermitApprovedDate,
+      item.IcApprovedDate,
+      item.RoofingCreatedDate,
+      item.RoofingCompleteDate,
+      item.PvInstallCreatedDate,
+      item.MpuCreatedDate,
+      item.MpucompleteDate,
+      item.DerateCreateDate,
+      item.DerateCompleteDate,
+      item.TrenchingWSOpenDate,
+      item.TrenchingCompleteDate,
+      item.FinCreateDate,
+      item.FinPassDate,
+      item.PtoSubmittedDate,
+      item.PtoDate    
+      
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -413,12 +461,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-            {
-              startDate: selected.start,
-              endDate: selected.end,
-              key: 'selection',
-            },
-          ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
         : []
     );
 
@@ -681,6 +729,8 @@ const ProjectPerformence = () => {
     setActiveTab(tab);
   };
 
+  const isStaging = process.env.REACT_APP_ENV;
+
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
   return (
@@ -882,8 +932,14 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
+                { isStaging === 'staging' ? 
+                <div className='pipeline-googlemap'>
+                  <img src={ICONS.PinMap} alt="pin map" />
+                </div>
+              : null }
               </div>
             </div>
+
             <div className="perf-export-btn">
               <button
                 disabled={isExportingData}
@@ -972,7 +1028,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.qc.qc_action_required_count > 0
+                                          project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -998,7 +1054,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.ntp.action_required_count > 0
+                                          project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }

@@ -82,7 +82,7 @@ export const createUserObject = (
   formData: CreateUserModel
 ): CreateUserParamModel => {
   let createObject: CreateUserParamModel = {
-    name: formData.first_name + ' ' + formData.last_name,
+    name: formData.first_name?.trim() + ' ' + formData.last_name?.trim(),
     email_id: formData.email_id,
     mobile_number: formData.mobile_number,
     role_name: formData.role_name,

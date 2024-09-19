@@ -70,7 +70,9 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
-	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) && !(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
+	if dataReq.Role != string(types.RoleAdmin) && dataReq.Role != string(types.RoleFinAdmin) &&
+		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
+		!(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
 			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
 			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
@@ -99,14 +101,23 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		dataReq.DealerName = append(dataReq.DealerName, dealerName)
 	}
 
+	if dataReq.Role == string(types.RoleAccountManager) || dataReq.Role == string(types.RoleAccountExecutive) {
+		dealerNames, err := FetchLeaderBoardDealerForAmAe(dataReq, dataReq.Role)
+		if err != nil {
+			FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+			return
+		}
+
+		if len(dealerNames) == 0 {
+			FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+			return
+		}
+		dataReq.DealerName = dealerNames
+	}
+
 	// query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date,ntp_date, pv_install_completed_date, pto_date, canceled_date, primary_sales_rep, secondary_sales_rep FROM consolidated_data_view"
 	query = models.CsvDownloadRetrieveQueryFunc()
-	// if len(dataReq.DealerName) == 0 {
-	// 	errorResp := []string{}
-	// 	log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-	// 	FormAndSendHttpResp(resp, "csv Data", http.StatusOK, errorResp, RecordCount)
-	// 	return
-	// }
+
 	dealerIn = "dealer IN("
 	for i, data := range dataReq.DealerName {
 		if i > 0 {
@@ -183,4 +194,45 @@ func PrepareLeaderCsvDateFilters(dataFilter models.GetCsvDownload, dealerIn stri
 
 	filters = filtersBuilder.String()
 	return filters, whereEleList
+}
+
+func FetchLeaderBoardDealerForAmAe(dataReq models.GetCsvDownload, userRole interface{}) ([]string, error) {
+	log.EnterFn(0, "FetchLeaderBoardDealerForAmAe")
+	defer func() { log.ExitFn(0, "FetchLeaderBoardDealerForAmAe", nil) }()
+
+	var items []string
+
+	accountName, err := fetchAmAeName(dataReq.Email)
+	if err != nil {
+		log.FuncErrorTrace(0, "Unable to fetch name for Account Manager/Account Executive; err: %v", err)
+		return nil, fmt.Errorf("unable to fetch name for account manager / account executive; err: %v", err)
+	}
+
+	var roleBase string
+	role, _ := userRole.(string)
+	if role == "Account Manager" {
+		roleBase = "account_manager"
+	} else {
+		roleBase = "account_executive"
+	}
+
+	log.FuncInfoTrace(0, "Logged user %v is %v", accountName, roleBase)
+
+	query := fmt.Sprintf("SELECT sales_partner_name AS data FROM sales_partner_dbhub_schema WHERE LOWER(%s) = LOWER('%s')", roleBase, accountName)
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+		return nil, fmt.Errorf("failed to get partner_name from sales_partner_dbhub_schema; err: %v", err)
+	}
+
+	for _, item := range data {
+		name, ok := item["data"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to parse 'data' item: %+v", item)
+			continue
+		}
+		items = append(items, name)
+	}
+
+	return items, nil
 }
