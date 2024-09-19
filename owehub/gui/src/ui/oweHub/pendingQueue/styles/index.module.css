@@ -10,11 +10,11 @@
   gap: 20px;
 }
 
-.grid_3{
+.grid_3 {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-.grid_2{
+.grid_2 {
   grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
 }
 .pending_card {
@@ -24,16 +24,15 @@
   cursor: pointer;
   transition: all 0.5s;
 }
-.disabled_card{
+.disabled_card {
   border: 1px solid #d9d9d9 !important;
   cursor: not-allowed;
-  
 }
 .disabled_card .pending_stats,
-.disabled_card .pending_card_desc{
-color: #d9d9d9 !important;
+.disabled_card .pending_card_desc {
+  color: #d9d9d9 !important;
 }
-.disabled_card .pending_card_title{
+.disabled_card .pending_card_title {
   color: #c0bfbf !important;
 }
 .deco-text:hover {
@@ -139,16 +138,16 @@ color: #d9d9d9 !important;
 }
 
 @media (max-width: 968px) {
-  .grid_3{
+  .grid_3 {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
-  .grid_2{
+  .grid_2 {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
 }
 
 @media screen and (max-width: 768px) {
-  .pending_card_wrapper{
+  .pending_card_wrapper {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
   .pending_queue_title {

@@ -120,7 +120,6 @@ const Index = () => {
   }, [groupBy, role, authData]);
 
   useEffect(() => {
-
     if (isAuthenticated && isFetched) {
       (async () => {
         setIsLoading(true);

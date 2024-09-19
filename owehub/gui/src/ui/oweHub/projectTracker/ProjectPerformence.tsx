@@ -41,7 +41,7 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
-import { RiMapPinFill, RiMapPinLine  } from "react-icons/ri";
+import { RiMapPinFill, RiMapPinLine } from "react-icons/ri";
 
 interface Option {
   value: string;
@@ -199,9 +199,7 @@ const ProjectPerformence = () => {
       'FinCreate Date',
       'FinPass Date',
       'Pto Submitted Date',
-      'Pto Date'
-
-
+      'Pto Date',
     ];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
@@ -244,8 +242,7 @@ const ProjectPerformence = () => {
       item.FinCreateDate,
       item.FinPassDate,
       item.PtoSubmittedDate,
-      item.PtoDate
-
+      item.PtoDate,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -819,7 +816,7 @@ const ProjectPerformence = () => {
                     setActiveCardId(activeCardId === cardId ? null : cardId);
                     setActiveCardTitle(activeCardId === cardId ? '' : title);
                   };
-                 
+
                   return (
                     <div
                       className="flex items-center arrow-wrap"
@@ -850,7 +847,7 @@ const ProjectPerformence = () => {
                         >
                           {activeCardId === card.id ? <MdDone /> : card.id}
                         </span>
-                        <p style={{color: isActive ? "#fff" : ''}}>{card.title || 'N/A'}</p>
+                        <p style={{ color: isActive ? "#fff" : '' }}>{card.title || 'N/A'}</p>
                         {card.pending !== 'roof' ? (
                           <h2 style={{ color: isHovered === index && !isActive ? '#263747' : isActive ? '#fff' : cardColor }}>{card.value || '0'}</h2>
                         ) : (
@@ -947,13 +944,17 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
-                {isStaging === 'staging' ?
-                  <div className='pipeline-googlemap' onMouseEnter={() => setMapHovered(true)} onMouseLeave={() => setMapHovered(false)}>
-                    {mapHovered ? <RiMapPinFill /> : <RiMapPinLine />}
-                  </div>
-                  : null}
-              </div>
-            </div>
+                {
+                  isStaging === 'staging' ? (
+                    <Link to="/map-address">
+                      <div className='pipeline-googlemap' onMouseEnter={() => setMapHovered(true)} onMouseLeave={() => setMapHovered(false)}>
+                        {mapHovered ? <RiMapPinFill /> : <RiMapPinLine />}
+                      </div></Link>
+                  )
+                    : null
+                }
+              </div >
+            </div >
 
             <div className="perf-export-btn">
               <button
@@ -965,7 +966,7 @@ const ProjectPerformence = () => {
                 <span>{isExportingData ? ' Downloading... ' : ' Export '}</span>
               </button>
             </div>
-          </div>
+          </div >
 
           <div className="performance-milestone-table">
             <table>
@@ -1372,9 +1373,9 @@ const ProjectPerformence = () => {
               />
             ) : null}
           </div>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   );
 };
 

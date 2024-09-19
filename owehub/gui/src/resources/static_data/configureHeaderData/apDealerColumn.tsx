@@ -19,7 +19,12 @@ export const ApDealerColumn: Column[] = [
   { name: 'Amount', displayName: 'Amount', type: 'string', isCheckbox: false },
   { name: 'Method', displayName: 'Method', type: 'string', isCheckbox: false },
   { name: 'Notes', displayName: 'Notes', type: 'string', isCheckbox: false },
-  
-  { name: 'Home Owner', displayName: 'Home Owner', type: 'string', isCheckbox: false },
+
+  {
+    name: 'Home Owner',
+    displayName: 'Home Owner',
+    type: 'string',
+    isCheckbox: false,
+  },
   { name: 'ST', displayName: 'ST', type: 'string', isCheckbox: false },
 ];

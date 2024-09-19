@@ -145,9 +145,6 @@ import chevronDown from '../assets/chevron-down.svg'
 import chevronUp from '../assets/chevron-Up.svg'
 
 
-
-
-
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
   LOGO: logo,

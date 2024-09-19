@@ -9,8 +9,8 @@ export const TYPE_OF_USER = {
   REGIONAL_MANGER: 'Regional Manager',
   SALE_MANAGER: 'Sales Manager',
   SALES_REPRESENTATIVE: 'Sale Representative',
-  ACCOUNT_MANAGER:"Account Manager",
-  ACCOUNT_EXCUTIVE:"Account Executive"
+  ACCOUNT_MANAGER: 'Account Manager',
+  ACCOUNT_EXCUTIVE: 'Account Executive',
 };
 
 export const ALL_USER_ROLE_LIST = [

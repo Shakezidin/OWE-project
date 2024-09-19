@@ -8,13 +8,13 @@
   display: flex !important;
 }
 
-.pipeline-googlemap{
+.pipeline-googlemap {
   height: 50px;
   width: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #CDDEFC;
+  background: #cddefc;
   border-radius: 6px;
   cursor: pointer;
   position: absolute;

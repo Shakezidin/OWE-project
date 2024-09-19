@@ -9,7 +9,7 @@
 import React from 'react';
 import './ActionButton.css';
 // import { ICONS } from '../../../resources/icons/Icons';
-import { MdAdd } from "react-icons/md";
+import { MdAdd } from 'react-icons/md';
 
 interface ActionButtonProps {
   title: string;
@@ -31,7 +31,7 @@ export const AddNewButton = (props: ActionButtonProps) => {
           alt=""
           style={{ width: '12px', height: '12px' }}
         /> */}
-        <MdAdd style={{flexShrink:0}} size={16} />
+        <MdAdd style={{ flexShrink: 0 }} size={16} />
         <span className="mobileTitle">{title}</span>
       </button>
     </div>

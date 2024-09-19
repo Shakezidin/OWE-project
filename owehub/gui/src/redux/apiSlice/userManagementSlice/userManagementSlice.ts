@@ -24,8 +24,8 @@ const userManagementSlice = createSlice({
   initialState,
   reducers: {
     shuffleArray(state, action) {
-      state.userRoleBasedList = action.payload
-    }
+      state.userRoleBasedList = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -44,7 +44,7 @@ const userManagementSlice = createSlice({
           state.error = null;
 
           state.userOnboardingList =
-            mapList && mapList.length > 0 ? mapList: [];
+            mapList && mapList.length > 0 ? mapList : [];
           state.userPerformanceList =
             userPerformanceList && userPerformanceList.length
               ? userPerformanceList
@@ -94,7 +94,9 @@ const userManagementSlice = createSlice({
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
           state.error = null;
-          state.userRoleBasedList = action.payload.users_data_list.sort((a: any, b: any) => a.user_code?.localeCompare?.(b.user_code)) ;
+          state.userRoleBasedList = action.payload.users_data_list.sort(
+            (a: any, b: any) => a.user_code?.localeCompare?.(b.user_code)
+          );
           state.totalCount = action.payload.count;
         }
       )
@@ -131,5 +133,5 @@ const userManagementSlice = createSlice({
       );
   },
 });
-export const {shuffleArray} = userManagementSlice.actions
+export const { shuffleArray } = userManagementSlice.actions;
 export default userManagementSlice.reducer;

@@ -1,23 +1,20 @@
+/* Smartphones in both portrait and landscape */
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  /* Styles for smartphones */
+  .lineChart-wrapper .recharts-responsive-container {
+    left: -6.5pc;
+    position: relative;
+    width: 160% !important;
+    height: 200px !important;
+  }
+}
 
-  /* Smartphones in both portrait and landscape */
-  @media only screen and (min-width: 320px) and (max-width: 480px) {
-    /* Styles for smartphones */
-    .lineChart-wrapper .recharts-responsive-container {
-        left: -6.5pc;
-        position: relative;
-        width: 160% !important;
-        height: 200px !important;
-  }
-  }
-  
-  /* Tablets in both portrait and landscape */
-  @media only screen and (min-width: 481px) and (max-width: 768px) {
-    /* Styles for tablets */
+/* Tablets in both portrait and landscape */
+@media only screen and (min-width: 481px) and (max-width: 768px) {
+  /* Styles for tablets */
+}
 
-  }
-  
-  /* Laptops and small desktops */
-  @media only screen and (min-width: 769px) and (max-width: 1024px) {
-    /* Styles for small desktops */
-
-  }
+/* Laptops and small desktops */
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+  /* Styles for small desktops */
+}

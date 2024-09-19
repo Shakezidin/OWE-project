@@ -5,7 +5,7 @@ import UserTable from '../userManagerAllTable/UserTable';
 import AppointmentSetterTable from '../userManagerAllTable/AppointmentSetterTable';
 import PartnerTable from '../userManagerAllTable/PartnerTable';
 import SalesManagerTable from '../userManagerAllTable/SalesManagerTable';
-import AccountManagerTable from '../userManagerAllTable/AccountManagerTable'
+import AccountManagerTable from '../userManagerAllTable/AccountManagerTable';
 import AccountExecutiveTable from '../userManagerAllTable/AccountExecutiveTable';
 import SalesRepresentativeTable from '../userManagerAllTable/SalesRepresentativeTable';
 import DealerOwnerTable from '../userManagerAllTable/DealerOwnerTable';
@@ -77,7 +77,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const { loading, dealerList, dealerCount } = useAppSelector(
     (state) => state.userManagement
   );
-
 
   useEffect(() => {
     const data = {
@@ -366,7 +365,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          {(activeSalesRep) && (
+          {activeSalesRep && (
             <img
               style={{ cursor: 'pointer' }}
               src={ICONS.cross}
@@ -374,9 +373,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
           )}
 
-          {activeSalesRep &&
-            <h3>{activeSalesRep} Sales Rep</h3>
-          }
+          {activeSalesRep && <h3>{activeSalesRep} Sales Rep</h3>}
         </div>
 
         <div className="delete-icon-container items-start mt2 ">
@@ -390,11 +387,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                 setSearch(e.target.value);
               }}
             />
-            {!(activeSalesRep) && <div>{AddBtn}</div>}
+            {!activeSalesRep && <div>{AddBtn}</div>}
           </div>
 
           <div className="user_user-type">
-            {!(activeSalesRep) && (
+            {!activeSalesRep && (
               <div
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}
@@ -440,7 +437,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     }}
                     menuWidth="fit-content"
                     menuListStyles={{
-                      width: "fit-content"
+                      width: 'fit-content',
                     }}
                     enableHoverEffect={false}
                   />
@@ -480,15 +477,17 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         </div>
       </div>
 
-      {selectedOption && loading ?
+      {selectedOption && loading ? (
         <div className="flex my3 justify-center items-center">
           <MicroLoader />
         </div>
-        : renderComponent()}
+      ) : (
+        renderComponent()
+      )}
 
       {selectedOption.value !== 'Partner' ? (
         <div className="user-page-heading-container">
-          {userRoleBasedList?.length > 0 && !loading  ? (
+          {userRoleBasedList?.length > 0 && !loading ? (
             <>
               <p className="page-heading">
                 {startIndex} - {endIndex > count! ? count : endIndex} of {count}{' '}
