@@ -930,9 +930,11 @@ const ProjectPerformence = () => {
                   <p>Not Started</p>
                 </div>
                 {isStaging === 'staging' ? (
+                  <Link to ="/map-address">
                   <div className="pipeline-googlemap">
                     <img src={ICONS.PinMap} alt="pin map" />
                   </div>
+                  </Link>
                 ) : null}
               </div>
             </div>
