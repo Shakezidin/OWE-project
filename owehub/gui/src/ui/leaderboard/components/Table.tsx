@@ -784,20 +784,29 @@ const Table = ({
   };
 
   const getName = useMemo(() => {
-    if (role === TYPE_OF_USER.DEALER_OWNER) {
-      return 'Code Name';
+    if (groupBy === 'primary_sales_rep') {
+      return 'Sale Rep Name';
     }
-    if (
-      role === TYPE_OF_USER.ADMIN ||
-      role === TYPE_OF_USER.FINANCE_ADMIN ||
-      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-      role === TYPE_OF_USER.ACCOUNT_MANAGER
-    ) {
+    if (groupBy === 'dealer') {
+      if (role === TYPE_OF_USER.DEALER_OWNER) {
+        return 'Code Name';
+      } else {
+        return 'Partner Name';
+      }
+    } if (groupBy === 'region') {
+      return 'Region Name';
+    }
+    if (groupBy === 'state') {
+      return 'State Name';
+    }
+    if (groupBy === 'team') {
+      return 'Team Name';
+    }
+    else {
       return 'Partner Name';
-    } else {
-      return 'Name';
     }
-  }, [role, authData]);
+
+  }, [role, authData, groupBy]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
