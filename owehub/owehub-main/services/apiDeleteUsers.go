@@ -31,10 +31,12 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err     error
 		reqBody []byte
-		// podioDeleteCount int
+		userDetailsResult []map[string]interface{}
+		whereClause string
 		deleteUsersReq   models.DeleteUsers
 		whereEleList     []interface{}
 		query            string
+		userQuery string
 		userDetails      []map[string]interface{}
 		tablePermissions []models.TablePermission
 		rowsAffected     int64
@@ -67,6 +69,16 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	// setup user info logging
 	logUserApi, closeUserLog := initUserApiLogging(req)
 	defer func() { closeUserLog(err) }()
+
+	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", strings.Join(deleteUsersReq.UserCodes, ","))
+
+	userQuery = fmt.Sprintf(`SELECT name, email_id, user_code, role_id
+							 FROM user_details %s;`, whereClause)
+
+	userDetailsResult, err = db.ReteriveFromDB(db.OweHubDbIndex, userQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user details from DB for podio err: %v", err)
+	}
 
 	//
 	// NEW LOGIC: Delete By Email
@@ -194,7 +206,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 
 	//* logic to delte users from podio
 
-	err, _ = DeletePodioUsers(deleteUsersReq.UserCodes)
+	err, _ = DeletePodioUsers(userDetailsResult)
 	if err != nil {
 		log.FuncInfoTrace(0, "error deleting user from podio; err: %v", err)
 	}

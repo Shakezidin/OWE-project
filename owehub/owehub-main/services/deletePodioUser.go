@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 type DeleteResponse struct {
@@ -24,26 +23,13 @@ type DeleteResponse struct {
 	Pending []int64 `json:"pending"`
 }
 
-func DeletePodioUsers(userCodes []string) (error, int) {
+func DeletePodioUsers(userDetails []map[string]interface{}) (error, int) {
 	var (
 		err         error
-		userDetails []map[string]interface{}
-		whereClause string
 	)
 
 	log.EnterFn(0, "DeletePodioUsersByCodes")
 	defer func() { log.ExitFn(0, "DeletePodioUsersByCodes", err) }()
-
-	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", strings.Join(userCodes, ","))
-
-	query := fmt.Sprintf(`SELECT name, email_id, user_code, role_id
-							 FROM user_details %s;`, whereClause)
-
-	userDetails, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get user details from DB err: %v", err)
-		return err, 0
-	}
 
 	var itemIds []int64
 	for _, user := range userDetails {
