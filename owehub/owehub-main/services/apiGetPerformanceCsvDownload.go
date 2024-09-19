@@ -97,7 +97,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		"intOpsMetSchema.cad_complete_date, intOpsMetSchema.permit_submitted_date, intOpsMetSchema.ic_submitted_date, intOpsMetSchema.permit_approved_date, intOpsMetSchema.ic_approved_date, fieldOpsSchema.roofing_created_date, " +
 		"fieldOpsSchema.roofing_completed_date, intOpsMetSchema.pv_install_created_date, fieldOpsSchema.battery_scheduled_date, fieldOpsSchema.battery_complete_date, intOpsMetSchema.pv_install_completed_date, " +
 		"fieldOpsSchema.mpu_created_date, fieldOpsSchema.derate_created_date, secondFieldOpsSchema.trenching_ws_open, fieldOpsSchema.derate_completed_date, fieldOpsSchema.mpu_complete_date, " +
-		"secondFieldOpsSchema.trenching_completed, fieldOpsSchema.fin_created_date, fieldOpsSchema.fin_pass_date, intOpsMetSchema.pto_submitted_date, intOpsMetSchema.pto_date, salMetSchema.contract_date, " +
+		"secondFieldOpsSchema.trenching_completed, fieldOpsSchema.fin_created_date, fieldOpsSchema.fin_pass_date, intOpsMetSchema.pto_submitted_date, intOpsMetSchema.pto_date, salMetSchema.contract_date,secondFieldOpsSchema.roofing_status, " +
 		"salMetSchema.dealer, salMetSchema.primary_sales_rep FROM internal_ops_metrics_schema AS intOpsMetSchema LEFT JOIN sales_metrics_schema AS salMetSchema " +
 		"ON intOpsMetSchema.unique_id = salMetSchema.unique_id LEFT JOIN field_ops_metrics_schema AS fieldOpsSchema ON intOpsMetSchema.unique_id = fieldOpsSchema.unique_id LEFT JOIN second_field_ops_metrics_schema AS secondFieldOpsSchema ON intOpsMetSchema.unique_id = secondFieldOpsSchema.unique_id "
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
@@ -437,13 +437,19 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		} else {
 			contractD = ContractDate.Format("2006-01-02")
 		}
+
+		RoofingStatus, ok := item["roofing_status"].(string)
+		if !ok || RoofingStatus == "" {
+			log.FuncErrorTrace(0, "Failed to get roofing status Item: %+v\n", item)
+			// continue
+		}
 		_, SiteSurveyCountT, _, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		_, CadDesignCountT, _ := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
 		_, PerimittingCountT, _ := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, CadCompleteD)
 		PerimittingCount += PerimittingCountT
-		_, RoofingCountT, _ := roofingColor(RoofingCreatedD, RoofingCompleteD)
+		_, RoofingCountT, _ := roofingColor(RoofingCreatedD, RoofingCompleteD, RoofingStatus)
 		RoofingCount += RoofingCountT
 		_, InstallCountT, _, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
