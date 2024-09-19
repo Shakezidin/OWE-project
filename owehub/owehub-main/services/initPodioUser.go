@@ -38,7 +38,7 @@ func SyncHubUsersToPodioOnInit() error {
 			FROM user_details ud
 			JOIN v_dealer vd ON ud.dealer_id = vd.id
       JOIN user_roles ur ON ud.role_id = ur.role_id
-      WHERE podio_user = True
+      WHERE ud.podio_user = True
 	`
 
 	oweHubData, err = db.ReteriveFromDB(db.OweHubDbIndex, allUsersQuery, nil)
