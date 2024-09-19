@@ -19,6 +19,12 @@
   cursor: pointer;
   position: absolute;
   right: -60px;
+  transition: all 0.3s ease;
+}
+
+.pipeline-googlemap svg{
+  font-size: 1.5rem;
+  color: #377CF6;
 }
 
 .performance-exportbtn {
@@ -560,7 +566,6 @@
   justify-content: center;
   gap: 5px;
   border-radius: 8px;
-  outline-offset: 3px;
   width: 140px;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -571,9 +576,12 @@
   transform: scale(1.05);
 }
 
-.project-card h2,
+.project-card h2{
+  font-weight: 600;
+}
+
 .project-card p {
-  color: #fff;
+  color: #263747;
   font-weight: 500;
   width: 100px;
   text-wrap: nowrap;
@@ -737,27 +745,36 @@
 
 .para-head {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .span-para {
   font-size: 12px;
+  font-weight: 600;
 }
 
 .view-flex {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  color: #fff;
   font-size: 12px;
   cursor: pointer;
   position: absolute;
   right: 10px;
   top: 60px;
+  color: #263747;
 }
 
 .view-flex img {
-  filter: invert(1);
+  color: #263747;
+}
+
+.status-card-wrp:hover .view-flex{
+  color: #fff;
+}
+
+.status-card-wrp:hover .view-flex img {
+  filter: brightness(0) invert(1); 
 }
 
 .status-graph-heading p {
