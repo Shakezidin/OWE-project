@@ -59,7 +59,7 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 	if role == "Dealer Owner" || role == "SubDealer Owner" {
 		queryForDealer := `
 			select vd.dealer_name from user_details ud
-			join v_dealer vd on vd.id = ud.dealer_id
+			join sales_partner_dbhub_schema vd on vd.partner_id = ud.dealer_id
 			where ud.email_id = $1`
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, queryForDealer, []interface{}{email})
 		if err != nil {
@@ -77,8 +77,8 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 		query = `
 				SELECT name FROM, user_code user_details
 				WHERE dealer_id IN (
-					SELECT id FROM v_dealer
-					WHERE LOWER(dealer_name) = LOWER($1)
+					SELECT partner_id FROM sales_partner_dbhub_schema
+					WHERE LOWER(sales_partner_name) = LOWER($1)
 				)
 				`
 		whereEleList = append(whereEleList, dataReq.DealerName)
@@ -86,8 +86,8 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 		query = `
 				SELECT name, user_code FROM user_details
 				WHERE dealer_id IN (
-					SELECT id FROM v_dealer
-					WHERE LOWER(dealer_name) = LOWER($1)
+					SELECT partner_id FROM sales_partner_dbhub_schema
+					WHERE LOWER(sales_partner_name) = LOWER($1)
 				)
 				AND role_id IN (
 					SELECT role_id

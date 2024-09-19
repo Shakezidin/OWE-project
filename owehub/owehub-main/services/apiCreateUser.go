@@ -91,10 +91,32 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// userEmail := req.Context().Value("emailid").(string)
+	// role := req.Context().Value("rolename").(string)
+	// if role == "Dealer Owner" {
+	// 	query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
+	// 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+	// 	if err != nil {
+	// 		log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
+	// 		FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
+	// 		return
+	// 	}
+
+	// 	if len(data) > 0 {
+	// 		DealerName, dealerNameOk := data[0]["dealer_name"].(string)
+	// 		if !dealerNameOk || DealerName == "" {
+	// 			log.FuncErrorTrace(0, "empty dealer name")
+	// 			FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
+	// 			return
+	// 		}
+	// 		createUserReq.Dealer = DealerName
+	// 	}
+	// }
+
 	userEmail := req.Context().Value("emailid").(string)
 	role := req.Context().Value("rolename").(string)
 	if role == "Dealer Owner" {
-		query := fmt.Sprintf("SELECT vd.dealer_name FROM user_details ud JOIN v_dealer vd ON ud.dealer_id = vd.id WHERE ud.email_id = '%v'", userEmail)
+		query := fmt.Sprintf("SELECT vd.sales_partner_name FROM user_details ud JOIN sales_partner_dbhub_schema vd ON ud.dealer_id = vd.partner_id WHERE ud.email_id = '%v'", userEmail)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
