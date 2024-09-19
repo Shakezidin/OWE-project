@@ -591,6 +591,8 @@ const ProjectStatus = () => {
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
+  const [isHovered, setIsHovered] = useState(-1)
+
   return (
     <>
       <QCModal
@@ -656,23 +658,25 @@ const ProjectStatus = () => {
                       className="rounded-8"
                       style={{
                         padding: 3,
-                        border: `1px dashed ${el.bgColor}`,
+                        border: isHovered === i ? 'none' : `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
                       }}
                     >
                       <div
-                        className=" flex items-center rounded-8 justify-center relative "
+                        className=" flex items-center rounded-8 justify-center relative status-card-wrp"
                         style={{
-                          background: el.bgColor,
+                          background: isHovered === i ? el.hoverColor : el.bgColor,
                           height: 83,
                           zIndex: i === 1 ? 50 : undefined,
                         }}
+                        onMouseEnter={() => setIsHovered(i)}
+                        onMouseLeave={() => setIsHovered(-1)}
                       >
                         <div
                           style={{
                             width: '100%',
                             textAlign: 'center',
-                            color: '#fff',
+                            color: isHovered === i ? '#fff' : '#263747',
                           }}
                         >
                           <p className="para-head text-white-color">
@@ -695,7 +699,7 @@ const ProjectStatus = () => {
                         </div>
                         {el.viewButton ? (
                           <div
-                            className="view-flex"
+                            className='view-flex'
                             ref={refBtn}
                             onClick={() => setActivePopups((prev) => !prev)}
                           >

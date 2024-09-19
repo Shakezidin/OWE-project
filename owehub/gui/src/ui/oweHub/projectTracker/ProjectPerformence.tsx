@@ -41,6 +41,8 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
+import { RiMapPinFill, RiMapPinLine } from "react-icons/ri";
+
 interface Option {
   value: string;
   label: string;
@@ -66,6 +68,8 @@ const ProjectPerformence = () => {
   const [titleData, setTileData] = useState<any>('');
   const [activeCardId, setActiveCardId] = useState(null);
   const [activeCardTitle, setActiveCardTitle] = useState<string>('');
+
+  const [mapHovered, setMapHovered] = useState(false);
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -439,6 +443,9 @@ const ProjectPerformence = () => {
   ];
 
   const cardColors = ['#57B3F1', '#E0728C', '#63ACA3', '#6761DA', '#C470C7'];
+  const hoverColors = ['#DCF1FF', '#FFE1E8', '#CBFFF9', '#DEDCFF', '#FEE0FF'];
+  const activeColors = ['#57B3F1', '#E1728C', '#63ACA3', '#6761DA', '#C470C7'];
+
   const resetPage = () => {
     setPage(1);
   };
@@ -458,12 +465,12 @@ const ProjectPerformence = () => {
     const [selectedRanges, setSelectedRanges] = useState(
       selected
         ? [
-            {
-              startDate: selected.start,
-              endDate: selected.end,
-              key: 'selection',
-            },
-          ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
         : []
     );
 
@@ -730,6 +737,10 @@ const ProjectPerformence = () => {
 
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
+
+  const [isHovered, setIsHovered] = useState(-1);
+  console.log(isHovered, "dasjkdasjkdjkasdasjkda")
+
   return (
     <div className="">
       <div className="flex justify-between p2 top-btns-wrapper">
@@ -798,11 +809,14 @@ const ProjectPerformence = () => {
                 {' '}
                 {topCardsData.map((card, index) => {
                   const cardColor = cardColors[index % cardColors.length];
+                  const hoverColor = hoverColors[index % hoverColors.length];
+                  const activeColor = activeColors[index % activeColors.length];
                   const isActive = activeCardId === card.id;
                   const handleCardClick = (cardId: any, title: string) => {
                     setActiveCardId(activeCardId === cardId ? null : cardId);
                     setActiveCardTitle(activeCardId === cardId ? '' : title);
                   };
+
                   return (
                     <div
                       className="flex items-center arrow-wrap"
@@ -811,15 +825,16 @@ const ProjectPerformence = () => {
                       <div
                         key={card.id}
                         className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
+                        onMouseEnter={() => setIsHovered(index)}
+                        onMouseLeave={() => setIsHovered(-1)}
                         style={{
-                          backgroundColor: cardColor,
-                          outline:
-                            activeCardId === card.id
-                              ? `4px solid ${cardColor}`
-                              : `1px dotted ${cardColor}`,
+                          backgroundColor: isActive ? activeColor : isHovered === index ? hoverColor : "#F6F6F6",
+                          border:
+                            isHovered === index ? `none`
+                              : `2px solid ${cardColor}`,
                           pointerEvents:
                             card.pending === 'roof' ? 'none' : 'auto',
-                          opacity: card.pending === 'roof' ? '0.3' : '',
+                          opacity: card.pending === 'roof' ? '0.5' : '',
                         }}
                         onClick={(e) => {
                           handlePendingRequest(card?.pending);
@@ -832,11 +847,11 @@ const ProjectPerformence = () => {
                         >
                           {activeCardId === card.id ? <MdDone /> : card.id}
                         </span>
-                        <p>{card.title || 'N/A'}</p>
+                        <p style={{ color: isActive ? "#fff" : '' }}>{card.title || 'N/A'}</p>
                         {card.pending !== 'roof' ? (
-                          <h2>{card.value || '0'}</h2>
+                          <h2 style={{ color: isHovered === index && !isActive ? '#263747' : isActive ? '#fff' : cardColor }}>{card.value || '0'}</h2>
                         ) : (
-                          <small style={{ color: 'white' }}>Coming Soon</small>
+                          <small>Coming Soon</small>
                         )}
                       </div>
                       {index < topCardsData.length - 1 && (
@@ -929,15 +944,17 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
-                {isStaging === 'staging' ? (
-                  <Link to ="/map-address">
-                  <div className="pipeline-googlemap">
-                    <img src={ICONS.PinMap} alt="pin map" />
-                  </div>
-                  </Link>
-                ) : null}
-              </div>
-            </div>
+                {
+                  isStaging === 'staging' ? (
+                    <Link to="/map-address">
+                      <div className='pipeline-googlemap' onMouseEnter={() => setMapHovered(true)} onMouseLeave={() => setMapHovered(false)}>
+                        {mapHovered ? <RiMapPinFill /> : <RiMapPinLine />}
+                      </div></Link>
+                  )
+                    : null
+                }
+              </div >
+            </div >
 
             <div className="perf-export-btn">
               <button
@@ -949,7 +966,7 @@ const ProjectPerformence = () => {
                 <span>{isExportingData ? ' Downloading... ' : ' Export '}</span>
               </button>
             </div>
-          </div>
+          </div >
 
           <div className="performance-milestone-table">
             <table>
@@ -1027,7 +1044,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.qc.qc_action_required_count > 0
+                                          project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1053,7 +1070,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.ntp.action_required_count > 0
+                                          project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1356,9 +1373,9 @@ const ProjectPerformence = () => {
               />
             ) : null}
           </div>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   );
 };
 
