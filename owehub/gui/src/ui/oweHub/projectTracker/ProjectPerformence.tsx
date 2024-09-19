@@ -832,9 +832,6 @@ const ProjectPerformence = () => {
                           border:
                             isHovered === index ? `none`
                               : `2px solid ${cardColor}`,
-                          pointerEvents:
-                            card.pending === 'roof' ? 'none' : 'auto',
-                          opacity: card.pending === 'roof' ? '0.5' : '',
                         }}
                         onClick={(e) => {
                           handlePendingRequest(card?.pending);
@@ -848,11 +845,7 @@ const ProjectPerformence = () => {
                           {activeCardId === card.id ? <MdDone /> : card.id}
                         </span>
                         <p style={{ color: isActive ? "#fff" : '' }}>{card.title || 'N/A'}</p>
-                        {card.pending !== 'roof' ? (
                           <h2 style={{ color: isHovered === index && !isActive ? '#263747' : isActive ? '#fff' : cardColor }}>{card.value || '0'}</h2>
-                        ) : (
-                          <small>Coming Soon</small>
-                        )}
                       </div>
                       {index < topCardsData.length - 1 && (
                         <div

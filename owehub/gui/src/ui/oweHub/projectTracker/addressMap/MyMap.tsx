@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { GoogleMap, Marker, InfoWindow, useLoadScript } from '@react-google-maps/api';
+import { IoClose } from 'react-icons/io5';
 import { debounce } from '../../../../utiles/debounce';
+import { useNavigate } from 'react-router-dom';
 
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
@@ -22,9 +24,11 @@ const MyMapComponent: React.FC = () => {
   const [locations, setLocations] = useState<LocationInfo[]>([{ lat: 25.5941, lng: 85.1376, info: 'Location 1' },
   { lat: 28.7041, lng: 77.1025, info: 'Location 2' },
   { lat: 19.0760, lng: 72.8777, info: 'Location 3' }]);
+  const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(null);
   const mapRef = useRef<any | null>(null);
   const [center, setCenter] = useState({ lat: 25.5941, lng: 85.1376 }); // Set an initial center
+
 
   const debouncedSetSelectedLocation = useCallback(
     debounce((location: LocationInfo | null) => {
@@ -32,6 +36,10 @@ const MyMapComponent: React.FC = () => {
     }, 100),
     []
   );
+
+  const handleCalcClose = () => {
+    navigate(-1);
+  };
 
   const onMarkerHover = useCallback((location: LocationInfo) => {
     debouncedSetSelectedLocation(location);
@@ -77,7 +85,14 @@ const MyMapComponent: React.FC = () => {
   if (!isLoaded) return <div>Loading Maps...</div>;
 
   return (
-    <div style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div>
+        <div>
+         <div onClick={handleCalcClose} style={{ height: '26px' }}>
+              <IoClose className="calendar-close" style ={{float:"right"}}/>
+            </div>
+            </div>
+
+    <div style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' , marginTop: '5px'}}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         onLoad={onMapLoad}
@@ -112,6 +127,7 @@ const MyMapComponent: React.FC = () => {
           </InfoWindow>
         )}
       </GoogleMap>
+    </div>
     </div>
   );
 };
