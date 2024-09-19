@@ -104,7 +104,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_user",
 		apiHandler.HandleCreateUserRequest,
-		false,
+		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
 	// {
