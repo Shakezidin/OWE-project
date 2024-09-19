@@ -5,7 +5,7 @@ import classes from "./styles/leadManagementNew.module.css"
 // import SalesRepSchedulePage from '../scheduler/SalesRepScheduler/SuccessSales';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validateEmail } from '../../utiles/Validation';
+import { validateEmail, validateZipCode } from '../../utiles/Validation';
 import Input from '../components/text_input/Input';
 import PhoneInput from 'react-phone-input-2';
 
@@ -31,6 +31,7 @@ const LeadManagementNew = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [zip_codeError, setZip_codeError] = useState('');
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -46,28 +47,58 @@ const LeadManagementNew = () => {
         delete err[name];
         setErrors(err);
       }
-    } else if (name === 'email_id') {
-      const isValidEmail = validateEmail(value.trim());
-      if (!isValidEmail) {
-        setEmailError('Please enter a valid email address.');
-      } else {
-        setEmailError('');
-      }
-      const trimmedValue = value.replace(/\s/g, '');
+    }  
+    
+   
+    else if (name === 'email_id') {
+                            const isValidEmail = validateEmail(value.trim());
+                            if (!isValidEmail) {
+                              setEmailError('Please enter a valid email address.');
+                            } else {
+                              setEmailError('');
+                            }
+                            const trimmedValue = value.replace(/\s/g, '');
+
       setFormData((prevData) => ({
         ...prevData,
         [name]: trimmedValue,
       }));
+    } 
+    
+    
+        
+    else if (name === 'zip_code') {
+      const isValidZipCode = validateZipCode(value.trim());
+      if (!isValidZipCode) {
+        setZip_codeError('Please enter a valid ZipCode number (only numbers, 6-12 digits).');
+      } else {
+        setZip_codeError('');
+      }
+    
+      const CorrectValue = value.replace(/\s/g, '');
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: CorrectValue,
+      }));
+    
     } else {
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
       }));
+    
+      // Clear any existing error for this field
       const err = { ...errors };
       delete err[name];
       setErrors(err);
     }
-  };
+    
+
+  }
+
+
+
+  
 
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
@@ -166,25 +197,18 @@ const LeadManagementNew = () => {
                       </div>
 
                       <div className={classes.srs_new_create}>
-                        <Input
-                          type="email"
-                          label="Email"
-                          value={formData.email_id}
-                          placeholder="Adam Samson76_1@gmail.com"
-                          onChange={handleInputChange}
-                          name="email_id"
-                          maxLength={100}
-                        />
-                        {errors.emailError && (
-                          <span
-                            style={{
-                              display: 'block',
-                            }}
-                            className="error"
-                          >
-                            {errors.emailError}
-                          </span>
-                        )}
+                        <Input 
+                        type={'text'}
+                                              label="Email ID"
+                                              value={formData.email_id}
+                                              placeholder={'email@mymail.com'}
+                                              onChange={(e) => handleInputChange(e)}
+                                              name={'email_id'}
+                                              // disabled={formData.isEdit}
+                                            />
+                                            {emailError && (
+                                              <div className="error-message">{emailError}</div>
+                                            )}
                       </div>
                       </div>
                       <div className={classes.salrep_input_container}>
@@ -211,24 +235,16 @@ const LeadManagementNew = () => {
                       </div>
                     <div className={classes.srs_new_create}>
                         <Input
-                          type="text"
+                          type="number"
                           label="Zip Code"
                           value={formData.zip_code}
                           placeholder="Zip Code"
-                          onChange={handleInputChange}
+                          onChange={(e) => handleInputChange(e)}
                           name="zip_code"
-                          maxLength={100}
+                          maxLength={15}  
                         />
-                        {errors.zip_code && (
-                          <span
-                            style={{
-                              display: 'block',
-                            }}
-                            className="error"
-                          >
-                            {errors.zip_code}
-                          </span>
-                        )}
+                        {zip_codeError && (
+                          <div className="error-message">{zip_codeError}</div>)}
                       </div>
                       
                       <div className={classes.create_input_field_note}>
