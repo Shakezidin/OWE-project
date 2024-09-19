@@ -128,3 +128,49 @@ label {
   -webkit-transition: width 0.4s ease-in-out;
   transition: width 0.4s ease-in-out;
 }  */
+
+
+@media (min-width: 276px) and (max-width: 512px) and (min-height: 600px) and (max-height: 1146px) {
+  .customer_wrapper_list {
+    flex-basis: 100%;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    max-width: 346px; 
+    height: 550px; 
+  }
+    
+  .DetailsMcontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;  
+    height: auto; 
+    padding: 16px;
+    border: 1px solid #377CF6;
+    border-top-left-radius: 8px; 
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 0px; 
+    border-bottom-right-radius: 0px;
+    background-color: #EEF5FF;
+  }
+  .main_name{
+    font-weight:600;
+    font-size: 18px;
+    margin-top: -13px;
+    margin-bottom: 3.7%;
+    margin-left: -139px; 
+    }
+
+    .mobileNumber{
+      text-align: left;
+      margin-left: -139px;
+      
+    }
+    .addresshead{
+      margin-bottom: 3.7%;
+      margin-top: -15px;
+    }
+  
+}
