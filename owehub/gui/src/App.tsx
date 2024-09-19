@@ -95,6 +95,7 @@ import RoutesForRole from './utiles/RoutesForRole';
 import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
 import LibraryHomepage from './ui/Library/LibraryHomepage';
 import LeadManamentSucessModel from './ui/leadmanagement/Modals/LeaderManamentSucessModel';
+import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap'
 
 function App() {
   const dispatch = useAppDispatch();
@@ -332,6 +333,7 @@ function App() {
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
+          <Route path ={ROUTES.MAP_ADDRESS} element={<MyMap />} />
           {ManageRoutesWithRole(role_name!)}
           {/* <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} /> */}
 
