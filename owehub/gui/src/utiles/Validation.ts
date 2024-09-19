@@ -13,6 +13,10 @@ export const validateEmail = (email: string): boolean => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 };
 
+export const validateZipCode = (zipCode: string): boolean => {
+  return /^[0-9]{6,12}$/.test(zipCode.trim());
+};
+
 export const validateMobileNumber = (mobileNumber: string): boolean => {
   return /^\+?[0-9]{10,16}$/.test(mobileNumber.trim());
 };
@@ -36,6 +40,9 @@ export const validateForm = (
 
     if (!validateMobileNumber(formData.mobile_number)) {
       errors.PhoneNumber = true;
+    }
+    if (!validateZipCode(formData.zip_code)) {
+      errors.ZipCode = true;
     }
   }
   if (formData.role_name.length === 0) {
@@ -82,12 +89,13 @@ export const createUserObject = (
   formData: CreateUserModel
 ): CreateUserParamModel => {
   let createObject: CreateUserParamModel = {
-    name: formData.first_name + ' ' + formData.last_name,
+    name: formData.first_name?.trim() + ' ' + formData.last_name?.trim(),
     email_id: formData.email_id,
     mobile_number: formData.mobile_number,
     role_name: formData.role_name,
     designation: 'SE',
     description: formData.description,
+    zip_code: formData.zip_code,
   };
   if (formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER) {
     createObject = {

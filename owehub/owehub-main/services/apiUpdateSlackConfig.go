@@ -56,7 +56,8 @@ func HandleUpdateSlackConfigRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if (len(updateSlackConfigReq.IssueType) <= 0) || (len(updateSlackConfigReq.ChannelName) <= 0) ||
-		(len(updateSlackConfigReq.BotToken) <= 0) || (len(updateSlackConfigReq.SlackAppToken) <= 0) {
+		(len(updateSlackConfigReq.BotToken) <= 0) || (len(updateSlackConfigReq.SlackAppToken) <= 0) ||
+		(len(updateSlackConfigReq.ChannelId) <= 0) {
 		err = fmt.Errorf("empty input fields in API is not allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -64,6 +65,7 @@ func HandleUpdateSlackConfigRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	queryParameters = append(queryParameters, updateSlackConfigReq.RecordId)
+	queryParameters = append(queryParameters, updateSlackConfigReq.ChannelId)
 	queryParameters = append(queryParameters, updateSlackConfigReq.IssueType)
 	queryParameters = append(queryParameters, updateSlackConfigReq.ChannelName)
 	queryParameters = append(queryParameters, updateSlackConfigReq.BotToken)

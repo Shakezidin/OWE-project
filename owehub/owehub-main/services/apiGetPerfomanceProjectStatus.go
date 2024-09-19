@@ -431,13 +431,19 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		} else {
 			ntpD = ntpDate.Format("2006-01-02")
 		}
+
+		RoofingStatus, ok := item["roofing_status"].(string)
+		if !ok || RoofingStatus == "" {
+			log.FuncErrorTrace(0, "Failed to get roofing status Item: %+v\n", item)
+			// continue
+		}
 		surveyColor, SiteSurveyCountT, SiteSurevyDate, _ := getSurveyColor(SiteSurveyD, SiteSurveyComD, contractD)
 		SiteSurveyCount += SiteSurveyCountT
 		cadColor, CadDesignCountT, CadDesignDate := getCadColor(CadD, CadCompleteD, SiteSurveyComD)
 		CadDesignCount += CadDesignCountT
 		permitColor, PerimittingCountT, PermittingDate := getPermittingColor(permitSubmittedD, IcSubmitD, PermitApprovedD, IcaprvdD, CadCompleteD)
 		PerimittingCount += PerimittingCountT
-		roofingColor, RoofingCountT, RoofingDate := roofingColor(RoofingCreatedD, RoofingCompleteD)
+		roofingColor, RoofingCountT, RoofingDate := roofingColor(RoofingCreatedD, RoofingCompleteD, RoofingStatus)
 		RoofingCount += RoofingCountT
 		installColor, InstallCountT, InstallDate, _ := installColor(PvInstallCreateD, BatteryScheduleD, BatteryCompleteD, PvInstallCompleteD, PermitApprovedD, IcaprvdD)
 		InstallCount += InstallCountT
@@ -1022,9 +1028,9 @@ func getCadColor(createdDate, completedDate, site_survey_completed_date string) 
 	return grey, count, ""
 }
 
-func roofingColor(roofingCreateDate, roofingCompleteDate string) (string, int64, string) {
+func roofingColor(roofingCreateDate, roofingCompleteDate, roofingStatus string) (string, int64, string) {
 	var count int64
-	if roofingCreateDate != "" && roofingCompleteDate == "" {
+	if roofingCreateDate != "" && roofingCompleteDate == "" && roofingStatus != "Customer Managed-COMPLETE" && roofingStatus != "COMPLETE" && roofingStatus != "No Roof Work Completed" {
 		count = 1
 	}
 	if roofingCompleteDate != "" {

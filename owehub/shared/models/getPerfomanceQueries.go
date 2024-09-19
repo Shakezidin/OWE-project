@@ -68,7 +68,9 @@ func SalesMetricsRetrieveQueryFunc() string {
             salMetSchema.contract_date,
             salMetSchema.dealer,
             salMetSchema.primary_sales_rep,
-            salMetSchema.ntp_date
+            salMetSchema.ntp_date,
+            secondFieldOpsSchema.roofing_status
+
         FROM
             internal_ops_metrics_schema AS intOpsMetSchema
         LEFT JOIN sales_metrics_schema AS salMetSchema 

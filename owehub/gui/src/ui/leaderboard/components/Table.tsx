@@ -16,8 +16,8 @@ import {
   startOfWeek,
   endOfWeek,
   startOfYear,
-  format
-} from "date-fns"
+  format,
+} from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -104,9 +104,9 @@ function getUserTimezone() {
 
 // Function to get current date in the user's timezone
 function getCurrentDateInUserTimezone() {
-  const now = new Date()
-  const userTimezone = getUserTimezone()
-  return toZonedTime(now, userTimezone)
+  const now = new Date();
+  const userTimezone = getUserTimezone();
+  return toZonedTime(now, userTimezone);
 }
 const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
@@ -127,8 +127,6 @@ const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
 const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
   weekStartsOn: 1,
 });
-
-
 
 const PeriodFilter = ({
   period,
@@ -320,12 +318,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -653,9 +651,11 @@ const Table = ({
     setPage(page - 1);
   };
 
-  const sortedPage = leaderTable
-    .slice()
-    .sort((a, b) => (a.hightlight || b.hightlight ? -1 : 1));
+  const sortedPage = leaderTable.slice().sort((a, b) => {
+    if (a.hightlight && !b.hightlight) return -1;
+    if (!a.hightlight && b.hightlight) return 1;
+    return 0;
+  });
 
   function formatSaleValue(value: any) {
     if (value === null || value === undefined) return ''; // Handle null or undefined values
@@ -723,7 +723,7 @@ const Table = ({
     setIsExporting(true);
     const headers = [
       'UniqueID',
-      "Homeowner Name",
+      'Homeowner Name',
       'Homeowner Email',
       'Homeowner Phone',
       'Address',
@@ -782,22 +782,33 @@ const Table = ({
     setIsExporting(false);
     setExportShow(false);
   };
-
+  console.log(groupBy, 'groupBy');
   const getName = useMemo(() => {
-    if (role === TYPE_OF_USER.DEALER_OWNER) {
-      return 'Code Name';
+    if (groupBy === 'primary_sales_rep') {
+      return 'Sale Rep Name';
     }
-    if (
-      role === TYPE_OF_USER.ADMIN ||
-      role === TYPE_OF_USER.FINANCE_ADMIN ||
-      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-      role === TYPE_OF_USER.ACCOUNT_MANAGER
-    ) {
-      return 'Partner Name';
+    if (groupBy === 'dealer') {
+      if (role === TYPE_OF_USER.DEALER_OWNER) {
+        return 'Code Name';
+      } else {
+        return 'Partner Name';
+      }
+    }
+    if (groupBy === 'region') {
+      return 'Region Name';
+    }
+    if (groupBy === 'state') {
+      return 'State Name';
+    }
+    if (groupBy === 'team') {
+      return 'Team Name';
+    }
+    if (groupBy === 'setter') {
+      return 'Setter Name';
     } else {
-      return 'Name';
+      return 'Partner Name';
     }
-  }, [role, authData]);
+  }, [role, authData, groupBy]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
@@ -920,10 +931,10 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN ||
-                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                role === TYPE_OF_USER.ACCOUNT_MANAGER
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+              role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }

@@ -131,10 +131,7 @@ const DashBoardTable = ({
               ) : currentPageData.length > 0 ? (
                 currentPageData.map((el: any, index: any) => (
                   <tr key={index}>
-                    <td
-                      style={{ fontWeight: '500' }}
-                      
-                    >
+                    <td style={{ fontWeight: '500' }}>
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(index)}
@@ -152,9 +149,14 @@ const DashBoardTable = ({
                             }
                           }}
                         />
-                        <span className="zoom-out-td" onClick={() => {
-                        setOpen(true);
-                      }}>{el.unique_id}</span>
+                        <span
+                          className="zoom-out-td"
+                          onClick={() => {
+                            setOpen(true);
+                          }}
+                        >
+                          {el.unique_id}
+                        </span>
                       </div>
                     </td>
 
@@ -214,8 +216,10 @@ const DashBoardTable = ({
                           </span>
                         )}
                       </td> */}
-                    <td>{el.epc?Number(el.epc).toFixed(2)  :'N/A'}</td>
-                    <td>{el.net_epc ? Number(el.net_epc).toFixed(2) : 'N/A'}</td>
+                    <td>{el.epc ? Number(el.epc).toFixed(2) : 'N/A'}</td>
+                    <td>
+                      {el.net_epc ? Number(el.net_epc).toFixed(2) : 'N/A'}
+                    </td>
                     <td>{el.net_rev ? el.net_rev : 'N/A'}</td>
                     <td>{el.current_status || 'N/A'}</td>
                     <td>{el.state || 'N/A'}</td>
@@ -289,12 +293,7 @@ const DashBoardTable = ({
         />
       )}
       {openIcon && (
-        <HelpDashboard
-          data={
-            editData
-          }
-          handleClose={handleIconClose}
-        />
+        <HelpDashboard data={editData} handleClose={handleIconClose} />
       )}
     </>
   );
