@@ -4,6 +4,7 @@ SERVICE_ROOT=${PWD}/../owehub-main/
 
 GOFMT=gofmt -w
 GOBUILD=go build -gcflags "-N -l" -v
+ifeq ($(shell uname), Darwin) GOBUILD := env GOOS=linux GOARCH=amd64 $(GOBUILD) endif # macos specific
 
 # Exporting service specific variables
 #GOGETFILES=golang.org/x/oauth2 golang.org/x/net github.com/gorilla/mux github.com/antihax

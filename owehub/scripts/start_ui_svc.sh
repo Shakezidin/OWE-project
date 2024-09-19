@@ -20,7 +20,11 @@ fi
 cd "$DOCKER_PATH" || exit 1
 
 # Start the Docker containers using docker-compose
-docker-compose -f docker-compose-ui.yaml up -d
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    docker compose -f docker-compose-ui.yaml up -d # macos specific command
+else
+    docker-compose -f docker-compose-ui.yaml up -d
+fi
 
 cd -
 
