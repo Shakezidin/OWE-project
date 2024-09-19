@@ -1650,6 +1650,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_user_address",
+		apiHandler.HandleGetUserAddressDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 
 	/************ Battery Backup Calculator API *******************/
 	{
