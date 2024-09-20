@@ -427,7 +427,9 @@ const LeradManagementHistory = () => {
                   </label>
                   <div className={styles.user_name}>
                     <h2>{item.name}</h2>
-                    <p>{item.status}</p>
+                    <p style={{ color: item.status === 'Deal Won' ? '#52B650' : item.status === 'Deal Loss' ? '#F55B5B' : '#81a6e7' }}>
+                      {item.status}
+                    </p>
                   </div>
                 </div>
 
