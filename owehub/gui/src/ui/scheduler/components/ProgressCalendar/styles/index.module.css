@@ -1,0 +1,44 @@
+.top-0{
+    top: 0;
+}
+
+.left-0{
+    left: 0;
+    /* transform: translateX(-50%); */
+}
+
+.caption_label{
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 35px;
+}
+
+.day_cell{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.active_day_cell{
+    background-color: #D5E4FF;
+    border: none;
+    color: #377CF6;
+    cursor: pointer;
+}
+
+.selected_cell{
+    border: none !important;
+
+}
+.active_selected_cell{
+    background-color: #377CF6;
+    border: none !important;
+    color: #fff;
+}
+.day_picker table thead tr {
+background-color: #fff !important;
+}
+
+.day_picker table tbody tr{
+    border: none !important;
+}
