@@ -378,6 +378,8 @@ const LeadManagementDashboard = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+
 
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
@@ -530,10 +532,18 @@ const LeadManagementDashboard = () => {
     setShowArchiveModal(true); // Show the modal
   };
 
+
+
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
+
+    setSelectedLead(lead);
+
+    console.log("UserNAME BUTTON CALLED");
   };
   console.log('currentFilter', currentFilter);
+
+
 
   const toggleLeadExpansion = (leadId: string) => {
     setExpandedLeads((prev) =>
@@ -813,6 +823,8 @@ const LeadManagementDashboard = () => {
                         onChange={() => handleLeadSelection(lead)}
                       />
                     </label>
+
+                    {/* CALLED BUTTON FOR APPOINTMENT SCHEDULAR MODAL */}
                     <div
                       className={styles.user_name}
                       onClick={() =>

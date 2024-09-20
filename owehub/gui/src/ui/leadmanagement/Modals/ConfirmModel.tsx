@@ -8,7 +8,6 @@ import failledLogo from './Modalimages/FAILLED.png';
 import DoneLogo from './Modalimages/DoneLogo.png';
 import FileAttach from './Modalimages/FileAttach.png';
 import EditModal from './EditModal';
-import { RiEdit2Line } from 'react-icons/ri';
 import AppointmentScheduler from './AppointmentScheduler';
 import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
@@ -25,6 +24,8 @@ const ConfirmaModel = () => {
     setIsModalOpen(true);
   };
 
+
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -35,7 +36,7 @@ const ConfirmaModel = () => {
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
-                <img className={classes.crossBtn} src={CrossIcon} />
+                <img className={classes.crossBtn} src={CrossIcon}  onClick={HandleModal}/>
               </div>
               <div className={classes.pers_det_top}>
                 <div className={classes.Column1Details}>
@@ -95,7 +96,7 @@ const ConfirmaModel = () => {
                     >
                       {/* <RiEdit2Line  />  I have USed Custom PNG Image instead of Library for PEN <img src={Pen}> in the EDIT BUTTON */}
                       <span className={classes.edit_modal_button2}>
-                        <img src={Pen} /> Edit
+                      <img className={classes.editPenStyle} src={Pen} ></img> Edit
                       </span>
                     </div>
                   </div>
@@ -107,7 +108,7 @@ const ConfirmaModel = () => {
                   onClick={handleOpenModal}
                 >
                   <span className={classes.edit_modal_button}>
-                    <img src={Pen} /> Edit
+                    <img className={classes.editPenStyle} src={Pen} ></img> Edit
                   </span>
                 </div>
               </div>

@@ -178,7 +178,7 @@ function App() {
   };
 
   /**config and user manangement routes*/
-  const configAndUserManagementRoutes = () => {
+  const configRoutes = () => {
     return (
       <Route>
         <Route
@@ -236,7 +236,6 @@ function App() {
         <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
         <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData />} />
 
-        <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
         <Route path={ROUTES.CONFIG_APREP} element={<ApRep />} />
         <Route path={ROUTES.CONFIG_DBA} element={<Dba />} />
         <Route path={ROUTES.CONFIG_SLACK} element={<Slack />} />
