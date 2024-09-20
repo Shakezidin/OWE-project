@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
 import { ICONS } from '../../../../resources/icons/Icons';
+import MicroLoader from '../../../components/loader/MicroLoader';
 import { toZonedTime } from 'date-fns-tz';
 import { IoIosSearch } from 'react-icons/io';
 import {
@@ -35,7 +36,7 @@ interface LocationInfo {
   lng: any;
   unique_id: string;
   home_owner: string;
-  project_status:string;
+  project_status: string;
 }
 export type DateRangeWithLabel = {
   label?: string;
@@ -71,6 +72,8 @@ const MyMapComponent: React.FC = () => {
   });
 
   const [locations, setLocations] = useState<LocationInfo[]>([]);
+  const [search, setSearch] = useState('');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
@@ -170,6 +173,7 @@ const MyMapComponent: React.FC = () => {
           end_date: selectedDates.endDate
             ? format(selectedDates.endDate, 'dd-MM-yyyy')
             : null,
+          unique_ids: [searchValue],
         });
 
         if (data.status > 201) {
@@ -182,7 +186,7 @@ const MyMapComponent: React.FC = () => {
             lng: location.lognitude, // Adjust to match your API response
             unique_id: location.unique_id || 'No info available', // Default info if not provided
             home_owner: location.home_owner,
-            project_status:location.project_status
+            project_status: location.project_status,
           })
         );
         setLocations(formattedData);
@@ -192,7 +196,7 @@ const MyMapComponent: React.FC = () => {
         setLoading(false);
       }
     })();
-  }, [selectedDates.startDate, selectedDates.endDate]);
+  }, [selectedDates.startDate, selectedDates.endDate, searchValue]);
 
   const debouncedSetSelectedLocation = useCallback(
     debounce((location: LocationInfo | null) => {
@@ -232,6 +236,13 @@ const MyMapComponent: React.FC = () => {
       }
     }
   }, [isLoaded, locations]);
+  const handleSearchChange = useCallback(
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(e.target.value);
+      
+    }, 800),
+    []
+  );
 
   const onMarkerClick = useCallback((location: LocationInfo) => {
     setSelectedLocation((prevLocation) =>
@@ -278,17 +289,20 @@ const MyMapComponent: React.FC = () => {
   return (
     <div>
       <div className={styles.cardHeader}>
-        <span className={styles.pipeline}>PipeLine</span>
+        <span className={styles.pipeline}>Install Map</span>
         <div className={styles.date_calendar}>
           <div className={styles.mapSearch}>
-            {/* <span className={styles.mapIcon}><IoIosSearch /></span> */}
+            {/* Search Input */}
             <Input
-              type="text"
-              placeholder="Search for Unique ID"
-              value={''}
-              name="Search for Unique ID"
-              onChange={() => {}}
-            />
+                  type="text"
+                  placeholder="Search for Unique ID or Name"
+                  value={search}
+                  name="Search Here ...."
+                  onChange={(e) => {
+                    handleSearchChange(e);
+                    setSearch(e.target.value);
+                  }}
+                />
           </div>
           {isCalendarOpen && (
             <div ref={calendarRef} className={styles.lead__datepicker_content}>
@@ -363,51 +377,58 @@ const MyMapComponent: React.FC = () => {
           marginTop: '5px',
         }}
       >
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          onLoad={onMapLoad}
-          zoom={5}
-          center={center}
-        >
-          {locations.map((location, index) => (
-            <Marker
-              key={index}
-              position={{ lat: location.lat, lng: location.lng }}
-              onMouseOver={() => onMarkerHover(location)}
-              onMouseOut={onMarkerLeave}
-              options={{
-                // pixelOffset: new window.google.maps.Size(0, -10),
-                anchorPoint: new window.google.maps.Point(0, -10),
-              }}
-            />
-          ))}
+        {loading ? (
+          <div className={styles.loading}>
+            {' '}
+            <MicroLoader />
+          </div> // Display loading spinner
+        ) : (
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            onLoad={onMapLoad}
+            zoom={5}
+            center={center}
+          >
+            {locations.map((location, index) => (
+              <Marker
+                key={index}
+                position={{ lat: location.lat, lng: location.lng }}
+                onMouseOver={() => onMarkerHover(location)}
+                onMouseOut={onMarkerLeave}
+                options={{
+                  // pixelOffset: new window.google.maps.Size(0, -10),
+                  anchorPoint: new window.google.maps.Point(0, -10),
+                }}
+              />
+            ))}
 
-          {selectedLocation && (
-            <InfoWindow
-              position={{
-                lat: selectedLocation.lat,
-                lng: selectedLocation.lng,
-              }}
-              options={{
-                pixelOffset: new window.google.maps.Size(0, -50),
-              }}
-            >
-              <div
-                className={`${styles.infoWindowCustom} bg-white shadow-xl p-4 rounded-lg pl-2`}
+            {selectedLocation && (
+              <InfoWindow
+                position={{
+                  lat: selectedLocation.lat,
+                  lng: selectedLocation.lng,
+                }}
+                options={{
+                  pixelOffset: new window.google.maps.Size(0, -50),
+                }}
               >
-                <p className="font-bold text-lg text-gray-800 mb-2">
-                  Home Owner: {selectedLocation.home_owner}
-                </p>
-                <p className="text-sm text-gray-600 mb-1">
-                  Unique ID: {selectedLocation.unique_id}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Project Status: {selectedLocation.project_status}
-                </p>
-              </div>
-            </InfoWindow>
-          )}
-        </GoogleMap>
+                <div
+                  className={`${styles.infoWindowCustom} bg-white shadow-xl p-4 rounded-lg pl-2`}
+                >
+                  <p className="font-bold text-lg text-gray-800 mb-2">
+                    Home Owner: {selectedLocation.home_owner}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-1">
+                    Unique ID: {selectedLocation.unique_id}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Project Status: {selectedLocation.project_status}
+                  </p>
+                </div>
+              </InfoWindow>
+            )}
+          </GoogleMap>
+        )}
       </div>
     </div>
   );
