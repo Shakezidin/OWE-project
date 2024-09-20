@@ -30,7 +30,7 @@ const initialState: CreateOnboardUserStateModel = {
     assigned_Manager: '',
     dealer_code: '',
     preferred_name: '',
-    podioChecked: false,
+    podioChecked: true,
   },
   dealerOwenerList: [],
   regionList: [],

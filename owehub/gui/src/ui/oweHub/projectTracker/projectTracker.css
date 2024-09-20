@@ -23,7 +23,7 @@
   transition: all 0.3s ease;
 }
 
-.pipeline-googlemap svg{
+.pipeline-googlemap svg {
   font-size: 1.5rem;
   color: #377CF6;
 }
@@ -430,6 +430,7 @@
 .last-card {
   margin-right: 12px;
 }
+
 /* 
 .project-card-container-1::-webkit-scrollbar {
   width: 10px;
@@ -579,7 +580,7 @@
   transform: scale(1.05);
 }
 
-.project-card h2{
+.project-card h2 {
   font-weight: 600;
 }
 
@@ -772,12 +773,12 @@
   color: #263747;
 }
 
-.status-card-wrp:hover .view-flex{
+.status-card-wrp:hover .view-flex {
   color: #fff;
 }
 
 .status-card-wrp:hover .view-flex img {
-  filter: brightness(0) invert(1); 
+  filter: brightness(0) invert(1);
 }
 
 .status-graph-heading p {
@@ -1258,6 +1259,18 @@
 
   .hover-text {
     left: 20% !important;
+  }
+}
+
+@media (max-width: 407px) {
+  .pipeline-googlemap {
+    top: 113px !important;
+  }
+}
+
+@media (max-width: 389px) {
+  .pipeline-googlemap {
+    top: 132px !important;
   }
 }
 
@@ -1780,9 +1793,17 @@
 }
 
 @media (max-width: 768px) {
+
   .select-container .css-1n894bm-control,
   .select-container .css-xego5g-control {
     margin-top: 1rem;
+  }
+
+  .pipeline-googlemap {
+    right: 0;
+    top: 96px;
+    height: 36px;
+    width: 36px;
   }
 
   .progress-qc-acre {
