@@ -40,9 +40,9 @@ background-color: transparent !important;
 
 }
 .active_selected_cell{
-    background-color: #377CF6;
-    border: none !important;
-    color: #fff;
+    background-color: #377CF6 ;
+    border: none ;
+    color: #fff ;
 }
 .day_picker table thead tr {
 background-color: #fff !important;
