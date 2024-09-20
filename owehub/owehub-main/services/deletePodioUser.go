@@ -25,11 +25,11 @@ type DeleteResponse struct {
 
 func DeletePodioUsers(userDetails []map[string]interface{}) (error, int) {
 	var (
-		err         error
+		err error
 	)
 
-	log.EnterFn(0, "DeletePodioUsersByCodes")
-	defer func() { log.ExitFn(0, "DeletePodioUsersByCodes", err) }()
+	log.EnterFn(0, "DeletePodioUsers")
+	defer func() { log.ExitFn(0, "DeletePodioUsers", err) }()
 
 	var itemIds []int64
 	for _, user := range userDetails {
@@ -111,8 +111,8 @@ func DeletePodioUsers(userDetails []map[string]interface{}) (error, int) {
 
 func deletePodioUsers(podioAccessToken string, itemIds []int64) (error, int) {
 	var err error
-	log.EnterFn(0, "deletePodioUserByCode")
-	defer func() { log.ExitFn(0, "deletePodioUserByCode", err) }()
+	log.EnterFn(0, "deletePodioUsers")
+	defer func() { log.ExitFn(0, "deletePodioUsers", err) }()
 
 	appID := types.CommGlbCfg.PodioAppCfg.AppId
 	podioAPIURL := fmt.Sprintf("https://api.podio.com/item/app/%v/delete", appID)
@@ -127,26 +127,38 @@ func deletePodioUsers(podioAccessToken string, itemIds []int64) (error, int) {
 		return err, 0
 	}
 
-	req, err := http.NewRequest("POST", podioAPIURL, bytes.NewBuffer(jsonData))
-	if err != nil {
-		err = fmt.Errorf("failed to create HTTP request: %v", err)
-		return err, 0
-	}
+	maxRetries := 5
+	var resp *http.Response
 
-	req.Header.Set("Authorization", "OAuth2 "+podioAccessToken)
-	req.Header.Set("Content-Type", "application/json")
+	for try := 1; try <= maxRetries; try++ {
+		log.FuncInfoTrace(0, "Attempt %d to delete Podio users", try)
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		err = fmt.Errorf("failed to send request: %v", err)
-		return err, 0
-	}
-	defer resp.Body.Close()
+		req, err := http.NewRequest("POST", podioAPIURL, bytes.NewBuffer(jsonData))
+		if err != nil {
+			err = fmt.Errorf("failed to create HTTP request: %v", err)
+			return err, 0
+		}
 
-	if resp.StatusCode != http.StatusOK {
-		err = fmt.Errorf("received non-OK response: %d", resp.StatusCode)
-		return err, 0
+		req.Header.Set("Authorization", "OAuth2 "+podioAccessToken)
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{}
+		resp, err = client.Do(req)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to send request on attempt %d: %v", try, err)
+			continue
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode == http.StatusOK {
+			break
+		} else {
+			log.FuncErrorTrace(0, "Received non-OK response on attempt %d: %d", try, resp.StatusCode)
+		}
+
+		if try == maxRetries {
+			err = fmt.Errorf("failed to delete after %d attempts, last status: %d", try, resp.StatusCode)
+			return err, 0
+		}
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)

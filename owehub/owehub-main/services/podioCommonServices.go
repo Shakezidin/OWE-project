@@ -289,7 +289,7 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 		}
 	}
 
-	if podiodata.DealerItemId <= 0 {
+	if podiodata.DealerItemId >= 0 {
 		itemPayload.Fields["dealer"] = []map[string]interface{}{
 			{
 				"value": podiodata.DealerItemId,
