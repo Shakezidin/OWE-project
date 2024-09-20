@@ -443,17 +443,11 @@
 
 .crossBtn {
   cursor: pointer;
-  margin-top: -8px;
-  margin-bottom: -21px;
   width: 19px;
   height: 19px;
 }
 
 .crossBtn:hover {
-  cursor: pointer;
-  text-align: right;
-  margin-top: -8px;
-  margin-bottom: -21px;
   transform: scale(1.06);
 }
 
