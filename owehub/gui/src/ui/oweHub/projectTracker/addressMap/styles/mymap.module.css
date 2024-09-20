@@ -4,6 +4,30 @@
   align-items: center;
 }
 
+.mapSearch{
+  position: relative;
+}
+
+.mymap_mapSearch__p5rtM{
+  width: 250px;
+}
+
+.mapClose{
+  margin-left: 10px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.mapClose svg{
+  font-size: 1.5rem;
+}
+
+.mapIcon{
+  position: absolute;
+  right: 10px;
+  top: 14px;
+}
+
 .pipeline {
   flex: 1; /* Takes up space on the left */
 }

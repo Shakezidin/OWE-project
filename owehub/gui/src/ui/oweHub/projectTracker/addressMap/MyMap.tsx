@@ -14,6 +14,7 @@ import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { toZonedTime } from 'date-fns-tz';
+import { IoIosSearch } from "react-icons/io";
 import {
   endOfWeek,
   startOfMonth,
@@ -22,6 +23,7 @@ import {
   subDays,
   format,
 } from 'date-fns';
+import Input from '../../../components/text_input/Input';
 
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
@@ -262,7 +264,7 @@ const MyMapComponent: React.FC = () => {
     return toZonedTime(now, userTimezone);
   }
 
-  
+
   const periodFilterOptions: DateRangeWithLabel[] = [
     { label: 'This Week', start: startOfThisWeek, end: today },
     { label: 'Last Week', start: startOfLastWeek, end: endOfLastWeek },
@@ -277,6 +279,16 @@ const MyMapComponent: React.FC = () => {
       <div className={styles.cardHeader}>
         <span className={styles.pipeline}>PipeLine</span>
         <div className={styles.date_calendar}>
+          <div className={styles.mapSearch}>
+            {/* <span className={styles.mapIcon}><IoIosSearch /></span> */}
+            <Input
+              type="text"
+              placeholder="Search for Unique ID"
+              value={""}
+              name="Search for Unique ID"
+              onChange={() => { }}
+            />
+          </div>
           {isCalendarOpen && (
             <div ref={calendarRef} className={styles.lead__datepicker_content}>
               <DateRange
@@ -334,6 +346,9 @@ const MyMapComponent: React.FC = () => {
               <img src={ICONS.includes_icon} alt="" />
             </div>
           </div>
+        </div>
+        <div className={styles.mapClose}>
+          <IoClose />
         </div>
       </div>
 

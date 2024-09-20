@@ -442,9 +442,9 @@ const ProjectPerformence = () => {
     },
   ];
 
-  const cardColors = ['#57B3F1', '#E0728C', '#63ACA3', '#6761DA', '#C470C7'];
-  const hoverColors = ['#DCF1FF', '#FFE1E8', '#CBFFF9', '#DEDCFF', '#FEE0FF'];
-  const activeColors = ['#57B3F1', '#E1728C', '#63ACA3', '#6761DA', '#C470C7'];
+  const cardColors = ['#57B3F1', '#E0728C', '#63ACA3', '#6761DA', '#C470C7', '#A07FFF', '#EE6363'];
+  const hoverColors = ['#DCF1FF', '#FFE1E8', '#CBFFF9', '#DEDCFF', '#FEE0FF', '#E5D1FF', '#FFC9C9'];
+  const activeColors = ['#57B3F1', '#E1728C', '#63ACA3', '#6761DA', '#C470C7', '#A07FFF', '#EE6363'];
 
   const resetPage = () => {
     setPage(1);
@@ -739,7 +739,56 @@ const ProjectPerformence = () => {
   console.log(selectedRangeDate, 'select');
 
   const [isHovered, setIsHovered] = useState(-1);
-  console.log(isHovered, "dasjkdasjkdjkasdasjkda")
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) return;
+
+    let isDown = false;
+    let startX: number;
+    let scrollLeft: number;
+
+    const mouseDownHandler = (e: MouseEvent) => {
+      isDown = true;
+      container.classList.add('active');
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+      container.style.cursor = "grabbing";
+    };
+
+    const mouseLeaveHandler = () => {
+      isDown = false;
+      container.style.cursor = "grab";
+    };
+
+    const mouseUpHandler = () => {
+      isDown = false;
+      container.style.cursor = "grab";
+    };
+
+    const mouseMoveHandler = (e: MouseEvent) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1;
+      container.scrollLeft = scrollLeft - walk;
+    };
+
+    container.addEventListener('mousedown', mouseDownHandler);
+    container.addEventListener('mouseleave', mouseLeaveHandler);
+    container.addEventListener('mouseup', mouseUpHandler);
+    container.addEventListener('mousemove', mouseMoveHandler);
+
+    return () => {
+      container.removeEventListener('mousedown', mouseDownHandler);
+      container.removeEventListener('mouseleave', mouseLeaveHandler);
+      container.removeEventListener('mouseup', mouseUpHandler);
+      container.removeEventListener('mousemove', mouseMoveHandler);
+    };
+  }, []);
 
   return (
     <div className="">
@@ -791,7 +840,11 @@ const ProjectPerformence = () => {
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
         </div>
         <div className="flex stats-card-wrapper">
-          <div style={{ width: '100%' }} className="project-card-container-1 ">
+          <div
+            ref={containerRef}
+            style={{ width: '100%', cursor: 'grab' }}
+            className="project-card-container-1"
+          >
             {loading ? (
               <div
                 style={{
@@ -806,32 +859,32 @@ const ProjectPerformence = () => {
               </div>
             ) : (
               <>
-                {' '}
                 {topCardsData.map((card, index) => {
                   const cardColor = cardColors[index % cardColors.length];
                   const hoverColor = hoverColors[index % hoverColors.length];
                   const activeColor = activeColors[index % activeColors.length];
                   const isActive = activeCardId === card.id;
+
                   const handleCardClick = (cardId: any, title: string) => {
                     setActiveCardId(activeCardId === cardId ? null : cardId);
                     setActiveCardTitle(activeCardId === cardId ? '' : title);
                   };
 
                   return (
-                    <div
-                      className="flex items-center arrow-wrap"
-                      style={{ marginRight: '-20px' }}
-                    >
+                    <div className="flex items-center arrow-wrap" style={{ marginRight: '-20px' }}>
                       <div
                         key={card.id}
-                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
+                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
+                          } ${isActive ? 'active' : ''}`}
                         onMouseEnter={() => setIsHovered(index)}
                         onMouseLeave={() => setIsHovered(-1)}
                         style={{
-                          backgroundColor: isActive ? activeColor : isHovered === index ? hoverColor : "#F6F6F6",
-                          border:
-                            isHovered === index ? `none`
-                              : `2px solid ${cardColor}`,
+                          backgroundColor: isActive
+                            ? activeColor
+                            : isHovered === index
+                              ? hoverColor
+                              : '#F6F6F6',
+                          border: isHovered === index ? `none` : `2px solid ${cardColor}`,
                         }}
                         onClick={(e) => {
                           handlePendingRequest(card?.pending);
@@ -844,21 +897,30 @@ const ProjectPerformence = () => {
                         >
                           {activeCardId === card.id ? <MdDone /> : card.id}
                         </span>
-                        <p style={{ color: isActive ? "#fff" : '' }}>{card.title || 'N/A'}</p>
-                          <h2 style={{ color: isHovered === index && !isActive ? '#263747' : isActive ? '#fff' : cardColor }}>{card.value || '0'}</h2>
+                        <p style={{ color: isActive ? '#fff' : '' }}>
+                          {card.title || 'N/A'}
+                        </p>
+                        <h2
+                          style={{
+                            color:
+                              isHovered === index && !isActive
+                                ? '#263747'
+                                : isActive
+                                  ? '#fff'
+                                  : cardColor,
+                          }}
+                        >
+                          {card.value || '0'}
+                        </h2>
                       </div>
                       {index < topCardsData.length - 1 && (
-                        <div
-                          className="flex arrow-dir"
-                          style={{ padding: '0 5px' }}
-                        >
+                        <div className="flex arrow-dir" style={{ padding: '0 5px' }}>
                           <MdOutlineKeyboardDoubleArrowRight
                             style={{
                               width: '1.5rem',
                               height: '1.5rem',
                               color: cardColor,
-                              marginLeft:
-                                activeCardId === card.id ? '8px' : '0px',
+                              marginLeft: activeCardId === card.id ? '8px' : '0px',
                             }}
                           />
                           <MdOutlineKeyboardDoubleArrowRight
@@ -866,8 +928,7 @@ const ProjectPerformence = () => {
                               marginLeft: '-10px',
                               height: '1.5rem',
                               width: '1.5rem',
-                              color:
-                                cardColors[(index + 1) % cardColors.length],
+                              color: cardColors[(index + 1) % cardColors.length],
                             }}
                           />
                         </div>
@@ -879,6 +940,7 @@ const ProjectPerformence = () => {
             )}
           </div>
         </div>
+
       </div>
 
       <div
