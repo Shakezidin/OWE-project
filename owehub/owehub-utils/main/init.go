@@ -62,6 +62,13 @@ var apiRoutes = ApiRoutes{
 		false,
 		[]types.UserGroup{},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/notification_graph",
+		handleDynamicLoggingConf,
+		false,
+		[]types.UserGroup{},
+	},
 }
 
 /******************************************************************************
