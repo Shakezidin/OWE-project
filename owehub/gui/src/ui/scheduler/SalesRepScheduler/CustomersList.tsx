@@ -5,7 +5,6 @@ import { ICONS } from '../../../resources/icons/Icons';
 import { CiMail } from 'react-icons/ci';
 import { BiPhone } from 'react-icons/bi';
 import { TbChevronDown } from 'react-icons/tb';
-import GoogleMapReact from 'google-map-react';
 import { CSSObjectWithLabel } from 'react-select';
 import { IoLocationOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
@@ -304,7 +303,11 @@ const CustomersList = ({ mapStyles = {} }) => {
         </div>
 
         <div className={` bg-white ${styles.calendar_wrapper}`} >
-          <DayPickerCalendar dayWithProgress={dayWithProgress} />
+          <h5 style={{fontWeight:500,fontSize:16}} className='mb2' >Select Date & Time</h5>
+          <div className="flex items-start justify-between">
+          <DayPickerCalendar onClick={(e)=>console.log(e)} dayWithProgress={dayWithProgress} />
+
+          </div>
         </div>
       </div>
     </>
