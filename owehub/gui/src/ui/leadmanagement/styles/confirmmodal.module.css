@@ -446,29 +446,12 @@ padding-top: 1px;
 
 .crossBtn {
   cursor: pointer;
-<<<<<<< HEAD
-  margin-top: -8px;
-  margin-bottom: -21px;
-  width: 19.5px;
-  height: 19.5px;
-  /* background-color: red; */
-
-}
-
-.crossBtn:hover {
-  cursor: pointer;
-  text-align: right;
-  margin-top: -8px;
-  margin-bottom: -21px;
-  transform: scale(1.2);
-=======
   width: 19px;
   height: 19px;
 }
 
 .crossBtn:hover {
   transform: scale(1.06);
->>>>>>> 32fb33def445e4f714b38ef8fe860607548ad88f
 }
 
 .edit_modal_open {
