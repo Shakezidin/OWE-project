@@ -544,11 +544,11 @@ const LeadManagementDashboard = () => {
 
   return (
     <div className={styles.dashboard}>
-      {showConfirmModal && (
+      {/* {showConfirmModal && (
         <ConfirmModel
         // isOpen={filterOPen} handleClose={filterClose}
         />
-      )}
+      )} */}
 
       {showArchiveModal && (
         <ArchiveModal
