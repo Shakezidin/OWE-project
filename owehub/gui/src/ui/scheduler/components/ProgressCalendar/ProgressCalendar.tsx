@@ -9,8 +9,18 @@ type DayWithProgress = {
     progress: number,
     id: number
 }
+type TEvent = {
+    id: number
+}
 type DayPickerCalendarProps = {
-    dayWithProgress?: DayWithProgress[]
+    dayWithProgress?: DayWithProgress[],
+    onClick?: ({ date, event }: { date: Date, event: TEvent }) => void
+}
+
+interface ExtendedDayButtonProps extends DayButtonProps {
+    dayWithProgress: DayWithProgress[] | undefined;
+    selected: Date | undefined;
+    onDateSelect?: ({ date, event }: { date: Date; event: TEvent }) => void;
 }
 
 const getCurrentDayExcludedHoliday = () => {
@@ -45,24 +55,25 @@ const getColorByPercent = (percent: number): string => {
     }
 };
 
-const DayButton = (props: DayButtonProps & { dayWithProgress: DayWithProgress[] | undefined, selected: Date }) => {
-    const { day, modifiers, selected, dayWithProgress, ...buttonProps } = props;
+const DayButton = (props: ExtendedDayButtonProps) => {
+    const { day, modifiers, selected, dayWithProgress, onSelect, className, ...buttonProps } = props;
     const nextSevenWeekdays = getNextSevenWeekdays();
     const isNext = nextSevenWeekdays.some(date =>
         date.getTime() === new Date(day.date).setHours(0, 0, 0, 0)
     );
-    const colorProgress = dayWithProgress?.find(date =>
+    const findDay = dayWithProgress?.find(date =>
         date.date.getDate() === day.date.getDate()
         && date.date.getMonth() === day.date.getMonth()
         && date.date.getFullYear() === day.date.getFullYear()
-    )?.progress;
+    );
+    const colorProgress = findDay?.progress
     const getColor = colorProgress ? getColorByPercent(colorProgress) : ""
-    const isSelected = selected.getTime() === new Date(day.date).setHours(0, 0, 0, 0)
-    return <button {...buttonProps} disabled={!isNext} style={{ width: "52px" }} >
+    const isSelected = selected?.getTime() === new Date(day.date).setHours(0, 0, 0, 0)
+    return <button {...buttonProps} disabled={!isNext} className={` ${className} ${!isNext ? styles.disable_day_cell : ""}`} onClick={() => props.onDateSelect?.({ date: day.date, event: { id: findDay?.id! } })} style={{ width: "52px" }}  >
 
         {isNext ?
             <CircularProgress filledColor={getColor} strokeWidth={7} size={50} progress={colorProgress || 0}>
-                <button className={`${styles.day_cell} ${isNext ? isSelected ? styles.active_selected_cell : styles.active_day_cell : ''}`}>
+                <button className={`${styles.day_cell} ${isNext ? isSelected ? styles.active_selected_cell : styles.active_day_cell : ''}`}  >
                     {day.date.getDate()}
                 </button>
             </CircularProgress>
@@ -71,7 +82,7 @@ const DayButton = (props: DayButtonProps & { dayWithProgress: DayWithProgress[] 
     </button>
 }
 const DayPickerCalendar = (props: DayPickerCalendarProps) => {
-    const [selected, setSelected] = useState<Date>(getCurrentDayExcludedHoliday);
+    const [selected, setSelected] = useState<Date>();
     const defaultClassNames = getDefaultClassNames();
     return (
         <DayPicker
@@ -81,9 +92,9 @@ const DayPickerCalendar = (props: DayPickerCalendarProps) => {
             required
             showOutsideDays
             selected={selected}
-            classNames={{ caption_label: styles.caption_label, month_caption: `${defaultClassNames.month_caption} items-center` }}
+            classNames={{ caption_label: styles.caption_label, month_caption: `${defaultClassNames.month_caption} items-center`, }}
             components={{
-                DayButton: (prop) => <DayButton {...prop} selected={selected} dayWithProgress={props.dayWithProgress} />
+                DayButton: (prop) => <DayButton {...prop} selected={selected} dayWithProgress={props.dayWithProgress} onDateSelect={props.onClick} />
             }}
             onSelect={setSelected}
         />
