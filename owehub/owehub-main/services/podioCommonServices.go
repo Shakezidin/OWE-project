@@ -24,11 +24,11 @@ func assignUserRoleToPodioId(role string) int {
 	case "Sale Representative":
 		positionId = 2
 	case "Regional Manager":
-		positionId = 3
+		positionId = 7
 	case "Sales Manager":
-		positionId = 4
+		positionId = 8
 	case "Dealer Owner":
-		positionId = 5
+		positionId = 6
 	default:
 		positionId = 0
 	}

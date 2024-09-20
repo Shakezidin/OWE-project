@@ -547,11 +547,20 @@ const LeadManagementDashboard = () => {
     setToggledId((prevId) => (prevId === id ? null : id));
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className={styles.dashboard}>
       {showConfirmModal && (
         <ConfirmModel
-        // isOpen={filterOPen} handleClose={filterClose}
+          isOpen1={isModalOpen} onClose1={handleCloseModal}
         />
       )}
 
@@ -805,7 +814,7 @@ const LeadManagementDashboard = () => {
             <tbody>
               {currentLeads.map((lead, index) => (
                 <tr key={index} className={styles.history_lists}>
-                  <td className={styles.history_list_inner}>
+                  <td className={styles.history_list_inner} onClick={handleOpenModal}>
                     <label>
                       <input
                         type="checkbox"
