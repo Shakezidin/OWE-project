@@ -18,12 +18,12 @@ type GetUserAddressReq struct {
 }
 
 type GetUserAddressData struct {
-	UniqueId      string `json:"unique_id"`
-	HomeOwner     string `json:"home_owner"`
-	Address       string `json:"address"`
-	Latitute      string `json:"latitute"`
-	Longitude     string `json:"lognitude"`
-	ProjectStatus string `json:"project_status"`
+	UniqueId      string  `json:"unique_id"`
+	HomeOwner     string  `json:"home_owner"`
+	Address       string  `json:"address"`
+	Latitute      float64 `json:"latitute"`
+	Longitude     float64 `json:"lognitude"`
+	ProjectStatus string  `json:"project_status"`
 }
 
 type GetUserAddressList struct {

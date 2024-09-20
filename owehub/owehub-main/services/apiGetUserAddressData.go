@@ -151,8 +151,9 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		filter, whereEleList = PrepareSaleRepAddressFilters(tableName, dataReq, SaleRepList)
 	}
 
-	query = `SELECT unique_id, address, home_owner, project_status 
-		FROM ` + db.ViewName_ConsolidatedDataView
+	query = `SELECT c.unique_id, c.address, c.home_owner, c.project_status, cs.address_lat, cs.address_lng
+			FROM consolidated_data_view c
+			LEFT JOIN customers_customers_schema cs ON c.unique_id = cs.unique_id `
 
 	if filter != "" {
 		queryWithFiler = query + filter
@@ -188,16 +189,16 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 			HomeOwner = ""
 		}
 
-		Latitude, ok := item["latitude"].(string)
-		if !ok || Latitude == "" {
+		Latitude, ok := item["address_lat"].(float64)
+		if !ok || Latitude == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get latitude for Record ID %v. Item: %+v\n", UniqueId, item)
-			Latitude = ""
+			Latitude = 0.0
 		}
 
-		Longitude, ok := item["longitude"].(string)
+		Longitude, ok := item["address_lng"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get Longitude for Record ID %v. Item: %+v\n", UniqueId, item)
-			Longitude = ""
+			Longitude = 0.0
 		}
 
 		ProjectStatus, ok := item["project_status"].(string)
@@ -253,7 +254,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" c.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -268,7 +269,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 		}
 
 		// Add condition for LOWER(unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(unique_id) IN (")
+		filtersBuilder.WriteString("LOWER(c.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -280,7 +281,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 		filtersBuilder.WriteString(") ")
 
 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR LOWER(unique_id) ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR LOWER(c.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
@@ -292,7 +293,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 		filtersBuilder.WriteString("])")
 
 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR c.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -309,7 +310,6 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 	}
 
 	// Add dealer filter if not adminCheck and not filterCheck
-	log.FuncErrorTrace(0, "dealer names %v, length %v", dataFilter.DealerNames, len(dataFilter.DealerNames))
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -317,7 +317,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" c.dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
 		for _, dealer := range dataFilter.DealerNames {
 			whereEleList = append(whereEleList, dealer)
 		}
@@ -329,7 +329,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` project_status != 'DUPLICATE'`)
+	filtersBuilder.WriteString(` c.project_status != 'DUPLICATE'`)
 
 	// filtersBuilder.WriteString(` unique_id IS NOT NULL
 	// 		AND unique_id <> ''
@@ -383,7 +383,7 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE c.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -398,7 +398,7 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		}
 
 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(unique_id) IN (")
+		filtersBuilder.WriteString("LOWER(c.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -410,7 +410,7 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		filtersBuilder.WriteString(") ")
 
 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR LOWER(unique_id) ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR LOWER(c.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
@@ -422,7 +422,7 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		filtersBuilder.WriteString("])")
 
 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR c.home_owner ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -447,7 +447,7 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" primary_sales_rep IN (")
+		filtersBuilder.WriteString(" c.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -467,13 +467,13 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" c.dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
 		for _, dealer := range dataFilter.DealerNames {
 			whereEleList = append(whereEleList, dealer)
 		}
 	}
 
-	filtersBuilder.WriteString(` AND project_status != 'DUPLICATE'`)
+	filtersBuilder.WriteString(` AND c.project_status != 'DUPLICATE'`)
 
 	// // Add the always-included filters
 	// filtersBuilder.WriteString(` AND unique_id IS NOT NULL
