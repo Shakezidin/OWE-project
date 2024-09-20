@@ -14,6 +14,11 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import DayPickerCalendar from '../components/ProgressCalendar/ProgressCalendar';
 
+interface ITimeSlot {
+  id: number;
+  time: string;
+  uniqueId: number
+}
 const Marker = ({
   text,
   lat,
@@ -67,6 +72,8 @@ const CustomersList = ({ mapStyles = {} }) => {
   const [customer, setCustomers] = useState<ICustomer[]>(customers);
   const [isPending, setIsPending] = useState(true);
   const [page, setPage] = useState(1);
+  const [selectedDate, setSelectedDate] = useState<Date>()
+  const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([])
 
   const getCustomers = async () => {
     try {
@@ -112,6 +119,13 @@ const CustomersList = ({ mapStyles = {} }) => {
     },
     zoom: 11,
   };
+  const timeSlots = [
+    { id: 1, time: "6:00 Am - 9:00 Am", uniqueId: 1 },
+    { id: 2, time: "9:30 Am - 12:30 Pm", uniqueId: 2 },
+    { id: 3, time: "1:00 Pm - 4:00 Pm", uniqueId: 3 },
+    { id: 1, time: "4:30 Pm - 7:30 Pm", uniqueId: 4 },
+    { id: 2, time: "8:00 Pm - 11:00 Pm", uniqueId: 5 },
+  ];
 
   const dayWithProgress = [
     { id: 1, date: new Date(2024, 8, 20), progress: 75 },
@@ -303,10 +317,22 @@ const CustomersList = ({ mapStyles = {} }) => {
         </div>
 
         <div className={` bg-white ${styles.calendar_wrapper}`} >
-          <h5 style={{fontWeight:500,fontSize:16}} className='mb2' >Select Date & Time</h5>
+          <h5 style={{ fontWeight: 500, fontSize: 16 }} className='mb2' >Select Date & Time</h5>
           <div className="flex items-start justify-between">
-          <DayPickerCalendar onClick={(e)=>console.log(e)} dayWithProgress={dayWithProgress} />
-
+            <DayPickerCalendar onClick={(e) => {
+              setSelectedDate(e.date)
+              setAvailableSlots([...timeSlots.filter(slot => slot.id === e.event.id)])
+            }} dayWithProgress={dayWithProgress} />
+            {selectedDate ? <div className='flex flex-column  justify-center'>
+              <h5 className=' my2' style={{ fontSize: 14, fontWeight: 500 }}> Select time slot</h5>
+              <div className='flex flex-column items-center justify-center'>
+                {!!availableSlots.length ? availableSlots.map((slot) => {
+                  return <button key={slot.uniqueId} className={styles.time_slot_pill}>
+                    {slot.time}
+                  </button>
+                }) : <h5>No Slot Available</h5>}
+              </div>
+            </div> : ""}
           </div>
         </div>
       </div>

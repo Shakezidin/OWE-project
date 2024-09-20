@@ -21,11 +21,31 @@
   padding-inline: 20px;
 }
 
+.time_slot_pill{
+  padding: 6px 9.5px;
+  border:1px solid #4C4C4C;
+  border-radius: 6px;
+  background-color: #fff;
+  outline: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 500ms;
+  margin-bottom: 19px;
+  min-width: 152px;
+  display: grid;
+  place-items: center;
+}
+
+.time_slot_pill:hover{
+  transition: all 500ms;
+  background-color: #D5E4FF;
+  border-color: #D5E4FF;
+}
 
 .calendar_wrapper {
   flex-basis: 60%;
   padding-top: 25px;
-  padding-left: 29px;
+  padding-inline: 29px;
   border-radius: 8px;
 }
 
