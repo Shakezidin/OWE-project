@@ -33,24 +33,101 @@ func SendMailToClient(email string, username string) (err error) {
 	plainTextContent := ""
 
 	htmlContent := fmt.Sprintf(`
-    <html>
-        <body>
-            <p>Dear %s,</p>
-            <p>We're thrilled to welcome you to Our World Energy!</p>
-            <p>Your account has been successfully created.</p>
-            <p>Here are your account details:</p>
-            <p>Email: %s</p>
-            <p>Password: %s</p>
-            <p>
-                <a clicktracking="off" href="https://www.owe-hub.com/login" 
-                   style="display: inline-block; padding: 5px 10px; font-size: 14px; color: #ffffff; background-color: #007bff; text-align: center; text-decoration: none; border-radius: 5px;">
-                   Login to Your Account
-                </a>
-            </p>
-            <p>Thank you for choosing us!</p>
-            <p>Best regards,<br>The Team</p>
-        </body>
-    </html>`,
+	<html>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    "
+  >
+    <div
+      style="
+        background-color: #ffffff;
+        margin: 50px auto;
+        padding: 20px;
+        max-width: 600px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <div style="text-align: center; padding-bottom: 20px">
+        <img
+          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
+           width="300"
+        />
+        <h1 style="font-size: 24px; color: #333333; margin: 0">
+          Welcome to Our World Energy
+        </h1>
+      </div>
+      <div style="font-size: 16px; color: #555555; line-height: 1.6">
+        <p>Dear %s,</p>
+        <p>
+          We're excited to have you on
+          board and can't wait for you to start exploring our platform.
+        </p>
+        <p>
+          To get started, please take a moment to set up your account. This will
+          help you access all the features and resources available to you.
+        </p>
+        <p>
+          <a 
+		    clicktracking="off"
+            href="https://www.owe-hub.com/login"
+            style="color: #007bff; border-radius: 5px"
+            >Click here to set up your account</a
+          >
+        </p>
+
+        <p><strong>Email:</strong> %s</p>
+        <p><strong>Password:</strong>%s</p>
+
+        <p>Here's a quick guide to help you through the setup process:</p>
+        <p>
+          <a 
+		    clicktracking="off"
+            href="https://www.loom.com/share/a19e3761db904b1fb91c69de971a597a"
+            style="color: #007bff"
+            >Watch the Setup Video</a
+          >
+        </p>
+        <p>
+          If you have any questions or need assistance, feel free to reach out
+          to our IT team at
+          <a 
+		    clicktracking="off"
+            href="mailto:it@ourworldenergy.com"
+            style="color: #007bff; text-decoration: none"
+            >it@ourworldenergy.com</a
+          >.
+        </p>
+        <p>
+          Thank you for joining us, and we look forward to supporting you on
+          your journey!
+        </p>
+        <p style="margin-top: 30px">Thanks again,</p>
+        <p>Warm regards,<br /><strong>OWE IT Team</strong></p>
+      </div>
+      <div
+        style="
+          margin-top: 30px;
+          text-align: center;
+          font-size: 12px;
+          color: #888888;
+        "
+      >
+        <p>&copy; 2024 Our World Energy. All rights reserved.</p>
+
+        <img
+          src="https://i.ibb.co/FJcyHcX/image-10-1.png"
+		  width="300"
+        />
+      </div>
+    </div>
+  </body>
+</html>
+   `,
 		username, email, createUserReqPassword,
 	)
 

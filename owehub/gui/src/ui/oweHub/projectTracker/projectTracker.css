@@ -385,9 +385,11 @@
   flex-wrap: nowrap;
   gap: 1.5rem;
   max-width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
   padding: 1rem 1.25rem;
-  scroll-behavior: smooth;
+  user-select: none;
 }
 
 .pipeline-header-btns {
@@ -428,7 +430,7 @@
 .last-card {
   margin-right: 12px;
 }
-
+/* 
 .project-card-container-1::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -454,7 +456,7 @@
 
 .project-card-container-1::-webkit-scrollbar-corner {
   background-color: transparent;
-}
+} */
 
 .project-card-container-1 .project-card {
   position: relative;

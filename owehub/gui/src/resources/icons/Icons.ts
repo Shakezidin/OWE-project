@@ -143,6 +143,7 @@ import pdf from '../../resources/assets/pdf.svg';
 import leadMngExport from '../../resources/assets/export-lead.svg';
 import chevronDown from '../assets/chevron-down.svg'
 import chevronUp from '../assets/chevron-Up.svg'
+import declinedArchive from '../assets/archiveIcon.svg'
 
 
 export const ICONS = {
@@ -304,4 +305,5 @@ export const ICONS = {
   LeadMngExport:leadMngExport,
   chevronDown:chevronDown,
   chevronUp:chevronUp,
+  declinedArchive:declinedArchive
 };

@@ -24,11 +24,11 @@ func assignUserRoleToPodioId(role string) int {
 	case "Sale Representative":
 		positionId = 2
 	case "Regional Manager":
-		positionId = 3
+		positionId = 7
 	case "Sales Manager":
-		positionId = 4
+		positionId = 8
 	case "Dealer Owner":
-		positionId = 5
+		positionId = 6
 	default:
 		positionId = 0
 	}
@@ -289,7 +289,7 @@ func updatePodioUser(userData models.CreateUserReq, podioAccessToken string, pod
 		}
 	}
 
-	if podiodata.DealerItemId <= 0 {
+	if podiodata.DealerItemId > 0 {
 		itemPayload.Fields["dealer"] = []map[string]interface{}{
 			{
 				"value": podiodata.DealerItemId,

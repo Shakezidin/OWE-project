@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
+import useWindowWidth from '../../hooks/useWindowWidth';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -378,8 +379,6 @@ const LeadManagementDashboard = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-
 
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
@@ -537,7 +536,7 @@ const LeadManagementDashboard = () => {
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
 
-    setSelectedLead(lead);
+    // setSelectedLead(lead);
 
     console.log("UserNAME BUTTON CALLED");
   };
@@ -557,11 +556,20 @@ const LeadManagementDashboard = () => {
     setToggledId((prevId) => (prevId === id ? null : id));
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className={styles.dashboard}>
       {showConfirmModal && (
         <ConfirmModel
-        // isOpen={filterOPen} handleClose={filterClose}
+          isOpen1={isModalOpen} onClose1={handleCloseModal}
         />
       )}
 
@@ -814,8 +822,9 @@ const LeadManagementDashboard = () => {
           <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}>
-                  <td className={styles.history_list_inner}>
+                <tr key={index} className={styles.history_lists}
+                >
+                  <td className={`${lead.status === 'Declined' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
                     <label>
                       <input
                         type="checkbox"
@@ -850,6 +859,37 @@ const LeadManagementDashboard = () => {
                       </span>
                     </div>
                     <div className={styles.address}>{lead.address}</div>
+                   
+
+                    {lead.status === 'Declined' && (
+                      <div className={styles.actionButtons}>
+                        <button
+                          onClick={() => handleReschedule(lead)}
+                          className={styles.rescheduleButton}
+                        >
+                          Reschedule
+                        </button>
+                        <button
+                          onClick={() => handleArchive(lead)}
+                          className={styles.archiveButton}
+                        >
+                          Archive
+                        </button>
+                        {/* {
+                          isTablet ?
+                          <button
+                          onClick={() => handleArchive(lead)}
+                          className={styles.archiveButton}
+                          >
+                            <img src={ICONS.declinedArchive}/>
+                          </button>
+                          :
+                      
+                        } */}
+                       
+                      </div>
+                    )}
+
                     <div
                       className={styles.chevron_down}
                       onClick={() => handleChevronClick(lead.id)}
@@ -867,23 +907,6 @@ const LeadManagementDashboard = () => {
                         }
                       />
                     </div>
-
-                    {lead.status === 'Declined' && (
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() => handleReschedule(lead)}
-                          className={styles.rescheduleButton}
-                        >
-                          Reschedule
-                        </button>
-                        <button
-                          onClick={() => handleArchive(lead)}
-                          className={styles.archiveButton}
-                        >
-                          Archive
-                        </button>
-                      </div>
-                    )}
                   </td>
                 </tr>
               ))}

@@ -413,10 +413,6 @@ function App() {
             element={<LeadManagementNew />}
           />
           <Route
-            path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL}
-            element={<ConfirmaModel />}
-          />
-          <Route
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
             element={<LeradManagementHistory />}
           />

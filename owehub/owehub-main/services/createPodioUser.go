@@ -107,6 +107,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 		return err
 	}
 
+	log.FuncInfoTrace(0, "Data to be updated in podio -> %v", podioData)
 	CreateOrUpdatePodioUser(reqData, podioData, podioAccessToken, userExists)
 	return err
 }
