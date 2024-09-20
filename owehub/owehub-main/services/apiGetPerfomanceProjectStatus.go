@@ -1030,7 +1030,10 @@ func getCadColor(createdDate, completedDate, site_survey_completed_date string) 
 
 func roofingColor(roofingCreateDate, roofingCompleteDate, roofingStatus string) (string, int64, string) {
 	var count int64
-	if roofingCreateDate != "" && roofingCompleteDate == "" && roofingStatus != "Customer Managed-COMPLETE" && roofingStatus != "COMPLETE" && roofingStatus != "No Roof Work Completed" {
+	if roofingCreateDate != "" && roofingCompleteDate == "" && roofingStatus != "Customer Managed-COMPLETE" && roofingStatus != "COMPLETE" && roofingStatus != "No Roof work required for Solar" &&
+		roofingStatus != "No Roof work required for Solar,CANCEL" && roofingStatus != "No Roof work required for Solar,COMPLETE" && roofingStatus != "No Roof work required for Solar,COMPLETE,COMPLETE" &&
+		roofingStatus != "No Roof work required for Solar,COMPLETE,COMPLETE,COMPLETE" && roofingStatus != "No Roof work required for Solar,Customer Managed-COMPLETE" && roofingStatus != "No Roof work required for Solar,Customer Managed" &&
+		roofingStatus != "No Roof work required for Solar,COMPLETE,No Roof work required for Solar" && roofingStatus != "No Roof work required for Solar,No Roof work required for Solar" {
 		count = 1
 	}
 	if roofingCompleteDate != "" {
