@@ -13,13 +13,17 @@
 }
 
 .customer_wrapper_list {
-  flex-basis: calc(100%);
+  flex-basis: calc(40% - 13px );
   border-radius: 8px;
   background-color: #fff;
   padding-top: 15px;
   padding-inline: 20px;
 }
 
+.calendar_wrapper{
+  flex-basis: 60%;
+  border-radius: 8px;
+}
 .sr_top {
   display: flex;
   flex-direction: row;

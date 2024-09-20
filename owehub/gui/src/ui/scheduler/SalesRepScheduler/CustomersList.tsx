@@ -13,7 +13,7 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
-import SchedulerCalendar from '../components/SchedulerCalendar/SchedulerCalendar';
+import DayPickerCalendar from '../components/ProgressCalendar/ProgressCalendar';
 
 const Marker = ({
   text,
@@ -113,6 +113,16 @@ const CustomersList = ({ mapStyles = {} }) => {
     },
     zoom: 11,
   };
+
+  const dayWithProgress = [
+    { id: 1, date: new Date(2024, 8, 20), progress: 75 },
+    { id: 2, date: new Date(2024, 8, 23), progress: 35 },
+    { id: 3, date: new Date(2024, 8, 24), progress: 70 },
+    { id: 4, date: new Date(2024, 8, 25), progress: 63 },
+    { id: 5, date: new Date(2024, 8, 26), progress: 79 },
+    { id: 6, date: new Date(2024, 8, 27), progress: 20 },
+    { id: 7, date: new Date(2024, 8, 30), progress: 95 },
+  ];
 
   return (
     <>
@@ -292,7 +302,10 @@ const CustomersList = ({ mapStyles = {} }) => {
             )}
           </div>
         </div>
-        <SchedulerCalendar />
+
+        <div className={` bg-white ${styles.calendar_wrapper}`} >
+          <DayPickerCalendar dayWithProgress={dayWithProgress} />
+        </div>
       </div>
     </>
   );
