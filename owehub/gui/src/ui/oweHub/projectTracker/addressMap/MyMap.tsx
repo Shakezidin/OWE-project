@@ -14,7 +14,7 @@ import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { toZonedTime } from 'date-fns-tz';
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch } from 'react-icons/io';
 import {
   endOfWeek,
   startOfMonth,
@@ -35,6 +35,7 @@ interface LocationInfo {
   lng: any;
   unique_id: string;
   home_owner: string;
+  project_status:string;
 }
 export type DateRangeWithLabel = {
   label?: string;
@@ -181,6 +182,7 @@ const MyMapComponent: React.FC = () => {
             lng: location.lognitude, // Adjust to match your API response
             unique_id: location.unique_id || 'No info available', // Default info if not provided
             home_owner: location.home_owner,
+            project_status:location.project_status
           })
         );
         setLocations(formattedData);
@@ -264,7 +266,6 @@ const MyMapComponent: React.FC = () => {
     return toZonedTime(now, userTimezone);
   }
 
-
   const periodFilterOptions: DateRangeWithLabel[] = [
     { label: 'This Week', start: startOfThisWeek, end: today },
     { label: 'Last Week', start: startOfLastWeek, end: endOfLastWeek },
@@ -284,9 +285,9 @@ const MyMapComponent: React.FC = () => {
             <Input
               type="text"
               placeholder="Search for Unique ID"
-              value={""}
+              value={''}
               name="Search for Unique ID"
-              onChange={() => { }}
+              onChange={() => {}}
             />
           </div>
           {isCalendarOpen && (
@@ -391,9 +392,18 @@ const MyMapComponent: React.FC = () => {
                 pixelOffset: new window.google.maps.Size(0, -50),
               }}
             >
-              <div className="flex flex-column pb2 pr2 items-center justify-center">
-                <h4> Unique ID: {selectedLocation.unique_id}</h4>
-                <p>Home Owner: {selectedLocation.home_owner}</p>
+              <div
+                className={`${styles.infoWindowCustom} bg-white shadow-xl p-4 rounded-lg pl-2`}
+              >
+                <p className="font-bold text-lg text-gray-800 mb-2">
+                  Home Owner: {selectedLocation.home_owner}
+                </p>
+                <p className="text-sm text-gray-600 mb-1">
+                  Unique ID: {selectedLocation.unique_id}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Project Status: {selectedLocation.project_status}
+                </p>
               </div>
             </InfoWindow>
           )}

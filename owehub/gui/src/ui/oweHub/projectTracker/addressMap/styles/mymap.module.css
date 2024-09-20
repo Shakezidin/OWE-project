@@ -4,6 +4,16 @@
   align-items: center;
 }
 
+.info-window-custom {
+  max-width: 200px;
+  border: 1px solid #ddd;
+  transition: transform 0.3s ease-in-out;
+}
+
+.info-window-custom:hover {
+  transform: scale(1.05);
+}
+
 .mapSearch{
   position: relative;
 }
