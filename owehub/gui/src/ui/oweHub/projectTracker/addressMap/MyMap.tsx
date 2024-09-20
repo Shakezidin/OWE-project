@@ -239,7 +239,7 @@ const MyMapComponent: React.FC = () => {
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
-      
+
     }, 800),
     []
   );
@@ -290,21 +290,27 @@ const MyMapComponent: React.FC = () => {
     <div>
       <div className={styles.cardHeader}>
         <span className={styles.pipeline}>Install Map</span>
+        <div className={styles.mapClose}>
+          <IoClose />
+        </div>
+      </div>
+
+      <div className={styles.mapHeader2}>
         <div className={styles.date_calendar}>
           <div className={styles.mapSearch}>
             {/* Search Input */}
             <Input
-                  type="text"
-                  placeholder="Search for Unique ID or Name"
-                  value={search}
-                  name="Search Here ...."
-                  onChange={(e) => {
-                    handleSearchChange(e);
-                    setSearch(e.target.value);
-                  }}
-                />
+              type="text"
+              placeholder="Search for Unique ID or Name"
+              value={search}
+              name="Search Here ...."
+              onChange={(e) => {
+                handleSearchChange(e);
+                setSearch(e.target.value);
+              }}
+            />
           </div>
-          {isCalendarOpen && (
+          {/* {isCalendarOpen && (
             <div ref={calendarRef} className={styles.lead__datepicker_content}>
               <DateRange
                 editableDateInputs={true}
@@ -321,8 +327,8 @@ const MyMapComponent: React.FC = () => {
                 </button>
               </div>
             </div>
-          )}
-          <div>
+          )} */}
+          {/* <div>
             {selectedDates.startDate && selectedDates.endDate && (
               <div className={styles.hist_date}>
                 <span className={styles.date_display}>
@@ -360,10 +366,7 @@ const MyMapComponent: React.FC = () => {
             >
               <img src={ICONS.includes_icon} alt="" />
             </div>
-          </div>
-        </div>
-        <div className={styles.mapClose}>
-          <IoClose />
+          </div> */}
         </div>
       </div>
 
