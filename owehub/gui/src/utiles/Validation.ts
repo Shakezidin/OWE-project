@@ -96,6 +96,7 @@ export const createUserObject = (
     designation: 'SE',
     description: formData.description,
     zip_code: formData.zip_code,
+    podio_checked: formData.podioChecked,
   };
   if (formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER) {
     createObject = {
