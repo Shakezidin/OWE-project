@@ -79,14 +79,14 @@
 }
 
 .customer_details {
-  width: 100%;
+  width: auto;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   padding: 18px 16px 18px 16px;
   gap: 23px;
-  max-height: 72px;
+  max-height: max-content;
   transition: max-height 0.7s ease;
   overflow: hidden;
 }
@@ -94,10 +94,11 @@
 .customer_details.open {
   max-height: 700px;
 }
-.cust_det_top {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr) auto;
-}
+/* .cust_det_top {
+  display: flex;
+  flex-direction: row;
+  gap: 35px;
+} */
 .name_icon {
   height: 24px;
   width: 24px;
@@ -115,13 +116,25 @@
 .name {
   font-size: 14px;
   font-weight: 600;
+  display: flex;
+  flex-direction: row;
+  gap: 11px;
 }
 .cust_name {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   /* text-align: center; */
   align-items: center;
   gap: 11px;
+}
+
+.grid_items{
+  display: flex;
+  /* gap: 11px; */
+  /* justify-content: space-between;
+  text-align: center;
+  align-items: center;
+  gap: 11px; */
 }
 
 .cust_det_list {
@@ -133,7 +146,10 @@
 
 .head_det {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
 }
 .head_det h2 {
   font-size: 12px;
@@ -147,7 +163,7 @@
 
 .accordian_btn {
   border: none;
-  border-radius: 5px;
+  border-radius: 50px;
   background-color: #eaecf0;
   width: 32px;
   height: 32px;
@@ -172,12 +188,12 @@
   overflow: hidden;
 }
 
-.cust_det_bot {
+/* .cust_det_bot {
   display: flex;
   justify-content: space-between;
   width: 100%;
   transition: all 500ms;
-}
+} */
 
 .cust_det_map_sec {
   width: 80%;
@@ -211,4 +227,46 @@
 
 .cust_det_button:hover span {
   transform: scale(1.07);
+}
+
+.icon_and_content{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.cust_det_top{
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.parent_icon_and_content{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.cust_det_bot {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 items per row */
+  gap: 16px; 
+}
+
+.grid_items {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+
+.grid_items .head_det {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px; /* Gap for aligning content */
+}
+
+.rooftype_align{
+  justify-content: end;
 }

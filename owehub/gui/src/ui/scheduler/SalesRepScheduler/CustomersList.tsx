@@ -13,6 +13,7 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
+import SchedulerCalendar from '../components/SchedulerCalendar/SchedulerCalendar';
 
 const Marker = ({
   text,
@@ -32,33 +33,33 @@ export interface ICustomer {
   home_owner: string;
   customer_email: string;
   customer_phone_number: string;
-  system_size: number;
+  system_size: string;
   address: string;
 }
 const customers = [
   {
-    roof_type: 'John Doe',
-    home_owner: 'John Doe',
-    customer_email: 'john.doe@example.com',
-    customer_phone_number: '123-456-7890',
-    system_size: 4.5,
-    address: '123 Solar St.',
+    roof_type: 'XYZ Rooftype',
+    home_owner: 'Jacob Martin',
+    customer_email: 'Alexsimon322@gmail.com',
+    customer_phone_number: '(831) 544-1235',
+    system_size: '450 KW',
+    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
   {
-    roof_type: 'John Doe',
-    home_owner: 'John Doe',
-    customer_email: 'john.doe@example.com',
-    customer_phone_number: '123-456-7890',
-    system_size: 4.5,
-    address: '123 Solar St.',
+    roof_type: 'XYZ Rooftype',
+    home_owner: 'Jacob Martin',
+    customer_email: 'Alexsimon322@gmail.com',
+    customer_phone_number: '(831) 544-1235',
+    system_size: '450 KW',
+    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
   {
-    roof_type: 'John Doe',
-    home_owner: 'John Doe',
-    customer_email: 'john.doe@example.com',
-    customer_phone_number: '123-456-7890',
-    system_size: 4.5,
-    address: '123 Solar St.',
+    roof_type: 'XYZ Rooftype',
+    home_owner: 'Jacob Martin',
+    customer_email: 'Alexsimon322@gmail.com',
+    customer_phone_number: '(831) 544-1235',
+    system_size: '450 KW',
+    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
 ];
 const CustomersList = ({ mapStyles = {} }) => {
@@ -133,18 +134,18 @@ const CustomersList = ({ mapStyles = {} }) => {
             <div className={styles.pending}>
               <>
                 <div className={styles.notification}>
-                  <span>17</span>
+                  <span>25</span>
                 </div>
                 <h3>Pending Schedule</h3>
               </>
             </div>
 
             <div className={styles.filter}>
-              <div className={styles.filtericon} onClick={handleAddClick}>
-                <img src={ICONS.AddIconSr} alt="" />
-              </div>
               <div className={styles.newproj}>
                 <SortingDropDown />
+              </div>
+              <div className={styles.filtericon} onClick={handleAddClick}>
+                <img src={ICONS.AddIconSr} alt="" />
               </div>
             </div>
           </div>
@@ -166,125 +167,123 @@ const CustomersList = ({ mapStyles = {} }) => {
                 >
                   <div className={styles.cust_det_top}>
                     <div className={styles.cust_name}>
-                      <div
-                        style={{ backgroundColor: '#FFEAEA' }}
-                        className={styles.name_icon}
-                      >
-                        <span>
-                          {customer.home_owner.slice(0, 2).toUpperCase()}
-                        </span>
+                      <div className={styles.name}>
+                        <div
+                          style={{ backgroundColor: '#FFEAEA' }}
+                          className={styles.name_icon}
+                        >
+                          <span>
+                            {customer.home_owner.slice(0, 2).toUpperCase()}
+                          </span>
+                        </div>
+                        {customer.home_owner}
                       </div>
-                      <div className={styles.name}>{customer.home_owner}</div>
+                      <button
+                        className={styles.accordian_btn}
+                        onClick={() => toggleOpen(index)}
+                      >
+                        <TbChevronDown
+                          size={22}
+                          style={{
+                            transform: openStates[index]
+                              ? 'rotate(180deg)'
+                              : undefined,
+                            transition: 'all 500ms',
+                          }}
+                        />
+                      </button>
                     </div>
-                    <div className={styles.cust_name}>
+                    <div className={styles.parent_icon_and_content}>
+                      {/* icon and content */}
                       <div
-                        style={{ backgroundColor: '#E8FFE7', color: '#8BC48A' }}
-                        className={styles.name_icon}
+                        className={`${styles.cust_name} ${styles.icon_and_content}`}
                       >
-                        <CiMail size={14} />
-                      </div>
-                      <div className={styles.head_det}>
-                        <h2>Email</h2>
-                        <span>{customer.customer_email}</span>
-                      </div>
-                    </div>
-
-                    <div className={styles.cust_name}>
-                      <div
-                        style={{ backgroundColor: '#EEEBFF', color: '#8E81E0' }}
-                        className={styles.name_icon}
-                      >
-                        <BiPhone size={14} />
-                      </div>
-                      <div className={styles.head_det}>
-                        <h2>Phone Number</h2>
-                        <span>{customer.customer_phone_number}</span>
-                      </div>
-                    </div>
-
-                    <div className={styles.cust_name}>
-                      <div
-                        style={{ backgroundColor: '#EEEBFF', color: '#8E81E0' }}
-                        className={styles.name_icon}
-                      >
-                        <img src={ICONS.SystemSize} alt="img" />
-                      </div>
-                      <div className={styles.head_det}>
-                        <h2>System Size</h2>
-                        <span> {customer.system_size} </span>
-                      </div>
-                    </div>
-
-                    <div className={styles.cust_name}>
-                      <div
-                        style={{ backgroundColor: '#E8FFE7', color: '#8E81E0' }}
-                        className={styles.name_icon}
-                      >
-                        <img src={ICONS.RoofType} alt="img" />
-                      </div>
-                      <div className={styles.head_det}>
-                        <h2>Roof Type</h2>
-                        <span> {customer.roof_type} </span>
+                        <div className={styles.head_det}>
+                          <div
+                            // style={{
+                            //   backgroundColor: '#E8FFE7',
+                            //   color: '#8BC48A',
+                            // }}
+                            className={styles.name_icon}
+                          >
+                            <CiMail size={14} />
+                          </div>
+                          <span>{customer.customer_email}</span>
+                        </div>
                       </div>
 
-                      <TbChevronDown
-                        size={22}
-                        style={{
-                          marginTop: '-12px',
-                          cursor: 'pointer',
-                        }}
-                      />
+                      <div
+                        className={`${styles.cust_name} ${styles.icon_and_content}`}
+                      >
+                        <div className={styles.head_det}>
+                          <div
+                            // style={{
+                            //   backgroundColor: '#EEEBFF',
+                            //   color: '#8E81E0',
+                            // }}
+                            className={styles.name_icon}
+                          >
+                            <BiPhone size={14} />
+                          </div>
+                          <span>{customer.customer_phone_number}</span>
+                        </div>
+                      </div>
+                      {/* icon and content */}
                     </div>
-
-                    <button
-                      className={styles.accordian_btn}
-                      onClick={() => toggleOpen(index)}
-                    >
-                      <TbChevronDown
-                        size={22}
-                        style={{
-                          transform: openStates[index]
-                            ? 'rotate(180deg)'
-                            : undefined,
-                          transition: 'all 500ms',
-                        }}
-                      />
-                    </button>
                   </div>
                   {openStates[index] && (
                     <div className={styles.cust_det_bot}>
-                      <div className={styles.cust_det_map_sec}>
-                        <div className={styles.map_wrapper}>
-                          <GoogleMapReact
-                            bootstrapURLKeys={{ key: '' }}
-                            defaultCenter={defaultProps.center}
-                            defaultZoom={defaultProps.zoom}
-                          >
-                            <Marker
-                              lat={59.955413}
-                              lng={30.337844}
-                              text="My Marker"
-                            />
-                          </GoogleMapReact>
+                      {/* kilo Watt */}
+                      <div
+                        className={`${styles.grid_items} ${styles.grid_items}`}
+                      >
+                        <div
+                          // style={{
+                          //   backgroundColor: '#EEEBFF',
+                          //   color: '#8E81E0',
+                          // }}
+                          className={styles.name_icon}
+                        >
+                          <img src={ICONS.SystemSize} alt="img" />
                         </div>
-                        <div className={styles.cust_name}>
-                          <div
-                            style={{
-                              backgroundColor: '#EEEBFF',
-                              color: '#8E81E0',
-                            }}
-                            className={styles.name_icon}
-                          >
-                            <IoLocationOutline />
-                          </div>
-                          <div className={styles.head_det}>
-                            <h2>103 backstreet, churchline, arizona,12544</h2>
-                          </div>
+                        <div className={styles.head_det}>
+                          <span> {customer.system_size} </span>
                         </div>
                       </div>
 
-                      <div className={styles.cust_det_button}>
-                        <span>Schedule</span>
+                      {/* rooftype */}
+                      <div
+                        className={`${styles.grid_items} ${styles.rooftype_align}`}
+                      >
+                        <div
+                          // style={{
+                          //   backgroundColor: '#E8FFE7',
+                          //   color: '#8E81E0',
+                          // }}
+                          className={styles.name_icon}
+                        >
+                          <img src={ICONS.RoofType} alt="img" />
+                        </div>
+                        <div className={styles.head_det}>
+                          <span> {customer.roof_type} </span>
+                        </div>
+                      </div>
+
+                      {/* address */}
+
+                      <div className={`${styles.grid_items}`}>
+                        <div
+                          // style={{
+                          //   backgroundColor: '#EEEBFF',
+                          //   color: '#8E81E0',
+                          // }}
+                          className={styles.name_icon}
+                        >
+                          <IoLocationOutline />
+                        </div>
+                        <div className={styles.head_det}>
+                          <h2>{customer.address}</h2>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -293,6 +292,7 @@ const CustomersList = ({ mapStyles = {} }) => {
             )}
           </div>
         </div>
+        <SchedulerCalendar />
       </div>
     </>
   );
