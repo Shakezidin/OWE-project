@@ -81,10 +81,10 @@ const MyMapComponent: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
   const mapRef = useRef<any | null>(null);
-  const [center, setCenter] = useState({ lat: 25.5941, lng: 85.1376 }); // Set an initial center'
-  // shams start
+  const [center, setCenter] = useState({ lat: 25.5941, lng: 85.1376 });
+
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-  // const [selectedPeriod, setSelectedPeriod] = useState('This Week');
+
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(null);
   const [selectedRanges, setSelectedRanges] = useState([
@@ -99,38 +99,6 @@ const MyMapComponent: React.FC = () => {
     endDate: today,
   });
 
-  const handleRangeChange = (ranges: any) => {
-    setSelectedRanges([ranges.selection]);
-  };
-
-  const onReset = () => {
-    setSelectedDates({ startDate: new Date(), endDate: new Date() });
-    setIsCalendarOpen(false);
-  };
-
-  const onApply = () => {
-    const startDate = selectedRanges[0].startDate;
-    const endDate = selectedRanges[0].endDate;
-    setSelectedDates({ startDate, endDate });
-    setIsCalendarOpen(false);
-  };
-
-  const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedLabel = e.target.value;
-    const selectedOption = periodFilterOptions.find(
-      (option) => option.label === selectedLabel
-    );
-    if (selectedOption) {
-      setSelectedDates({
-        startDate: selectedOption.start,
-        endDate: selectedOption.end,
-      });
-      setSelectedPeriod(selectedOption || null);
-    } else {
-      setSelectedDates({ startDate: null, endDate: null });
-    }
-  };
-
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -141,38 +109,17 @@ const MyMapComponent: React.FC = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
 
-  const handleClickOutside = (event: Event) => {
-    if (
-      calendarRef.current &&
-      !calendarRef.current.contains(event.target as Node) &&
-      toggleRef.current &&
-      !toggleRef.current.contains(event.target as Node)
-    ) {
-      setIsCalendarOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, []);
-
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
         const data = await postCaller('get_user_address', {
-          start_date: selectedDates.startDate
-            ? format(selectedDates.startDate, 'dd-MM-yyyy')
-            : null,
-          end_date: selectedDates.endDate
-            ? format(selectedDates.endDate, 'dd-MM-yyyy')
-            : null,
+          // start_date: selectedDates.startDate
+          //   ? format(selectedDates.startDate, 'dd-MM-yyyy')
+          //   : null,
+          // end_date: selectedDates.endDate
+          //   ? format(selectedDates.endDate, 'dd-MM-yyyy')
+          //   : null,
           unique_ids: [searchValue],
         });
 
@@ -180,15 +127,22 @@ const MyMapComponent: React.FC = () => {
           toast.error(data.message);
           return;
         }
-        const formattedData: LocationInfo[] = data?.data?.map(
-          (location: any) => ({
-            lat: location.latitute, // Adjust to match your API response
-            lng: location.lognitude, // Adjust to match your API response
-            unique_id: location.unique_id || 'No info available', // Default info if not provided
+        const formattedData: LocationInfo[] = data?.data
+          ?.filter(
+            (location: any) =>
+              location.latitute &&
+              location.latitute !== 0 &&
+              location.lognitude &&
+              location.lognitude !== 0
+          )
+          .map((location: any) => ({
+            lat: location.latitute,
+            lng: location.lognitude,
+            unique_id: location.unique_id || 'No info available',
             home_owner: location.home_owner,
             project_status: location.project_status,
-          })
-        );
+          }));
+
         setLocations(formattedData);
       } catch (error) {
         console.error(error);
@@ -220,6 +174,17 @@ const MyMapComponent: React.FC = () => {
     debouncedSetSelectedLocation(null);
   }, [debouncedSetSelectedLocation]);
 
+  const onMarkerClick = useCallback((location: LocationInfo) => {
+    setSelectedLocation((prevLocation) =>
+      prevLocation === location ? null : location
+    );
+
+    if (mapRef.current) {
+      mapRef.current.setZoom(15); // Zoom level when marker is clicked
+      mapRef.current.panTo({ lat: location.lat, lng: location.lng }); // Center the map on the clicked marker
+    }
+  }, []);
+
   useEffect(() => {
     if (isLoaded && locations.length > 0 && window.google) {
       const bounds = new window.google.maps.LatLngBounds();
@@ -239,16 +204,9 @@ const MyMapComponent: React.FC = () => {
   const handleSearchChange = useCallback(
     debounce((e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchValue(e.target.value);
-
     }, 800),
     []
   );
-
-  const onMarkerClick = useCallback((location: LocationInfo) => {
-    setSelectedLocation((prevLocation) =>
-      prevLocation === location ? null : location
-    );
-  }, []);
 
   const onMapLoad = useCallback(
     (map: any) => {
@@ -277,20 +235,12 @@ const MyMapComponent: React.FC = () => {
     return toZonedTime(now, userTimezone);
   }
 
-  const periodFilterOptions: DateRangeWithLabel[] = [
-    { label: 'This Week', start: startOfThisWeek, end: today },
-    { label: 'Last Week', start: startOfLastWeek, end: endOfLastWeek },
-    { label: 'This Month', start: startOfThisMonth, end: today },
-    { label: 'Last Month', start: startOfLastMonth, end: endOfLastMonth },
-    { label: 'This Quarter', start: startOfThreeMonthsAgo, end: today },
-    { label: 'This Year', start: startOfThisYear, end: today },
-  ];
-
   return (
     <div>
       <div className={styles.cardHeader}>
         <span className={styles.pipeline}>Install Map</span>
-        <div className={styles.mapClose}>
+
+        <div className={styles.mapClose} onClick={handleCalcClose} >
           <IoClose />
         </div>
       </div>
@@ -298,11 +248,11 @@ const MyMapComponent: React.FC = () => {
       <div className={styles.mapHeader2}>
         <div className={styles.date_calendar}>
           <div className={styles.mapSearch}>
-            {/* Search Input */}
             <Input
               type="text"
               placeholder="Search for Unique ID or Name"
               value={search}
+              className={styles.inputsearch}
               name="Search Here ...."
               onChange={(e) => {
                 handleSearchChange(e);
@@ -310,63 +260,6 @@ const MyMapComponent: React.FC = () => {
               }}
             />
           </div>
-          {/* {isCalendarOpen && (
-            <div ref={calendarRef} className={styles.lead__datepicker_content}>
-              <DateRange
-                editableDateInputs={true}
-                onChange={handleRangeChange}
-                moveRangeOnFirstSelection={false}
-                ranges={selectedRanges}
-              />
-              <div className={styles.lead__datepicker_btns}>
-                <button className="reset-calender" onClick={onReset}>
-                  Reset
-                </button>
-                <button className="apply-calender" onClick={onApply}>
-                  Apply
-                </button>
-              </div>
-            </div>
-          )} */}
-          {/* <div>
-            {selectedDates.startDate && selectedDates.endDate && (
-              <div className={styles.hist_date}>
-                <span className={styles.date_display}>
-                  {selectedDates.startDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                  {' - '}
-                  {selectedDates.endDate.toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </span>
-              </div>
-            )}
-          </div>
-          <div className={styles.date_parent}>
-            <select
-              value={selectedPeriod?.label || ''}
-              onChange={handlePeriodChange}
-              className={styles.monthSelect}
-            >
-              {periodFilterOptions.map((option) => (
-                <option key={option.label} value={option.label}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <div
-              ref={toggleRef}
-              className={styles.calender}
-              onClick={toggleCalendar}
-            >
-              <img src={ICONS.includes_icon} alt="" />
-            </div>
-          </div> */}
         </div>
       </div>
 
@@ -384,7 +277,7 @@ const MyMapComponent: React.FC = () => {
           <div className={styles.loading}>
             {' '}
             <MicroLoader />
-          </div> // Display loading spinner
+          </div>
         ) : (
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
@@ -397,9 +290,9 @@ const MyMapComponent: React.FC = () => {
                 key={index}
                 position={{ lat: location.lat, lng: location.lng }}
                 onMouseOver={() => onMarkerHover(location)}
+                onClick={() => onMarkerClick(location)}
                 onMouseOut={onMarkerLeave}
                 options={{
-                  // pixelOffset: new window.google.maps.Size(0, -10),
                   anchorPoint: new window.google.maps.Point(0, -10),
                 }}
               />
@@ -413,20 +306,38 @@ const MyMapComponent: React.FC = () => {
                 }}
                 options={{
                   pixelOffset: new window.google.maps.Size(0, -50),
+                  disableAutoPan: true,
+                }}
+                onDomReady={() => {
+                  // Continuously try to hide the close button after DOM is ready
+                  const interval = setInterval(() => {
+                    const closeButton = document.querySelector('.gm-ui-hover-effect') as HTMLElement;
+                    if (closeButton) {
+                      closeButton.style.display = 'none';
+                      clearInterval(interval); // Stop checking once the button is hidden
+                    }
+                  }, 10);  
                 }}
               >
-                <div
-                  className={`${styles.infoWindowCustom} bg-white shadow-xl p-4 rounded-lg pl-2`}
-                >
-                  <p className="font-bold text-lg text-gray-800 mb-2">
-                    Home Owner: {selectedLocation.home_owner}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">
-                    Unique ID: {selectedLocation.unique_id}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Project Status: {selectedLocation.project_status}
-                  </p>
+                <div className={styles.infoWindow}>
+                  <div className={styles.infoWindowRow}>
+                    <p className={styles.infoWindowLabel}>Home Owner:</p>
+                    <p className={styles.infoWindowValue}>
+                      {selectedLocation.home_owner}
+                    </p>
+                  </div>
+                  <div className={styles.infoWindowRow}>
+                    <p className={styles.infoWindowLabel}>Unique ID:</p>
+                    <p className={styles.infoWindowValue}>
+                      {selectedLocation.unique_id}
+                    </p>
+                  </div>
+                  <div className={styles.infoWindowRow}>
+                    <p className={styles.infoWindowLabel}>Project Status:</p>
+                    <p className={styles.infoWindowValue}>
+                      {selectedLocation.project_status}
+                    </p>
+                  </div>
                 </div>
               </InfoWindow>
             )}
