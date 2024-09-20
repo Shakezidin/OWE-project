@@ -194,6 +194,8 @@
 .act_head {
   font-size: 12px;
   font-weight: 500;
+  max-width: 107px;
+  text-align: center;
 }
 
 .act_date {

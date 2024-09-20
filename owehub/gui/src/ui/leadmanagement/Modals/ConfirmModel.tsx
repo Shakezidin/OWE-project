@@ -12,25 +12,33 @@ import { RiEdit2Line } from 'react-icons/ri';
 import AppointmentScheduler from './AppointmentScheduler';
 import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
-// const LeadManamentSucessModel: React.FC<TableProps> = ({
-const ConfirmaModel = () => {
+interface EditModalProps {
+  isOpen1: boolean;
+  onClose1: () => void;
+}
+
+// const ConfirmaModel = () => {
+  const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
   const HandleModal = () => {
     setModalClose(false);
+    onClose1();
   };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
+   
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    
   };
   return (
     <div>
-      {modalOpen && (
+      {isOpen1 && (
         <div className="transparent-model">
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
