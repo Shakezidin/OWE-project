@@ -1,3 +1,6 @@
+/* -----------------Vaibhav Start----------------- */
+
+
 .dashboard {
   padding: 24px;
   background-color: #f3f4f6;
@@ -25,7 +28,7 @@
 
 .cardHeader {
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -365,10 +368,25 @@ input[type='checkbox']:checked {
   border-radius: 5px;
 }
 
+.date_parent {
+  display: flex;
+  gap: 10px;
+}
+
+/* -----------------Vaibhav End----------------- */
+
+
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
 
 /* For tablets and larger screens */
 @media (min-width: 768px) {
+  .history_list_inner_declined {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
+    /* place-items: center; */
+    align-items: center;
+
+  }
   .chartGrid {
     grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
   }
@@ -407,9 +425,20 @@ input[type='checkbox']:checked {
   .address {
     display: none;
   }
+  .history_list_inner_declined {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr !important;
+    /* place-items: center; */
+    align-items: start;
+
+  }
   .history_list_inner {
     display: grid;
-    grid-template-columns: auto 2fr 0 0 0 auto !important;
+    grid-template-columns: auto 2fr auto !important;
+
+  }
+  .actionButtons {
+    transform: scale(0.7) translate(0, -10px);
   }
   .chevron_down {
     display: block !important;
@@ -421,20 +450,43 @@ input[type='checkbox']:checked {
     align-items: center !important;
     border-radius: 5px;
   }
+  .hist_date {
+    font-size: 10px !important;
+  }
+  .date_parent {
+    display: flex;
+    gap: 10px;
+    transform: scale(0.8);
+    margin-right:-15px
+  }
+  .date_calendar {  
+    gap: unset !important;
+  }
+
 }
 
 /* Tablets in both portrait and landscape */
 @media only screen and (min-width: 481px) and (max-width: 768px) {
   /* Styles for tablets */
+  .history_list_inner_declined {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
+    /* place-items: center; */
+    align-items: center;
+
+  }
 }
 
 /* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
   /* Styles for small desktops */
-  /* .chart_main_grid {
-      display: flex;
-      flex-direction: row;
-    } */
+  .history_list_inner_declined {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
+    /* place-items: center; */
+    align-items: center;
+
+  }
   .chartGrid {
     grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
   }
@@ -466,6 +518,7 @@ input[type='checkbox']:checked {
     flex-direction: row !important;
     flex-wrap: wrap;
     justify-content: right !important;
+    gap: 10px;
   }
 
   .date_parent {
@@ -502,7 +555,9 @@ input[type='checkbox']:checked {
   /* Styles for extra-large screens */
 }
 
-/* Shams */
+
+
+/*---------------- Shams Start-------------------- */
 
 .lead__datepicker_content {
   position: absolute;
@@ -582,5 +637,7 @@ input[type='checkbox']:checked {
   flex-direction: row;
   gap: 15px;
   align-items: center;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: right !important;
 }
+/*---------------- Shams Start-------------------- */

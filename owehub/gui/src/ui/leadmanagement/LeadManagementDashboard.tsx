@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
+import useWindowWidth from '../../hooks/useWindowWidth';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -378,6 +379,8 @@ const LeadManagementDashboard = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
+  const width = useWindowWidth();
+  const isTablet = width <= 1024;
 
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
@@ -813,8 +816,9 @@ const LeadManagementDashboard = () => {
           <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}>
-                  <td className={styles.history_list_inner} onClick={handleOpenModal}>
+                <tr key={index} className={styles.history_lists}
+                >
+                  <td className={`${lead.status === 'Declined' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
                     <label>
                       <input
                         type="checkbox"
@@ -847,6 +851,36 @@ const LeadManagementDashboard = () => {
                       </span>
                     </div>
                     <div className={styles.address}>{lead.address}</div>
+                   
+
+                    {lead.status === 'Declined' && (
+                      <div className={styles.actionButtons}>
+                        <button
+                          onClick={() => handleReschedule(lead)}
+                          className={styles.rescheduleButton}
+                        >
+                          Reschedule
+                        </button>
+                        {
+                          isTablet ?
+                          <button
+                          onClick={() => handleArchive(lead)}
+                          className={styles.archiveButton}
+                          >
+                            <img src={ICONS.declinedArchive}/>
+                          </button>
+                          :
+                          <button
+                          onClick={() => handleArchive(lead)}
+                          className={styles.archiveButton}
+                        >
+                          Archive
+                        </button>
+                        }
+                       
+                      </div>
+                    )}
+
                     <div
                       className={styles.chevron_down}
                       onClick={() => handleChevronClick(lead.id)}
@@ -864,23 +898,6 @@ const LeadManagementDashboard = () => {
                         }
                       />
                     </div>
-
-                    {lead.status === 'Declined' && (
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() => handleReschedule(lead)}
-                          className={styles.rescheduleButton}
-                        >
-                          Reschedule
-                        </button>
-                        <button
-                          onClick={() => handleArchive(lead)}
-                          className={styles.archiveButton}
-                        >
-                          Archive
-                        </button>
-                      </div>
-                    )}
                   </td>
                 </tr>
               ))}
