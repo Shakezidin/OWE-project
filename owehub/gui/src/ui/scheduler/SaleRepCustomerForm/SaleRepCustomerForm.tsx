@@ -107,7 +107,7 @@ const SaleRepCustomerForm = () => {
                                     setAvailableSlots([...timeSlots.filter(slot => slot.id === e.event.id)])
                                 }} dayWithProgress={dayWithProgress} />
                                 {selectedDate ? <div className='flex flex-column  justify-center'>
-                                    <h5 className=' my2' style={{ fontSize: 14, fontWeight: 500 }}> Select time slot</h5>
+                                    <h5 className=' mb2' style={{ fontSize: 14, fontWeight: 500 }}> Select time slot</h5>
                                     <div className='flex flex-column items-center justify-center'>
                                         {!!availableSlots.length ? availableSlots.map((slot) => {
                                             return <button onClick={() => setSelectedTime(slot)} key={slot.uniqueId} className={`${shardeStyles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? shardeStyles.active_time_slot : shardeStyles.inactive_time_slot} `}>
