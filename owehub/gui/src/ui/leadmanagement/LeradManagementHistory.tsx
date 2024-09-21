@@ -8,7 +8,7 @@ import useMatchMedia from '../../hooks/useMatchMedia';
 import { DateRange } from 'react-date-range';
 import { toZonedTime } from 'date-fns-tz';
 import { endOfWeek, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns';
-
+import Select, { SingleValue } from 'react-select';
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
@@ -128,17 +128,25 @@ const LeradManagementHistory = () => {
     setIsCalendarOpen(false);
   };
 
-  const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedLabel = e.target.value;
-    const selectedOption = periodFilterOptions.find((option) => option.label === selectedLabel);
+  // const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const selectedLabel = e.target.value;
+  //   const selectedOption = periodFilterOptions.find((option) => option.label === selectedLabel);
+  //   if (selectedOption) {
+  //     setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
+  //     setSelectedPeriod(selectedOption || null);
+  //   } else {
+  //     setSelectedDates({ startDate: null, endDate: null });
+  //   }
+  // };
+  const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
     if (selectedOption) {
       setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
-      setSelectedPeriod(selectedOption || null);
+      setSelectedPeriod(selectedOption);
     } else {
       setSelectedDates({ startDate: null, endDate: null });
+      setSelectedPeriod(null);
     }
   };
-
 
   const handleCrossClick = () => {
     setSelectedItemIds([]);
@@ -203,7 +211,7 @@ const LeradManagementHistory = () => {
     {
       id: 1,
       name: "Sanju Samson",
-      status: "Appointment Sent",
+      status: "Deal Loss",
       phoneNumber: "+1 82-26-2356445",
       email: "sanjusamson19@gmail.com",
       address: "12778 Domingo Ct, Parker, Arizona .CO 12312",
@@ -211,7 +219,7 @@ const LeradManagementHistory = () => {
     {
       id: 2,
       name: "Rahul Dravid",
-      status: "Appointment Accepted",
+      status: "Deal Won",
       phoneNumber: "+1 90-12-3456789",
       email: "rahuldravid@gmail.com",
       address: "56432 Oak St, Denver, Colorado .CO 54321",
@@ -235,7 +243,7 @@ const LeradManagementHistory = () => {
     {
       id: 5,
       name: "Sachin Tendulkar",
-      status: "Appointment Sent",
+      status: "Deal Won",
       phoneNumber: "+1 55-67-9082345",
       email: "sachintendulkar@gmail.com",
       address: "15678 Pine Ave, Austin, Texas .TX 78701",
@@ -243,7 +251,7 @@ const LeradManagementHistory = () => {
     {
       id: 6,
       name: "Rohit Sharma",
-      status: "Appointment Accepted",
+      status: "Deal Won",
       phoneNumber: "+1 45-67-2839456",
       email: "rohitsharma@gmail.com",
       address: "8934 Maple Rd, San Antonio, Texas .TX 78201",
@@ -267,7 +275,7 @@ const LeradManagementHistory = () => {
     {
       id: 9,
       name: "Shikhar Dhawan",
-      status: "Appointment Sent",
+      status: "Deal Won",
       phoneNumber: "+1 56-34-2903498",
       email: "shikhardhawan@gmail.com",
       address: "9876 Spruce Ln, San Francisco, California .CA 94101",
@@ -275,7 +283,7 @@ const LeradManagementHistory = () => {
     {
       id: 10,
       name: "Jasprit Bumrah",
-      status: "Appointment Accepted",
+      status: "Deal Loss",
       phoneNumber: "+1 78-34-9829345",
       email: "jaspritbumrah@gmail.com",
       address: "56432 Redwood St, Seattle, Washington .WA 98101",
@@ -364,7 +372,7 @@ const LeradManagementHistory = () => {
                     ) : null
                   }
 
-                  <select
+                  {/* <select
                     value={selectedPeriod?.label || ''}
                     onChange={handlePeriodChange}
                     className={styles.monthSelect}
@@ -378,7 +386,76 @@ const LeradManagementHistory = () => {
                         {option.label}
                       </option>
                     ))}
-                  </select>
+                  </select> */}
+
+                  <Select
+                    value={selectedPeriod}
+                    onChange={handlePeriodChange}
+                    options={periodFilterOptions}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        marginTop: 'px',
+                        borderRadius: '8px',
+                        outline: 'none',
+                        color: 'white',
+                        width: '140px',
+                        height: '36px',
+                        fontSize: '12px',
+                        border: '1px solid #d0d5dd',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        alignContent: 'center',
+                        backgroundColor: '#377CF6',
+                        boxShadow: 'none',
+                        '@media only screen and (max-width: 767px)': {
+                          width: '80px',
+                          // width: 'fit-content',
+                        },
+                        '&:focus-within': {
+                          borderColor: '#377CF6',
+                          boxShadow: '0 0 0 1px #377CF6',
+                          caretColor: 'white',
+                        },
+                      }),
+                      placeholder: (baseStyles) => ({
+                        ...baseStyles,
+                        color: '#fffff',
+                      }),
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#ffffff',
+                        '&:hover': {
+                          color: '#ffffff',
+                        },
+                        
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#ffffff',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#377CF6',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#0f2d5e' : '#0f2d5e',
+                        },
+                        cursor: 'pointer',
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: 'white',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '140px',
+                        backgroundColor: '#377CF6',
+                        marginTop: "-4px"
+                      }),
+                    }}
+                  />
+
                   <div className={styles.calender} onClick={toggleCalendar} ref={calendarRef}>
                     <img src={ICONS.includes_icon} alt="" />
                   </div>
@@ -489,7 +566,7 @@ const LeradManagementHistory = () => {
                             <div className={styles.line}></div>
                           </div>
                           <div className={styles.activity_info}>
-                            <div className={styles.act_head}>Appointment Schedule</div>
+                            <div className={styles.act_head}>Appointment Accepted</div>
                             <div className={styles.act_date}>27 Aug, 2024</div>
                           </div>
                         </div>
@@ -500,7 +577,7 @@ const LeradManagementHistory = () => {
                             <div className={styles.line}></div>
                           </div>
                           <div className={styles.activity_info}>
-                            <div className={styles.act_head}>Appointment Accepted</div>
+                            <div className={styles.act_head}>Appointment Date</div>
                             <div className={styles.act_date}>29 Aug, 2024</div>
                           </div>
                         </div>
@@ -511,7 +588,7 @@ const LeradManagementHistory = () => {
                             <div className={styles.line}></div>
                           </div>
                           <div className={styles.activity_info}>
-                            <div className={styles.act_head}>Appointment Date</div>
+                            <div className={styles.act_head}>Deal Won</div>
                             <div className={styles.act_date}>30 Aug, 2024</div>
                           </div>
                         </div>
@@ -522,8 +599,7 @@ const LeradManagementHistory = () => {
                             <div className={styles.line}></div>
                           </div>
                           <div className={styles.activity_info}>
-                            <div className={styles.act_head}>Moving to different city
-                              in few months</div>
+                            <div className={styles.act_head}>Proposal Sent</div>
                             <div className={styles.act_date}>1 Sep, 2024</div>
                           </div>
                         </div>
@@ -565,7 +641,7 @@ const LeradManagementHistory = () => {
                           <div className={styles.line_mob}></div>
                         </div>
                         <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Appointment Schedule</div>
+                          <div className={styles.act_head}>Appointment Accepted</div>
                           <div className={styles.act_date}>27 Aug, 2024</div>
                         </div>
                       </div>
@@ -576,7 +652,7 @@ const LeradManagementHistory = () => {
                           <div className={styles.line_mob}></div>
                         </div>
                         <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Appointment Accepted</div>
+                          <div className={styles.act_head}>Appointment Date</div>
                           <div className={styles.act_date}>29 Aug, 2024</div>
                         </div>
                       </div>
@@ -587,7 +663,7 @@ const LeradManagementHistory = () => {
                           <div className={styles.line_mob}></div>
                         </div>
                         <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Appointment Date</div>
+                          <div className={styles.act_head}>Deal Won</div>
                           <div className={styles.act_date}>30 Aug, 2024</div>
                         </div>
                       </div>
@@ -598,7 +674,7 @@ const LeradManagementHistory = () => {
                           <div className={styles.line_mob}></div>
                         </div>
                         <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Deal Won</div>
+                          <div className={styles.act_head}>Proposal Sent</div>
                           <div className={styles.act_date}>1 Sep, 2024</div>
                         </div>
                       </div>

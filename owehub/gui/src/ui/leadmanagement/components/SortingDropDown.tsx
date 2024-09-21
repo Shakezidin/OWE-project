@@ -7,7 +7,7 @@ interface propTypes {
 }
 const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all'>('asc');
+  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all'>('all');
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
