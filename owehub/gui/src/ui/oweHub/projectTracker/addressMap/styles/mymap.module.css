@@ -4,6 +4,12 @@
   align-items: center;
 }
 
+.headerLeft{
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
 .info-window-custom {
   max-width: 200px;
   border: 1px solid #ddd;
@@ -43,14 +49,13 @@
 }
 
  
-
-
 .info-window-custom:hover {
   transform: scale(1.05);
 }
 
 .mapSearch {
   position: relative;
+  margin-top: -8px;
 }
 
 .mymap_mapSearch__p5rtM {
