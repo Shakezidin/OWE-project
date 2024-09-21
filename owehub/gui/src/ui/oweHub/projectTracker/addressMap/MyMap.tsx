@@ -294,16 +294,26 @@ const MyMapComponent: React.FC = () => {
                 setSearch(e.target.value);
               }}
             />
-          </div>
-          <div className={styles.dropdownselect}>
-            <span>State:</span>
-            <div className={styles.dropdownstate}>
+             <div className={styles.dropdownstate}>
               <SelectOption
                 options={stateOption(newFormData)}
                 onChange={(newValue) => handleChange(newValue, 'state')}
-                value={stateOption(newFormData)?.find(
-                  (option) => option.value === createRePayData.state
-                )}
+                value={
+                  stateOption(newFormData)?.find(
+                    (option) => option.value === createRePayData.state
+                  ) || { label: 'Select State', value: '' } 
+                }
+                menuStyles={{
+                  width: 400
+                }}
+                menuListStyles={{
+                  fontWeight: 400,
+                  width: 150
+                }}
+                singleValueStyles={{
+                  fontWeight: 400
+                }}
+                width='150px'
               />
             </div>
           </div>
