@@ -97,11 +97,11 @@
 .buttonGroup {
   display: flex;
   padding: 5px;
-  gap: 8px;
-  width: 70%;
-  overflow: scroll;
-  /* flex-wrap: wrap; */
-  box-shadow: inset -3px 0px 5px 2px #0000000d;
+  gap: 5px;
+  width: 71%;
+  /* overflow: scroll; */
+  flex-wrap: wrap;
+  /* box-shadow: inset -3px 0px 5px 2px #0000000d; */
   border-radius: 22px 0 0 22px;
 }
 
@@ -188,7 +188,7 @@ table tbody tr:hover {
 .filterCallToAction {
   display: flex;
   gap: 10px;
-  transform: scale(0.7);
+  transform: scale(0.7) translate(-1em,-4em);
   position: relative;
   /* top: -2pc; */
   right: -8px;
@@ -373,6 +373,15 @@ input[type='checkbox']:checked {
   gap: 10px;
 }
 
+.action_needed_btn{
+  width:auto;
+}
+
+.tabs_setting{
+  padding: 10px 0 0 5px;
+
+}
+
 /* -----------------Vaibhav End----------------- */
 
 
@@ -380,9 +389,13 @@ input[type='checkbox']:checked {
 
 /* For tablets and larger screens */
 @media (min-width: 768px) {
+  .tabs_setting{
+    padding: 10px 15px;
+  }
   .history_list_inner_declined {
     display: grid;
-    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
+    /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
+    grid-template-columns: 35px 1fr 1fr 2fr 1fr auto!important;
     /* place-items: center; */
     align-items: center;
 
@@ -395,9 +408,9 @@ input[type='checkbox']:checked {
   }
   .buttonGroup {
     display: flex;
-    gap: 8px;
+    gap: 16px;
     width: 100%;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     display: flex;
     flex-direction: row;
     box-shadow: unset;
@@ -435,6 +448,7 @@ input[type='checkbox']:checked {
   .history_list_inner {
     display: grid;
     grid-template-columns: auto 2fr auto !important;
+    align-items: baseline;
 
   }
   .actionButtons {
@@ -462,6 +476,9 @@ input[type='checkbox']:checked {
   .date_calendar {  
     gap: unset !important;
   }
+  .user_name{
+    transform: translate(5px, -5px);
+  }
 
 }
 
@@ -480,13 +497,12 @@ input[type='checkbox']:checked {
 /* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
   /* Styles for small desktops */
-  .history_list_inner_declined {
+  /* .history_list_inner_declined {
     display: grid;
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
     align-items: center;
 
-  }
+  } */
   .chartGrid {
     grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
   }
@@ -530,7 +546,7 @@ input[type='checkbox']:checked {
     display: grid;
     grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
     justify-content: center !important;
-    align-items: center !important;
+    align-items: start !important;
   }
 
   .paginationContainer {
@@ -613,6 +629,17 @@ input[type='checkbox']:checked {
 
 .monthSelect option:hover {
   transform: scale(1.06);
+}
+
+.monthSelect {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px; 
+  padding-left: 15px; 
 }
 
 .calender {

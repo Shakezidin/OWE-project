@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../routes/routes';
 import { RiArrowRightLine } from 'react-icons/ri';
 import './ConfigurePage.css';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 interface AccordionSection {
   title: string;
@@ -118,7 +119,13 @@ const ConfigurePage: React.FC = () => {
     <>
       <div className="configure-container">
         <div className="configure-header">
-          <h3>Configure</h3>
+          <Breadcrumb
+            head=""
+            linkPara="Configure"
+            route={''}
+            linkparaSecond=""
+            marginLeftMobile="12px"
+          />
         </div>
         <div className="configure-main">
           <div className="configure-main-section">

@@ -1,0 +1,59 @@
+.form_wrapper {
+    background-color: #F6F6F6;
+    padding-inline: 2rem;
+    min-height: 100vh;
+
+}
+
+.form_conatiner {
+    max-width: 1089px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-inline: auto;
+    padding-bottom: 24px;
+
+}
+
+.form_header {
+    background-color: #404767;
+    height: 78px;
+}
+
+.form_header h3 {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.form_header p {
+    font-size: 12px;
+    color: #fff;
+    font-weight: 400;
+}
+
+.form_content {
+    max-width: 555px;
+    margin-inline: auto;
+}
+
+.date_time_wrapper {
+    border-left: 1px solid #F4F4F4;
+    flex: auto;
+}
+
+.submit_btn {
+    background-color: #377CF6;
+    max-width: 472px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    font-size: 20px;
+    padding-block: 10px;
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+}

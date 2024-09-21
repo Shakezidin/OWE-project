@@ -36,7 +36,7 @@ const Breadcrumb: React.FC<textProps> = ({
         >
           <h3>{linkPara}</h3>
         </div>
-        <GoChevronRight style={{ color: '#8688A0' }} />
+        {/* <GoChevronRight style={{ color: '#8688A0' }} /> */}
         <div className="">
           <p style={{ color: '#04a5e8', fontSize: '14px' }}>{linkparaSecond}</p>
         </div>

@@ -1,8 +1,6 @@
 .configure-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
+  margin-left: 6px;
+  margin-top: 6px;
 }
 
 .configure-header-icons {
