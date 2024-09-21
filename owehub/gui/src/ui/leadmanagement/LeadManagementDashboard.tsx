@@ -23,6 +23,8 @@ import useWindowWidth from '../../hooks/useWindowWidth';
 
 // shams start
 import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
 import {
   endOfWeek,
@@ -92,6 +94,7 @@ const pieData = [
   { name: 'Appointment sent', value: 29, color: '#81A6E7' },
   { name: 'Appointment accepted', value: 21, color: '#52B650' },
   { name: 'Appointment declined', value: 15, color: '#CD4040' },
+  { name: 'Action Needed', value: 10, color: '#63ACA3' },
 ];
 
 const lineData = [
@@ -190,6 +193,14 @@ const leads = [
     address: '12778 Domingo Ct',
     status: 'Declined',
   },
+  {
+    id: '11',
+    name: 'Adam',
+    phone: '+00 876472822',
+    email: 'adam8772@gmail.com',
+    address: '12778 Domingo Ct',
+    status: 'Action Needed',
+  },
 ];
 
 const renderActiveShape = (props: any) => {
@@ -251,7 +262,7 @@ const renderActiveShape = (props: any) => {
             key={index}
             x={cx}
             dy={index ? 15 : 0}
-            style={{ fontSize: '12.07px', wordBreak: 'break-word' }}
+            style={{ fontSize: '12.07px', wordBreak: 'break-word',fontWeight:550 }}
           >
             {line}
           </tspan>
@@ -314,6 +325,8 @@ const getStatusColor = (status: string) => {
       return '#52B650';
     case 'Declined':
       return '#CD4040';
+    case 'Action Needed':
+      return '#63ACA3';
     default:
       return '#000000';
   }
@@ -324,6 +337,7 @@ const statusMap = {
   'Appointment accepted': 'Accepted',
   'Appointment sent': 'Sent',
   'Appointment declined': 'Declined',
+  'Action Needed': 'Action Needed',
 };
 
 const CustomTooltip = ({
@@ -661,7 +675,8 @@ const LeadManagementDashboard = () => {
                 <select
                   value={selectedPeriod?.label || ''}
                   onChange={handlePeriodChange}
-                  className={styles.monthSelect}
+                  className={`${styles.monthSelect} monthSelectFocus`}
+
                 >
                   {periodFilterOptions.map((option) => (
                     <option key={option.label} value={option.label}>
@@ -697,7 +712,7 @@ const LeadManagementDashboard = () => {
                   formatter={(value) =>
                     value === 'won' ? 'Total won' : 'Total Lost'
                   }
-                  wrapperStyle={{ fontSize: '12px' }}
+                  wrapperStyle={{ fontSize: '12px',fontWeight:550,marginBottom:-15 }}
                 />
                 <Line
                   type="monotone"
@@ -720,16 +735,16 @@ const LeadManagementDashboard = () => {
       </div>
 
       <div className={styles.card}>
-        <div className={styles.cardHeader}>
+        <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
           {selectedLeads.length === 0 ? (
             <>
-              <div className={styles.buttonGroup}>
-                {['Pending', 'Sent', 'Accepted', 'Declined'].map((status) => (
+               <div className={styles.buttonGroup}>
+                {['Pending', 'Sent', 'Accepted', 'Declined','Action Needed'].map((status) => (
                   <button
                     key={status}
-                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}`}
-                    onClick={() => handleFilterClick(status)}
-                  >
+                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}
+                     ${status === 'Action Needed' ? styles.action_needed_btn : ''}`} 
+                     onClick={() => handleFilterClick(status)}>
                     <p
                       className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}
                     >
@@ -775,44 +790,6 @@ const LeadManagementDashboard = () => {
         </div>
 
         <div className={styles.cardContent}>
-          {/* <table className={styles.table}>
-            <tbody>
-              {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}>
-                  <td className={styles.history_list_inner}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedLeads.includes(lead)}
-                        onChange={() => handleLeadSelection(lead)}
-                      />
-                    </label>
-                    <div className={styles.user_name} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
-                      <h2>{lead.name}</h2>
-                      <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
-                    </div>
-                    <>
-                      <div className={styles.phone_number}>{lead.phone}</div>
-                      <div className={styles.email}>
-                        <span>{lead.email}
-                          <img className='ml1' height={15} width={15} src={ICONS.complete} alt="verified" />
-                        </span>
-                      </div>
-                      <div className={styles.address}>{lead.address}</div>
-                      
-                      {lead.status === 'Declined' && (
-                        <div className={styles.actionButtons}>
-                          <button onClick={() => handleReschedule(lead)} className={styles.rescheduleButton}>Reschedule</button>
-                          <button onClick={() => handleArchive(lead)} className={styles.archiveButton}>Archive</button>
-                        </div>
-                      )}
-                    </>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-
           <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
