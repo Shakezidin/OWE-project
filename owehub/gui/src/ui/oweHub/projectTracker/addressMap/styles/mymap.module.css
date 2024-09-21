@@ -3,6 +3,9 @@
   justify-content: space-between;
   align-items: center;
   position: relative;
+  background: #fff;
+  border-radius: 12px;
+  margin: 10px 0;
 }
 
 .headerLeft{
@@ -598,11 +601,18 @@ input[type='checkbox']:checked {
 @media (max-width: 768px) {
   .mapSearch{
     position: absolute;
-    top: 4rem;
+    top: 4.5rem;
   }
   .cardHeader{
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
     border-bottom: none;
+    padding: 10px 16px;
+  }
+  .mapWrap{
+    margin: 10px;
+  }
+  .mapWrapper{
+    margin-top: 1rem;
   }
 }
 
@@ -613,7 +623,7 @@ input[type='checkbox']:checked {
     gap: 2px;
   }
   .cardHeader{
-    margin-bottom: 6rem;
+    margin-bottom: 7rem;
   }
 }
 
