@@ -151,7 +151,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		filter, whereEleList = PrepareSaleRepAddressFilters(tableName, dataReq, SaleRepList)
 	}
 
-	query = `SELECT c.unique_id, c.address, c.home_owner, c.project_status, cs.address_lat, cs.address_lng
+	query = `SELECT c.unique_id, c.address, c.home_owner, c.project_status, cs.address_lat, cs.address_lng, c.state
 			FROM consolidated_data_view c
 			LEFT JOIN customers_customers_schema cs ON c.unique_id = cs.unique_id `
 
@@ -183,6 +183,13 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 			log.FuncErrorTrace(0, "Failed to get Address for Record ID %v. Item: %+v\n", UniqueId, item)
 			Address = ""
 		}
+
+		State, ok := item["state"].(string)
+		if !ok || State == "" {
+			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", UniqueId, item)
+			State = ""
+		}
+
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get HomeOwner for Record ID %v. Item: %+v\n", UniqueId, item)
@@ -214,6 +221,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 			Latitute:      Latitude,
 			Longitude:     Longitude,
 			ProjectStatus: ProjectStatus,
+			State:         State,
 		}
 
 		UserAddressList.UserAddressList = append(UserAddressList.UserAddressList, UserAddress)
@@ -319,10 +327,31 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" c.dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" c.dealer IN ('%s') ", strings.Join(dataFilter.DealerNames, ",")))
 		for _, dealer := range dataFilter.DealerNames {
 			whereEleList = append(whereEleList, dealer)
 		}
+	}
+
+	// Add dealer filter if not adminCheck and not filterCheck
+	if len(dataFilter.States) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" LOWER(c.state) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.States {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
 	}
 
 	// Always add the following filters
@@ -331,7 +360,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` c.project_status != 'DUPLICATE'`)
+	filtersBuilder.WriteString(` c.pv_install_completed_date IS NOT NULL`)
 
 	// filtersBuilder.WriteString(` unique_id IS NOT NULL
 	// 		AND unique_id <> ''
@@ -461,7 +490,7 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
+	// Add state filter if not adminCheck and not filterCheck
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -475,7 +504,27 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		}
 	}
 
-	filtersBuilder.WriteString(` AND c.project_status != 'DUPLICATE'`)
+	if len(dataFilter.States) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" LOWER(c.state) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.States {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+	}
+
+	filtersBuilder.WriteString(` AND c.pv_install_completed_date IS NOT NULL`)
 
 	// // Add the always-included filters
 	// filtersBuilder.WriteString(` AND unique_id IS NOT NULL
