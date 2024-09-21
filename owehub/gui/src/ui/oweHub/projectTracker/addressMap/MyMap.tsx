@@ -278,7 +278,7 @@ const MyMapComponent: React.FC = () => {
 
   console.log(createRePayData.state, 'dhhfj');
   return (
-    <div>
+    <div className={styles.mapWrap}>
       <div className={styles.cardHeader}>
         <div className={styles.headerLeft}>
           <h3>Install Map</h3>
@@ -301,7 +301,7 @@ const MyMapComponent: React.FC = () => {
                 value={
                   stateOption(newFormData)?.find(
                     (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: '' } 
+                  ) || { label: 'Select State', value: ''} 
                 }
                 menuStyles={{
                   width: 400
@@ -329,7 +329,7 @@ const MyMapComponent: React.FC = () => {
       <div
         style={{
           width: '100%',
-          height: '100vh',
+          height: '80vh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
