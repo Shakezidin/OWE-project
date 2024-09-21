@@ -111,6 +111,26 @@
     outline: 0;
     min-width: 220px;
 }
+.dropdownselect {
+  display: flex;
+  align-items: center; /* Aligns items vertically */
+  gap: 10px; /* Adds some space between the label and the select dropdown */
+}
+.dropdownstate {
+  margin-top: -25px;
+  width: 125px;
+}
+
+.dropdownselect span {
+  font-weight: lighter /* You can adjust the label styling as needed */
+}
+
+.dropdownselect select {
+  width: 100%; /* Make the select box flexible */
+  max-width: 200px; /* You can set a max width for the dropdown */
+}
+
+ 
 .date_parent {
   display: flex;
   align-items: center;
