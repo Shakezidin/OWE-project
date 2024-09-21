@@ -13,7 +13,8 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import DayPickerCalendar from '../components/ProgressCalendar/ProgressCalendar';
-
+import { IoIosInformationCircle } from "react-icons/io";
+import { format } from 'date-fns';
 interface ITimeSlot {
   id: number;
   time: string;
@@ -89,16 +90,19 @@ const customers = [
     system_size: '450 KW',
     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
+
 ];
 const CustomersList = ({ mapStyles = {} }) => {
   const navigate = useNavigate();
-  const [openStates, setOpenStates] = useState<{ [key: number]: boolean }>({});
   const [customer, setCustomers] = useState<ICustomer[]>(customers);
+  const [selectedCustomer, setSelectedCustomer] = useState(-1)
+  const [collapse, setCollapse] = useState(-1)
   const [isPending, setIsPending] = useState(true);
   const [page, setPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([])
-
+  const [selectedTime, setSelectedTime] = useState<ITimeSlot>()
+  const [isSurveyScheduled, setIsSurveyScheduled] = useState(false)
   const getCustomers = async () => {
     try {
       setIsPending(true);
@@ -125,12 +129,7 @@ const CustomersList = ({ mapStyles = {} }) => {
     getCustomers();
   }, [page]);
 
-  const toggleOpen = (index: number) => {
-    setOpenStates((prevStates) => ({
-      ...prevStates,
-      [index]: !prevStates[index],
-    }));
-  };
+
 
   const handleAddClick = () => {
     navigate('/add-new-salesrep-schedule');
@@ -175,7 +174,7 @@ const CustomersList = ({ mapStyles = {} }) => {
           </span>
         </div>
       </div>
-      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+      <div className={`flex justify-between mt2 `}>
         <div className={styles.customer_wrapper_list}>
           <div className={styles.sr_top}>
             <div className={styles.pending}>
@@ -197,7 +196,7 @@ const CustomersList = ({ mapStyles = {} }) => {
             </div>
           </div>
 
-          <div className={styles.cust_det_list}>
+          <div className={` scrollbar ${styles.cust_det_list}`}>
             {isPending ? (
               <div className="flex items-center justify-center">
                 <MicroLoader />
@@ -210,7 +209,13 @@ const CustomersList = ({ mapStyles = {} }) => {
               customer.map((customer, index) => (
                 <div
                   key={index}
-                  className={`${openStates[index] ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}`}                >
+                  onClick={() => {
+                    setSelectedCustomer(index)
+                    if (collapse !== selectedCustomer) {
+                      setCollapse(-1)
+                    }
+                  }}
+                  className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${selectedCustomer === index ? styles.selected_active_customer : ""} `}                >
                   <div className={styles.cust_det_top}>
                     <div className={styles.cust_name}>
                       <div className={styles.name}>
@@ -226,12 +231,18 @@ const CustomersList = ({ mapStyles = {} }) => {
                       </div>
                       <button
                         className={styles.accordian_btn}
-                        onClick={() => toggleOpen(index)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setCollapse(prev => prev === index ? -1 : index)
+                          if (selectedCustomer !== index) {
+                            setSelectedCustomer(index)
+                          }
+                        }}
                       >
                         <TbChevronDown
                           size={22}
                           style={{
-                            transform: openStates[index]
+                            transform: selectedCustomer === index && collapse === index
                               ? 'rotate(180deg)'
                               : undefined,
                             transition: 'all 500ms',
@@ -252,7 +263,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                             // }}
                             className={styles.name_icon}
                           >
-                            <CiMail size={14} />
+                            <CiMail size={15} />
                           </div>
                           <span>{customer.customer_email}</span>
                         </div>
@@ -263,34 +274,28 @@ const CustomersList = ({ mapStyles = {} }) => {
                       >
                         <div className={styles.head_det}>
                           <div
-                            // style={{
-                            //   backgroundColor: '#EEEBFF',
-                            //   color: '#8E81E0',
-                            // }}
+
                             className={styles.name_icon}
                           >
-                            <BiPhone size={14} />
+                            <BiPhone size={15} style={{ transform: "translateX(10px)" }} />
                           </div>
                           <span>{customer.customer_phone_number}</span>
                         </div>
                       </div>
-                      {/* icon and content */}
+
                     </div>
                   </div>
-                  {openStates[index] && (
+                  {selectedCustomer === index && collapse === index && (
                     <div className={styles.cust_det_bot}>
                       {/* kilo Watt */}
                       <div
                         className={`${styles.grid_items} ${styles.grid_items}`}
                       >
                         <div
-                          // style={{
-                          //   backgroundColor: '#EEEBFF',
-                          //   color: '#8E81E0',
-                          // }}
+
                           className={styles.name_icon}
                         >
-                          <img src={ICONS.SystemSize} alt="img" />
+                          <img width={13} src={ICONS.scheduleDoor} alt="img" />
                         </div>
                         <div className={styles.head_det}>
                           <span> {customer.system_size} </span>
@@ -302,13 +307,10 @@ const CustomersList = ({ mapStyles = {} }) => {
                         className={`${styles.grid_items} ${styles.rooftype_align}`}
                       >
                         <div
-                          // style={{
-                          //   backgroundColor: '#E8FFE7',
-                          //   color: '#8E81E0',
-                          // }}
+
                           className={styles.name_icon}
                         >
-                          <img src={ICONS.RoofType} alt="img" />
+                          <img style={{ filter: "brightness(10)" }} src={ICONS.RoofType} width={15} alt="img" />
                         </div>
                         <div className={styles.head_det}>
                           <span> {customer.roof_type} </span>
@@ -319,10 +321,7 @@ const CustomersList = ({ mapStyles = {} }) => {
 
                       <div className={`${styles.grid_items}`}>
                         <div
-                          // style={{
-                          //   backgroundColor: '#EEEBFF',
-                          //   color: '#8E81E0',
-                          // }}
+
                           className={styles.name_icon}
                         >
                           <IoLocationOutline />
@@ -340,23 +339,48 @@ const CustomersList = ({ mapStyles = {} }) => {
         </div>
 
         <div className={` bg-white ${styles.calendar_wrapper}`} >
-          <h5 style={{ fontWeight: 500, fontSize: 16 }} className='mb2' >Select Date & Time</h5>
-          <div className="flex items-start justify-between">
-            <DayPickerCalendar onClick={(e) => {
-              setSelectedDate(e.date)
-              setAvailableSlots([...timeSlots.filter(slot => slot.id === e.event.id)])
-            }} dayWithProgress={dayWithProgress} />
-            {selectedDate ? <div className='flex flex-column  justify-center'>
-              <h5 className=' my2' style={{ fontSize: 14, fontWeight: 500 }}> Select time slot</h5>
-              <div className='flex flex-column items-center justify-center'>
-                {!!availableSlots.length ? availableSlots.map((slot) => {
-                  return <button key={slot.uniqueId} className={styles.time_slot_pill}>
-                    {slot.time}
-                  </button>
-                }) : <h5>No Slot Available</h5>}
+          {
+            !isSurveyScheduled ?
+
+              <>
+                <h5 style={{ fontWeight: 500, fontSize: 16 }} className='mb2' >Select Date & Time</h5>
+                <div className="flex items-start justify-between">
+                  <DayPickerCalendar onClick={(e) => {
+                    setSelectedDate(e.date)
+                    setSelectedTime(undefined)
+                    setAvailableSlots([...timeSlots.filter(slot => slot.id === e.event.id)])
+                  }} dayWithProgress={dayWithProgress} />
+                  {selectedDate ? <div className='flex flex-column  justify-center'>
+                    <h5 className=' my2' style={{ fontSize: 14, fontWeight: 500 }}> Select time slot</h5>
+                    <div className='flex flex-column items-center justify-center'>
+                      {!!availableSlots.length ? availableSlots.map((slot) => {
+                        return <button onClick={() => setSelectedTime(slot)} key={slot.uniqueId} className={`${styles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? styles.active_time_slot : styles.inactive_time_slot} `}>
+                          {slot.time}
+                        </button>
+                      }) : <h5>No Slot Available</h5>}
+                    </div>
+                  </div> : ""}
+                </div>
+                {selectedTime && selectedDate &&
+                  <div className='mt3'>
+                    <div className="flex mb2 items-center justify-center">
+                      <h5 className={styles.selected_time}>{format(selectedDate, "EEEE, dd MMM")}  {selectedTime.time} </h5>
+                      <IoIosInformationCircle className='ml1' color='#1F2937' size={17} />
+                    </div>
+                    <button onClick={() => setIsSurveyScheduled(true)} className={`mx-auto ${styles.calendar_schedule_btn}`} >
+                      Submit
+                    </button>
+                  </div>
+                }
+              </>
+              : <div className='flex items-center flex-column justify-center' style={{ height: "calc(100vh - 200px)" }}>
+                <h3 className={styles.survey_success_message}>Site survey scheduled 👍</h3>
+                <h5 className={styles.selected_time}>{selectedDate && format(selectedDate, "EEEE, dd MMM")}  {selectedTime?.time} </h5>
               </div>
-            </div> : ""}
-          </div>
+
+          }
+
+
         </div>
       </div>
     </>
