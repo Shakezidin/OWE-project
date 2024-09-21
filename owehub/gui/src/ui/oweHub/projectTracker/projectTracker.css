@@ -29,20 +29,24 @@
 }
 
 .performance-exportbtn {
-  margin-left: auto;
-  width: -moz-fit-content;
-  width: fit-content;
-  cursor: pointer;
-  z-index: 10;
   align-items: center;
-  border-radius: 5px;
+  background-color: #377cf6 !important;
   border: none;
+  border-radius: 5px;
+  color: #f1f1f1;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: auto;
+  margin-top: 7px;
+  padding: 8px 12px;
+  transition: all .3s ease;
+  width: fit-content;
+}
+
+.pipeline-export{
   height: 49px;
   width: 50px;
-  color: #f1f1f1;
-  background-color: #377cf6 !important;
   margin-top: 1px;
-  transition: all 0.3s ease;
 }
 
 .performance-exportbtn:hover {
@@ -1396,7 +1400,7 @@
     height: 43px;
   }
 
-  .performance-exportbtn{
+  .pipeline-export{
     margin-top: 0;
     height: 44px;
     width: 45px;
