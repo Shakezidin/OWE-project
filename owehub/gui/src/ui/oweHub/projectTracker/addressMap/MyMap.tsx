@@ -9,14 +9,19 @@ import { IoClose } from 'react-icons/io5';
 import { debounce } from '../../../../utiles/debounce';
 import { useNavigate } from 'react-router-dom';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
 import { toast } from 'react-toastify';
 import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
 import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { toZonedTime } from 'date-fns-tz';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { IoIosSearch } from 'react-icons/io';
 import SelectOption from '../../../components/selectOption/SelectOption';
+import NotFound from '../../noRecordFound/NotFound';
+import DataNotFound from '../../../components/loader/DataNotFound';
+
 import {
   endOfWeek,
   startOfMonth,
@@ -109,27 +114,37 @@ const MyMapComponent: React.FC = () => {
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+  const [createRePayData, setCreatePayData] = useState({
+    state: '',
+  });
 
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
         const data = await postCaller('get_user_address', {
-          // start_date: selectedDates.startDate
-          //   ? format(selectedDates.startDate, 'dd-MM-yyyy')
-          //   : null,
-          // end_date: selectedDates.endDate
-          //   ? format(selectedDates.endDate, 'dd-MM-yyyy')
-          //   : null,
           unique_ids: [searchValue],
+          states: [createRePayData.state],
         });
 
         if (data.status > 201) {
           toast.error(data.message);
           return;
         }
-        const formattedData: LocationInfo[] = data?.data
-          ?.filter(
+
+        // Check if data.data exists and has elements
+        if (
+          !data?.data ||
+          !Array.isArray(data.data) ||
+          data.data.length === 0
+        ) {
+         
+          setLocations([]); // Set empty array if no data
+          return;
+        }
+
+        const formattedData: LocationInfo[] = data.data
+          .filter(
             (location: any) =>
               location.latitute &&
               location.latitute !== 0 &&
@@ -151,7 +166,12 @@ const MyMapComponent: React.FC = () => {
         setLoading(false);
       }
     })();
-  }, [selectedDates.startDate, selectedDates.endDate, searchValue]);
+  }, [
+    selectedDates.startDate,
+    selectedDates.endDate,
+    searchValue,
+    createRePayData.state,
+  ]);
 
   const debouncedSetSelectedLocation = useCallback(
     debounce((location: LocationInfo | null) => {
@@ -164,13 +184,20 @@ const MyMapComponent: React.FC = () => {
     navigate(-1);
   };
 
+  const handleChange = (newValue: any, fieldName: string) => {
+    setCreatePayData((prevData) => ({
+      ...prevData,
+      [fieldName]: newValue ? newValue.value : '',
+    }));
+  };
+
   const onMarkerHover = useCallback(
     (location: LocationInfo) => {
       debouncedSetSelectedLocation(location);
     },
     [debouncedSetSelectedLocation]
   );
-
+  const [newFormData, setNewFormData] = useState({});
   const onMarkerLeave = useCallback(() => {
     debouncedSetSelectedLocation(null);
   }, [debouncedSetSelectedLocation]);
@@ -185,6 +212,19 @@ const MyMapComponent: React.FC = () => {
       mapRef.current.panTo({ lat: location.lat, lng: location.lng }); // Center the map on the clicked marker
     }
   }, []);
+
+  const tableData = {
+    tableNames: ['states'],
+  };
+  const getNewFormData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData((prev) => ({ ...prev, ...res.data }));
+  };
+  useEffect(() => {
+    getNewFormData();
+  }, []);
+
+  console.log(newFormData);
 
   useEffect(() => {
     if (isLoaded && locations.length > 0 && window.google) {
@@ -236,6 +276,7 @@ const MyMapComponent: React.FC = () => {
     return toZonedTime(now, userTimezone);
   }
 
+  console.log(createRePayData.state, 'dhhfj');
   return (
     <div>
       <div className={styles.cardHeader}>
@@ -254,9 +295,22 @@ const MyMapComponent: React.FC = () => {
               }}
             />
           </div>
+          <div className={styles.dropdownselect}>
+            <span>State:</span>
+            <div className={styles.dropdownstate}>
+              <SelectOption
+                options={stateOption(newFormData)}
+                onChange={(newValue) => handleChange(newValue, 'state')}
+                value={stateOption(newFormData)?.find(
+                  (option) => option.value === createRePayData.state
+                )}
+              />
+            </div>
+          </div>
         </div>
+
         <div className={styles.headerRight}>
-          <div className={styles.mapClose} onClick={handleCalcClose} >
+          <div className={styles.mapClose} onClick={handleCalcClose}>
             <IoClose />
           </div>
         </div>
@@ -274,73 +328,86 @@ const MyMapComponent: React.FC = () => {
       >
         {loading ? (
           <div className={styles.loading}>
-            {' '}
             <MicroLoader />
           </div>
         ) : (
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            onLoad={onMapLoad}
-            zoom={5}
-            center={center}
-          >
-            {locations.map((location, index) => (
-              <Marker
-                key={index}
-                position={{ lat: location.lat, lng: location.lng }}
-                onMouseOver={() => onMarkerHover(location)}
-                onClick={() => onMarkerClick(location)}
-                onMouseOut={onMarkerLeave}
-                options={{
-                  anchorPoint: new window.google.maps.Point(0, -10),
-                }}
-              />
-            ))}
-
-            {selectedLocation && (
-              <InfoWindow
-                position={{
-                  lat: selectedLocation.lat,
-                  lng: selectedLocation.lng,
-                }}
-                options={{
-                  pixelOffset: new window.google.maps.Size(0, -50),
-                  disableAutoPan: true,
-                }}
-                onDomReady={() => {
-                  // Continuously try to hide the close button after DOM is ready
-                  const interval = setInterval(() => {
-                    const closeButton = document.querySelector('.gm-ui-hover-effect') as HTMLElement;
-                    if (closeButton) {
-                      closeButton.style.display = 'none';
-                      clearInterval(interval); // Stop checking once the button is hidden
-                    }
-                  }, 10);
-                }}
+          <>
+            {locations && locations.length > 0 ? (
+              <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                onLoad={onMapLoad}
+                zoom={5}
+                center={center}
               >
-                <div className={styles.infoWindow}>
-                  <div className={styles.infoWindowRow}>
-                    <p className={styles.infoWindowLabel}>Home Owner:</p>
-                    <p className={styles.infoWindowValue}>
-                      {selectedLocation.home_owner}
-                    </p>
-                  </div>
-                  <div className={styles.infoWindowRow}>
-                    <p className={styles.infoWindowLabel}>Unique ID:</p>
-                    <p className={styles.infoWindowValue}>
-                      {selectedLocation.unique_id}
-                    </p>
-                  </div>
-                  <div className={styles.infoWindowRow}>
-                    <p className={styles.infoWindowLabel}>Project Status:</p>
-                    <p className={styles.infoWindowValue}>
-                      {selectedLocation.project_status}
-                    </p>
-                  </div>
-                </div>
-              </InfoWindow>
+                {locations.map((location, index) => (
+                  <Marker
+                    key={index}
+                    position={{ lat: location.lat, lng: location.lng }}
+                    onMouseOver={() => onMarkerHover(location)}
+                    onClick={() => onMarkerClick(location)}
+                    onMouseOut={onMarkerLeave}
+                    options={{
+                      anchorPoint: new window.google.maps.Point(0, -10),
+                    }}
+                  />
+                ))}
+
+                {selectedLocation && (
+                  <InfoWindow
+                    position={{
+                      lat: selectedLocation.lat,
+                      lng: selectedLocation.lng,
+                    }}
+                    options={{
+                      pixelOffset: new window.google.maps.Size(0, -50),
+                      disableAutoPan: true,
+                    }}
+                    onDomReady={() => {
+                      const interval = setInterval(() => {
+                        const closeButton = document.querySelector(
+                          '.gm-ui-hover-effect'
+                        ) as HTMLElement;
+                        if (closeButton) {
+                          closeButton.style.display = 'none';
+                          clearInterval(interval);
+                        }
+                      }, 10);
+                    }}
+                  >
+                    <div className={styles.infoWindow}>
+                      <div className={styles.infoWindowRow}>
+                        <p className={styles.infoWindowLabel}>Home Owner:</p>
+                        <p className={styles.infoWindowValue}>
+                          {selectedLocation.home_owner}
+                        </p>
+                      </div>
+                      <div className={styles.infoWindowRow}>
+                        <p className={styles.infoWindowLabel}>Unique ID:</p>
+                        <p className={styles.infoWindowValue}>
+                          {selectedLocation.unique_id}
+                        </p>
+                      </div>
+                      <div className={styles.infoWindowRow}>
+                        <p className={styles.infoWindowLabel}>
+                          Project Status:
+                        </p>
+                        <p className={styles.infoWindowValue}>
+                          {selectedLocation.project_status}
+                        </p>
+                      </div>
+                    </div>
+                  </InfoWindow>
+                )}
+              </GoogleMap>
+            ) : (
+              <div
+              className=""
+              style={{ display: 'flex', justifyContent: 'center' }}
+            >
+              <DataNotFound />
+            </div>
             )}
-          </GoogleMap>
+          </>
         )}
       </div>
     </div>
