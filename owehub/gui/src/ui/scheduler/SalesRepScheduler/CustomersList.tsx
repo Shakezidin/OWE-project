@@ -90,6 +90,32 @@ const customers = [
     system_size: '450 KW',
     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
+  {
+    roof_type: 'XYZ Rooftype',
+    home_owner: 'Jacob Martin',
+    customer_email: 'Alexsimon322@gmail.com',
+    customer_phone_number: '(831) 544-1235',
+    system_size: '450 KW',
+    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+  },
+
+  {
+    roof_type: 'XYZ Rooftype',
+    home_owner: 'Jacob Martin',
+    customer_email: 'Alexsimon322@gmail.com',
+    customer_phone_number: '(831) 544-1235',
+    system_size: '450 KW',
+    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+  },
+
+  {
+    roof_type: 'XYZ Rooftype',
+    home_owner: 'Jacob Martin',
+    customer_email: 'Alexsimon322@gmail.com',
+    customer_phone_number: '(831) 544-1235',
+    system_size: '450 KW',
+    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
+  },
 ];
 const CustomersList = ({ mapStyles = {} }) => {
   const navigate = useNavigate();
@@ -173,7 +199,7 @@ const CustomersList = ({ mapStyles = {} }) => {
           </span>
         </div>
       </div>
-      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+      <div className={`flex justify-between mt2 `}>
         <div className={styles.customer_wrapper_list}>
           <div className={styles.sr_top}>
             <div className={styles.pending}>
@@ -195,7 +221,7 @@ const CustomersList = ({ mapStyles = {} }) => {
             </div>
           </div>
 
-          <div className={styles.cust_det_list}>
+          <div className={` scrollbar ${styles.cust_det_list}`}>
             {isPending ? (
               <div className="flex items-center justify-center">
                 <MicroLoader />
