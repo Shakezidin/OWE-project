@@ -11,7 +11,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   setVisibleDiv,
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date('2024-08-25'));
-  const [selectedTime, setSelectedTime] = useState('12:00 PM');
+  const [selectedTime, setSelectedTime] = useState('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(true);
 
   const handleDateChange = (date: Date) => {
@@ -114,14 +114,26 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             year: 'numeric',
           })
           .toUpperCase()}
-        , {selectedTime}
+        {selectedTime && `, ${selectedTime}`}
       </div>
 
       <div className="sendAppointmentBtn">
-        <button onClick={() => setVisibleDiv(1)}>SEND APPOINTMENT</button>
+      <button 
+    onClick={() => {
+      if (selectedTime) {
+        setVisibleDiv(1);
+      } else {
+        console.log('Please select a time before proceeding.');
+      }
+    }}
+  >
+    SEND APPOINTMENT
+  </button>
+
       </div>
     </div>
   );
 };
 
 export default AppointmentScheduler;
+

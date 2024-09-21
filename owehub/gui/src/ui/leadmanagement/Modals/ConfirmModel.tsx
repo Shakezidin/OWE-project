@@ -8,7 +8,6 @@ import failledLogo from './Modalimages/FAILLED.png';
 import DoneLogo from './Modalimages/DoneLogo.png';
 import FileAttach from './Modalimages/FileAttach.png';
 import EditModal from './EditModal';
-import { RiEdit2Line } from 'react-icons/ri';
 import AppointmentScheduler from './AppointmentScheduler';
 import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
@@ -16,8 +15,6 @@ interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
 }
-
-// const ConfirmaModel = () => {
   const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,12 +26,12 @@ interface EditModalProps {
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-   
   };
 
+
+  
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    
   };
   return (
     <div>
@@ -43,7 +40,7 @@ interface EditModalProps {
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
-                <img className={classes.crossBtn} src={CrossIcon} />
+                <img className={classes.crossBtn} src={CrossIcon}  onClick={HandleModal}/>
               </div>
               <div className={classes.pers_det_top}>
                 <div className={classes.Column1Details}>
@@ -103,7 +100,7 @@ interface EditModalProps {
                     >
                       {/* <RiEdit2Line  />  I have USed Custom PNG Image instead of Library for PEN <img src={Pen}> in the EDIT BUTTON */}
                       <span className={classes.edit_modal_button2}>
-                        <img src={Pen} /> Edit
+                      <img className={classes.editPenStyle} src={Pen} ></img> Edit
                       </span>
                     </div>
                   </div>
@@ -115,7 +112,7 @@ interface EditModalProps {
                   onClick={handleOpenModal}
                 >
                   <span className={classes.edit_modal_button}>
-                    <img src={Pen} /> Edit
+                    <img className={classes.editPenStyle} src={Pen} ></img> Edit
                   </span>
                 </div>
               </div>
