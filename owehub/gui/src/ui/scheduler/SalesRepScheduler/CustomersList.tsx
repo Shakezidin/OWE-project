@@ -90,32 +90,7 @@ const customers = [
     system_size: '450 KW',
     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
 
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
-
-  {
-    roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
-    customer_email: 'Alexsimon322@gmail.com',
-    customer_phone_number: '(831) 544-1235',
-    system_size: '450 KW',
-    address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
-  },
 ];
 const CustomersList = ({ mapStyles = {} }) => {
   const navigate = useNavigate();
@@ -234,7 +209,9 @@ const CustomersList = ({ mapStyles = {} }) => {
               customer.map((customer, index) => (
                 <div
                   key={index}
-                  onClick={() => setSelectedCustomer(index)}
+                  onClick={() =>{ setSelectedCustomer(index)
+                    setCollapse(-1)
+                  }}
                   className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${selectedCustomer === index ? styles.selected_active_customer : ""} `}                >
                   <div className={styles.cust_det_top}>
                     <div className={styles.cust_name}>
