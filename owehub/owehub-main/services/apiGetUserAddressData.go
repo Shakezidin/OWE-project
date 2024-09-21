@@ -233,7 +233,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		UserAddressList.UserAddressList = Paginate(UserAddressList.UserAddressList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of user address List fetched : %v list %+v", len(UserAddressList.UserAddressList), UserAddressList.UserAddressList)
+	log.FuncInfoTrace(0, "Number of users address List fetched : %v list %+v", len(UserAddressList.UserAddressList), UserAddressList.UserAddressList)
 	FormAndSendHttpResp(resp, "user address Data", http.StatusOK, UserAddressList.UserAddressList, RecordCount)
 }
 
