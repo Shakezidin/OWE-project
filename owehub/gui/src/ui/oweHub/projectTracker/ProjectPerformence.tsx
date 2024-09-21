@@ -11,6 +11,7 @@ import Select from 'react-select';
 import { getProjects } from '../../../redux/apiSlice/projectManagement';
 import { FaUpload } from 'react-icons/fa';
 import Papa from 'papaparse';
+import { MdDownloading } from "react-icons/md";
 import {
   format,
   subDays,
@@ -443,7 +444,7 @@ const ProjectPerformence = () => {
   ];
 
   const cardColors = ['#57B3F1', '#E0728C', '#63ACA3', '#6761DA', '#C470C7', '#A07FFF', '#EE6363'];
-  const hoverColors = ['#DCF1FF', '#FFE1E8', '#CBFFF9', '#DEDCFF', '#FEE0FF', '#E5D1FF', '#FFC9C9'];
+  const hoverColors = ['#DCF1FF', '#FFE1E8', '#C3E7E3', '#DEDCFF', '#FEE0FF', '#E5D1FF', '#FFC9C9'];
   const activeColors = ['#57B3F1', '#E1728C', '#63ACA3', '#6761DA', '#C470C7', '#A07FFF', '#EE6363'];
 
   const resetPage = () => {
@@ -797,7 +798,7 @@ const ProjectPerformence = () => {
           head=""
           linkPara="Pipeline"
           route={''}
-          linkparaSecond="Dashboard"
+          linkparaSecond=""
           marginLeftMobile="12px"
         />
         <div className="pipeline-header-btns">
@@ -999,26 +1000,25 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
-              
-               
-                    <Link to="/map-address">
-                      <div className='pipeline-googlemap' onMouseEnter={() => setMapHovered(true)} onMouseLeave={() => setMapHovered(false)}>
-                        {mapHovered ? <RiMapPinFill /> : <RiMapPinLine />}
-                      </div></Link>
-                  
-                  
-                
+
+
+                <Link to="/map-address">
+                  <div className='pipeline-googlemap' onMouseEnter={() => setMapHovered(true)} onMouseLeave={() => setMapHovered(false)}>
+                    {mapHovered ? <RiMapPinFill /> : <RiMapPinLine />}
+                  </div></Link>
+
+
+
               </div >
             </div >
 
-            <div className="perf-export-btn">
+            <div className="perf-export-btn pipline-export-btn">
               <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
                 className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
-                <FaUpload size={12} className="mr-1" />
-                <span>{isExportingData ? ' Downloading... ' : ' Export '}</span>
+                {isExportingData ? <MdDownloading size={26} className='mt1' /> : <FaUpload size={16} className='mt1' />}
               </button>
             </div>
           </div >
