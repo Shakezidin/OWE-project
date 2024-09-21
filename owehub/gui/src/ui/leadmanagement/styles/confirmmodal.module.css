@@ -435,6 +435,9 @@
   justify-content: flex-end;
   cursor: pointer;
 }
+.editPenStyle{
+padding-top: 1px;
+}
 
 .parentSpanBtn {
   display: flex;
@@ -443,12 +446,20 @@
 
 .crossBtn {
   cursor: pointer;
-  width: 19px;
-  height: 19px;
+  margin-top: -8px;
+  margin-bottom: -21px;
+  width: 19.5px;
+  height: 19.5px;
+  /* background-color: red; */
+
 }
 
 .crossBtn:hover {
-  transform: scale(1.06);
+  cursor: pointer;
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: -21px;
+  transform: scale(1.2);
 }
 
 .edit_modal_open {

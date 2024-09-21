@@ -14,6 +14,7 @@ type GetUserAddressReq struct {
 	EndDate       string   `json:"end_date"`
 	Email         string   `json:"email"`
 	ProjectStatus []string `json:"project_status"`
+	States        []string `json:"states"`
 	DealerNames   []string
 }
 
@@ -24,6 +25,7 @@ type GetUserAddressData struct {
 	Latitute      float64 `json:"latitute"`
 	Longitude     float64 `json:"lognitude"`
 	ProjectStatus string  `json:"project_status"`
+	State         string `json:"state"`
 }
 
 type GetUserAddressList struct {
