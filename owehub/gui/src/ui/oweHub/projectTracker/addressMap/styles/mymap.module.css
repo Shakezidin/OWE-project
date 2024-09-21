@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .headerLeft{
@@ -54,8 +55,10 @@
 }
 
 .mapSearch {
-  position: relative;
   margin-top: -8px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .mymap_mapSearch__p5rtM {
@@ -117,8 +120,10 @@
   gap: 10px; /* Adds some space between the label and the select dropdown */
 }
 .dropdownstate {
-  margin-top: -25px;
-  width: 125px;
+  margin-top: -20px;
+}
+.dropdownstate .select-container .css-19mwi93-control .css-hlgwow .css-1i5rmfk-singleValue{
+  font-weight: 400 !important;
 }
 
 .dropdownselect span {
@@ -589,9 +594,27 @@ input[type='checkbox']:checked {
   }
 }
 
-/* Tablets in both portrait and landscape */
-@media only screen and (min-width: 481px) and (max-width: 768px) {
-  /* Styles for tablets */
+
+@media (max-width: 768px) {
+  .mapSearch{
+    position: absolute;
+    top: 4rem;
+  }
+  .cardHeader{
+    margin-bottom: 3rem;
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 420px){
+  .mapSearch{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .cardHeader{
+    margin-bottom: 6rem;
+  }
 }
 
 /* Laptops and small desktops */
