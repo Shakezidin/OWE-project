@@ -3,6 +3,7 @@ import { DayPicker, DayButtonProps, getDefaultClassNames } from "react-day-picke
 import "react-day-picker/style.css";
 import CircularProgress from "../CircularProgress/CircularProgress";
 import styles from "./styles/index.module.css";
+import { format } from "date-fns";
 
 type DayWithProgress = {
     date: Date,
@@ -86,22 +87,27 @@ const DayPickerCalendar = ({ dayWithProgress, onClick }: DayPickerCalendarProps)
     const defaultClassNames = getDefaultClassNames();
 
     return (
+        <div>
+        { selected &&  <h5 className={` ml2 mb2 ${defaultClassNames.month_caption}`}> {format(selected, "MMMM yyyy")}  </h5>}
+        
         <DayPicker
             className={styles.day_picker}
             mode="single"
             modifiersClassNames={{ selected: styles.selected_cell, caption: styles.caption_label }}
             required
             showOutsideDays
+            hideNavigation
             selected={selected}
             classNames={{ 
                 caption_label: styles.caption_label, 
-                month_caption: `${defaultClassNames.month_caption} items-center` 
+                month_caption: `hidden` 
             }}
             components={{
                 DayButton: (props) => (
                     <DayButton 
                         {...props} 
                         selected={selected} 
+                        
                         dayWithProgress={dayWithProgress} 
                         onDateSelect={(day) => {
                             onClick?.(day);
@@ -111,6 +117,7 @@ const DayPickerCalendar = ({ dayWithProgress, onClick }: DayPickerCalendarProps)
                 )
             }}
         />
+        </div>
     );
 }
 
