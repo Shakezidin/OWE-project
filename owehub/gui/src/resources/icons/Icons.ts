@@ -6,6 +6,7 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import scheduleDoor from '../../resources/assets/schedule_door.png';
 import dashIcon from '../../resources/assets/dashIcon.svg';
 import ConfigIcon from '../../resources/assets/config.svg';
 import userManIcon from '../../resources/assets/userManag.svg';
@@ -305,5 +306,6 @@ export const ICONS = {
   LeadMngExport:leadMngExport,
   chevronDown:chevronDown,
   chevronUp:chevronUp,
-  declinedArchive:declinedArchive
+  declinedArchive:declinedArchive,
+  scheduleDoor
 };

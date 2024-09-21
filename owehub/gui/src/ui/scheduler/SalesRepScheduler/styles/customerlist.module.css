@@ -23,9 +23,9 @@
   padding-right: 0;
 }
 
-.time_slot_pill{
+.time_slot_pill {
   padding: 6px 9.5px;
-  border:1px solid #4C4C4C;
+  border: 1px solid #4C4C4C;
   border-radius: 6px;
   background-color: #fff;
   outline: none;
@@ -36,12 +36,31 @@
   min-width: 152px;
   display: grid;
   place-items: center;
+  transition: all 500ms;
 }
 
-.time_slot_pill:hover{
+.survey_success_message {
+  color: #263747;
+  font-size: 1.5rem;
+  margin-bottom: 19px;
+}
+
+.time_slot_pill.inactive_time_slot:hover {
   transition: all 500ms;
   background-color: #D5E4FF;
   border-color: #D5E4FF;
+}
+
+.selected_time {
+  color: #274726;
+  font-weight: 600;
+}
+
+.time_slot_pill.active_time_slot {
+  background-color: #377CF6;
+  color: #fff;
+  transition: all 500ms;
+  border-color: #377CF6;
 }
 
 .calendar_wrapper {
@@ -161,6 +180,12 @@
   text-align: center;
 }
 
+.selected_active_customer {
+  background-color: #377CF6;
+  border: none;
+  color: #fff;
+}
+
 .name_icon span {
   font-size: 12px;
   font-weight: 600;
@@ -195,8 +220,8 @@
 .cust_det_list {
   display: flex;
   flex-direction: column;
-  gap: 17px;
-  margin-top: 30px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .head_det {
@@ -213,7 +238,7 @@
 }
 
 .head_det span {
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -231,7 +256,7 @@
 }
 
 .accordian_btn:focus-within {
-  outline: none;  
+  outline: none;
   background-color: #fff;
 
 }
@@ -335,10 +360,9 @@
   justify-content: end;
 }
 
-.customer_details:hover {
- cursor: pointer;
- background-color: #D5E4FF;
-
+.customer_details:not(.selected_active_customer):hover {
+  cursor: pointer;
+  background-color: #D5E4FF;
 }
 
 .customer_details:hover .accordian_btn {
@@ -346,8 +370,8 @@
 }
 
 .customer_details_selected {
-  background-color: #377CF6; 
-  color: #fff !important; 
+  background-color: #377CF6;
+  color: #fff !important;
 
   width: auto;
   /* border: 1px solid #d1d5db; */
@@ -367,7 +391,20 @@
 
 
 .customer_details_selected.open.accordian_btn {
-color: #fff !important;
+  color: #fff !important;
 }
 
-
+.calendar_schedule_btn {
+  background-color: #377CF6;
+  max-width: 472px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 20px;
+  padding-block: 10px;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+}
