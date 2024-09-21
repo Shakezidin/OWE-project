@@ -209,8 +209,11 @@ const CustomersList = ({ mapStyles = {} }) => {
               customer.map((customer, index) => (
                 <div
                   key={index}
-                  onClick={() =>{ setSelectedCustomer(index)
-                    setCollapse(-1)
+                  onClick={() => {
+                    setSelectedCustomer(index)
+                    if (collapse !== selectedCustomer) {
+                      setCollapse(-1)
+                    }
                   }}
                   className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${selectedCustomer === index ? styles.selected_active_customer : ""} `}                >
                   <div className={styles.cust_det_top}>
