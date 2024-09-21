@@ -19,6 +19,8 @@
   background-color: #fff;
   padding-top: 15px;
   padding-inline: 20px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 
@@ -34,8 +36,10 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 16px;
+  padding-right: 25px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid black;
 }
 
 .pending {
@@ -47,9 +51,9 @@
 }
 
 .pending h3 {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
-  color: #377cf6;
+  color: #263747;
 }
 
 .notification {
@@ -68,19 +72,29 @@
 
 .filter {
   display: flex;
-  gap: 10px;
+  gap: 25px;
   justify-content: center;
   align-items: center;
 }
 
 .filtericon {
-  display: flex;
+  /* display: flex;
   justify-content: center;
   align-items: center;
   height: 39px;
   width: 39px;
-  border-radius: 50%;
+  border-radius: 8px;
+  background-color: red;
+  cursor: pointer;
+  transition: all 0.3s ease; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #377cf6;
+  border: none;
+  border-radius: 8px;
+  padding: 8.5px;
+  color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -97,8 +111,8 @@
 
 .customer_details {
   width: auto;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border-bottom: 1px solid #d1d5db;
+  /* border-radius: 8px; */
   display: flex;
   flex-direction: column;
   padding: 18px 16px 18px 16px;
@@ -180,30 +194,32 @@
 
 .head_det span {
   font-size: 10px;
-  color: #afafaf;
   font-weight: 500;
 }
 
 .accordian_btn {
   border: none;
   border-radius: 50px;
-  background-color: #eaecf0;
+  background-color: #D5E4FF;
   width: 32px;
   height: 32px;
   display: grid;
   place-items: center;
   cursor: pointer;
   transition: all 500ms;
+  color: #377cf6;
 }
 
 .accordian_btn:focus-within {
-  outline: none;
+  outline: none;  
+  background-color: #fff;
+
 }
 
 .accordian_btn:hover {
-  background-color: #dde9ff;
+  background-color: #fff;
   transition: all 500ms;
-  color: #4372e9;
+  color: #377cf6;
 }
 
 .map_wrapper {
@@ -233,7 +249,7 @@
 .cust_det_button {
   width: 114px;
   height: 42px;
-  background-color: #4372e9;
+  background-color: #377cf6;
   color: #ffff;
   font-weight: 500;
   font-size: 14px;
@@ -298,3 +314,40 @@
 .rooftype_align {
   justify-content: end;
 }
+
+.customer_details:hover {
+ cursor: pointer;
+ background-color: #D5E4FF;
+
+}
+
+.customer_details:hover .accordian_btn {
+  background-color: #fff;
+}
+
+.customer_details_selected {
+  background-color: #377CF6; 
+  color: #fff !important; 
+
+  width: auto;
+  /* border: 1px solid #d1d5db; */
+  /* border-radius: 8px; */
+  display: flex;
+  flex-direction: column;
+  padding: 18px 25px 18px 24px;
+  gap: 23px;
+  max-height: max-content;
+  transition: max-height 0.7s ease;
+  overflow: hidden;
+}
+
+.customer_details_selected.open {
+  max-height: 700px;
+}
+
+
+.customer_details_selected.open.accordian_btn {
+color: #fff !important;
+}
+
+
