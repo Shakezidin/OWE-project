@@ -90,6 +90,7 @@ const customers = [
     system_size: '450 KW',
     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
+
 ];
 const CustomersList = ({ mapStyles = {} }) => {
   const navigate = useNavigate();
@@ -173,7 +174,7 @@ const CustomersList = ({ mapStyles = {} }) => {
           </span>
         </div>
       </div>
-      <div className={`flex justify-between mt2 ${styles.h_screen}`}>
+      <div className={`flex justify-between mt2 `}>
         <div className={styles.customer_wrapper_list}>
           <div className={styles.sr_top}>
             <div className={styles.pending}>
@@ -195,7 +196,7 @@ const CustomersList = ({ mapStyles = {} }) => {
             </div>
           </div>
 
-          <div className={styles.cust_det_list}>
+          <div className={` scrollbar ${styles.cust_det_list}`}>
             {isPending ? (
               <div className="flex items-center justify-center">
                 <MicroLoader />
@@ -208,7 +209,12 @@ const CustomersList = ({ mapStyles = {} }) => {
               customer.map((customer, index) => (
                 <div
                   key={index}
-                  onClick={() => setSelectedCustomer(index)}
+                  onClick={() => {
+                    setSelectedCustomer(index)
+                    if (collapse !== selectedCustomer) {
+                      setCollapse(-1)
+                    }
+                  }}
                   className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${selectedCustomer === index ? styles.selected_active_customer : ""} `}                >
                   <div className={styles.cust_det_top}>
                     <div className={styles.cust_name}>
