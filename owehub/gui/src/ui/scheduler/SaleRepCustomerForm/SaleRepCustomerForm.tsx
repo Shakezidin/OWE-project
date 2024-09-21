@@ -5,6 +5,7 @@ import DayPickerCalendar from '../components/ProgressCalendar/ProgressCalendar'
 import shardeStyles from '../SalesRepScheduler/styles/customerlist.module.css'
 import { IoIosInformationCircle } from 'react-icons/io'
 import { format } from 'date-fns'
+import { MdKeyboardBackspace } from "react-icons/md";
 const timeSlots = [
     { id: 1, time: "6:00 Am - 9:00 Am", uniqueId: 1 },
     { id: 2, time: "9:30 Am - 12:30 Pm", uniqueId: 2 },
@@ -41,8 +42,9 @@ const SaleRepCustomerForm = () => {
                         step < 3 &&
 
                         <>
-                            <div style={{ flexBasis: step === 2 ? "40%" : undefined }}>
-                                <div className={step===1?"flex flex-column items-center justify-center ":"mx-auto"} style={{ width: step === 2 ? "fit-content" : undefined }}>
+                            <div className='flex items-center' style={{ flexBasis: step === 2 ? "40%" : undefined }}>
+                                {step > 1 && <MdKeyboardBackspace style={{cursor:"pointer"}} className='curosr-pointer ml3' color='#fff' size={21} onClick={() => setStep(1)} />}
+                                <div className={step === 1 ? "flex flex-column items-center justify-center " : "mx-auto"} style={{ width: step === 2 ? "fit-content" : undefined }}>
                                     <h3>Customer Information</h3>
                                     <p >
                                         Change the customer information if incorrect
