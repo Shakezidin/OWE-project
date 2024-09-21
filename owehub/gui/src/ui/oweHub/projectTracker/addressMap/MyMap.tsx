@@ -16,6 +16,7 @@ import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { toZonedTime } from 'date-fns-tz';
 import { IoIosSearch } from 'react-icons/io';
+import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   endOfWeek,
   startOfMonth,
@@ -238,15 +239,8 @@ const MyMapComponent: React.FC = () => {
   return (
     <div>
       <div className={styles.cardHeader}>
-        <span className={styles.pipeline}>Install Map</span>
-
-        <div className={styles.mapClose} onClick={handleCalcClose} >
-          <IoClose />
-        </div>
-      </div>
-
-      <div className={styles.mapHeader2}>
-        <div className={styles.date_calendar}>
+        <div className={styles.headerLeft}>
+          <h3>Install Map</h3>
           <div className={styles.mapSearch}>
             <Input
               type="text"
@@ -259,6 +253,11 @@ const MyMapComponent: React.FC = () => {
                 setSearch(e.target.value);
               }}
             />
+          </div>
+        </div>
+        <div className={styles.headerRight}>
+          <div className={styles.mapClose} onClick={handleCalcClose} >
+            <IoClose />
           </div>
         </div>
       </div>
@@ -316,7 +315,7 @@ const MyMapComponent: React.FC = () => {
                       closeButton.style.display = 'none';
                       clearInterval(interval); // Stop checking once the button is hidden
                     }
-                  }, 10);  
+                  }, 10);
                 }}
               >
                 <div className={styles.infoWindow}>
