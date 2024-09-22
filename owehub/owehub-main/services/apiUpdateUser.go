@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -49,21 +50,21 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update User request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update User request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateUserReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update User request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update User request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update User request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -86,13 +87,13 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		//(len(updateUserReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if len(updateUserReq.UserCode) <= 0 {
 		err = fmt.Errorf("Invalid UserCode, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid UserCode, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid UserCode, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -100,7 +101,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		tablesPermissionsJSON, err = json.Marshal(updateUserReq.TablesPermissions)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to create user, marshall error: %v", err)
-			FormAndSendHttpResp(resp, "Failed to create user", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to create user", http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -119,7 +120,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil || len(data) <= 0 {
 			log.FuncErrorTrace(0, "Failed to get old username from db with err %s", err)
-			FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
 			return
 		}
 
@@ -156,7 +157,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
-			FormAndSendHttpResp(resp, "Failed to revoke user privilages", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to revoke user privilages", http.StatusInternalServerError, nil)
 			return
 			// Handle the error as needed, such as logging or returning an HTTP response
 		} else {
@@ -208,7 +209,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 				}
 				log.FuncErrorTrace(0, "Failed to update user with err: %v", err)
-				FormAndSendHttpResp(resp, "Failed to update the user db privilages", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to update the user db privilages", http.StatusInternalServerError, nil)
 				return
 			}
 
@@ -269,7 +270,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 		}
 		log.FuncErrorTrace(0, "Failed to Update User in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -282,14 +283,14 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Retrieve User Details from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
 		return
 	}
 
 	if len(userInfoResult) == 0 {
 		err = fmt.Errorf("Failed to Retrieve User Details from DB")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -317,5 +318,5 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	data := result[0].(map[string]interface{})
 	log.DBTransDebugTrace(0, "User updated with Id: %+v", data["result"])
 
-	FormAndSendHttpResp(resp, "User Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "User Updated Successfully", http.StatusOK, nil)
 }

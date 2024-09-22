@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -42,21 +43,21 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create dealer credit request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create dealer credit request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createDealerReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create dealer credit request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create dealer credit request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create dealer credit request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -64,21 +65,21 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		(len(createDealerReq.ApprovedBy) <= 0) || (len(createDealerReq.Notes) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createDealerReq.ExactAmount <= float64(0) {
 		err = fmt.Errorf("Invalid ExactAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createDealerReq.PerKwAmount <= float64(0) {
 		err = fmt.Errorf("Invalid PerKwAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,12 +95,12 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Unique ID, does not exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get Unique ID, does not exist", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(data) <= 0 {
-		FormAndSendHttpResp(resp, "Invalid Unique Id", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Unique Id", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -124,12 +125,12 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add dealer credit in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Dealer Credit", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Dealer Credit", http.StatusInternalServerError, nil)
 		return
 	}
 
 	resultData := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New dealer credit created with Id: %+v", resultData["result"])
-	FormAndSendHttpResp(resp, "Dealer Credit Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Dealer Credit Created Successfully", http.StatusOK, nil)
 }

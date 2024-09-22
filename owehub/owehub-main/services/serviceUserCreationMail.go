@@ -1,6 +1,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"encoding/base64"
@@ -165,21 +166,21 @@ func SendMailToUserFromUI(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ar schedule data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ar schedule data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get ar schedule data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get ar schedule data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get ar schedule data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -194,7 +195,7 @@ func SendMailToUserFromUI(resp http.ResponseWriter, req *http.Request) {
 	client := sendgrid.NewSendClient("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")
 	client.Send(message)
 
-	FormAndSendHttpResp(resp, "Email send succesfully", http.StatusAccepted, fmt.Sprintf("email sent succesfully to %v", dataReq.ToMail), 1)
+	appserver.FormAndSendHttpResp(resp, "Email send succesfully", http.StatusAccepted, fmt.Sprintf("email sent succesfully to %v", dataReq.ToMail), 1)
 }
 
 /***************************************************************************************
@@ -217,7 +218,7 @@ func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
 	err = req.ParseMultipartForm(10 << 20) // Limit to 10 MB
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse multipart form: %v", err)
-		FormAndSendHttpResp(resp, "Failed to parse multipart form", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse multipart form", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -226,7 +227,7 @@ func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
 	if jsonData == "" {
 		err = fmt.Errorf("missing JSON body")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Missing JSON body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Missing JSON body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -234,7 +235,7 @@ func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
 	err = json.Unmarshal([]byte(jsonData), &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal JSON body: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal JSON body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal JSON body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -247,7 +248,7 @@ func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
 		contentType := fileHeader.Header.Get("Content-Type")
 		if !strings.HasPrefix(contentType, "image/") || (contentType != "image/png" && contentType != "image/jpeg" && contentType != "image/jpg") {
 			log.FuncErrorTrace(0, "Unsupported file type: %v", contentType)
-			FormAndSendHttpResp(resp, "Unsupported file type. Only png, jpg, jpeg are allowed.", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Unsupported file type. Only png, jpg, jpeg are allowed.", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -255,7 +256,7 @@ func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
 		fileContent, err := io.ReadAll(file)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to read file content: %v", err)
-			FormAndSendHttpResp(resp, "Failed to read file content", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to read file content", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -294,10 +295,10 @@ func SendMailtoITfromUser(resp http.ResponseWriter, req *http.Request) {
 	_, err = client.Send(message)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send email: %v", err)
-		FormAndSendHttpResp(resp, "Failed to send email", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to send email", http.StatusInternalServerError, nil)
 		return
 	}
 
 	// Respond to client
-	FormAndSendHttpResp(resp, "Email sent successfully", http.StatusAccepted, fmt.Sprintf("Email sent successfully to %v", dataReq.ToMail), 1)
+	appserver.FormAndSendHttpResp(resp, "Email sent successfully", http.StatusAccepted, fmt.Sprintf("Email sent successfully to %v", dataReq.ToMail), 1)
 }

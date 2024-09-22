@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -37,28 +38,28 @@ func HandleAddTeamMemberDataRequest(resp http.ResponseWriter, req *http.Request)
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in Manage team request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Manage team request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &TeamData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal Manage team request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Manage team request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Manage team request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if TeamData.TeamID <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -71,7 +72,7 @@ func HandleAddTeamMemberDataRequest(resp http.ResponseWriter, req *http.Request)
 		if duplicateMap[id] {
 			err = fmt.Errorf("Sale representative ID %s is also present in manager IDs", id)
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "Duplicate IDs in SaleRepIds and ManagerIds", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Duplicate IDs in SaleRepIds and ManagerIds", http.StatusBadRequest, nil)
 			return
 		}
 	}
@@ -87,9 +88,9 @@ func HandleAddTeamMemberDataRequest(resp http.ResponseWriter, req *http.Request)
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.AddTeamMembers, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update Team in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to add team members", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to add team members", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Team Managed Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Team Managed Successfully", http.StatusOK, nil)
 }

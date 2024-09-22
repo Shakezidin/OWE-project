@@ -50,21 +50,21 @@ package services
 // 	if req.Body == nil {
 // 		err = fmt.Errorf("HTTP Request body is null in get PerfomancePieData data request")
 // 		log.FuncErrorTrace(0, "%v", err)
-// 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+// 		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 // 		return
 // 	}
 
 // 	reqBody, err := ioutil.ReadAll(req.Body)
 // 	if err != nil {
 // 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get PerfomancePieData data request err: %v", err)
-// 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+// 		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 // 		return
 // 	}
 
 // 	err = json.Unmarshal(reqBody, &dataReq)
 // 	if err != nil {
 // 		log.FuncErrorTrace(0, "Failed to unmarshal get PerfomancePieData data request err: %v", err)
-// 		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomancePieData data Request body", http.StatusBadRequest, nil)
+// 		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomancePieData data Request body", http.StatusBadRequest, nil)
 // 		return
 // 	}
 
@@ -75,7 +75,7 @@ package services
 // 	tableName := db.ViewName_ConsolidatedDataView
 // 	dataReq.Email = req.Context().Value("emailid").(string)
 // 	if dataReq.Email == "" {
-// 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+// 		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 // 		return
 // 	}
 // 	// this sets the data interval bracket for querying
@@ -108,7 +108,7 @@ package services
 // 		}
 // 	} else {
 // 		log.FuncErrorTrace(0, "Failed to get PerfomancePieData data from DB err: %v", err)
-// 		FormAndSendHttpResp(resp, "Failed to get PerfomancePieData data", http.StatusBadRequest, nil)
+// 		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomancePieData data", http.StatusBadRequest, nil)
 // 		return
 // 	}
 
@@ -121,7 +121,7 @@ package services
 // 				PerfomanceList: []models.PerfomanceResponse{},
 // 			}
 // 			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
-// 			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+// 			appserver.FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 // 			return
 // 		}
 
@@ -150,19 +150,16 @@ package services
 // 		 FROM rep_pay_pr_data
 // 		 WHERE current_status IN ('NTP', 'Install', 'PTO')) AS current_due`
 
-		 
-	
 // 	// retrieving value from owe_db from here
 // 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 // 	if err != nil {
 // 		log.FuncErrorTrace(0, "Failed to get PerfomancePieData data from DB err: %v", err)
-// 		FormAndSendHttpResp(resp, "Failed to get PerfomancePieData data", http.StatusBadRequest, nil)
+// 		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomancePieData data", http.StatusBadRequest, nil)
 // 		return
 // 	}
-	
 
 // 	log.FuncInfoTrace(0, "Number of PerfomancePieData List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-// 	FormAndSendHttpResp(resp, "PerfomancePieData Data", http.StatusOK, perfomanceList, RecordCount)
+// 	appserver.FormAndSendHttpResp(resp, "PerfomancePieData Data", http.StatusOK, perfomanceList, RecordCount)
 // }
 
 // /******************************************************************************

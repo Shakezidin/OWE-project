@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -48,21 +49,21 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get auto adder data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get auto adder data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get auto adder data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get auto adder data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get auto adder data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -109,7 +110,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -172,7 +173,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 			data3, err := db.ReteriveFromDB(db.OweHubDbIndex, qry, whereEleList)
 			if err != nil || len(data3) <= 0 {
 				log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
-				FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
 				return
 			}
 			PerKWAmount, ok = data3[0]["fee_rate"].(float64)
@@ -233,14 +234,14 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of auto adder List fetched : %v list %+v", len(AutoAdderList.AutoAdderList), AutoAdderList)
-	FormAndSendHttpResp(resp, "Auto Adder Data", http.StatusOK, AutoAdderList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Auto Adder Data", http.StatusOK, AutoAdderList, RecordCount)
 }
 
 /******************************************************************************
@@ -331,7 +332,7 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 // data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 // if err != nil {
 // 	log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
-// 	FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
+// 	appserver.FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
 // 	return
 // }
 // RecordCount = int64(len(data))

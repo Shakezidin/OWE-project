@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -40,28 +41,28 @@ func HandleUpdateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *http.R
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update adjustmentss archive request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update adjustmentss archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAdjustmentsArcReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update adjustmentss archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update adjustmentss archive request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update adjustmentss archive request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(updateAdjustmentsArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty, Update Archive failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Record Id is empty, Update Archive failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,11 +80,11 @@ func HandleUpdateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *http.R
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdjustmentsArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update adjustments archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Adjustments Archive", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update Adjustments Archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "adjustments archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "Adjustments Archive Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Adjustments Archive Updated Successfully", http.StatusOK, nil)
 }

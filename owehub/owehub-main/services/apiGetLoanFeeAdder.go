@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -43,21 +44,21 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get loan fee adder request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get loan fee adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get loan fee adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get loan fee adder Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get loan fee adder Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -83,7 +84,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get loan fee adder from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get loan fee adder from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get loan fee adder from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -334,13 +335,13 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get loan fee adder from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get loan fee adder from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get loan fee adder from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of loan fee adder List fetched : %v list %+v", len(LoanFeeAdderList.LoanFeeAdderList), LoanFeeAdderList)
-	FormAndSendHttpResp(resp, "Loan Fee Adder", http.StatusOK, LoanFeeAdderList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Loan Fee Adder", http.StatusOK, LoanFeeAdderList, RecordCount)
 }
 
 /******************************************************************************

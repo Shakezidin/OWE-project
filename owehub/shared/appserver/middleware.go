@@ -4,7 +4,7 @@
  * DATE            : 19-Jan-2024
  **************************************************************************/
 
-package services
+package appserver
 
 import (
 	log "OWEApp/shared/logger"
@@ -54,7 +54,7 @@ func AuthorizeAPIAccess(groupsAccessAllowed []types.UserGroup, next http.Handler
 			return
 		}
 
-		token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenString, &types.Claims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(types.JwtKey), nil
 		})
 
@@ -65,7 +65,7 @@ func AuthorizeAPIAccess(groupsAccessAllowed []types.UserGroup, next http.Handler
 		}
 
 		/* Now Validate if user role has permission to access the resource */
-		claims, ok := token.Claims.(*Claims)
+		claims, ok := token.Claims.(*types.Claims)
 		if !ok || time.Now().Unix() > claims.ExpiresAt {
 			FormAndSendHttpResp(w, "Unauthorized API Access", http.StatusUnauthorized, nil)
 			err = fmt.Errorf("Failed to get the claims, unauthorized access")

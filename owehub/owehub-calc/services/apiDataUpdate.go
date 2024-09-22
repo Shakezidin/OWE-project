@@ -9,6 +9,7 @@ package services
 import (
 	//common "OWEApp/owehub-calc/common"
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
+	"OWEApp/shared/appserver"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 
@@ -37,21 +38,21 @@ func HandleDataUpdateHandler(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in Update Data Handler")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update Data Handler err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &data)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal Update Data Handler request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update Data Handler request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Update Data Handler request", http.StatusBadRequest, nil)
 		return
 	} else {
 		log.FuncDebugTrace(0, "Data udpate notification recieved for unique_id: %v, hookType: %v", data.UniqueID, data.HookType)

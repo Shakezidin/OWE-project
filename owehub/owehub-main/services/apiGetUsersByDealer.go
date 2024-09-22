@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -36,23 +37,23 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get users by dealer request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	if err := json.NewDecoder(req.Body).Decode(&dataReq); err != nil {
 		log.FuncErrorTrace(0, "Failed to decode HTTP Request body from get users by dealer request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 	role := req.Context().Value("rolename").(string)
 	if role == "" {
-		FormAndSendHttpResp(resp, "error while getting role", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "error while getting role", http.StatusBadRequest, nil)
 		return
 	}
 	email := req.Context().Value("emailid").(string)
 	if email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -64,7 +65,7 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, queryForDealer, []interface{}{email})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
@@ -103,7 +104,7 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -130,5 +131,5 @@ func HandleGetUsersByDealerRequest(resp http.ResponseWriter, req *http.Request) 
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersNameList.UsersNameList), usersNameList)
-	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersNameList)
+	appserver.FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersNameList)
 }

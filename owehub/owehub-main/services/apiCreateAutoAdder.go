@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -39,51 +40,51 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create auto adder request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create auto adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createAutoAdderReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create auto adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create auto adder request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create auto adder request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(createAutoAdderReq.UniqueID) <= 0) || (len(createAutoAdderReq.Date) <= 0) ||
 		(len(createAutoAdderReq.Type) <= 0) || (len(createAutoAdderReq.GC) <= 0) ||
-		// (len(createAutoAdderReq.DescriptionRepVisible) <= 0) || 
+		// (len(createAutoAdderReq.DescriptionRepVisible) <= 0) ||
 		// (len(createAutoAdderReq.AdderType) <= 0) ||
 		(len(createAutoAdderReq.NotesNoRepVisible) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	// if createAutoAdderReq.ExactAmount <= float64(0) {
 	// 	err = fmt.Errorf("Invalid exact amount Not Allowed")
 	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed", http.StatusBadRequest, nil)
+	// 	appserver.FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed", http.StatusBadRequest, nil)
 	// 	return
 	// }
 	if createAutoAdderReq.PerKWAmount <= float64(0) {
 		err = fmt.Errorf("Invalid per_kw_amount price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per Kw Amount price Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Per Kw Amount price Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createAutoAdderReq.RepPercentage <= float64(0) {
 		err = fmt.Errorf("Invalid rep percentage Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid rep percentage Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid rep percentage Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -91,11 +92,11 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		err = fmt.Errorf("Error parsing date:", err)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid date not allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid date not allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	createAutoAdderReq.PerKWAmount= 99.99
+	createAutoAdderReq.PerKWAmount = 99.99
 	createAutoAdderReq.DescriptionRepVisible = "description"
 	createAutoAdderReq.AdderType = "adder type"
 
@@ -115,12 +116,12 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateAutoAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add auto adder in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Auto Adder", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Auto Adder", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New auto adder created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Auto Adder Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Auto Adder Created Successfully", http.StatusOK, nil)
 }

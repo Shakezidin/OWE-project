@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -46,21 +47,21 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get user address data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get user address request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get user address data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get user address data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get user address data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -71,7 +72,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -98,12 +99,12 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)
 			if err != nil {
-				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
 
 			if len(dealerNames) == 0 {
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 				return
 			} else {
 				dataReq.DealerNames = dealerNames
@@ -119,7 +120,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 	} else {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -132,7 +133,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
 			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			appserver.FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -159,14 +160,14 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		queryWithFiler = query + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get RepType data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get RepType data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get RepType data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -234,7 +235,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 	}
 	// Send the response
 	log.FuncInfoTrace(0, "Number of users address List fetched : %v list %+v", len(UserAddressList.UserAddressList), UserAddressList.UserAddressList)
-	FormAndSendHttpResp(resp, "user address Data", http.StatusOK, UserAddressList.UserAddressList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "user address Data", http.StatusOK, UserAddressList.UserAddressList, RecordCount)
 }
 
 /******************************************************************************
