@@ -37,6 +37,7 @@ import Input from '../../../components/text_input/Input';
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
   height: '100%',
+  borderRadius: "14px"
 };
 
 interface LocationInfo {
