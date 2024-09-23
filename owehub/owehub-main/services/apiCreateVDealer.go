@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,28 +39,28 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create v dealer request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create v dealer request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createVDealerReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create v dealer request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create v dealer request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create v dealer request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(createVDealerReq.DealerCode) <= 0) || (len(createVDealerReq.DealerName) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -77,21 +78,21 @@ func HandleCreateVDealerRequest(resp http.ResponseWriter, req *http.Request) {
 		if strings.Contains(err.Error(), "duplicate") {
 			if strings.Contains(err.Error(), "dealer_name") {
 				log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
-				FormAndSendHttpResp(resp, "V Dealer with Dealer Name Already Exists", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "V Dealer with Dealer Name Already Exists", http.StatusInternalServerError, nil)
 				return
 			} else if strings.Contains(err.Error(), "dealer_code") {
 				log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
-				FormAndSendHttpResp(resp, "V Dealer with Dealer Code Already Exists", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "V Dealer with Dealer Code Already Exists", http.StatusInternalServerError, nil)
 				return
 			}
 		}
 		log.FuncErrorTrace(0, "Failed to Add v dealer in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create V dealer", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create V dealer", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New partner created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Partner Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Partner Created Successfully", http.StatusOK, nil)
 }

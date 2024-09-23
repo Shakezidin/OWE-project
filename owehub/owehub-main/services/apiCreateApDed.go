@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -39,21 +40,21 @@ func HandleCreateApDedRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create ApDed request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create ApDed request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createApDedReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create ApDed request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create ar-rep request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create ar-rep request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -62,14 +63,14 @@ func HandleCreateApDedRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(createApDedReq.Description) <= 0) {
 		err = errors.New("empty input fields in API is not allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createApDedReq.Amount <= float64(0) {
 		err = errors.New("invalid values not allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Values Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Values Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -77,7 +78,7 @@ func HandleCreateApDedRequest(resp http.ResponseWriter, req *http.Request) {
 	date, err := time.Parse("2006-01-02", createApDedReq.Date)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
-		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -91,12 +92,12 @@ func HandleCreateApDedRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateApDedFuntion, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add ApDed in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create ApDed", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create ApDed", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New ApDed created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "ApDed Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "ApDed Created Successfully", http.StatusOK, nil)
 }

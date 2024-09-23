@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -41,27 +42,27 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get new form data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get new form data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &newFormDataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get new form data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get new form data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get new form data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(newFormDataReq.TableNames) <= 0 {
 		log.FuncErrorTrace(0, "Table name list is empty", nil)
-		FormAndSendHttpResp(resp, "Table Name list is empty", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Table Name list is empty", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -110,7 +111,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive) {
 				accountName, err := fetchAmAeName(email)
 				if err != nil {
-					FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+					appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 					return
 				}
 				var roleBase string
@@ -136,7 +137,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(dbIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get new form data for table name %v from DB err: %v", tableName, err)
-			FormAndSendHttpResp(resp, "Failed to get Data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get Data from DB", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -153,7 +154,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of new form data List fetched : %v list %+v", len(responseData), responseData)
-	FormAndSendHttpResp(resp, "New Form Data", http.StatusOK, responseData)
+	appserver.FormAndSendHttpResp(resp, "New Form Data", http.StatusOK, responseData)
 }
 
 /******************************************************************************

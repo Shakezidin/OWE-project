@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -42,21 +43,21 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update dealer credit request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealer credit request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateDealerCredit)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update dealer credit request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update Dealer Credit request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Update Dealer Credit request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -64,28 +65,28 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		(len(updateDealerCredit.ApprovedBy) <= 0) || (len(updateDealerCredit.Notes) <= 0) {
 		err = errors.New("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDealerCredit.RecordId <= int64(0) {
 		err = errors.New("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDealerCredit.ExactAmount <= float64(0) {
 		err = errors.New("Invalid ExactAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDealerCredit.PerKwAmount <= float64(0) {
 		err = errors.New("Invalid PerKwAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -102,7 +103,7 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Unique ID, does not exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get Unique ID, does not exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -128,12 +129,12 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update dealer credit in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update dealer credit", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update dealer credit", http.StatusInternalServerError, nil)
 		return
 	}
 
 	resultData := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "dealer credit updated with Id: %+v", resultData["result"])
-	FormAndSendHttpResp(resp, "Dealer Credit Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Dealer Credit Updated Successfully", http.StatusOK, nil)
 }

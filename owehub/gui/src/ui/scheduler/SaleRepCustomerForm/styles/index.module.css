@@ -17,9 +17,11 @@
 }
 
 .form_header {
-    background-color: #404767;
+    background: linear-gradient(90deg, #159CBF 0%, #6EC135 100%);
     height: 78px;
 }
+
+
 
 .form_header h3 {
     font-size: 18px;

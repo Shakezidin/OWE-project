@@ -43,7 +43,7 @@ const SaleRepCustomerForm = () => {
 
                         <>
                             <div className='flex items-center' style={{ flexBasis: step === 2 ? "40%" : undefined }}>
-                                {step > 1 && <MdKeyboardBackspace style={{cursor:"pointer"}} className='curosr-pointer ml3' color='#fff' size={21} onClick={() => setStep(1)} />}
+                                {step > 1 && <MdKeyboardBackspace style={{ cursor: "pointer" }} className='curosr-pointer ml3' color='#fff' size={21} onClick={() => setStep(1)} />}
                                 <div className={step === 1 ? "flex flex-column items-center justify-center " : "mx-auto"} style={{ width: step === 2 ? "fit-content" : undefined }}>
                                     <h3>Customer Information</h3>
                                     <p >
@@ -69,9 +69,9 @@ const SaleRepCustomerForm = () => {
                     </div>
                 }
                 <div className="flex">
-                    {step <= 2 && <div style={{ flexBasis: step === 1 ? "50%" : "40%" }} className={`${styles.form_content} py3 px4`}>
+                    {step <= 2 && <div style={{ flexBasis: step === 1 ? "70%" : "40%" }} className={`${styles.form_content} py3 ${step === 2 ? "px4" : ""} `}>
                         <div className='mb2'>
-                            <Input label='Prospect ID' value={"48594"} />
+                            <Input label='Prospect ID' showIsEditing={false} value={"48594"} />
                         </div>
 
                         <div className='mb2'>
