@@ -7,8 +7,29 @@ import Pagination from '../components/pagination/Pagination';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import { DateRange } from 'react-date-range';
 import { toZonedTime } from 'date-fns-tz';
-import { endOfWeek, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns';
+import { endOfWeek, format, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns';
 import Select, { SingleValue } from 'react-select';
+import useAuth from '../../hooks/useAuth';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+
+interface HistoryTableProp {
+  city: string;
+  country: string;
+  deal_date: string;
+  deal_status: string;
+  email_id: string;
+  first_name: string;
+  last_name: string;
+  leads_id: number;
+  notes: string;
+  phone_number: string;
+  state: string;
+  street_address: string;
+  zipcode: string;
+}
+
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
@@ -20,7 +41,7 @@ const LeradManagementHistory = () => {
   const navigate = useNavigate();
   const [see, setSee] = useState(false);
   const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const startIndex = (page - 1) * 10 + 1;
   const endIndex = page * 10;
   const totalPage = Math.ceil(totalCount / 10);
@@ -28,7 +49,9 @@ const LeradManagementHistory = () => {
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
   const [expandedItemIds, setExpandedItemIds] = useState<number[]>([]);
+  const [isAuthenticated, setAuthenticated] = useState(false);
 
+  const itemsPerPage = 10;
   function getUserTimezone() {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
@@ -289,6 +312,53 @@ const LeradManagementHistory = () => {
       address: "56432 Redwood St, Seattle, Washington .WA 98101",
     }
   ];
+
+  const { authData, saveAuthData } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [historyTable, setHistoryTable] = useState<HistoryTableProp[]>([]);
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
+  
+  useEffect(() => {
+    if (isAuthenticated) {
+      (async () => {
+        try {
+          setIsLoading(true);
+          const response = await axios.post(
+            'http://155.138.239.170:31023/owe-commisions-service/v1/leads_history',
+            {
+              leads_status: 5,
+              start_date: selectedDates.startDate ? format(selectedDates.startDate, 'yyyy-MM-dd') : '',
+              end_date: selectedDates.endDate ? format(selectedDates.endDate, 'yyyy-MM-dd') : '',
+              page_size: itemsPerPage,
+              page_number: page
+            }
+          );
+  
+         
+          if (response.status > 201) {
+            toast.error(response.data.message);
+            return;
+          }
+          if (response.data?.data?.leads_history_list) {
+             setHistoryTable(response.data?.data.leads_history_list as HistoryTableProp[]);
+             setTotalCount(response.data?.dbRecCount);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      })();
+    }
+  }, [isAuthenticated, selectedDates]);
+
+  
 
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');
