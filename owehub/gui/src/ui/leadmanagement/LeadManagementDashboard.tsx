@@ -793,90 +793,123 @@ const LeadManagementDashboard = () => {
           <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}
-                >
-                  <td className={`${lead.status === 'Declined' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedLeads.includes(lead)}
-                        onChange={() => handleLeadSelection(lead)}
-                      />
-                    </label>
-                    <div
-                      className={styles.user_name}
-                      onClick={() =>
-                        currentFilter == 'Pending' && handleDetailModal(lead)
-                      }
-                    >
-                      <h2>{lead.name}</h2>
-                      <p style={{ color: getStatusColor(lead.status) }}>
-                        {lead.status}
-                      </p>
-                    </div>
-                    <div className={styles.phone_number}>{lead.phone}</div>
-                    <div className={styles.email}>
-                      <span>
-                        {lead.email}
-                        <img
-                          className="ml1"
-                          height={15}
-                          width={15}
-                          src={ICONS.complete}
-                          alt="verified"
+                <React.Fragment key={index}>
+                  <tr className={styles.history_lists}>
+                    <td className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedLeads.includes(lead)}
+                          onChange={() => handleLeadSelection(lead)}
                         />
-                      </span>
-                    </div>
-                    <div className={styles.address}>{lead.address}</div>
-                   
-
-                    {lead.status === 'Declined' && (
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() => handleReschedule(lead)}
-                          className={styles.rescheduleButton}
-                        >
-                          Reschedule
-                        </button>
-                        {
-                          isTablet ?
-                          <button
-                          onClick={() => handleArchive(lead)}
-                          className={styles.archiveButton}
-                          >
-                            <img src={ICONS.declinedArchive}/>
-                          </button>
-                          :
-                          <button
-                          onClick={() => handleArchive(lead)}
-                          className={styles.archiveButton}
-                        >
-                          Archive
-                        </button>
+                      </label>
+                      <div
+                        className={styles.user_name}
+                        onClick={() =>
+                          currentFilter == 'Pending' && handleDetailModal(lead)
                         }
-                       
+                      >
+                        <h2>{lead.name}</h2>
+                        <p style={{ color: getStatusColor(lead.status) }}>
+                          {lead.status}
+                        </p>
                       </div>
-                    )}
+                      <div className={styles.phone_number}>{lead.phone}</div>
+                      <div className={styles.email}>
+                        <span>
+                          {lead.email}
+                          <img
+                            className="ml1"
+                            height={15}
+                            width={15}
+                            src={ICONS.complete}
+                            alt="verified"
+                          />
+                        </span>
+                      </div>
+                      <div className={styles.address}>{lead.address}</div>
+                     
 
-                    <div
-                      className={styles.chevron_down}
-                      onClick={() => handleChevronClick(lead.id)}
-                    >
-                      <img
-                        src={
-                          toggledId === lead.id
-                            ? ICONS.chevronUp
-                            : ICONS.chevronDown
-                        }
-                        alt={
-                          toggledId === lead.id
-                            ? 'chevronUp-icon'
-                            : 'chevronDown-icon'
-                        }
-                      />
-                    </div>
-                  </td>
-                </tr>
+                      {lead.status === 'Declined' && (
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() => handleReschedule(lead)}
+                            className={styles.rescheduleButton}
+                          >
+                            Reschedule
+                          </button>
+                          {
+                            isTablet ?
+                            <button
+                            onClick={() => handleArchive(lead)}
+                            className={styles.archiveButton}
+                            >
+                              <img src={ICONS.declinedArchive}/>
+                            </button>
+                            :
+                            <button
+                            onClick={() => handleArchive(lead)}
+                            className={styles.archiveButton}
+                          >
+                            Archive
+                          </button>
+                          }
+                         
+                        </div>
+                      )}
+
+                    {lead.status === 'Action Needed' && (
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() => handleReschedule(lead)}
+                            className={styles.rescheduleButton}
+                          >
+                            Reschedule
+                          </button>
+                         
+                        </div>
+                      )}
+
+                      <div
+                        className={styles.chevron_down}
+                        onClick={() => handleChevronClick(lead.id)}
+                      >
+                        <img
+                          src={
+                            toggledId === lead.id
+                              ? ICONS.chevronUp
+                              : ICONS.chevronDown
+                          }
+                          alt={
+                            toggledId === lead.id
+                              ? 'chevronUp-icon'
+                              : 'chevronDown-icon'
+                          }
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  {toggledId === lead.id && (
+                    <tr>
+                      <td colSpan={5} className={styles.detailsRow}>
+                        <div className={''}>{lead.phone}</div>
+                        <div className={''}>
+                          <span>
+                            {lead.email}
+                            <img
+                              className="ml1"
+                              height={15}
+                              width={15}
+                              src={ICONS.complete}
+                              alt="verified"
+                            />
+                          </span>
+                        </div>
+                        <div className={''}>{lead.address}</div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
