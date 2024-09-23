@@ -33,11 +33,10 @@ import {
 } from 'date-fns';
 import Input from '../../../components/text_input/Input';
 
-
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
   height: '100%',
-  borderRadius: "14px"
+  borderRadius: '14px',
 };
 
 interface LocationInfo {
@@ -178,11 +177,7 @@ const MyMapComponent: React.FC = () => {
         setLoading(false);
       }
     })();
-  }, [
-    selectedDates.startDate,
-    selectedDates.endDate,
-    createRePayData.state,
-  ]);
+  }, [selectedDates.startDate, selectedDates.endDate, createRePayData.state]);
 
   const debouncedSetSelectedLocation = useCallback(
     debounce((location: LocationInfo | null) => {
@@ -258,24 +253,23 @@ const MyMapComponent: React.FC = () => {
   // Handle search changes in the Autocomplete input
   const onPlaceChanged = () => {
     const place = autocompleteRef.current?.getPlace();
-    
+
     if (!place || !place.geometry || !place.geometry.location) {
       toast.error('No details available for the selected place.');
       return;
     }
-  
+
     const searchedLocation: LatLng = {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
     };
 
- // Set the selected place's name in the search bar
-  const selectedAddress = place.formatted_address || place.name || '';
-  setSearchValue(selectedAddress); // Update the input field to show the selected address
+    // Set the selected place's name in the search bar
+    const selectedAddress = place.formatted_address || place.name || '';
+    setSearchValue(selectedAddress); // Update the input field to show the selected address
 
-  
     setCenter(searchedLocation);
-  
+
     // Filter locations within 10 km of the searched address
     const neighboringLocations = locations.filter((location) => {
       const distance = calculateDistance(
@@ -286,41 +280,40 @@ const MyMapComponent: React.FC = () => {
       );
       return distance <= 10; // Locations within 10km
     });
-  
+
     setFilteredLocations(neighboringLocations);
-  
+
     // Adjust the map bounds to show both the searched location and neighboring markers
     const bounds = new window.google.maps.LatLngBounds();
     bounds.extend(searchedLocation);
-  
+
     neighboringLocations.forEach((location) => {
       bounds.extend({ lat: location.lat, lng: location.lng });
     });
-  
+
     if (mapRef.current) {
       mapRef.current.fitBounds(bounds); // Fit the map to show all markers
     }
   };
 
   // Add a new function to handle input changes
-const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const inputValue = event.target.value;
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
 
-  // If the input is cleared, reload the default locations
-  if (inputValue === '') {
-    setFilteredLocations(locations); // Reset to all locations
-    if (mapRef.current) {
-      const bounds = new window.google.maps.LatLngBounds();
-      locations.forEach((location) => {
-        bounds.extend({ lat: location.lat, lng: location.lng });
-      });
-      mapRef.current.fitBounds(bounds); // Fit the map to all markers
+    // If the input is cleared, reload the default locations
+    if (inputValue === '') {
+      setFilteredLocations(locations); // Reset to all locations
+      if (mapRef.current) {
+        const bounds = new window.google.maps.LatLngBounds();
+        locations.forEach((location) => {
+          bounds.extend({ lat: location.lat, lng: location.lng });
+        });
+        mapRef.current.fitBounds(bounds); // Fit the map to all markers
+      }
     }
-  }
 
-  setSearchValue(inputValue); // Update the search state (if needed)
-};
-
+    setSearchValue(inputValue); // Update the search state (if needed)
+  };
 
   // Set all locations by default when no search is performed
   useEffect(() => {
@@ -396,14 +389,39 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           <h3>Install Map</h3>
           <div className={styles.mapSearch}>
             <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-              <input
-                type="text"
-                placeholder="Search for an address"
-                className={styles.inputsearch}
-                style={{ width: '300px', padding: '8px', marginTop: "5px" }}
-                onChange={handleInputChange} 
-                value={searchValue} 
-              />
+              <div
+                style={{
+                  position: 'relative',
+                  width: '300px',
+                  marginTop: '5px',
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Search for Unique ID or name"
+                  className={styles.inputsearch}
+                  style={{ width: '100%', padding: '8px' }}
+                  onChange={handleInputChange}
+                  value={searchValue}
+                />
+                {searchValue && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchValue('')}
+                    style={{
+                      position: 'absolute',
+                      right: '8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </Autocomplete>
 
             <div className={styles.dropdownstate}>
@@ -479,7 +497,6 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
                     onMouseOver={() => onMarkerHover(location)}
                     onClick={() => onMarkerClick(location)}
                     onMouseOut={onMarkerLeave}
-                     
                     options={{
                       anchorPoint: new window.google.maps.Point(0, -10),
                     }}
