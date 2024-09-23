@@ -5,7 +5,13 @@
   position: relative;
   background: #fff;
   border-radius: 12px;
-  margin: 10px 0;
+}
+
+.mapWrap {
+  padding: 10px;
+  background-color: var(--white-color);
+  border-radius: 14px;
+  margin-top: 10px;
 }
 
 .headerLeft {
@@ -184,8 +190,7 @@
 }
 
 .cardHeader {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 0;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -605,14 +610,14 @@ input[type='checkbox']:checked {
 @media (max-width: 768px) {
   .mapSearch {
     position: absolute;
-    top: 4.5rem;
+    top: 3.2rem;
     left: 0;
   }
 
   .cardHeader {
     margin-bottom: 4rem;
     border-bottom: none;
-    padding: 10px 16px;
+    padding: 5px
   }
 
   .mapWrap {
@@ -624,7 +629,7 @@ input[type='checkbox']:checked {
   }
 }
 
-@media (max-width: 502px) {
+@media (max-width: 520px) {
   .mapSearch {
     flex-direction: column;
     align-items: flex-start;
@@ -632,7 +637,7 @@ input[type='checkbox']:checked {
   }
 
   .cardHeader {
-    margin-bottom: 7rem;
+    margin-bottom: 6.5rem;
   }
 }
 
