@@ -79,6 +79,10 @@
   margin-top: 5px;
   cursor: pointer;
 }
+.mapClose:hover{
+  transform: scale(1.03);
+  transition: all 0.3 ease;
+}
 
 .mapClose svg {
   font-size: 1.5rem;
