@@ -397,11 +397,11 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
             <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
               <input
                 type="text"
-                placeholder="Search for an address"
+                placeholder="Search for Unique ID or name"
                 className={styles.inputsearch}
-                style={{ width: '300px', padding: '8px' }}
-                onChange={handleInputChange} // Add the input change handler
-                value={searchValue} // Bind the input value to state
+                style={{ width: '300px', padding: '8px', marginTop: "5px" }}
+                onChange={handleInputChange} 
+                value={searchValue} 
               />
             </Autocomplete>
 
@@ -440,7 +440,7 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       <div
         style={{
           width: '100%',
-          height: '80vh',
+          height: '75vh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
