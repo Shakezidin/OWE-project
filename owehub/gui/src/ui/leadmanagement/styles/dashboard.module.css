@@ -401,7 +401,7 @@ input[type='checkbox']:checked {
 
   }
   .chartGrid {
-    grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
+    grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
   }
   .lineCard {
     margin-right: 26px;
