@@ -431,7 +431,7 @@ const LeradManagementHistory = () => {
                         '&:hover': {
                           color: '#ffffff',
                         },
-                        
+
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
@@ -455,6 +455,7 @@ const LeradManagementHistory = () => {
                       }),
                     }}
                   />
+
 
                   <div className={styles.calender} onClick={toggleCalendar} ref={calendarRef}>
                     <img src={ICONS.includes_icon} alt="" />
@@ -497,7 +498,7 @@ const LeradManagementHistory = () => {
                         width: '16.42px',
                         height: '16px',
                         gap: '0px',
-                        borderRadius: '16px',
+                        borderRadius: '8pxpx',
                         border: '1px solid #797979',
                       }}
                     />
@@ -541,7 +542,7 @@ const LeradManagementHistory = () => {
               {!isMobile && expandedItemIds.includes(item.id) && (
                 <>
                   {(isTablet &&
-                    <div className={styles.phone_number}>{item.phoneNumber}</div>
+                    <div className={styles.phone_number_tab}>{item.phoneNumber}</div>
                   )}
                   <div style={{ padding: "0px 12px" }}>
                     <div style={{ backgroundColor: "#fff" }} className={styles.history_list_activity}>
