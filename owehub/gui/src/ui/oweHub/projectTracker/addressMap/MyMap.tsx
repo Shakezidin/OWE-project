@@ -398,9 +398,9 @@ const MyMapComponent: React.FC = () => {
               >
                 <input
                   type="text"
-                  placeholder="Search for Unique ID or name"
+                  placeholder="Search for an address"
                   className={styles.inputsearch}
-                  style={{ width: '100%', padding: '8px' }}
+                  style={{ width: '100%', padding: '8px', paddingRight: "2rem" }}
                   onChange={handleInputChange}
                   value={searchValue}
                 />
