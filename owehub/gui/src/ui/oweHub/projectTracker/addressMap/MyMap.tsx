@@ -406,32 +406,52 @@ const MyMapComponent: React.FC = () => {
                 />
                 {searchValue && (
                   <button
-                    type="button"
-                    onClick={() => setSearchValue('')}
-                    style={{
-                      position: 'absolute',
-                      right: '8px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    ✕
-                  </button>
+                  type="button"
+                  onClick={() => {
+                    setSearchValue(''); // Clear the search value
+                    setFilteredLocations(locations); // Reset to show all locations
+                
+                    if (mapRef.current) {
+                      const bounds = new google.maps.LatLngBounds();
+                
+                      // Loop through all the locations and extend the bounds to include each marker's position
+                      locations.forEach((location) => {
+                        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+                      });
+                
+                      // Adjust the map to fit the bounds of all markers
+                      mapRef.current.fitBounds(bounds);
+                    }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    right: '8px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ✕
+                </button>
+                
+                 
                 )}
               </div>
             </Autocomplete>
 
             <div className={styles.dropdownstate}>
               <SelectOption
-                options={stateOption(newFormData)}
+                options={[
+                  { label: 'Select State', value: '' }, // Default option
+                  ...(stateOption(newFormData) || []), // Ensure it returns an array
+                ]}
                 onChange={(newValue) => handleChange(newValue, 'state')}
                 value={
-                  stateOption(newFormData)?.find(
+                  (stateOption(newFormData) || []).find(
                     (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: '' }
+                  ) || { label: 'Select State', value: '' } // Default when no match
                 }
                 menuStyles={{
                   width: 400,
