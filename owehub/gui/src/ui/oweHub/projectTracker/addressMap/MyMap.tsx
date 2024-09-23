@@ -22,6 +22,8 @@ import { IoIosSearch } from 'react-icons/io';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import NotFound from '../../noRecordFound/NotFound';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import useAuth from '../../../../hooks/useAuth';
 
 import {
   endOfWeek,
@@ -86,6 +88,7 @@ const MyMapComponent: React.FC = () => {
   const [locations, setLocations] = useState<LocationInfo[]>([]);
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState<any>('');
+  const { authData, getUpdatedAuthData } = useAuth();
 
   const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
@@ -99,7 +102,7 @@ const MyMapComponent: React.FC = () => {
   const [filteredLocations, setFilteredLocations] = useState<LocationInfo[]>(
     []
   ); // Filtered locations
-
+  const role = authData?.role;
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
 
   const [selectedPeriod, setSelectedPeriod] =
@@ -122,7 +125,7 @@ const MyMapComponent: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
   const [toggledId, setToggledId] = useState<string | null>(null);
-
+  
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
@@ -522,7 +525,8 @@ const MyMapComponent: React.FC = () => {
                     }}
                   />
                 ))}
-
+              { role === TYPE_OF_USER.ADMIN ?
+                <>
                 {selectedLocation && (
                   <InfoWindow
                     position={{
@@ -569,6 +573,9 @@ const MyMapComponent: React.FC = () => {
                     </div>
                   </InfoWindow>
                 )}
+                </>
+             : null }  
+
               </GoogleMap>
             ) : (
               <div
