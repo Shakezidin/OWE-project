@@ -343,8 +343,8 @@ const CustomersList = ({ mapStyles = {} }) => {
             !isSurveyScheduled ?
 
               <>
-                <h5 style={{ fontWeight: 500, fontSize: 16 }} className='mb2 ml2' >Select Date & Time</h5>
-                <div className="flex items-start justify-between">
+                <h5 style={{ fontWeight: 500, fontSize: 16 }} className='mb3 ml2' >Select Date & Time</h5>
+                <div className={`flex items-start ${selectedDate ? "justify-between" : "justify-center"}`}>
                   <DayPickerCalendar onClick={(e) => {
                     setSelectedDate(e.date)
                     setSelectedTime(undefined)
@@ -362,7 +362,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                   </div> : ""}
                 </div>
                 {selectedTime && selectedDate &&
-                  <div className='mt3'>
+                  <div className='mt4'>
                     <div className="flex mb2 items-center justify-center">
                       <h5 className={styles.selected_time}>{format(selectedDate, "EEEE, dd MMM")}  {selectedTime.time} </h5>
                       <IoIosInformationCircle className='ml1' color='#1F2937' size={17} />

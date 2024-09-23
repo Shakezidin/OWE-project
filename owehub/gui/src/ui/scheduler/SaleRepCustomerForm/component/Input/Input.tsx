@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef } from 'react'
 import styles from './styles/index.module.css'
 import { AiOutlineEdit } from 'react-icons/ai'
-import { BsCheck } from 'react-icons/bs'
+import { FaCheck } from "react-icons/fa6";
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     showIsEditing?: boolean
@@ -36,7 +36,7 @@ const Input: React.FC<InputProps> = ({ label, id, showIsEditing = true, ...rest 
             <div ref={wrapperRef} className={styles.input_wrapper}>
                 <input ref={inputRef} id={id} {...rest} readOnly={showIsEditing ? !isEditing : undefined} className={`${styles.input_field} ${className}`} />
                 {showIsEditing && <span className={styles.edit_btn} onClick={() => setIsEditing(prev => !prev)}>
-                    {isEditing ? <BsCheck size={18} /> : <AiOutlineEdit size={15} color='#C1C1C1' />}
+                    {isEditing ? <FaCheck size={21} color='#377CF6' /> : <AiOutlineEdit size={15} color='#C1C1C1' />}
                 </span>}
             </div>
         </div>

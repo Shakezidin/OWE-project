@@ -54,7 +54,7 @@ const getColorByPercent = (percent: number): string => {
 const DayButton = ({ day, selected, dayWithProgress, className, onDateSelect, ...buttonProps }: ExtendedDayButtonProps) => {
     const nextSevenWeekdays = useMemo(getNextSevenWeekdays, []);
     const isNext = nextSevenWeekdays.some(date => date.getTime() === new Date(day.date).setHours(0, 0, 0, 0));
-    const findDay = dayWithProgress?.find(date => 
+    const findDay = dayWithProgress?.find(date =>
         date.date.getDate() === day.date.getDate() &&
         date.date.getMonth() === day.date.getMonth() &&
         date.date.getFullYear() === day.date.getFullYear()
@@ -64,11 +64,11 @@ const DayButton = ({ day, selected, dayWithProgress, className, onDateSelect, ..
     const isSelected = selected?.getTime() === new Date(day.date).setHours(0, 0, 0, 0);
 
     return (
-        <button 
-            {...buttonProps} 
-            disabled={!isNext} 
-            className={`${className} ${!isNext ? styles.disable_day_cell : ""}`} 
-            onClick={() => onDateSelect?.({ date: day.date, event: { id: findDay?.id! } })} 
+        <button
+            {...buttonProps}
+            disabled={!isNext}
+            className={`${className} ${!isNext ? styles.disable_day_cell : ""}`}
+            onClick={() => onDateSelect?.({ date: day.date, event: { id: findDay?.id! } })}
             style={{ width: "52px" }}
         >
             {isNext ? (
@@ -88,35 +88,35 @@ const DayPickerCalendar = ({ dayWithProgress, onClick }: DayPickerCalendarProps)
 
     return (
         <div>
-        { selected &&  <h5 className={` ml2 mb2 ${defaultClassNames.month_caption}`}> {format(selected, "MMMM yyyy")}  </h5>}
-        
-        <DayPicker
-            className={styles.day_picker}
-            mode="single"
-            modifiersClassNames={{ selected: styles.selected_cell, caption: styles.caption_label }}
-            required
-            showOutsideDays
-            hideNavigation
-            selected={selected}
-            classNames={{ 
-                caption_label: styles.caption_label, 
-                month_caption: `hidden` 
-            }}
-            components={{
-                DayButton: (props) => (
-                    <DayButton 
-                        {...props} 
-                        selected={selected} 
-                        
-                        dayWithProgress={dayWithProgress} 
-                        onDateSelect={(day) => {
-                            onClick?.(day);
-                            setSelected(day.date);
-                        }} 
-                    />
-                )
-            }}
-        />
+            <h5 className={`  mb2 ${defaultClassNames.month_caption} ${!selected?"flex justify-center":"ml2"} `}> {format((selected || new Date()), selected ? "dd MMMM yyyy" : "MMMM yyyy")}  </h5>
+
+            <DayPicker
+                className={styles.day_picker}
+                mode="single"
+                modifiersClassNames={{ selected: styles.selected_cell, caption: styles.caption_label }}
+                required
+                showOutsideDays
+                hideNavigation
+                selected={selected}
+                classNames={{
+                    caption_label: styles.caption_label,
+                    month_caption: `hidden`
+                }}
+                components={{
+                    DayButton: (props) => (
+                        <DayButton
+                            {...props}
+                            selected={selected}
+
+                            dayWithProgress={dayWithProgress}
+                            onDateSelect={(day) => {
+                                onClick?.(day);
+                                setSelected(day.date);
+                            }}
+                        />
+                    )
+                }}
+            />
         </div>
     );
 }
