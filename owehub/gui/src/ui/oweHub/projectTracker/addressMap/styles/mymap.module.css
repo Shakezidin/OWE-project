@@ -5,10 +5,16 @@
   position: relative;
   background: #fff;
   border-radius: 12px;
-  margin: 10px 0;
 }
 
-.headerLeft{
+.mapWrap {
+  padding: 1rem;
+  background-color: var(--white-color);
+  border-radius: 14px;
+  margin-top: 10px;
+}
+
+.headerLeft {
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -19,22 +25,22 @@
   border: 1px solid #ddd;
   transition: transform 0.3s ease-in-out;
 }
- 
+
 .infoWindow {
   background-color: white;
   padding: 16px;
   border-radius: 8px;
   min-width: 200px;
-  border: none;  
-}
- 
-.gm-ui-hover-effect {
-  display: none !important;  
+  border: none;
 }
 
- 
+.gm-ui-hover-effect {
+  display: none !important;
+}
+
+
 .infoWindow:hover {
-  border: none;  
+  border: none;
 }
 
 .infoWindowRow {
@@ -52,7 +58,7 @@
   color: #333;
 }
 
- 
+
 .info-window-custom:hover {
   transform: scale(1.05);
 }
@@ -72,6 +78,10 @@
   margin-left: 10px;
   margin-top: 5px;
   cursor: pointer;
+}
+.mapClose:hover{
+  transform: scale(1.03);
+  transition: all 0.3 ease;
 }
 
 .mapClose svg {
@@ -103,42 +113,46 @@
   margin-right: 16px;
 }
 
-.inputsearch{
+.inputsearch {
   min-width: 220px !important;
   font-size: 13px;
-    font-weight: 400;
-    flex: 1 1;
-    height: 2.27rem;
-    color: #000;
-    padding: 0px 14px;
-    line-height: 14.5px;
-    border: 0;
-    border-radius: 0;
-    outline: 0;
-    min-width: 220px;
+  font-weight: 400;
+  flex: 1 1;
+  height: 2.27rem;
+  color: #000;
+  padding: 0px 14px;
+  border: 1px solid #CBCBCB;
+  border-radius: 6px;
+  outline: 0;
 }
+
 .dropdownselect {
   display: flex;
-  align-items: center; /* Aligns items vertically */
-  gap: 10px; /* Adds some space between the label and the select dropdown */
+  align-items: center;
+  gap: 10px;
 }
+
 .dropdownstate {
   margin-top: -20px;
 }
-.dropdownstate .select-container .css-19mwi93-control .css-hlgwow .css-1i5rmfk-singleValue{
+
+.dropdownstate .select-container .css-19mwi93-control .css-hlgwow .css-1i5rmfk-singleValue {
   font-weight: 400 !important;
 }
 
 .dropdownselect span {
-  font-weight: lighter /* You can adjust the label styling as needed */
+  font-weight: lighter
+    /* You can adjust the label styling as needed */
 }
 
 .dropdownselect select {
-  width: 100%; /* Make the select box flexible */
-  max-width: 200px; /* You can set a max width for the dropdown */
+  width: 100%;
+  /* Make the select box flexible */
+  max-width: 200px;
+  /* You can set a max width for the dropdown */
 }
 
- 
+
 .date_parent {
   display: flex;
   align-items: center;
@@ -180,8 +194,7 @@
 }
 
 .cardHeader {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 0;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -599,31 +612,36 @@ input[type='checkbox']:checked {
 
 
 @media (max-width: 768px) {
-  .mapSearch{
+  .mapSearch {
     position: absolute;
-    top: 4.5rem;
+    top: 3.2rem;
+    left: 0;
   }
-  .cardHeader{
+
+  .cardHeader {
     margin-bottom: 4rem;
     border-bottom: none;
-    padding: 10px 16px;
+    padding: 5px
   }
-  .mapWrap{
+
+  .mapWrap {
     margin: 10px;
   }
-  .mapWrapper{
+
+  .mapWrapper {
     margin-top: 1rem;
   }
 }
 
-@media (max-width: 420px){
-  .mapSearch{
+@media (max-width: 520px) {
+  .mapSearch {
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
   }
-  .cardHeader{
-    margin-bottom: 7rem;
+
+  .cardHeader {
+    margin-bottom: 6.5rem;
   }
 }
 

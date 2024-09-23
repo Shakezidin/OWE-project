@@ -4,6 +4,7 @@ import {
   Marker,
   InfoWindow,
   useLoadScript,
+  Autocomplete,
 } from '@react-google-maps/api';
 import { IoClose } from 'react-icons/io5';
 import { debounce } from '../../../../utiles/debounce';
@@ -35,11 +36,12 @@ import Input from '../../../components/text_input/Input';
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
   height: '100%',
+  borderRadius: '14px',
 };
 
 interface LocationInfo {
-  lat: any;
-  lng: any;
+  lat: number;
+  lng: number;
   unique_id: string;
   home_owner: string;
   project_status: string;
@@ -49,10 +51,14 @@ export type DateRangeWithLabel = {
   start: Date;
   end: Date;
 };
-
+type LatLng = {
+  lat: number;
+  lng: number;
+};
 const MyMapComponent: React.FC = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
+    googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0', // Replace with your API key
+    libraries: ['places'],
   });
   const today = getCurrentDateInUserTimezone();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
@@ -79,15 +85,20 @@ const MyMapComponent: React.FC = () => {
 
   const [locations, setLocations] = useState<LocationInfo[]>([]);
   const [search, setSearch] = useState('');
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [searchValue, setSearchValue] = useState<any>('');
 
   const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState<LocationInfo | null>(
     null
   );
   const [loading, setLoading] = useState(false);
-  const mapRef = useRef<any | null>(null);
+  const [projectCount, setProjectCount] = useState<number>(0);
+
+  const mapRef = useRef<google.maps.Map | null>(null);
   const [center, setCenter] = useState({ lat: 25.5941, lng: 85.1376 });
+  const [filteredLocations, setFilteredLocations] = useState<LocationInfo[]>(
+    []
+  ); // Filtered locations
 
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
 
@@ -104,9 +115,10 @@ const MyMapComponent: React.FC = () => {
     startDate: startOfThisWeek,
     endDate: today,
   });
-
+  const [newFormData, setNewFormData] = useState({});
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
   const [toggledId, setToggledId] = useState<string | null>(null);
@@ -138,7 +150,6 @@ const MyMapComponent: React.FC = () => {
           !Array.isArray(data.data) ||
           data.data.length === 0
         ) {
-         
           setLocations([]); // Set empty array if no data
           return;
         }
@@ -166,12 +177,7 @@ const MyMapComponent: React.FC = () => {
         setLoading(false);
       }
     })();
-  }, [
-    selectedDates.startDate,
-    selectedDates.endDate,
-    searchValue,
-    createRePayData.state,
-  ]);
+  }, [selectedDates.startDate, selectedDates.endDate, createRePayData.state]);
 
   const debouncedSetSelectedLocation = useCallback(
     debounce((location: LocationInfo | null) => {
@@ -197,7 +203,7 @@ const MyMapComponent: React.FC = () => {
     },
     [debouncedSetSelectedLocation]
   );
-  const [newFormData, setNewFormData] = useState({});
+
   const onMarkerLeave = useCallback(() => {
     debouncedSetSelectedLocation(null);
   }, [debouncedSetSelectedLocation]);
@@ -224,43 +230,135 @@ const MyMapComponent: React.FC = () => {
     getNewFormData();
   }, []);
 
-  console.log(newFormData);
+  // Function to calculate the distance between two points (Haversine formula)
+  const calculateDistance = (
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number
+  ): number => {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in kilometers
+  };
 
-  useEffect(() => {
-    if (isLoaded && locations.length > 0 && window.google) {
-      const bounds = new window.google.maps.LatLngBounds();
-      locations.forEach((location) => {
-        bounds.extend({ lat: location.lat, lng: location.lng });
-      });
-      const newCenter = {
-        lat: (bounds.getNorthEast().lat() + bounds.getSouthWest().lat()) / 2,
-        lng: (bounds.getNorthEast().lng() + bounds.getSouthWest().lng()) / 2,
-      };
-      setCenter(newCenter);
-      if (mapRef.current) {
-        mapRef.current.fitBounds(bounds);
-      }
+  // Handle search changes in the Autocomplete input
+  const onPlaceChanged = () => {
+    const place = autocompleteRef.current?.getPlace();
+
+    if (!place || !place.geometry || !place.geometry.location) {
+      toast.error('No details available for the selected place.');
+      return;
     }
-  }, [isLoaded, locations]);
-  const handleSearchChange = useCallback(
-    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchValue(e.target.value);
-    }, 800),
-    []
-  );
 
-  const onMapLoad = useCallback(
-    (map: any) => {
-      mapRef.current = map;
-      if (locations.length > 0) {
+    const searchedLocation: LatLng = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    };
+
+    // Set the selected place's name in the search bar
+    const selectedAddress = place.formatted_address || place.name || '';
+    setSearchValue(selectedAddress); // Update the input field to show the selected address
+
+    setCenter(searchedLocation);
+
+    // Filter locations within 10 km of the searched address
+    const neighboringLocations = locations.filter((location) => {
+      const distance = calculateDistance(
+        searchedLocation.lat,
+        searchedLocation.lng,
+        location.lat,
+        location.lng
+      );
+      return distance <= 10; // Locations within 10km
+    });
+
+    setFilteredLocations(neighboringLocations);
+
+    // Adjust the map bounds to show both the searched location and neighboring markers
+    const bounds = new window.google.maps.LatLngBounds();
+    bounds.extend(searchedLocation);
+
+    neighboringLocations.forEach((location) => {
+      bounds.extend({ lat: location.lat, lng: location.lng });
+    });
+
+    if (mapRef.current) {
+      mapRef.current.fitBounds(bounds); // Fit the map to show all markers
+    }
+  };
+
+  // Add a new function to handle input changes
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+
+    // If the input is cleared, reload the default locations
+    if (inputValue === '') {
+      setFilteredLocations(locations); // Reset to all locations
+      if (mapRef.current) {
         const bounds = new window.google.maps.LatLngBounds();
         locations.forEach((location) => {
           bounds.extend({ lat: location.lat, lng: location.lng });
         });
+        mapRef.current.fitBounds(bounds); // Fit the map to all markers
+      }
+    }
+
+    setSearchValue(inputValue); // Update the search state (if needed)
+  };
+
+  // Set all locations by default when no search is performed
+  useEffect(() => {
+    // Initially set the map to show all locations if no search is performed
+    if (locations.length > 0 && filteredLocations.length === 0) {
+      setFilteredLocations(locations);
+    }
+  }, [locations, filteredLocations]);
+
+  // Recalculate bounds when locations change
+  useEffect(() => {
+    if (mapRef.current && locations.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+      locations.forEach((location) => {
+        bounds.extend({ lat: location.lat, lng: location.lng });
+      });
+      mapRef.current.fitBounds(bounds);
+    }
+  }, [locations]);
+  const onMapLoad = useCallback(
+    (map: google.maps.Map) => {
+      mapRef.current = map;
+
+      // Create a bounds object
+      const bounds = new window.google.maps.LatLngBounds();
+
+      // Use filtered locations if there are any, otherwise use all locations
+      const locationsToShow =
+        filteredLocations.length > 0 ? filteredLocations : locations;
+
+      if (locationsToShow.length > 0) {
+        // Extend the bounds for each marker location
+        locationsToShow.forEach((location) => {
+          bounds.extend({ lat: location.lat, lng: location.lng });
+        });
+
+        // Fit the map to the bounds (this adjusts center and zoom to show all markers)
         map.fitBounds(bounds);
+      } else {
+        // If no locations, set the map to a default center and zoom level
+        map.setCenter({ lat: 25.5941, lng: 85.1376 });
+        map.setZoom(5); // Adjust default zoom as per your preference
       }
     },
-    [locations]
+    [filteredLocations, locations]
   );
 
   if (loadError) return <div>Error loading maps</div>;
@@ -276,44 +374,96 @@ const MyMapComponent: React.FC = () => {
     return toZonedTime(now, userTimezone);
   }
 
-  console.log(createRePayData.state, 'dhhfj');
+  // Define onLoad function to store the autocomplete instance
+  const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
+    autocompleteRef.current = autocomplete;
+  };
+
+  console.log(filteredLocations, 'klkogjd');
+  console.log(projectCount, 'projectcount');
+
   return (
     <div className={styles.mapWrap}>
       <div className={styles.cardHeader}>
         <div className={styles.headerLeft}>
           <h3>Install Map</h3>
           <div className={styles.mapSearch}>
-            <Input
-              type="text"
-              placeholder="Search for Unique ID or Name"
-              value={search}
-              className={styles.inputsearch}
-              name="Search Here ...."
-              onChange={(e) => {
-                handleSearchChange(e);
-                setSearch(e.target.value);
-              }}
-            />
-             <div className={styles.dropdownstate}>
+            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+              <div
+                style={{
+                  position: 'relative',
+                  width: '300px',
+                  marginTop: '5px',
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Search for an address"
+                  className={styles.inputsearch}
+                  style={{ width: '100%', padding: '8px', paddingRight: "2rem" }}
+                  onChange={handleInputChange}
+                  value={searchValue}
+                />
+                {searchValue && (
+                  <button
+                  type="button"
+                  onClick={() => {
+                    setSearchValue(''); // Clear the search value
+                    setFilteredLocations(locations); // Reset to show all locations
+                
+                    if (mapRef.current) {
+                      const bounds = new google.maps.LatLngBounds();
+                
+                      // Loop through all the locations and extend the bounds to include each marker's position
+                      locations.forEach((location) => {
+                        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+                      });
+                
+                      // Adjust the map to fit the bounds of all markers
+                      mapRef.current.fitBounds(bounds);
+                    }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    right: '8px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ✕
+                </button>
+                
+                 
+                )}
+              </div>
+            </Autocomplete>
+
+            <div className={styles.dropdownstate}>
               <SelectOption
-                options={stateOption(newFormData)}
+                options={[
+                  { label: 'Select State', value: '' }, // Default option
+                  ...(stateOption(newFormData) || []), // Ensure it returns an array
+                ]}
                 onChange={(newValue) => handleChange(newValue, 'state')}
                 value={
-                  stateOption(newFormData)?.find(
+                  (stateOption(newFormData) || []).find(
                     (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: ''} 
+                  ) || { label: 'Select State', value: '' } // Default when no match
                 }
                 menuStyles={{
-                  width: 400
+                  width: 400,
                 }}
                 menuListStyles={{
                   fontWeight: 400,
-                  width: 150
+                  width: 150,
                 }}
                 singleValueStyles={{
-                  fontWeight: 400
+                  fontWeight: 400,
                 }}
-                width='150px'
+                width="150px"
               />
             </div>
           </div>
@@ -329,7 +479,7 @@ const MyMapComponent: React.FC = () => {
       <div
         style={{
           width: '100%',
-          height: '80vh',
+          height: '75vh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -349,7 +499,18 @@ const MyMapComponent: React.FC = () => {
                 zoom={5}
                 center={center}
               >
-                {locations.map((location, index) => (
+                {/* Searched location marker */}
+                {/* {center && (
+          <Marker
+            position={center}
+            icon={{
+              url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png', // Customize the icon if needed
+            }}
+          />
+        )} */}
+
+                {/* Display all or filtered markers */}
+                {filteredLocations.map((location, index) => (
                   <Marker
                     key={index}
                     position={{ lat: location.lat, lng: location.lng }}
@@ -411,11 +572,11 @@ const MyMapComponent: React.FC = () => {
               </GoogleMap>
             ) : (
               <div
-              className=""
-              style={{ display: 'flex', justifyContent: 'center' }}
-            >
-              <DataNotFound />
-            </div>
+                className=""
+                style={{ display: 'flex', justifyContent: 'center' }}
+              >
+                <DataNotFound />
+              </div>
             )}
           </>
         )}

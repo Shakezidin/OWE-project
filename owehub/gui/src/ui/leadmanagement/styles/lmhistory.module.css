@@ -89,6 +89,7 @@
 .phone_number {
   font-size: 12px;
   font-weight: 400;
+  margin-left: 0;
 }
 
 .email p {
@@ -363,7 +364,8 @@
   }
 
   .hist_checkname {
-    gap: 12px;
+    gap: 19px;
+    padding-left: 11px;
   }
 
   .history_list_activity_mob {
@@ -374,7 +376,11 @@
     border-radius: 6px;
     margin-top: 20px;
     gap: 29px;
-    padding: 22px 0px 20px 60px;
+    padding: 22px 0px 20px 49px;
+  }
+
+  .history_list_inner{
+    padding-right: 8px;
   }
 
   .history_list_activity_det {
@@ -389,7 +395,7 @@
 
   .circle_mob {
     position: absolute;
-    top: 60%;
+    top: 12px;
     right: 0;
     transform: translateY(-50%);
     width: 14px;
@@ -416,12 +422,13 @@
   .personal_info_mob {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     justify-content: flex-start;
     margin-top: 14px;
-    padding-left: 17px;
+    padding-left: 51px;
     gap: 4px;
   }
+
   .lm_history_header {
     padding: 0px 1px;
   }
@@ -492,7 +499,7 @@
 
   .lead__datepicker_content {
     margin-top: 5px;
-    right: 0;
+    right: 5px;
   }
 }
 
@@ -531,7 +538,7 @@
     width: 100%;
   }
 
-  .phone_number {
+  .phone_number_tab {
     font-weight: 400;
     font-size: 12px;
     color: #3E3E3E;
@@ -555,6 +562,7 @@
   justify-content: space-between;
   padding: 1rem 4.875rem 1rem 1.875rem;
 }
+
 @media screen and (max-width: 767px) {
   .page_heading_container {
     flex-direction: column;
