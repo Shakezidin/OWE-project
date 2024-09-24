@@ -785,8 +785,8 @@ const ProjectStatus = () => {
                       style={{
                         background: '#4191C9',
                         borderRadius: 0,
-                        width: 14,
-                        height: 14,
+                        width: 12,
+                        height: 12,
                       }}
                     ></div>
                     <p>Stages</p>
@@ -797,8 +797,8 @@ const ProjectStatus = () => {
                       style={{
                         background: '#63ACA3',
                         borderRadius: 0,
-                        width: 14,
-                        height: 14,
+                        width: 12,
+                        height: 12,
                       }}
                     ></div>
                     <p>Completed</p>
@@ -809,8 +809,8 @@ const ProjectStatus = () => {
                       style={{
                         background: '#E9E9E9',
                         borderRadius: 0,
-                        width: 14,
-                        height: 14,
+                        width: 12,
+                        height: 12,
                       }}
                     ></div>
                     <p>Not Started yet</p>

@@ -474,7 +474,7 @@ export const DashboardPage: React.FC = () => {
                     style={{ height: '15px', width: '15px' }}
                   />
                 </div>
-                <button className={`performance-exportbtn  mt0 `}>
+                <button className={`performance-exportbtn  mt0 `} style={{height: "36px", padding: "8px 12px"}}>
                   <FaUpload size={12} className="mr-1" />
                   <span>{' Export '}</span>
                 </button>
