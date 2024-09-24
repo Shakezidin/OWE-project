@@ -534,6 +534,11 @@ const MyMapComponent: React.FC = () => {
                   type="text"
                   placeholder="Search for an address"
                   className={styles.inputsearch}
+                  maxLength={100} 
+                  onInput={(e) => {
+                    const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
+                    input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
+                  }}
                   style={{
                     width: '100%',
                     padding: '8px',
