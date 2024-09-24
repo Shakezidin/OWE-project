@@ -294,7 +294,14 @@ const MyMapComponent: React.FC = () => {
     });
 
     if (mapRef.current) {
-      mapRef.current.fitBounds(bounds); // Fit the map to show all markers
+      if (neighboringLocations.length > 0) {
+        // If there are neighboring locations, fit bounds to show all markers
+        mapRef.current.fitBounds(bounds);
+      } else {
+        // If no neighboring locations, set a default zoom level (zoom out)
+        mapRef.current.setCenter(searchedLocation);
+        mapRef.current.setZoom(8); // Adjust zoom level to show a larger area
+      }
     }
   };
 
@@ -472,7 +479,7 @@ const MyMapComponent: React.FC = () => {
         {/* Display total project count */}
         { projectCount > 0 ?
         <div className={styles.projectCount}>
-          <h4>Total Projects Nearby: {projectCount}</h4>
+          <h3>Total Projects {projectCount}</h3>
         </div>
       : null }
         <div className={styles.headerRight}>

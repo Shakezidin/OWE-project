@@ -43,12 +43,12 @@
 
 /* Highlighting items when hovered */
 .pac-item:hover {
-  background-color: #f1f1f1 !important;
+  background-color: #f2f7ff !important;
 }
 
 /* Style the highlighted text inside each item */
 .pac-item .pac-item-query {
-  color: #007bff !important; /* Change highlight text color */
+ 
   font-weight: 500 !important;
 }
 
