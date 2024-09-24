@@ -9,7 +9,7 @@ import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
 import { FaRegCalendarCheck } from 'react-icons/fa6';
-
+import { RiCalendarScheduleLine } from "react-icons/ri";
 const mob = {
   mob: [
     {
@@ -78,7 +78,13 @@ const mob = {
         icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
       },
     },
-
+    {
+      path: ROUTES.SCHEDULER,
+      sidebarProps: {
+        displayText: 'Scheduler',
+        icon: <RiCalendarScheduleLine size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
     {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
@@ -102,6 +108,7 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
+    
 
     // {
     //   path: ROUTES.CALENDAR,

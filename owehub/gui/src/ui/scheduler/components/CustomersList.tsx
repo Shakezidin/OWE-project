@@ -14,6 +14,14 @@ export interface ICustomer {
   system_size: number;
   address: string;
 }
+const customers = [{
+  roof_type: "ABC",
+  home_owner: "test",
+  customer_email: "test@gmail.com",
+  customer_phone_number: "8840957619",
+  system_size: 10,
+  address: "Austin Texas",
+}]
 const CustomersList = ({
   page = 1,
   setPage,
@@ -28,7 +36,7 @@ const CustomersList = ({
   );
   const [isPending, setIsPending] = useState(true);
   const itemsPerPage = 10;
-  const [customer, setCustomers] = useState<ICustomer[]>([]);
+  const [customer, setCustomers] = useState<ICustomer[]>(customers);
   const [order, setOrder] = useState('asc');
   const getCustomers = async () => {
     try {
@@ -45,7 +53,7 @@ const CustomersList = ({
         toast.error((data as Error).message as string);
         return;
       }
-      setCustomers(data?.data?.scheduling_list || []);
+      setCustomers(data?.data?.scheduling_list || customers);
       setIsPending(false);
       setTotalCount(data?.dbRecCount || 0);
     } catch (error) {
@@ -125,6 +133,7 @@ const CustomersList = ({
                 mobile={item.customer_phone_number}
                 sysSize={item.system_size}
                 key={index}
+                mapStyles={{ flexBasis: "265px" }}
                 address={item.address}
               />
             );
