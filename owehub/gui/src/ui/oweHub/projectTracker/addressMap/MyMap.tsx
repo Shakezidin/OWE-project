@@ -48,6 +48,10 @@ interface LocationInfo {
   home_owner: string;
   project_status: string;
 }
+interface StateOption {
+  label: string; // This is the name of the state
+  value: string; // This is the unique value for the state
+}
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
@@ -95,10 +99,10 @@ const MyMapComponent: React.FC = () => {
     null
   );
   const [loading, setLoading] = useState(false);
+  const [isSearchDisabled, setIsSearchDisabled] = useState(false);
+
   const [projectCount, setProjectCount] = useState<number>(0);
-  const [neighboring, setNeighboring] =  useState<LocationInfo[]>(
-    []
-  ); // Filtered locations
+  const [neighboring, setNeighboring] = useState<LocationInfo[]>([]); // Filtered locations
   const projectCountRef = useRef(projectCount);
   const mapRef = useRef<google.maps.Map | null>(null);
   const [center, setCenter] = useState({ lat: 25.5941, lng: 85.1376 });
@@ -176,7 +180,6 @@ const MyMapComponent: React.FC = () => {
           }));
 
         setLocations(formattedData);
-        
       } catch (error) {
         console.error(error);
       } finally {
@@ -196,12 +199,49 @@ const MyMapComponent: React.FC = () => {
     navigate(-1);
   };
 
-  const handleChange = (newValue: any, fieldName: string) => {
+  const handleChange = (newValue: StateOption | null, fieldName: string) => {
+    const updatedValue = newValue ? newValue.value : '';
+
     setCreatePayData((prevData) => ({
       ...prevData,
-      [fieldName]: newValue ? newValue.value : '',
+      [fieldName]: updatedValue,
     }));
+
+    // Disable search input if a state is selected
+    if (updatedValue) {
+      setIsSearchDisabled(true); // Disable the search
+    } else {
+      setIsSearchDisabled(false); // Enable the search
+    }
   };
+
+  useEffect(() => {
+    // Ensure the state field exists before proceeding
+    if (createRePayData.state) {
+      const geocoder = new window.google.maps.Geocoder();
+      const stateName = createRePayData.state; // Assuming `createPayData.state` holds the state's name or label
+
+      console.log(stateName, 'stateName');
+
+      // Perform geocoding to get the new state's coordinates and update the map
+      geocoder.geocode({ address: stateName }, (results, status) => {
+        if (status === 'OK' && results && results.length > 0) {
+          const stateBounds = results[0].geometry.viewport;
+          const stateCenter = results[0].geometry.location;
+
+          if (mapRef.current) {
+            // Update the map center and bounds with the new state's location
+            setCenter({ lat: stateCenter.lat(), lng: stateCenter.lng() });
+            mapRef.current.fitBounds(stateBounds);
+          }
+        } else {
+          toast.error('Failed to find state location.');
+        }
+      });
+    }
+  }, [createRePayData.state]); // Trigger effect whenever `createPayData.state` changes
+
+  console.log(center, 'crjksshf');
 
   const onMarkerHover = useCallback(
     (location: LocationInfo) => {
@@ -287,8 +327,7 @@ const MyMapComponent: React.FC = () => {
     });
 
     setFilteredLocations(neighboringLocations);
-    setNeighboring(neighboringLocations)
-  
+    setNeighboring(neighboringLocations);
 
     // Adjust the map bounds to show both the searched location and neighboring markers
     const bounds = new window.google.maps.LatLngBounds();
@@ -305,13 +344,10 @@ const MyMapComponent: React.FC = () => {
       } else {
         // If no neighboring locations, set a default zoom level (zoom out)
         mapRef.current.setCenter(searchedLocation);
-        mapRef.current.setZoom(8); // Adjust zoom level to show a larger area
+        mapRef.current.setZoom(10); // Adjust zoom level to show a larger area
       }
     }
   };
-
-  
- 
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -333,39 +369,82 @@ const MyMapComponent: React.FC = () => {
   useEffect(() => {
     if (filteredLocations.length === 0) {
       setFilteredLocations(locations);
+    } else if (createRePayData) {
+      setFilteredLocations(locations);
     }
-  }, [locations, filteredLocations,createRePayData.state]);
+  }, [locations, filteredLocations, createRePayData.state]);
 
-  console.log(locations, "locations");
   useEffect(() => {
-    if (mapRef.current && locations.length > 0) {
-      const bounds = new window.google.maps.LatLngBounds();
-      locations.forEach((location) => {
-        bounds.extend({ lat: location.lat, lng: location.lng });
+    // Ensure the state is selected before proceeding
+    if (createRePayData.state) {
+      const geocoder = new window.google.maps.Geocoder();
+      const selectedState = createRePayData.state; // Assuming `createRePayData.state` holds the selected state
+
+      // Perform geocoding to get the coordinates and bounds for the selected state and update the map
+      geocoder.geocode({ address: selectedState }, (results, status) => {
+        if (status === 'OK' && results && results.length > 0) {
+          const stateLocation = results[0].geometry.location;
+          const stateBounds = results[0].geometry.viewport;
+
+          if (mapRef.current) {
+            // Center the map on the selected state and fit it to the state's bounds
+            setCenter({ lat: stateLocation.lat(), lng: stateLocation.lng() });
+            mapRef.current.fitBounds(stateBounds); // This will zoom and center to show only the state
+          }
+        } else {
+          toast.error('Failed to find the state location.');
+        }
       });
-      mapRef.current.fitBounds(bounds);
     }
-  }, [locations]);
+  }, [createRePayData.state, locations]); // Listen for changes to the selected state
+
+  useEffect(() => {
+    if (
+      createRePayData.state === '' ||
+      createRePayData.state === 'All States'
+    ) {
+      if (mapRef.current && locations.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+
+        // Extend bounds to include all markers' positions
+        locations.forEach((location) => {
+          bounds.extend(new google.maps.LatLng(location.lat, location.lng));
+        });
+
+        // Fit the map to the computed bounds
+        mapRef.current.fitBounds(bounds);
+
+        // Listener to control zoom if bounds make the map zoom too far
+        const listener = google.maps.event.addListener(
+          mapRef.current,
+          'bounds_changed',
+          () => {
+            const currentZoom = mapRef.current?.getZoom() ?? 0;
+            if (currentZoom > 15) {
+              mapRef.current?.setZoom(15); // Set the max zoom level to 15, adjust if needed
+            }
+            google.maps.event.removeListener(listener); // Remove the listener once the zoom is set
+          }
+        );
+      }
+    } else {
+      // Logic for when a specific state is selected, e.g., zoom in on state or show markers in that state
+      console.log('A specific state is selected:', createRePayData.state);
+    }
+  }, [locations, createRePayData.state]);
 
   useEffect(() => {
     // Update state and ref
     if (createRePayData.state) {
-      
       setProjectCount(locations.length);
       projectCountRef.current = locations.length;
-    } 
-    else if(searchValue){
-     setProjectCount(neighboring.length);
-    }
-     else {
+    } else if (searchValue) {
+      setProjectCount(neighboring.length);
+    } else {
       setProjectCount(filteredLocations.length);
       projectCountRef.current = filteredLocations.length;
     }
-    
-    
   }, [filteredLocations, createRePayData.state, locations]);
-
-  console.log(locations.length, "changes")
 
   const onMapLoad = useCallback(
     (map: google.maps.Map) => {
@@ -387,7 +466,7 @@ const MyMapComponent: React.FC = () => {
         map.setZoom(5);
       }
     },
-    [filteredLocations, locations]
+    [filteredLocations, locations, createRePayData.state]
   );
 
   if (loadError) return <div>Error loading maps</div>;
@@ -406,16 +485,42 @@ const MyMapComponent: React.FC = () => {
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
     autocompleteRef.current = autocomplete;
   };
- 
 
   console.log(filteredLocations, 'klkogjd');
   console.log(projectCount, 'projectcount');
-
+  console.log(neighboring.length, 'negughtb');
+  console.log(searchedLocation, 'searchloaction');
   return (
     <div className={styles.mapWrap}>
       <div className={styles.cardHeader}>
         <div className={styles.headerLeft}>
           <h3>Install Map</h3>
+          <div className={styles.dropdownstate}>
+              <SelectOption
+                options={[
+                  { label: 'All State', value: '' }, // Default option
+                  ...(stateOption(newFormData) || []), // Ensure it returns an array
+                ]}
+                onChange={(newValue) => handleChange(newValue, 'state')}
+                value={
+                  (stateOption(newFormData) || []).find(
+                    (option) => option.value === createRePayData.state
+                  ) || { label: 'Select State', value: '' } // Default when no match
+                }
+                menuStyles={{
+                  width: 400,
+                }}
+                menuListStyles={{
+                  fontWeight: 400,
+                  width: 150,
+                }}
+                singleValueStyles={{
+                  fontWeight: 400,
+                }}
+                width="150px"
+              />
+            </div>
+
           <div className={styles.mapSearch}>
             <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
               <div
@@ -436,6 +541,7 @@ const MyMapComponent: React.FC = () => {
                   }}
                   onChange={handleInputChange}
                   value={searchValue}
+                  disabled={isSearchDisabled} // Disable search when a state is selected
                 />
                 {searchValue && (
                   <button
@@ -475,45 +581,20 @@ const MyMapComponent: React.FC = () => {
               </div>
             </Autocomplete>
 
-            <div className={styles.dropdownstate}>
-              <SelectOption
-                options={[
-                  { label: 'Select State', value: '' }, // Default option
-                  ...(stateOption(newFormData) || []), // Ensure it returns an array
-                ]}
-                onChange={(newValue) => handleChange(newValue, 'state')}
-                value={
-                  (stateOption(newFormData) || []).find(
-                    (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: '' } // Default when no match
-                }
-                menuStyles={{
-                  width: 400,
-                }}
-                menuListStyles={{
-                  fontWeight: 400,
-                  width: 150,
-                }}
-                singleValueStyles={{
-                  fontWeight: 400,
-                }}
-                width="150px"
-              />
-            </div>
+       
           </div>
 
-             {/* Display total project count */}
-             { projectCount > 0 ? (
-    <div className={styles.projectCount}>
-      <h3>
-        <span className={styles.totalProjects}>Total Projects : </span> 
-        <span className={styles.projectCountValue}>{projectCount}</span>
-      </h3>
-    </div>
-  ) : null }
-
+          {/* Display total project count */}
+          {projectCount > 0 ? (
+            <div className={styles.projectCount}>
+              <h3>
+                <span className={styles.totalProjects}>Total Projects : </span>
+                <span className={styles.projectCountValue}>{projectCount}</span>
+              </h3>
+            </div>
+          ) : null}
         </div>
-     
+
         <div className={styles.headerRight}>
           <div className={styles.mapClose} onClick={handleCalcClose}>
             <IoClose />
@@ -563,7 +644,7 @@ const MyMapComponent: React.FC = () => {
                       fillColor: 'blue', // Fully blue marker
                       fillOpacity: 1,
                       strokeWeight: 0, // No outline
-                      scale: 1.5, // Scale to size
+                      scale: 2.0, // Scale to size
                     }}
                   />
                 )}
@@ -593,17 +674,17 @@ const MyMapComponent: React.FC = () => {
                           pixelOffset: new window.google.maps.Size(0, -50),
                           disableAutoPan: true,
                         }}
-                        onDomReady={() => {
-                          const interval = setInterval(() => {
-                            const closeButton = document.querySelector(
-                              '.gm-ui-hover-effect'
-                            ) as HTMLElement;
-                            if (closeButton) {
-                              closeButton.style.display = 'none';
-                              clearInterval(interval);
-                            }
-                          }, 10);
-                        }}
+                        // onDomReady={() => {
+                        //   const interval = setInterval(() => {
+                        //     const closeButton = document.querySelector(
+                        //       '.gm-ui-hover-effect'
+                        //     ) as HTMLElement;
+                        //     if (closeButton) {
+                        //       closeButton.style.display = 'none';
+                        //       clearInterval(interval);
+                        //     }
+                        //   }, 10);
+                        // }}
                       >
                         <div className={styles.infoWindow}>
                           <div className={styles.infoWindowRow}>
