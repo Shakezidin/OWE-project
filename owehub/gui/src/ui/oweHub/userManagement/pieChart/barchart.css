@@ -31,6 +31,10 @@
   gap: 1.2rem;
 }
 
+.inact-sr, .act-sr{
+  font-size: 14px;
+}
+
 .mask-chart-img {
   position: absolute;
   left: 50%;
