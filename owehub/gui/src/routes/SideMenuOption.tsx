@@ -10,6 +10,7 @@ import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
 import { FaRegCalendarCheck } from 'react-icons/fa6';
 import { RiCalendarScheduleLine } from "react-icons/ri";
+import { FaMapLocationDot } from "react-icons/fa6";
 const mob = {
   mob: [
     {
@@ -51,6 +52,19 @@ const mob = {
         displayText: 'Project Manager',
         icon: (
           <AiOutlineProject
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.MAP_ADDRESS,
+      sidebarProps: {
+        displayText: 'Install Map',
+        icon: (
+          <FaMapLocationDot
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"

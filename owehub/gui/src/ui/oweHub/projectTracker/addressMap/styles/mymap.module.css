@@ -137,13 +137,8 @@
   border-bottom: none;
 }
 
-.projectCount h3 {
-  font-size: -0.5rem; /* Adjust size as needed */
-}
-
-.totalProjects {
-  font-weight: bold;
-}
+ 
+ 
 
 .projectCountValue {
   font-weight: normal;
@@ -177,7 +172,7 @@
 }
 
 .dropdownstate {
-  margin-top: -20px;
+  margin-top: -30px;
 }
 
 .dropdownstate .select-container .css-19mwi93-control .css-hlgwow .css-1i5rmfk-singleValue {
