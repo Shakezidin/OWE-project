@@ -103,7 +103,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	}
 	whereEleList = nil
 
-	query = "SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE "
+	query = "SELECT COUNT(contracted_system_size) AS weekly_sale FROM customers_customers_schema WHERE "
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
@@ -132,7 +132,7 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 
 	switch dataReq.DataType {
 	case "sale_rep":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v')", dataReq.Dealer, dataReq.Name, dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
 		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
@@ -145,7 +145,7 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 		filtersBuilder.WriteString(fmt.Sprintf(" setter = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(" AND contract_date BETWEEN current_date - interval '1 days' * $%d AND current_date ", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" AND sale_date BETWEEN current_date - interval '1 days' * $%d AND current_date ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, "7")
 
 	filters = filtersBuilder.String()
@@ -160,31 +160,32 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	var filtersBuilder strings.Builder
 
 	if dataReq.CountKwSelection {
-		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN contract_date IS NOT NULL THEN system_size END) AS total_sales,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN ntp_date IS NOT NULL THEN system_size END) AS total_ntp,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size END) AS total_installs")
+		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN ccs.sale_date IS NOT NULL THEN ccs.contracted_system_size END) AS total_sales,")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN ntp_date IS NOT NULL THEN ccs.contracted_system_size END) AS total_ntp,")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN pv_install_completed_date IS NOT NULL THEN ccs.contracted_system_size END) AS total_installs")
 	} else {
-		filtersBuilder.WriteString("SELECT SUM(CASE WHEN contract_date IS NOT NULL THEN system_size ELSE 0 END) AS total_sales,")
-		filtersBuilder.WriteString(" SUM(CASE WHEN ntp_date IS NOT NULL THEN system_size ELSE 0 END) AS total_ntp,")
-		filtersBuilder.WriteString(" SUM(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size ELSE 0 END) AS total_installs")
+		filtersBuilder.WriteString("SELECT SUM(CASE WHEN ccs.sale_date IS NOT NULL THEN ccs.contracted_system_size ELSE 0 END) AS total_sales,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN ns.ccs.contracted_system_size IS NOT NULL THEN ccs.contracted_system_size ELSE 0 END) AS total_ntp,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN pis.pv_completion_date IS NOT NULL THEN ccs.contracted_system_size ELSE 0 END) AS total_installs")
 	}
 
-	filtersBuilder.WriteString(" FROM consolidated_data_view ")
+	filtersBuilder.WriteString(` FROM customers_customers_schema ccs LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = ccs.unique_id 
+								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = css.unique_id `)
 	filtersBuilder.WriteString(" WHERE ")
 
 	switch dataReq.DataType {
 	case "sale_rep":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v')", dataReq.Dealer, dataReq.Name, dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" ccs.dealer = '%v' AND ccs.primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" ccs.team = '%v' AND ccs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
-		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" ccs.state = '%v' AND ccs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" ccs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" ccs.region = '%v' AND ccs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "setter":
-		filtersBuilder.WriteString(fmt.Sprintf(" setter = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" ccs.setter = '%v' AND ccs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters : %s", filters)
