@@ -91,7 +91,7 @@ const PendingQueue = () => {
 
   return (
     <>
-      <div style={{marginLeft: "6px", marginTop: "6px"}}>
+      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
         <Breadcrumb
           head=""
           linkPara="Pending Actions"
@@ -227,42 +227,42 @@ const PendingQueue = () => {
           <div
             className={`flex  py2 items-center justify-between ${styles.pending_queue_table_header}`}
           >
-            <h3
-              className={` ${styles.table_heading}`}
-              style={{ fontWeight: 700, fontSize: 20 }}
-            >
-              {active === 'qc'
-                ? 'QC Checklist'
-                : active === 'ntp'
-                  ? 'NTP Checklist'
-                  : 'C/O Status'}
-            </h3>
-
-            <div className="performance-box-container">
-              <p className="status-indicator">Checklist Indicators</p>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#2EAF71', borderRadius: '2px' }}
-                ></div>
-                <p>Completed</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#EBA900', borderRadius: '2px' }}
-                ></div>
-                <p>Pending OWE</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#E14514', borderRadius: '2px' }}
-                ></div>
-                <p>Sale Rep Action Required</p>
+            <div className={styles.pendingQueHead}>
+              <h3
+                className={` ${styles.table_heading}`}
+                style={{ fontWeight: 600, fontSize: 16 }}
+              >
+                {active === 'qc'
+                  ? 'QC Checklist'
+                  : active === 'ntp'
+                    ? 'NTP Checklist'
+                    : 'C/O Status'}
+              </h3>
+              <div className={`performance-box-container ${styles.pendingBoxContainer}`} style={{ padding: "0.6rem 1rem" }}>
+                <p className="status-indicator">Checklist Indicators</p>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#2EAF71', borderRadius: '2px' }}
+                  ></div>
+                  <p>Completed</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#EBA900', borderRadius: '2px' }}
+                  ></div>
+                  <p>Pending OWE</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#E14514', borderRadius: '2px' }}
+                  ></div>
+                  <p>Sale Rep Action Required</p>
+                </div>
               </div>
             </div>
-
             <div className={styles.search_wrapper}>
               <Input
                 type="text"

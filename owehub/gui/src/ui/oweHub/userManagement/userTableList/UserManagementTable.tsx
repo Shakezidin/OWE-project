@@ -376,7 +376,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           {activeSalesRep && <h3>{activeSalesRep} Sales Rep</h3>}
         </div>
 
-        <div className="delete-icon-container items-start mt2 ">
+        <div className="delete-icon-container items-center items-start mt2 ">
           <div className="userManagementTable__search">
             <input
               type="text"

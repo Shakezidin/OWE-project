@@ -186,9 +186,12 @@
 
 .active-slrp {
   border: 1px solid #377cf6;
-  padding: 8px 18px 8px 18px;
+  height: 36px;
+  width: 230px;
+  padding: 0 12px;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 
@@ -211,9 +214,12 @@
 
 .inactive-slrp {
   border: 1px solid #377cf6;
-  padding: 8px 18px 8px 18px;
+  height: 36px;
+  width: 230px;
+  padding: 0 12px;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 

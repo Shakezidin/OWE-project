@@ -587,40 +587,40 @@ const ProjectPerformence = () => {
 
         <div className="pipeline-header-btns">
 
-          <p
+          <button
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Active Queue'), setPage(1);
             }}
           >
             Active
-          </p>
-          <p
+          </button>
+          <button
             className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Active Queue'), setPage(1);
             }}
           >
             Active
-          </p>
+          </button>
 
 
-          <p
+          <button
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Hold & Jeopardy'), setPage(1);
             }}
           >
             Hold & Jeopardy
-          </p>
-          <p
+          </button>
+          <button
             className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Hold & Jeopardy'), setPage(1);
             }}
           >
             H&J
-          </p>
+          </button>
 
           <DropdownCheckbox selectedOptions={selectedDealer} options={dealerOption} onChange={setSelectedDealer} />
 
@@ -768,7 +768,7 @@ const ProjectPerformence = () => {
                 />
               </div>
 
-              <div className="performance-box-container">
+              <div className="performance-box-container pipeline-box-container" style={{padding: "0.7rem 1rem"}}>
                 <p className="status-indicator">Status indicators</p>
                 <div className="progress-box-body">
                   <div
@@ -809,7 +809,7 @@ const ProjectPerformence = () => {
                 onClick={ExportCsv}
                 className={`performance-exportbtn pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
-                {isExportingData ? <MdDownloading size={26} className='mt1' /> : <FaUpload size={16} className='mt1' />}
+                {isExportingData ? <MdDownloading size={20} /> : <FaUpload size={16} />}
               </button>
             </div>
           </div >

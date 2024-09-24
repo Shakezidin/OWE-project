@@ -139,7 +139,6 @@ const MyMapComponent: React.FC = () => {
       try {
         setLoading(true);
         const data = await postCaller('get_user_address', {
-          
           states: [createRePayData.state],
         });
 
@@ -284,6 +283,7 @@ const MyMapComponent: React.FC = () => {
     });
 
     setFilteredLocations(neighboringLocations);
+  
 
     // Adjust the map bounds to show both the searched location and neighboring markers
     const bounds = new window.google.maps.LatLngBounds();
@@ -294,9 +294,20 @@ const MyMapComponent: React.FC = () => {
     });
 
     if (mapRef.current) {
-      mapRef.current.fitBounds(bounds); // Fit the map to show all markers
+      if (neighboringLocations.length > 0) {
+        // If there are neighboring locations, fit bounds to show all markers
+        mapRef.current.fitBounds(bounds);
+      } else {
+        // If no neighboring locations, set a default zoom level (zoom out)
+        mapRef.current.setCenter(searchedLocation);
+        mapRef.current.setZoom(8); // Adjust zoom level to show a larger area
+      }
     }
   };
+
+  useEffect(() => {
+    setProjectCount(filteredLocations.length);
+  }, [filteredLocations]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -369,6 +380,7 @@ const MyMapComponent: React.FC = () => {
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
     autocompleteRef.current = autocomplete;
   };
+ 
 
   console.log(filteredLocations, 'klkogjd');
   console.log(projectCount, 'projectcount');
@@ -405,7 +417,7 @@ const MyMapComponent: React.FC = () => {
                     onClick={() => {
                       setSearchValue(''); // Clear the search value
                       setFilteredLocations(locations);
-                      setSearchedLocation(null) // Reset to show all locations
+                      setSearchedLocation(null); // Reset to show all locations
 
                       if (mapRef.current) {
                         const bounds = new google.maps.LatLngBounds();
@@ -463,8 +475,19 @@ const MyMapComponent: React.FC = () => {
               />
             </div>
           </div>
-        </div>
 
+             {/* Display total project count */}
+             { projectCount > 0 ? (
+    <div className={styles.projectCount}>
+      <h3>
+        <span className={styles.totalProjects}>Total Projects : </span> 
+        <span className={styles.projectCountValue}>{projectCount}</span>
+      </h3>
+    </div>
+  ) : null }
+
+        </div>
+     
         <div className={styles.headerRight}>
           <div className={styles.mapClose} onClick={handleCalcClose}>
             <IoClose />
@@ -508,16 +531,15 @@ const MyMapComponent: React.FC = () => {
                 {/* Searched location marker with different color */}
                 {searchedLocation && (
                   <Marker
-                  position={searchedLocation}
-                  icon={{
-                    path: "M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 9.75 6.3 11.77.3.36.82.36 1.12 0C14.5 18.75 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z",
-                    fillColor: "blue", // Fully blue marker
-                    fillOpacity: 1,
-                    strokeWeight: 0, // No outline
-                    scale: 1.5, // Scale to size
-                  }}
-                />
-                
+                    position={searchedLocation}
+                    icon={{
+                      path: 'M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 9.75 6.3 11.77.3.36.82.36 1.12 0C14.5 18.75 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z',
+                      fillColor: 'blue', // Fully blue marker
+                      fillOpacity: 1,
+                      strokeWeight: 0, // No outline
+                      scale: 1.5, // Scale to size
+                    }}
+                  />
                 )}
 
                 {/* Display all or filtered markers */}
