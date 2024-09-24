@@ -80,7 +80,10 @@ const ProjectPerformence = () => {
   }>({} as Option);
 
   const { authData } = useAuth();
-  const role = authData?.role;
+  const role = localStorage.getItem("role")
+
+  const showDropdown = (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN || role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role === TYPE_OF_USER.ACCOUNT_MANAGER)
+
 
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
@@ -273,6 +276,8 @@ const ProjectPerformence = () => {
   //   return () => toast.dismiss();
   // }, []);
 
+  // const showDropdown = 
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -405,8 +410,13 @@ const ProjectPerformence = () => {
   ]);
 
   useEffect(() => {
-    getNewFormData()
-  }, [])
+    if (showDropdown) {
+
+      getNewFormData()
+    } else {
+      setIsFetched(true)
+    }
+  }, [showDropdown])
 
   const calculateCompletionPercentage = (
     project: (typeof projectStatus)[0]
@@ -587,6 +597,9 @@ const ProjectPerformence = () => {
 
         <div className="pipeline-header-btns">
 
+          {showDropdown && <DropdownCheckbox selectedOptions={selectedDealer} options={dealerOption} onChange={setSelectedDealer} />}
+
+
           <button
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
@@ -622,7 +635,6 @@ const ProjectPerformence = () => {
             H&J
           </button>
 
-          <DropdownCheckbox selectedOptions={selectedDealer} options={dealerOption} onChange={setSelectedDealer} />
 
         </div>
 
@@ -768,7 +780,7 @@ const ProjectPerformence = () => {
                 />
               </div>
 
-              <div className="performance-box-container pipeline-box-container" style={{padding: "0.7rem 1rem"}}>
+              <div className="performance-box-container pipeline-box-container" style={{ padding: "0.7rem 1rem" }}>
                 <p className="status-indicator">Status indicators</p>
                 <div className="progress-box-body">
                   <div
