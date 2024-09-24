@@ -110,9 +110,9 @@ const MainLayout = () => {
 
   return isAuthenticated ? (
     <div className="main-container">
-      {isStaging === 'staging' ? (
+      {/* {isStaging === 'staging' ? (
         <ChatSupport isAuthenticated={isAuthenticated} />
-      ) : null}
+      ) : null} */}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}
