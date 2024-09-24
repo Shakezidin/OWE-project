@@ -123,7 +123,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
 			if len(dataReq.DealerNames) <= 0 {
-				appserver.FormAndSendHttpResp(resp, "Dealer names cant't be null", http.StatusBadRequest, nil)
+				perfomanceResponse := models.PerfomanceTileDataResponse{}
+				appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceResponse, RecordCount)
 				return
 			}
 		} else {
