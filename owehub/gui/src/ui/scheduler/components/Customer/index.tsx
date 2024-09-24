@@ -8,6 +8,8 @@ import GoogleMapReact from 'google-map-react';
 import { IoLocationOutline } from 'react-icons/io5';
 import roofIcon from '../../../../resources/assets/roof_top.svg';
 import { ICONS } from '../../../../resources/icons/Icons';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../../../routes/routes';
 const Marker = ({
   text,
   lat,
@@ -162,11 +164,11 @@ const Index = ({
               </div>
             )}
             <div className="flex items-center ">
-              <button
+              <Link to={"/schedule-detail/1"}
                 className={`${styles.primary_btn}  ${styles.schedule_btn}`}
               >
                 Schedule
-              </button>
+              </Link>
               {withSecondaryBtn && (
                 <button
                   style={{ marginLeft: 16 }}
@@ -178,8 +180,8 @@ const Index = ({
             </div>
           </div>
 
-          <div>
-            <div className={styles.map_wrapper} style={mapStyles}>
+          <div style={mapStyles}>
+            <div className={styles.map_wrapper} >
               <GoogleMapReact
                 bootstrapURLKeys={{
                   key: 'AIzaSyARz_js0ZPhw2zRvfcsj6SRc0NR19jWvmc',

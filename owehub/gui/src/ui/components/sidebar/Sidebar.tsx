@@ -53,7 +53,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
+            item.path === ROUTES.CONFIG_PAGE ||  item.path===ROUTES.SCHEDULER)
         ) {
         } else {
           newArr[0].mob.push(item);
@@ -66,7 +66,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
+            item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER)
         ) {
         } else if (item.path !== ROUTES.CONFIG_PAGE) {
           newArr[0].mob.push(item);
@@ -79,7 +79,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
+            item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER)
         ) {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
@@ -99,7 +99,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
+            item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER ||  item.path===ROUTES.SCHEDULER)
         ) {
         } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
@@ -117,7 +117,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -135,7 +135,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER)
           ) {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
@@ -157,7 +157,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER)
           ) {
           } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
@@ -181,7 +181,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER)
           ) {
           } else {
             newArr[0].mob.push(item);
@@ -197,7 +197,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path===ROUTES.SCHEDULER )
           ) {
           } else {
             newArr[0].mob.push(item);
