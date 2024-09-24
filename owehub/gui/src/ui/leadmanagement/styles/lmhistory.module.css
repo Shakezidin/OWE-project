@@ -418,6 +418,9 @@
     height: 1.3px;
     background-color: #929292;
   }
+  .act_head {
+    text-align: left;
+  }
 
   .personal_info_mob {
     display: flex;
@@ -435,6 +438,9 @@
 
   .filters {
     gap: 4px;
+  }
+  .activity_info {
+    align-items: start;
   }
 
   .hist_checkbox_count h1 {
@@ -552,7 +558,7 @@
 
   .act_head {
     max-width: 100px;
-    text-align: center;
+    
   }
 
 }
