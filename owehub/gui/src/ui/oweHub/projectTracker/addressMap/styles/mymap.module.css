@@ -137,6 +137,19 @@
   border-bottom: none;
 }
 
+.projectCount h3 {
+  font-size: -0.5rem; /* Adjust size as needed */
+}
+
+.totalProjects {
+  font-weight: bold;
+}
+
+.projectCountValue {
+  font-weight: normal;
+}
+
+
 /* Styling for highlighted text */
 .pac-item .pac-item-query {
   color: #007bff; /* Highlighted text color */

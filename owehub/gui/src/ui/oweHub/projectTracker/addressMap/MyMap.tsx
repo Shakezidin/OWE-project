@@ -475,13 +475,19 @@ const MyMapComponent: React.FC = () => {
               />
             </div>
           </div>
+
+             {/* Display total project count */}
+             { projectCount > 0 ? (
+    <div className={styles.projectCount}>
+      <h3>
+        <span className={styles.totalProjects}>Total Projects : </span> 
+        <span className={styles.projectCountValue}>{projectCount}</span>
+      </h3>
+    </div>
+  ) : null }
+
         </div>
-        {/* Display total project count */}
-        { projectCount > 0 ?
-        <div className={styles.projectCount}>
-          <h3>Total Projects {projectCount}</h3>
-        </div>
-      : null }
+     
         <div className={styles.headerRight}>
           <div className={styles.mapClose} onClick={handleCalcClose}>
             <IoClose />
