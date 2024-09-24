@@ -132,7 +132,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
 			if len(dataReq.DealerNames) <= 0 {
-				FormAndSendHttpResp(resp, "Dealer names cant't be null", http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, "Dealer names cant't be null", http.StatusBadRequest, nil)
 				return
 			}
 		} else {
@@ -164,7 +164,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 			for _, dealerNameFromUI := range dataReq.DealerNames {
 				if !dealerNameSet[dealerNameFromUI] {
-					FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+					appserver.FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
 					return
 				}
 			}
