@@ -77,6 +77,7 @@ export const getPerfomanceStatus = createAsyncThunk(
       uniqueId?: any;
       selected_milestone: string;
       project_status: any;
+      dealer_names:string[]
     },
     { rejectWithValue }
   ) => {
@@ -120,7 +121,7 @@ interface IState {
 const initialState: IState = {
   perfomaceSale: [],
   error: '',
-  isLoading: false,
+  isLoading: true,
   isSuccess: 0,
   commisionMetrics: {} as ICommision,
   projectStatus: [],

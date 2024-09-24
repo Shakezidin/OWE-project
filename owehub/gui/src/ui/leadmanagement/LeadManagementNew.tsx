@@ -1,8 +1,5 @@
 import React from 'react';
 import classes from './styles/leadManagementNew.module.css';
-// import './styles/leadManagementNew.module.css';
-
-// import SalesRepSchedulePage from '../scheduler/SalesRepScheduler/SuccessSales';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateEmail, validateZipCode } from '../../utiles/Validation';
@@ -10,7 +7,7 @@ import Input from '../components/text_input/Input';
 import PhoneInput from 'react-phone-input-2';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 const LeadManagementNew = () => {
   const [formData, setFormData] = useState({
     first_name: '',
@@ -21,13 +18,7 @@ const LeadManagementNew = () => {
     zip_code: '',
     notes: '',
   });
-  const navigate = useNavigate();
-  const options1 = [
-    { value: 'today', label: 'Table 1 Data' },
-    { value: 'this_week', label: 'Table 2 Data' },
-    { value: 'all', label: 'Table 3 Data' },
-  ];
-  const selectedOption = { value: 'Type1', label: 'Type1' };
+  console.log(formData, "form data consoling ")
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -49,10 +40,12 @@ const LeadManagementNew = () => {
       }
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
+      errors.first_name = "";
       if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
       } else {
         setEmailError('');
+        errors.first_name = "";
       }
       const trimmedValue = value.replace(/\s/g, '');
 
@@ -64,7 +57,7 @@ const LeadManagementNew = () => {
       const isValidZipCode = validateZipCode(value.trim());
       if (!isValidZipCode) {
         setZip_codeError(
-          'Please enter a valid ZipCode number (only numbers, 6-12 digits).'
+          'Please enter a valid ZipCode'
         );
       } else {
         setZip_codeError('');
@@ -87,19 +80,54 @@ const LeadManagementNew = () => {
       setErrors(err);
     }
   };
-
-  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
-  // const filterClose = () => setFilterOpen(false);
-
-  // const filter = () => {
-  //   setFilterOpen(true);
-  // };
-
+  const initialFormData = {
+    first_name: '',
+    last_name: '',
+    email_id: '',
+    mobile_number: '',
+    address: '',
+    zip_code: '',
+    notes: '',
+  };
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(formData);
-    // filter();
+    const newErrors: { [key: string]: string } = {};
+
+    // Check if each field is empty and set corresponding error
+    if (formData.first_name.trim() === '') {
+      newErrors.first_name = 'First name is required';
+    }
+    if (formData.last_name.trim() === '') {
+      newErrors.last_name = 'Last name is required';
+    }
+    if (formData.email_id.trim() === '') {
+      newErrors.email_id = 'Email is required';
+    }
+    if (formData.mobile_number.trim() === '') {
+      newErrors.mobile_number = 'Mobile number is required';
+    }
+    if (formData.address.trim() === '') {
+      newErrors.address = 'Address is required';
+    }
+    if (formData.zip_code.trim() === '') {
+      newErrors.zip_code = 'Zip code is required';
+    }
+    if (formData.notes.trim() === '') {
+      newErrors.notes = 'Notes are required';
+    }
+
+    // Update the error state
+    setErrors(newErrors);
+
+    // If there are no errors, submit the form
+    if (Object.keys(newErrors).length === 0) {
+      console.log(formData);
+      resetFormData();
+    }
+  };
+
+  const resetFormData = () => {
+    setFormData(initialFormData);
   };
 
   return (
@@ -107,8 +135,6 @@ const LeadManagementNew = () => {
       <div className={`${classes.main_head} ${classes.form_header}`}>
         Create New Lead
       </div>
-
-      {/* <SalesRepSchedulePage isOpen={filterOPen} handleClose={filterClose}/> Filter Modal */}
       <div className={`flex justify-between mt2 ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
@@ -127,7 +153,7 @@ const LeadManagementNew = () => {
                           onChange={handleInputChange}
                           name="first_name"
                           maxLength={100}
-                          // backgroundColor="#F3F3F3"
+                        // backgroundColor="#F3F3F3"
                         />
                         {errors.first_name && (
                           <span
@@ -166,7 +192,7 @@ const LeadManagementNew = () => {
                     <div className={classes.salrep_input_container}>
                       <div
                         className={classes.srs_new_create}
-                        // style={{ marginTop: '-4px' }}
+                      // style={{ marginTop: '-4px' }}
                       >
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
@@ -177,11 +203,15 @@ const LeadManagementNew = () => {
                           placeholder="+91 8739273728"
                           value={formData.mobile_number}
                           onChange={(value: any) => {
-                            console.log('date', value);
+                            const phoneNumber = value.toString();
+                            setFormData((prevData) => ({
+                              ...prevData,
+                              mobile_number: phoneNumber,
+                            }));
                           }}
                         />
-                        {phoneNumberError && (
-                          <p className="error-message">{phoneNumberError}</p>
+                        {phoneNumberError || errors.mobile_number && (
+                          <p className="error-message">{phoneNumberError || errors.mobile_number}</p>
                         )}
                       </div>
 
@@ -193,10 +223,12 @@ const LeadManagementNew = () => {
                           placeholder={'email@mymail.com'}
                           onChange={(e) => handleInputChange(e)}
                           name={'email_id'}
-                          // disabled={formData.isEdit}
+                        // disabled={formData.isEdit}
                         />
-                        {emailError && (
-                          <div className="error-message">{emailError}</div>
+                        {(emailError || errors.email_id) && (
+                          <div className="error-message">
+                            {emailError || errors.email_id}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -230,10 +262,10 @@ const LeadManagementNew = () => {
                           placeholder="Zip Code"
                           onChange={(e) => handleInputChange(e)}
                           name="zip_code"
-                          maxLength={15}
+                          maxLength={8}
                         />
-                        {zip_codeError && (
-                          <div className="error-message">{zip_codeError}</div>
+                        {(zip_codeError || errors.zip_code) && (
+                          <div className="error-message">{zip_codeError || errors.zip_code}</div>
                         )}
                       </div>
 
@@ -252,11 +284,10 @@ const LeadManagementNew = () => {
                           placeholder="Write"
                         ></textarea>
                         <p
-                          className={`character-count ${
-                            formData.notes.trim().length >= 500
-                              ? 'exceeded'
-                              : ''
-                          }`}
+                          className={`character-count ${formData.notes.trim().length >= 500
+                            ? 'exceeded'
+                            : ''
+                            }`}
                         >
                           {/* {formData.notes.trim().length}/500 characters */}
                         </p>

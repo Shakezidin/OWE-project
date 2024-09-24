@@ -1,0 +1,29 @@
+.dropdown-checkbox {
+    border-radius: 8px;
+}
+
+.dropdown-checkbox .dropdown-toggle {
+    width: 100%;
+    padding: 7px 1rem;
+    border: 1px solid #dfd8d8;
+    font-weight: 600;
+    height: auto;
+    transition: all 0.3s ease;
+
+}
+.dropdown-checkbox .dropdown-toggle span{
+    color: #377cf6;
+}
+.dropdown-checkbox .dropdown-toggle svg{
+    color: #377cf6;
+}
+.dropdown-checkbox  .dropdown-menu{
+    right: 0;
+    left: auto;
+}
+.dropdown-checkbox .dropdown-toggle:hover{
+    background-color: #ddebff;
+    border-color: #377cf6;
+    transform: scale(1.04);
+    transition: all 0.3s ease;
+}

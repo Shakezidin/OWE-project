@@ -43,6 +43,8 @@ import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
 import { RiMapPinFill, RiMapPinLine } from "react-icons/ri";
+import DropdownCheckbox from '../../components/DropdownCheckBox';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 interface Option {
   value: string;
@@ -65,7 +67,7 @@ const ProjectPerformence = () => {
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [activeTab, setActiveTab] = useState('Active Queue');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [titleData, setTileData] = useState<any>('');
   const [activeCardId, setActiveCardId] = useState(null);
   const [activeCardTitle, setActiveCardTitle] = useState<string>('');
@@ -83,6 +85,7 @@ const ProjectPerformence = () => {
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
   const startOfThisMonth = startOfMonth(today);
+  const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
   const startOfThisYear = startOfYear(today);
   const startOfLastMonth = new Date(
     today.getFullYear(),
@@ -119,7 +122,9 @@ const ProjectPerformence = () => {
   });
 
   const [exportShow, setExportShow] = useState<boolean>(false);
+  const [dealerOption, setDealerOption] = useState<Option[]>([])
   const [isExportingData, setIsExporting] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
@@ -285,6 +290,25 @@ const ProjectPerformence = () => {
     };
   }, []);
 
+  const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
+    newFormData?.dealer_name?.map((value: string) => ({
+      value,
+      label: value,
+    }));
+
+  const getNewFormData = async () => {
+    const tableData = {
+      tableNames: ['dealer_name'],
+    };
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    if (res.status > 200) {
+      return;
+    }
+    setSelectedDealer(leaderDealer(res.data));
+    setDealerOption(leaderDealer(res.data))
+    setIsFetched(true)
+  };
+
   const periodFilterOptions: any = [
     {
       label: 'All',
@@ -327,41 +351,47 @@ const ProjectPerformence = () => {
   );
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      try {
-        const data = await postCaller('get_perfomancetiledata', {
-          project_status:
-            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
-        });
+    if (isFetched) {
+      (async () => {
+        setLoading(true);
+        try {
+          const data = await postCaller('get_perfomancetiledata', {
+            project_status:
+              activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
+            dealer_names: selectedDealer.map(item => item.value)
+          });
 
-        if (data.status > 201) {
-          toast.error(data.message);
-          return;
+          if (data.status > 201) {
+            toast.error(data.message);
+            return;
+          }
+          setTileData(data.data);
+          setLoading(false);
+        } catch (error) {
+          console.error(error);
+          toast.error((error as Error).message)
+        } finally {
         }
-        console.log(data.data);
-        setTileData(data.data);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-      } finally {
-      }
-    })();
-  }, [activeTab]);
+      })();
+    }
+  }, [activeTab, selectedDealer, isFetched]);
 
   useEffect(() => {
-    dispatch(
-      getPerfomanceStatus({
-        page,
-        perPage,
-        startDate: '',
-        endDate: '',
-        uniqueId: searchValue ? searchValue : '',
-        selected_milestone: selectedMilestone,
-        project_status:
-          activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
-      })
-    );
+    if (isFetched) {
+      dispatch(
+        getPerfomanceStatus({
+          page,
+          perPage,
+          startDate: '',
+          endDate: '',
+          uniqueId: searchValue ? searchValue : '',
+          selected_milestone: selectedMilestone,
+          project_status:
+            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
+          dealer_names: selectedDealer.map(item => item.value)
+        })
+      );
+    }
   }, [
     page,
     selectedRangeDate.start,
@@ -370,7 +400,13 @@ const ProjectPerformence = () => {
     searchValue,
     selectedMilestone,
     activeTab,
+    selectedDealer,
+    isFetched
   ]);
+
+  useEffect(() => {
+    getNewFormData()
+  }, [])
 
   const calculateCompletionPercentage = (
     project: (typeof projectStatus)[0]
@@ -453,259 +489,6 @@ const ProjectPerformence = () => {
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
-  const DateFilter = ({
-    selected,
-    setSelected,
-    resetPage,
-  }: {
-    selected: DateRangeWithLabel;
-    setSelected: (newVal: DateRangeWithLabel) => void;
-    resetPage: () => void;
-  }) => {
-    const [showCalendar, setShowCalendar] = useState(false);
-    const [selectedRanges, setSelectedRanges] = useState(
-      selected
-        ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
-        : []
-    );
-
-    const onApply = () => {
-      const range = selectedRanges[0];
-      if (!range) return;
-      setSelected({
-        start: range.startDate,
-        end: range.endDate,
-        label: 'Custom',
-      });
-      setShowCalendar(false);
-      resetPage();
-    };
-
-    const onReset = () => {
-      const defaultOption = periodFilterOptions[5];
-      setSelected(periodFilterOptions[5]);
-      setSelectedRanges([
-        {
-          startDate: defaultOption.start,
-          endDate: defaultOption.end,
-          key: 'selection',
-        },
-      ]);
-      setShowCalendar(false);
-      resetPage();
-    };
-
-    // update datepicker if "selected" updated externally
-    useEffect(() => {
-      setSelectedRanges([
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]);
-    }, [selected]);
-
-    // close on click outside anywhere
-    const wrapperRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-        console.log(event);
-        const remain = window.innerWidth - event.clientX;
-        if (
-          wrapperRef.current &&
-          !event.composedPath().includes(wrapperRef.current) &&
-          remain > 15
-        )
-          setShowCalendar(false);
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      return () =>
-        document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    useEffect(() => {
-      const handleKeydown = (e: any) => {
-        if (e.key === 'Escape') {
-          setActiveCardId(null);
-        }
-      };
-      window.addEventListener('keydown', handleKeydown);
-      return () => {
-        window.removeEventListener('keydown', handleKeydown);
-      };
-    }, []);
-
-    return (
-      <div className="flex items-center justify-end">
-        <div className="leaderborder_filter-slect-wrapper mr1">
-          <Select
-            options={periodFilterOptions}
-            value={selected}
-            isSearchable={false}
-            onChange={(value) => value && setSelected(value)}
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                fontSize: '11px',
-                fontWeight: '500',
-                borderRadius: '4px',
-                outline: 'none',
-                width: 'fit-content',
-                minWidth: '92px',
-                height: '28px',
-                alignContent: 'center',
-                cursor: 'pointer',
-                boxShadow: 'none',
-                border: '1px solid #377CF6',
-                minHeight: 30,
-              }),
-              valueContainer: (provided, state) => ({
-                ...provided,
-                height: '30px',
-                padding: '0 6px',
-              }),
-              placeholder: (baseStyles) => ({
-                ...baseStyles,
-                color: '#377CF6',
-              }),
-              indicatorSeparator: () => ({
-                display: 'none',
-              }),
-              dropdownIndicator: (baseStyles, state) => ({
-                ...baseStyles,
-                svg: {
-                  fill: '#377CF6',
-                },
-                marginLeft: '-18px',
-              }),
-
-              option: (baseStyles, state) => ({
-                ...baseStyles,
-                fontSize: '12px',
-                color: '#fff',
-                transition: 'all 500ms',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                  background: 'none',
-                  transition: 'all 500ms',
-                },
-                background: '#377CF6',
-                transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
-              }),
-
-              singleValue: (baseStyles, state) => ({
-                ...baseStyles,
-                color: '#377CF6',
-                fontSize: 11,
-                padding: '0 8px',
-              }),
-              menu: (baseStyles) => ({
-                ...baseStyles,
-                width: '92px',
-                zIndex: 999,
-                color: '#FFFFFF',
-              }),
-              menuList: (base) => ({
-                ...base,
-                background: '#377CF6',
-              }),
-              input: (base) => ({ ...base, margin: 0 }),
-            }}
-          />
-        </div>
-        <div
-          ref={wrapperRef}
-          className="leaderboard-data__datepicker-wrapper calender-wrapper"
-        >
-          <span
-            role="button"
-            onClick={() => setShowCalendar((prev) => !prev)}
-            style={{ lineHeight: 0 }}
-          >
-            <Calendar />
-          </span>
-          {showCalendar && (
-            <div className="leaderboard-data__datepicker-content">
-              <DateRange
-                editableDateInputs={true}
-                onChange={(item) => {
-                  const startDate = item.selection?.startDate;
-                  const endDate = item.selection?.endDate;
-                  if (startDate && endDate) {
-                    setSelectedRanges([
-                      { startDate, endDate, key: 'selection' },
-                    ]);
-                  } else {
-                    // Handle the case when no dates are selected
-                    setSelectedRanges([]);
-                  }
-                }}
-                moveRangeOnFirstSelection={false}
-                ranges={selectedRanges}
-              />
-              <div className="leaderboard-data__datepicker-btns">
-                <button className="reset-calender" onClick={onReset}>
-                  Reset
-                </button>
-                <button className="apply-calender" onClick={onApply}>
-                  Apply
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const PeriodFilter = ({
-    period,
-    setPeriod,
-    resetPage,
-  }: {
-    period: DateRangeWithLabel | null;
-    setPeriod: (newVal: DateRangeWithLabel) => void;
-    resetPage: () => void;
-  }) => {
-    return (
-      <ul className="leaderboard-data__btn-group">
-        {periodFilterOptions.map((item: any) => (
-          <li key={item.label}>
-            <button
-              onClick={() => {
-                if (item.label === 'All') {
-                  setPeriod({
-                    label: 'All',
-                    start: null,
-                    end: null,
-                  });
-                } else {
-                  setPeriod(item);
-                }
-                resetPage();
-              }}
-              className={
-                'leaderboard-data__btn' +
-                (period?.label === item.label
-                  ? ' leaderboard-data__btn--active performance-btn'
-                  : ' inactive-btn')
-              }
-            >
-              {item.label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    );
-  };
 
   const handlePendingRequest = (pending: any) => {
     setSelectedMilestone(pending);
@@ -801,7 +584,9 @@ const ProjectPerformence = () => {
           linkparaSecond=""
           marginLeftMobile="12px"
         />
+
         <div className="pipeline-header-btns">
+
           <p
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
@@ -818,6 +603,8 @@ const ProjectPerformence = () => {
           >
             Active
           </p>
+
+
           <p
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
             onClick={() => {
@@ -834,7 +621,11 @@ const ProjectPerformence = () => {
           >
             H&J
           </p>
+
+          <DropdownCheckbox selectedOptions={selectedDealer} options={dealerOption} onChange={setSelectedDealer} />
+
         </div>
+
       </div>
       <div className="project-container">
         <div className="project-heading pipeline-heading">
