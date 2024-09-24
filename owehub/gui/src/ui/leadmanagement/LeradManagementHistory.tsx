@@ -323,7 +323,7 @@ const LeradManagementHistory = () => {
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
-  
+
   useEffect(() => {
     if (isAuthenticated) {
       (async () => {
@@ -339,15 +339,15 @@ const LeradManagementHistory = () => {
               page_number: page
             }
           );
-  
-         
+
+
           if (response.status > 201) {
             toast.error(response.data.message);
             return;
           }
           if (response.data?.data?.leads_history_list) {
-             setHistoryTable(response.data?.data.leads_history_list as HistoryTableProp[]);
-             setTotalCount(response.data?.dbRecCount);
+            setHistoryTable(response.data?.data.leads_history_list as HistoryTableProp[]);
+            setTotalCount(response.data?.dbRecCount);
           }
         } catch (error) {
           console.error(error);
@@ -358,7 +358,7 @@ const LeradManagementHistory = () => {
     }
   }, [isAuthenticated, selectedDates]);
 
-  
+
 
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');
