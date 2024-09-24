@@ -468,7 +468,7 @@ const LeradManagementHistory = () => {
                         marginTop: 'px',
                         borderRadius: '8px',
                         outline: 'none',
-                        color: 'white',
+                        color: '#3E3E3E',
                         width: '140px',
                         height: '36px',
                         fontSize: '12px',
@@ -476,7 +476,7 @@ const LeradManagementHistory = () => {
                         fontWeight: '500',
                         cursor: 'pointer',
                         alignContent: 'center',
-                        backgroundColor: '#377CF6',
+                        backgroundColor: '#fffff',
                         boxShadow: 'none',
                         '@media only screen and (max-width: 767px)': {
                           width: '80px',
@@ -485,43 +485,42 @@ const LeradManagementHistory = () => {
                         '&:focus-within': {
                           borderColor: '#377CF6',
                           boxShadow: '0 0 0 1px #377CF6',
-                          caretColor: 'white',
+                          caretColor: '#3E3E3E',
                         },
                       }),
                       placeholder: (baseStyles) => ({
                         ...baseStyles,
-                        color: '#fffff',
+                        color: '#3E3E3E',
                       }),
                       indicatorSeparator: () => ({
                         display: 'none',
                       }),
                       dropdownIndicator: (baseStyles, state) => ({
                         ...baseStyles,
-                        color: '#ffffff',
+                        color: '#3E3E3E',
                         '&:hover': {
-                          color: '#ffffff',
+                          color: '#3E3E3E',
                         },
 
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
                         fontSize: '13px',
-                        color: state.isSelected ? '#ffffff' : '#ffffff',
-                        backgroundColor: state.isSelected ? '#377CF6' : '#377CF6',
+                        color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                        backgroundColor: state.isSelected ? '#fffff' : '#fffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#0f2d5e' : '#0f2d5e',
+                          backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
                         },
                         cursor: 'pointer',
                       }),
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
-                        color: 'white',
+                        color: '#3E3E3E',
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,
                         width: '140px',
-                        backgroundColor: '#377CF6',
-                        marginTop: "-4px"
+                        marginTop: "0px"
                       }),
                     }}
                   />
