@@ -59,7 +59,7 @@ type LatLng = {
 };
 const MyMapComponent: React.FC = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0', // Replace with your API key
+    googleMapsApiKey: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
     libraries: ['places'],
   });
   const today = getCurrentDateInUserTimezone();
@@ -99,6 +99,7 @@ const MyMapComponent: React.FC = () => {
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const [center, setCenter] = useState({ lat: 25.5941, lng: 85.1376 });
+  const [searchedLocation, setSearchedLocation] = useState<LatLng | null>(null); // New state for searched location
   const [filteredLocations, setFilteredLocations] = useState<LocationInfo[]>(
     []
   ); // Filtered locations
@@ -125,7 +126,7 @@ const MyMapComponent: React.FC = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
   const [toggledId, setToggledId] = useState<string | null>(null);
-  
+
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
@@ -138,7 +139,6 @@ const MyMapComponent: React.FC = () => {
       try {
         setLoading(true);
         const data = await postCaller('get_user_address', {
-          unique_ids: [searchValue],
           states: [createRePayData.state],
         });
 
@@ -147,13 +147,12 @@ const MyMapComponent: React.FC = () => {
           return;
         }
 
-        // Check if data.data exists and has elements
         if (
           !data?.data ||
           !Array.isArray(data.data) ||
           data.data.length === 0
         ) {
-          setLocations([]); // Set empty array if no data
+          setLocations([]);
           return;
         }
 
@@ -217,8 +216,8 @@ const MyMapComponent: React.FC = () => {
     );
 
     if (mapRef.current) {
-      mapRef.current.setZoom(15); // Zoom level when marker is clicked
-      mapRef.current.panTo({ lat: location.lat, lng: location.lng }); // Center the map on the clicked marker
+      mapRef.current.setZoom(15);
+      mapRef.current.panTo({ lat: location.lat, lng: location.lng });
     }
   }, []);
 
@@ -267,10 +266,9 @@ const MyMapComponent: React.FC = () => {
       lng: place.geometry.location.lng(),
     };
 
-    // Set the selected place's name in the search bar
     const selectedAddress = place.formatted_address || place.name || '';
-    setSearchValue(selectedAddress); // Update the input field to show the selected address
-
+    setSearchValue(selectedAddress);
+    setSearchedLocation(searchedLocation);
     setCenter(searchedLocation);
 
     // Filter locations within 10 km of the searched address
@@ -281,10 +279,11 @@ const MyMapComponent: React.FC = () => {
         location.lat,
         location.lng
       );
-      return distance <= 10; // Locations within 10km
+      return distance <= 10;
     });
 
     setFilteredLocations(neighboringLocations);
+  
 
     // Adjust the map bounds to show both the searched location and neighboring markers
     const bounds = new window.google.maps.LatLngBounds();
@@ -295,38 +294,44 @@ const MyMapComponent: React.FC = () => {
     });
 
     if (mapRef.current) {
-      mapRef.current.fitBounds(bounds); // Fit the map to show all markers
+      if (neighboringLocations.length > 0) {
+        // If there are neighboring locations, fit bounds to show all markers
+        mapRef.current.fitBounds(bounds);
+      } else {
+        // If no neighboring locations, set a default zoom level (zoom out)
+        mapRef.current.setCenter(searchedLocation);
+        mapRef.current.setZoom(8); // Adjust zoom level to show a larger area
+      }
     }
   };
 
-  // Add a new function to handle input changes
+  useEffect(() => {
+    setProjectCount(filteredLocations.length);
+  }, [filteredLocations]);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
 
-    // If the input is cleared, reload the default locations
     if (inputValue === '') {
-      setFilteredLocations(locations); // Reset to all locations
+      setFilteredLocations(locations);
       if (mapRef.current) {
         const bounds = new window.google.maps.LatLngBounds();
         locations.forEach((location) => {
           bounds.extend({ lat: location.lat, lng: location.lng });
         });
-        mapRef.current.fitBounds(bounds); // Fit the map to all markers
+        mapRef.current.fitBounds(bounds);
       }
     }
 
-    setSearchValue(inputValue); // Update the search state (if needed)
+    setSearchValue(inputValue);
   };
 
-  // Set all locations by default when no search is performed
   useEffect(() => {
-    // Initially set the map to show all locations if no search is performed
     if (locations.length > 0 && filteredLocations.length === 0) {
       setFilteredLocations(locations);
     }
   }, [locations, filteredLocations]);
 
-  // Recalculate bounds when locations change
   useEffect(() => {
     if (mapRef.current && locations.length > 0) {
       const bounds = new window.google.maps.LatLngBounds();
@@ -340,25 +345,20 @@ const MyMapComponent: React.FC = () => {
     (map: google.maps.Map) => {
       mapRef.current = map;
 
-      // Create a bounds object
       const bounds = new window.google.maps.LatLngBounds();
 
-      // Use filtered locations if there are any, otherwise use all locations
       const locationsToShow =
         filteredLocations.length > 0 ? filteredLocations : locations;
 
       if (locationsToShow.length > 0) {
-        // Extend the bounds for each marker location
         locationsToShow.forEach((location) => {
           bounds.extend({ lat: location.lat, lng: location.lng });
         });
 
-        // Fit the map to the bounds (this adjusts center and zoom to show all markers)
         map.fitBounds(bounds);
       } else {
-        // If no locations, set the map to a default center and zoom level
         map.setCenter({ lat: 25.5941, lng: 85.1376 });
-        map.setZoom(5); // Adjust default zoom as per your preference
+        map.setZoom(5);
       }
     },
     [filteredLocations, locations]
@@ -377,10 +377,10 @@ const MyMapComponent: React.FC = () => {
     return toZonedTime(now, userTimezone);
   }
 
-  // Define onLoad function to store the autocomplete instance
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
     autocompleteRef.current = autocomplete;
   };
+ 
 
   console.log(filteredLocations, 'klkogjd');
   console.log(projectCount, 'projectcount');
@@ -403,43 +403,48 @@ const MyMapComponent: React.FC = () => {
                   type="text"
                   placeholder="Search for an address"
                   className={styles.inputsearch}
-                  style={{ width: '100%', padding: '8px', paddingRight: "2rem" }}
+                  style={{
+                    width: '100%',
+                    padding: '8px',
+                    paddingRight: '2rem',
+                  }}
                   onChange={handleInputChange}
                   value={searchValue}
                 />
                 {searchValue && (
                   <button
-                  type="button"
-                  onClick={() => {
-                    setSearchValue(''); // Clear the search value
-                    setFilteredLocations(locations); // Reset to show all locations
-                
-                    if (mapRef.current) {
-                      const bounds = new google.maps.LatLngBounds();
-                
-                      // Loop through all the locations and extend the bounds to include each marker's position
-                      locations.forEach((location) => {
-                        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
-                      });
-                
-                      // Adjust the map to fit the bounds of all markers
-                      mapRef.current.fitBounds(bounds);
-                    }
-                  }}
-                  style={{
-                    position: 'absolute',
-                    right: '8px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer',
-                  }}
-                >
-                  ✕
-                </button>
-                
-                 
+                    type="button"
+                    onClick={() => {
+                      setSearchValue(''); // Clear the search value
+                      setFilteredLocations(locations);
+                      setSearchedLocation(null); // Reset to show all locations
+
+                      if (mapRef.current) {
+                        const bounds = new google.maps.LatLngBounds();
+
+                        // Loop through all the locations and extend the bounds to include each marker's position
+                        locations.forEach((location) => {
+                          bounds.extend(
+                            new google.maps.LatLng(location.lat, location.lng)
+                          );
+                        });
+
+                        // Adjust the map to fit the bounds of all markers
+                        mapRef.current.fitBounds(bounds);
+                      }
+                    }}
+                    style={{
+                      position: 'absolute',
+                      right: '8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✕
+                  </button>
                 )}
               </div>
             </Autocomplete>
@@ -470,8 +475,19 @@ const MyMapComponent: React.FC = () => {
               />
             </div>
           </div>
-        </div>
 
+             {/* Display total project count */}
+             { projectCount > 0 ? (
+    <div className={styles.projectCount}>
+      <h3>
+        <span className={styles.totalProjects}>Total Projects : </span> 
+        <span className={styles.projectCountValue}>{projectCount}</span>
+      </h3>
+    </div>
+  ) : null }
+
+        </div>
+     
         <div className={styles.headerRight}>
           <div className={styles.mapClose} onClick={handleCalcClose}>
             <IoClose />
@@ -512,6 +528,20 @@ const MyMapComponent: React.FC = () => {
           />
         )} */}
 
+                {/* Searched location marker with different color */}
+                {searchedLocation && (
+                  <Marker
+                    position={searchedLocation}
+                    icon={{
+                      path: 'M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 9.75 6.3 11.77.3.36.82.36 1.12 0C14.5 18.75 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z',
+                      fillColor: 'blue', // Fully blue marker
+                      fillOpacity: 1,
+                      strokeWeight: 0, // No outline
+                      scale: 1.5, // Scale to size
+                    }}
+                  />
+                )}
+
                 {/* Display all or filtered markers */}
                 {filteredLocations.map((location, index) => (
                   <Marker
@@ -525,57 +555,58 @@ const MyMapComponent: React.FC = () => {
                     }}
                   />
                 ))}
-              { role === TYPE_OF_USER.ADMIN ?
-                <>
-                {selectedLocation && (
-                  <InfoWindow
-                    position={{
-                      lat: selectedLocation.lat,
-                      lng: selectedLocation.lng,
-                    }}
-                    options={{
-                      pixelOffset: new window.google.maps.Size(0, -50),
-                      disableAutoPan: true,
-                    }}
-                    onDomReady={() => {
-                      const interval = setInterval(() => {
-                        const closeButton = document.querySelector(
-                          '.gm-ui-hover-effect'
-                        ) as HTMLElement;
-                        if (closeButton) {
-                          closeButton.style.display = 'none';
-                          clearInterval(interval);
-                        }
-                      }, 10);
-                    }}
-                  >
-                    <div className={styles.infoWindow}>
-                      <div className={styles.infoWindowRow}>
-                        <p className={styles.infoWindowLabel}>Home Owner:</p>
-                        <p className={styles.infoWindowValue}>
-                          {selectedLocation.home_owner}
-                        </p>
-                      </div>
-                      <div className={styles.infoWindowRow}>
-                        <p className={styles.infoWindowLabel}>Unique ID:</p>
-                        <p className={styles.infoWindowValue}>
-                          {selectedLocation.unique_id}
-                        </p>
-                      </div>
-                      <div className={styles.infoWindowRow}>
-                        <p className={styles.infoWindowLabel}>
-                          Project Status:
-                        </p>
-                        <p className={styles.infoWindowValue}>
-                          {selectedLocation.project_status}
-                        </p>
-                      </div>
-                    </div>
-                  </InfoWindow>
-                )}
-                </>
-             : null }  
-
+                {role === TYPE_OF_USER.ADMIN ? (
+                  <>
+                    {selectedLocation && (
+                      <InfoWindow
+                        position={{
+                          lat: selectedLocation.lat,
+                          lng: selectedLocation.lng,
+                        }}
+                        options={{
+                          pixelOffset: new window.google.maps.Size(0, -50),
+                          disableAutoPan: true,
+                        }}
+                        onDomReady={() => {
+                          const interval = setInterval(() => {
+                            const closeButton = document.querySelector(
+                              '.gm-ui-hover-effect'
+                            ) as HTMLElement;
+                            if (closeButton) {
+                              closeButton.style.display = 'none';
+                              clearInterval(interval);
+                            }
+                          }, 10);
+                        }}
+                      >
+                        <div className={styles.infoWindow}>
+                          <div className={styles.infoWindowRow}>
+                            <p className={styles.infoWindowLabel}>
+                              Home Owner:
+                            </p>
+                            <p className={styles.infoWindowValue}>
+                              {selectedLocation.home_owner}
+                            </p>
+                          </div>
+                          <div className={styles.infoWindowRow}>
+                            <p className={styles.infoWindowLabel}>Unique ID:</p>
+                            <p className={styles.infoWindowValue}>
+                              {selectedLocation.unique_id}
+                            </p>
+                          </div>
+                          <div className={styles.infoWindowRow}>
+                            <p className={styles.infoWindowLabel}>
+                              Project Status:
+                            </p>
+                            <p className={styles.infoWindowValue}>
+                              {selectedLocation.project_status}
+                            </p>
+                          </div>
+                        </div>
+                      </InfoWindow>
+                    )}
+                  </>
+                ) : null}
               </GoogleMap>
             ) : (
               <div

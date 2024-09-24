@@ -19,6 +19,39 @@
 .rcw-new-message {
   width: calc(100% - 15px);
 }
+/*auto complete */
+
+/* Global CSS to target the Google Maps Autocomplete dropdown */
+
+/* This styles the container of the dropdown */
+.pac-container {
+  font-family: 'Poppins', sans-serif !important; /* Ensure Poppins is applied */
+  font-size: 14px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #ccc !important;
+  overflow: hidden !important;
+  cursor: pointer;
+}
+
+/* Styles individual dropdown items */
+.pac-item {
+  padding: 8px 10px !important;
+  border-bottom: 1px solid #eaeaea !important;
+  cursor: pointer;
+}
+
+/* Highlighting items when hovered */
+.pac-item:hover {
+  background-color: #f2f7ff !important;
+}
+
+/* Style the highlighted text inside each item */
+.pac-item .pac-item-query {
+ 
+  font-weight: 500 !important;
+}
+
 /* color config */
 :root {
   --white-color: #fff;

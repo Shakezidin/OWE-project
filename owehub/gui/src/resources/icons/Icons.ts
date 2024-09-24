@@ -145,6 +145,10 @@ import leadMngExport from '../../resources/assets/export-lead.svg';
 import chevronDown from '../assets/chevron-down.svg'
 import chevronUp from '../assets/chevron-Up.svg'
 import declinedArchive from '../assets/archiveIcon.svg'
+import deleteFileLibrary from '../assets/delete-file-lib.svg'
+
+
+
 
 
 export const ICONS = {
@@ -307,5 +311,7 @@ export const ICONS = {
   chevronDown:chevronDown,
   chevronUp:chevronUp,
   declinedArchive:declinedArchive,
-  scheduleDoor
+  scheduleDoor,
+  deleteFileLibrary:deleteFileLibrary
+
 };

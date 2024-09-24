@@ -112,6 +112,50 @@
 .hist_date {
   margin-right: 16px;
 }
+/* Custom styles for the autocomplete dropdown */
+.pac-container {
+  font-family: 'Poppins', sans-serif;  /* Use Poppins for the dropdown */
+  font-size: 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+/* Hover effect for each item */
+.pac-item:hover {
+  background-color: #7e104b;
+}
+
+/* Additional styling for individual items */
+.pac-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.pac-item:last-child {
+  border-bottom: none;
+}
+
+.projectCount h3 {
+  font-size: -0.5rem; /* Adjust size as needed */
+}
+
+.totalProjects {
+  font-weight: bold;
+}
+
+.projectCountValue {
+  font-weight: normal;
+}
+
+
+/* Styling for highlighted text */
+.pac-item .pac-item-query {
+  color: #007bff; /* Highlighted text color */
+  font-weight: 500;
+}
+
 
 .inputsearch {
   min-width: 220px !important;
