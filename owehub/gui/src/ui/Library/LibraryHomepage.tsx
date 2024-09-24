@@ -148,10 +148,10 @@ const LibraryHomepage = () => {
             />
           </div>
           <AddNewButton title="New" onClick={() => {}} />
-          <div className={`${styles.recycleBin}`}>
+          {/* <div className={`${styles.recycleBin}`}>
             {' '}
             <img src={ICONS.recycleBin} alt="" />
-          </div>
+          </div> */}
         </div>
       </div>
 
