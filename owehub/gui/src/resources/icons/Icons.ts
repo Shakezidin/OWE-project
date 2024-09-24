@@ -142,9 +142,11 @@ import historyLeadMgmt from '../../resources/assets/history-lead-mgmt.svg';
 import seemore from '../../resources/assets/see_more_lm.svg';
 import pdf from '../../resources/assets/pdf.svg';
 import leadMngExport from '../../resources/assets/export-lead.svg';
-import chevronDown from '../assets/chevron-down.svg'
-import chevronUp from '../assets/chevron-Up.svg'
-import declinedArchive from '../assets/archiveIcon.svg'
+import chevronDown from '../assets/chevron-down.svg';
+import chevronUp from '../assets/chevron-Up.svg';
+import declinedArchive from '../assets/archiveIcon.svg';
+import recycleBin from "../assets/recycle-bin.svg";
+import verticalDots from "../assets/vertical-dots.svg"
 
 
 export const ICONS = {
@@ -307,5 +309,7 @@ export const ICONS = {
   chevronDown:chevronDown,
   chevronUp:chevronUp,
   declinedArchive:declinedArchive,
-  scheduleDoor
+  scheduleDoor,
+  recycleBin: recycleBin,
+  verticalDots: verticalDots
 };
