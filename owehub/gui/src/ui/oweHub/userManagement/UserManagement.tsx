@@ -226,6 +226,10 @@ const UserManagement: React.FC = () => {
           tables_permissions: tablePermissions,
           description: formData.description.trim(),
           dealer_logo: logoUrl,
+          podio_checked: (formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
+            formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+            formData.role_name === TYPE_OF_USER.REGIONAL_MANGER ||
+            formData.role_name === TYPE_OF_USER.DEALER_OWNER) ? data.podio_checked : undefined
         })
       );
       const result = unwrapResult(actionResult);
