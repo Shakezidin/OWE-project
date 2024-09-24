@@ -132,7 +132,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
 			if len(dataReq.DealerNames) <= 0 {
-				appserver.FormAndSendHttpResp(resp, "Dealer names cant't be null", http.StatusBadRequest, nil)
+				perfomanceList := models.PerfomanceListResponse{}
+				appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 				return
 			}
 		} else {
