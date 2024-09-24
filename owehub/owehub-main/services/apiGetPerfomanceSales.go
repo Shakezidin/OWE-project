@@ -35,7 +35,6 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		whereEleList       []interface{}
 		queryWithFiler     string
 		filter             string
-		dealerName         interface{}
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
@@ -117,9 +116,20 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	if len(data) > 0 {
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName = data[0]["dealer_name"]
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if dealerName == "" || !ok {
+			dealerName = ""
+		}
+
+		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
+			if len(dataReq.DealerNames) <= 0 {
+				FormAndSendHttpResp(resp, "Dealer names cant't be null", http.StatusBadRequest, nil)
+				return
+			}
+		} else {
+			dataReq.DealerNames = []string{dealerName}
+		}
 		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
 
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
@@ -137,7 +147,18 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 				return
 			}
-			filter, whereEleList = PrepareAeAmFilters(dealerNames, dataReq, false)
+			dealerNameSet := make(map[string]bool)
+			for _, dealer := range dealerNames {
+				dealerNameSet[dealer] = true
+			}
+
+			for _, dealerNameFromUI := range dataReq.DealerNames {
+				if !dealerNameSet[dealerNameFromUI] {
+					FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+					return
+				}
+			}
+			filter, whereEleList = PrepareAdminDlrTalesFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PrepareSaleRepTalesFilters(tableName, dataReq, SaleRepList)
@@ -471,16 +492,36 @@ func PrepareAdminDlrTalesFilters(tableName string, dataFilter models.PerfomanceT
 		whereAdded = true
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
-	if !adminCheck && !filterCheck {
+	// // Add dealer filter if not adminCheck and not filterCheck
+	// if !adminCheck && !filterCheck {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE")
+	// 		whereAdded = true
+	// 	}
+	// 	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
+	// 	whereEleList = append(whereEleList, dataFilter.DealerName)
+	// }
+
+	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
-			filtersBuilder.WriteString(" AND")
+			filtersBuilder.WriteString(" AND ")
 		} else {
-			filtersBuilder.WriteString(" WHERE")
+			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerNames {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerNames)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
 
 	// Always add the following filters
@@ -523,7 +564,7 @@ func PrepareAdminDlrTalesFilters(tableName string, dataFilter models.PerfomanceT
 * RETURNS:    		void
 ******************************************************************************/
 
-func PrepareAeAmFilters(dealerList []string, dataFilter models.PerfomanceTileDataReq, dataCount bool) (filters string, whereEleList []interface{}) {
+func PrepareAeAmFilter(dealerList []string, dataFilter models.PerfomanceTileDataReq, dataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareAeAmFilters")
 	defer func() { log.ExitFn(0, "PrepareAeAmFilters", nil) }()
 
@@ -640,15 +681,35 @@ func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTi
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	// // Add dealer filter
+	// if whereAdded {
+	// 	filtersBuilder.WriteString(" AND ")
+	// } else {
+	// 	filtersBuilder.WriteString(" WHERE ")
+	// 	whereAdded = true
+	// }
+	// filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
+	// whereEleList = append(whereEleList, dataFilter.DealerName)
+
+	if len(dataFilter.DealerNames) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerNames {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerNames)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
