@@ -96,7 +96,10 @@ const MyMapComponent: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
   const [projectCount, setProjectCount] = useState<number>(0);
-
+  const [neighboring, setNeighboring] =  useState<LocationInfo[]>(
+    []
+  ); // Filtered locations
+  const projectCountRef = useRef(projectCount);
   const mapRef = useRef<google.maps.Map | null>(null);
   const [center, setCenter] = useState({ lat: 25.5941, lng: 85.1376 });
   const [searchedLocation, setSearchedLocation] = useState<LatLng | null>(null); // New state for searched location
@@ -173,6 +176,7 @@ const MyMapComponent: React.FC = () => {
           }));
 
         setLocations(formattedData);
+        
       } catch (error) {
         console.error(error);
       } finally {
@@ -283,6 +287,7 @@ const MyMapComponent: React.FC = () => {
     });
 
     setFilteredLocations(neighboringLocations);
+    setNeighboring(neighboringLocations)
   
 
     // Adjust the map bounds to show both the searched location and neighboring markers
@@ -305,9 +310,8 @@ const MyMapComponent: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    setProjectCount(filteredLocations.length);
-  }, [filteredLocations]);
+  
+ 
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -327,11 +331,12 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (locations.length > 0 && filteredLocations.length === 0) {
+    if (filteredLocations.length === 0) {
       setFilteredLocations(locations);
     }
-  }, [locations, filteredLocations]);
+  }, [locations, filteredLocations,createRePayData.state]);
 
+  console.log(locations, "locations");
   useEffect(() => {
     if (mapRef.current && locations.length > 0) {
       const bounds = new window.google.maps.LatLngBounds();
@@ -341,6 +346,27 @@ const MyMapComponent: React.FC = () => {
       mapRef.current.fitBounds(bounds);
     }
   }, [locations]);
+
+  useEffect(() => {
+    // Update state and ref
+    if (createRePayData.state) {
+      
+      setProjectCount(locations.length);
+      projectCountRef.current = locations.length;
+    } 
+    else if(searchValue){
+     setProjectCount(neighboring.length);
+    }
+     else {
+      setProjectCount(filteredLocations.length);
+      projectCountRef.current = filteredLocations.length;
+    }
+    
+    
+  }, [filteredLocations, createRePayData.state, locations]);
+
+  console.log(locations.length, "changes")
+
   const onMapLoad = useCallback(
     (map: google.maps.Map) => {
       mapRef.current = map;
