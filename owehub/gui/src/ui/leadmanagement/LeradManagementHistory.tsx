@@ -154,25 +154,7 @@ const LeradManagementHistory = () => {
     setIsCalendarOpen(false);
   };
 
-  // const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   const selectedLabel = e.target.value;
-  //   const selectedOption = periodFilterOptions.find((option) => option.label === selectedLabel);
-  //   if (selectedOption) {
-  //     setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
-  //     setSelectedPeriod(selectedOption || null);
-  //   } else {
-  //     setSelectedDates({ startDate: null, endDate: null });
-  //   }
-  // };
-  const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
-    if (selectedOption) {
-      setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
-      setSelectedPeriod(selectedOption);
-    } else {
-      setSelectedDates({ startDate: null, endDate: null });
-      setSelectedPeriod(null);
-    }
-  };
+  
 
   const handleCrossClick = () => {
     setSelectedItemIds([]);
@@ -361,6 +343,15 @@ const LeradManagementHistory = () => {
     }
   }, [isAuthenticated, selectedDates, itemsPerPage, page]);
 
+  const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
+    if (selectedOption) {
+      setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
+      setSelectedPeriod(selectedOption);
+    } else {
+      setSelectedDates({ startDate: null, endDate: null });
+      setSelectedPeriod(null);
+    }
+  };
 
 
   const isMobile = useMatchMedia('(max-width: 767px)');
@@ -445,21 +436,7 @@ const LeradManagementHistory = () => {
                     ) : null
                   }
 
-                  {/* <select
-                    value={selectedPeriod?.label || ''}
-                    onChange={handlePeriodChange}
-                    className={styles.monthSelect}
-                  >
-                    {periodFilterOptions.map((option) => (
-                      <option
-                        key={option.label}
-                        value={option.label}
-                        selected={selectedPeriod?.label === option.label}
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </select> */}
+                 
 
                   <Select
                     value={selectedPeriod}

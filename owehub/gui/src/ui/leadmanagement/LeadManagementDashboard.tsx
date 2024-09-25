@@ -12,6 +12,7 @@ import {
   Legend,
   Sector,
 } from 'recharts';
+import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
 import './styles/mediaQuery.css';
 import { ICONS } from '../../resources/icons/Icons';
@@ -33,6 +34,7 @@ import {
   startOfYear,
   subDays,
 } from 'date-fns';
+// import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
 export type DateRangeWithLabel = {
@@ -179,10 +181,10 @@ const leads = [
   },
   {
     id: '9',
-    name: 'Kilewan dicho',
+    name: 'Rabindra Kumar Sharma',
     phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
+    email: 'rabindr718@gmail.com',
+    address: 'Patel Nagar, Dehradun, UK',
     status: 'Accepted',
   },
   {
@@ -200,6 +202,61 @@ const leads = [
     email: 'adam8772@gmail.com',
     address: '12778 Domingo Ct',
     status: 'Action Needed',
+  },
+  {
+    id: '12',
+    name: 'Kilewan dicho',
+    phone: '+00 876472822',
+    email: 'Paul mark8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Accepted',
+  },
+  {
+    id: '13',
+    name: 'XYZ Name',
+    phone: '+00 876472822',
+    email: 'xyz8772@gmail.com',
+    address: '12778 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '14',
+    name: 'Virendra Sehwag',
+    phone: '+00 876472822',
+    email: 'sehwag8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '15',
+    name: 'Bhuvneshwar Kumar',
+    phone: '+00 876472822',
+    email: 'bhuvi8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'No Response',
+  },
+  {
+    id: '16',
+    name: 'Jasprit Bumrah',
+    phone: '+00 876472822',
+    email: 'jasprit8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Update Status',
+  }, {
+    id: '17',
+    name: 'Risabh Pant',
+    phone: '+00 876472822',
+    email: 'rp8772@gmail.com',
+    address: 'haridwar, Delhi',
+    status: 'No Response',
+  },
+  {
+    id: '18',
+    name: 'Virat Kohli',
+    phone: '+00 876472822',
+    email: 'king8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Deal Won',
   },
 ];
 
@@ -229,6 +286,8 @@ const renderActiveShape = (props: any) => {
   const textAnchor = cos >= 0 ? 'start' : 'end';
 
   // Center text in pie chart
+
+
   const splitText = (text: string, width: number) => {
     const words = text.split(' ');
     const lines = [];
@@ -332,6 +391,12 @@ const getStatusColor = (status: string) => {
   }
 };
 
+// const ActionNeeded={
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+// }
 const statusMap = {
   'Pending leads': 'Pending',
   'Appointment accepted': 'Accepted',
@@ -396,11 +461,10 @@ const LeadManagementDashboard = () => {
   const width = useWindowWidth();
   const isTablet = width <= 1024;
 
+
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-  // const [selectedPeriod, setSelectedPeriod] = useState('This Week');
-  const [selectedPeriod, setSelectedPeriod] =
-    useState<DateRangeWithLabel | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
@@ -429,21 +493,6 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen(false);
   };
 
-  const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedLabel = e.target.value;
-    const selectedOption = periodFilterOptions.find(
-      (option) => option.label === selectedLabel
-    );
-    if (selectedOption) {
-      setSelectedDates({
-        startDate: selectedOption.start,
-        endDate: selectedOption.end,
-      });
-      setSelectedPeriod(selectedOption || null);
-    } else {
-      setSelectedDates({ startDate: null, endDate: null });
-    }
-  };
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
@@ -454,6 +503,26 @@ const LeadManagementDashboard = () => {
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+
+//CALLING FOR RANGE PICK IN USING SELECT CODE
+const handlePeriodChange = (
+  newValue: SingleValue<DateRangeWithLabel>, 
+  actionMeta: ActionMeta<DateRangeWithLabel>
+) => {
+  if (newValue) {
+    setSelectedDates({
+      startDate: newValue.start,
+      endDate: newValue.end,
+    });
+    setSelectedPeriod(newValue);
+  } else {
+    setSelectedDates({ startDate: null, endDate: null });
+  }
+};
+
+
+
+
 
   const handleClickOutside = (event: Event) => {
     if (
@@ -671,30 +740,120 @@ const LeadManagementDashboard = () => {
                   </span>
                 </div>
               )}
-              <div className={styles.date_parent}>
-                <select
-                  value={selectedPeriod?.label || ''}
-                  onChange={handlePeriodChange}
-                  className={`${styles.monthSelect} monthSelectFocus`}
 
-                >
-                  {periodFilterOptions.map((option) => (
-                    <option key={option.label} value={option.label}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              {/* RABINDR718.....DATE_PICKER STARTED */}
+    <Select value={selectedPeriod}
+                    onChange={handlePeriodChange}
+                    options={periodFilterOptions}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        marginTop: 'px',
+                        borderRadius: '8px',
+                        outline: 'none',
+                        color: '#3E3E3E',
+                        width: '140px',
+                        height: '36px',
+                        fontSize: '12px',
+                        border: '1px solid #d0d5dd',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        alignContent: 'center',
+                        backgroundColor: '#fffff',
+                        boxShadow: 'none',
+                        '@media only screen and (max-width: 767px)': {
+                          width: '80px',
+                          // width: 'fit-content',
+                        },
+                        '&:focus-within': {
+                          borderColor: '#377CF6',
+                          boxShadow: '0 0 0 1px #377CF6',
+                          caretColor: '#3E3E3E',
+                        },
+                      }),
+                      placeholder: (baseStyles) => ({
+                        ...baseStyles,
+                        color: '#3E3E3E',
+                      }),
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#3E3E3E',
+                        '&:hover': {
+                          color: '#3E3E3E',
+                        },
+
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                        backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                        },
+                        cursor: 'pointer',
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#3E3E3E',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '140px',
+                        marginTop: "0px"
+                      }),
+                    }}
+                  />
+<div
                   ref={toggleRef}
                   className={styles.calender}
                   onClick={toggleCalendar}
                 >
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
-              </div>
-            </div>
           </div>
-          {/* shams end */}
+
+          </div>
+           {/* RABINDR718.....DATE_PICKER ENDED */}
+        
+          
+          
+          
+
           <div
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
@@ -914,29 +1073,36 @@ const LeadManagementDashboard = () => {
             </tbody>
           </table>
 
-          <div
-            className={styles.paginationContainer}
-            style={{ textAlign: 'right' }}
-          >
-            {filteredLeads.length > 0 && (
-              <div className={styles.lead_pagination}>
-                <p className={styles.pageHeading}>
-                  {indexOfFirstItem + 1} -{' '}
-                  {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
-                  {filteredLeads.length} items
-                </p>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
-                  paginate={paginate}
-                  goToNextPage={goToNextPage}
-                  goToPrevPage={goToPrevPage}
-                  perPage={itemsPerPage}
-                  currentPageData={currentLeads}
-                />
-              </div>
-            )}
-          </div>
+    {/* HERE IMPLEMENT PAGINATION */}
+
+    <div className={styles.leadpagination}>
+
+{ filteredLeads.length > 0 && <div className={styles.leftitem}>
+        <p className={styles.pageHeading}>
+        {indexOfFirstItem + 1} -{' '}
+        {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
+        {filteredLeads.length} items
+      </p>
+</div>}
+
+
+
+  <div className={styles.rightitem}>
+  <Pagination
+      currentPage={currentPage}
+      totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      perPage={itemsPerPage}
+      currentPageData={currentLeads}
+    />
+  </div>
+
+
+
+</div>
+
         </div>
       </div>
     </div>
