@@ -14,7 +14,8 @@
   scrollbar-width: 0;
   overflow-y: auto;
   scroll-behavior: smooth;
-  height: 100vh;
+  height: calc(100vh - 63px);
+  padding-bottom: 46px;
 }
 
 .side-bar-container::-webkit-scrollbar {
