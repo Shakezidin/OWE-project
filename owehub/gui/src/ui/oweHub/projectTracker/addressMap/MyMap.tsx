@@ -368,7 +368,7 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchValue && neighboring.length > 0) {
+    if (searchValue) {
       // If there is a searchValue, set neighboring locations
       setFilteredLocations(neighboring);
     } else if (createRePayData.state) {
@@ -651,8 +651,8 @@ const MyMapComponent: React.FC = () => {
                 zoom={5}
                 center={center}
                 options={{
-                  maxZoom: 20, // Set max zoom level to 20
-                  minZoom: 5, // Set min zoom level to 5
+                  maxZoom: 25, // Set max zoom level to 20
+                  minZoom: 2, // Set min zoom level to 5
                 }}
               >
                 {/* Searched location marker */}
