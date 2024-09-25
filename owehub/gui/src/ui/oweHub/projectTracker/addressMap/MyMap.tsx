@@ -290,9 +290,9 @@ const MyMapComponent: React.FC = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in kilometers
   };
@@ -510,30 +510,31 @@ const MyMapComponent: React.FC = () => {
 
           <div className={styles.mapHeaderWrap}>
             <div className={styles.dropdownstate}>
-              <SelectOption
-                options={[
-                  { label: 'All State', value: '' }, // Default option
-                  ...(stateOption(newFormData) || []), // Ensure it returns an array
-                ]}
-                onChange={(newValue) => handleChange(newValue, 'state')}
-                value={
-                  (stateOption(newFormData) || []).find(
-                    (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: '' } // Default when no match
-                }
-                menuStyles={{
-                  width: 400,
-                }}
-                menuListStyles={{
-                  fontWeight: 400,
-                  width: 150,
-                }}
-                singleValueStyles={{
-                  fontWeight: 400,
-                  color: (createRePayData.state === '') ? '#868686' : 'inherit'
-                }}
-                width="150px"
-              />
+              <div className={styles.dropdownstate}>
+                <SelectOption
+                  options={[
+                    { label: 'All State', value: '' }, // Default option
+                    ...(stateOption(newFormData) || []), // Ensure it returns an array
+                  ]}
+                  onChange={(newValue) => handleChange(newValue, 'state')}
+                  value={
+                    (stateOption(newFormData) || []).find(
+                      (option) => option.value === createRePayData.state
+                    ) || { label: 'All State', value: '' } // Show "All State" when state value is empty
+                  }
+                  menuStyles={{
+                    width: 400,
+                  }}
+                  menuListStyles={{
+                    fontWeight: 400,
+                    width: 150,
+                  }}
+                  singleValueStyles={{
+                    fontWeight: 400,
+                  }}
+                  width="150px"
+                />
+              </div>
             </div>
 
             <div className={styles.mapSearch}>
@@ -545,8 +546,7 @@ const MyMapComponent: React.FC = () => {
                     marginTop: '3px',
                   }}
                 >
-
-                  <div style={{position: "relative"}}>
+                  <div style={{ position: 'relative' }}>
                     <input
                       type="text"
                       placeholder="Search for an address"
@@ -554,7 +554,10 @@ const MyMapComponent: React.FC = () => {
                       maxLength={100}
                       onInput={(e) => {
                         const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
-                        input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
+                        input.value = input.value.replace(
+                          /[^a-zA-Z0-9\s]/g,
+                          ''
+                        ); // Replace non-alphanumeric characters
                       }}
                       style={{
                         width: '100%',
@@ -578,7 +581,10 @@ const MyMapComponent: React.FC = () => {
                             // Loop through all the locations and extend the bounds to include each marker's position
                             locations.forEach((location) => {
                               bounds.extend(
-                                new google.maps.LatLng(location.lat, location.lng)
+                                new google.maps.LatLng(
+                                  location.lat,
+                                  location.lng
+                                )
                               );
                             });
 
@@ -596,12 +602,11 @@ const MyMapComponent: React.FC = () => {
                           cursor: 'pointer',
                         }}
                       >
-                        <IoClose size={16} style={{ marginTop: "4px" }} />
+                        <IoClose size={16} style={{ marginTop: '4px' }} />
                       </button>
                     )}
                     <RiMapPinLine className={styles.inputMap} />
                   </div>
-
                 </div>
               </Autocomplete>
             </div>
@@ -645,6 +650,10 @@ const MyMapComponent: React.FC = () => {
                 onLoad={onMapLoad}
                 zoom={5}
                 center={center}
+                options={{
+                  maxZoom: 20, // Set max zoom level to 20
+                  minZoom: 5, // Set min zoom level to 5
+                }}
               >
                 {/* Searched location marker */}
                 {/* {center && (
@@ -696,17 +705,17 @@ const MyMapComponent: React.FC = () => {
                           pixelOffset: new window.google.maps.Size(0, -50),
                           disableAutoPan: true,
                         }}
-                      // onDomReady={() => {
-                      //   const interval = setInterval(() => {
-                      //     const closeButton = document.querySelector(
-                      //       '.gm-ui-hover-effect'
-                      //     ) as HTMLElement;
-                      //     if (closeButton) {
-                      //       closeButton.style.display = 'none';
-                      //       clearInterval(interval);
-                      //     }
-                      //   }, 10);
-                      // }}
+                        // onDomReady={() => {
+                        //   const interval = setInterval(() => {
+                        //     const closeButton = document.querySelector(
+                        //       '.gm-ui-hover-effect'
+                        //     ) as HTMLElement;
+                        //     if (closeButton) {
+                        //       closeButton.style.display = 'none';
+                        //       clearInterval(interval);
+                        //     }
+                        //   }, 10);
+                        // }}
                       >
                         <div className={styles.infoWindow}>
                           <div className={styles.infoWindowRow}>
