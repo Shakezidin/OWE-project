@@ -354,9 +354,20 @@ input[type='checkbox']:checked {
 }
 
 .paginationContainer {
-  display: flex;
-  justify-content: right;
+  display: flex;              
+  justify-content: space-between; 
+  align-items: center;   
+  height: 50px;   
 }
+
+.leadpagination {
+  display: flex;              
+  justify-content: space-between; 
+  align-items: center;     
+  height: 50px;
+}
+
+
 
 .chevron_down {
   display: none !important;
@@ -550,14 +561,16 @@ input[type='checkbox']:checked {
     align-items: start !important;
   }
 
-  .paginationContainer {
+
+  /* HERE MEDIA SCREEN */
+  .leadpagination {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     gap: 50px !important;
   }
 
-  .lead_pagination {
+  .leftitem, .rightitem {
     align-items: flex-start; /* Optional: vertically center the items */
   }
 }
@@ -609,9 +622,9 @@ input[type='checkbox']:checked {
 }
 
 .monthSelect {
-  background-color: #3b82f6;
+  /* background-color: #3b82f6; */
   color: white;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   padding: 4px 8px;
   border: none;
   font-size: 12px;
@@ -669,3 +682,158 @@ input[type='checkbox']:checked {
   justify-content: right !important;
 }
 /*---------------- Shams Start-------------------- */
+
+
+
+/* styles={{
+  control: (baseStyles, state) => ({
+    ...baseStyles,
+    marginTop: 'px',
+    borderRadius: '8px',
+    outline: 'none',
+    color: '#3E3E3E',
+    width: '140px',
+    height: '36px',
+    fontSize: '12px',
+    border: '1px solid #d0d5dd',
+    fontWeight: '500',
+    cursor: 'pointer',
+    alignContent: 'center',
+    backgroundColor: '#fffff',
+    boxShadow: 'none',
+    '@media only screen and (max-width: 767px)': {
+      width: '80px',
+      // width: 'fit-content',
+    },
+    '&:focus-within': {
+      borderColor: '#377CF6',
+      boxShadow: '0 0 0 1px #377CF6',
+      caretColor: '#3E3E3E',
+    },
+  }),
+  placeholder: (baseStyles) => ({
+    ...baseStyles,
+    color: '#3E3E3E',
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',
+  }),
+  dropdownIndicator: (baseStyles, state) => ({
+    ...baseStyles,
+    color: '#3E3E3E',
+    '&:hover': {
+      color: '#3E3E3E',
+    },
+
+  }),
+  option: (baseStyles, state) => ({
+    ...baseStyles,
+    fontSize: '13px',
+    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+    '&:hover': {
+      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+    },
+    cursor: 'pointer',
+  }),
+  singleValue: (baseStyles, state) => ({
+    ...baseStyles,
+    color: '#3E3E3E',
+  }),
+  menu: (baseStyles) => ({
+    ...baseStyles,
+    width: '140px',
+    marginTop: "0px"
+  }),
+}} */
+
+
+/* General style for the month select */
+/* General style for the month select */
+.monthSelect {
+  margin-top: 0;
+  border-radius: 8px;
+  outline: none;
+  color: #3e3e3e;
+  width: 140px;
+  height: 36px;
+  font-size: 12px;
+  border: 1px solid #d0d5dd;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 20px; /* Space for the arrow */
+  background-color: #ffffff;
+  box-shadow: none;
+  position: relative;
+  appearance: none;
+}
+
+/* Arrow in the dropdown */
+.monthSelect::after {
+  content: "▼"; /* Down arrow character */
+  font-size: 12px;
+  color: #3e3e3e;
+  position: absolute;
+  right: 10px;
+  pointer-events: none; /* Prevent interaction with the arrow */
+}
+
+/* Border will be none when the dropdown is open */
+.monthSelect:focus {
+  border: none;
+  box-shadow: none;
+}
+
+/* Focused state styling for border color when the dropdown is not open */
+.monthSelectFocus:focus-within {
+  border-color: #377cf6;
+  box-shadow: 0 0 0 1px #377cf6;
+  caret-color: #3e3e3e;
+}
+
+/* Placeholder styling */
+.placeholder {
+  color: #3e3e3e;
+}
+
+/* Option styling */
+.option {
+  font-size: 13px;
+  color: #3e3e3e;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: #ddebff;
+}
+
+.optionSelected {
+  background-color: #ffffff;
+}
+
+/* Single value styling */
+.singleValue {
+  color: #3e3e3e;
+}
+
+/* Menu styling */
+.menu {
+  width: 140px;
+  margin-top: 0px;
+}
+
+.indicatorSeparator {
+  display: none;
+}
+
+@media only screen and (max-width: 767px) {
+  .monthSelect {
+    width: 80px;
+  }
+}
+
+
