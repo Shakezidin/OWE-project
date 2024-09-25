@@ -310,8 +310,10 @@ const ProjectPerformence = () => {
     if (res.status > 200) {
       return;
     }
-    setSelectedDealer(leaderDealer(res.data));
-    setDealerOption(leaderDealer(res.data))
+    if(res.data?.dealer_name){
+      setSelectedDealer(leaderDealer(res.data));
+      setDealerOption(leaderDealer(res.data))
+    }
     setIsFetched(true)
   };
 

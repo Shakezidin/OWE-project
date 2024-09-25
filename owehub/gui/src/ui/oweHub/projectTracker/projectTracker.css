@@ -1863,8 +1863,15 @@
 }
 
 @media (max-width: 530px) {
+  .breadcrumb-container{
+    margin-left: 0px !important;
+  }
   .status-boxes {
     margin-top: 1rem;
+  }
+  .top-btns-wrapper{
+    flex-direction: column;
+    flex-wrap: wrap;
   }
 
   .pipeline-header-btns .desktop-btn {

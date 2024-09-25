@@ -10,6 +10,7 @@ import roofIcon from '../../../../resources/assets/roof_top.svg';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../../routes/routes';
+import { MdLocationOn } from "react-icons/md";
 const Marker = ({
   text,
   lat,
@@ -18,7 +19,7 @@ const Marker = ({
   text: string;
   lat: number;
   lng: number;
-}) => <div>{text}</div>;
+}) => <MdLocationOn color='red' size={36}/>;
 interface propTypes {
   withSecondaryBtn?: boolean;
   mapStyles?: CSSProperties;
@@ -42,8 +43,8 @@ const Index = ({
   const [isOpen, setIsOpen] = useState(false);
   const defaultProps = {
     center: {
-      lat: 10.99835602,
-      lng: 77.01502627,
+      lat: 28.5355,
+      lng: 77.3910,
     },
     zoom: 11,
   };
@@ -181,16 +182,16 @@ const Index = ({
           </div>
 
           <div style={mapStyles}>
-            <div className={styles.map_wrapper} >
+            <div className={styles.map_wrapper} style={{height:withSecondaryBtn?101:170}}  >
               <GoogleMapReact
                 bootstrapURLKeys={{
-                  key: 'AIzaSyARz_js0ZPhw2zRvfcsj6SRc0NR19jWvmc',
+                  key: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
                 }}
                 defaultCenter={defaultProps.center}
                 defaultZoom={defaultProps.zoom}
                 yesIWantToUseGoogleMapApiInternals
               >
-                <Marker lat={59.955413} lng={30.337844} text="My Marker" />
+                 <Marker lat={28.5355} lng={77.3910} text="Noida, India" />
               </GoogleMapReact>
             </div>
             <div className="flex items-center mt1">
