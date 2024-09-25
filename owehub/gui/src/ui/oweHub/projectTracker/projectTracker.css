@@ -288,13 +288,11 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-right: 10px;
+  margin-right: 14px;
   text-wrap: nowrap;
 }
 
 .active-queue svg {
-  width: 2rem;
-  height: 1.7rem;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -384,7 +382,7 @@
 
 .pipeline-title h2,
 .performance-table-heading h2 {
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 550;
   color: var(--page-heading-color);
 }
@@ -955,7 +953,6 @@
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  margin-right: 12px;
   position: relative;
   margin-top: -6px;
 }
@@ -1276,8 +1273,13 @@
   .pipeline-googlemap {
     top: 100px !important;
   }
+
   .pipline-export-btn .performance-exportbtn {
     margin-top: 6.8rem !important;
+  }
+
+  .active-queue{
+    top: 165px !important;
   }
 }
 
@@ -1285,8 +1287,12 @@
   .pipeline-googlemap {
     top: 127px !important;
   }
+
   .pipline-export-btn .performance-exportbtn {
     margin-top: 8.5rem !important;
+  }
+  .active-queue{
+    top: 190px !important;
   }
 }
 
@@ -1426,9 +1432,8 @@
   }
 
   .pipeline-googlemap {
-            right: 55px;
-        top: -47px;
-    padding: 12px;
+    right: 55px;
+    top: -47px;
   }
 }
 
@@ -1631,6 +1636,9 @@
   .active-queue {
     padding-top: 10px;
     margin-right: 0;
+    position: absolute;
+    left: 10px;
+    top: 155px;
   }
 
   .arrow-wrap {
@@ -1835,7 +1843,7 @@
     margin-top: -48px;
   }
 
-  .proper-top{
+  .proper-top {
     margin-bottom: 0;
   }
 
