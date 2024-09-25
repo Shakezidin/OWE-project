@@ -770,6 +770,7 @@ const ProjectPerformence = () => {
               {activeCardId !== null && (
                 <div className="active-queue">
                   <IoClose
+                  size={18}
                     onClick={() => {
                       setActiveCardId(null),
                         setSelectedMilestone(''),
