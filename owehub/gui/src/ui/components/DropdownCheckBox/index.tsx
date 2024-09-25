@@ -102,7 +102,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
       <div className="dropdown-toggle flex items-center" onClick={() => setIsOpen(!isOpen)}>
         <span>
-          {` ${isAllSelected ? "All" : selectedOptions.length} ${label} selected`}
+          {` ${isAllSelected && selectedOptions.length ? "All" : selectedOptions.length} ${label} selected`}
         </span>
         <BiChevronDown className="ml1 " size={22} style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "all 550ms" }} />
       </div>
