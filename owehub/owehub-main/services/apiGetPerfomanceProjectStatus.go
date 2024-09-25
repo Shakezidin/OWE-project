@@ -140,8 +140,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			dataReq.DealerNames = []string{dealerName}
 		}
 
-		rgnSalesMgrCheck = false
-
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false, false)
@@ -844,18 +842,6 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString(")")
 	}
 
-	// // Add dealer filter if not adminCheck and not filterCheck
-	// if !adminCheck && !filterCheck {
-	// 	if whereAdded {
-	// 		filtersBuilder.WriteString(" AND")
-	// 	} else {
-	// 		filtersBuilder.WriteString(" WHERE")
-	// 		whereAdded = true
-	// 	}
-	// 	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	// 	whereEleList = append(whereEleList, dataFilter.DealerNames)
-	// }
-
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -1009,16 +995,6 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 		filtersBuilder.WriteString(")")
 	}
-
-	// // Add dealer filter
-	// if whereAdded {
-	// 	filtersBuilder.WriteString(" AND ")
-	// } else {
-	// 	filtersBuilder.WriteString(" WHERE ")
-	// 	whereAdded = true
-	// }
-	// filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	// whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {

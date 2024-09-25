@@ -29,7 +29,6 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		whereEleList       []interface{}
 		queryWithFiler     string
 		filter             string
-		dealerName         interface{}
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
@@ -119,14 +118,49 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	if len(data) > 0 {
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName = data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
-		dataReq.Dealer = dealerName
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if dealerName == "" || !ok {
+			dealerName = ""
+		}
+
+		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
+			if len(dataReq.DealerName) <= 0 {
+				perfomanceList := models.PerfomanceListResponse{}
+				appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+				return
+			}
+		} else {
+			dataReq.DealerName = []string{dealerName}
+		}
 
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
+			filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)
+			if err != nil {
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+
+			if len(dealerNames) == 0 {
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				return
+			}
+			dealerNameSet := make(map[string]bool)
+			for _, dealer := range dealerNames {
+				dealerNameSet[dealer] = true
+			}
+
+			for _, dealerNameFromUI := range dataReq.DealerName {
+				if !dealerNameSet[dealerNameFromUI] {
+					appserver.FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+					return
+				}
+			}
 			filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
@@ -591,16 +625,24 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		whereAdded = true
 	}
 
-	// Add dealer filter
-	if !adminCheck && !filterCheck {
+	if len(dataFilter.DealerName) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.Dealer)
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerName {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerName)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
 
 	// Always add the following filters
@@ -671,15 +713,25 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	if len(dataFilter.DealerName) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerName {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerName)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.Dealer)
 
 	// Always add the following filters
 	if whereAdded {

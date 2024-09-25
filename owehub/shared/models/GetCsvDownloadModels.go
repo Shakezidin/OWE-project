@@ -9,12 +9,11 @@ package models
 type GetCsvDownload struct {
 	Email             string `json:"email"`
 	Role              string
-	Dealer            interface{}
 	StartDate         string   `json:"start_date"`
 	EndDate           string   `json:"end_date"`
 	PageNumber        int      `json:"page_number"`
 	PageSize          int      `json:"page_size"`
-	DealerName        []string `json:"dealer_name"`
+	DealerName        []string `json:"dealer_names"`
 	SelectedMilestone string   `json:"selected_milestone"`
 	GroupBy           string   `json:"group_by"`
 }
