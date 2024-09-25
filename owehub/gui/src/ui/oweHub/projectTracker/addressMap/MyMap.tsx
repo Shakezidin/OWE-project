@@ -148,7 +148,7 @@ const MyMapComponent: React.FC = () => {
       try {
         setLoading(true);
         const data = await postCaller('get_user_address', {
-          states: [createRePayData.state],
+          ...(createRePayData.state ? { states: [createRePayData.state] } : {}),
         });
 
         if (data.status > 201) {
@@ -208,7 +208,7 @@ const MyMapComponent: React.FC = () => {
       ...prevData,
       [fieldName]: updatedValue,
     }));
-
+    setSearchValue('')
   
     if (updatedValue) {
       setIsSearchDisabled(true);  
@@ -223,7 +223,7 @@ const MyMapComponent: React.FC = () => {
       const geocoder = new window.google.maps.Geocoder();
       const stateName = createRePayData.state; // Assuming `createPayData.state` holds the state's name or label
 
-      console.log(stateName, 'stateName');
+      
 
       // Perform geocoding to get the new state's coordinates and update the map
       geocoder.geocode({ address: stateName }, (results, status) => {
@@ -369,18 +369,25 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchValue) {
-      
+    // Trim searchValue to remove spaces
+    const trimmedSearchValue = searchValue.trim();
+  
+    if (trimmedSearchValue) {
+      // If searchValue has meaningful content, filter neighboring locations
       setFilteredLocations(neighboring);
     } else if (createRePayData.state) {
-      
+      // If no searchValue but state is available, filter by locations in that state
       setFilteredLocations(locations);
     } else if (filteredLocations.length === 0) {
-    
+      // If no filtered locations, load the full locations list
       setFilteredLocations(locations);
-    } else if(createRePayData.state === ''){
-      setFilteredLocations(locations)
+    } else if (createRePayData.state === '') {
+      // If state is an empty string, load full locations list
+      setFilteredLocations(locations);
     }
+  
+    // Check if searchValue is spaces only or empty and load map if true
+    
   }, [
     locations,
     filteredLocations,
@@ -388,6 +395,7 @@ const MyMapComponent: React.FC = () => {
     searchValue,
     neighboring,
   ]);
+  
 
   useEffect(() => {
     
