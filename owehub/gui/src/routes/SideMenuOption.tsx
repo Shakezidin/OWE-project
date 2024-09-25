@@ -11,6 +11,9 @@ import { ImStatsBars2 } from 'react-icons/im';
 import { FaRegCalendarCheck } from 'react-icons/fa6';
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { FaMapLocationDot } from "react-icons/fa6";
+import { FaCloudUploadAlt } from 'react-icons/fa';
+import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
+import { TfiMapAlt } from 'react-icons/tfi';
 const mob = {
   mob: [
     {
@@ -64,7 +67,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Lead Management',
         icon: (
-          <AiOutlineProject
+          <IoListSharp
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"
@@ -77,7 +80,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Library',
         icon: (
-          <AiOutlineProject
+          <IoCloudUploadOutline
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"
@@ -90,7 +93,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Install Map',
         icon: (
-          <FaMapLocationDot
+          <TfiMapAlt
             size={20}
             style={{ marginLeft: '3px' }}
             color="black"
