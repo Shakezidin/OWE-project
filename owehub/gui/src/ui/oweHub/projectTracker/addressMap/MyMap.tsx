@@ -496,30 +496,30 @@ const MyMapComponent: React.FC = () => {
         <div className={styles.headerLeft}>
           <h3>Install Map</h3>
           <div className={styles.dropdownstate}>
-              <SelectOption
-                options={[
-                  { label: 'All State', value: '' }, // Default option
-                  ...(stateOption(newFormData) || []), // Ensure it returns an array
-                ]}
-                onChange={(newValue) => handleChange(newValue, 'state')}
-                value={
-                  (stateOption(newFormData) || []).find(
-                    (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: '' } // Default when no match
-                }
-                menuStyles={{
-                  width: 400,
-                }}
-                menuListStyles={{
-                  fontWeight: 400,
-                  width: 150,
-                }}
-                singleValueStyles={{
-                  fontWeight: 400,
-                }}
-                width="150px"
-              />
-            </div>
+            <SelectOption
+              options={[
+                { label: 'All State', value: '' }, // Default option
+                ...(stateOption(newFormData) || []), // Ensure it returns an array
+              ]}
+              onChange={(newValue) => handleChange(newValue, 'state')}
+              value={
+                (stateOption(newFormData) || []).find(
+                  (option) => option.value === createRePayData.state
+                ) || { label: 'All State', value: '' } // Show "All State" when state value is empty
+              }
+              menuStyles={{
+                width: 400,
+              }}
+              menuListStyles={{
+                fontWeight: 400,
+                width: 150,
+              }}
+              singleValueStyles={{
+                fontWeight: 400,
+              }}
+              width="150px"
+            />
+          </div>
 
           <div className={styles.mapSearch}>
             <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
@@ -534,7 +534,7 @@ const MyMapComponent: React.FC = () => {
                   type="text"
                   placeholder="Search for an address"
                   className={styles.inputsearch}
-                  maxLength={100} 
+                  maxLength={100}
                   onInput={(e) => {
                     const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
                     input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
@@ -585,8 +585,6 @@ const MyMapComponent: React.FC = () => {
                 )}
               </div>
             </Autocomplete>
-
-       
           </div>
 
           {/* Display total project count */}
