@@ -34,6 +34,7 @@ import {
   format,
 } from 'date-fns';
 import Input from '../../../components/text_input/Input';
+import { RiMapPinLine } from 'react-icons/ri';
 
 const mapContainerStyle: React.CSSProperties = {
   width: '100%',
@@ -266,7 +267,7 @@ const MyMapComponent: React.FC = () => {
   }, []);
 
   const tableData = {
-    tableNames: ['states'],
+    tableNames: ['available_states'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -289,9 +290,9 @@ const MyMapComponent: React.FC = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLng / 2) *
-        Math.sin(dLng / 2);
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in kilometers
   };
@@ -367,12 +368,23 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (filteredLocations.length === 0) {
+    if (searchValue && neighboring.length > 0) {
+      // If there is a searchValue, set neighboring locations
+      setFilteredLocations(neighboring);
+    } else if (createRePayData.state) {
+      // If createRePayData.state exists, use the original locations
       setFilteredLocations(locations);
-    } else if (createRePayData) {
+    } else if (filteredLocations.length === 0) {
+      // If no filtered locations, set it to locations as fallback
       setFilteredLocations(locations);
     }
-  }, [locations, filteredLocations, createRePayData.state]);
+  }, [
+    locations,
+    filteredLocations,
+    createRePayData.state,
+    searchValue,
+    neighboring,
+  ]);
 
   useEffect(() => {
     // Ensure the state is selected before proceeding
@@ -495,107 +507,113 @@ const MyMapComponent: React.FC = () => {
       <div className={styles.cardHeader}>
         <div className={styles.headerLeft}>
           <h3>Install Map</h3>
-          <div className={styles.dropdownstate}>
-            <SelectOption
-              options={[
-                { label: 'All State', value: '' }, // Default option
-                ...(stateOption(newFormData) || []), // Ensure it returns an array
-              ]}
-              onChange={(newValue) => handleChange(newValue, 'state')}
-              value={
-                (stateOption(newFormData) || []).find(
-                  (option) => option.value === createRePayData.state
-                ) || { label: 'All State', value: '' } // Show "All State" when state value is empty
-              }
-              menuStyles={{
-                width: 400,
-              }}
-              menuListStyles={{
-                fontWeight: 400,
-                width: 150,
-              }}
-              singleValueStyles={{
-                fontWeight: 400,
-              }}
-              width="150px"
-            />
-          </div>
 
-          <div className={styles.mapSearch}>
-            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-              <div
-                style={{
-                  position: 'relative',
-                  width: '300px',
-                  marginTop: '5px',
+          <div className={styles.mapHeaderWrap}>
+            <div className={styles.dropdownstate}>
+              <SelectOption
+                options={[
+                  { label: 'All State', value: '' }, // Default option
+                  ...(stateOption(newFormData) || []), // Ensure it returns an array
+                ]}
+                onChange={(newValue) => handleChange(newValue, 'state')}
+                value={
+                  (stateOption(newFormData) || []).find(
+                    (option) => option.value === createRePayData.state
+                  ) || { label: 'Select State', value: '' } // Default when no match
+                }
+                menuStyles={{
+                  width: 400,
                 }}
-              >
-                <input
-                  type="text"
-                  placeholder="Search for an address"
-                  className={styles.inputsearch}
-                  maxLength={100}
-                  onInput={(e) => {
-                    const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
-                    input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    paddingRight: '2rem',
-                  }}
-                  onChange={handleInputChange}
-                  value={searchValue}
-                  disabled={isSearchDisabled} // Disable search when a state is selected
-                />
-                {searchValue && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchValue(''); // Clear the search value
-                      setFilteredLocations(locations);
-                      setSearchedLocation(null); // Reset to show all locations
-
-                      if (mapRef.current) {
-                        const bounds = new google.maps.LatLngBounds();
-
-                        // Loop through all the locations and extend the bounds to include each marker's position
-                        locations.forEach((location) => {
-                          bounds.extend(
-                            new google.maps.LatLng(location.lat, location.lng)
-                          );
-                        });
-
-                        // Adjust the map to fit the bounds of all markers
-                        mapRef.current.fitBounds(bounds);
-                      }
-                    }}
-                    style={{
-                      position: 'absolute',
-                      right: '8px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </Autocomplete>
-          </div>
-
-          {/* Display total project count */}
-          {projectCount > 0 ? (
-            <div className={styles.projectCount}>
-              <h3>
-                <span className={styles.totalProjects}>Total Projects : </span>
-                <span className={styles.projectCountValue}>{projectCount}</span>
-              </h3>
+                menuListStyles={{
+                  fontWeight: 400,
+                  width: 150,
+                }}
+                singleValueStyles={{
+                  fontWeight: 400,
+                  color: (createRePayData.state === '') ? '#868686' : 'inherit'
+                }}
+                width="150px"
+              />
             </div>
-          ) : null}
+
+            <div className={styles.mapSearch}>
+              <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '300px',
+                    marginTop: '3px',
+                  }}
+                >
+
+                  <div style={{position: "relative"}}>
+                    <input
+                      type="text"
+                      placeholder="Search for an address"
+                      className={styles.inputsearch}
+                      maxLength={100}
+                      onInput={(e) => {
+                        const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
+                        input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '8px 2rem',
+                      }}
+                      onChange={handleInputChange}
+                      value={searchValue}
+                      disabled={isSearchDisabled} // Disable search when a state is selected
+                    />
+                    {searchValue && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchValue(''); // Clear the search value
+                          setFilteredLocations(locations);
+                          setSearchedLocation(null); // Reset to show all locations
+
+                          if (mapRef.current) {
+                            const bounds = new google.maps.LatLngBounds();
+
+                            // Loop through all the locations and extend the bounds to include each marker's position
+                            locations.forEach((location) => {
+                              bounds.extend(
+                                new google.maps.LatLng(location.lat, location.lng)
+                              );
+                            });
+
+                            // Adjust the map to fit the bounds of all markers
+                            mapRef.current.fitBounds(bounds);
+                          }
+                        }}
+                        style={{
+                          position: 'absolute',
+                          right: '8px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <IoClose size={16} style={{ marginTop: "4px" }} />
+                      </button>
+                    )}
+                    <RiMapPinLine className={styles.inputMap} />
+                  </div>
+
+                </div>
+              </Autocomplete>
+            </div>
+
+            {/* Display total project count */}
+            {projectCount > 0 ? (
+              <div className={styles.projectCount}>
+                <h3 className={styles.totalProjects}>Total Projects : </h3>
+                <span className={styles.projectCountValue}>{projectCount}</span>
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className={styles.headerRight}>
@@ -647,7 +665,8 @@ const MyMapComponent: React.FC = () => {
                       fillColor: 'blue', // Fully blue marker
                       fillOpacity: 1,
                       strokeWeight: 0, // No outline
-                      scale: 2.0, // Scale to size
+                      scale: 1.5, // Adjust the scale as per your needs
+                      anchor: new window.google.maps.Point(12, 24), // Ensure the icon stays anchored correctly
                     }}
                   />
                 )}
@@ -677,17 +696,17 @@ const MyMapComponent: React.FC = () => {
                           pixelOffset: new window.google.maps.Size(0, -50),
                           disableAutoPan: true,
                         }}
-                        // onDomReady={() => {
-                        //   const interval = setInterval(() => {
-                        //     const closeButton = document.querySelector(
-                        //       '.gm-ui-hover-effect'
-                        //     ) as HTMLElement;
-                        //     if (closeButton) {
-                        //       closeButton.style.display = 'none';
-                        //       clearInterval(interval);
-                        //     }
-                        //   }, 10);
-                        // }}
+                      // onDomReady={() => {
+                      //   const interval = setInterval(() => {
+                      //     const closeButton = document.querySelector(
+                      //       '.gm-ui-hover-effect'
+                      //     ) as HTMLElement;
+                      //     if (closeButton) {
+                      //       closeButton.style.display = 'none';
+                      //       clearInterval(interval);
+                      //     }
+                      //   }, 10);
+                      // }}
                       >
                         <div className={styles.infoWindow}>
                           <div className={styles.infoWindowRow}>
