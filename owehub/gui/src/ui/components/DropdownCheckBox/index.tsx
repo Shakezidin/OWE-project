@@ -14,6 +14,7 @@ interface DropdownCheckboxProps {
   selectedOptions: Option[];
   onChange: (selectedOptions: Option[]) => void;
   placeholder?: string;
+  label?: string;
 }
 
 const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
@@ -21,11 +22,13 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   selectedOptions,
   onChange,
   placeholder = 'Search...',
+  label
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const optionContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setFilteredOptions([...options]);
@@ -71,6 +74,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
         updatedSelection = selectedOptions.filter((item) => item.value !== option.value);
       } else {
         updatedSelection = [...selectedOptions, option];
+        optionContainer.current?.scroll({ top: 0,behavior:"smooth" })
       }
       if (updatedSelection.length === options.length - 1 && options.some((opt) => opt.value === 'ALL')) {
         updatedSelection = [...options];
@@ -86,18 +90,24 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   const isAllSelected =
     selectedOptions.length === options.length ||
     selectedOptions.some((item) => item.value === 'ALL');
-  console.log(filteredOptions.length, 'filteredOptions', options.length)
+  const sortedOptions = filteredOptions.sort((a, b) => {
+    const isSelected = selectedOptions.some((item) => item.value === a.value);
+    if (isSelected) {
+      return -1
+    } else {
+      return 1
+    }
+  });
   return (
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
       <div className="dropdown-toggle flex items-center" onClick={() => setIsOpen(!isOpen)}>
         <span>
-
-          {` ${isAllSelected ? "All" : selectedOptions.length} selected`}
+          {` ${isAllSelected ? "All" : selectedOptions.length} ${label} selected`}
         </span>
         <BiChevronDown className="ml1 " size={22} style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "all 550ms" }} />
       </div>
       {isOpen && (
-        <div className="dropdown-menu scrollbar" style={{ overflowX: 'clip' }}>
+        <div ref={optionContainer} className="dropdown-menu scrollbar" style={{ overflowX: 'clip' }}>
           <input
             type="text"
             className="input"
@@ -115,8 +125,8 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
               <span>All</span>
             </div>
           )}
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map((option, index) => (
+          {sortedOptions.length > 0 ? (
+            sortedOptions.map((option, index) => (
               <div key={index} className="dropdown-item">
                 <input
                   type="checkbox"
