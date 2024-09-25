@@ -20,6 +20,11 @@
 .dropdown-checkbox  .dropdown-menu{
     right: 0;
     left: auto;
+    width: 100%;
+}
+
+.dropdown-checkbox  .dropdown-menu .input{
+    width: 100%;
 }
 .dropdown-checkbox .dropdown-toggle:hover{
     background-color: #ddebff;
