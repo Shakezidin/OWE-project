@@ -378,6 +378,8 @@ const MyMapComponent: React.FC = () => {
     } else if (filteredLocations.length === 0) {
     
       setFilteredLocations(locations);
+    } else if(createRePayData.state === ''){
+      setFilteredLocations(locations)
     }
   }, [
     locations,
