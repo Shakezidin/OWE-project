@@ -126,6 +126,9 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			} else {
 				query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
 			}
+		case "available_states":
+			query = "SELECT state AS data FROM customers_customers_schema WHERE pv_install_completed_date IS NOT NULL"
+			dbIndex = db.RowDataDBIndex
 		case "rep_type":
 			query = "SELECT rep_type as data FROM " + db.TableName_rep_type
 		default:
