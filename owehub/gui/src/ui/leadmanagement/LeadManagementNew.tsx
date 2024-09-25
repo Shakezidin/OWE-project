@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { validateEmail, validateZipCode } from '../../utiles/Validation';
 import Input from '../components/text_input/Input';
 import PhoneInput from 'react-phone-input-2';
+import axios from 'axios';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { ICONS } from '../../resources/icons/Icons';
+import { toast } from 'react-toastify';
 
 interface FormInput
   extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
@@ -23,10 +27,15 @@ const LeadManagementNew = () => {
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [zip_codeError, setZip_codeError] = useState('');
+  const [load, setLoad] = useState(false);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     const lettersAndSpacesPattern = /^[A-Za-z\s]+$/;
+
+    if (name === 'zip_code' && value.length > 12) {
+      return;
+    }
 
     if (name === 'first_name' || name === 'last_name') {
       if (value === '' || lettersAndSpacesPattern.test(value)) {
@@ -54,15 +63,16 @@ const LeadManagementNew = () => {
         [name]: trimmedValue,
       }));
     } else if (name === 'zip_code') {
-      const isValidZipCode = validateZipCode(value.trim());
-      if (!isValidZipCode) {
-        setZip_codeError(
-          'Please enter a valid ZipCode'
-        );
+      const trimmedValue = value.trim();
+      const isValidZipCode = validateZipCode(trimmedValue);
+
+      if (trimmedValue.length > 10) {
+        setZip_codeError('Zip code should not exceed 10 characters');
+      } else if (!isValidZipCode) {
+        setZip_codeError('Please enter a valid ZipCode');
       } else {
         setZip_codeError('');
       }
-
       const CorrectValue = value.replace(/\s/g, '');
       setFormData((prevData) => ({
         ...prevData,
@@ -84,56 +94,89 @@ const LeadManagementNew = () => {
     first_name: '',
     last_name: '',
     email_id: '',
-    mobile_number: '',
+    mobile_number: '+1',
     address: '',
     zip_code: '',
     notes: '',
   };
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const newErrors: { [key: string]: string } = {};
 
-    // Check if each field is empty and set corresponding error
+
+  const validateForm = (formData: any) => {
+    const errors: { [key: string]: string } = {};
+
     if (formData.first_name.trim() === '') {
-      newErrors.first_name = 'First name is required';
+      errors.first_name = 'First name is required';
     }
     if (formData.last_name.trim() === '') {
-      newErrors.last_name = 'Last name is required';
+      errors.last_name = 'Last name is required';
     }
     if (formData.email_id.trim() === '') {
-      newErrors.email_id = 'Email is required';
+      errors.email_id = 'Email is required';
     }
     if (formData.mobile_number.trim() === '') {
-      newErrors.mobile_number = 'Mobile number is required';
+      errors.mobile_number = 'Mobile number is required';
     }
     if (formData.address.trim() === '') {
-      newErrors.address = 'Address is required';
+      errors.address = 'Address is required';
     }
     if (formData.zip_code.trim() === '') {
-      newErrors.zip_code = 'Zip code is required';
+      errors.zip_code = 'Zip code is required';
     }
     if (formData.notes.trim() === '') {
-      newErrors.notes = 'Notes are required';
+      errors.notes = 'Notes are required';
     }
 
-    // Update the error state
-    setErrors(newErrors);
+    return errors;
+  };
 
-    // If there are no errors, submit the form
-    if (Object.keys(newErrors).length === 0) {
-      console.log(formData);
-      resetFormData();
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const errors = validateForm(formData);
+    setErrors(errors);
+
+    if (Object.keys(errors).length === 0) {
+      setLoad(true);
+      try {
+        const response = await postCaller(
+          'create_leads',
+          {
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            phone_number: formData.mobile_number,
+            email_id: formData.email_id,
+            street_address: formData.address,
+            zipcode: "84101",
+            notes: formData.notes,
+          },
+        );
+        if (response.status === 200) {
+          toast.success("Lead Created Succesfully");
+          resetFormData();
+        } else if (response.status >= 201) {
+          toast.warn(response.message);
+        }
+        setLoad(false);
+      }
+      catch (error) {
+        setLoad(false);
+        console.error('Error submitting form:', error);
+      }
     }
   };
 
   const resetFormData = () => {
     setFormData(initialFormData);
   };
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate('/leadmng-dashboard');
+  }
 
   return (
     <>
       <div className={`${classes.main_head} ${classes.form_header}`}>
         Create New Lead
+        <img src={ICONS.cross} alt="" onClick={handleBack} />
       </div>
       <div className={`flex justify-between mt2 ${classes.h_screen}`}>
         <div className={classes.customer_wrapper_list}>
@@ -298,7 +341,14 @@ const LeadManagementNew = () => {
               </div>
             </div>
             <div className={classes.srActionButton}>
-              <button className={classes.submitbut}>Submit</button>
+              <button
+                className={classes.submitbut}
+                disabled={load}
+                onClick={handleSubmit}
+                style={{ pointerEvents: load ? "none" : "auto" }}
+              >
+                {load ? 'Submitting...' : 'Submit'}
+              </button>
             </div>
           </form>
         </div>

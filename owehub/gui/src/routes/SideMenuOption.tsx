@@ -60,6 +60,32 @@ const mob = {
       },
     },
     {
+      path: ROUTES.LEAD_MANAGEMENT,
+      sidebarProps: {
+        displayText: 'Lead Management',
+        icon: (
+          <AiOutlineProject
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.LIBRARY,
+      sidebarProps: {
+        displayText: 'Library',
+        icon: (
+          <AiOutlineProject
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
       path: ROUTES.MAP_ADDRESS,
       sidebarProps: {
         displayText: 'Install Map',
