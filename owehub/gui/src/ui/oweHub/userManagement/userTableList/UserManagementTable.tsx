@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState, useCallback } from 'react';
+import React, { SetStateAction, useEffect, useState, useCallback, useRef } from 'react';
 import '../user.css';
 import '../../configure/configure.css';
 import UserTable from '../userManagerAllTable/UserTable';
@@ -77,33 +77,37 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const { loading, dealerList, dealerCount } = useAppSelector(
     (state) => state.userManagement
   );
+  const initialRender = useRef(false);
 
   useEffect(() => {
-    const data = {
-      page_number: currentPage1,
-      page_size: pageSize1,
-      sales_rep_status: activeSalesRep,
-      filters: [
-        {
-          Column: 'role_name',
-          Operation: '=',
-          Data: selectedOption.value,
-        },
-      ],
-    };
-    const dataa = {
-      page_number: currentPage1,
-      page_size: pageSize1,
-    };
-    dispatch(fetchUserListBasedOnRole(data));
-
-    if (selectedOption.value === 'Partner') {
-      dispatch(fetchDealerList(dataa));
+    if (initialRender.current) {
+      initialRender.current = true;
+      const data = {
+        page_number: currentPage1,
+        page_size: pageSize1,
+        sales_rep_status: activeSalesRep,
+        filters: [
+          {
+            Column: 'role_name',
+            Operation: '=',
+            Data: selectedOption.value,
+          },
+        ],
+      };
+      const dataa = {
+        page_number: currentPage1,
+        page_size: pageSize1,
+      };
+      dispatch(fetchUserListBasedOnRole(data));
+  
+      if (selectedOption.value === 'Partner') {
+        dispatch(fetchDealerList(dataa));
+      }
     }
     return () => {
       dispatch(resetOpt());
     };
-  }, [dispatch, currentPage1, pageSize1, activeSalesRep]);
+  }, [dispatch, currentPage1, pageSize1, activeSalesRep,initialRender]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
