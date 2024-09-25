@@ -1,0 +1,78 @@
+
+  .dropdown_container{
+    width: 178px;
+    height: 249px;
+  
+  }  
+  .logo_dropdown_botton{
+      outline: none;
+      border: none;
+      background-color: transparent;
+  }
+  
+  .logo_dropdown{
+    width: 30px;
+    height: 30px;
+    border: 1px solid #377CF6;
+    border-radius: 50%;
+    color: #377CF6;
+  }
+.dropdownlibrary_inner_div{
+    margin-top: 15px;
+    border: 1px solid #8C8C8C;
+    border-radius: 5px;
+    width: 175px;
+    border-radius: 8px;
+    background-color: #fff;
+    
+   
+    
+}
+.dropdownlibrary_allone{
+    height: 34px;
+    color: #3E3E3E;
+    font-family: 'Poppins';
+    font-weight: 500;
+    line-height: 21px;
+    font-size: 14px;
+    padding-inline: 20px;  
+    border-radius: 5px 5px 0px 0px;
+    display: flex;
+    align-items: center;
+}
+.dropdownlibrary_allone:hover{
+    cursor: pointer;
+    background-color: #D6E5FF;
+    
+}
+.dropdownlibrary_all{
+    height: 34px; 
+    color: #3E3E3E;
+    font-family: 'Poppins';
+    font-weight: 500;
+    line-height: 21px;
+    font-size: 14px;
+     padding-inline: 20px; 
+     display: flex;
+    align-items: center;
+}
+.dropdownlibrary_all:hover{
+    cursor: pointer;
+     background-color: #D6E5FF; 
+}
+.dropdownlibrary_all_last{
+    height: 38px; 
+    color: #3E3E3E;
+    font-family: 'Poppins';
+    font-weight: 500;
+    line-height: 21px;
+    font-size: 14px;
+     padding-inline: 20px; 
+     display: flex;
+    align-items: center;
+    border-radius:0px 0px 5px 5px ;
+}
+.dropdownlibrary_all_last:hover{
+    cursor: pointer;
+    background-color: #D6E5FF; 
+}
