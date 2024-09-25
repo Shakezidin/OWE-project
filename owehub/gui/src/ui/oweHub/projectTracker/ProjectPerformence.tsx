@@ -217,7 +217,9 @@ const ProjectPerformence = () => {
       page_number: 1,
       page_size: projectsCount,
       selected_milestone: selectedMilestone,
-      dealer_names: selectedDealer.map(item => item.value)
+      dealer_names: selectedDealer.map(item => item.value),
+      project_status:
+        activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
     });
     if (getAllData.status > 201) {
       toast.error(getAllData.message);
@@ -310,7 +312,7 @@ const ProjectPerformence = () => {
     if (res.status > 200) {
       return;
     }
-    if(res.data?.dealer_name){
+    if (res.data?.dealer_name) {
       setSelectedDealer(leaderDealer(res.data));
       setDealerOption(leaderDealer(res.data))
     }
@@ -373,7 +375,7 @@ const ProjectPerformence = () => {
             toast.error(data.message);
             return;
           }
-          setTileData(data.data);
+          setTileData(data.data || {});
           setLoading(false);
         } catch (error) {
           console.error(error);
@@ -770,7 +772,7 @@ const ProjectPerformence = () => {
               {activeCardId !== null && (
                 <div className="active-queue">
                   <IoClose
-                  size={18}
+                    size={18}
                     onClick={() => {
                       setActiveCardId(null),
                         setSelectedMilestone(''),
