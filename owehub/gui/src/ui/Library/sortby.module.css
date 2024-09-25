@@ -1,0 +1,14 @@
+
+.sortby_containerr{
+    width: 102px;
+    height: 128px;
+  
+  }  
+  .sortlibrary_inner_div{
+    margin-top: 15px;
+    border: 1px solid #8C8C8C;
+    border-radius: 5px;
+    width: 175px;
+    border-radius: 8px;
+    background-color: #fff;
+  }

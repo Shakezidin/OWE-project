@@ -41,7 +41,7 @@ const LeradManagementHistory = () => {
   const navigate = useNavigate();
   const [see, setSee] = useState(false);
   const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(10);
   const startIndex = (page - 1) * 10 + 1;
   const endIndex = page * 10;
   const totalPage = Math.ceil(totalCount / 10);
@@ -115,8 +115,11 @@ const LeradManagementHistory = () => {
     },
   ];
 
-  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
+  // const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
 
+  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(
+    periodFilterOptions.find((option) => option.label === 'This Week') || null
+  );
 
 
   const [selectedRanges, setSelectedRanges] = useState([
@@ -131,8 +134,8 @@ const LeradManagementHistory = () => {
     startDate: Date | null;
     endDate: Date | null;
   }>({
-    startDate: null,
-    endDate: null,
+    startDate: startOfThisWeek,
+    endDate: today,
   });
 
   const handleRangeChange = (ranges: any) => {
@@ -329,8 +332,8 @@ const LeradManagementHistory = () => {
       (async () => {
         try {
           setIsLoading(true);
-          const response = await axios.post(
-            'http://155.138.239.170:31023/owe-commisions-service/v1/leads_history',
+          const response = await postCaller(
+            'leads_history',
             {
               leads_status: 5,
               start_date: selectedDates.startDate ? format(selectedDates.startDate, 'yyyy-MM-dd') : '',
@@ -356,7 +359,7 @@ const LeradManagementHistory = () => {
         }
       })();
     }
-  }, [isAuthenticated, selectedDates]);
+  }, [isAuthenticated, selectedDates, itemsPerPage, page]);
 
 
 
@@ -575,7 +578,7 @@ const LeradManagementHistory = () => {
                   <div className={styles.user_name}>
                     <h2>{item.name}</h2>
                     <p style={{ color: item.status === 'Deal Won' ? '#52B650' : item.status === 'Deal Loss' ? '#F55B5B' : '#81a6e7' }}>
-                      {item.status}
+                      {item.status}: 22Nov 2024
                     </p>
                   </div>
                 </div>
