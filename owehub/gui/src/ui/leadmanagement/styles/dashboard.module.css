@@ -119,6 +119,11 @@
   font-weight: 500;
   padding-right: 12px;
   transition: all 500ms;
+
+}
+
+.button:hover{
+  background-color: #ddebff;
 }
 
 .status {
@@ -140,6 +145,10 @@
   background-color: #3b82f6;
   color: white;
   border: unset !important;
+}
+.buttonActive:hover{
+  background-color: #3b82f6;
+
 }
 
 .table {
