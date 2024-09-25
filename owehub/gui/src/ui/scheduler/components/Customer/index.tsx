@@ -182,7 +182,7 @@ const Index = ({
           </div>
 
           <div style={mapStyles}>
-            <div className={styles.map_wrapper} >
+            <div className={styles.map_wrapper} style={{height:withSecondaryBtn?101:170}}  >
               <GoogleMapReact
                 bootstrapURLKeys={{
                   key: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
