@@ -10,7 +10,8 @@ import { IoClose } from 'react-icons/io5';
 import { debounce } from '../../../../utiles/debounce';
 import { useNavigate } from 'react-router-dom';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
+import {  availableStates
+} from '../../../../core/models/data_models/SelectDataModel';
 import { toast } from 'react-toastify';
 import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
@@ -208,11 +209,11 @@ const MyMapComponent: React.FC = () => {
       [fieldName]: updatedValue,
     }));
 
-    // Disable search input if a state is selected
+  
     if (updatedValue) {
-      setIsSearchDisabled(true); // Disable the search
+      setIsSearchDisabled(true);  
     } else {
-      setIsSearchDisabled(false); // Enable the search
+      setIsSearchDisabled(false);  
     }
   };
 
@@ -236,11 +237,11 @@ const MyMapComponent: React.FC = () => {
             mapRef.current.fitBounds(stateBounds);
           }
         } else {
-          toast.error('Failed to find state location.');
+          console.log('Failed to find state location.');
         }
       });
     }
-  }, [createRePayData.state]); // Trigger effect whenever `createPayData.state` changes
+  }, [createRePayData.state]);  
 
   console.log(center, 'crjksshf');
 
@@ -277,14 +278,14 @@ const MyMapComponent: React.FC = () => {
     getNewFormData();
   }, []);
 
-  // Function to calculate the distance between two points (Haversine formula)
+ 
   const calculateDistance = (
     lat1: number,
     lng1: number,
     lat2: number,
     lng2: number
   ): number => {
-    const R = 6371; // Earth's radius in kilometers
+    const R = 6371;  
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLng = ((lng2 - lng1) * Math.PI) / 180;
     const a =
@@ -294,15 +295,15 @@ const MyMapComponent: React.FC = () => {
         Math.sin(dLng / 2) *
         Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in kilometers
+    return R * c;  
   };
 
-  // Handle search changes in the Autocomplete input
+   
   const onPlaceChanged = () => {
     const place = autocompleteRef.current?.getPlace();
 
     if (!place || !place.geometry || !place.geometry.location) {
-      toast.error('No details available for the selected place.');
+    console.log('No details available for the selected place.');
       return;
     }
 
@@ -316,7 +317,7 @@ const MyMapComponent: React.FC = () => {
     setSearchedLocation(searchedLocation);
     setCenter(searchedLocation);
 
-    // Filter locations within 10 km of the searched address
+   
     const neighboringLocations = locations.filter((location) => {
       const distance = calculateDistance(
         searchedLocation.lat,
@@ -330,7 +331,7 @@ const MyMapComponent: React.FC = () => {
     setFilteredLocations(neighboringLocations);
     setNeighboring(neighboringLocations);
 
-    // Adjust the map bounds to show both the searched location and neighboring markers
+     
     const bounds = new window.google.maps.LatLngBounds();
     bounds.extend(searchedLocation);
 
@@ -340,12 +341,12 @@ const MyMapComponent: React.FC = () => {
 
     if (mapRef.current) {
       if (neighboringLocations.length > 0) {
-        // If there are neighboring locations, fit bounds to show all markers
+  
         mapRef.current.fitBounds(bounds);
       } else {
-        // If no neighboring locations, set a default zoom level (zoom out)
+      
         mapRef.current.setCenter(searchedLocation);
-        mapRef.current.setZoom(10); // Adjust zoom level to show a larger area
+        mapRef.current.setZoom(10);  
       }
     }
   };
@@ -368,15 +369,17 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchValue && neighboring.length > 0) {
-      // If there is a searchValue, set neighboring locations
+    if (searchValue) {
+      
       setFilteredLocations(neighboring);
     } else if (createRePayData.state) {
-      // If createRePayData.state exists, use the original locations
+      
       setFilteredLocations(locations);
     } else if (filteredLocations.length === 0) {
-      // If no filtered locations, set it to locations as fallback
+    
       setFilteredLocations(locations);
+    } else if(createRePayData.state === ''){
+      setFilteredLocations(locations)
     }
   }, [
     locations,
@@ -387,24 +390,23 @@ const MyMapComponent: React.FC = () => {
   ]);
 
   useEffect(() => {
-    // Ensure the state is selected before proceeding
+    
     if (createRePayData.state) {
       const geocoder = new window.google.maps.Geocoder();
-      const selectedState = createRePayData.state; // Assuming `createRePayData.state` holds the selected state
-
-      // Perform geocoding to get the coordinates and bounds for the selected state and update the map
+      const selectedState = createRePayData.state;  
+ 
       geocoder.geocode({ address: selectedState }, (results, status) => {
         if (status === 'OK' && results && results.length > 0) {
           const stateLocation = results[0].geometry.location;
           const stateBounds = results[0].geometry.viewport;
 
           if (mapRef.current) {
-            // Center the map on the selected state and fit it to the state's bounds
+            
             setCenter({ lat: stateLocation.lat(), lng: stateLocation.lng() });
-            mapRef.current.fitBounds(stateBounds); // This will zoom and center to show only the state
+            mapRef.current.fitBounds(stateBounds); //  
           }
         } else {
-          toast.error('Failed to find the state location.');
+          console.log('Failed to find the state location.');
         }
       });
     }
@@ -418,29 +420,29 @@ const MyMapComponent: React.FC = () => {
       if (mapRef.current && locations.length > 0) {
         const bounds = new google.maps.LatLngBounds();
 
-        // Extend bounds to include all markers' positions
+       
         locations.forEach((location) => {
           bounds.extend(new google.maps.LatLng(location.lat, location.lng));
         });
 
-        // Fit the map to the computed bounds
+       
         mapRef.current.fitBounds(bounds);
 
-        // Listener to control zoom if bounds make the map zoom too far
+        
         const listener = google.maps.event.addListener(
           mapRef.current,
           'bounds_changed',
           () => {
             const currentZoom = mapRef.current?.getZoom() ?? 0;
             if (currentZoom > 15) {
-              mapRef.current?.setZoom(15); // Set the max zoom level to 15, adjust if needed
+              mapRef.current?.setZoom(15);  
             }
-            google.maps.event.removeListener(listener); // Remove the listener once the zoom is set
+            google.maps.event.removeListener(listener);  
           }
         );
       }
     } else {
-      // Logic for when a specific state is selected, e.g., zoom in on state or show markers in that state
+    
       console.log('A specific state is selected:', createRePayData.state);
     }
   }, [locations, createRePayData.state]);
@@ -514,11 +516,11 @@ const MyMapComponent: React.FC = () => {
                 <SelectOption
                   options={[
                     { label: 'All State', value: '' }, // Default option
-                    ...(stateOption(newFormData) || []), // Ensure it returns an array
+                    ...(availableStates(newFormData) || []), // Ensure it returns an array
                   ]}
                   onChange={(newValue) => handleChange(newValue, 'state')}
                   value={
-                    (stateOption(newFormData) || []).find(
+                    (availableStates(newFormData) || []).find(
                       (option) => option.value === createRePayData.state
                     ) || { label: 'All State', value: '' } // Show "All State" when state value is empty
                   }
@@ -651,8 +653,8 @@ const MyMapComponent: React.FC = () => {
                 zoom={5}
                 center={center}
                 options={{
-                  maxZoom: 20, // Set max zoom level to 20
-                  minZoom: 5, // Set min zoom level to 5
+                  maxZoom: 25, // Set max zoom level to 20
+                  minZoom: 2, // Set min zoom level to 5
                 }}
               >
                 {/* Searched location marker */}
