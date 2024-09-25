@@ -597,7 +597,7 @@ const ProjectPerformence = () => {
 
         <div className="pipeline-header-btns">
 
-          {showDropdown && <DropdownCheckbox placeholder={selectedDealer.length===1?"partner":'partners'} selectedOptions={selectedDealer} options={dealerOption} onChange={setSelectedDealer} />}
+          {showDropdown && <DropdownCheckbox  label={selectedDealer.length===1?"partner":"partners"} placeholder={'Search partners'} selectedOptions={selectedDealer} options={dealerOption} onChange={setSelectedDealer} />}
 
 
           <button
