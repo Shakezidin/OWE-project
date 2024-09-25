@@ -16,6 +16,7 @@ type GetCsvDownload struct {
 	DealerName        []string `json:"dealer_names"`
 	SelectedMilestone string   `json:"selected_milestone"`
 	GroupBy           string   `json:"group_by"`
+	ProjectStatus     []string `json:"project_status"`
 }
 
 type GetCsvPerformance struct {
