@@ -266,7 +266,7 @@ const MyMapComponent: React.FC = () => {
   }, []);
 
   const tableData = {
-    tableNames: ['states'],
+    tableNames: ['available_states'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -367,12 +367,23 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (filteredLocations.length === 0) {
+    if (searchValue && neighboring.length > 0) {
+      // If there is a searchValue, set neighboring locations
+      setFilteredLocations(neighboring);
+    } else if (createRePayData.state) {
+      // If createRePayData.state exists, use the original locations
       setFilteredLocations(locations);
-    } else if (createRePayData) {
+    } else if (filteredLocations.length === 0) {
+      // If no filtered locations, set it to locations as fallback
       setFilteredLocations(locations);
     }
-  }, [locations, filteredLocations, createRePayData.state]);
+  }, [
+    locations,
+    filteredLocations,
+    createRePayData.state,
+    searchValue,
+    neighboring,
+  ]);
 
   useEffect(() => {
     // Ensure the state is selected before proceeding
@@ -647,7 +658,8 @@ const MyMapComponent: React.FC = () => {
                       fillColor: 'blue', // Fully blue marker
                       fillOpacity: 1,
                       strokeWeight: 0, // No outline
-                      scale: 2.0, // Scale to size
+                      scale: 1.5, // Adjust the scale as per your needs
+                      anchor: new window.google.maps.Point(12, 24), // Ensure the icon stays anchored correctly
                     }}
                   />
                 )}
