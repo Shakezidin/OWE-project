@@ -13,17 +13,21 @@
   gap: 16px;
   padding: 16px;
   background-color: #ffffff;
+  align-items: center;
 }
 
 .image_div{
   display: flex;
   flex-direction: row;
   gap: 14px;
+  align-items: center;
+
 }
 
 .image_div img {
   height: 36.68px;
   width: 32px;
+  border-radius: 2.8px;
 }
 
 .libSecHeader{
@@ -32,7 +36,7 @@
   justify-content: space-between;
     align-items: center;
     background-color: #ffffff;
-    padding: 16px;
+    padding: 24px;
 }
 
 .libSecHeader_left{
@@ -49,16 +53,26 @@
   justify-content: center;
 }
 
-.libSecHeader_left button {
+.buttons {
   border-radius: 18px;
   border: 1px solid #989898;
   padding: 4px 32px;
-    font: poppins;
+    font-family: poppins;
     font-weight: 500;
-    size: 16px;
+    font-size: 16px;
     color: #8c8c8c;
     background-color: #fff;
+    cursor: pointer;
 }
+buttons:hover {
+  color: #377CF6; 
+  background-color: #EFF5FF;
+}
+
+/* .clickedButton{
+  color: #377CF6; 
+  background-color: #EFF5FF;
+} */
 
 .recycleBin{
   display: flex;
@@ -70,15 +84,20 @@
   border: 1px solid #AFAFAF;
 }
 
-.verticalDots{
+.recycleBin:hover{
+  border: 1px solid #377CF6;
+
+}
+.recycleBin img:hover {
+  fill: #377CF6
+}
+
+/* .verticalDots{
   display: flex;
   align-items: center;
   justify-items: center;
-  border-radius: 50%;
   border: 1px solid #989898;
-  border-radius: 50%;
-  padding: 0px 6px;
-}
+} */
 
 .recycleBin img {
   height: 27px;
@@ -157,7 +176,7 @@
   flex-direction: row;
   /* align-items: center;
   justify-content: center; */
-  gap: 4px;
+  gap: 16px;
 }
 
 
@@ -179,4 +198,57 @@
 
 .sorting p{
   color: #8c8c8c;
+}
+
+.lib_Grid_Header .grid_item {
+  font-size: 16px;
+  font: poppins;
+  font-weight: 500;
+}
+
+
+.libGridItem .grid_item{
+  font-size: 14px;
+  font: poppins;
+  font-weight: 400;
+  
+}
+
+.libGridItem {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Black color with 10% opacity */
+}
+
+.size{
+  font-family: inter;
+  font-weight: 400;
+  font-size: 12px;
+  color: #959595;
+}
+
+.name{
+  font-family: inter;
+  font-weight: 500;
+  font-size: 14px;
+  color: #101828;
+}
+
+.searchInput ::placeholder{
+  color: #CBCBCB;
+}
+
+.recycleBinContent{
+  position: absolute;
+  top: 165px;
+  right: 35px;
+  font-size: 12px;
+  color: #377CF6;
+  font-weight: 600;
+
+}
+
+.dotsDiv{
+  padding: 0;
+  margin: 0;
+  border: none !important;
+
 }

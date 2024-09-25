@@ -146,6 +146,11 @@ import chevronDown from '../assets/chevron-down.svg'
 import chevronUp from '../assets/chevron-Up.svg'
 import declinedArchive from '../assets/archiveIcon.svg'
 import deleteFileLibrary from '../assets/delete-file-lib.svg'
+import imageIcon from '../assets/image-icon.svg'
+import mp4Icon from '../assets/mp4-icon.svg'
+import excelIcon from '../assets/excel-icon.svg'
+import recycleBin from '../assets/recycleBin.svg'
+import recycleBinColor from '../assets/recycleBinColor.svg'
 
 
 
@@ -312,6 +317,12 @@ export const ICONS = {
   chevronUp:chevronUp,
   declinedArchive:declinedArchive,
   scheduleDoor,
-  deleteFileLibrary:deleteFileLibrary
+  deleteFileLibrary:deleteFileLibrary,
+  imageIcon:imageIcon,
+  mp4Icon:mp4Icon,
+  excelIcon:excelIcon,
+  recycleBin:recycleBin,
+  recycleBinColor:recycleBinColor,
+  
 
 };

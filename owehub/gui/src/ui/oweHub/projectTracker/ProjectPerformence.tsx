@@ -832,13 +832,13 @@ const ProjectPerformence = () => {
             </div >
 
             <div className="perf-export-btn pipline-export-btn">
-              <button
+              {!!(projectStatus.length && !loading) && <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
                 className={`performance-exportbtn pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
                 {isExportingData ? <MdDownloading size={20} /> : <FaUpload size={16} />}
-              </button>
+              </button>}
             </div>
           </div >
 
