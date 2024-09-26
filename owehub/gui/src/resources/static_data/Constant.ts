@@ -1,4 +1,5 @@
 export const TYPE_OF_USER = {
+  ALL: 'All',
   ADMIN: 'Admin',
   FINANCE_ADMIN: 'Finance Admin',
   DB_USER: 'DB User',
@@ -14,6 +15,7 @@ export const TYPE_OF_USER = {
 };
 
 export const ALL_USER_ROLE_LIST = [
+  { value: '', label: 'All' },
   { value: 'Admin', label: 'Admin' },
   { value: 'Finance Admin', label: 'Finance Admin' },
   { value: 'DB User', label: 'DB User' },
