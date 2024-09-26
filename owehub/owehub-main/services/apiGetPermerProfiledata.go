@@ -163,7 +163,7 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	if dataReq.CountKwSelection {
 		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size END) AS total_sales,")
 		filtersBuilder.WriteString(" COUNT(CASE WHEN cdv.ntp_date IS NOT NULL THEN cs.contracted_system_size END) AS total_ntp,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN pis.pv_install_completed_date IS NOT NULL THEN cs.contracted_system_size END) AS total_installs")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN pis.pv_completion_date IS NOT NULL THEN cs.contracted_system_size END) AS total_installs")
 	} else {
 		filtersBuilder.WriteString("SELECT SUM(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_sales,")
 		filtersBuilder.WriteString(" SUM(CASE WHEN cs.contracted_system_size IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_ntp,")
@@ -171,7 +171,7 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	}
 
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = css.unique_id 
+								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
 								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id `)
 	filtersBuilder.WriteString(" WHERE ")
 
