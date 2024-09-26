@@ -127,7 +127,14 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 				query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
 			}
 		case "available_states":
-			query = "SELECT DISTINCT(state) AS data FROM consolidated_data_view WHERE pv_install_completed_date IS NOT NULL"
+			query = `SELECT DISTINCT(
+						CASE 
+							WHEN LENGTH(state) > 6 THEN SUBSTRING(state FROM 7)
+							ELSE state
+						END
+					) AS data 
+					FROM consolidated_data_view 
+					WHERE pv_install_completed_date IS NOT NULL;`
 			dbIndex = db.RowDataDBIndex
 		case "rep_type":
 			query = "SELECT rep_type as data FROM " + db.TableName_rep_type
