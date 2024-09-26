@@ -223,7 +223,7 @@ const MyMapComponent: React.FC = () => {
       ...prevData,
       [fieldName]: updatedValue,
     }));
-
+    setSearchValue('')
     // Disable search input if a state is selected
     if (updatedValue) {
       setIsSearchDisabled(true); // Disable the search
@@ -758,6 +758,10 @@ const MyMapComponent: React.FC = () => {
                 onLoad={onMapLoad}
                 zoom={5}
                 center={center}
+                options={{
+                  minZoom: 2,  // Prevent zooming out too far
+                  maxZoom: 20,  // Set max zoom level
+                }}
               >
                 {/* Searched location marker */}
                 {/* {center && (
@@ -778,7 +782,8 @@ const MyMapComponent: React.FC = () => {
                       fillColor: 'blue', // Fully blue marker
                       fillOpacity: 1,
                       strokeWeight: 0, // No outline
-                      scale: 2.0, // Scale to size
+                      scale: 1.0, // Scale to size
+                      anchor: new google.maps.Point(12, 24), // Anchor at the bottom of the marker
                     }}
                   />
                 )}
