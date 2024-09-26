@@ -348,16 +348,41 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" LOWER(cs.state) ILIKE ANY (ARRAY[")
-		for i, filter := range dataFilter.States {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
+		// Create a list of valid states (non-empty) to filter by
+		var validStates []string
+		hasEmptyString := false
+		for _, state := range dataFilter.States {
+			if state == "" {
+				hasEmptyString = true // Mark that an empty string was passed
+			} else {
+				validStates = append(validStates, state)
 			}
 		}
-		filtersBuilder.WriteString("]) ")
+
+		// Case 1: Only empty string passed, match only empty states
+		if len(validStates) == 0 && hasEmptyString {
+			filtersBuilder.WriteString(" cs.state = '' ")
+
+			// Case 2: Both valid states and empty string passed
+		} else if len(validStates) > 0 {
+			filtersBuilder.WriteString(" (LOWER(cs.state) ILIKE ANY (ARRAY[")
+			for i, filter := range validStates {
+				filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+				whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+				if i < len(validStates)-1 {
+					filtersBuilder.WriteString(", ")
+				}
+			}
+			filtersBuilder.WriteString("]) ")
+
+			// If empty string was passed as well, include OR condition for empty state
+			if hasEmptyString {
+				filtersBuilder.WriteString(" OR cs.state = '' ")
+			}
+
+			filtersBuilder.WriteString(") ") // Close the OR condition group
+		}
 	}
 
 	// Always add the following filters
@@ -515,6 +540,7 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		filtersBuilder.WriteString(fmt.Sprintf(` cs.dealer IN (%s) `, statusList))
 	}
 
+	// Add dealer filter if not adminCheck and not filterCheck
 	if len(dataFilter.States) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -523,16 +549,41 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" LOWER(cs.state) ILIKE ANY (ARRAY[")
-		for i, filter := range dataFilter.States {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
+		// Create a list of valid states (non-empty) to filter by
+		var validStates []string
+		hasEmptyString := false
+		for _, state := range dataFilter.States {
+			if state == "" {
+				hasEmptyString = true // Mark that an empty string was passed
+			} else {
+				validStates = append(validStates, state)
 			}
 		}
-		filtersBuilder.WriteString("]) ")
+
+		// Case 1: Only empty string passed, match only empty states
+		if len(validStates) == 0 && hasEmptyString {
+			filtersBuilder.WriteString(" cs.state = '' ")
+
+			// Case 2: Both valid states and empty string passed
+		} else if len(validStates) > 0 {
+			filtersBuilder.WriteString(" (LOWER(cs.state) ILIKE ANY (ARRAY[")
+			for i, filter := range validStates {
+				filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+				whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+				if i < len(validStates)-1 {
+					filtersBuilder.WriteString(", ")
+				}
+			}
+			filtersBuilder.WriteString("]) ")
+
+			// If empty string was passed as well, include OR condition for empty state
+			if hasEmptyString {
+				filtersBuilder.WriteString(" OR cs.state = '' ")
+			}
+
+			filtersBuilder.WriteString(") ") // Close the OR condition group
+		}
 	}
 
 	filtersBuilder.WriteString(` AND pis.pv_completion_date IS NOT NULL AND cs.unique_id != ''`)
