@@ -82,7 +82,7 @@ services:
     container_name: owehub-calc_1
     networks:
       owe_net:
-        ipv4_address: 172.30.0.212
+        ipv4_address: 172.30.0.213
     ports:
       - "31021:8080"
     environment:
