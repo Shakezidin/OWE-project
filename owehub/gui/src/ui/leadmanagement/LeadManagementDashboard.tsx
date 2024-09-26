@@ -1,5 +1,18 @@
-import React, { useState, useEffect,useRef } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, Sector } from 'recharts';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  Sector,
+} from 'recharts';
+import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
 import './styles/mediaQuery.css';
 import { ICONS } from '../../resources/icons/Icons';
@@ -7,40 +20,58 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
+import useWindowWidth from '../../hooks/useWindowWidth';
 
 // shams start
 import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
-import { endOfWeek, startOfMonth, startOfWeek, startOfYear, subDays } from 'date-fns';
+import {
+  endOfWeek,
+  startOfMonth,
+  startOfWeek,
+  startOfYear,
+  subDays,
+} from 'date-fns';
+// import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
- 
+
 export type DateRangeWithLabel = {
   label?: string;
   start: Date;
   end: Date;
 };
- 
+
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
- 
+
 function getCurrentDateInUserTimezone() {
   const now = new Date();
   const userTimezone = getUserTimezone();
   return toZonedTime(now, userTimezone);
 }
- 
+
 const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+const startOfThreeMonthsAgo = new Date(
+  today.getFullYear(),
+  today.getMonth() - 2,
+  1
+);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
- 
-const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), { weekStartsOn: 1 });
- 
+
+const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
+  weekStartsOn: 1,
+});
+const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
+  weekStartsOn: 1,
+});
+
 const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Week', start: startOfThisWeek, end: today },
   { label: 'Last Week', start: startOfLastWeek, end: endOfLastWeek },
@@ -50,7 +81,6 @@ const periodFilterOptions: DateRangeWithLabel[] = [
   { label: 'This Year', start: startOfThisYear, end: today },
 ];
 // shams end
-
 
 type Lead = {
   id: string;
@@ -66,6 +96,7 @@ const pieData = [
   { name: 'Appointment sent', value: 29, color: '#81A6E7' },
   { name: 'Appointment accepted', value: 21, color: '#52B650' },
   { name: 'Appointment declined', value: 15, color: '#CD4040' },
+  { name: 'Action Needed', value: 10, color: '#63ACA3' },
 ];
 
 const lineData = [
@@ -84,21 +115,166 @@ const lineData = [
 ];
 
 const leads = [
-  { id: '1', name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { id: '2', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { id: '3', name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { id: '4', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Pending' },
-  { id: '5', name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { id: '6', name: 'Adam Samson', phone: '+00 876472822', email: 'adamsamson8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { id: '7', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Kilewanditcho8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { id: '8', name: 'Adam Samson', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Sent' },
-  { id: '9', name: 'Kilewan dicho', phone: '+00 876472822', email: 'Paul mark8772@gmail.com', address: '12778 Domingo Ct, 1233Parker, CO', status: 'Accepted' },
-  { id: '10', name: 'Adam', phone: '+00 876472822', email: 'adam8772@gmail.com', address: '12778 Domingo Ct', status: 'Declined' },
+  {
+    id: '1',
+    name: 'Adam Samson',
+    phone: '+00 876472822',
+    email: 'adamsamson8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Pending',
+  },
+  {
+    id: '2',
+    name: 'Kilewan dicho',
+    phone: '+00 876472822',
+    email: 'Kilewanditcho8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Pending',
+  },
+  {
+    id: '3',
+    name: 'Adam Samson',
+    phone: '+00 876472822',
+    email: 'Paul mark8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Pending',
+  },
+  {
+    id: '4',
+    name: 'Kilewan dicho',
+    phone: '+00 876472822',
+    email: 'Paul mark8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Pending',
+  },
+  {
+    id: '5',
+    name: 'Adam Samson',
+    phone: '+00 876472822',
+    email: 'adamsamson8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Sent',
+  },
+  {
+    id: '6',
+    name: 'Adam Samson',
+    phone: '+00 876472822',
+    email: 'adamsamson8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Sent',
+  },
+  {
+    id: '7',
+    name: 'Kilewan dicho',
+    phone: '+00 876472822',
+    email: 'Kilewanditcho8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Sent',
+  },
+  {
+    id: '8',
+    name: 'Adam Samson',
+    phone: '+00 876472822',
+    email: 'Paul mark8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Sent',
+  },
+  {
+    id: '9',
+    name: 'Rabindra Kumar Sharma',
+    phone: '+00 876472822',
+    email: 'rabindr718@gmail.com',
+    address: 'Patel Nagar, Dehradun, UK',
+    status: 'Accepted',
+  },
+  {
+    id: '10',
+    name: 'Adam',
+    phone: '+00 876472822',
+    email: 'adam8772@gmail.com',
+    address: '12778 Domingo Ct',
+    status: 'Declined',
+  },
+  {
+    id: '11',
+    name: 'Adam',
+    phone: '+00 876472822',
+    email: 'adam8772@gmail.com',
+    address: '12778 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '12',
+    name: 'Kilewan dicho',
+    phone: '+00 876472822',
+    email: 'Paul mark8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Accepted',
+  },
+  {
+    id: '13',
+    name: 'XYZ Name',
+    phone: '+00 876472822',
+    email: 'xyz8772@gmail.com',
+    address: '12778 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '14',
+    name: 'Virendra Sehwag',
+    phone: '+00 876472822',
+    email: 'sehwag8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '15',
+    name: 'Bhuvneshwar Kumar',
+    phone: '+00 876472822',
+    email: 'bhuvi8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'No Response',
+  },
+  {
+    id: '16',
+    name: 'Jasprit Bumrah',
+    phone: '+00 876472822',
+    email: 'jasprit8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Update Status',
+  }, {
+    id: '17',
+    name: 'Risabh Pant',
+    phone: '+00 876472822',
+    email: 'rp8772@gmail.com',
+    address: 'haridwar, Delhi',
+    status: 'No Response',
+  },
+  {
+    id: '18',
+    name: 'Virat Kohli',
+    phone: '+00 876472822',
+    email: 'king8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Deal Won',
+  },
 ];
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
-  const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+  const {
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+    percent,
+    value,
+  } = props;
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
   const sx = cx + (outerRadius + 10) * cos;
@@ -110,6 +286,8 @@ const renderActiveShape = (props: any) => {
   const textAnchor = cos >= 0 ? 'start' : 'end';
 
   // Center text in pie chart
+
+
   const splitText = (text: string, width: number) => {
     const words = text.split(' ');
     const lines = [];
@@ -132,9 +310,19 @@ const renderActiveShape = (props: any) => {
 
   return (
     <g>
-      <text x={cx} y={cy - (lines.length - 1) * 6} textAnchor="middle" fill={fill}>
+      <text
+        x={cx}
+        y={cy - (lines.length - 1) * 6}
+        textAnchor="middle"
+        fill={fill}
+      >
         {lines.map((line, index) => (
-          <tspan key={index} x={cx} dy={index ? 15 : 0} style={{ fontSize: '12.07px', wordBreak: 'break-word' }}>
+          <tspan
+            key={index}
+            x={cx}
+            dy={index ? 15 : 0}
+            style={{ fontSize: '12.07px', wordBreak: 'break-word',fontWeight:550 }}
+          >
             {line}
           </tspan>
         ))}
@@ -157,12 +345,29 @@ const renderActiveShape = (props: any) => {
         outerRadius={outerRadius + 10}
         fill={fill}
       />
-      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={fill}
+        fill="none"
+      />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333" style={{ fontSize: '12.07px' }}>
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        textAnchor={textAnchor}
+        fill="#333"
+        style={{ fontSize: '12.07px' }}
+      >
         {`${value}`}
       </text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999" style={{ fontSize: '12.07px' }}>
+      <text
+        x={ex + (cos >= 0 ? 1 : -1) * 12}
+        y={ey}
+        dy={18}
+        textAnchor={textAnchor}
+        fill="#999"
+        style={{ fontSize: '12.07px' }}
+      >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
     </g>
@@ -179,34 +384,63 @@ const getStatusColor = (status: string) => {
       return '#52B650';
     case 'Declined':
       return '#CD4040';
+    case 'Action Needed':
+      return '#63ACA3';
     default:
       return '#000000';
   }
 };
 
+// const ActionNeeded={
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+// }
 const statusMap = {
   'Pending leads': 'Pending',
   'Appointment accepted': 'Accepted',
   'Appointment sent': 'Sent',
-  'Appointment declined': 'Declined'
+  'Appointment declined': 'Declined',
+  'Action Needed': 'Action Needed',
 };
 
-const CustomTooltip = ({ active, payload, label }: {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
   active?: boolean;
   payload?: any[];
   label?: string;
 }) => {
   if (active && payload && payload.length) {
     return (
-      <div style={{
-        backgroundColor: 'white',
-        padding: '5px 10px',
-        // border: '1px solid #f0f0f0',
-        borderRadius: '4px',
-        // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}>
-        <p style={{ margin: '2px 0', color: '#57B93A', fontWeight: 'bold',fontSize:11 }}>{`${payload[0].value} Closed Won`}</p>
-        <p style={{ margin: '2px 0', color: '#CD4040', fontWeight: 'bold',fontSize:11 }}>{`${payload[1].value} Closed Lost`}</p>
+      <div
+        style={{
+          backgroundColor: 'white',
+          padding: '5px 10px',
+          // border: '1px solid #f0f0f0',
+          borderRadius: '4px',
+          // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}
+      >
+        <p
+          style={{
+            margin: '2px 0',
+            color: '#57B93A',
+            fontWeight: 'bold',
+            fontSize: 11,
+          }}
+        >{`${payload[0].value} Closed Won`}</p>
+        <p
+          style={{
+            margin: '2px 0',
+            color: '#CD4040',
+            fontWeight: 'bold',
+            fontSize: 11,
+          }}
+        >{`${payload[1].value} Closed Lost`}</p>
       </div>
     );
   }
@@ -224,16 +458,21 @@ const LeadManagementDashboard = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
+  const width = useWindowWidth();
+  const isTablet = width <= 1024;
+
 
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-  // const [selectedPeriod, setSelectedPeriod] = useState('This Week');
   const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
 
-  const [selectedDates, setSelectedDates] = useState<{ startDate: Date | null; endDate: Date | null }>({
+  const [selectedDates, setSelectedDates] = useState<{
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({
     startDate: null,
     endDate: null,
   });
@@ -254,16 +493,6 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen(false);
   };
 
-  const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedLabel = e.target.value;
-    const selectedOption = periodFilterOptions.find((option) => option.label === selectedLabel);
-    if (selectedOption) {
-      setSelectedDates({ startDate: selectedOption.start, endDate: selectedOption.end });
-      setSelectedPeriod(selectedOption || null);
-    } else {
-      setSelectedDates({ startDate: null, endDate: null });
-    }
-  };
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
@@ -274,6 +503,26 @@ const LeadManagementDashboard = () => {
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
+
+//CALLING FOR RANGE PICK IN USING SELECT CODE
+const handlePeriodChange = (
+  newValue: SingleValue<DateRangeWithLabel>, 
+  actionMeta: ActionMeta<DateRangeWithLabel>
+) => {
+  if (newValue) {
+    setSelectedDates({
+      startDate: newValue.start,
+      endDate: newValue.end,
+    });
+    setSelectedPeriod(newValue);
+  } else {
+    setSelectedDates({ startDate: null, endDate: null });
+  }
+};
+
+
+
+
 
   const handleClickOutside = (event: Event) => {
     if (
@@ -295,7 +544,7 @@ const LeadManagementDashboard = () => {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
-// shams end
+  // shams end
   const itemsPerPage = 5;
   const navigate = useNavigate();
 
@@ -311,7 +560,7 @@ const LeadManagementDashboard = () => {
     const pieName = pieData[activeIndex].name;
     const newFilter = statusMap[pieName as keyof typeof statusMap];
     setCurrentFilter(newFilter);
-    setFilteredLeads(leads.filter(lead => lead.status === newFilter));
+    setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
   }, [activeIndex]);
 
   const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
@@ -320,12 +569,16 @@ const LeadManagementDashboard = () => {
 
   const handleFilterClick = (filter: string) => {
     setCurrentFilter(filter);
-    setFilteredLeads(leads.filter(lead => lead.status === filter));
-    setActiveIndex(pieData.findIndex(item => statusMap[item.name as keyof typeof statusMap] === filter));
+    setFilteredLeads(leads.filter((lead) => lead.status === filter));
+    setActiveIndex(
+      pieData.findIndex(
+        (item) => statusMap[item.name as keyof typeof statusMap] === filter
+      )
+    );
   };
 
   const getLeadCount = (status: string) => {
-    return leads.filter(lead => lead.status === status).length;
+    return leads.filter((lead) => lead.status === status).length;
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -333,19 +586,23 @@ const LeadManagementDashboard = () => {
   const currentLeads = filteredLeads.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredLeads.length / itemsPerPage)));
-  const goToPrevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
-
+  const goToNextPage = () =>
+    setCurrentPage((prev) =>
+      Math.min(prev + 1, Math.ceil(filteredLeads.length / itemsPerPage))
+    );
+  const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   const handleLeadSelection = (lead: Lead) => {
-    setSelectedLeads(prev => 
-      prev.includes(lead) ? prev.filter(l => l !== lead) : [...prev, lead]
+    setSelectedLeads((prev) =>
+      prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
     );
   };
 
   const handleArchiveSelected = () => {
     // Implement the logic to remove selected leads
-    setFilteredLeads(prev => prev.filter(lead => !selectedLeads.includes(lead)));
+    setFilteredLeads((prev) =>
+      prev.filter((lead) => !selectedLeads.includes(lead))
+    );
     setSelectedLeads([]);
   };
 
@@ -353,36 +610,43 @@ const LeadManagementDashboard = () => {
     console.log(`Lead ${lead.name} is being rescheduled`);
     handleFilterClick('Pending'); // Switch to the "Pending" tab
   };
-  
 
   const handleArchive = (lead: Lead) => {
     setLeadToArchive(lead); // Store the lead to be archived
     setShowArchiveModal(true); // Show the modal
   };
 
-  const handleDetailModal= (lead: Lead) => {
+  const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
   };
-  console.log("currentFilter",currentFilter)
+  console.log('currentFilter', currentFilter);
 
   const toggleLeadExpansion = (leadId: string) => {
-    setExpandedLeads(prev => 
-      prev.includes(leadId) 
-        ? prev.filter(id => id !== leadId) 
+    setExpandedLeads((prev) =>
+      prev.includes(leadId)
+        ? prev.filter((id) => id !== leadId)
         : [...prev, leadId]
     );
   };
 
   const handleChevronClick = (id: string) => {
-    setToggledId(prevId => (prevId === id ? null : id));
+    setToggledId((prevId) => (prevId === id ? null : id));
   };
-  
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className={styles.dashboard}>
       {showConfirmModal && (
         <ConfirmModel
-        // isOpen={filterOPen} handleClose={filterClose}
+          isOpen1={isModalOpen} onClose1={handleCloseModal}
         />
       )}
 
@@ -422,101 +686,227 @@ const LeadManagementDashboard = () => {
             <div className={styles.legend}>
               {pieData.map((item) => (
                 <div key={item.name} className={styles.legendItem}>
-                  <div className={styles.legendColor} style={{ backgroundColor: item.color }}></div>
+                  <div
+                    className={styles.legendColor}
+                    style={{ backgroundColor: item.color }}
+                  ></div>
                   <span className={styles.legendText}>{item.name}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        
+
         <div className={`${styles.card} ${styles.lineCard}`}>
           {/* shams start */}
           <div className={styles.cardHeader}>
-              <span>Total Won Lost</span>
-              <div className={styles.date_calendar}>
-                {isCalendarOpen && (
-                  <div ref={calendarRef} className={styles.lead__datepicker_content}>
-                    <DateRange
-                      editableDateInputs={true}
-                      onChange={handleRangeChange}
-                      moveRangeOnFirstSelection={false}
-                      ranges={selectedRanges}
-                    />
-                    <div className={styles.lead__datepicker_btns}>
-                      <button className="reset-calender" onClick={onReset}>
-                        Reset
-                      </button>
-                      <button className="apply-calender" onClick={onApply}>
-                        Apply
-                      </button>
-                    </div>
+            <span>Total Won Lost</span>
+            <div className={styles.date_calendar}>
+              {isCalendarOpen && (
+                <div
+                  ref={calendarRef}
+                  className={styles.lead__datepicker_content}
+                >
+                  <DateRange
+                    editableDateInputs={true}
+                    onChange={handleRangeChange}
+                    moveRangeOnFirstSelection={false}
+                    ranges={selectedRanges}
+                  />
+                  <div className={styles.lead__datepicker_btns}>
+                    <button className="reset-calender" onClick={onReset}>
+                      Reset
+                    </button>
+                    <button className="apply-calender" onClick={onApply}>
+                      Apply
+                    </button>
                   </div>
-                )}
-                {selectedDates.startDate && selectedDates.endDate && (
-                  <div className={styles.hist_date}>
-                    <span>
-                      {selectedDates.startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      {' - '}
-                      {selectedDates.endDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                  </div>
-                )}
-                <select value={selectedPeriod?.label || ''} onChange={handlePeriodChange} className={styles.monthSelect}>
-                  {periodFilterOptions.map((option) => (
-                    <option key={option.label} value={option.label}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div ref={toggleRef} className={styles.calender} onClick={toggleCalendar}>
+                </div>
+              )}
+              {selectedDates.startDate && selectedDates.endDate && (
+                <div className={styles.hist_date}>
+                  <span className={styles.date_display}>
+                    {selectedDates.startDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                    {' - '}
+                    {selectedDates.endDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </div>
+              )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              {/* RABINDR718.....DATE_PICKER STARTED */}
+    <Select value={selectedPeriod}
+                    onChange={handlePeriodChange}
+                    options={periodFilterOptions}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        marginTop: 'px',
+                        borderRadius: '8px',
+                        outline: 'none',
+                        color: '#3E3E3E',
+                        width: '140px',
+                        height: '36px',
+                        fontSize: '12px',
+                        border: '1px solid #d0d5dd',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        alignContent: 'center',
+                        backgroundColor: '#fffff',
+                        boxShadow: 'none',
+                        '@media only screen and (max-width: 767px)': {
+                          width: '80px',
+                          // width: 'fit-content',
+                        },
+                        '&:focus-within': {
+                          borderColor: '#377CF6',
+                          boxShadow: '0 0 0 1px #377CF6',
+                          caretColor: '#3E3E3E',
+                        },
+                      }),
+                      placeholder: (baseStyles) => ({
+                        ...baseStyles,
+                        color: '#3E3E3E',
+                      }),
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#3E3E3E',
+                        '&:hover': {
+                          color: '#3E3E3E',
+                        },
+
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                        backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                        },
+                        cursor: 'pointer',
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#3E3E3E',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '140px',
+                        marginTop: "0px"
+                      }),
+                    }}
+                  />
+<div
+                  ref={toggleRef}
+                  className={styles.calender}
+                  onClick={toggleCalendar}
+                >
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
-              </div>
-            </div>
-          {/* shams end */}
-          <div className={`${styles.cardContent} lineChart-wrapper`}>
-            <ResponsiveContainer width="100%" height={300}>
+          </div>
+
+          </div>
+           {/* RABINDR718.....DATE_PICKER ENDED */}
+        
+          
+          
+          
+
+          <div
+            className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
+          >
+            <ResponsiveContainer
+              className={styles.chart_main_grid}
+              width="100%"
+              height={300}
+            >
               <LineChart data={lineData}>
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend 
-                  formatter={(value) => value === 'won' ? 'Total won' : 'Total Lost'}
-                  wrapperStyle={{ fontSize: '12px'}} 
+                <Legend
+                  className={styles.lineChart_legend}
+                  formatter={(value) =>
+                    value === 'won' ? 'Total won' : 'Total Lost'
+                  }
+                  wrapperStyle={{ fontSize: '12px',fontWeight:550,marginBottom:-15 }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="won" 
-                  stroke="#57B93A" 
-                  strokeWidth={2} 
-                  name="won" 
+                <Line
+                  type="monotone"
+                  dataKey="won"
+                  stroke="#57B93A"
+                  strokeWidth={2}
+                  name="won"
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="lost" 
-                  stroke="#CD4040" 
-                  strokeWidth={2} 
-                  name="lost" 
+                <Line
+                  type="monotone"
+                  dataKey="lost"
+                  stroke="#CD4040"
+                  strokeWidth={2}
+                  name="lost"
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
-      
+
       <div className={styles.card}>
-        <div className={styles.cardHeader}>
+        <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
           {selectedLeads.length === 0 ? (
             <>
-              <div className={styles.buttonGroup}>
-                {['Pending', 'Sent', 'Accepted', 'Declined'].map((status) => (
+               <div className={styles.buttonGroup}>
+                {['Pending', 'Sent', 'Accepted', 'Declined','Action Needed'].map((status) => (
                   <button
                     key={status}
-                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}`}
-                    onClick={() => handleFilterClick(status)}
-                  >
-                    <p className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}>
+                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}
+                     ${status === 'Action Needed' ? styles.action_needed_btn : ''}`} 
+                     onClick={() => handleFilterClick(status)}>
+                    <p
+                      className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}
+                    >
                       {getLeadCount(status)}
                     </p>
                     {status}
@@ -525,26 +915,33 @@ const LeadManagementDashboard = () => {
               </div>
               <div className={styles.filterCallToAction}>
                 <div className={styles.filtericon} onClick={handleHistory}>
-                  <img src={ICONS.historyLeadMgmt} alt="" width="100" height="100" />
+                  <img
+                    src={ICONS.historyLeadMgmt}
+                    alt=""
+                    width="100"
+                    height="100"
+                  />
                 </div>
                 <div className={styles.filtericon} onClick={handleAddLead}>
-                  <img src={ICONS.AddIconSr} alt=""  width="80" height="80" />
+                  <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                 </div>
               </div>
             </>
           ) : (
             <div className={styles.selectionHeader}>
               <div className={styles.selectionInfo}>
-                <span className={styles.closeIcon} onClick={() => setSelectedLeads([])}>
-                <img
-                  src={ICONS.cross}
-                  alt=""
-                  height="26" width="26"
-                />
+                <span
+                  className={styles.closeIcon}
+                  onClick={() => setSelectedLeads([])}
+                >
+                  <img src={ICONS.cross} alt="" height="26" width="26" />
                 </span>
                 <span>{selectedLeads.length} Selected</span>
               </div>
-              <button className={styles.removeButton} onClick={handleArchiveSelected}>
+              <button
+                className={styles.removeButton}
+                onClick={handleArchiveSelected}
+              >
                 Archived
               </button>
             </div>
@@ -552,105 +949,160 @@ const LeadManagementDashboard = () => {
         </div>
 
         <div className={styles.cardContent}>
-        {/* <table className={styles.table}>
+          <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}>
-                  <td className={styles.history_list_inner}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedLeads.includes(lead)}
-                        onChange={() => handleLeadSelection(lead)}
-                      />
-                    </label>
-                    <div className={styles.user_name} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
-                      <h2>{lead.name}</h2>
-                      <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
-                    </div>
-                    <>
+                <React.Fragment key={index}>
+                  <tr className={styles.history_lists}>
+                    <td className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedLeads.includes(lead)}
+                          onChange={() => handleLeadSelection(lead)}
+                        />
+                      </label>
+                      <div
+                        className={styles.user_name}
+                        onClick={() =>
+                          currentFilter == 'Pending' && handleDetailModal(lead)
+                        }
+                      >
+                        <h2>{lead.name}</h2>
+                        <p style={{ color: getStatusColor(lead.status) }}>
+                          {lead.status}
+                        </p>
+                      </div>
                       <div className={styles.phone_number}>{lead.phone}</div>
                       <div className={styles.email}>
-                        <span>{lead.email}
-                          <img className='ml1' height={15} width={15} src={ICONS.complete} alt="verified" />
+                        <span>
+                          {lead.email}
+                          <img
+                            className="ml1"
+                            height={15}
+                            width={15}
+                            src={ICONS.complete}
+                            alt="verified"
+                          />
                         </span>
                       </div>
                       <div className={styles.address}>{lead.address}</div>
-                      
+                     
+
                       {lead.status === 'Declined' && (
                         <div className={styles.actionButtons}>
-                          <button onClick={() => handleReschedule(lead)} className={styles.rescheduleButton}>Reschedule</button>
-                          <button onClick={() => handleArchive(lead)} className={styles.archiveButton}>Archive</button>
+                          <button
+                            onClick={() => handleReschedule(lead)}
+                            className={styles.rescheduleButton}
+                          >
+                            Reschedule
+                          </button>
+                          {
+                            isTablet ?
+                            <button
+                            onClick={() => handleArchive(lead)}
+                            className={styles.archiveButton}
+                            >
+                              <img src={ICONS.declinedArchive}/>
+                            </button>
+                            :
+                            <button
+                            onClick={() => handleArchive(lead)}
+                            className={styles.archiveButton}
+                          >
+                            Archive
+                          </button>
+                          }
+                         
                         </div>
                       )}
-                    </>
-                  </td>
-                </tr>
+
+                    {lead.status === 'Action Needed' && (
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() => handleReschedule(lead)}
+                            className={styles.rescheduleButton}
+                          >
+                            Reschedule
+                          </button>
+                         
+                        </div>
+                      )}
+
+                      <div
+                        className={styles.chevron_down}
+                        onClick={() => handleChevronClick(lead.id)}
+                      >
+                        <img
+                          src={
+                            toggledId === lead.id
+                              ? ICONS.chevronUp
+                              : ICONS.chevronDown
+                          }
+                          alt={
+                            toggledId === lead.id
+                              ? 'chevronUp-icon'
+                              : 'chevronDown-icon'
+                          }
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  {toggledId === lead.id && (
+                    <tr>
+                      <td colSpan={5} className={styles.detailsRow}>
+                        <div className={''}>{lead.phone}</div>
+                        <div className={''}>
+                          <span>
+                            {lead.email}
+                            <img
+                              className="ml1"
+                              height={15}
+                              width={15}
+                              src={ICONS.complete}
+                              alt="verified"
+                            />
+                          </span>
+                        </div>
+                        <div className={''}>{lead.address}</div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
-          </table> */}
+          </table>
 
-        <table className={styles.table}>
-          <tbody>
-            {currentLeads.map((lead, index) => (
-              <tr key={index} className={styles.history_lists}>
-                <td className={styles.history_list_inner}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectedLeads.includes(lead)}
-                      onChange={() => handleLeadSelection(lead)}
-                    />
-                  </label>
-                  <div className={styles.user_name} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
-                    <h2>{lead.name}</h2>
-                    <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
-                  </div>
-                    <div className={styles.phone_number}>{lead.phone}</div>
-                    <div className={styles.email}>
-                      <span>{lead.email}
-                        <img className='ml1' height={15} width={15} src={ICONS.complete} alt="verified" />
-                      </span>
-                    </div>
-                    <div className={styles.address}>{lead.address}</div>
-                    <div className={styles.chevron_down} onClick={() => handleChevronClick(lead.id)}>
-            <img
-              src={toggledId === lead.id ? ICONS.chevronUp : ICONS.chevronDown}
-              alt={toggledId === lead.id ? "chevronUp-icon" : "chevronDown-icon"}
-            />
-          </div>
-                    
-                    {lead.status === 'Declined' && (
-                      <div className={styles.actionButtons}>
-                        <button onClick={() => handleReschedule(lead)} className={styles.rescheduleButton}>Reschedule</button>
-                        <button onClick={() => handleArchive(lead)} className={styles.archiveButton}>Archive</button>
-                      </div>
-                    )}
-                 
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    {/* HERE IMPLEMENT PAGINATION */}
 
-          <div className={styles.paginationContainer} style={{ textAlign: 'right' }}>
-            {filteredLeads.length > 0 && (
-              <div className="p1 lead-pagination">
-                <p className={styles.pageHeading}>
-                  {indexOfFirstItem + 1} - {Math.min(indexOfLastItem, filteredLeads.length)} of {filteredLeads.length} items
-                </p>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
-                  paginate={paginate}
-                  goToNextPage={goToNextPage}
-                  goToPrevPage={goToPrevPage}
-                  perPage={itemsPerPage}
-                  currentPageData={currentLeads}
-                />
-              </div>
-            )}
-          </div>
+    <div className={styles.leadpagination}>
+
+{ filteredLeads.length > 0 && <div className={styles.leftitem}>
+        <p className={styles.pageHeading}>
+        {indexOfFirstItem + 1} -{' '}
+        {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
+        {filteredLeads.length} items
+      </p>
+</div>}
+
+
+
+  <div className={styles.rightitem}>
+  <Pagination
+      currentPage={currentPage}
+      totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      perPage={itemsPerPage}
+      currentPageData={currentLeads}
+    />
+  </div>
+
+
+
+</div>
+
         </div>
       </div>
     </div>

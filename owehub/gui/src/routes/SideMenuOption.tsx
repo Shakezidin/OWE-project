@@ -9,7 +9,11 @@ import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
 import { FaRegCalendarCheck } from 'react-icons/fa6';
-
+import { RiCalendarScheduleLine } from "react-icons/ri";
+import { FaMapLocationDot } from "react-icons/fa6";
+import { FaCloudUploadAlt } from 'react-icons/fa';
+import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
+import { TfiMapAlt } from 'react-icons/tfi';
 const mob = {
   mob: [
     {
@@ -59,6 +63,45 @@ const mob = {
       },
     },
     {
+      path: ROUTES.LEAD_MANAGEMENT,
+      sidebarProps: {
+        displayText: 'Lead Management',
+        icon: (
+          <IoListSharp
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.LIBRARY,
+      sidebarProps: {
+        displayText: 'Library',
+        icon: (
+          <IoCloudUploadOutline
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.MAP_ADDRESS,
+      sidebarProps: {
+        displayText: 'Install Map',
+        icon: (
+          <TfiMapAlt
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
       path: ROUTES.COMMISSION_DASHBOARD,
       sidebarProps: {
         displayText: 'Dealer Pay',
@@ -78,7 +121,13 @@ const mob = {
         icon: <GrDocumentConfig size={18} style={{ flexShrink: '0' }} />,
       },
     },
-
+    {
+      path: ROUTES.SCHEDULER,
+      sidebarProps: {
+        displayText: 'Scheduler',
+        icon: <RiCalendarScheduleLine size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
     {
       path: ROUTES.TEAM_MANAGEMENT_DASHBOARD,
 
@@ -102,6 +151,7 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
+    
 
     // {
     //   path: ROUTES.CALENDAR,

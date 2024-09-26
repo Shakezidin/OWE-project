@@ -6,7 +6,7 @@ import { ActionButton } from '../../components/button/ActionButton';
 
 interface ButtonProps {
   handleClose: () => void;
- data:any;
+  data: any;
 }
 const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -16,7 +16,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
   };
 
   const [state, setState] = useState({
-    project_id: data?.unique_id  || '',
+    project_id: data?.unique_id || '',
     dealer_name: data?.dealer || '',
     sale_rep: data?.rep1,
     customer_name: data?.home_owner,
@@ -41,7 +41,6 @@ const HelpDashboard: React.FC<ButtonProps> = ({ data, handleClose }) => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
 
-  
   return (
     <>
       <div className="transparent-model-down">

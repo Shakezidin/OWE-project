@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -46,21 +47,21 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get user address data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get user address request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get user address data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get user address data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get user address data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -71,7 +72,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -83,9 +84,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		role := data[0]["role_name"]
 		name := data[0]["name"]
 		dealerName, ok := data[0]["dealer_name"].(string)
-		if !ok || dealerName == "" {
-			dealerName = ""
-		} else {
+		if ok || dealerName != "" {
 			dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
 		}
 		rgnSalesMgrCheck = false
@@ -98,12 +97,12 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)
 			if err != nil {
-				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
 
 			if len(dealerNames) == 0 {
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 				return
 			} else {
 				dataReq.DealerNames = dealerNames
@@ -119,7 +118,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 	} else {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -132,7 +131,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
 			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			appserver.FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -151,23 +150,24 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		filter, whereEleList = PrepareSaleRepAddressFilters(tableName, dataReq, SaleRepList)
 	}
 
-	query = `SELECT cs.unique_id, cs.address, iops.home_owner, cs.project_status, cs.address_lat, cs.address_lng
+	query = `SELECT cs.unique_id, cs.address, iops.home_owner, cs.project_status, cs.address_lat, cs.address_lng, cs.state
 			FROM  customers_customers_schema cs
 			LEFT JOIN ntp_ntp_schema ns ON cs.unique_id = ns.unique_id 
-			LEFT JOIN internal_ops_metrics_schema iops ON cs.unique_id = iops.unique_id`
+			LEFT JOIN internal_ops_metrics_schema iops ON cs.unique_id = iops.unique_id
+			LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id`
 
 	if filter != "" {
 		queryWithFiler = query + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get RepType data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get RepType data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get user address data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get user address data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -184,6 +184,13 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 			log.FuncErrorTrace(0, "Failed to get Address for Record ID %v. Item: %+v\n", UniqueId, item)
 			Address = ""
 		}
+
+		State, ok := item["state"].(string)
+		if !ok || State == "" {
+			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", UniqueId, item)
+			State = ""
+		}
+
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get HomeOwner for Record ID %v. Item: %+v\n", UniqueId, item)
@@ -215,6 +222,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 			Latitute:      Latitude,
 			Longitude:     Longitude,
 			ProjectStatus: ProjectStatus,
+			State:         State,
 		}
 
 		UserAddressList.UserAddressList = append(UserAddressList.UserAddressList, UserAddress)
@@ -226,8 +234,8 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		UserAddressList.UserAddressList = Paginate(UserAddressList.UserAddressList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of user address List fetched : %v list %+v", len(UserAddressList.UserAddressList), UserAddressList.UserAddressList)
-	FormAndSendHttpResp(resp, "user address Data", http.StatusOK, UserAddressList.UserAddressList, RecordCount)
+	log.FuncInfoTrace(0, "Number of users address List fetched : %v list %+v", len(UserAddressList.UserAddressList), UserAddressList.UserAddressList)
+	appserver.FormAndSendHttpResp(resp, "user address Data", http.StatusOK, UserAddressList.UserAddressList, RecordCount)
 }
 
 /******************************************************************************
@@ -312,7 +320,6 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -320,10 +327,37 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
-		for _, dealer := range dataFilter.DealerNames {
-			whereEleList = append(whereEleList, dealer)
+		// Prepare the values for the IN clause
+		var dealerNames []string
+		for _, val := range dataFilter.DealerNames {
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", val))
 		}
+		// Join the values with commas
+		statusList := strings.Join(dealerNames, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` cs.dealer IN (%s) `, statusList))
+	}
+
+	// Add dealer filter if not adminCheck and not filterCheck
+	if len(dataFilter.States) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" LOWER(c.state) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.States {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
 	}
 
 	// Always add the following filters
@@ -332,7 +366,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` cs.project_status != 'DUPLICATE' AND cs.unique_id != ''`)
+	filtersBuilder.WriteString(` pis.pv_completion_date IS NOT NULL AND cs.unique_id != ''`)
 
 	// filtersBuilder.WriteString(` unique_id IS NOT NULL
 	// 		AND unique_id <> ''
@@ -462,7 +496,6 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -470,13 +503,39 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
-		for _, dealer := range dataFilter.DealerNames {
-			whereEleList = append(whereEleList, dealer)
+		// Prepare the values for the IN clause
+		var dealerNames []string
+		for _, val := range dataFilter.DealerNames {
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", val))
 		}
+		// Join the values with commas
+		statusList := strings.Join(dealerNames, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` cs.dealer IN (%s) `, statusList))
 	}
 
-	filtersBuilder.WriteString(` AND cs.project_status != 'DUPLICATE' AND cs.unique_id != ''`)
+	if len(dataFilter.States) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" LOWER(cs.state) ILIKE ANY (ARRAY[")
+		for i, filter := range dataFilter.States {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
+
+			if i < len(dataFilter.UniqueIds)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString("]) ")
+	}
+
+	filtersBuilder.WriteString(` AND pis.pv_completion_date IS NOT NULL AND cs.unique_id != ''`)
 
 	// // Add the always-included filters
 	// filtersBuilder.WriteString(` AND unique_id IS NOT NULL

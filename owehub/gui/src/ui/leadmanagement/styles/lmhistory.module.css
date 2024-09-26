@@ -20,23 +20,54 @@
   padding-top: 16px;
   border-bottom: 1px solid #000;
   padding-bottom: 18px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  transition: all 500ms ease;
 }
 
-.history_list_inner {
+.history_lists:hover {
+  background-color: #EEF5FF;
+}
+
+
+/* .history_list_inner {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding-left: 6px;
   padding-right: 6px;
+  transition: all 0.3s ease;
+} */
+
+
+.history_list_inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(12vw, 1fr)) 2fr minmax(12vw, 1fr);
+  grid-gap: 10px;
+  align-items: center;
+  padding-left: 10px;
+  transition: all 0.3s ease;
 }
+
+.history_list_inner>*:last-child {
+  justify-self: center;
+}
+
+.history_list_inner>*:nth-child(4) {
+  justify-self: start;
+  padding-left: 85px;
+}
+
+
+
 
 .email {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .user_name {
@@ -58,6 +89,7 @@
 .phone_number {
   font-size: 12px;
   font-weight: 400;
+  margin-left: 0;
 }
 
 .email p {
@@ -93,6 +125,8 @@
   transform: scale(1.06);
 }
 
+
+
 .history_list_activity {
   display: flex;
   flex-direction: row;
@@ -100,8 +134,16 @@
   border: 1px solid #377cf6;
   border-radius: 6px;
   margin-top: 20px;
-  padding: 22px 0px 20px 0px;
+  padding: 35px 0px 20px 0px;
+  width: 100%;
 
+}
+
+.history_list_activities {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 95%;
 }
 
 .history_list_activity_det {
@@ -117,7 +159,6 @@
 
 .circle {
   position: absolute;
-  /* top: 50%; */
   right: 0;
   transform: translateY(-50%);
   width: 14px;
@@ -130,10 +171,10 @@
   right: 22px;
   position: absolute;
   transform: translateY(-50%);
-  /* width: 9vw; */
   min-width: 9vw;
   height: 1px;
   background-color: #929292;
+  flex: 1;
 }
 
 .line1 {
@@ -154,6 +195,8 @@
 .act_head {
   font-size: 12px;
   font-weight: 500;
+  max-width: 114px;
+  text-align: center;
 }
 
 .act_date {
@@ -209,7 +252,9 @@
   color: #3E3E3E;
   font-weight: 600;
   font-size: 16px;
+  width: 10%;
   margin-top: -10px;
+  margin-left: 10px;
 }
 
 .lead_his_remove {
@@ -270,6 +315,36 @@
 }
 
 
+
+.monthSelect {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 20px;
+  padding: 6px 8px 7px 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  width: 114px;
+}
+
+.monthSelect option {
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.monthSelect :hover {
+  border: none;
+}
+
+.monthSelect option:hover {
+  transform: scale(1.06);
+}
+
+
+
+
+
 @media screen and (max-width: 767px) {
   .h_screen {
     display: flex;
@@ -289,7 +364,8 @@
   }
 
   .hist_checkname {
-    gap: 12px;
+    gap: 19px;
+    padding-left: 11px;
   }
 
   .history_list_activity_mob {
@@ -300,7 +376,11 @@
     border-radius: 6px;
     margin-top: 20px;
     gap: 29px;
-    padding: 22px 0px 20px 60px;
+    padding: 22px 0px 20px 49px;
+  }
+
+  .history_list_inner{
+    padding-right: 8px;
   }
 
   .history_list_activity_det {
@@ -315,7 +395,7 @@
 
   .circle_mob {
     position: absolute;
-    top: 60%;
+    top: 12px;
     right: 0;
     transform: translateY(-50%);
     width: 14px;
@@ -323,6 +403,7 @@
     border-radius: 50%;
     border: 1px solid #292929;
   }
+
   .lm_history_header {
     align-items: center;
   }
@@ -337,22 +418,31 @@
     height: 1.3px;
     background-color: #929292;
   }
+  .act_head {
+    text-align: left;
+  }
 
   .personal_info_mob {
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
+    justify-content: flex-start;
     margin-top: 14px;
-    padding-left: 17px;
+    padding-left: 51px;
     gap: 4px;
   }
 
   .lm_history_header {
     padding: 0px 1px;
   }
-  .filters{
+
+  .filters {
     gap: 4px;
   }
+  .activity_info {
+    align-items: start;
+  }
+
   .hist_checkbox_count h1 {
     font-size: 16px;
   }
@@ -363,11 +453,13 @@
     font-size: 14px;
     font-weight: 500;
   }
-  .hist_date{
+
+  .hist_date {
     font-weight: 500;
     font-size: 12px;
   }
-  .top_filters{
+
+  .top_filters {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -375,30 +467,6 @@
   }
 
 }
-
-.monthSelect {
-  background-color: #3b82f6;
-  color: white;
-  border-radius: 20px;
-  padding: 7px 4px;
-  border: none;
-  font-size: 12px;
-  font-weight: 500;
-  width: 104px;
-}
-.monthSelect option{
-  font-weight: 500;
-  font-size: 12px;
-  transition: all 0.3s ease;
-}
-.monthSelect :hover{
-  border: none;
-}
-.monthSelect option:hover {
-  transform: scale(1.06);
-}
-
-
 
 .lead__datepicker_wrapper:hover {
   z-index: 11;
@@ -431,11 +499,81 @@
 
 
 @media screen and (max-width: 767px) {
-    .monthSelect{
-      width: 90px;
-    }
-    .lead__datepicker_content{
-      margin-top: 5px;
-      right: 0;
-    }
+  .monthSelect {
+    width: 90px;
+  }
+
+  .lead__datepicker_content {
+    margin-top: 5px;
+    right: 5px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .history_list_inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .history_list_inner>*:last-child {
+    justify-self: center;
+  }
+
+  .history_list_inner>*:nth-child(4) {
+    justify-self: start;
+    padding-left: 0;
+  }
+
+
+  .customer_wrapper_list {
+    padding-inline: 3px;
+  }
+
+  .history_list_activity {
+    flex-direction: column;
+    padding: 25px 0px 25px 0px;
+    gap: 24px;
+  }
+
+  .history_list_activities {
+    padding-left: 10px;
+    width: 100%;
+  }
+
+  .phone_number_tab {
+    font-weight: 400;
+    font-size: 12px;
+    color: #3E3E3E;
+    margin-top: 10px;
+    margin-left: 34px;
+  }
+
+  .history_list_head {
+    width: 1%;
+  }
+
+  .act_head {
+    max-width: 100px;
+    
+  }
+
+}
+
+.page_heading_container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 4.875rem 1rem 1.875rem;
+}
+
+@media screen and (max-width: 767px) {
+  .page_heading_container {
+    flex-direction: column;
+    justify-content: unset;
+    gap: 1rem;
+    padding: 20px;
+  }
 }

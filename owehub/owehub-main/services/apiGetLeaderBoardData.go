@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -56,33 +57,33 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get LeaderBoard data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get LeaderBoard data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get LeaderBoard data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get LeaderBoard data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get LeaderBoard data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
 		return
 	}
 
 	dataReq.Role = req.Context().Value("rolename").(string)
 	if dataReq.Role == "" {
-		FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,7 +95,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			LeaderBoardList.LeaderBoardList = []models.GetLeaderBoard{}
 
 			log.FuncErrorTrace(0, "no dealer name selected")
-			FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
+			appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 			return
 		}
 	}
@@ -111,19 +112,19 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
-			FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
 			return
 		}
 		if len(data) == 0 {
 			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
-			FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
 			return
 		}
 
 		dealerName, ok := data[0]["dealer_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to convert dealer_name to string for data: %v", data[0])
-			FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -132,7 +133,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			HighlightName, ok = data[0]["name"].(string)
 			if !ok {
 				log.FuncErrorTrace(0, "Failed to convert name to string for data: %v", data[0])
-				FormAndSendHttpResp(resp, "Failed to process sales rep name", http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to process sales rep name", http.StatusBadRequest, nil)
 				return
 			}
 			HighLightDlrName = dealerName
@@ -149,19 +150,19 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
-			FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer name", http.StatusBadRequest, data)
 			return
 		}
 		if len(data) == 0 {
 			log.FuncErrorTrace(0, "Failed to get dealer name from DB for %v err: %v", data, err)
-			FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer name %v", http.StatusBadRequest, data)
 			return
 		}
 
 		dealerName1, ok := data[0]["dealer_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to convert dealer_name to string for data: %v", data[0])
-			FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to process dealer name", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -197,7 +198,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, leaderBoardQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get leader board details from DB for %v err: %v", data, err)
-		FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch leader board details", http.StatusBadRequest, data)
 		return
 	}
 
@@ -230,7 +231,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 			dealerData, err := db.ReteriveFromDB(db.OweHubDbIndex, dealerQuery, args)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to get dealer codes from DB err: %v", err)
-				FormAndSendHttpResp(resp, "Failed to fetch dealer codes", http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to fetch dealer codes", http.StatusBadRequest, nil)
 				return
 			}
 
@@ -340,7 +341,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	RecordCount = int64(len(data))
 	// log.FuncInfoTrace(0, "Number of LeaderBoard List fetched : %v list %+v", len(LeaderBoardList.LeaderBoardList), LeaderBoardList)
-	FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "LeaderBoard Data", http.StatusOK, LeaderBoardList, RecordCount)
 }
 
 /******************************************************************************

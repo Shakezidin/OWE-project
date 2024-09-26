@@ -95,6 +95,8 @@ import RoutesForRole from './utiles/RoutesForRole';
 import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
 import LibraryHomepage from './ui/Library/LibraryHomepage';
 import LeadManamentSucessModel from './ui/leadmanagement/Modals/LeaderManamentSucessModel';
+import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap'
+import SaleRepCustomerForm from './ui/scheduler/SaleRepCustomerForm/SaleRepCustomerForm';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -106,7 +108,6 @@ function App() {
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-
 
   function getConfigChildRoute() {
     return [
@@ -134,7 +135,10 @@ function App() {
       { path: ROUTES.CONFIG_INSTALL_COST, element: <InstallCost /> },
       { path: ROUTES.CONFIG_LEADER_OVERRIDE, element: <LeaderOverride /> },
       { path: ROUTES.CONFIG_ADDER_CREDITS, element: <AdderCredit /> },
-      { path: ROUTES.CONFIG_ADDER_RESPONSIBILITY, element: <AdderResponsibility /> },
+      {
+        path: ROUTES.CONFIG_ADDER_RESPONSIBILITY,
+        element: <AdderResponsibility />,
+      },
       { path: ROUTES.CONFIG_LOAN_FEES, element: <LoanFee /> },
       { path: ROUTES.CONFIG_AR_IMPORT, element: <ArImport /> },
       { path: ROUTES.CONFIG_ADJUSTMENTS, element: <Adjustments /> },
@@ -152,23 +156,27 @@ function App() {
       { path: ROUTES.CONFIG_APOTH, element: <ApOth /> },
       { path: ROUTES.CONFIG_APPDA, element: <ApPda /> },
       { path: ROUTES.CONFIG_APPDA, element: <ApPda /> },
-      {path:ROUTES.CONFIG_APDEALER, element:<ApDealer/>},
+      { path: ROUTES.CONFIG_APDEALER, element: <ApDealer /> },
     ];
   }
 
   const ManageRoutesWithRole = (role: string) => {
-    const routes = RoutesForRole.filter(route => (route.available.includes(role) && (route.stagingOnly ? isStaging === "staging" : true)));
+    const routes = RoutesForRole.filter(
+      (route) =>
+        route.available.includes(role) &&
+        (route.stagingOnly ? isStaging === 'staging' : true)
+    );
     const availableRoutes = routes.map((route) => (
       <Route key={route.route} path={route.route} element={<route.element />} />
     ));
-    if (RoutesForRole.some(route => route.route === ROUTES.CONFIG_PAGE)) {
+    if (RoutesForRole.some((route) => route.route === ROUTES.CONFIG_PAGE)) {
       const childRoutes = getConfigChildRoute().map((route) => (
         <Route key={route.path} path={route.path} element={route.element} />
       ));
       availableRoutes.push(...childRoutes);
     }
-    return availableRoutes
-  }
+    return availableRoutes;
+  };
 
   /**config and user manangement routes*/
   const configRoutes = () => {
@@ -326,9 +334,8 @@ function App() {
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
-          {
-            ManageRoutesWithRole(role_name!)
-          }
+          <Route path ={ROUTES.MAP_ADDRESS} element={<MyMap />} />
+          {ManageRoutesWithRole(role_name!)}
           {/* <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} /> */}
 
           {/* {(role_name === TYPE_OF_USER.ADMIN ||
@@ -390,7 +397,6 @@ function App() {
           />
           <Route path={ROUTES.TEAM_MANAGEMENT_TABLE} element={<TeamTable />} /> */}
 
-
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
 
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
@@ -399,19 +405,30 @@ function App() {
             path={ROUTES.SALES_REP_SCHEDULER}
             element={<CustomersList />}
           />
-          <Route path={ROUTES.LEAD_MANAGEMENT} element={<LeadManagementDashboard />} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW} element={<LeadManagementNew />} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_ADD_NEW_MODAL} element={<ConfirmaModel />} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_HISTORY} element={<LeradManagementHistory />} />
-          <Route path={ROUTES.LEAD_MANAGEMENT_SUCCESS_MODAl} element={<LeadManamentSucessModel />} />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT}
+            element={<LeadManagementDashboard />}
+          />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT_ADD_NEW}
+            element={<LeadManagementNew />}
+          />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT_HISTORY}
+            element={<LeradManagementHistory />}
+          />
+          <Route
+            path={ROUTES.LEAD_MANAGEMENT_SUCCESS_MODAl}
+            element={<LeadManamentSucessModel />}
+          />
           <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
-
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
+        <Route path={ROUTES.SALE_RP_CUSTOMER_FORM} element={<SaleRepCustomerForm/>} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />

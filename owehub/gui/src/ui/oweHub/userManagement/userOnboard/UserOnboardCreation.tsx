@@ -434,23 +434,33 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </div>
                   </div>
                 </div>
-                {(formData.role_name === TYPE_OF_USER.SALE_MANAGER || formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE || formData.role_name === TYPE_OF_USER.REGIONAL_MANGER || formData.role_name===TYPE_OF_USER.DEALER_OWNER) && <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                  }}
-                >
-                  <CheckBox
-                    checked={formData.podioChecked}
-                    onChange={() => {
-                      dispatch(updateUserForm({ field: 'podioChecked', value: !formData.podioChecked }))
+                {(formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
+                  formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+                  formData.role_name === TYPE_OF_USER.REGIONAL_MANGER ||
+                  formData.role_name === TYPE_OF_USER.DEALER_OWNER) && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
                     }}
-                  />
-                  <div className="access-data">
-                    <p>Add user to podio</p>
+                  >
+                    <CheckBox
+                      checked={formData.podioChecked}
+                      onChange={() => {
+                        dispatch(
+                          updateUserForm({
+                            field: 'podioChecked',
+                            value: !formData.podioChecked,
+                          })
+                        );
+                      }}
+                    />
+                    <div className="access-data">
+                      <p>Add user to podio</p>
+                    </div>
                   </div>
-                </div>}
+                )}
                 <div className="create-input-field-note">
                   <label htmlFor="" className="inputLabel">
                     Description
@@ -466,10 +476,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     placeholder="Type"
                   ></textarea>
                   <p
-                    className={`character-count ${formData.description.trim().length >= 500
+                    className={`character-count ${
+                      formData.description.trim().length >= 500
                         ? 'exceeded'
                         : ''
-                      }`}
+                    }`}
                   >
                     {formData.description.trim().length}/500 characters
                   </p>
@@ -484,7 +495,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={'button'}
           />
-          <ActionButton title={'Create'} onClick={() => { }} type={'submit'} />
+          <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
         </div>
       </form>
     </div>

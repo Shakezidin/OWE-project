@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
@@ -40,21 +41,21 @@ func HandleDeleteSlackConfigRequest(resp http.ResponseWriter, req *http.Request)
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in delete Slack Config request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from delete Slack Config request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &deleteSlackConfigReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal delete Slack Config request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal delete slack config request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal delete slack config request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -65,10 +66,10 @@ func HandleDeleteSlackConfigRequest(resp http.ResponseWriter, req *http.Request)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to delete slack config data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to delete slack config Data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to delete slack config Data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
 	log.DBTransDebugTrace(0, "Total %d slack config deleted with record ids: %v", deletedRows, deleteSlackConfigReq.RecordId)
-	FormAndSendHttpResp(resp, "Delete slack config successfully", http.StatusOK, deletedRows)
+	appserver.FormAndSendHttpResp(resp, "Delete slack config successfully", http.StatusOK, deletedRows)
 }

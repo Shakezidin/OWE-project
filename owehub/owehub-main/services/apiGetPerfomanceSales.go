@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -78,21 +79,21 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get perfomance tile data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get perfomance tile data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get perfomance tile data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get perfomance tile data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get perfomance tile data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -104,7 +105,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -122,7 +123,8 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
 			if len(dataReq.DealerNames) <= 0 {
-				FormAndSendHttpResp(resp, "Dealer names cant't be null", http.StatusBadRequest, nil)
+				perfomanceResponse := models.PerfomanceTileDataResponse{}
+				appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceResponse, RecordCount)
 				return
 			}
 		} else {
@@ -138,12 +140,12 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchDealerForAmAe(dataReq, role)
 			if err != nil {
-				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
 			if len(dealerNames) == 0 {
 				log.FuncInfoTrace(0, "No dealer list present")
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 				return
 			}
 			dealerNameSet := make(map[string]bool)
@@ -153,7 +155,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 
 			for _, dealerNameFromUI := range dataReq.DealerNames {
 				if !dealerNameSet[dealerNameFromUI] {
-					FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+					appserver.FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
 					return
 				}
 			}
@@ -168,7 +170,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		}
 	} else {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -181,7 +183,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
 			log.FuncErrorTrace(0, "No sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			appserver.FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -204,7 +206,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -212,7 +214,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get perfomance tile data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get perfomance tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -457,7 +459,7 @@ func HandleGetPerfomanceTileDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	log.FuncInfoTrace(0, "Number of perfomance tile List fetched : %v list %+v", 1, perfomanceResponse)
-	FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceResponse, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "perfomance tile Data", http.StatusOK, perfomanceResponse, RecordCount)
 }
 
 /******************************************************************************

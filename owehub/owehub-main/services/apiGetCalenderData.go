@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -55,33 +56,33 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get calender data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get calender data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get calender data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get calender data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get calender data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	dataReq.Role = req.Context().Value("rolename").(string)
 	if dataReq.Role == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -95,7 +96,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, saleRepNameQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -122,7 +123,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get pending queue tile data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get pending queue tile data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -228,7 +229,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			endDate, err2 := time.Parse("2006-01-02", dataReq.EndDate)
 			if err1 != nil || err2 != nil {
 				log.FuncErrorTrace(0, "Error parsing dates:%v, %v", err1, err2)
-				FormAndSendHttpResp(resp, "Failed to get calender data, invalid date parsed", http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to get calender data, invalid date parsed", http.StatusBadRequest, nil)
 				return
 			}
 
@@ -295,7 +296,7 @@ func HandleGetCalenderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	RecordCount = int64(len(calenderDataList.CalenderDataList))
 
 	log.FuncInfoTrace(0, "Number of pending queue tile List fetched : %v list %+v", 1, calenderDataList)
-	FormAndSendHttpResp(resp, "pending queue tile Data", http.StatusOK, calenderDataList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "pending queue tile Data", http.StatusOK, calenderDataList, RecordCount)
 }
 
 /******************************************************************************

@@ -48,83 +48,117 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     const isStaging = process.env.REACT_APP_ENV;
 
     if (role === TYPE_OF_USER.ADMIN) {
-  
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
+            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
         ) {
-        } else {
+
+        }
+        if (item.path === ROUTES.SALES_REP_SCHEDULER) {
+          item.path = ROUTES.SCHEDULER
+        }
+
+        else {
           newArr[0].mob.push(item);
         }
       });
       return newArr;
     } else if (role === TYPE_OF_USER.DEALER_OWNER) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
+        ) {
 
+        } 
+        if (item.path === ROUTES.SALES_REP_SCHEDULER) {
+          item.path = ROUTES.SCHEDULER
+        }
+        
+        else if (item.path !== ROUTES.CONFIG_PAGE) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    } else if (role === TYPE_OF_USER.SALES_REPRESENTATIVE) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
+            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
         ) {
-        } else if (item.path !== ROUTES.CONFIG_PAGE) {
-          newArr[0].mob.push(item);
-        }
-      });
-      return newArr;
-    }
 
-    else if (role === TYPE_OF_USER.SALES_REPRESENTATIVE) {
-    
+        }
+        
+        else if (role === TYPE_OF_USER.SALES_REPRESENTATIVE && item.path === ROUTES.SCHEDULER) {
+          item.path = ROUTES.SALES_REP_SCHEDULER
+        }
+
+        else if (
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.CONFIG_PAGE &&
+          item.path !== ROUTES.COMMISSION_DASHBOARD
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    } else if (
+      role === TYPE_OF_USER.REGIONAL_MANGER ||
+      role === TYPE_OF_USER.SALE_MANAGER
+    ) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
+            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER || item.path === ROUTES.SCHEDULER)
         ) {
-        } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.COMMISSION_DASHBOARD) {
+         
+        } 
+        if (item.path === ROUTES.SALES_REP_SCHEDULER) {
+          item.path = ROUTES.SCHEDULER
+        }
+        
+        else if (
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.CONFIG_PAGE &&
+          item.path !== ROUTES.COMMISSION_DASHBOARD
+        ) {
           newArr[0].mob.push(item);
         }
       });
       return newArr;
-    }
-    else if (role === TYPE_OF_USER.REGIONAL_MANGER||role===TYPE_OF_USER.SALE_MANAGER) {
-    
-      const newArr: any[] = [{ mob: [] }];
-      list[0].mob.forEach((item: any) => {
-        if (
-          isStaging !== 'staging' &&
-          (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE)
-        ) {
-        } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.COMMISSION_DASHBOARD) {
-          newArr[0].mob.push(item);
-        }
-      });
-      return newArr;
-    }
-    else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
-     
+    } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
           ) {
-          } else {
+            if (role === TYPE_OF_USER.SALES_REPRESENTATIVE && item.path === ROUTES.SCHEDULER) {
+              item.path = ROUTES.SALES_REP_SCHEDULER
+            }
+          } 
+          if (item.path === ROUTES.SALES_REP_SCHEDULER) {
+            item.path = ROUTES.SCHEDULER
+          }
+          
+          else {
             newArr[0].mob.push(item);
           }
         }
       });
       return newArr;
     } else if (role === TYPE_OF_USER.APPOINTMENT_SETTER) {
-   
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -134,36 +168,55 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
           ) {
-          } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path !== ROUTES.COMMISSION_DASHBOARD) {
+            
+          }
+          
+          if (item.path === ROUTES.SALES_REP_SCHEDULER) {
+            item.path = ROUTES.SCHEDULER
+          }
+          
+          else if (
+            item.path !== ROUTES.USER_MANAEMENT &&
+            item.path !== ROUTES.CONFIG_PAGE &&
+            item.path !== ROUTES.COMMISSION_DASHBOARD
+          ) {
             newArr[0].mob.push(item);
           }
         }
       });
       return newArr;
-    } else if (role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role=== TYPE_OF_USER.ACCOUNT_MANAGER) {
+    } else if (
+      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+      role === TYPE_OF_USER.ACCOUNT_MANAGER
+    ) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (
-
-          item.path !== ROUTES.USER_MANAEMENT
-        ) {
+        if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
-          ) 
+              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
+          ) {
+            
+          } 
 
-          {
-          } else if (item.path !== ROUTES.USER_MANAEMENT && item.path !== ROUTES.CONFIG_PAGE && item.path!==ROUTES.TEAM_MANAGEMENT_DASHBOARD) {
+          if (item.path === ROUTES.SALES_REP_SCHEDULER) {
+            item.path = ROUTES.SCHEDULER
+          }
+          
+          else if (
+            item.path !== ROUTES.USER_MANAEMENT &&
+            item.path !== ROUTES.CONFIG_PAGE &&
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD
+          ) {
             newArr[0].mob.push(item);
           }
         }
       });
       return newArr;
     } else if (role === TYPE_OF_USER.DB_USER) {
-      
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -175,26 +228,38 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
           ) {
-          } else {
+            
+          } 
+          if (role === TYPE_OF_USER.SALES_REPRESENTATIVE && item.path === ROUTES.SCHEDULER) {
+            item.path = ROUTES.SALES_REP_SCHEDULER
+          }
+          
+          else {
             newArr[0].mob.push(item);
           }
         }
       });
       return newArr;
-    } 
-    else {
-      console.log( 'list working else');
+    } else {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE)
+              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SCHEDULER)
+
           ) {
-          } else {
+
+          } 
+
+          if (role === TYPE_OF_USER.SALES_REPRESENTATIVE && item.path === ROUTES.SCHEDULER) {
+            item.path = ROUTES.SALES_REP_SCHEDULER
+          }
+          
+          else {
             newArr[0].mob.push(item);
           }
         }
@@ -243,7 +308,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   // const isMobile = width < 768;
   const isMobile = true;
 
-  console.log(dealer, 'dealer');
+  console.log(filteredList(), 'dealer');
   return (
     <div
       style={{ zIndex: '30' }}
@@ -280,8 +345,8 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       }, 500);
                     }}
                     className={`side-icon-container ${location.pathname === oth.path
-                        ? 'active-link-bg'
-                        : 'not-active-link'
+                      ? 'active-link-bg'
+                      : 'not-active-link'
                       }`}
                   >
                     <div

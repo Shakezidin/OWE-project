@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -39,21 +40,21 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update Tier Loan Fee request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Tier Loan Fee request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateTierLoanFee)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update Tier Loan Fee request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update Tier Loan Fee request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update Tier Loan Fee request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -62,34 +63,34 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 		(len(updateTierLoanFee.StartDate) <= 0) || (len(updateTierLoanFee.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateTierLoanFee.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateTierLoanFee.OweCost <= float64(0) {
 		err = fmt.Errorf("Invalid owe cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid owe cost Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid owe cost Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateTierLoanFee.DlrMu <= float64(0) {
 		err = fmt.Errorf("Invalid dlr mu Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid dlr_mu Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid dlr_mu Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateTierLoanFee.DlrCost <= float64(0) {
 		err = fmt.Errorf("Invalid dlr cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -97,7 +98,7 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	if err != nil {
 		err = fmt.Errorf("Error parsing start date:", err)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid start date, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid start date, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -105,7 +106,7 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	if err != nil {
 		err = fmt.Errorf("Error parsing start date:", err)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid end date, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid end date, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -124,12 +125,12 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateTierLoanFeeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add Tier Loan Fee in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Tier Loan Fee", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update Tier Loan Fee", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Tier Loan Fee updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Tier Loan Fee Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Tier Loan Fee Updated Successfully", http.StatusOK, nil)
 }

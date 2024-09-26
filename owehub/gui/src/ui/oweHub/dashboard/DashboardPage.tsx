@@ -22,6 +22,7 @@ import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints'
 import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
@@ -53,7 +54,7 @@ export const DashboardPage: React.FC = () => {
     comissionValueData[comissionValueData.length - 1].value
   );
   const { isActive } = useAppSelector((state) => state.filterSlice);
-  const [prefferedType, setPrefferedType] = useState<string>('')
+  const [prefferedType, setPrefferedType] = useState<string>('');
   const { pathname } = useLocation();
   const [isOptionsFetched, setIsOptionsFetched] = useState(false);
   const handleSelectChange2 = (
@@ -78,18 +79,28 @@ export const DashboardPage: React.FC = () => {
         getDealerPay({
           page_number: currentPage,
           page_size: itemsPerPage,
-          pay_roll_start_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
+          pay_roll_start_date: moment(appliedDate).format(
+            'YYYY-MM-DD HH:mm:ss'
+          ),
           pay_roll_end_date: moment(appliedDate).format('YYYY-MM-DD HH:mm:ss'),
           use_cutoff: 'NO',
           dealer_name: dealer.value,
           sort_by: 'unique_id',
           commission_model: selectedOption2,
           filters,
-          preffered_type: prefferedType
+          preffered_type: prefferedType,
         })
       );
     }
-  }, [currentPage, selectedOption2, appliedDate, filters, dealer, isOptionsFetched, prefferedType]);
+  }, [
+    currentPage,
+    selectedOption2,
+    appliedDate,
+    filters,
+    dealer,
+    isOptionsFetched,
+    prefferedType,
+  ]);
 
   useEffect(() => {
     (async () => {
@@ -98,7 +109,7 @@ export const DashboardPage: React.FC = () => {
       };
       const res = await postCaller(EndPoints.get_newFormData, tableData);
       if (res.status > 201) {
-        return
+        return;
       }
       setDealers([...res.data.dealer]);
       setDealer({ label: 'All', value: 'ALL' });
@@ -127,10 +138,17 @@ export const DashboardPage: React.FC = () => {
     setFilters(req.filters);
   };
 
-
-
   return (
     <>
+      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+        <Breadcrumb
+          head=""
+          linkPara="Dealer Pay"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
       <div className="Dashboard-section-container">
         <div className="white-back">
           <div className="DashboardPage-container">
@@ -241,7 +259,15 @@ export const DashboardPage: React.FC = () => {
                     Sales Partner
                   </label>
                   <Select
-                    options={[{ label: 'All', value: 'ALL' }, ...dealers?.map?.((item) => ({ label: item, value: item }))] || []}
+                    options={
+                      [
+                        { label: 'All', value: 'ALL' },
+                        ...dealers?.map?.((item) => ({
+                          label: item,
+                          value: item,
+                        })),
+                      ] || []
+                    }
                     value={dealer}
                     onChange={(newValue) => {
                       if (newValue) {
@@ -331,8 +357,6 @@ export const DashboardPage: React.FC = () => {
                   /> */}
                 </div>
               </div>
-
-
 
               <div className="dash-head-input" style={{ width: '250px' }}>
                 <div
@@ -450,7 +474,7 @@ export const DashboardPage: React.FC = () => {
                     style={{ height: '15px', width: '15px' }}
                   />
                 </div>
-                <button className={`performance-exportbtn  mt0 `}>
+                <button className={`performance-exportbtn  mt0 `} style={{height: "36px", padding: "8px 12px"}}>
                   <FaUpload size={12} className="mr-1" />
                   <span>{' Export '}</span>
                 </button>

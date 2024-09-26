@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -28,7 +29,6 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		whereEleList       []interface{}
 		queryWithFiler     string
 		filter             string
-		dealerName         interface{}
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
@@ -74,21 +74,21 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get PerfomanceCsvDownload data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get PerfomanceCsvDownload data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get PerfomanceCsvDownload data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceCsvDownload data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceCsvDownload data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -107,7 +107,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -118,14 +118,49 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	if len(data) > 0 {
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName = data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
-		dataReq.Dealer = dealerName
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if dealerName == "" || !ok {
+			dealerName = ""
+		}
+
+		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
+			if len(dataReq.DealerName) <= 0 {
+				perfomanceList := models.PerfomanceListResponse{}
+				appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+				return
+			}
+		} else {
+			dataReq.DealerName = []string{dealerName}
+		}
 
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
 			filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, true, false, false)
 		case string(types.RoleDealerOwner):
+			filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, false, false, false)
+		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
+			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)
+			if err != nil {
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				return
+			}
+
+			if len(dealerNames) == 0 {
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				return
+			}
+			dealerNameSet := make(map[string]bool)
+			for _, dealer := range dealerNames {
+				dealerNameSet[dealer] = true
+			}
+
+			for _, dealerNameFromUI := range dataReq.DealerName {
+				if !dealerNameSet[dealerNameFromUI] {
+					appserver.FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+					return
+				}
+			}
 			filter, whereEleList = PrepareAdminDlrCsvFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
@@ -137,7 +172,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		}
 	} else {
 		log.FuncErrorTrace(0, "Failed to get Perfomance Csv Download data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Perfomance Csv Download data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get Perfomance Csv Download data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -150,7 +185,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
 			log.FuncErrorTrace(0, "No sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			appserver.FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -170,7 +205,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		queryWithFiler = query + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -178,7 +213,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Perfomance Csv Download data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Perfomance Csv Download data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get Perfomance Csv Download data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -555,7 +590,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 	}
 
 	log.FuncInfoTrace(0, "Number of data List fetched : %v list %+v", len(data), data)
-	FormAndSendHttpResp(resp, "Perfomance Csv Data", http.StatusOK, perfomanceList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Perfomance Csv Data", http.StatusOK, perfomanceList, RecordCount)
 }
 
 /*
@@ -590,16 +625,24 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		whereAdded = true
 	}
 
-	// Add dealer filter
-	if !adminCheck && !filterCheck {
+	if len(dataFilter.DealerName) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.Dealer)
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerName {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerName)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
 
 	// Always add the following filters
@@ -607,12 +650,28 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		filtersBuilder.WriteString(" AND")
 	} else {
 		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
 	}
+	// Add the always-included filters
 	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
 
 	filters = filtersBuilder.String()
 
@@ -670,27 +729,53 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	if len(dataFilter.DealerName) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerName {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerName)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.Dealer)
 
 	// Always add the following filters
 	if whereAdded {
 		filtersBuilder.WriteString(" AND")
 	} else {
 		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
 	}
+	// Add the always-included filters
 	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
 
 	filters = filtersBuilder.String()
 

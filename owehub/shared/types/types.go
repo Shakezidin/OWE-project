@@ -9,7 +9,15 @@ package types
 
 import (
 	CfgModels "OWEApp/shared/models"
+
+	"github.com/dgrijalva/jwt-go"
 )
+
+type Claims struct {
+	EmailId  string `json:"emailid"`
+	RoleName string `json:"rolename"`
+	jwt.StandardClaims
+}
 
 type UserGroup string
 type UserRoles string

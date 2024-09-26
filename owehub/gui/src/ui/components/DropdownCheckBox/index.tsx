@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import "../../leaderboard/components/Banner.css"
-import "../text_input/Input.css"
-
+import React, { useState, useEffect, useRef, memo } from 'react';
+import '../../leaderboard/components/Banner.css';
+import '../text_input/Input.css';
+import './styles/index.css';
+import { BiChevronDown } from 'react-icons/bi';
+import SelectOption from '../selectOption/SelectOption';
 interface Option {
   label: string;
   value: string;
@@ -12,6 +14,7 @@ interface DropdownCheckboxProps {
   selectedOptions: Option[];
   onChange: (selectedOptions: Option[]) => void;
   placeholder?: string;
+  label?: string;
 }
 
 const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
@@ -19,19 +22,24 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   selectedOptions,
   onChange,
   placeholder = 'Search...',
+  label
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [filteredOptions, setFilteredOptions] = useState<Option[]>(options);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const optionContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setFilteredOptions(options);
+    setFilteredOptions([...options]);
   }, [options]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
         setSearch('');
         setFilteredOptions(options);
@@ -42,37 +50,34 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [options]);
 
-  useEffect(() => {
-    // Check if "ALL" option is present and select all options by default
-    if (options.some(option => option.value === "ALL")) {
-      onChange(options);
-    }
-  }, [options, onChange]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase().trim();
     setSearch(searchTerm);
 
     if (searchTerm) {
-      const filtered = options.filter(item =>
+      const filtered = options.filter((item) =>
         item.label.toLowerCase().includes(searchTerm)
       );
       setFilteredOptions(filtered);
     } else {
-      setFilteredOptions(options);
+      setFilteredOptions([...options]);
     }
   };
-  console.log(options, "topionsss")
   const handleOptionChange = (option: Option) => {
     let updatedSelection: Option[];
-    if (option.value === "ALL") {
+
+    if (option.value === 'ALL') {
       updatedSelection = selectedOptions.length === options.length ? [] : options;
     } else {
-      updatedSelection = selectedOptions.some(item => item.value === option.value)
-        ? selectedOptions.filter(item => item.value !== option.value && item.value !== "ALL")
-        : [...selectedOptions.filter(item => item.value !== "ALL"), option];
-      if (updatedSelection.length === options.length - 1 && options.some(opt => opt.value === "ALL")) {
-        updatedSelection = options;
+      if (selectedOptions.some((item) => item.value === option.value)) {
+        updatedSelection = selectedOptions.filter((item) => item.value !== option.value);
+      } else {
+        updatedSelection = [...selectedOptions, option];
+        optionContainer.current?.scroll({ top: 0,behavior:"smooth" })
+      }
+      if (updatedSelection.length === options.length - 1 && options.some((opt) => opt.value === 'ALL')) {
+        updatedSelection = [...options];
       }
     }
     onChange(updatedSelection);
@@ -82,15 +87,27 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     onChange(selectedOptions.length === options.length ? [] : options);
   };
 
-  const isAllSelected = (selectedOptions.length === options.length || selectedOptions.some(item => item.value === "ALL"));
-
+  const isAllSelected =
+    selectedOptions.length === options.length ||
+    selectedOptions.some((item) => item.value === 'ALL');
+  const sortedOptions = filteredOptions.sort((a, b) => {
+    const isSelected = selectedOptions.some((item) => item.value === a.value);
+    if (isSelected) {
+      return -1
+    } else {
+      return 1
+    }
+  });
   return (
-    <div className="dropdown-checkbox" ref={dropdownRef}>
-      <div className="dropdown-toggle" onClick={() => setIsOpen(!isOpen)}>
-        {isAllSelected ? 'All selected' : `${selectedOptions.length}  selected`}
+    <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
+      <div className="dropdown-toggle flex items-center" onClick={() => setIsOpen(!isOpen)}>
+        <span>
+          {` ${isAllSelected && selectedOptions.length ? "All" : selectedOptions.length} ${label} selected`}
+        </span>
+        <BiChevronDown className="ml1 " size={22} style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "all 550ms" }} />
       </div>
       {isOpen && (
-        <div className="dropdown-menu scrollbar" style={{ overflowX: "clip" }}>
+        <div ref={optionContainer} className="dropdown-menu scrollbar" style={{ overflowX: 'clip' }}>
           <input
             type="text"
             className="input"
@@ -108,12 +125,15 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
               <span>All</span>
             </div>
           )}
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map((option, index) => (
+          {sortedOptions.length > 0 ? (
+            sortedOptions.map((option, index) => (
               <div key={index} className="dropdown-item">
                 <input
                   type="checkbox"
-                  checked={selectedOptions.some(item => item.value === option.value)}
+                  style={{ flexShrink: 0 }}
+                  checked={selectedOptions.some(
+                    (item) => item.value === option.value
+                  )}
                   onChange={() => handleOptionChange(option)}
                 />
                 <span>{option.label}</span>
@@ -128,4 +148,4 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   );
 };
 
-export default DropdownCheckbox;
+export default memo(DropdownCheckbox);

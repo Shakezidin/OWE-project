@@ -12,19 +12,11 @@ import (
 	models "OWEApp/shared/models"
 
 	"fmt"
-
-	"github.com/dgrijalva/jwt-go"
 )
 
 const (
 	logginSessionTimeMin = 60 * 8
 )
-
-type Claims struct {
-	EmailId  string `json:"emailid"`
-	RoleName string `json:"rolename"`
-	jwt.StandardClaims
-}
 
 /******************************************************************************
  * FUNCTION:		ValidateUser

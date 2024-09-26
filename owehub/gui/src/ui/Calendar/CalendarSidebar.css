@@ -14,12 +14,12 @@
 }
 
 .user-sidebar {
-    max-width: 580px;
-    min-width: 580px;
-    min-height: 100vh;
-    overflow-y: auto;
-    background: #fff;
-    padding: 20px;
+  max-width: 580px;
+  min-width: 580px;
+  min-height: 100vh;
+  overflow-y: auto;
+  background: #fff;
+  padding: 20px;
 }
 
 .user-sidebar .upper-section {
@@ -106,7 +106,7 @@
   width: 230px;
 }
 .sidebar-cards .card-address:hover {
-  color: #3C7AF1;
+  color: #3c7af1;
 }
 
 .sidebar-cards .card-address:hover {
@@ -137,36 +137,36 @@
 }
 
 @media screen and (max-width: 915px) {
-    .sidebar-wrapper {
-        position: unset;
-        background-color: unset;
-        overflow-y: unset;
-        justify-content: center;
-        background: #fff;
-        border-radius: 20px;
-        margin-top: 1rem;
-    }
+  .sidebar-wrapper {
+    position: unset;
+    background-color: unset;
+    overflow-y: unset;
+    justify-content: center;
+    background: #fff;
+    border-radius: 20px;
+    margin-top: 1rem;
+  }
 
-    .user-sidebar{
-      max-width: unset;
-      width: 100%;
-    }
+  .user-sidebar {
+    max-width: unset;
+    width: 100%;
+  }
 
-    .sidebar-cards .card {
-        justify-content: space-between;
-    }
+  .sidebar-cards .card {
+    justify-content: space-between;
+  }
 
-    .upper-section {
-        padding: 1rem 0;
-    }
+  .upper-section {
+    padding: 1rem 0;
+  }
 
   .sidebar-cards {
     margin: 2rem 0;
   }
 
-    .sidebar-cards .card-name {
-        margin-right: 10px;
-    }
+  .sidebar-cards .card-name {
+    margin-right: 10px;
+  }
 
   .user-sidebar {
     background: unset;
@@ -189,9 +189,9 @@
     font-size: 1.3rem;
   }
 
-    .upper-section-status {
-        display: none;
-    }
+  .upper-section-status {
+    display: none;
+  }
 
   .upper-section-status div {
     padding: 7px;
@@ -203,34 +203,34 @@
     font-size: 14px;
   }
 
-    .upper-section-status span {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 1.3rem;
-        height: 1.3rem;
-        border-radius: 50%;
-        margin-right: 8px;
-        font-weight: 500;
-        background-color: #fff;
-    }
+  .upper-section-status span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    margin-right: 8px;
+    font-weight: 500;
+    background-color: #fff;
+  }
 }
 
-@media (max-width: 768px){
-  .main-sidebar{
+@media (max-width: 768px) {
+  .main-sidebar {
     margin: 10px;
   }
 }
 
 @media (max-width: 590px) {
-    .sidebar-cards {
-        grid-template-columns: 1fr;
-    }
+  .sidebar-cards {
+    grid-template-columns: 1fr;
+  }
 
-    .sidebar-wrapper {
-        display: block;
-    }
-    .sidebar-cards .card-name {
-        width: 200px;
-    }
+  .sidebar-wrapper {
+    display: block;
+  }
+  .sidebar-cards .card-name {
+    width: 200px;
+  }
 }

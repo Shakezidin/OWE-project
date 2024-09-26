@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -42,28 +43,28 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create team request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create team request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &TeamData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create team request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create team request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create team request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(TeamData.TeamName) <= 0 {
 		err = fmt.Errorf("empty input fields in api is not allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -76,7 +77,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		if _, exists := saleRepSet[managerId]; exists {
 			err = fmt.Errorf("user id %s cannot be both a sale representative and a manager", managerId)
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
 			return
 		}
 	}
@@ -84,13 +85,13 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	role := req.Context().Value("rolename").(string)
 	if role == "Sale Representative" {
 		log.FuncErrorTrace(0, "sale rep accessing")
-		FormAndSendHttpResp(resp, "unauthorized user", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "unauthorized user", http.StatusBadRequest, nil)
 		return
 	}
 
 	if role == "Admin" && len(TeamData.DealerName) <= 0 {
 		log.FuncErrorTrace(0, "for admins, dealer should be selected for team creation")
-		FormAndSendHttpResp(resp, "dealer not selected for team creation", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "dealer not selected for team creation", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -98,7 +99,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		// Get dealer_id based on email of logged-in user
 		TeamData.Email = req.Context().Value("emailid").(string)
 		if TeamData.Email == "" {
-			FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 			return
 		}
 		userEmail := TeamData.Email
@@ -110,14 +111,14 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{userEmail})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get dealers ID from DB with err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get dealers ID", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get dealers ID", http.StatusBadRequest, nil)
 			return
 		}
 
 		if len(data) == 0 {
 			err = fmt.Errorf("no dealer found for the given email")
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "No dealer found for the given email", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "No dealer found for the given email", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -134,14 +135,14 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get dealer ID from DB with err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get dealer ID", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get dealer ID", http.StatusBadRequest, nil)
 			return
 		}
 
 		if len(data) == 0 {
 			err = fmt.Errorf("no dealer found with the given name")
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "No dealer found with the given name", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "No dealer found with the given name", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -159,13 +160,13 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key value") {
 			log.FuncErrorTrace(0, "Team with the same name already exists err: %v", err)
-			FormAndSendHttpResp(resp, "Team with the same name already exists", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Team with the same name already exists", http.StatusInternalServerError, nil)
 			return
 		}
 		log.FuncErrorTrace(0, "Failed to Add Team in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Team", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Team", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Team Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Team Created Successfully", http.StatusOK, nil)
 }
