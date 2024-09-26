@@ -275,7 +275,7 @@ const MyMapComponent: React.FC = () => {
   const onPlaceChanged = () => {
     const place = autocompleteRef.current?.getPlace();
     if (!place || !place.geometry || !place.geometry.location) {
-      toast.error('No details available for the selected place.');
+      console.log('No details available for the selected place.');
       return;
     }
 
@@ -313,7 +313,7 @@ const MyMapComponent: React.FC = () => {
             mapRef.current.fitBounds(stateBounds);
           }
         } else {
-          toast.error('Failed to find state location.');
+          console.log('Failed to find state location.');
         }
       });
     }
@@ -487,7 +487,7 @@ const MyMapComponent: React.FC = () => {
             mapRef.current.fitBounds(stateBounds); // This will zoom and center to show only the state
           }
         } else {
-          toast.error('Failed to find the state location.');
+          console.log('Failed to find the state location.');
         }
       });
     }
