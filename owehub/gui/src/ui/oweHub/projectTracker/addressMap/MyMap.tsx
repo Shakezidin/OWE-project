@@ -10,7 +10,7 @@ import { IoClose } from 'react-icons/io5';
 import { debounce } from '../../../../utiles/debounce';
 import { useNavigate } from 'react-router-dom';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
+import { availableStates } from '../../../../core/models/data_models/SelectDataModel';
 import { toast } from 'react-toastify';
 import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
@@ -206,10 +206,10 @@ const MyMapComponent: React.FC = () => {
     { km: 100 },
     { km: 200 },
     { km: 500 },
-    { km: 1000 }
-  ]
+    { km: 1000 },
+  ];
 
-  const [selectedKm, setSelectedKm] = useState<string>('');
+  const [selectedKm, setSelectedKm] = useState<any>(10);
 
   const handleChange = (newValue: StateOption | null, fieldName: string) => {
     const updatedValue = newValue ? newValue.value : '';
@@ -227,10 +227,65 @@ const MyMapComponent: React.FC = () => {
     }
   };
 
-  const handleKM = (newValue: string, field: string) => {
-    if (field === 'km') {
-      setSelectedKm(newValue);
+  const handleKMChange = (newKm: any) => {
+    setSelectedKm(newKm);
+    if (searchedLocation) {
+      filterLocationsByKm(searchedLocation, newKm); // Call the filter function
     }
+  };
+
+  // Function to filter locations within the selected KM range
+  const filterLocationsByKm = (searchedLocation: LatLng, km: number) => {
+    const neighboringLocations = locations.filter((location) => {
+      const distance = calculateDistance(
+        searchedLocation.lat,
+        searchedLocation.lng,
+        location.lat,
+        location.lng
+      );
+      return distance <= km;
+    });
+
+    setFilteredLocations(neighboringLocations); // Set the new filtered locations
+    setNeighboring(neighboringLocations);
+
+    // Update map bounds to show the filtered locations
+    const bounds = new window.google.maps.LatLngBounds();
+    bounds.extend(searchedLocation);
+    neighboringLocations.forEach((location) => {
+      bounds.extend({ lat: location.lat, lng: location.lng });
+    });
+
+    if (mapRef.current) {
+      if (neighboringLocations.length > 0) {
+        mapRef.current.fitBounds(bounds);
+      } else {
+        mapRef.current.setCenter(searchedLocation);
+        mapRef.current.setZoom(10); // Zoom out if no neighboring locations found
+      }
+    }
+  };
+
+  // Function to handle search location change
+  const onPlaceChanged = () => {
+    const place = autocompleteRef.current?.getPlace();
+    if (!place || !place.geometry || !place.geometry.location) {
+      toast.error('No details available for the selected place.');
+      return;
+    }
+
+    const searchedLocation: LatLng = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    };
+
+    const selectedAddress = place.formatted_address || place.name || '';
+    setSearchValue(selectedAddress);
+    setSearchedLocation(searchedLocation);
+    setCenter(searchedLocation);
+
+    // Filter locations within the selected KM range after search
+    filterLocationsByKm(searchedLocation, selectedKm);
   };
 
   useEffect(() => {
@@ -284,7 +339,7 @@ const MyMapComponent: React.FC = () => {
   }, []);
 
   const tableData = {
-    tableNames: ['states'],
+    tableNames: ['available_states'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -307,65 +362,65 @@ const MyMapComponent: React.FC = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in kilometers
   };
 
   // Handle search changes in the Autocomplete input
-  const onPlaceChanged = () => {
-    const place = autocompleteRef.current?.getPlace();
+  // const onPlaceChanged = () => {
+  //   const place = autocompleteRef.current?.getPlace();
 
-    if (!place || !place.geometry || !place.geometry.location) {
-      toast.error('No details available for the selected place.');
-      return;
-    }
+  //   if (!place || !place.geometry || !place.geometry.location) {
+  //     toast.error('No details available for the selected place.');
+  //     return;
+  //   }
 
-    const searchedLocation: LatLng = {
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
-    };
+  //   const searchedLocation: LatLng = {
+  //     lat: place.geometry.location.lat(),
+  //     lng: place.geometry.location.lng(),
+  //   };
 
-    const selectedAddress = place.formatted_address || place.name || '';
-    setSearchValue(selectedAddress);
-    setSearchedLocation(searchedLocation);
-    setCenter(searchedLocation);
+  //   const selectedAddress = place.formatted_address || place.name || '';
+  //   setSearchValue(selectedAddress);
+  //   setSearchedLocation(searchedLocation);
+  //   setCenter(searchedLocation);
 
-    // Filter locations within 10 km of the searched address
-    const neighboringLocations = locations.filter((location) => {
-      const distance = calculateDistance(
-        searchedLocation.lat,
-        searchedLocation.lng,
-        location.lat,
-        location.lng
-      );
-      return distance <= 10;
-    });
+  //   // Filter locations within 10 km of the searched address
+  //   const neighboringLocations = locations.filter((location) => {
+  //     const distance = calculateDistance(
+  //       searchedLocation.lat,
+  //       searchedLocation.lng,
+  //       location.lat,
+  //       location.lng
+  //     );
+  //     return distance <= 10;
+  //   });
 
-    setFilteredLocations(neighboringLocations);
-    setNeighboring(neighboringLocations);
+  //   setFilteredLocations(neighboringLocations);
+  //   setNeighboring(neighboringLocations);
 
-    // Adjust the map bounds to show both the searched location and neighboring markers
-    const bounds = new window.google.maps.LatLngBounds();
-    bounds.extend(searchedLocation);
+  //   // Adjust the map bounds to show both the searched location and neighboring markers
+  //   const bounds = new window.google.maps.LatLngBounds();
+  //   bounds.extend(searchedLocation);
 
-    neighboringLocations.forEach((location) => {
-      bounds.extend({ lat: location.lat, lng: location.lng });
-    });
+  //   neighboringLocations.forEach((location) => {
+  //     bounds.extend({ lat: location.lat, lng: location.lng });
+  //   });
 
-    if (mapRef.current) {
-      if (neighboringLocations.length > 0) {
-        // If there are neighboring locations, fit bounds to show all markers
-        mapRef.current.fitBounds(bounds);
-      } else {
-        // If no neighboring locations, set a default zoom level (zoom out)
-        mapRef.current.setCenter(searchedLocation);
-        mapRef.current.setZoom(10); // Adjust zoom level to show a larger area
-      }
-    }
-  };
+  //   if (mapRef.current) {
+  //     if (neighboringLocations.length > 0) {
+  //       // If there are neighboring locations, fit bounds to show all markers
+  //       mapRef.current.fitBounds(bounds);
+  //     } else {
+  //       // If no neighboring locations, set a default zoom level (zoom out)
+  //       mapRef.current.setCenter(searchedLocation);
+  //       mapRef.current.setZoom(10); // Adjust zoom level to show a larger area
+  //     }
+  //   }
+  // };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -385,12 +440,29 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (filteredLocations.length === 0) {
+    // Trim searchValue to remove spaces
+    const trimmedSearchValue = searchValue.trim();
+
+    if (trimmedSearchValue) {
+      // If searchValue has meaningful content, filter neighboring locations
+      setFilteredLocations(neighboring);
+    } else if (createRePayData.state) {
+      // If no searchValue but state is available, filter by locations in that state
       setFilteredLocations(locations);
-    } else if (createRePayData) {
+    } else if (filteredLocations.length === 0) {
+      // If no filtered locations, load the full locations list
+      setFilteredLocations(locations);
+    } else if (createRePayData.state === '') {
+      // If state is an empty string, load full locations list
       setFilteredLocations(locations);
     }
-  }, [locations, filteredLocations, createRePayData.state]);
+  }, [
+    locations,
+    filteredLocations,
+    createRePayData.state,
+    searchValue,
+    neighboring,
+  ]);
 
   useEffect(() => {
     // Ensure the state is selected before proceeding
@@ -509,7 +581,6 @@ const MyMapComponent: React.FC = () => {
   console.log(neighboring.length, 'negughtb');
   console.log(searchedLocation, 'searchloaction');
 
-
   return (
     <div className={styles.mapWrap}>
       <div className={styles.cardHeader}>
@@ -521,13 +592,15 @@ const MyMapComponent: React.FC = () => {
                 <SelectOption
                   options={[
                     { label: 'All State', value: '' }, // Default option
-                    ...(stateOption(newFormData) || []), // Ensure it returns an array
+                    ...(availableStates(newFormData) || []), // Ensure it returns an array
                   ]}
                   onChange={(newValue) => handleChange(newValue, 'state')}
                   value={
-                    (stateOption(newFormData) || []).find(
-                      (option) => option.value === createRePayData.state
-                    ) || { label: 'Select State', value: '' } // Default when no match
+                    createRePayData.state === ''
+                      ? { label: 'All State', value: '' } // If no state is selected, show "All State"
+                      : (availableStates(newFormData) || []).find(
+                          (option) => option.value === createRePayData.state
+                        )
                   }
                   menuStyles={{
                     width: 400,
@@ -538,93 +611,105 @@ const MyMapComponent: React.FC = () => {
                   }}
                   singleValueStyles={{
                     fontWeight: 400,
-                    color: (createRePayData.state === '') ? '#868686' : 'inherit'
+                    color: createRePayData.state === '' ? '#868686' : 'inherit', // Grey color for "All State"
                   }}
                   width="150px"
                 />
               </div>
 
-              <div className={styles.kmWrap}>
-                <SelectOption
-                  options={[
-                    { label: 'All', value: '' },
-                    ...kmsOptions.map((km) => ({ label: `${km.km} KM`, value: km.km.toString() })),
-                  ]}
-                  onChange={(newValue) => newValue && handleKM(newValue.value, 'km')}
-                  value={selectedKm ? { value: selectedKm, label: `${selectedKm} km` } : { label: 'Select Km', value: '' }}
-                  menuStyles={{
-                    width: 400,
-                  }}
-                  menuListStyles={{
-                    fontWeight: 400,
-                    width: 150,
-                  }}
-                  singleValueStyles={{
-                    fontWeight: 400,
-                    color: (createRePayData.state === '') ? '#868686' : 'inherit'
-                  }}
-                  width="150px"
-                />
-              </div>
+              {searchValue ? (
+                <div className={styles.kmWrap}>
+                  <SelectOption
+                    options={[
+                      { label: 'All', value: '' },
+                      ...kmsOptions.map((km) => ({
+                        label: `${km.km} KM`,
+                        value: km.km.toString(),
+                      })),
+                    ]}
+                    onChange={(newValue) =>
+                      newValue && handleKMChange(newValue.value)
+                    }
+                    value={
+                      selectedKm
+                        ? { value: selectedKm, label: `${selectedKm} km` }
+                        : { label: 'Select Km', value: '' }
+                    }
+                    menuStyles={{
+                      width: 400,
+                    }}
+                    menuListStyles={{
+                      fontWeight: 400,
+                      width: 150,
+                    }}
+                    singleValueStyles={{
+                      fontWeight: 400,
+                      color:
+                        createRePayData.state === '' ? '#868686' : 'inherit',
+                    }}
+                    width="150px"
+                  />
+                </div>
+              ) : null}
             </div>
 
             <div className={styles.mapSearch}>
               <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                  <div className={styles.inputWrap}>
-                    <input
-                      type="text"
-                      placeholder="Search for an address"
-                      className={styles.inputsearch}
-                      maxLength={100}
-                      onInput={(e) => {
-                        const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
-                        input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
+                <div className={styles.inputWrap}>
+                  <input
+                    type="text"
+                    placeholder="Search for an address"
+                    className={styles.inputsearch}
+                    maxLength={100}
+                    onInput={(e) => {
+                      const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
+                      input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '8px 2rem',
+                    }}
+                    onChange={handleInputChange}
+                    value={searchValue}
+                    disabled={isSearchDisabled} // Disable search when a state is selected
+                  />
+                  {searchValue && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchValue(''); // Clear the search value
+                        setFilteredLocations(locations);
+                        setSearchedLocation(null); // Reset to show all locations
+
+                        if (mapRef.current) {
+                          const bounds = new google.maps.LatLngBounds();
+
+                          // Loop through all the locations and extend the bounds to include each marker's position
+                          locations.forEach((location) => {
+                            bounds.extend(
+                              new google.maps.LatLng(location.lat, location.lng)
+                            );
+                          });
+
+                          // Adjust the map to fit the bounds of all markers
+                          mapRef.current.fitBounds(bounds);
+                        }
                       }}
                       style={{
-                        width: '100%',
-                        padding: '8px 2rem',
+                        position: 'absolute',
+                        right: '8px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
                       }}
-                      onChange={handleInputChange}
-                      value={searchValue}
-                      disabled={isSearchDisabled} // Disable search when a state is selected
-                    />
-                    {searchValue && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSearchValue(''); // Clear the search value
-                          setFilteredLocations(locations);
-                          setSearchedLocation(null); // Reset to show all locations
-
-                          if (mapRef.current) {
-                            const bounds = new google.maps.LatLngBounds();
-
-                            // Loop through all the locations and extend the bounds to include each marker's position
-                            locations.forEach((location) => {
-                              bounds.extend(
-                                new google.maps.LatLng(location.lat, location.lng)
-                              );
-                            });
-
-                            // Adjust the map to fit the bounds of all markers
-                            mapRef.current.fitBounds(bounds);
-                          }
-                        }}
-                        style={{
-                          position: 'absolute',
-                          right: '8px',
-                          top: '50%',
-                          transform: 'translateY(-50%)',
-                          background: 'transparent',
-                          border: 'none',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <IoClose size={16} style={{ marginTop: "4px" }} />
-                      </button>
-                    )}
-                    <RiMapPinLine className={styles.inputMap} />
-                  </div>
+                    >
+                      <IoClose size={16} style={{ marginTop: '4px' }} />
+                    </button>
+                  )}
+                  <RiMapPinLine className={styles.inputMap} />
+                </div>
               </Autocomplete>
             </div>
 
@@ -720,7 +805,9 @@ const MyMapComponent: React.FC = () => {
                           }}
                         >
                           <div className={styles.infoWindow}>
-                            <h3 className={styles.projectDetail}>Project Details</h3>
+                            <h3 className={styles.projectDetail}>
+                              Project Details
+                            </h3>
                             <div className={styles.infoWindowRow}>
                               <p className={styles.infoWindowLabel}>
                                 Home Owner:
@@ -730,7 +817,9 @@ const MyMapComponent: React.FC = () => {
                               </p>
                             </div>
                             <div className={styles.infoWindowRow}>
-                              <p className={styles.infoWindowLabel}>Unique ID:</p>
+                              <p className={styles.infoWindowLabel}>
+                                Unique ID:
+                              </p>
                               <p className={styles.infoWindowValue}>
                                 {selectedLocation.unique_id}
                               </p>
@@ -745,7 +834,6 @@ const MyMapComponent: React.FC = () => {
                             </div>
                           </div>
                         </InfoWindow>
-
                       )}
                     </div>
                   </>
