@@ -7,7 +7,7 @@ import { IoChevronDownSharp } from 'react-icons/io5';
 import { RxDownload } from 'react-icons/rx';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import DropDownLibrary from './DropDownLibrary';
+import DropDownLibrary from './Modals/DropDownLibrary';
 
 
 const LibraryHomepage = () => {

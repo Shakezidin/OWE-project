@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classes from './sortby.module.css';
+import classes from './styles/sortby.module.css';
 
 
 
