@@ -1,6 +1,10 @@
 .sortby_container {
   position: relative;
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
 }
  
 .logo_sortby_botton{
@@ -14,6 +18,10 @@
   font-weight: 500;
   line-height: 18px;
   font-family: 'Poppins';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 .logo_sortby_botton:hover{
   border: 1px solid #377CF6;
@@ -57,4 +65,9 @@
   background-color: #D6E5FF;
   
   
+}
+
+.icon{
+position: relative;
+top: 1px;
 }
