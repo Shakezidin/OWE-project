@@ -10,6 +10,8 @@ import { ReactComponent as CrossIcon } from '../../../resources/assets/cross.svg
 import { ReactComponent as RefreshIcon } from '../../../resources/assets/cross2.svg';
 import moment from 'moment';
 import Loading from '../loader/Loading';
+import Lottie from 'lottie-react';
+import Icon from './ChatBot.json';
 
 const socket = io('https://staging.owe-hub.com', {
   autoConnect: false,
@@ -402,9 +404,7 @@ const ChatSupport = ({ isAuthenticated }: any) => {
           aria-controls="rcw-chat-container"
           onClick={handleChatHide}
         >
-          <img
-            src={isChatOpen ? botOpenUp : botOpen}
-            alt="Open chat"
+          <div
             className="bot-open"
             onMouseOver={() => {
               document
@@ -414,7 +414,10 @@ const ChatSupport = ({ isAuthenticated }: any) => {
             onMouseLeave={() => {
               document.getElementById('need-assistace')?.classList.add('hide');
             }}
-          />
+          >
+            <Lottie animationData={Icon} loop={true} />
+          </div>
+
           <img
             src={need}
             id="need-assistace"
