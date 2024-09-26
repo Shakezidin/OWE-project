@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classes from './dropdownlibrary.module.css';
+import classes from './styles/dropdownlibrary.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 const DropDownLibrary = () => {

@@ -1,44 +1,43 @@
 import React, { useState } from 'react';
-import classes from './createfolderlibrary.module.css';
+import classes from './styles/deletefile.module.css';
 import { useNavigate } from 'react-router-dom';
-import { ICONS } from '../../resources/icons/Icons';
+import { ICONS } from '../../../resources/icons/Icons';
 
-const CreateNewFolderLibrary = () =>
+const DeleteFileModal = () =>
   {
     const navigate = useNavigate();
-   
+    // const [confirmModal, setConfirmModal]=useState(false);
     const [visibleDiv, setVisibleDiv] = useState(1);
 
   
 
     return (
-       <div>
+      // <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
+      <div>
         <div className="transparent-model">
           <div className={classes.customer_wrapper_list}>
             
            
               <>
                 {' '}
-
                 <div className={classes.success_not}>
-                    <div className={classes.success_header}>
-                        <h2 className={classes.success_heading}>Create a New Folder</h2>
-                        <img src={ICONS.cross} alt="" className={classes.success_crossimg} />
-                    </div>
-                    <div className={classes.success_hrline}>
-
-                    </div>
-
-                        
                   <div className={classes.succicon}>
-                   <input type='text' className={classes.succicon_input_box} placeholder='Add your folder Name'></input> 
-                                       
+                     <img src={ICONS.deleteFileLibrary} alt="" />
                   </div>
-               
+                  <div className={classes.heading}>
+                        <h2>Are You Sure? </h2>
+                        <p>Do you really want to delete this?</p>
+                  </div>
                 </div>
                 <div className={classes.survey_button}>
+                  <button
+                    className={classes.self}
+                  
+                  >
+                    Cancel
+                  </button>
                   <button id="otherButtonId" className={classes.other}>
-                    Create
+                    Delete
                   </button>
                 </div>
               </>
@@ -50,4 +49,4 @@ const CreateNewFolderLibrary = () =>
     );
   };
 
-export default CreateNewFolderLibrary;
+export default DeleteFileModal;
