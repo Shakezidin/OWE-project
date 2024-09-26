@@ -84,9 +84,7 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 		role := data[0]["role_name"]
 		name := data[0]["name"]
 		dealerName, ok := data[0]["dealer_name"].(string)
-		if !ok || dealerName == "" {
-			dealerName = ""
-		} else {
+		if ok || dealerName != "" {
 			dataReq.DealerNames = append(dataReq.DealerNames, dealerName)
 		}
 		rgnSalesMgrCheck = false
@@ -166,8 +164,8 @@ func HandleGetUserAddressDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get RepType data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get RepType data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get user address data from DB err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to get user address data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -320,7 +318,6 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -328,10 +325,16 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" c.dealer IN ('%s') ", strings.Join(dataFilter.DealerNames, ",")))
-		for _, dealer := range dataFilter.DealerNames {
-			whereEleList = append(whereEleList, dealer)
+		// Prepare the values for the IN clause
+		var dealerNames []string
+		for _, val := range dataFilter.DealerNames {
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", val))
 		}
+		// Join the values with commas
+		statusList := strings.Join(dealerNames, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` c.dealer IN (%s) `, statusList))
 	}
 
 	// Add dealer filter if not adminCheck and not filterCheck
@@ -491,7 +494,6 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add state filter if not adminCheck and not filterCheck
 	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
@@ -499,10 +501,16 @@ func PrepareSaleRepAddressFilters(tableName string, dataFilter models.GetUserAdd
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" c.dealer IN (%s) ", strings.Join(dataFilter.DealerNames, ",")))
-		for _, dealer := range dataFilter.DealerNames {
-			whereEleList = append(whereEleList, dealer)
+		// Prepare the values for the IN clause
+		var dealerNames []string
+		for _, val := range dataFilter.DealerNames {
+			dealerNames = append(dealerNames, fmt.Sprintf("'%s'", val))
 		}
+		// Join the values with commas
+		statusList := strings.Join(dealerNames, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` c.dealer IN (%s) `, statusList))
 	}
 
 	if len(dataFilter.States) > 0 {

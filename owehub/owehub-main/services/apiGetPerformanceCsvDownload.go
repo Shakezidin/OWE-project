@@ -650,12 +650,28 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		filtersBuilder.WriteString(" AND")
 	} else {
 		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
 	}
+	// Add the always-included filters
 	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
 
 	filters = filtersBuilder.String()
 
@@ -738,12 +754,28 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 		filtersBuilder.WriteString(" AND")
 	} else {
 		filtersBuilder.WriteString(" WHERE")
+		whereAdded = true
 	}
+	// Add the always-included filters
 	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
 			AND intOpsMetSchema.unique_id <> ''
 			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0 
-			AND salMetSchema.project_status = 'ACTIVE'`)
+			AND intOpsMetSchema.system_size > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+	}
 
 	filters = filtersBuilder.String()
 

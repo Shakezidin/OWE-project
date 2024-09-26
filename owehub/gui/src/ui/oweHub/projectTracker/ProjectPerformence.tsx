@@ -217,7 +217,9 @@ const ProjectPerformence = () => {
       page_number: 1,
       page_size: projectsCount,
       selected_milestone: selectedMilestone,
-      dealer_names: selectedDealer.map(item => item.value)
+      dealer_names: selectedDealer.map(item => item.value),
+      project_status:
+        activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
     });
     if (getAllData.status > 201) {
       toast.error(getAllData.message);
@@ -310,7 +312,7 @@ const ProjectPerformence = () => {
     if (res.status > 200) {
       return;
     }
-    if(res.data?.dealer_name){
+    if (res.data?.dealer_name) {
       setSelectedDealer(leaderDealer(res.data));
       setDealerOption(leaderDealer(res.data))
     }
@@ -373,7 +375,7 @@ const ProjectPerformence = () => {
             toast.error(data.message);
             return;
           }
-          setTileData(data.data);
+          setTileData(data.data || {});
           setLoading(false);
         } catch (error) {
           console.error(error);
@@ -770,7 +772,7 @@ const ProjectPerformence = () => {
               {activeCardId !== null && (
                 <div className="active-queue">
                   <IoClose
-                  size={18}
+                    size={18}
                     onClick={() => {
                       setActiveCardId(null),
                         setSelectedMilestone(''),
@@ -830,13 +832,13 @@ const ProjectPerformence = () => {
             </div >
 
             <div className="perf-export-btn pipline-export-btn">
-              <button
+              {!!(projectStatus.length && !loading) && <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
                 className={`performance-exportbtn pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
                 {isExportingData ? <MdDownloading size={20} /> : <FaUpload size={16} />}
-              </button>
+              </button>}
             </div>
           </div >
 

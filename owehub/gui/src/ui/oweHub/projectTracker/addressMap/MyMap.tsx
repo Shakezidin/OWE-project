@@ -10,7 +10,8 @@ import { IoClose } from 'react-icons/io5';
 import { debounce } from '../../../../utiles/debounce';
 import { useNavigate } from 'react-router-dom';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
+import {  availableStates
+} from '../../../../core/models/data_models/SelectDataModel';
 import { toast } from 'react-toastify';
 import { DateRange } from 'react-date-range';
 import styles from './styles/mymap.module.css';
@@ -147,7 +148,7 @@ const MyMapComponent: React.FC = () => {
       try {
         setLoading(true);
         const data = await postCaller('get_user_address', {
-          states: [createRePayData.state],
+          ...(createRePayData.state ? { states: [createRePayData.state] } : {}),
         });
 
         if (data.status > 201) {
@@ -207,12 +208,12 @@ const MyMapComponent: React.FC = () => {
       ...prevData,
       [fieldName]: updatedValue,
     }));
-
-    // Disable search input if a state is selected
+    setSearchValue('')
+  
     if (updatedValue) {
-      setIsSearchDisabled(true); // Disable the search
+      setIsSearchDisabled(true);  
     } else {
-      setIsSearchDisabled(false); // Enable the search
+      setIsSearchDisabled(false);  
     }
   };
 
@@ -230,7 +231,7 @@ const MyMapComponent: React.FC = () => {
       const geocoder = new window.google.maps.Geocoder();
       const stateName = createRePayData.state; // Assuming `createPayData.state` holds the state's name or label
 
-      console.log(stateName, 'stateName');
+      
 
       // Perform geocoding to get the new state's coordinates and update the map
       geocoder.geocode({ address: stateName }, (results, status) => {
@@ -244,11 +245,11 @@ const MyMapComponent: React.FC = () => {
             mapRef.current.fitBounds(stateBounds);
           }
         } else {
-          toast.error('Failed to find state location.');
+          console.log('Failed to find state location.');
         }
       });
     }
-  }, [createRePayData.state]); // Trigger effect whenever `createPayData.state` changes
+  }, [createRePayData.state]);  
 
   console.log(center, 'crjksshf');
 
@@ -275,7 +276,7 @@ const MyMapComponent: React.FC = () => {
   }, []);
 
   const tableData = {
-    tableNames: ['states'],
+    tableNames: ['available_states'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -285,32 +286,32 @@ const MyMapComponent: React.FC = () => {
     getNewFormData();
   }, []);
 
-  // Function to calculate the distance between two points (Haversine formula)
+ 
   const calculateDistance = (
     lat1: number,
     lng1: number,
     lat2: number,
     lng2: number
   ): number => {
-    const R = 6371; // Earth's radius in kilometers
+    const R = 6371;  
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLng = ((lng2 - lng1) * Math.PI) / 180;
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in kilometers
+    return R * c;  
   };
 
-  // Handle search changes in the Autocomplete input
+   
   const onPlaceChanged = () => {
     const place = autocompleteRef.current?.getPlace();
 
     if (!place || !place.geometry || !place.geometry.location) {
-      toast.error('No details available for the selected place.');
+    console.log('No details available for the selected place.');
       return;
     }
 
@@ -324,7 +325,7 @@ const MyMapComponent: React.FC = () => {
     setSearchedLocation(searchedLocation);
     setCenter(searchedLocation);
 
-    // Filter locations within 10 km of the searched address
+   
     const neighboringLocations = locations.filter((location) => {
       const distance = calculateDistance(
         searchedLocation.lat,
@@ -338,7 +339,7 @@ const MyMapComponent: React.FC = () => {
     setFilteredLocations(neighboringLocations);
     setNeighboring(neighboringLocations);
 
-    // Adjust the map bounds to show both the searched location and neighboring markers
+     
     const bounds = new window.google.maps.LatLngBounds();
     bounds.extend(searchedLocation);
 
@@ -348,12 +349,12 @@ const MyMapComponent: React.FC = () => {
 
     if (mapRef.current) {
       if (neighboringLocations.length > 0) {
-        // If there are neighboring locations, fit bounds to show all markers
+  
         mapRef.current.fitBounds(bounds);
       } else {
-        // If no neighboring locations, set a default zoom level (zoom out)
+      
         mapRef.current.setCenter(searchedLocation);
-        mapRef.current.setZoom(10); // Adjust zoom level to show a larger area
+        mapRef.current.setZoom(10);  
       }
     }
   };
@@ -376,32 +377,52 @@ const MyMapComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (filteredLocations.length === 0) {
+    // Trim searchValue to remove spaces
+    const trimmedSearchValue = searchValue.trim();
+  
+    if (trimmedSearchValue) {
+      // If searchValue has meaningful content, filter neighboring locations
+      setFilteredLocations(neighboring);
+    } else if (createRePayData.state) {
+      // If no searchValue but state is available, filter by locations in that state
       setFilteredLocations(locations);
-    } else if (createRePayData) {
+    } else if (filteredLocations.length === 0) {
+      // If no filtered locations, load the full locations list
+      setFilteredLocations(locations);
+    } else if (createRePayData.state === '') {
+      // If state is an empty string, load full locations list
       setFilteredLocations(locations);
     }
-  }, [locations, filteredLocations, createRePayData.state]);
+  
+    // Check if searchValue is spaces only or empty and load map if true
+    
+  }, [
+    locations,
+    filteredLocations,
+    createRePayData.state,
+    searchValue,
+    neighboring,
+  ]);
+  
 
   useEffect(() => {
-    // Ensure the state is selected before proceeding
+    
     if (createRePayData.state) {
       const geocoder = new window.google.maps.Geocoder();
-      const selectedState = createRePayData.state; // Assuming `createRePayData.state` holds the selected state
-
-      // Perform geocoding to get the coordinates and bounds for the selected state and update the map
+      const selectedState = createRePayData.state;  
+ 
       geocoder.geocode({ address: selectedState }, (results, status) => {
         if (status === 'OK' && results && results.length > 0) {
           const stateLocation = results[0].geometry.location;
           const stateBounds = results[0].geometry.viewport;
 
           if (mapRef.current) {
-            // Center the map on the selected state and fit it to the state's bounds
+            
             setCenter({ lat: stateLocation.lat(), lng: stateLocation.lng() });
-            mapRef.current.fitBounds(stateBounds); // This will zoom and center to show only the state
+            mapRef.current.fitBounds(stateBounds); //  
           }
         } else {
-          toast.error('Failed to find the state location.');
+          console.log('Failed to find the state location.');
         }
       });
     }
@@ -415,29 +436,29 @@ const MyMapComponent: React.FC = () => {
       if (mapRef.current && locations.length > 0) {
         const bounds = new google.maps.LatLngBounds();
 
-        // Extend bounds to include all markers' positions
+       
         locations.forEach((location) => {
           bounds.extend(new google.maps.LatLng(location.lat, location.lng));
         });
 
-        // Fit the map to the computed bounds
+       
         mapRef.current.fitBounds(bounds);
 
-        // Listener to control zoom if bounds make the map zoom too far
+        
         const listener = google.maps.event.addListener(
           mapRef.current,
           'bounds_changed',
           () => {
             const currentZoom = mapRef.current?.getZoom() ?? 0;
             if (currentZoom > 15) {
-              mapRef.current?.setZoom(15); // Set the max zoom level to 15, adjust if needed
+              mapRef.current?.setZoom(15);  
             }
-            google.maps.event.removeListener(listener); // Remove the listener once the zoom is set
+            google.maps.event.removeListener(listener);  
           }
         );
       }
     } else {
-      // Logic for when a specific state is selected, e.g., zoom in on state or show markers in that state
+    
       console.log('A specific state is selected:', createRePayData.state);
     }
   }, [locations, createRePayData.state]);
@@ -519,30 +540,31 @@ const MyMapComponent: React.FC = () => {
 
           <div className={styles.mapHeaderWrap}>
             <div className={styles.dropdownstate}>
-              <SelectOption
-                options={[
-                  { label: 'All State', value: '' }, // Default option
-                  ...(stateOption(newFormData) || []), // Ensure it returns an array
-                ]}
-                onChange={(newValue) => handleChange(newValue, 'state')}
-                value={
-                  (stateOption(newFormData) || []).find(
-                    (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: '' } // Default when no match
-                }
-                menuStyles={{
-                  width: 400,
-                }}
-                menuListStyles={{
-                  fontWeight: 400,
-                  width: 150,
-                }}
-                singleValueStyles={{
-                  fontWeight: 400,
-                  color: (createRePayData.state === '') ? '#868686' : 'inherit'
-                }}
-                width="150px"
-              />
+              <div className={styles.dropdownstate}>
+                <SelectOption
+                  options={[
+                    { label: 'All State', value: '' }, // Default option
+                    ...(availableStates(newFormData) || []), // Ensure it returns an array
+                  ]}
+                  onChange={(newValue) => handleChange(newValue, 'state')}
+                  value={
+                    (availableStates(newFormData) || []).find(
+                      (option) => option.value === createRePayData.state
+                    ) || { label: 'All State', value: '' } // Show "All State" when state value is empty
+                  }
+                  menuStyles={{
+                    width: 400,
+                  }}
+                  menuListStyles={{
+                    fontWeight: 400,
+                    width: 150,
+                  }}
+                  singleValueStyles={{
+                    fontWeight: 400,
+                  }}
+                  width="150px"
+                />
+              </div>
             </div>
 
             {/* <div>
@@ -574,8 +596,7 @@ const MyMapComponent: React.FC = () => {
                     marginTop: '3px',
                   }}
                 >
-
-                  <div style={{ position: "relative" }}>
+                  <div style={{ position: 'relative' }}>
                     <input
                       type="text"
                       placeholder="Search for an address"
@@ -583,7 +604,10 @@ const MyMapComponent: React.FC = () => {
                       maxLength={100}
                       onInput={(e) => {
                         const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
-                        input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
+                        input.value = input.value.replace(
+                          /[^a-zA-Z0-9\s]/g,
+                          ''
+                        ); // Replace non-alphanumeric characters
                       }}
                       style={{
                         width: '100%',
@@ -607,7 +631,10 @@ const MyMapComponent: React.FC = () => {
                             // Loop through all the locations and extend the bounds to include each marker's position
                             locations.forEach((location) => {
                               bounds.extend(
-                                new google.maps.LatLng(location.lat, location.lng)
+                                new google.maps.LatLng(
+                                  location.lat,
+                                  location.lng
+                                )
                               );
                             });
 
@@ -625,12 +652,11 @@ const MyMapComponent: React.FC = () => {
                           cursor: 'pointer',
                         }}
                       >
-                        <IoClose size={16} style={{ marginTop: "4px" }} />
+                        <IoClose size={16} style={{ marginTop: '4px' }} />
                       </button>
                     )}
                     <RiMapPinLine className={styles.inputMap} />
                   </div>
-
                 </div>
               </Autocomplete>
             </div>
@@ -674,6 +700,10 @@ const MyMapComponent: React.FC = () => {
                 onLoad={onMapLoad}
                 zoom={5}
                 center={center}
+                options={{
+                  maxZoom: 25, // Set max zoom level to 20
+                  minZoom: 2, // Set min zoom level to 5
+                }}
               >
                 {/* Searched location marker */}
                 {/* {center && (
@@ -694,7 +724,8 @@ const MyMapComponent: React.FC = () => {
                       fillColor: 'blue', // Fully blue marker
                       fillOpacity: 1,
                       strokeWeight: 0, // No outline
-                      scale: 2.0, // Scale to size
+                      scale: 1.5, // Adjust the scale as per your needs
+                      anchor: new window.google.maps.Point(12, 24), // Ensure the icon stays anchored correctly
                     }}
                   />
                 )}
