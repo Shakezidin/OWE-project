@@ -716,7 +716,7 @@ input[type='checkbox']:checked {
   }
 
   .cardHeader {
-    margin-bottom: 5rem !important;
+    margin-bottom: 8rem !important;
     border-bottom: none;
     padding: 5px
   }
@@ -730,13 +730,13 @@ input[type='checkbox']:checked {
   }
 
   .projectCount {
-    top: 93px !important;
+    top: 140px !important;
   }
 
   .inputWrap {
     position: absolute;
-    top: -48px;
-    left: 112px
+    top: -7px;
+    left: 0;
   }
 
   .headerDropDowns {
@@ -754,11 +754,6 @@ input[type='checkbox']:checked {
 
   .cardHeader {
     margin-bottom: 8rem !important;
-  }
-
-  .inputWrap{
-    top: 47px;
-    left: 0;
   }
   .projectCount{
     top: 140px !important;
