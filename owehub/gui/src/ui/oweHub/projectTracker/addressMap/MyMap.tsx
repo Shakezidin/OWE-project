@@ -514,70 +514,63 @@ const MyMapComponent: React.FC = () => {
     <div className={styles.mapWrap}>
       <div className={styles.cardHeader}>
         <div className={styles.headerLeft}>
-          <h3>Install Map</h3>
-
+          <h3 className={styles.installMap}>Install Map</h3>
           <div className={styles.mapHeaderWrap}>
-            <div className={styles.dropdownstate}>
-              <SelectOption
-                options={[
-                  { label: 'All State', value: '' }, // Default option
-                  ...(stateOption(newFormData) || []), // Ensure it returns an array
-                ]}
-                onChange={(newValue) => handleChange(newValue, 'state')}
-                value={
-                  (stateOption(newFormData) || []).find(
-                    (option) => option.value === createRePayData.state
-                  ) || { label: 'Select State', value: '' } // Default when no match
-                }
-                menuStyles={{
-                  width: 400,
-                }}
-                menuListStyles={{
-                  fontWeight: 400,
-                  width: 150,
-                }}
-                singleValueStyles={{
-                  fontWeight: 400,
-                  color: (createRePayData.state === '') ? '#868686' : 'inherit'
-                }}
-                width="150px"
-              />
-            </div>
+            <div className={styles.headerDropDowns}>
+              <div className={styles.dropdownstate}>
+                <SelectOption
+                  options={[
+                    { label: 'All State', value: '' }, // Default option
+                    ...(stateOption(newFormData) || []), // Ensure it returns an array
+                  ]}
+                  onChange={(newValue) => handleChange(newValue, 'state')}
+                  value={
+                    (stateOption(newFormData) || []).find(
+                      (option) => option.value === createRePayData.state
+                    ) || { label: 'Select State', value: '' } // Default when no match
+                  }
+                  menuStyles={{
+                    width: 400,
+                  }}
+                  menuListStyles={{
+                    fontWeight: 400,
+                    width: 150,
+                  }}
+                  singleValueStyles={{
+                    fontWeight: 400,
+                    color: (createRePayData.state === '') ? '#868686' : 'inherit'
+                  }}
+                  width="150px"
+                />
+              </div>
 
-            <div className={styles.kmWrap}>
-              <SelectOption
-               options={[
-                { label: 'All', value: '' },
-                ...kmsOptions.map((km) => ({ label: `${km.km} KM`, value: km.km.toString() })),
-              ]}
-                onChange={(newValue) => newValue && handleKM(newValue.value, 'km')}
-                value={selectedKm ? { value: selectedKm, label: selectedKm } : undefined || { label: 'Select Km', value: '' }}
-                menuStyles={{
-                  width: 400,
-                }}
-                menuListStyles={{
-                  fontWeight: 400,
-                  width: 150,
-                }}
-                singleValueStyles={{
-                  fontWeight: 400,
-                  color: (createRePayData.state === '') ? '#868686' : 'inherit'
-                }}
-                width="150px"
-              />
+              <div className={styles.kmWrap}>
+                <SelectOption
+                  options={[
+                    { label: 'All', value: '' },
+                    ...kmsOptions.map((km) => ({ label: `${km.km} KM`, value: km.km.toString() })),
+                  ]}
+                  onChange={(newValue) => newValue && handleKM(newValue.value, 'km')}
+                  value={selectedKm ? { value: selectedKm, label: selectedKm } : undefined || { label: 'Select Km', value: '' }}
+                  menuStyles={{
+                    width: 400,
+                  }}
+                  menuListStyles={{
+                    fontWeight: 400,
+                    width: 150,
+                  }}
+                  singleValueStyles={{
+                    fontWeight: 400,
+                    color: (createRePayData.state === '') ? '#868686' : 'inherit'
+                  }}
+                  width="150px"
+                />
+              </div>
             </div>
 
             <div className={styles.mapSearch}>
               <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                <div
-                  style={{
-                    position: 'relative',
-                    width: '300px',
-                    marginTop: '3px',
-                  }}
-                >
-
-                  <div style={{ position: "relative" }}>
+                  <div className={styles.inputWrap}>
                     <input
                       type="text"
                       placeholder="Search for an address"
@@ -632,8 +625,6 @@ const MyMapComponent: React.FC = () => {
                     )}
                     <RiMapPinLine className={styles.inputMap} />
                   </div>
-
-                </div>
               </Autocomplete>
             </div>
 

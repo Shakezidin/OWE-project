@@ -14,6 +14,11 @@
   margin-top: 10px;
 }
 
+.inputWrap{
+  position: relative;
+  width: 300px;
+}
+
 .mapHeaderWrap {
   display: flex;
   align-items: center;
@@ -26,10 +31,20 @@
   margin-top: -6px;
 }
 
+.headerDropDowns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
+}
+
+.installMap {
+  margin-top: -5px;
 }
 
 .info-window-custom {
@@ -50,7 +65,7 @@
   display: none !important;
 }
 
-.projectDetail{
+.projectDetail {
   padding-bottom: 10px;
   text-align: center;
 }
@@ -74,7 +89,7 @@
   color: #333;
 }
 
-.kmWrap{
+.kmWrap {
   margin-top: -30px;
 }
 
@@ -83,7 +98,7 @@
 }
 
 .mapSearch {
-  margin-top: -8px;
+  margin-top: -5px;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -717,6 +732,17 @@ input[type='checkbox']:checked {
   .projectCount {
     top: 93px !important;
   }
+
+  .inputWrap {
+    position: absolute;
+    top: -48px;
+    left: 112px
+  }
+
+  .headerDropDowns {
+    top: 50px !important;
+  }
+
 }
 
 @media (max-width: 520px) {
@@ -727,19 +753,33 @@ input[type='checkbox']:checked {
   }
 
   .cardHeader {
-    margin-bottom: 6.5rem;
+    margin-bottom: 8rem !important;
+  }
+
+  .inputWrap{
+    top: 47px;
+    left: 0;
+  }
+  .projectCount{
+    top: 140px !important;
   }
 }
 
 @media (max-width: 890px) {
   .projectCount {
     position: absolute;
-    top: 60px;
+    top: 110px;
     left: 0;
   }
 
   .cardHeader {
-    margin-bottom: 2rem;
+    margin-bottom: 5rem;
+  }
+
+  .headerDropDowns {
+    position: absolute;
+    top: 65px;
+    left: 0;
   }
 }
 
