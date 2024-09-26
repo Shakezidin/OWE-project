@@ -1,0 +1,14 @@
+{
+    "dbConfigs": [
+        {
+            "hostName": "service-postgres:5432",
+            "username": "OwePostgres",
+            "password": "OwePostgres"
+        },
+        {
+            "hostName": "149.248.3.82:5432",
+            "username": "OwePostgres",
+            "password": "OwePostgres"
+        }
+    ]
+}
