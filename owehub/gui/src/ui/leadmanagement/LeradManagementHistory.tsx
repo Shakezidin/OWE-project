@@ -15,19 +15,21 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 interface HistoryTableProp {
-  city: string;
-  country: string;
-  deal_date: string;
-  deal_status: string;
-  email_id: string;
   first_name: string;
   last_name: string;
-  leads_id: number;
-  notes: string;
   phone_number: string;
-  state: string;
+  email_id: string;
   street_address: string;
   zipcode: string;
+  deal_date: string;
+  deal_status: string;
+  appointment_scheduled_date: string;
+  appointment_accepted_date: string;
+  appointment_declined_date: string;
+  appointment_date: string | null;
+  deal_won_date: string | null;
+  deal_lost_date: string | null;
+  proposal_sent_date: string | null;
 }
 
 export type DateRangeWithLabel = {
@@ -42,8 +44,9 @@ const LeradManagementHistory = () => {
   const [see, setSee] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(10);
-  const startIndex = (page - 1) * 10 + 1;
-  const endIndex = page * 10;
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const startIndex = (page - 1) * itemsPerPage + 1;
+  const endIndex = page * itemsPerPage;
   const totalPage = Math.ceil(totalCount / 10);
   const [checkedCount, setCheckedCount] = useState<number>(0);
   const dateRangeRef = useRef<HTMLDivElement>(null);
@@ -51,7 +54,6 @@ const LeradManagementHistory = () => {
   const [expandedItemIds, setExpandedItemIds] = useState<number[]>([]);
   const [isAuthenticated, setAuthenticated] = useState(false);
 
-  const itemsPerPage = 10;
   function getUserTimezone() {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
@@ -154,7 +156,7 @@ const LeradManagementHistory = () => {
     setIsCalendarOpen(false);
   };
 
-  
+
 
   const handleCrossClick = () => {
     setSelectedItemIds([]);
@@ -298,6 +300,16 @@ const LeradManagementHistory = () => {
     }
   ];
 
+  const [selectedValue, setSelectedValue] = useState<number>(-1);
+
+  const handleSortingChange = (value: number) => {
+    if (!value) {
+      setSelectedValue(-1);
+    } else {
+      setSelectedValue(value);
+    }
+  };
+
   const { authData, saveAuthData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [historyTable, setHistoryTable] = useState<HistoryTableProp[]>([]);
@@ -317,9 +329,9 @@ const LeradManagementHistory = () => {
           const response = await postCaller(
             'leads_history',
             {
-              leads_status: 5,
-              start_date: selectedDates.startDate ? format(selectedDates.startDate, 'yyyy-MM-dd') : '',
-              end_date: selectedDates.endDate ? format(selectedDates.endDate, 'yyyy-MM-dd') : '',
+              leads_status: selectedValue,
+              start_date: selectedDates.startDate ? format(selectedDates.startDate, 'dd-MM-yyyy') : '',
+              end_date: selectedDates.endDate ? format(selectedDates.endDate, 'dd-MM-yyyy') : '',
               page_size: itemsPerPage,
               page_number: page
             }
@@ -330,9 +342,10 @@ const LeradManagementHistory = () => {
             toast.error(response.data.message);
             return;
           }
-          if (response.data?.data?.leads_history_list) {
-            setHistoryTable(response.data?.data.leads_history_list as HistoryTableProp[]);
-            setTotalCount(response.data?.dbRecCount);
+          console.log(response, "first check")
+          if (response.data?.leads_history_list) {
+            setHistoryTable(response.data?.leads_history_list as HistoryTableProp[]);
+            setTotalCount(response.dbRecCount);
           }
         } catch (error) {
           console.error(error);
@@ -341,7 +354,7 @@ const LeradManagementHistory = () => {
         }
       })();
     }
-  }, [isAuthenticated, selectedDates, itemsPerPage, page]);
+  }, [isAuthenticated, selectedDates, itemsPerPage, page, selectedValue]);
 
   const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
     if (selectedOption) {
@@ -353,10 +366,17 @@ const LeradManagementHistory = () => {
     }
   };
 
+  const handlePerPageChange = (selectedPerPage: number) => {
+    setItemPerPage(selectedPerPage);
+    setPage(1); // Reset to the first page when changing items per page
+  };
+
+  
+
 
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');
-
+  console.log(historyTable, "hagsfdghafsdghaf")
 
   return (
     <div className={`flex justify-between mt2 ${styles.h_screen}`}>
@@ -436,7 +456,7 @@ const LeradManagementHistory = () => {
                     ) : null
                   }
 
-                 
+
 
                   <Select
                     value={selectedPeriod}
@@ -510,7 +530,7 @@ const LeradManagementHistory = () => {
                     <img src={ICONS.includes_icon} alt="" />
                   </div>
                   <div className={styles.sort_drop}>
-                    <SortingDropDown />
+                    <SortingDropDown onChange={handleSortingChange} />
                   </div>
                   <div className={styles.calender}>
                     <img src={ICONS.LeadMngExport} style={{ marginTop: "-2px" }} alt="" height={22} width={22} />
@@ -747,18 +767,18 @@ const LeradManagementHistory = () => {
 
             <Pagination
               currentPage={page}
-              totalPages={totalPage} // You need to calculate total pages
+              totalPages={totalPage}
               paginate={(num) => setPage(num)}
               currentPageData={[]}
               goToNextPage={() => 0}
               goToPrevPage={() => 0}
-              perPage={10}
+              perPage={itemsPerPage}
+              onPerPageChange={handlePerPageChange}
             />
           </div>
         )}
 
       </div>
-
     </div>
   );
 };

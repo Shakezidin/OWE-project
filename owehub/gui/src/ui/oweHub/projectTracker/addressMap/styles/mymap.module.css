@@ -14,6 +14,11 @@
   margin-top: 10px;
 }
 
+.inputWrap{
+  position: relative;
+  width: 300px;
+}
+
 .mapHeaderWrap {
   display: flex;
   align-items: center;
@@ -26,10 +31,20 @@
   margin-top: -6px;
 }
 
+.headerDropDowns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
+}
+
+.installMap {
+  margin-top: -5px;
 }
 
 .info-window-custom {
@@ -50,6 +65,10 @@
   display: none !important;
 }
 
+.projectDetail {
+  padding-bottom: 10px;
+  text-align: center;
+}
 
 .infoWindow:hover {
   border: none;
@@ -70,13 +89,16 @@
   color: #333;
 }
 
+.kmWrap {
+  margin-top: -30px;
+}
 
 .info-window-custom:hover {
   transform: scale(1.05);
 }
 
 .mapSearch {
-  margin-top: -8px;
+  margin-top: -5px;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -208,7 +230,7 @@
 }
 
 .dropdownstate {
-  margin-top: -15px;
+  margin-top: -30px;
 }
 
 .dropdownstate .select-container .css-19mwi93-control .css-hlgwow .css-1i5rmfk-singleValue {
@@ -706,9 +728,21 @@ input[type='checkbox']:checked {
   .mapWrapper {
     margin-top: 1rem;
   }
-  .projectCount{
+
+  .projectCount {
     top: 93px !important;
   }
+
+  .inputWrap {
+    position: absolute;
+    top: -48px;
+    left: 112px
+  }
+
+  .headerDropDowns {
+    top: 50px !important;
+  }
+
 }
 
 @media (max-width: 520px) {
@@ -719,18 +753,33 @@ input[type='checkbox']:checked {
   }
 
   .cardHeader {
-    margin-bottom: 6.5rem;
+    margin-bottom: 8rem !important;
+  }
+
+  .inputWrap{
+    top: 47px;
+    left: 0;
+  }
+  .projectCount{
+    top: 140px !important;
   }
 }
 
-@media (max-width: 890px){
-  .projectCount{
+@media (max-width: 890px) {
+  .projectCount {
     position: absolute;
-    top: 60px;
+    top: 110px;
     left: 0;
   }
-  .cardHeader{
-    margin-bottom: 2rem;
+
+  .cardHeader {
+    margin-bottom: 5rem;
+  }
+
+  .headerDropDowns {
+    position: absolute;
+    top: 65px;
+    left: 0;
   }
 }
 
@@ -892,5 +941,4 @@ input[type='checkbox']:checked {
   flex-direction: row;
   gap: 15px;
   align-items: center;
-
 }

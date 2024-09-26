@@ -63,32 +63,6 @@ const mob = {
       },
     },
     {
-      path: ROUTES.LEAD_MANAGEMENT,
-      sidebarProps: {
-        displayText: 'Lead Management',
-        icon: (
-          <IoListSharp
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
-        ),
-      },
-    },
-    {
-      path: ROUTES.LIBRARY,
-      sidebarProps: {
-        displayText: 'Library',
-        icon: (
-          <IoCloudUploadOutline
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
-        ),
-      },
-    },
-    {
       path: ROUTES.MAP_ADDRESS,
       sidebarProps: {
         displayText: 'Install Map',
@@ -122,6 +96,40 @@ const mob = {
       },
     },
     {
+      path: ROUTES.USER_MANAEMENT,
+
+      sidebarProps: {
+        displayText: 'Users',
+        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
+      },
+    },
+    {
+      path: ROUTES.LEAD_MANAGEMENT,
+      sidebarProps: {
+        displayText: 'Lead Management',
+        icon: (
+          <IoListSharp
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
+      path: ROUTES.LIBRARY,
+      sidebarProps: {
+        displayText: 'Library',
+        icon: (
+          <IoCloudUploadOutline
+            size={20}
+            style={{ marginLeft: '3px' }}
+            color="black"
+          />
+        ),
+      },
+    },
+    {
       path: ROUTES.SCHEDULER,
       sidebarProps: {
         displayText: 'Scheduler',
@@ -134,14 +142,6 @@ const mob = {
       sidebarProps: {
         displayText: 'Teams',
         icon: <AiOutlineTeam size={20} style={{ flexShrink: '0' }} />,
-      },
-    },
-    {
-      path: ROUTES.USER_MANAEMENT,
-
-      sidebarProps: {
-        displayText: 'Users',
-        icon: <RiUserSettingsLine size={20} style={{ flexShrink: '0' }} />,
       },
     },
     {

@@ -23,6 +23,17 @@
 
 /* Global CSS to target the Google Maps Autocomplete dropdown */
 
+/* Dialogue Map Hover css  */
+.gm-style .gm-style-iw-c{
+  padding: 0 !important;
+}
+.gm-style .gm-style-iw-c:focus-visible{
+ outline: none !important;
+}
+.gm-style-iw-chr{
+  display: none !important;
+}
+
 /* This styles the container of the dropdown */
 .pac-container {
   font-family: 'Poppins', sans-serif !important; /* Ensure Poppins is applied */

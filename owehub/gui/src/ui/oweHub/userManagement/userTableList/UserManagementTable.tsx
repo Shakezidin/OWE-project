@@ -144,6 +144,23 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const renderComponent = () => {
     switch (selectedOption.label) {
+      case TYPE_OF_USER.ALL:
+        return (
+          <UserTable
+            selectedValue={selectedOption.label}
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
       case TYPE_OF_USER.ADMIN:
         return (
           <UserTable
@@ -225,6 +242,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
+
       case TYPE_OF_USER.PARTNER:
         return (
           <PartnerTable

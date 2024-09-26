@@ -56,7 +56,7 @@
 .buttons {
   border-radius: 18px;
   border: 1px solid #989898;
-  padding: 4px 32px;
+  padding: 2px 32px;
     font-family: poppins;
     font-weight: 500;
     font-size: 16px;
@@ -64,7 +64,8 @@
     background-color: #fff;
     cursor: pointer;
 }
-buttons:hover {
+
+.buttons:hover {
   color: #377CF6; 
   background-color: #EFF5FF;
 }
@@ -92,12 +93,23 @@ buttons:hover {
   fill: #377CF6
 }
 
-/* .verticalDots{
+.verticalDots {
   display: flex;
   align-items: center;
-  justify-items: center;
-  border: 1px solid #989898;
-} */
+  justify-content: center;
+  width: 30px; /* Adjust the size of the circle */
+  height: 30px; /* Make height equal to width for a perfect circle */
+  border: 1px solid #989898; /* Border for the circle */
+  border-radius: 50%; /* This makes the div a circle */
+  cursor: pointer;
+  background-color: white; /* Optional: Set a background color */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+  transition: background-color 0.2s ease; /* Optional: Add a hover effect */
+}
+
+.verticalDots:hover{
+  border: 1px solid #377cf6; /* Border for the circle */
+}
 
 .recycleBin img {
   height: 27px;
@@ -112,7 +124,7 @@ buttons:hover {
   gap: 5px;
   border: 1px solid #CBCBCB;
   border-radius: 8px;
-  padding: 7px 10px;
+  padding: 5px 10px;
 }
 
 
@@ -252,3 +264,16 @@ buttons:hover {
   border: none !important;
 
 }
+
+.clicked{
+  border: 1px solid #377cf6;
+}
+
+.icons{
+  cursor: pointer;
+}
+
+.searchWrapper:hover{
+  border: 1px solid black;
+}
+
