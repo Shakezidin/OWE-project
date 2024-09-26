@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -89,7 +90,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	// Insert the lead details into the database using function CallDBFunction
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateLeadFunction, queryParameters)
 	if err != nil {
-		if err.Error() == "EMAIL_OR_PHONE_NO._EXISTS" {
+		if strings.Contains(err.Error(), "EMAIL_OR_PHONE_NO._EXISTS") {
 			FormAndSendHttpResp(resp, "Email id or phone number already exists", http.StatusBadRequest, nil)
 			return
 		}
