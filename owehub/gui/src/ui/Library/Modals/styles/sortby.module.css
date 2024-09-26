@@ -1,14 +1,60 @@
-
-.sortby_containerr{
-    width: 102px;
-    height: 128px;
+.sortby_container {
+  position: relative;
+  display: inline-block;
+}
+ 
+.logo_sortby_botton{
+  width: 102px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #8C8C8C;
+  color: #8C8C8C;
+  background-color: white;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  font-family: 'Poppins';
+}
+.logo_sortby_botton:hover{
+  border: 1px solid #377CF6;
+  color:#377CF6 ;
+}
+.sortlibrary_inner_div {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100; 
+  width: 102px;
+  top: 37px;
+  border-radius: 6px;
+  border: 1px solid #8C8C8C;
+ 
+}
+ 
+.sortbylibrary_all{
+ padding-inline: 10px;
+ color: #3E3E3E;
+  cursor: pointer;
+  font-family: 'Poppins';
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-inline: 12px;
+}
+.sortbylibrary_name:hover{
+  border-radius: 6px 6px 0px 0px;
+}
+.sortbylibrary_size:hover{
+  border-radius:0px 0px 6px 6px ;
+}
+ 
+.sortbylibrary_all:hover {
+  background-color: #D6E5FF;
   
-  }  
-  .sortlibrary_inner_div{
-    margin-top: 15px;
-    border: 1px solid #8C8C8C;
-    border-radius: 5px;
-    width: 175px;
-    border-radius: 8px;
-    background-color: #fff;
-  }
+  
+}
