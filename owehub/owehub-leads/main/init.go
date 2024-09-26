@@ -92,13 +92,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-leads-service/v1/sent_appointment",
-	// 	apiHandler.HandleSentAppointmentRequest,
-	// 	true,
-	// 	[]types.UserGroup{types.GroupAdminDealer},
-	// },
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/sent_appointment",
+		apiHandler.HandleSentAppointmentRequest,
+		true,
+		leadsRoleGroup,
+	},
 }
 
 /******************************************************************************

@@ -16,8 +16,6 @@ import (
 
 	models "OWEApp/shared/models"
 
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -205,33 +203,7 @@ func ValidateCreateLeadsRequest(req models.CreateLeadsReq) error {
 	return nil
 }
 
-// return true or false
-// true - transaction commit
-// false - transaction rollback
-// this function will send the email to the client that your appointment is on this date and our sales
-// representative will come to you and talk to you
-// about client email ?
-func sentAppointmentEmail(ClientEmail, dateTime string) bool {
-
-	from := mail.NewEmail("OWE", "it@ourworldenergy.com")
-	to := mail.NewEmail("Client", ClientEmail)
-
-	// Create the email content
-	subject := "Appointment Confirmation"
-	plainTextContent := fmt.Sprintf("Dear Customer, your appointment is scheduled for %s.", dateTime)
-	htmlContent := fmt.Sprintf("<strong>Dear Customer,</strong><br>Your appointment is scheduled for <b>%s</b>.", dateTime)
-
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-
-	client := sendgrid.NewSendClient("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")
-
-	_, err := client.Send(message)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to send email to %s : %v", ClientEmail, err)
-		return false
-	}
-
-	// Log success and return true if email is sent successfully
-	//FormAndSendHttpResp(resp, "Email send succesfully", http.StatusAccepted, fmt.Sprintf("email sent succesfully to %v", ClientEmail), 1)
-	return true
+// dummy [TODO: call outlook api]
+func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time) error {
+	return nil
 }
