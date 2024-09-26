@@ -50,6 +50,10 @@
   display: none !important;
 }
 
+.projectDetail{
+  padding-bottom: 10px;
+  text-align: center;
+}
 
 .infoWindow:hover {
   border: none;
@@ -70,6 +74,9 @@
   color: #333;
 }
 
+.kmWrap{
+  margin-top: -30px;
+}
 
 .info-window-custom:hover {
   transform: scale(1.05);
@@ -208,7 +215,7 @@
 }
 
 .dropdownstate {
-  margin-top: -15px;
+  margin-top: -30px;
 }
 
 .dropdownstate .select-container .css-19mwi93-control .css-hlgwow .css-1i5rmfk-singleValue {
@@ -706,7 +713,8 @@ input[type='checkbox']:checked {
   .mapWrapper {
     margin-top: 1rem;
   }
-  .projectCount{
+
+  .projectCount {
     top: 93px !important;
   }
 }
@@ -723,13 +731,14 @@ input[type='checkbox']:checked {
   }
 }
 
-@media (max-width: 890px){
-  .projectCount{
+@media (max-width: 890px) {
+  .projectCount {
     position: absolute;
     top: 60px;
     left: 0;
   }
-  .cardHeader{
+
+  .cardHeader {
     margin-bottom: 2rem;
   }
 }
@@ -892,5 +901,4 @@ input[type='checkbox']:checked {
   flex-direction: row;
   gap: 15px;
   align-items: center;
-
 }
