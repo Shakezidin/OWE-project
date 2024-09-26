@@ -348,7 +348,7 @@ func PrepareAdminDlrAddressFilters(tableName string, dataFilter models.GetUserAd
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" LOWER(c.state) ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" LOWER(cs.state) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.States {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
