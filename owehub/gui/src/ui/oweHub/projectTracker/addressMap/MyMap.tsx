@@ -551,7 +551,7 @@ const MyMapComponent: React.FC = () => {
                     ...kmsOptions.map((km) => ({ label: `${km.km} KM`, value: km.km.toString() })),
                   ]}
                   onChange={(newValue) => newValue && handleKM(newValue.value, 'km')}
-                  value={selectedKm ? { value: selectedKm, label: selectedKm } : undefined || { label: 'Select Km', value: '' }}
+                  value={selectedKm ? { value: selectedKm, label: `${selectedKm} km` } : { label: 'Select Km', value: '' }}
                   menuStyles={{
                     width: 400,
                   }}
