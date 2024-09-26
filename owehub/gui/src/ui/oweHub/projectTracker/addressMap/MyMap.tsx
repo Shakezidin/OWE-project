@@ -687,7 +687,7 @@ const MyMapComponent: React.FC = () => {
                 <div className={styles.kmWrap}>
                   <SelectOption
                     options={[
-                      { label: 'All', value: '' },
+                     
                       ...kmsOptions.map((km) => ({
                         label: `${km.km} KM`,
                         value: km.km.toString(),
