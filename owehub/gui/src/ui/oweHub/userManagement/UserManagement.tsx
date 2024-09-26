@@ -111,16 +111,60 @@ const UserManagement: React.FC = () => {
   }, [selectedOption]);
 
   /** role based get data */
+
+
+  // useEffect(() => {
+  //   const data = {
+  //     page_number: page,
+  //     page_size: 25,
+  //     filters: [
+  //       {
+  //         Column: 'role_name',
+  //         Operation: '=',
+  //         Data: selectedOption.value,
+  //       },
+  //       {
+  //         Column: 'name',
+  //         Operation: 'cont',
+  //         Data: searchTerm,
+  //       },
+  //     ],
+  //   };
+
+  //   const dataa = {
+  //     page_number: page,
+  //     page_size: 25,
+  //     filters: [
+  //       {
+  //         Column: 'dealer_name',
+  //         Operation: 'cont',
+  //         Data: searchTerm,
+  //       },
+  //     ],
+  //   };
+  //   const fetchList = async () => {
+  //     await dispatch(fetchUserListBasedOnRole(data));
+  //   };
+
+  //   if (selectedOption.value !== 'Partner') {
+  //     fetchList();
+  //   }
+
+  //   const fetchDealer = async () => {
+  //     await dispatch(fetchDealerList(dataa));
+  //   };
+  //   if (selectedOption.value === 'Partner') {
+  //     fetchDealer();
+  //   }
+  // }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
+
+
+
   useEffect(() => {
     const data = {
       page_number: page,
       page_size: 25,
       filters: [
-        {
-          Column: 'role_name',
-          Operation: '=',
-          Data: selectedOption.value,
-        },
         {
           Column: 'name',
           Operation: 'cont',
@@ -128,7 +172,7 @@ const UserManagement: React.FC = () => {
         },
       ],
     };
-
+  
     const dataa = {
       page_number: page,
       page_size: 25,
@@ -140,21 +184,33 @@ const UserManagement: React.FC = () => {
         },
       ],
     };
+  
     const fetchList = async () => {
+      if (selectedOption.value !== "") {
+        data.filters.push({
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        });
+      }
       await dispatch(fetchUserListBasedOnRole(data));
     };
-
+  
     if (selectedOption.value !== 'Partner') {
       fetchList();
     }
-
+  
     const fetchDealer = async () => {
       await dispatch(fetchDealerList(dataa));
     };
+  
     if (selectedOption.value === 'Partner') {
       fetchDealer();
     }
   }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
+ 
+
+
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
@@ -371,6 +427,7 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
+          
           activeSalesRep={activeSalesRep}
           handleCrossClick={handleCrossClick}
           currentPage1={page}
