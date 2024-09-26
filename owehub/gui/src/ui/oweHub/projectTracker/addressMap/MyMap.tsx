@@ -146,9 +146,14 @@ const MyMapComponent: React.FC = () => {
     (async () => {
       try {
         setLoading(true);
-        const data = await postCaller('get_user_address', {
-          states: [createRePayData.state],
-        });
+        const requestData: any = {}; // Initialize an empty object
+
+        // Conditionally add 'states' only if it has a value
+        if (createRePayData.state && createRePayData.state.length > 0) {
+          requestData.states = [createRePayData.state];
+        }
+
+        const data = await postCaller('get_user_address', requestData);
 
         if (data.status > 201) {
           toast.error(data.message);
@@ -617,41 +622,7 @@ const MyMapComponent: React.FC = () => {
                 />
               </div>
 
-              {searchValue ? (
-                <div className={styles.kmWrap}>
-                  <SelectOption
-                    options={[
-                      { label: 'All', value: '' },
-                      ...kmsOptions.map((km) => ({
-                        label: `${km.km} KM`,
-                        value: km.km.toString(),
-                      })),
-                    ]}
-                    onChange={(newValue) =>
-                      newValue && handleKMChange(newValue.value)
-                    }
-                    value={
-                      selectedKm
-                        ? { value: selectedKm, label: `${selectedKm} km` }
-                        : { label: 'Select Km', value: '' }
-                    }
-                    menuStyles={{
-                      width: 400,
-                    }}
-                    menuListStyles={{
-                      fontWeight: 400,
-                      width: 150,
-                    }}
-                    singleValueStyles={{
-                      fontWeight: 400,
-                      color:
-                        createRePayData.state === '' ? '#868686' : 'inherit',
-                    }}
-                    width="150px"
-                  />
-                </div>
-              ) : null}
-            </div>
+          
 
             <div className={styles.mapSearch}>
               <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
@@ -711,6 +682,41 @@ const MyMapComponent: React.FC = () => {
                   <RiMapPinLine className={styles.inputMap} />
                 </div>
               </Autocomplete>
+            </div>
+            {searchValue ? (
+                <div className={styles.kmWrap}>
+                  <SelectOption
+                    options={[
+                      { label: 'All', value: '' },
+                      ...kmsOptions.map((km) => ({
+                        label: `${km.km} KM`,
+                        value: km.km.toString(),
+                      })),
+                    ]}
+                    onChange={(newValue) =>
+                      newValue && handleKMChange(newValue.value)
+                    }
+                    value={
+                      selectedKm
+                        ? { value: selectedKm, label: `${selectedKm} km` }
+                        : { label: 'Select Km', value: '' }
+                    }
+                    menuStyles={{
+                      width: 400,
+                    }}
+                    menuListStyles={{
+                      fontWeight: 400,
+                      width: 150,
+                    }}
+                    singleValueStyles={{
+                      fontWeight: 400,
+                      color:
+                        createRePayData.state === '' ? '#868686' : 'inherit',
+                    }}
+                    width="150px"
+                  />
+                </div>
+              ) : null}
             </div>
 
             {/* Display total project count */}
