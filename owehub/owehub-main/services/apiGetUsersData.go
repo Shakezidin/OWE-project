@@ -485,6 +485,27 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 		}
 	}
 
+	if len(dataFilter.UserRoles) > 0 {
+		log.FuncErrorTrace(0, "dataaa = %v", dataFilter.UserRoles)
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		filtersBuilder.WriteString(" ur.role_name IN (")
+		for i, dealer := range dataFilter.UserRoles {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.UserRoles)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
+	}
+
 	if len(dataFilter.DealerName) > 0 {
 		if whereAdder {
 			filtersBuilder.WriteString(fmt.Sprintf(" AND vd.dealer_name = $%d", len(whereEleList)+1))
