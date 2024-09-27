@@ -99,6 +99,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/delete_lead",
+		apiHandler.HandleDeleteRequest,
+		true,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
 }
 
 /******************************************************************************
