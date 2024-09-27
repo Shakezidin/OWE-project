@@ -20,6 +20,7 @@ type User struct {
 	Phone      string
 	DealerName string
 	UserRole   string
+	ItemId     int64
 }
 
 func SyncHubUsersToPodioOnInit() error {
@@ -52,8 +53,16 @@ func SyncHubUsersToPodioOnInit() error {
 		return nil
 	}
 
-	var oweHubusers []User
+	podioAccessToken, err = generatePodioAccessCode()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to generate podio access token; err: %v", err)
+		return err
+	}
+
 	for _, data := range oweHubData {
+		var podioUpdateCheck bool
+		var itemId int64
+
 		user_code, _ := data["user_code"].(string)
 		name, ok1 := data["name"].(string)
 		emailId, ok2 := data["email_id"].(string)
@@ -67,106 +76,60 @@ func SyncHubUsersToPodioOnInit() error {
 		}
 
 		//* this rejects roles other than sale manager, regional manager, sales rep
-		if userRole != string(types.RoleSalesManager) && userRole != string(types.RoleRegionalManager) && 
-		userRole != string(types.RoleSalesRep) && userRole != string(types.RoleDealerOwner) {
+		if userRole != string(types.RoleSalesManager) && userRole != string(types.RoleRegionalManager) &&
+			userRole != string(types.RoleSalesRep) && userRole != string(types.RoleDealerOwner) {
 			log.FuncErrorTrace(0, "Non podio user; user_code: %v", user_code)
 			continue
 		}
 
-		user := User{
-			Name:       name,
-			EmailID:    emailId,
-			Phone:      phone,
-			DealerName: dealerName,
-			UserRole:   userRole,
-		}
-		oweHubusers = append(oweHubusers, user)
-	}
-
-	//* check the user exists in podio
-	query = "SELECT name, item_id, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id FROM sales_rep_dbhub_schema"
-	SaleRepdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get sales_rep_dbhub_schema data from DB for podio insert err: %v", err)
-		return err
-	}
-
-	var oweDbusers []User
-	for _, data := range SaleRepdata {
-		itemId, _ := data["item_id"].(int64)
-		name, ok1 := data["name"].(string)
-		emailId, ok2 := data["work_email"].(string)
-
-		if !ok1 || !ok2 {
-			log.FuncErrorTrace(0, "Failed to fetch name or email id for item_id: %v", itemId)
-			continue
+		query = fmt.Sprintf(`SELECT name, item_id, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id 
+													FROM sales_rep_dbhub_schema
+													WHERE LOWER(name) = LOWER('%s') AND work_email = '%s'`, name, emailId)
+		SaleRepdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get sales_rep_dbhub_schema data from DB for podio insert err: %v", err)
+			return err
 		}
 
-		user := User{
-			Name:    name,
-			EmailID: emailId,
+		if len(SaleRepdata) > 0 {
+			itemId, _ = SaleRepdata[0]["item_id"].(int64)
+			log.FuncInfoTrace(0, "User %v to be updated in Podio; email: %v", name, emailId)
+			podioUpdateCheck = true
+		} else {
+			log.FuncInfoTrace(0, "User %v to be added in Podio; email: %v", name, emailId)
+			podioUpdateCheck = false
 		}
-		oweDbusers = append(oweDbusers, user)
-	}
 
-	var userDoesNotExist []User
-	oweDbUserMap := make(map[string]string)
-	for _, dbUser := range oweDbusers {
-		oweDbUserMap[dbUser.EmailID] = dbUser.Name
-	}
-
-	//* checking user alreay exists or not
-	for _, hubUser := range oweHubusers {
-		if _, exists := oweDbUserMap[hubUser.EmailID]; !exists {
-			log.FuncInfoTrace(0, "User %v to be added to Podio; email: %v", hubUser.Name, hubUser.EmailID)
-			userDoesNotExist = append(userDoesNotExist, hubUser)
-		} else if oweDbUserMap[hubUser.EmailID] != hubUser.Name {
-			log.FuncInfoTrace(0, "User %v to be added to Podio; email: %v", hubUser.Name, hubUser.EmailID)
-			userDoesNotExist = append(userDoesNotExist, hubUser)
-		}
-	}
-
-	if len(oweHubusers) == 0 {
-		log.FuncInfoTrace(0, "No user to be added to Podio, all the users exists")
-		return nil
-	}
-
-	podioAccessToken, err = generatePodioAccessCode()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to generate podio access token; err: %v", err)
-		return err
-	}
-
-	for _, hubUser := range userDoesNotExist {
 		query = fmt.Sprintf(`SELECT item_id, partner_id 
 	 					FROM sales_partner_dbhub_schema 
-						WHERE LOWER(sales_partner_name) = LOWER('%s');`, hubUser.DealerName)
+						WHERE LOWER(sales_partner_name) = LOWER('%s');`, dealerName)
 		Dealerdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to get sales_partner_dbhub_schema data from DB for email %v err: %v", hubUser.EmailID, err)
+			log.FuncErrorTrace(0, "Failed to get sales_partner_dbhub_schema data from DB for email %v err: %v", emailId, err)
 			continue
 		}
 
 		if len(Dealerdata) == 0 {
-			log.FuncErrorTrace(0, "No dealer is found in podio for email: %v", hubUser.EmailID)
+			log.FuncErrorTrace(0, "No dealer is found in podio for email: %v", emailId)
 			continue
 		}
 
 		dealerItemId, ok := Dealerdata[0]["item_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "No dealer ItemId found in podio for email: %v", hubUser.EmailID)
+			log.FuncErrorTrace(0, "No dealer ItemId found in podio for email: %v", emailId)
 			continue
 		}
 
 		dealerId, ok := Dealerdata[0]["partner_id"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "No partner id found in podio for email: %v", hubUser.EmailID)
+			log.FuncErrorTrace(0, "No partner id found in podio for email: %v", emailId)
 			continue
 		}
 
-		positionId := assignUserRoleToPodioId(hubUser.UserRole)
+		positionId := assignUserRoleToPodioId(userRole)
 		if positionId == 0 {
-			log.FuncErrorTrace(0, "User role not authorized to be added to podio for email: %v", hubUser.EmailID)
+			log.FuncErrorTrace(0, "User role not authorized to be added to podio for email: %v", emailId)
 			continue
 		}
 
@@ -174,20 +137,30 @@ func SyncHubUsersToPodioOnInit() error {
 		podioData.DealerItemId = dealerItemId
 		podioData.PartnerId = dealerId
 		podioData.PositionId = positionId
+		podioData.ItemId = itemId
 
 		userData := models.CreateUserReq{
-			Name:         hubUser.Name,
-			MobileNumber: hubUser.Phone,
-			EmailId:      hubUser.EmailID,
+			Name:         name,
+			MobileNumber: phone,
+			EmailId:      emailId,
 		}
 
-		err = CreateOrUpdatePodioUser(userData, podioData, podioAccessToken, false)
+		err = CreateOrUpdatePodioUser(userData, podioData, podioAccessToken, podioUpdateCheck)
 		if err != nil {
-			log.FuncErrorTrace(0, "Failed to create user in podio for email: %v", hubUser.EmailID)
-			continue
+			if podioUpdateCheck {
+				log.FuncErrorTrace(0, "Failed to update user in podio for email: %v", emailId)
+				continue
+			} else {
+				log.FuncErrorTrace(0, "Failed to add user in podio for email: %v", emailId)
+				continue
+			}
 		}
 
-		log.FuncInfoTrace(0, "User %v created succesfully in Podio; email: %v", hubUser.Name, hubUser.EmailID)
+		if podioUpdateCheck {
+			log.FuncInfoTrace(0, "User %v updated succesfully in Podio; email: %v", name, emailId)
+		} else {
+			log.FuncInfoTrace(0, "User %v added succesfully to Podio; email: %v", name, emailId)
+		}
 	}
 	return nil
 }
