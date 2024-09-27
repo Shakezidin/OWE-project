@@ -151,6 +151,8 @@ import mp4Icon from '../assets/mp4-icon.svg'
 import excelIcon from '../assets/excel-icon.svg'
 import recycleBin from '../assets/recycleBin.svg'
 import recycleBinColor from '../assets/recycleBinColor.svg'
+import folderImage from '../assets/folderimage.svg'
+
 
 
 
@@ -323,6 +325,5 @@ export const ICONS = {
   excelIcon:excelIcon,
   recycleBin:recycleBin,
   recycleBinColor:recycleBinColor,
-  
-
+  folderImage,
 };

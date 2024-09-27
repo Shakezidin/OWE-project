@@ -10,17 +10,21 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const [selectedType, setSelectedType] = useState('all'); // New state for selected type
   const dropdownRef = useRef<HTMLUListElement | null>(null);
   const buttonRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
-    setIsClicked(!isClicked); 
+    setIsClicked(!isClicked);
   };
 
   const handleSelect = (type: string) => {
+    setSelectedType(type); // Update selected type
     onSelectType(type);
-    setIsVisible(false); 
+    setIsVisible(false);
+    setIsClicked(false);
+
   };
 
   useEffect(() => {
@@ -33,7 +37,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
         !buttonRef.current.contains(target)
       ) {
         setIsVisible(false);
-        setIsClicked(false); 
+        setIsClicked(false);
       }
     };
 
@@ -56,18 +60,43 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
           style={{
             height: '25px',
             width: '20px',
-            color: isClicked || isHovered ? '#377cf6' : '#8C8C8C',
+            color: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
           }}
         />      
       </div>
 
       {isVisible && (
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
-          <li onClick={() => handleSelect('all')} className={classes.dropdownItem}>All</li>
-          <li onClick={() => handleSelect('excel')} className={classes.dropdownItem}>Excel</li>
-          <li onClick={() => handleSelect('pdf')} className={classes.dropdownItem}>PDF Format</li>
-          <li onClick={() => handleSelect('img')} className={classes.dropdownItem}>Images</li>
-          <li onClick={() => handleSelect('mp4')} className={classes.dropdownItem}>Videos</li>
+          <li 
+            onClick={() => handleSelect('all')} 
+            className={`${classes.dropdownItem} ${selectedType === 'all' ? classes.selected : ''}`}
+          >
+            All
+          </li>
+          <li 
+            onClick={() => handleSelect('excel')} 
+            className={`${classes.dropdownItem} ${selectedType === 'excel' ? classes.selected : ''}`}
+          >
+            Excel
+          </li>
+          <li 
+            onClick={() => handleSelect('pdf')} 
+            className={`${classes.dropdownItem} ${selectedType === 'pdf' ? classes.selected : ''}`}
+          >
+            PDF Format
+          </li>
+          <li 
+            onClick={() => handleSelect('img')} 
+            className={`${classes.dropdownItem} ${selectedType === 'img' ? classes.selected : ''}`}
+          >
+            Images
+          </li>
+          <li 
+            onClick={() => handleSelect('mp4')} 
+            className={`${classes.dropdownItem} ${selectedType === 'mp4' ? classes.selected : ''}`}
+          >
+            Videos
+          </li>
         </ul>
       )}
     </div>

@@ -24,7 +24,7 @@ const NewFile = () => {
 
     return (
         <div className={classes.newfile_container} ref={dropdownRef}>
-            <button onClick={handleClick} className={classes.newfile_botton}>+ New</button>
+            <button onClick={handleClick} className={classes.newfile_botton}style={isVisible ? { backgroundColor: '#377cf6', color: '#ffffff' } : {}}>+ New</button>
             {isVisible && (
                 <ul className={classes.newfilelibrary_uploadbutton_container}>
                     <li className={classes.newfilelibrary_uploadbutton_inner}>

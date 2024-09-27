@@ -39,11 +39,10 @@
   background-color: #D6E5FF;
 }
 
-/* 
-.verticalDotsIcon:hover {
-  color: #377cf6;
-} */
 
-.verticalDotsIcon{
-  color: orange;
+
+
+.selected{
+  background-color: #377CF6;
+  color: #ffffff;
 }
