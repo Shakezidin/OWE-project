@@ -130,7 +130,7 @@ const mob = {
       },
     },
     {
-      path: ROUTES.SCHEDULER,
+      path: ROUTES.SALES_REP_SCHEDULER,
       sidebarProps: {
         displayText: 'Scheduler',
         icon: <RiCalendarScheduleLine size={20} style={{ flexShrink: '0' }} />,

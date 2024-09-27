@@ -430,7 +430,7 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
 								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id 
 								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id`)
-	if len(dealerIn) > 13 {
+	if len(dealerIn) > 16 {
 		filtersBuilder.WriteString(" WHERE ")
 		filtersBuilder.WriteString(dealerIn)
 		whereAdded = true
