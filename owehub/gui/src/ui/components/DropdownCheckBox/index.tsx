@@ -90,19 +90,22 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   const isAllSelected =
     selectedOptions.length === options.length ||
     selectedOptions.some((item) => item.value === 'ALL');
-  const sortedOptions = filteredOptions.sort((a, b) => {
-    const isSelected = selectedOptions.some((item) => item.value === a.value);
-    if (isSelected) {
-      return -1
-    } else {
-      return 1
-    }
-  });
+    const sortedOptions = filteredOptions.sort((a, b) => {
+      const aIsSelected = selectedOptions.some((item) => item.value === a.value);
+      const bIsSelected = selectedOptions.some((item) => item.value === b.value);
+      if (aIsSelected === bIsSelected) {
+        return 0;
+      }
+      if (aIsSelected) {
+        return -1;
+      }
+      return 1;
+    });
   return (
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
       <div className="dropdown-toggle flex items-center" onClick={() => setIsOpen(!isOpen)}>
         <span>
-          {` ${isAllSelected && selectedOptions.length ? "All" : selectedOptions.length} ${label} selected`}
+          {` ${selectedOptions.length} ${label}`}
         </span>
         <BiChevronDown className="ml1 " size={22} style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "all 550ms" }} />
       </div>
