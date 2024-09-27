@@ -139,21 +139,26 @@ const MyMapComponent: React.FC = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
   const [createRePayData, setCreatePayData] = useState({
-    state: '',
+    state: "All",
+    // other fields...
   });
-
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
         const requestData: any = {}; // Initialize an empty object
 
-        // Conditionally add 'states' only if it has a value
-        if (createRePayData.state && createRePayData.state.length > 0) {
-          requestData.states = [createRePayData.state];
-        }
+        const availableStateOptions = availableStates(newFormData);
 
-        const data = await postCaller('get_user_address', requestData);
+        const data = await postCaller('get_user_address', {
+          states:
+          createRePayData.state === 'All'
+              ? availableStateOptions.map((state) => state.value)
+              : createRePayData.state === ''
+                ? ['']
+                : [createRePayData.state],
+              
+        });
 
         if (data.status > 201) {
           toast.error(data.message);
@@ -213,42 +218,103 @@ const MyMapComponent: React.FC = () => {
     { km: 500 },
     { km: 1000 },
   ];
+  const milesOptions = [
+    { miles: 5 },
+    { miles: 10 },
+    { miles: 25 },
+    { miles: 50 },
+    { miles: 100 },
+    { miles: 200 },
+  ];
 
   const [selectedKm, setSelectedKm] = useState<any>(10);
 
-  const handleChange = (newValue: StateOption | null, fieldName: string) => {
-    const updatedValue = newValue ? newValue.value : '';
+  const [selectedMiles, setSelectedMiles] = useState<any>(10); // Default to 10 miles
 
-    setCreatePayData((prevData) => ({
-      ...prevData,
-      [fieldName]: updatedValue,
-    }));
+  // Handle change function
+  const handleChange = (newValue: any) => {
+    setCreatePayData({
+      ...createRePayData,
+      state: newValue.value, // Update state with the selected state's value
+    });
     setSearchValue('')
-    // Disable search input if a state is selected
-    if (updatedValue) {
-      setIsSearchDisabled(true); // Disable the search
+    
+  };
+
+  useEffect(() => {
+    if (createRePayData.state !== 'All') {
+      setIsSearchDisabled(true);
     } else {
-      setIsSearchDisabled(false); // Enable the search
+      setIsSearchDisabled(false);
     }
+  }, [createRePayData.state]);
+
+  console.log(createRePayData.state, "all")
+
+  // const handleChange = (newValue: any, fieldName: string) => {
+  //   // Extract the selected state's value, or set it to 'All' if nothing is selected
+  //   const updatedValue = newValue ? newValue.value : 'All';
+
+  //   setCreatePayData((prevData) => {
+  //     const availableStateOptions = availableStates(newFormData); // Call the function to get the states
+
+  //     // Handle if "All" is selected (assign all states)
+  //     if (updatedValue === 'All') {
+  //       return {
+  //         ...prevData,
+  //         [fieldName]: availableStateOptions.map((state) => state.value), // Set all state values
+  //       };
+  //     }
+  //     // Handle if "-" is selected (assign empty)
+  //     else if (updatedValue === '-') {
+  //       return {
+  //         ...prevData,
+  //         [fieldName]: [], // Set an empty state value
+  //       };
+  //     }
+  //     // Handle if a specific state is selected
+  //     else {
+  //       return {
+  //         ...prevData,
+  //         [fieldName]: [updatedValue], // Set only the selected state
+  //       };
+  //     }
+  //   });
+
+  //   // Reset the search value when a new state is selected
+  //   setSearchValue('');
+  // };
+
+  // Function to calculate the distance between two points in miles
+  const calculateDistanceInMiles = (
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number
+  ): number => {
+    const R = 3958.8; // Earth's radius in miles
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in miles
   };
 
-  const handleKMChange = (newKm: any) => {
-    setSelectedKm(newKm);
-    if (searchedLocation) {
-      filterLocationsByKm(searchedLocation, newKm); // Call the filter function
-    }
-  };
-
-  // Function to filter locations within the selected KM range
-  const filterLocationsByKm = (searchedLocation: LatLng, km: number) => {
+  // Function to filter locations within the selected miles range
+  const filterLocationsByMiles = (searchedLocation: LatLng, miles: number) => {
     const neighboringLocations = locations.filter((location) => {
-      const distance = calculateDistance(
+      const distance = calculateDistanceInMiles(
         searchedLocation.lat,
         searchedLocation.lng,
         location.lat,
         location.lng
       );
-      return distance <= km;
+      return distance <= miles;
     });
 
     setFilteredLocations(neighboringLocations); // Set the new filtered locations
@@ -271,6 +337,52 @@ const MyMapComponent: React.FC = () => {
     }
   };
 
+  const handleMilesChange = (newMiles: any) => {
+    setSelectedMiles(newMiles);
+    if (searchedLocation) {
+      filterLocationsByMiles(searchedLocation, newMiles); // Call the filter function for miles
+    }
+  };
+
+  // const handleKMChange = (newKm: any) => {
+  //   setSelectedKm(newKm);
+  //   if (searchedLocation) {
+  //     filterLocationsByKm(searchedLocation, newKm); // Call the filter function
+  //   }
+  // };
+
+  // Function to filter locations within the selected KM range
+  // const filterLocationsByKm = (searchedLocation: LatLng, km: number) => {
+  //   const neighboringLocations = locations.filter((location) => {
+  //     const distance = calculateDistance(
+  //       searchedLocation.lat,
+  //       searchedLocation.lng,
+  //       location.lat,
+  //       location.lng
+  //     );
+  //     return distance <= km;
+  //   });
+
+  //   setFilteredLocations(neighboringLocations); // Set the new filtered locations
+  //   setNeighboring(neighboringLocations);
+
+  //   // Update map bounds to show the filtered locations
+  //   const bounds = new window.google.maps.LatLngBounds();
+  //   bounds.extend(searchedLocation);
+  //   neighboringLocations.forEach((location) => {
+  //     bounds.extend({ lat: location.lat, lng: location.lng });
+  //   });
+
+  //   if (mapRef.current) {
+  //     if (neighboringLocations.length > 0) {
+  //       mapRef.current.fitBounds(bounds);
+  //     } else {
+  //       mapRef.current.setCenter(searchedLocation);
+  //       mapRef.current.setZoom(10); // Zoom out if no neighboring locations found
+  //     }
+  //   }
+  // };
+
   // Function to handle search location change
   const onPlaceChanged = () => {
     const place = autocompleteRef.current?.getPlace();
@@ -285,17 +397,20 @@ const MyMapComponent: React.FC = () => {
     };
 
     const selectedAddress = place.formatted_address || place.name || '';
+    console.log(searchedLocation, 'searchedLocation');
+
+    // Update the search value and location state
     setSearchValue(selectedAddress);
     setSearchedLocation(searchedLocation);
     setCenter(searchedLocation);
 
-    // Filter locations within the selected KM range after search
-    filterLocationsByKm(searchedLocation, selectedKm);
+    // Filter locations within the selected Miles range after search
+    filterLocationsByMiles(searchedLocation, selectedMiles);
   };
 
   useEffect(() => {
     // Ensure the state field exists before proceeding
-    if (createRePayData.state) {
+    if (createRePayData.state !== 'All') {
       const geocoder = new window.google.maps.Geocoder();
       const stateName = createRePayData.state; // Assuming `createPayData.state` holds the state's name or label
 
@@ -318,8 +433,6 @@ const MyMapComponent: React.FC = () => {
       });
     }
   }, [createRePayData.state]); // Trigger effect whenever `createPayData.state` changes
-
-  console.log(center, 'crjksshf');
 
   const onMarkerHover = useCallback(
     (location: LocationInfo) => {
@@ -354,25 +467,25 @@ const MyMapComponent: React.FC = () => {
     getNewFormData();
   }, []);
 
-  // Function to calculate the distance between two points (Haversine formula)
-  const calculateDistance = (
-    lat1: number,
-    lng1: number,
-    lat2: number,
-    lng2: number
-  ): number => {
-    const R = 6371; // Earth's radius in kilometers
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLng = ((lng2 - lng1) * Math.PI) / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLng / 2) *
-        Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in kilometers
-  };
+  // // Function to calculate the distance between two points (Haversine formula)
+  // const calculateDistance = (
+  //   lat1: number,
+  //   lng1: number,
+  //   lat2: number,
+  //   lng2: number
+  // ): number => {
+  //   const R = 6371; // Earth's radius in kilometers
+  //   const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  //   const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  //   const a =
+  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  //     Math.cos((lat1 * Math.PI) / 180) *
+  //       Math.cos((lat2 * Math.PI) / 180) *
+  //       Math.sin(dLng / 2) *
+  //       Math.sin(dLng / 2);
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   return R * c; // Distance in kilometers
+  // };
 
   // Handle search changes in the Autocomplete input
   // const onPlaceChanged = () => {
@@ -471,7 +584,7 @@ const MyMapComponent: React.FC = () => {
 
   useEffect(() => {
     // Ensure the state is selected before proceeding
-    if (createRePayData.state) {
+    if (createRePayData.state !== 'All' && createRePayData.state) {
       const geocoder = new window.google.maps.Geocoder();
       const selectedState = createRePayData.state; // Assuming `createRePayData.state` holds the selected state
 
@@ -494,10 +607,7 @@ const MyMapComponent: React.FC = () => {
   }, [createRePayData.state, locations]); // Listen for changes to the selected state
 
   useEffect(() => {
-    if (
-      createRePayData.state === '' ||
-      createRePayData.state === 'All States'
-    ) {
+    if (createRePayData.state === '' || createRePayData.state === 'All') {
       if (mapRef.current && locations.length > 0) {
         const bounds = new google.maps.LatLngBounds();
 
@@ -530,7 +640,7 @@ const MyMapComponent: React.FC = () => {
 
   useEffect(() => {
     // Update state and ref
-    if (createRePayData.state) {
+    if (createRePayData.state !== 'All' && createRePayData.state) {
       setProjectCount(locations.length);
       projectCountRef.current = locations.length;
     } else if (searchValue) {
@@ -596,16 +706,16 @@ const MyMapComponent: React.FC = () => {
               <div className={styles.dropdownstate}>
                 <SelectOption
                   options={[
-                    { label: 'All State', value: '' }, // Default option
-                    ...(availableStates(newFormData) || []), // Ensure it returns an array
+                    { label: 'All State', value: 'All' }, // Default "All State" option
+                    ...(availableStates(newFormData) || []), // Other states
                   ]}
-                  onChange={(newValue) => handleChange(newValue, 'state')}
+                  onChange={handleChange} // Update createRePayData.state
                   value={
-                    createRePayData.state === ''
-                      ? { label: 'All State', value: '' } // If no state is selected, show "All State"
-                      : (availableStates(newFormData) || []).find(
+                    createRePayData.state // Dynamically show the selected state
+                      ? (availableStates(newFormData) || []).find(
                           (option) => option.value === createRePayData.state
-                        )
+                        ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
+                      : { label: 'All State', value: 'All' }
                   }
                   menuStyles={{
                     width: 400,
@@ -616,90 +726,96 @@ const MyMapComponent: React.FC = () => {
                   }}
                   singleValueStyles={{
                     fontWeight: 400,
-                    color: createRePayData.state === '' ? '#868686' : 'inherit', // Grey color for "All State"
                   }}
                   width="150px"
                 />
               </div>
 
-          
-
-            <div className={styles.mapSearch}>
-              <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                <div className={styles.inputWrap}>
-                  <input
-                    type="text"
-                    placeholder="Search for an address"
-                    className={styles.inputsearch}
-                    maxLength={100}
-                    onInput={(e) => {
-                      const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
-                      input.value = input.value.replace(/[^a-zA-Z0-9\s]/g, ''); // Replace non-alphanumeric characters
-                    }}
-                    style={{
-                      width: '100%',
-                      padding: '8px 2rem',
-                    }}
-                    onChange={handleInputChange}
-                    value={searchValue}
-                    disabled={isSearchDisabled} // Disable search when a state is selected
-                  />
-                  {searchValue && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSearchValue(''); // Clear the search value
-                        setFilteredLocations(locations);
-                        setSearchedLocation(null); // Reset to show all locations
-
-                        if (mapRef.current) {
-                          const bounds = new google.maps.LatLngBounds();
-
-                          // Loop through all the locations and extend the bounds to include each marker's position
-                          locations.forEach((location) => {
-                            bounds.extend(
-                              new google.maps.LatLng(location.lat, location.lng)
-                            );
-                          });
-
-                          // Adjust the map to fit the bounds of all markers
-                          mapRef.current.fitBounds(bounds);
-                        }
+              <div className={styles.mapSearch}>
+                <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                  <div className={styles.inputWrap}>
+                    <input
+                      type="text"
+                      placeholder="Search for an address"
+                      className={styles.inputsearch}
+                      maxLength={100}
+                      onInput={(e) => {
+                        const input = e.target as HTMLInputElement; // Type assertion to HTMLInputElement
+                        input.value = input.value.replace(
+                          /[^a-zA-Z0-9\s]/g,
+                          ''
+                        ); // Replace non-alphanumeric characters
                       }}
                       style={{
-                        position: 'absolute',
-                        right: '8px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
+                        width: '100%',
+                        padding: '8px 2rem',
                       }}
-                    >
-                      <IoClose size={16} style={{ marginTop: '4px' }} />
-                    </button>
-                  )}
-                  <RiMapPinLine className={styles.inputMap} />
-                </div>
-              </Autocomplete>
-            </div>
-            {searchValue ? (
+                      onChange={handleInputChange}
+                      value={searchValue}
+                      disabled={isSearchDisabled} // Disable search when a state is selected
+                    />
+                    {searchValue && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchValue(''); // Clear the search value
+                          setFilteredLocations(locations);
+                          setSearchedLocation(null); 
+                          setSelectedMiles(10)// Reset to show all locations
+
+                          if (mapRef.current) {
+                            const bounds = new google.maps.LatLngBounds();
+
+                            // Loop through all the locations and extend the bounds to include each marker's position
+                            locations.forEach((location) => {
+                              bounds.extend(
+                                new google.maps.LatLng(
+                                  location.lat,
+                                  location.lng
+                                )
+                              );
+                            });
+
+                            // Adjust the map to fit the bounds of all markers
+                            mapRef.current.fitBounds(bounds);
+                          }
+                        }}
+                        style={{
+                          position: 'absolute',
+                          right: '8px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <IoClose size={16} style={{ marginTop: '4px' }} />
+                      </button>
+                    )}
+                    <RiMapPinLine className={styles.inputMap} />
+                  </div>
+                </Autocomplete>
+              </div>
+              {searchValue ? (
                 <div className={styles.kmWrap}>
                   <SelectOption
                     options={[
-                     
-                      ...kmsOptions.map((km) => ({
-                        label: `${km.km} KM`,
-                        value: km.km.toString(),
+                   
+                      ...milesOptions.map((mile) => ({
+                        label: `${mile.miles} miles`,
+                        value: mile.miles.toString(),
                       })),
                     ]}
                     onChange={(newValue) =>
-                      newValue && handleKMChange(newValue.value)
+                      newValue && handleMilesChange(newValue.value)
                     }
                     value={
-                      selectedKm
-                        ? { value: selectedKm, label: `${selectedKm} km` }
-                        : { label: 'Select Km', value: '' }
+                       {
+                            value: selectedMiles,
+                            label: `${selectedMiles} miles`,
+                          }
+                        
                     }
                     menuStyles={{
                       width: 400,
@@ -759,8 +875,8 @@ const MyMapComponent: React.FC = () => {
                 zoom={5}
                 center={center}
                 options={{
-                  minZoom: 2,  // Prevent zooming out too far
-                  maxZoom: 20,  // Set max zoom level
+                  minZoom: 2, // Prevent zooming out too far
+                  maxZoom: 20, // Set max zoom level
                 }}
               >
                 {/* Searched location marker */}
@@ -782,7 +898,7 @@ const MyMapComponent: React.FC = () => {
                       fillColor: 'blue', // Fully blue marker
                       fillOpacity: 1,
                       strokeWeight: 0, // No outline
-                      scale: 1.0, // Scale to size
+                      scale: 1.5, // Scale to size
                       anchor: new google.maps.Point(12, 24), // Anchor at the bottom of the marker
                     }}
                   />
