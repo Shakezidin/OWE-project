@@ -118,7 +118,7 @@ func HandleGetLeaderBoardCsvDownloadRequest(resp http.ResponseWriter, req *http.
 
 	// query = "SELECT unique_id,home_owner,customer_email,customer_phone_number,address,state,contract_total,system_size, contract_date,ntp_date, pv_install_completed_date, pto_date, canceled_date, primary_sales_rep, secondary_sales_rep FROM consolidated_data_view"
 	query = models.CsvDownloadRetrieveQueryFunc()
-	dealerIn = "dealer IN("
+	dealerIn = "cs.dealer IN("
 	for i, data := range dataReq.DealerName {
 		if i > 0 {
 			dealerIn += ","
@@ -170,11 +170,11 @@ func PrepareLeaderCsvDateFilters(dataFilter models.GetCsvDownload, dealerIn stri
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
-	if len(dealerIn) > 13 {
+	if len(dealerIn) > 16 {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
@@ -190,7 +190,7 @@ func PrepareLeaderCsvDateFilters(dataFilter models.GetCsvDownload, dealerIn stri
 		filtersBuilder.WriteString(" WHERE ")
 		whereAdded = true
 	}
-	filtersBuilder.WriteString("project_status != 'DUPLICATE' ")
+	filtersBuilder.WriteString("cs.project_status != 'DUPLICATE' AND cs.unique_id != '' ")
 
 	filters = filtersBuilder.String()
 	return filters, whereEleList
