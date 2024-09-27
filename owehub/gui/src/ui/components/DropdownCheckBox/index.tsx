@@ -15,6 +15,7 @@ interface DropdownCheckboxProps {
   onChange: (selectedOptions: Option[]) => void;
   placeholder?: string;
   label?: string;
+  disabled?: boolean;
 }
 
 const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
@@ -22,7 +23,8 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   selectedOptions,
   onChange,
   placeholder = 'Search...',
-  label
+  label,
+  disabled
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -103,7 +105,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     });
   return (
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
-      <div className="dropdown-toggle flex items-center" onClick={() => setIsOpen(!isOpen)}>
+      <div className="dropdown-toggle flex items-center" onClick={() => !disabled && setIsOpen(!isOpen)}>
         <span>
           {` ${selectedOptions.length} ${label}`}
         </span>
@@ -123,7 +125,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
               <input
                 type="checkbox"
                 checked={isAllSelected}
-                onChange={handleSelectAll}
+                onChange={() => !disabled && handleSelectAll() }
               />
               <span>All</span>
             </div>
@@ -137,7 +139,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
                   checked={selectedOptions.some(
                     (item) => item.value === option.value
                   )}
-                  onChange={() => handleOptionChange(option)}
+                  onChange={() => !disabled && handleOptionChange(option)}
                 />
                 <span>{option.label}</span>
               </div>

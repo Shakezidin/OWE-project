@@ -187,7 +187,7 @@ const Index = () => {
     }
   };
 
-  const exportPdf = async (callback: () => void) => {
+  const exportPdf = async () => {
     if (leaderboard.current) {
       setIsExporting(true);
       const element = leaderboard.current;
@@ -237,7 +237,6 @@ const Index = () => {
         URL.revokeObjectURL(url);
         selector.style.overflow = 'auto';
         setIsExporting(false);
-        callback();
       }
     }
   };
