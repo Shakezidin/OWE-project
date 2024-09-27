@@ -34,6 +34,8 @@ import {
   startOfYear,
   subDays,
 } from 'date-fns';
+import Breadcrumb from '../components/breadcrumb/Breadcrumb';
+
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -644,6 +646,15 @@ const handlePeriodChange = (
 
   return (
     <div className={styles.dashboard}>
+      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+      <Breadcrumb
+          head=""
+          linkPara="Lead Management"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
       {showConfirmModal && (
         <ConfirmModel
           isOpen1={isModalOpen} onClose1={handleCloseModal}
