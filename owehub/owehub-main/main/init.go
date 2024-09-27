@@ -18,6 +18,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	apiHandler "OWEApp/owehub-main/services"
 	"OWEApp/shared/db"
@@ -1810,6 +1811,7 @@ func init() {
 	// 	log.ConfErrorTrace(0, "Failed to insert users to PODIO err: %+v", err)
 	// }
 
+	time.Sleep(time.Minute * 1)
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 
