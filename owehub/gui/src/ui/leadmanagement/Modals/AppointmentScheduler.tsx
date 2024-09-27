@@ -5,10 +5,14 @@ import '../styles/appointmentScheduler.css';
 
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
+  onDateChange: (date: Date) => void;
+  onTimeChange: (time: string) => void;
 }
 
 const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
   setVisibleDiv,
+  onDateChange,
+  onTimeChange,
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date('2024-08-25'));
   const [selectedTime, setSelectedTime] = useState('');
@@ -16,10 +20,12 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
+    onDateChange(date);
   };
 
   const handleTimeChange = (time: string) => {
     setSelectedTime(time);
+    onTimeChange(time);
   };
 
   const timeSlots = [

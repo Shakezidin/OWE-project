@@ -17,6 +17,10 @@ export PATH=$PATH:/usr/local/go/bin
 ./buildApp_Utils.sh make_all
 ./buildApp_Utils.sh make_docker  
 
+./buildApp_Leads.sh make_clean
+./buildApp_Leads.sh make_all
+./buildApp_Leads.sh make_docker
+
 docker images
 
 ./start-OweApp-Backend-svc.sh

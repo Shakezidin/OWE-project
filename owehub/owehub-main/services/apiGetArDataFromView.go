@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -44,28 +45,28 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ar data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ar data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get ar data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get ar data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get ar data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	if dataReq.ReportType == "" || dataReq.SalePartner == "" {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -90,7 +91,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ar data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ar data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get ar data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -264,14 +265,14 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	datacount, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get appt setters data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
 	RecordCount = int64(len(datacount))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of ar data List fetched : %v", len(arDataList.ArDataList))
-	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, arDataList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, arDataList, RecordCount)
 }
 
 // Function to generate the base query

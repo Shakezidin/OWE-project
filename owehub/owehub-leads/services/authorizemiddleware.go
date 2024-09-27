@@ -27,6 +27,7 @@ func RecoveryMiddleware(next http.Handler) http.Handler {
 				// Log the panic and stack trace
 				buf := make([]byte, 1<<16)
 				runtime.Stack(buf, true)
+
 				log.FuncErrorTrace(0, "Recovered from panic: %v\nStack Trace: %s", rec, buf)
 
 				// Send a generic internal server error response

@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleCreateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create v adders request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create v adders request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createVAddersReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create v adders request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create v adders request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create v adders request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,13 +62,13 @@ func HandleCreateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(createVAddersReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createVAddersReq.Active <= 0 {
 		err = fmt.Errorf("Invalid Active Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -82,12 +83,12 @@ func HandleCreateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateVAddersFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add v adders in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create V adders", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create V adders", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New v adders created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "V Adders Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "V Adders Created Successfully", http.StatusOK, nil)
 }

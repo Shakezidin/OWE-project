@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleUpdateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update v adders request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update v adders request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateVAddersReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update v adders request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update Adders request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Update Adders request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,19 +62,19 @@ func HandleUpdateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(updateVAddersReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateVAddersReq.Active <= 0 {
 		err = fmt.Errorf("Invalid Active Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateVAddersReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -89,12 +90,12 @@ func HandleUpdateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateVAddersFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update v adders in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Adders", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update Adders", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "v adders updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Adders Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Adders Updated Successfully", http.StatusOK, nil)
 }

@@ -35,6 +35,7 @@ import {
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
 import useAuth from '../../../hooks/useAuth';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -110,16 +111,60 @@ const UserManagement: React.FC = () => {
   }, [selectedOption]);
 
   /** role based get data */
+
+
+  // useEffect(() => {
+  //   const data = {
+  //     page_number: page,
+  //     page_size: 25,
+  //     filters: [
+  //       {
+  //         Column: 'role_name',
+  //         Operation: '=',
+  //         Data: selectedOption.value,
+  //       },
+  //       {
+  //         Column: 'name',
+  //         Operation: 'cont',
+  //         Data: searchTerm,
+  //       },
+  //     ],
+  //   };
+
+  //   const dataa = {
+  //     page_number: page,
+  //     page_size: 25,
+  //     filters: [
+  //       {
+  //         Column: 'dealer_name',
+  //         Operation: 'cont',
+  //         Data: searchTerm,
+  //       },
+  //     ],
+  //   };
+  //   const fetchList = async () => {
+  //     await dispatch(fetchUserListBasedOnRole(data));
+  //   };
+
+  //   if (selectedOption.value !== 'Partner') {
+  //     fetchList();
+  //   }
+
+  //   const fetchDealer = async () => {
+  //     await dispatch(fetchDealerList(dataa));
+  //   };
+  //   if (selectedOption.value === 'Partner') {
+  //     fetchDealer();
+  //   }
+  // }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
+
+
+
   useEffect(() => {
     const data = {
       page_number: page,
       page_size: 25,
       filters: [
-        {
-          Column: 'role_name',
-          Operation: '=',
-          Data: selectedOption.value,
-        },
         {
           Column: 'name',
           Operation: 'cont',
@@ -127,7 +172,7 @@ const UserManagement: React.FC = () => {
         },
       ],
     };
-
+  
     const dataa = {
       page_number: page,
       page_size: 25,
@@ -139,21 +184,33 @@ const UserManagement: React.FC = () => {
         },
       ],
     };
+  
     const fetchList = async () => {
+      if (selectedOption.value !== "") {
+        data.filters.push({
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        });
+      }
       await dispatch(fetchUserListBasedOnRole(data));
     };
-
+  
     if (selectedOption.value !== 'Partner') {
       fetchList();
     }
-
+  
     const fetchDealer = async () => {
       await dispatch(fetchDealerList(dataa));
     };
+  
     if (selectedOption.value === 'Partner') {
       fetchDealer();
     }
   }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
+ 
+
+
 
   /** handle dropdown value */
   const handleSelectChange = useCallback(
@@ -225,6 +282,10 @@ const UserManagement: React.FC = () => {
           tables_permissions: tablePermissions,
           description: formData.description.trim(),
           dealer_logo: logoUrl,
+          podio_checked: (formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
+            formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+            formData.role_name === TYPE_OF_USER.REGIONAL_MANGER ||
+            formData.role_name === TYPE_OF_USER.DEALER_OWNER) ? data.podio_checked : undefined
         })
       );
       const result = unwrapResult(actionResult);
@@ -318,6 +379,15 @@ const UserManagement: React.FC = () => {
   /** render UI */
   return (
     <>
+      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+        <Breadcrumb
+          head=""
+          linkPara="Users"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}
@@ -357,6 +427,7 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
+          
           activeSalesRep={activeSalesRep}
           handleCrossClick={handleCrossClick}
           currentPage1={page}
@@ -375,11 +446,11 @@ const UserManagement: React.FC = () => {
             selectedOption.value === 'Partner'
               ? deleteDealerRequest(item)
               : deleteUserRequest(
-                  [item.user_code],
-                  item.role_name === 'DB User'
-                    ? [item.db_username]
-                    : [item.name.split(' ').join('_')]
-                );
+                [item.user_code],
+                item.role_name === 'DB User'
+                  ? [item.db_username]
+                  : [item.name.split(' ').join('_')]
+              );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(

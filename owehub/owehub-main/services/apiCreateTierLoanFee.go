@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create tier loan fee request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create tier loan fee request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createTierLoanFee)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create tier loan fee request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create tier loan fee request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create tier loan fee request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,28 +62,28 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 		(len(createTierLoanFee.StartDate) <= 0) || (len(createTierLoanFee.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createTierLoanFee.OweCost <= float64(0) {
 		err = fmt.Errorf("Invalid owe cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid owe cost Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid owe cost Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createTierLoanFee.DlrMu <= float64(0) {
 		err = fmt.Errorf("Invalid dlr_mu Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid dlr)mu Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid dlr)mu Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createTierLoanFee.DlrCost <= float64(0) {
 		err = fmt.Errorf("Invalid dlr cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -90,7 +91,7 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	if err != nil {
 		err = fmt.Errorf("Error parsing start date:", err)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid start date not allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid start date not allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -98,7 +99,7 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	if err != nil {
 		err = fmt.Errorf("Error parsing start date:", err)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid end date not allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid end date not allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -116,12 +117,12 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateTierLoanFeeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add tier loan fee in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Tier Loan Fee", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Tier Loan Fee", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "tier loan fee created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Tier Loan Fee Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Tier Loan Fee Created Successfully", http.StatusOK, nil)
 }

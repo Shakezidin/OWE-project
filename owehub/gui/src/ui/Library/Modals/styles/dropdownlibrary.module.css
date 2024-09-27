@@ -1,0 +1,48 @@
+.dropdown_container {
+  position: relative;
+  display: inline-block;
+}
+
+.verticalDots {
+  display: flex;
+  cursor: pointer;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  /* top: 5px; */
+}
+
+.dropdownMenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 45px; 
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  width: 175px;
+    border-radius: 5px;
+}
+
+.dropdownItem {
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+.dropdownItem:hover {
+  background-color: #D6E5FF;
+}
+
+
+
+
+.selected{
+  background-color: #377CF6;
+  color: #ffffff;
+}

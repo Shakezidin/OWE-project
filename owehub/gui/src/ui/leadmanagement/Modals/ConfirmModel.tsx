@@ -15,12 +15,20 @@ interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
 }
-
-// const ConfirmaModel = () => {
   const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState('');
+
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+  };
+
+  const handleTimeChange = (time: string) => {
+    setSelectedTime(time);
+  };
   const HandleModal = () => {
     setModalClose(false);
     onClose1();
@@ -28,15 +36,12 @@ interface EditModalProps {
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-   
   };
-
-
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    
   };
+ 
   return (
     <div>
       {isOpen1 && (
@@ -124,7 +129,11 @@ interface EditModalProps {
             <EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
             {/* <div style={{marginTop:"-308px"}}> </div> */}
             {visibleDiv === 0 && (
-              <AppointmentScheduler setVisibleDiv={setVisibleDiv} />
+              <AppointmentScheduler
+              setVisibleDiv={setVisibleDiv}
+              onDateChange={handleDateChange}
+              onTimeChange={handleTimeChange}
+            />
             )}
             {visibleDiv === 1 && (
               <>

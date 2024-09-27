@@ -6,6 +6,7 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import scheduleDoor from '../../resources/assets/schedule_door.png';
 import dashIcon from '../../resources/assets/dashIcon.svg';
 import ConfigIcon from '../../resources/assets/config.svg';
 import userManIcon from '../../resources/assets/userManag.svg';
@@ -144,6 +145,17 @@ import leadMngExport from '../../resources/assets/export-lead.svg';
 import chevronDown from '../assets/chevron-down.svg'
 import chevronUp from '../assets/chevron-Up.svg'
 import declinedArchive from '../assets/archiveIcon.svg'
+import deleteFileLibrary from '../assets/delete-file-lib.svg'
+import imageIcon from '../assets/image-icon.svg'
+import mp4Icon from '../assets/mp4-icon.svg'
+import excelIcon from '../assets/excel-icon.svg'
+import recycleBin from '../assets/recycleBin.svg'
+import recycleBinColor from '../assets/recycleBinColor.svg'
+import folderImage from '../assets/folderimage.svg'
+
+
+
+
 
 
 export const ICONS = {
@@ -305,5 +317,13 @@ export const ICONS = {
   LeadMngExport:leadMngExport,
   chevronDown:chevronDown,
   chevronUp:chevronUp,
-  declinedArchive:declinedArchive
+  declinedArchive:declinedArchive,
+  scheduleDoor,
+  deleteFileLibrary:deleteFileLibrary,
+  imageIcon:imageIcon,
+  mp4Icon:mp4Icon,
+  excelIcon:excelIcon,
+  recycleBin:recycleBin,
+  recycleBinColor:recycleBinColor,
+  folderImage,
 };

@@ -10,6 +10,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
 import Switch from '../../components/Switch';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
@@ -90,12 +91,19 @@ const PendingQueue = () => {
 
   return (
     <>
+      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+        <Breadcrumb
+          head=""
+          linkPara="Pending Actions"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
       <div
         style={{ borderRadius: 6 }}
         className="flex items-center bg-white px2 justify-between"
       >
-        <h2 className={`my2 ${styles.pending_queue_title}`}>Pending Actions</h2>
-
         {/* <div className="flex items-center">
        
           <Switch checked={pre} onChange={() => {
@@ -177,10 +185,10 @@ const PendingQueue = () => {
                   onClick={
                     pre
                       ? () => {
-                          setActive('qc');
-                          setPage(1);
-                          setSearch('');
-                        }
+                        setActive('qc');
+                        setPage(1);
+                        setSearch('');
+                      }
                       : undefined
                   }
                 >
@@ -219,42 +227,42 @@ const PendingQueue = () => {
           <div
             className={`flex  py2 items-center justify-between ${styles.pending_queue_table_header}`}
           >
-            <h3
-              className={` ${styles.table_heading}`}
-              style={{ fontWeight: 700, fontSize: 20 }}
-            >
-              {active === 'qc'
-                ? 'QC Checklist'
-                : active === 'ntp'
-                  ? 'NTP Checklist'
-                  : 'C/O Status'}
-            </h3>
-
-            <div className="performance-box-container">
-              <p className="status-indicator">Checklist Indicators</p>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#2EAF71', borderRadius: '2px' }}
-                ></div>
-                <p>Completed</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#EBA900', borderRadius: '2px' }}
-                ></div>
-                <p>Pending OWE</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#E14514', borderRadius: '2px' }}
-                ></div>
-                <p>Sale Rep Action Required</p>
+            <div className={styles.pendingQueHead}>
+              <h3
+                className={` ${styles.table_heading}`}
+                style={{ fontWeight: 600, fontSize: 16 }}
+              >
+                {active === 'qc'
+                  ? 'QC Checklist'
+                  : active === 'ntp'
+                    ? 'NTP Checklist'
+                    : 'C/O Status'}
+              </h3>
+              <div className={`performance-box-container ${styles.pendingBoxContainer}`} style={{ padding: "0.6rem 1rem" }}>
+                <p className="status-indicator">Checklist Indicators</p>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#2EAF71', borderRadius: '2px' }}
+                  ></div>
+                  <p>Completed</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#EBA900', borderRadius: '2px' }}
+                  ></div>
+                  <p>Pending OWE</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#E14514', borderRadius: '2px' }}
+                  ></div>
+                  <p>Sale Rep Action Required</p>
+                </div>
               </div>
             </div>
-
             <div className={styles.search_wrapper}>
               <Input
                 type="text"
@@ -367,7 +375,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                      'Pending (Action Required)'
+                                        'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'

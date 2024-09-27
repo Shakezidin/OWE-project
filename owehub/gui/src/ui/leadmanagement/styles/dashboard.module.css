@@ -97,11 +97,11 @@
 .buttonGroup {
   display: flex;
   padding: 5px;
-  gap: 8px;
-  width: 70%;
-  overflow: scroll;
-  /* flex-wrap: wrap; */
-  box-shadow: inset -3px 0px 5px 2px #0000000d;
+  gap: 5px;
+  width: 71%;
+  /* overflow: scroll; */
+  flex-wrap: wrap;
+  /* box-shadow: inset -3px 0px 5px 2px #0000000d; */
   border-radius: 22px 0 0 22px;
 }
 
@@ -117,7 +117,13 @@
   align-items: center;
   gap: 4px;
   font-weight: 500;
+  padding-right: 12px;
   transition: all 500ms;
+
+}
+
+.button:hover{
+  background-color: #ddebff;
 }
 
 .status {
@@ -139,6 +145,10 @@
   background-color: #3b82f6;
   color: white;
   border: unset !important;
+}
+.buttonActive:hover{
+  background-color: #3b82f6;
+
 }
 
 .table {
@@ -188,7 +198,7 @@ table tbody tr:hover {
 .filterCallToAction {
   display: flex;
   gap: 10px;
-  transform: scale(0.7);
+  transform: scale(0.7) translate(-1em,-4em);
   position: relative;
   /* top: -2pc; */
   right: -8px;
@@ -353,9 +363,20 @@ input[type='checkbox']:checked {
 }
 
 .paginationContainer {
-  display: flex;
-  justify-content: right;
+  display: flex;              
+  justify-content: space-between; 
+  align-items: center;   
+  height: 50px;   
 }
+
+.leadpagination {
+  display: flex;              
+  justify-content: space-between; 
+  align-items: center;     
+  height: 50px;
+}
+
+
 
 .chevron_down {
   display: none !important;
@@ -373,6 +394,15 @@ input[type='checkbox']:checked {
   gap: 10px;
 }
 
+.action_needed_btn{
+  width:auto;
+}
+
+.tabs_setting{
+  padding: 10px 0 0 5px;
+
+}
+
 /* -----------------Vaibhav End----------------- */
 
 
@@ -380,24 +410,28 @@ input[type='checkbox']:checked {
 
 /* For tablets and larger screens */
 @media (min-width: 768px) {
+  .tabs_setting{
+    padding: 10px 15px;
+  }
   .history_list_inner_declined {
     display: grid;
-    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
+    /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
+    grid-template-columns: 35px 1fr 1fr 2fr 1fr auto!important;
     /* place-items: center; */
     align-items: center;
 
   }
   .chartGrid {
-    grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
+    grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
   }
   .lineCard {
     margin-right: 26px;
   }
   .buttonGroup {
     display: flex;
-    gap: 8px;
+    gap: 16px;
     width: 100%;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     display: flex;
     flex-direction: row;
     box-shadow: unset;
@@ -435,6 +469,7 @@ input[type='checkbox']:checked {
   .history_list_inner {
     display: grid;
     grid-template-columns: auto 2fr auto !important;
+    align-items: baseline;
 
   }
   .actionButtons {
@@ -462,6 +497,9 @@ input[type='checkbox']:checked {
   .date_calendar {  
     gap: unset !important;
   }
+  .user_name{
+    transform: translate(5px, -5px);
+  }
 
 }
 
@@ -480,13 +518,12 @@ input[type='checkbox']:checked {
 /* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
   /* Styles for small desktops */
-  .history_list_inner_declined {
+  /* .history_list_inner_declined {
     display: grid;
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
     align-items: center;
 
-  }
+  } */
   .chartGrid {
     grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
   }
@@ -530,17 +567,19 @@ input[type='checkbox']:checked {
     display: grid;
     grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
     justify-content: center !important;
-    align-items: center !important;
+    align-items: start !important;
   }
 
-  .paginationContainer {
+
+  /* HERE MEDIA SCREEN */
+  .leadpagination {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     gap: 50px !important;
   }
 
-  .lead_pagination {
+  .leftitem, .rightitem {
     align-items: flex-start; /* Optional: vertically center the items */
   }
 }
@@ -592,9 +631,9 @@ input[type='checkbox']:checked {
 }
 
 .monthSelect {
-  background-color: #3b82f6;
+  /* background-color: #3b82f6; */
   color: white;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   padding: 4px 8px;
   border: none;
   font-size: 12px;
@@ -613,6 +652,17 @@ input[type='checkbox']:checked {
 
 .monthSelect option:hover {
   transform: scale(1.06);
+}
+
+.monthSelect {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px; 
+  padding-left: 15px; 
 }
 
 .calender {
@@ -641,3 +691,158 @@ input[type='checkbox']:checked {
   justify-content: right !important;
 }
 /*---------------- Shams Start-------------------- */
+
+
+
+/* styles={{
+  control: (baseStyles, state) => ({
+    ...baseStyles,
+    marginTop: 'px',
+    borderRadius: '8px',
+    outline: 'none',
+    color: '#3E3E3E',
+    width: '140px',
+    height: '36px',
+    fontSize: '12px',
+    border: '1px solid #d0d5dd',
+    fontWeight: '500',
+    cursor: 'pointer',
+    alignContent: 'center',
+    backgroundColor: '#fffff',
+    boxShadow: 'none',
+    '@media only screen and (max-width: 767px)': {
+      width: '80px',
+      // width: 'fit-content',
+    },
+    '&:focus-within': {
+      borderColor: '#377CF6',
+      boxShadow: '0 0 0 1px #377CF6',
+      caretColor: '#3E3E3E',
+    },
+  }),
+  placeholder: (baseStyles) => ({
+    ...baseStyles,
+    color: '#3E3E3E',
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',
+  }),
+  dropdownIndicator: (baseStyles, state) => ({
+    ...baseStyles,
+    color: '#3E3E3E',
+    '&:hover': {
+      color: '#3E3E3E',
+    },
+
+  }),
+  option: (baseStyles, state) => ({
+    ...baseStyles,
+    fontSize: '13px',
+    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+    '&:hover': {
+      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+    },
+    cursor: 'pointer',
+  }),
+  singleValue: (baseStyles, state) => ({
+    ...baseStyles,
+    color: '#3E3E3E',
+  }),
+  menu: (baseStyles) => ({
+    ...baseStyles,
+    width: '140px',
+    marginTop: "0px"
+  }),
+}} */
+
+
+/* General style for the month select */
+/* General style for the month select */
+.monthSelect {
+  margin-top: 0;
+  border-radius: 8px;
+  outline: none;
+  color: #3e3e3e;
+  width: 140px;
+  height: 36px;
+  font-size: 12px;
+  border: 1px solid #d0d5dd;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 20px; /* Space for the arrow */
+  background-color: #ffffff;
+  box-shadow: none;
+  position: relative;
+  appearance: none;
+}
+
+/* Arrow in the dropdown */
+.monthSelect::after {
+  content: "▼"; /* Down arrow character */
+  font-size: 12px;
+  color: #3e3e3e;
+  position: absolute;
+  right: 10px;
+  pointer-events: none; /* Prevent interaction with the arrow */
+}
+
+/* Border will be none when the dropdown is open */
+.monthSelect:focus {
+  border: none;
+  box-shadow: none;
+}
+
+/* Focused state styling for border color when the dropdown is not open */
+.monthSelectFocus:focus-within {
+  border-color: #377cf6;
+  box-shadow: 0 0 0 1px #377cf6;
+  caret-color: #3e3e3e;
+}
+
+/* Placeholder styling */
+.placeholder {
+  color: #3e3e3e;
+}
+
+/* Option styling */
+.option {
+  font-size: 13px;
+  color: #3e3e3e;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: #ddebff;
+}
+
+.optionSelected {
+  background-color: #ffffff;
+}
+
+/* Single value styling */
+.singleValue {
+  color: #3e3e3e;
+}
+
+/* Menu styling */
+.menu {
+  width: 140px;
+  margin-top: 0px;
+}
+
+.indicatorSeparator {
+  display: none;
+}
+
+@media only screen and (max-width: 767px) {
+  .monthSelect {
+    width: 80px;
+  }
+}
+
+

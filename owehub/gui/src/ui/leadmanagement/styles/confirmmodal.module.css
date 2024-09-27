@@ -446,12 +446,14 @@ padding-top: 1px;
 
 .crossBtn {
   cursor: pointer;
-  width: 19px;
-  height: 19px;
+  margin-top: -8px;
+  width: 19.5px;
+  height: 19.5px;
+  transition: all 0.3s ease;
 }
 
 .crossBtn:hover {
-  transform: scale(1.06);
+  transform: scale(1.2);
 }
 
 .edit_modal_open {

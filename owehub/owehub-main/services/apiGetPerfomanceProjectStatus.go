@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -41,7 +42,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		whereEleList       []interface{}
 		queryWithFiler     string
 		filter             string
-		dealerName         interface{}
 		rgnSalesMgrCheck   bool
 		RecordCount        int64
 		SaleRepList        []interface{}
@@ -87,21 +87,21 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get PerfomanceProjectStatus data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get PerfomanceProjectStatus data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get PerfomanceProjectStatus data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceProjectStatus data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceProjectStatus data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -113,7 +113,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -124,9 +124,21 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	if len(data) > 0 {
 		role := data[0]["role_name"]
 		name := data[0]["name"]
-		dealerName = data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
-		dataReq.DealerName = dealerName
+		dealerName, ok := data[0]["dealer_name"].(string)
+		if dealerName == "" || !ok {
+			dealerName = ""
+		}
+
+		if role == string(types.RoleAdmin) || role == string(types.RoleFinAdmin) || role == string(types.RoleAccountExecutive) || role == string(types.RoleAccountManager) {
+			if len(dataReq.DealerNames) <= 0 {
+				perfomanceList := models.PerfomanceListResponse{}
+				appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+				return
+			}
+		} else {
+			dataReq.DealerNames = []string{dealerName}
+		}
 
 		switch role {
 		case string(types.RoleAdmin), string(types.RoleFinAdmin):
@@ -136,15 +148,26 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchProjectDealerForAmAndAe(dataReq.Email, role)
 			if err != nil {
-				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
 
 			if len(dealerNames) == 0 {
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, RecordCount)
 				return
 			}
-			filter, whereEleList = PrepareProjectAeAmFilters(dealerNames, dataReq, false)
+			dealerNameSet := make(map[string]bool)
+			for _, dealer := range dealerNames {
+				dealerNameSet[dealer] = true
+			}
+
+			for _, dealerNameFromUI := range dataReq.DealerNames {
+				if !dealerNameSet[dealerNameFromUI] {
+					appserver.FormAndSendHttpResp(resp, "Please select your dealer name(s) from the allowed list", http.StatusBadRequest, nil)
+					return
+				}
+			}
+			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false, false)
 		case string(types.RoleSalesRep):
 			SaleRepList = append(SaleRepList, name)
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
@@ -155,7 +178,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 	} else {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -168,7 +191,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
 			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			appserver.FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -191,7 +214,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -199,7 +222,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -535,7 +558,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	perfomanceList.PerfomanceList = paginatedData
 
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 }
 
 /*
@@ -819,16 +842,24 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter if not adminCheck and not filterCheck
-	if !adminCheck && !filterCheck {
+	if len(dataFilter.DealerNames) > 0 {
 		if whereAdded {
-			filtersBuilder.WriteString(" AND")
+			filtersBuilder.WriteString(" AND ")
 		} else {
-			filtersBuilder.WriteString(" WHERE")
+			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-		whereEleList = append(whereEleList, dataFilter.DealerName)
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerNames {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerNames)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
 
 	// Always add the following filters
@@ -965,15 +996,25 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		filtersBuilder.WriteString(")")
 	}
 
-	// Add dealer filter
-	if whereAdded {
-		filtersBuilder.WriteString(" AND ")
-	} else {
-		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true
+	if len(dataFilter.DealerNames) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		for i, dealer := range dataFilter.DealerNames {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.DealerNames)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
-	filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer = $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.DealerName)
 
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
@@ -1241,129 +1282,4 @@ func electricalColor(mpuCreateDate, derateCreateDate, TrenchingWSOpen, derateCom
 	}
 
 	return grey, 1, ""
-}
-
-/******************************************************************************
-* FUNCTION:		PrepareProjectAeAmFilters
-* DESCRIPTION:     handler for prepare filter
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
-
-func PrepareProjectAeAmFilters(dealerList []string, dataFilter models.PerfomanceStatusReq, dataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareAeAmFilters")
-	defer func() { log.ExitFn(0, "PrepareAeAmFilters", nil) }()
-
-	var filtersBuilder strings.Builder
-	whereAdded := false
-
-	if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
-		startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
-		endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
-
-		endDate = endDate.Add(24*time.Hour - time.Second)
-
-		whereEleList = append(whereEleList,
-			startDate.Format("02-01-2006 00:00:00"),
-			endDate.Format("02-01-2006 15:04:05"),
-		)
-
-		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
-		whereAdded = true
-	}
-
-	// Check if there are filters
-	if len(dataFilter.UniqueIds) > 0 {
-		// Start with WHERE if none has been added
-		if whereAdded {
-			filtersBuilder.WriteString(" AND (") // Begin a group for the OR conditions
-		} else {
-			filtersBuilder.WriteString(" WHERE (") // Begin a group for the OR conditions
-			whereAdded = true
-		}
-
-		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
-			whereEleList = append(whereEleList, filter)
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString(") ")
-
-		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
-		for i, filter := range dataFilter.UniqueIds {
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString("])")
-
-		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
-		for i, filter := range dataFilter.UniqueIds {
-			// Wrap the filter in wildcards for pattern matching
-			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
-			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
-
-			if i < len(dataFilter.UniqueIds)-1 {
-				filtersBuilder.WriteString(", ")
-			}
-		}
-		filtersBuilder.WriteString("]) ")
-
-		// Close the OR group
-		filtersBuilder.WriteString(")")
-	}
-
-	placeholders := []string{}
-	for i := range dealerList {
-		placeholders = append(placeholders, fmt.Sprintf("$%d", len(whereEleList)+i+1))
-	}
-
-	if len(placeholders) != 0 {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-			whereAdded = true
-		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
-		for _, dealer := range dealerList {
-			whereEleList = append(whereEleList, dealer)
-		}
-	}
-
-	if whereAdded {
-		filtersBuilder.WriteString(" AND")
-	} else {
-		filtersBuilder.WriteString(" WHERE")
-		whereAdded = true
-	}
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
-
-	if len(dataFilter.ProjectStatus) > 0 {
-		var statusValues []string
-		for _, val := range dataFilter.ProjectStatus {
-			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
-		}
-		statusList := strings.Join(statusValues, ", ")
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
-	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
-	}
-
-	filters = filtersBuilder.String()
-	return filters, whereEleList
 }

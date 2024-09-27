@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -42,21 +43,21 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create user request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create user request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createUserReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create user request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create user request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create user request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -69,7 +70,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(createUserReq.RoleName) <= 0) {
 		err = fmt.Errorf("empty input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	createUserReq.Password = "Welcome@123"
@@ -79,7 +80,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		tablesPermissionsJSON, err = json.Marshal(createUserReq.TablesPermissions)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to marshall table permission while create user,  err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to marshall table permissions", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to marshall table permissions", http.StatusBadRequest, nil)
 			return
 		}
 	}
@@ -87,7 +88,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
 	if err != nil || hashedPassBytes == nil {
 		log.FuncErrorTrace(0, "Failed to hash the password err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -99,7 +100,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -107,7 +108,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			DealerName, dealerNameOk := data[0]["dealer_name"].(string)
 			if !dealerNameOk || DealerName == "" {
 				log.FuncErrorTrace(0, "empty dealer name")
-				FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
 				return
 			}
 			createUserReq.Dealer = DealerName
@@ -119,7 +120,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		createUserReq.Dealer == "" {
 
 		log.FuncErrorTrace(0, "dealer name can't be null")
-		FormAndSendHttpResp(resp, "Dealer name can't be null for dealer owner", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Dealer name can't be null for dealer owner", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -141,7 +142,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to get user name count from DB err: %v", err)
-				FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
 				return
 			}
 
@@ -149,14 +150,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			if !dbUserCountOk {
 				err = fmt.Errorf("Failed to assert db user count from type: %T", dbUserCheck[0]["count"])
 				log.FuncErrorTrace(0, "%v", err)
-				FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to validate db username", http.StatusInternalServerError, nil)
 				return
 			}
 
 			if dbUserCount != 0 {
 				err = fmt.Errorf("duplicate mobile number provided")
 				log.FuncErrorTrace(0, "%v", err)
-				FormAndSendHttpResp(resp, "Mobile number already taken", http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, "Mobile number already taken", http.StatusBadRequest, nil)
 				return
 			}
 
@@ -166,7 +167,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-				FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
 				return
 			}
 
@@ -191,11 +192,11 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 					if dropErr != nil {
 						log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
-						FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)
+						appserver.FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)
 						return
 					}
 					log.FuncErrorTrace(0, "Failed to create user while adding privilges err: %v", err)
-					FormAndSendHttpResp(resp, "Failed to create privilages for user", http.StatusInternalServerError, nil)
+					appserver.FormAndSendHttpResp(resp, "Failed to create privilages for user", http.StatusInternalServerError, nil)
 					return
 				}
 			}
@@ -244,12 +245,12 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		if strings.Contains(err.Error(), "User with email") {
 			// Handle the case where provided user data violates unique constraint
 			log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to Add User, provided user details email id or mobile number already exist.", http.StatusConflict, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to Add User, provided user details email id or mobile number already exist.", http.StatusConflict, nil)
 			return
 		}
 		// Handle other errors
 		log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create User in Database due to internal error.", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create User in Database due to internal error.", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -294,7 +295,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send HTTP response
 	if podioError != nil && createUserReq.AddToPodio {
-		FormAndSendHttpResp(
+		appserver.FormAndSendHttpResp(
 			resp,
 			fmt.Sprintf("User Created Successfully, Failed to create in podio; err: %v", podioError),
 			http.StatusOK,
@@ -302,5 +303,5 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
 }

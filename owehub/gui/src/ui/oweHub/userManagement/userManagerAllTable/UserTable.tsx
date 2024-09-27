@@ -87,6 +87,13 @@ const UserTable: React.FC<UserTableProps> = ({
         type: 'string',
         isCheckbox: false,
       });
+    } else  if (selectedValue === TYPE_OF_USER.ALL) {
+      col.splice(3, 0, {
+        name: 'role_name',
+        displayName: 'Role',
+        type: 'string',
+        isCheckbox: false,
+      });
     }
     return col;
   }, [selectedValue, UserColumns]);
@@ -98,6 +105,7 @@ const UserTable: React.FC<UserTableProps> = ({
     }
   }, [authData]);
 
+  console.log(selectedValue,"ghjsfghsdf")
   return (
     <div
       className="UserManageTable"
@@ -157,6 +165,9 @@ const UserTable: React.FC<UserTableProps> = ({
                   </div>
                 </td>
                 <td>{el.name}</td>
+                {selectedValue === TYPE_OF_USER.ALL && (
+                  <td>{el.role_name ? el.role_name : 'NA'}</td>
+                )}
                 {/* <td>{el.role_name}</td> */}
                 {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
@@ -164,6 +175,8 @@ const UserTable: React.FC<UserTableProps> = ({
                 )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
+
+              
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {el.description ? el.description : 'NA'}
                 </td>

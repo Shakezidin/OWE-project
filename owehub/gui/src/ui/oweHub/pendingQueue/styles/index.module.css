@@ -2,12 +2,21 @@
   border-radius: 6px;
   background-color: #fff;
   padding: 19px 28px;
-  margin-top: 15px;
+  margin-top: 10px;
   display: grid;
   justify-content: center;
-
   align-items: center;
   gap: 20px;
+}
+
+.pendingQueHead{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pending-box-container{
+  padding: 0.6rem 1rem !important;
 }
 
 .grid_3 {
@@ -132,9 +141,11 @@
 
 .search_wrapper {
   flex-basis: 250px;
+  margin-top: -5.5px;
 }
 .pending_queue_table_header {
   padding-inline: 2rem;
+  position: relative;
 }
 
 @media (max-width: 968px) {
@@ -143,6 +154,15 @@
   }
   .grid_2 {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  .pending_queue_table_header{
+    position: relative;
+    margin-bottom: 2.5rem;
+  }
+  .pendingBoxContainer{
+    position: absolute;
+    left: 1.5rem;
+    top: 3.7rem;
   }
 }
 
@@ -159,6 +179,7 @@
   .pending_queue_table_header {
     flex-direction: column;
     gap: 20px;
+    margin-bottom: 5.5rem;
   }
   .search_wrapper {
     flex: 1;
@@ -174,9 +195,27 @@
   .pending_stats {
     padding-right: 18px;
   }
+  .pendingBoxContainer{
+    position: absolute;
+    width: 90%;
+    left: 50%;
+    top: 125px;
+    transform: translateX(-50%) translateY(-50%);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 @media screen and (max-width: 450px) {
   .pending_queue_table_header {
     padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 540px){
+  .pendingBoxContainer{
+    top: 135px;
+  }
+  .pending_queue_table_header{
+    margin-bottom: 7rem;
   }
 }

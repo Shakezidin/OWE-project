@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -49,21 +50,21 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ProjectManagement data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ProjectManagement data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get ProjectManagement data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get ProjectManagement data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get ProjectManagement data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,7 +76,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	dataReq.Email = req.Context().Value("emailid").(string)
 	// this error throws only if no email if received from context
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 	dataReq.ProjectLimit = 100
@@ -116,7 +117,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 				ProjectList: []models.ProjectResponse{},
 			}
 			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(0))
+			appserver.FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(0))
 			return
 		}
 
@@ -139,14 +140,14 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -168,7 +169,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 			ProjectList: []models.ProjectResponse{}, // Initialize as an empty array
 		}
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, projectList)
+		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, projectList)
 		return
 	}
 
@@ -186,7 +187,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	if len(data) > 0 {
@@ -287,7 +288,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -320,7 +321,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	// Send the response
 	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of project management data List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
-	FormAndSendHttpResp(resp, "Project Management Data", http.StatusOK, projectList, int64(recordLen))
+	appserver.FormAndSendHttpResp(resp, "Project Management Data", http.StatusOK, projectList, int64(recordLen))
 }
 
 /******************************************************************************

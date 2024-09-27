@@ -275,7 +275,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           )}
 
           {!!userPerformanceList.length && (
-            <div className="flex stats-wrapper items-center justify-center pb2">
+            <div className="flex stats-wrapper items-center justify-center pb2 mt3">
               <div
                 className={`flex items-center active-slrp ${activeSalesRep === 'Active' ? 'clicked' : ''}`}
                 onMouseEnter={handleMouseEnter}

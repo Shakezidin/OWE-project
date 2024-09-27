@@ -83,5 +83,6 @@ export const ROUTES = {
   LEAD_MANAGEMENT_ADD_NEW_MODAL: '/leadmgt-addnew-model',
   LEAD_MANAGEMENT_HISTORY: '/leadmng-history',
   LEAD_MANAGEMENT_SUCCESS_MODAl: '/lead-mgmt-success-modal',
-  MAP_ADDRESS:'/map-address'
+  MAP_ADDRESS:'/map-address',
+  SALE_RP_CUSTOMER_FORM:"/sale-rep-customer-form"
 };

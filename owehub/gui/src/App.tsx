@@ -92,10 +92,11 @@ import LeadManagementDashboard from './ui/leadmanagement/LeadManagementDashboard
 import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
 import ConfirmaModel from './ui/leadmanagement/Modals/ConfirmModel';
 import RoutesForRole from './utiles/RoutesForRole';
-import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
+import LeradManagementHistory from './ui/leadmanagement/LeadManagementHistory';
 import LibraryHomepage from './ui/Library/LibraryHomepage';
 import LeadManamentSucessModel from './ui/leadmanagement/Modals/LeaderManamentSucessModel';
 import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap'
+import SaleRepCustomerForm from './ui/scheduler/SaleRepCustomerForm/SaleRepCustomerForm';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -427,6 +428,7 @@ function App() {
           <Route path={ROUTES.ADD_NEW_SALES} element={<AddNew />} />
         </Route>
         <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup />} />
+        <Route path={ROUTES.SALE_RP_CUSTOMER_FORM} element={<SaleRepCustomerForm/>} />
         <Route path={ROUTES.BATTERY_UI_GENRATOR} element={<BatteryAmp />} />
         <Route path={ROUTES.SR_IMAGE_UPLOAD} element={<SrImageUpload />} />
         <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />

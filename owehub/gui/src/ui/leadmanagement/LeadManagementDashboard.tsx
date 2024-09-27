@@ -12,6 +12,7 @@ import {
   Legend,
   Sector,
 } from 'recharts';
+import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
 import './styles/mediaQuery.css';
 import { ICONS } from '../../resources/icons/Icons';
@@ -23,6 +24,8 @@ import useWindowWidth from '../../hooks/useWindowWidth';
 
 // shams start
 import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // main css file
+import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
 import {
   endOfWeek,
@@ -31,6 +34,7 @@ import {
   startOfYear,
   subDays,
 } from 'date-fns';
+// import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
 export type DateRangeWithLabel = {
@@ -92,6 +96,7 @@ const pieData = [
   { name: 'Appointment sent', value: 29, color: '#81A6E7' },
   { name: 'Appointment accepted', value: 21, color: '#52B650' },
   { name: 'Appointment declined', value: 15, color: '#CD4040' },
+  { name: 'Action Needed', value: 10, color: '#63ACA3' },
 ];
 
 const lineData = [
@@ -176,10 +181,10 @@ const leads = [
   },
   {
     id: '9',
-    name: 'Kilewan dicho',
+    name: 'Rabindra Kumar Sharma',
     phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
+    email: 'rabindr718@gmail.com',
+    address: 'Patel Nagar, Dehradun, UK',
     status: 'Accepted',
   },
   {
@@ -189,6 +194,70 @@ const leads = [
     email: 'adam8772@gmail.com',
     address: '12778 Domingo Ct',
     status: 'Declined',
+  },
+  {
+    id: '11',
+    name: 'Adam',
+    phone: '+00 876472822',
+    email: 'adam8772@gmail.com',
+    address: '12778 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '12',
+    name: 'Kilewan dicho',
+    phone: '+00 876472822',
+    email: 'Paul mark8772@gmail.com',
+    address: '12778 Domingo Ct, 1233Parker, CO',
+    status: 'Accepted',
+  },
+  {
+    id: '13',
+    name: 'XYZ Name',
+    phone: '+00 876472822',
+    email: 'xyz8772@gmail.com',
+    address: '12778 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '14',
+    name: 'Virendra Sehwag',
+    phone: '+00 876472822',
+    email: 'sehwag8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Action Needed',
+  },
+  {
+    id: '15',
+    name: 'Bhuvneshwar Kumar',
+    phone: '+00 876472822',
+    email: 'bhuvi8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'No Response',
+  },
+  {
+    id: '16',
+    name: 'Jasprit Bumrah',
+    phone: '+00 876472822',
+    email: 'jasprit8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Update Status',
+  },
+  {
+    id: '17',
+    name: 'Risabh Pant',
+    phone: '+00 876472822',
+    email: 'rp8772@gmail.com',
+    address: 'haridwar, Delhi',
+    status: 'No Response',
+  },
+  {
+    id: '18',
+    name: 'Virat Kohli',
+    phone: '+00 876472822',
+    email: 'king8772@gmail.com',
+    address: '12333 Domingo Ct',
+    status: 'Deal Won',
   },
 ];
 
@@ -218,6 +287,7 @@ const renderActiveShape = (props: any) => {
   const textAnchor = cos >= 0 ? 'start' : 'end';
 
   // Center text in pie chart
+
   const splitText = (text: string, width: number) => {
     const words = text.split(' ');
     const lines = [];
@@ -251,7 +321,11 @@ const renderActiveShape = (props: any) => {
             key={index}
             x={cx}
             dy={index ? 15 : 0}
-            style={{ fontSize: '12.07px', wordBreak: 'break-word' }}
+            style={{
+              fontSize: '12.07px',
+              wordBreak: 'break-word',
+              fontWeight: 550,
+            }}
           >
             {line}
           </tspan>
@@ -314,16 +388,25 @@ const getStatusColor = (status: string) => {
       return '#52B650';
     case 'Declined':
       return '#CD4040';
+    case 'Action Needed':
+      return '#63ACA3';
     default:
       return '#000000';
   }
 };
 
+// const ActionNeeded={
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+//   'Action Needed': 'Action Needed',
+// }
 const statusMap = {
   'Pending leads': 'Pending',
   'Appointment accepted': 'Accepted',
   'Appointment sent': 'Sent',
   'Appointment declined': 'Declined',
+  'Action Needed': 'Action Needed',
 };
 
 const CustomTooltip = ({
@@ -379,10 +462,11 @@ const LeadManagementDashboard = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
+  const width = useWindowWidth();
+  const isTablet = width <= 1024;
 
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-  // const [selectedPeriod, setSelectedPeriod] = useState('This Week');
   const [selectedPeriod, setSelectedPeriod] =
     useState<DateRangeWithLabel | null>(null);
   const [selectedRanges, setSelectedRanges] = useState([
@@ -413,22 +497,6 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen(false);
   };
 
-  const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedLabel = e.target.value;
-    const selectedOption = periodFilterOptions.find(
-      (option) => option.label === selectedLabel
-    );
-    if (selectedOption) {
-      setSelectedDates({
-        startDate: selectedOption.start,
-        endDate: selectedOption.end,
-      });
-      setSelectedPeriod(selectedOption || null);
-    } else {
-      setSelectedDates({ startDate: null, endDate: null });
-    }
-  };
-
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -437,6 +505,22 @@ const LeadManagementDashboard = () => {
 
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
+  };
+
+  //CALLING FOR RANGE PICK IN USING SELECT CODE
+  const handlePeriodChange = (
+    newValue: SingleValue<DateRangeWithLabel>,
+    actionMeta: ActionMeta<DateRangeWithLabel>
+  ) => {
+    if (newValue) {
+      setSelectedDates({
+        startDate: newValue.start,
+        endDate: newValue.end,
+      });
+      setSelectedPeriod(newValue);
+    } else {
+      setSelectedDates({ startDate: null, endDate: null });
+    }
   };
 
   const handleClickOutside = (event: Event) => {
@@ -531,18 +615,10 @@ const LeadManagementDashboard = () => {
     setShowArchiveModal(true); // Show the modal
   };
 
-
-
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
-
-    // setSelectedLead(lead);
-
-    console.log("UserNAME BUTTON CALLED");
   };
   console.log('currentFilter', currentFilter);
-
-
 
   const toggleLeadExpansion = (leadId: string) => {
     setExpandedLeads((prev) =>
@@ -568,9 +644,7 @@ const LeadManagementDashboard = () => {
   return (
     <div className={styles.dashboard}>
       {showConfirmModal && (
-        <ConfirmModel
-          isOpen1={isModalOpen} onClose1={handleCloseModal}
-        />
+        <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
       )}
 
       {showArchiveModal && (
@@ -663,29 +737,84 @@ const LeadManagementDashboard = () => {
                   </span>
                 </div>
               )}
-              <div className={styles.date_parent}>
-                <select
-                  value={selectedPeriod?.label || ''}
-                  onChange={handlePeriodChange}
-                  className={styles.monthSelect}
-                >
-                  {periodFilterOptions.map((option) => (
-                    <option key={option.label} value={option.label}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div
-                  ref={toggleRef}
-                  className={styles.calender}
-                  onClick={toggleCalendar}
-                >
-                  <img src={ICONS.includes_icon} alt="" />
-                </div>
+
+              {/* RABINDR718.....DATE_PICKER STARTED */}
+              <Select
+                value={selectedPeriod}
+                onChange={handlePeriodChange}
+                options={periodFilterOptions}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    marginTop: 'px',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    color: '#3E3E3E',
+                    width: '140px',
+                    height: '36px',
+                    fontSize: '12px',
+                    border: '1px solid #d0d5dd',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    alignContent: 'center',
+                    backgroundColor: '#fffff',
+                    boxShadow: 'none',
+                    '@media only screen and (max-width: 767px)': {
+                      width: '80px',
+                      // width: 'fit-content',
+                    },
+                    '&:focus-within': {
+                      borderColor: '#377CF6',
+                      boxShadow: '0 0 0 1px #377CF6',
+                      caretColor: '#3E3E3E',
+                    },
+                  }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none',
+                  }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                    '&:hover': {
+                      color: '#3E3E3E',
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: '13px',
+                    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                    },
+                    cursor: 'pointer',
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: '140px',
+                    marginTop: '0px',
+                  }),
+                }}
+              />
+              <div
+                ref={toggleRef}
+                className={styles.calender}
+                onClick={toggleCalendar}
+              >
+                <img src={ICONS.includes_icon} alt="" />
               </div>
             </div>
           </div>
-          {/* shams end */}
+          {/* RABINDR718.....DATE_PICKER ENDED */}
+
           <div
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
@@ -703,7 +832,11 @@ const LeadManagementDashboard = () => {
                   formatter={(value) =>
                     value === 'won' ? 'Total won' : 'Total Lost'
                   }
-                  wrapperStyle={{ fontSize: '12px' }}
+                  wrapperStyle={{
+                    fontSize: '12px',
+                    fontWeight: 550,
+                    marginBottom: -15,
+                  }}
                 />
                 <Line
                   type="monotone"
@@ -726,14 +859,21 @@ const LeadManagementDashboard = () => {
       </div>
 
       <div className={styles.card}>
-        <div className={styles.cardHeader}>
+        <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
           {selectedLeads.length === 0 ? (
             <>
               <div className={styles.buttonGroup}>
-                {['Pending', 'Sent', 'Accepted', 'Declined'].map((status) => (
+                {[
+                  'Pending',
+                  'Sent',
+                  'Accepted',
+                  'Declined',
+                  'Action Needed',
+                ].map((status) => (
                   <button
                     key={status}
-                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}`}
+                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}
+                     ${status === 'Action Needed' ? styles.action_needed_btn : ''}`}
                     onClick={() => handleFilterClick(status)}
                   >
                     <p
@@ -781,160 +921,153 @@ const LeadManagementDashboard = () => {
         </div>
 
         <div className={styles.cardContent}>
-          {/* <table className={styles.table}>
-            <tbody>
-              {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}>
-                  <td className={styles.history_list_inner}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedLeads.includes(lead)}
-                        onChange={() => handleLeadSelection(lead)}
-                      />
-                    </label>
-                    <div className={styles.user_name} onClick={() => currentFilter == "Pending" && handleDetailModal(lead)}>
-                      <h2>{lead.name}</h2>
-                      <p style={{ color: getStatusColor(lead.status) }}>{lead.status}</p>
-                    </div>
-                    <>
-                      <div className={styles.phone_number}>{lead.phone}</div>
-                      <div className={styles.email}>
-                        <span>{lead.email}
-                          <img className='ml1' height={15} width={15} src={ICONS.complete} alt="verified" />
-                        </span>
-                      </div>
-                      <div className={styles.address}>{lead.address}</div>
-                      
-                      {lead.status === 'Declined' && (
-                        <div className={styles.actionButtons}>
-                          <button onClick={() => handleReschedule(lead)} className={styles.rescheduleButton}>Reschedule</button>
-                          <button onClick={() => handleArchive(lead)} className={styles.archiveButton}>Archive</button>
-                        </div>
-                      )}
-                    </>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-
           <table className={styles.table}>
             <tbody>
               {currentLeads.map((lead, index) => (
-                <tr key={index} className={styles.history_lists}
-                >
-                  <td className={`${lead.status === 'Declined' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedLeads.includes(lead)}
-                        onChange={() => handleLeadSelection(lead)}
-                      />
-                    </label>
-
-                    {/* CALLED BUTTON FOR APPOINTMENT SCHEDULAR MODAL */}
-                    <div
-                      className={styles.user_name}
-                      onClick={() =>
-                        currentFilter == 'Pending' && handleDetailModal(lead)
-                      }
+                <React.Fragment key={index}>
+                  <tr className={styles.history_lists}>
+                    <td
+                      className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
+                      onClick={handleOpenModal}
                     >
-                      <h2>{lead.name}</h2>
-                      <p style={{ color: getStatusColor(lead.status) }}>
-                        {lead.status}
-                      </p>
-                    </div>
-                    <div className={styles.phone_number}>{lead.phone}</div>
-                    <div className={styles.email}>
-                      <span>
-                        {lead.email}
-                        <img
-                          className="ml1"
-                          height={15}
-                          width={15}
-                          src={ICONS.complete}
-                          alt="verified"
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedLeads.includes(lead)}
+                          onChange={() => handleLeadSelection(lead)}
                         />
-                      </span>
-                    </div>
-                    <div className={styles.address}>{lead.address}</div>
-                   
-
-                    {lead.status === 'Declined' && (
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() => handleReschedule(lead)}
-                          className={styles.rescheduleButton}
-                        >
-                          Reschedule
-                        </button>
-                        <button
-                          onClick={() => handleArchive(lead)}
-                          className={styles.archiveButton}
-                        >
-                          Archive
-                        </button>
-                        {/* {
-                          isTablet ?
-                          <button
-                          onClick={() => handleArchive(lead)}
-                          className={styles.archiveButton}
-                          >
-                            <img src={ICONS.declinedArchive}/>
-                          </button>
-                          :
-                      
-                        } */}
-                       
+                      </label>
+                      <div
+                        className={styles.user_name}
+                        onClick={() =>
+                          currentFilter == 'Pending' && handleDetailModal(lead)
+                        }
+                      >
+                        <h2>{lead.name}</h2>
+                        <p style={{ color: getStatusColor(lead.status) }}>
+                          {lead.status}
+                        </p>
                       </div>
-                    )}
+                      <div className={styles.phone_number}>{lead.phone}</div>
+                      <div className={styles.email}>
+                        <span>
+                          {lead.email}
+                          <img
+                            className="ml1"
+                            height={15}
+                            width={15}
+                            src={ICONS.complete}
+                            alt="verified"
+                          />
+                        </span>
+                      </div>
+                      <div className={styles.address}>{lead.address}</div>
 
-                    <div
-                      className={styles.chevron_down}
-                      onClick={() => handleChevronClick(lead.id)}
-                    >
-                      <img
-                        src={
-                          toggledId === lead.id
-                            ? ICONS.chevronUp
-                            : ICONS.chevronDown
-                        }
-                        alt={
-                          toggledId === lead.id
-                            ? 'chevronUp-icon'
-                            : 'chevronDown-icon'
-                        }
-                      />
-                    </div>
-                  </td>
-                </tr>
+                      {lead.status === 'Declined' && (
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() => handleReschedule(lead)}
+                            className={styles.rescheduleButton}
+                          >
+                            Reschedule
+                          </button>
+                          {isTablet ? (
+                            <button
+                              onClick={() => handleArchive(lead)}
+                              className={styles.archiveButton}
+                            >
+                              <img src={ICONS.declinedArchive} />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleArchive(lead)}
+                              className={styles.archiveButton}
+                            >
+                              Archive
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {lead.status === 'Action Needed' && (
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() => handleReschedule(lead)}
+                            className={styles.rescheduleButton}
+                          >
+                            Reschedule
+                          </button>
+                        </div>
+                      )}
+
+                      <div
+                        className={styles.chevron_down}
+                        onClick={() => handleChevronClick(lead.id)}
+                      >
+                        <img
+                          src={
+                            toggledId === lead.id
+                              ? ICONS.chevronUp
+                              : ICONS.chevronDown
+                          }
+                          alt={
+                            toggledId === lead.id
+                              ? 'chevronUp-icon'
+                              : 'chevronDown-icon'
+                          }
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  {toggledId === lead.id && (
+                    <tr>
+                      <td colSpan={5} className={styles.detailsRow}>
+                        <div className={''}>{lead.phone}</div>
+                        <div className={''}>
+                          <span>
+                            {lead.email}
+                            <img
+                              className="ml1"
+                              height={15}
+                              width={15}
+                              src={ICONS.complete}
+                              alt="verified"
+                            />
+                          </span>
+                        </div>
+                        <div className={''}>{lead.address}</div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
 
-          <div
-            className={styles.paginationContainer}
-            style={{ textAlign: 'right' }}
-          >
+          {/* HERE IMPLEMENT PAGINATION */}
+
+          <div className={styles.leadpagination}>
             {filteredLeads.length > 0 && (
-              <div className={styles.lead_pagination}>
+              <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
                   {indexOfFirstItem + 1} -{' '}
                   {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
                   {filteredLeads.length} items
                 </p>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
-                  paginate={paginate}
-                  goToNextPage={goToNextPage}
-                  goToPrevPage={goToPrevPage}
-                  perPage={itemsPerPage}
-                  currentPageData={currentLeads}
-                />
               </div>
             )}
+
+            <div className={styles.rightitem}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
+                paginate={paginate}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+                currentPageData={currentLeads}
+              />
+            </div>
           </div>
         </div>
       </div>

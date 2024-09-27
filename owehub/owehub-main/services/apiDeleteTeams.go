@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -37,21 +38,21 @@ func HandleDeleteTeamsRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in delete teams request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.NewDecoder(req.Body).Decode(&teamData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to decode HTTP Request body for delete teams request, err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(teamData.TeamIDs) == 0 {
 		err = fmt.Errorf("Empty team IDs list in request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty team IDs list in request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty team IDs list in request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -59,9 +60,9 @@ func HandleDeleteTeamsRequest(resp http.ResponseWriter, req *http.Request) {
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.DeleteTeams, queryArgs)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to delete teams in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to delete teams", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to delete teams", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Teams deleted successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Teams deleted successfully", http.StatusOK, nil)
 }
