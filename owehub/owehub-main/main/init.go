@@ -1805,10 +1805,10 @@ func init() {
 	}
 
 	//* For initial setting up podio
-	err = apiHandler.SyncHubUsersToPodioOnInit()
-	if err != nil {
-		log.ConfErrorTrace(0, "Failed to insert users to PODIO err: %+v", err)
-	}
+	go apiHandler.SyncHubUsersToPodioOnInit()
+	// if err != nil {
+	// 	log.ConfErrorTrace(0, "Failed to insert users to PODIO err: %+v", err)
+	// }
 
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
