@@ -111,7 +111,7 @@ func SyncHubUsersToPodioOnInit() error {
 		}
 
 		if len(Dealerdata) == 0 {
-			log.FuncErrorTrace(0, "No dealer is found in podio for email: %v", emailId)
+			log.FuncErrorTrace(0, "No dealer is found in podio for mail: %v", emailId)
 			continue
 		}
 
