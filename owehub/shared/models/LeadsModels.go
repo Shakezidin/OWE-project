@@ -39,3 +39,8 @@ type GetLeadsData struct {
 	IsArchived                 bool       `json:"is_archived"`
 	Notes                      string     `json:"notes"`
 }
+
+// This struct is for deleting Leads
+type DeleteLeadsRequest struct {
+	IDs []int64 `json:"ids"`
+}
