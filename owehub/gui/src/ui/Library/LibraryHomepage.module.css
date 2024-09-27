@@ -2,9 +2,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 16px;
-  padding: 16px;
+  padding: 20px 24px;
   font-size: large;
   background-color: #EFF5FF;
+}
+
+.libraryHeader{
+  padding: 12px 0px !important;
 }
 
 .libGridItem{
@@ -39,6 +43,30 @@
     padding: 24px;
 }
 
+.recycle_div{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 24px;
+}
+
+.recycle_icon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+}
+.recycle_p{
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: default;
+}
+
 .libSecHeader_left{
   display: flex;
   flex-direction: row;
@@ -68,6 +96,9 @@
 .buttons:hover {
   color: #377CF6; 
   background-color: #EFF5FF;
+  border: 1px solid #377CF6;
+
+
 }
 
 /* .clickedButton{
@@ -139,6 +170,8 @@
   overflow: hidden;
   text-overflow: initial;
 }
+
+
 
 
 .customer_wrapper_list {
@@ -274,6 +307,17 @@
 }
 
 .searchWrapper:hover{
-  border: 1px solid black;
+  border: 1px solid #377cf6;
+}
+
+.verticalDots:active{
+  border-color: #377cf6;
+}
+
+
+.libraryHeader h3{
+  font-size: 18px;
+  font-family: 'poppins', sans-serif;
+  font-weight: 600;
 }
 
