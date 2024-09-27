@@ -318,12 +318,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
+        {
+          startDate: selected.start,
+          endDate: selected.end,
+          key: 'selection',
+        },
+      ]
       : []
   );
 
@@ -931,10 +931,10 @@ const Table = ({
             label="Group by:"
             options={
               role === 'Admin' ||
-              role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN ||
-              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-              role === TYPE_OF_USER.ACCOUNT_MANAGER
+                role === TYPE_OF_USER.DEALER_OWNER ||
+                role === TYPE_OF_USER.FINANCE_ADMIN ||
+                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -1208,23 +1208,29 @@ const Table = ({
         </div>
       </div>
 
-      {leaderTable?.length > 0 ? (
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
-            {totalCount} item
-          </p>
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            paginate={paginate}
-            currentPageData={leaderTable}
-            goToNextPage={goToNextPage}
-            goToPrevPage={goToPrevPage}
-            perPage={itemsPerPage}
-          />
-        </div>
-      ) : null}
+
+      <div className="page-heading-container">
+        {
+          leaderTable?.length > 0 && !isLoading ?
+            <>
+              <p className="page-heading">
+                {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+                {totalCount} item
+              </p>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                paginate={paginate}
+                currentPageData={leaderTable}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </>
+            : null
+        }
+      </div>
+
     </div>
   );
 };
