@@ -238,7 +238,7 @@ const MyMapComponent: React.FC = () => {
       state: newValue.value, // Update state with the selected state's value
     });
     setSearchValue('')
-
+    setSearchedLocation(null)
   };
 
   useEffect(() => {
@@ -674,6 +674,7 @@ const MyMapComponent: React.FC = () => {
     [filteredLocations, locations, createRePayData.state]
   );
 
+  console.log(searchedLocation, "searchloacesdtion")
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps...</div>;
 
