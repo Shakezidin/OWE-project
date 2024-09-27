@@ -13,6 +13,8 @@ import useAuth from '../../hooks/useAuth';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import DataNotFound from '../components/loader/DataNotFound';
+import MicroLoader from '../components/loader/MicroLoader';
 
 interface HistoryTableProp {
   first_name: string;
@@ -23,6 +25,7 @@ interface HistoryTableProp {
   zipcode: string;
   deal_date: string;
   deal_status: string;
+  leads_id: number;
   appointment_scheduled_date: string;
   appointment_accepted_date: string;
   appointment_declined_date: string;
@@ -43,7 +46,7 @@ const LeradManagementHistory = () => {
   const navigate = useNavigate();
   const [see, setSee] = useState(false);
   const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -321,28 +324,29 @@ const LeradManagementHistory = () => {
   }, [authData]);
 
 
+
   useEffect(() => {
     if (isAuthenticated) {
-      (async () => {
+      const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller(
-            'leads_history',
-            {
-              leads_status: selectedValue,
-              start_date: selectedDates.startDate ? format(selectedDates.startDate, 'dd-MM-yyyy') : '',
-              end_date: selectedDates.endDate ? format(selectedDates.endDate, 'dd-MM-yyyy') : '',
-              page_size: itemsPerPage,
-              page_number: page
-            }
-          );
-
+          const response = await postCaller('leads_history', {
+            leads_status: selectedValue,
+            start_date: selectedDates.startDate
+              ? format(selectedDates.startDate, 'dd-MM-yyyy')
+              : '',
+            end_date: selectedDates.endDate
+              ? format(selectedDates.endDate, 'dd-MM-yyyy')
+              : '',
+            page_size: itemsPerPage,
+            page_number: page,
+          });
 
           if (response.status > 201) {
             toast.error(response.data.message);
+            setIsLoading(false);
             return;
           }
-          console.log(response, "first check")
           if (response.data?.leads_history_list) {
             setHistoryTable(response.data?.leads_history_list as HistoryTableProp[]);
             setTotalCount(response.dbRecCount);
@@ -352,9 +356,13 @@ const LeradManagementHistory = () => {
         } finally {
           setIsLoading(false);
         }
-      })();
+      };
+
+      fetchData();
     }
   }, [isAuthenticated, selectedDates, itemsPerPage, page, selectedValue]);
+
+
 
   const handlePeriodChange = (selectedOption: SingleValue<DateRangeWithLabel>) => {
     if (selectedOption) {
@@ -371,13 +379,12 @@ const LeradManagementHistory = () => {
     setPage(1); // Reset to the first page when changing items per page
   };
 
-  
+
 
 
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');
-  console.log(historyTable, "hagsfdghafsdghaf")
-
+  
   return (
     <div className={`flex justify-between mt2 ${styles.h_screen}`}>
       <div className={styles.customer_wrapper_list}>
@@ -553,77 +560,156 @@ const LeradManagementHistory = () => {
         </div>
 
         <div className={styles.history_list}>
-          {dummyData.map((item) => (
-            <div style={expandedItemIds.includes(item.id) ? { width: "100%", backgroundColor: '#EEF5FF', borderTopLeftRadius: "8px", borderTopRightRadius: "8px" } : {}} className={styles.history_lists}>
+          {isLoading ? (
 
-              <div className={styles.history_list_inner}>
-                <div className={styles.hist_checkname}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectedItemIds.includes(item.id)}
-                      onChange={() => handleCheckboxChange(item.id)}
-                      style={{
-                        width: '16.42px',
-                        height: '16px',
-                        gap: '0px',
-                        borderRadius: '8pxpx',
-                        border: '1px solid #797979',
-                      }}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <MicroLoader />
+            </div>
+
+          ) : historyTable.length > 0 ? (
+            historyTable.map((item) => (
+              <div style={expandedItemIds.includes(item.leads_id) ? { width: "100%", backgroundColor: '#EEF5FF', borderTopLeftRadius: "8px", borderTopRightRadius: "8px" } : {}} className={styles.history_lists}>
+
+                <div className={styles.history_list_inner}>
+                  <div className={styles.hist_checkname}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={selectedItemIds.includes(item.leads_id)}
+                        onChange={() => handleCheckboxChange(item.leads_id)}
+                        style={{
+                          width: '16.42px',
+                          height: '16px',
+                          gap: '0px',
+                          borderRadius: '8pxpx',
+                          border: '1px solid #797979',
+                        }}
+                      />
+                    </label>
+                    <div className={styles.user_name}>
+                      <h2>{item.first_name} {item.last_name}</h2>
+                      <p style={{ color: item.deal_status === 'Deal Won' ? '#52B650' : item.deal_status === 'Deal Loss' ? '#F55B5B' : '#81a6e7' }}>
+                        {item.deal_status ? item.deal_status : 'N/A'}: {item.deal_date ? item.deal_date : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {(!isMobile &&
+                    <>
+                      {(!isTablet &&
+                        <div className={styles.phone_number}>{item.phone_number ? item.phone_number : "N/A"}</div>
+                      )}
+                      <div className={styles.email}>
+                        <p>{item.email_id ? item.email_id : "N/A"}</p>
+                        <img height={15} width={15} src={ICONS.complete} alt="img" />
+                      </div>
+                      <div className={styles.address}>
+                        {item.street_address ? item.street_address : "N/A"}
+                      </div>
+                    </>
+                  )}
+
+
+                  <div className={styles.see_more} onClick={() => handlesee(item.leads_id)}>
+                    <p>{expandedItemIds.includes(item.leads_id) ? 'See Less' : 'See More'}</p>
+                    <img
+                      src={ICONS.SeeMore}
+                      alt="img"
+                      style={{ transform: expandedItemIds.includes(item.leads_id) ? 'rotate(180deg)' : 'none' }}
                     />
-                  </label>
-                  <div className={styles.user_name}>
-                    <h2>{item.name}</h2>
-                    <p style={{ color: item.status === 'Deal Won' ? '#52B650' : item.status === 'Deal Loss' ? '#F55B5B' : '#81a6e7' }}>
-                      {item.status}: 22Nov 2024
-                    </p>
                   </div>
                 </div>
-
-                {(!isMobile &&
+                {!isMobile && expandedItemIds.includes(item.leads_id) && (
                   <>
-                    {(!isTablet &&
-                      <div className={styles.phone_number}>{item.phoneNumber}</div>
+                    {(isTablet &&
+                      <div className={styles.phone_number_tab}>{item.phone_number}</div>
                     )}
-                    <div className={styles.email}>
-                      <p>{item.email}</p>
-                      <img height={15} width={15} src={ICONS.complete} alt="img" />
-                    </div>
-                    <div className={styles.address}>
-                      {item.address}
+                    <div style={{ padding: "0px 12px" }}>
+                      <div style={{ backgroundColor: "#fff" }} className={styles.history_list_activity}>
+
+                        <div className={styles.history_list_head}>Activity</div>
+
+                        <div className={styles.history_list_activities}>
+
+                          <div className={styles.history_list_activity_det}>
+                            <div className={styles.circle_with_line}>
+                              <div className={styles.line1}></div>
+                              <div className={styles.circle}></div>
+                            </div>
+                            <div className={styles.activity_info}>
+                              <div className={styles.act_head}>Appointment Schedule</div>
+                              <div className={styles.act_date}>27 Aug, 2024</div>
+                            </div>
+                          </div>
+                          <div className={styles.history_list_activity_det}>
+                            <div className={styles.circle_with_line}>
+                              <div className={styles.circle}></div>
+                              <div className={styles.line}></div>
+                            </div>
+                            <div className={styles.activity_info}>
+                              <div className={styles.act_head}>Appointment Accepted</div>
+                              <div className={styles.act_date}>27 Aug, 2024</div>
+                            </div>
+                          </div>
+
+                          <div className={styles.history_list_activity_det}>
+                            <div className={styles.circle_with_line}>
+                              <div className={styles.circle}></div>
+                              <div className={styles.line}></div>
+                            </div>
+                            <div className={styles.activity_info}>
+                              <div className={styles.act_head}>Appointment Date</div>
+                              <div className={styles.act_date}>29 Aug, 2024</div>
+                            </div>
+                          </div>
+
+                          <div className={styles.history_list_activity_det}>
+                            <div className={styles.circle_with_line}>
+                              <div className={styles.circle}></div>
+                              <div className={styles.line}></div>
+                            </div>
+                            <div className={styles.activity_info}>
+                              <div className={styles.act_head}>Deal Won</div>
+                              <div className={styles.act_date}>30 Aug, 2024</div>
+                            </div>
+                          </div>
+
+                          <div className={styles.history_list_activity_det}>
+                            <div className={styles.circle_with_line}>
+                              <div className={styles.circle}></div>
+                              <div className={styles.line}></div>
+                            </div>
+                            <div className={styles.activity_info}>
+                              <div className={styles.act_head}>Proposal Sent</div>
+                              <div className={styles.act_date}>1 Sep, 2024</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </>
                 )}
+                {isMobile && expandedItemIds.includes(item.leads_id) && (
+                  <>
+                    <div className={styles.personal_info_mob}>
+                      <div className={styles.phone_number}>{item.phone_number ? item.phone_number : "N/A"}</div>
+                      <div className={styles.email}>
+                        <p>{item.email_id ? item.email_id : "N/A"}</p>
+                        <img height={15} width={15} src={ICONS.complete} alt="img" />
+                      </div>
+                      <div className={styles.address}>
+                        {item.street_address ? item.street_address : "N/A"}
+                      </div>
+                    </div>
 
-
-                <div className={styles.see_more} onClick={() => handlesee(item.id)}>
-                  <p>{expandedItemIds.includes(item.id) ? 'See Less' : 'See More'}</p>
-                  <img
-                    src={ICONS.SeeMore}
-                    alt="img"
-                    style={{ transform: expandedItemIds.includes(item.id) ? 'rotate(180deg)' : 'none' }}
-                  />
-                </div>
-              </div>
-
-
-
-              {!isMobile && expandedItemIds.includes(item.id) && (
-                <>
-                  {(isTablet &&
-                    <div className={styles.phone_number_tab}>{item.phoneNumber}</div>
-                  )}
-                  <div style={{ padding: "0px 12px" }}>
-                    <div style={{ backgroundColor: "#fff" }} className={styles.history_list_activity}>
-
-                      <div className={styles.history_list_head}>Activity</div>
-
-                      <div className={styles.history_list_activities}>
+                    <div style={{ padding: "0px 12px" }}>
+                      <div style={{ backgroundColor: "#fff" }} className={styles.history_list_activity_mob}>
+                        <div className={styles.history_list_head}>Activity</div>
 
                         <div className={styles.history_list_activity_det}>
                           <div className={styles.circle_with_line}>
-                            <div className={styles.line1}></div>
-                            <div className={styles.circle}></div>
+                            <div className={styles.line_mob}></div>
+                            <div className={styles.circle_mob}></div>
                           </div>
                           <div className={styles.activity_info}>
                             <div className={styles.act_head}>Appointment Schedule</div>
@@ -632,8 +718,8 @@ const LeradManagementHistory = () => {
                         </div>
                         <div className={styles.history_list_activity_det}>
                           <div className={styles.circle_with_line}>
-                            <div className={styles.circle}></div>
-                            <div className={styles.line}></div>
+                            <div className={styles.circle_mob}></div>
+                            <div className={styles.line_mob}></div>
                           </div>
                           <div className={styles.activity_info}>
                             <div className={styles.act_head}>Appointment Accepted</div>
@@ -643,8 +729,8 @@ const LeradManagementHistory = () => {
 
                         <div className={styles.history_list_activity_det}>
                           <div className={styles.circle_with_line}>
-                            <div className={styles.circle}></div>
-                            <div className={styles.line}></div>
+                            <div className={styles.circle_mob}></div>
+                            <div className={styles.line_mob}></div>
                           </div>
                           <div className={styles.activity_info}>
                             <div className={styles.act_head}>Appointment Date</div>
@@ -654,8 +740,8 @@ const LeradManagementHistory = () => {
 
                         <div className={styles.history_list_activity_det}>
                           <div className={styles.circle_with_line}>
-                            <div className={styles.circle}></div>
-                            <div className={styles.line}></div>
+                            <div className={styles.circle_mob}></div>
+                            <div className={styles.line_mob}></div>
                           </div>
                           <div className={styles.activity_info}>
                             <div className={styles.act_head}>Deal Won</div>
@@ -665,8 +751,8 @@ const LeradManagementHistory = () => {
 
                         <div className={styles.history_list_activity_det}>
                           <div className={styles.circle_with_line}>
-                            <div className={styles.circle}></div>
-                            <div className={styles.line}></div>
+                            <div className={styles.circle_mob}></div>
+                            <div className={styles.line_mob}></div>
                           </div>
                           <div className={styles.activity_info}>
                             <div className={styles.act_head}>Proposal Sent</div>
@@ -675,86 +761,13 @@ const LeradManagementHistory = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              )}
-              {isMobile && expandedItemIds.includes(item.id) && (
-                <>
-                  <div className={styles.personal_info_mob}>
-                    <div className={styles.phone_number}>{item.phoneNumber}</div>
-                    <div className={styles.email}>
-                      <p>{item.email}</p>
-                      <img height={15} width={15} src={ICONS.complete} alt="img" />
-                    </div>
-                    <div className={styles.address}>
-                      {item.address}
-                    </div>
-                  </div>
-
-                  <div style={{ padding: "0px 12px" }}>
-                    <div style={{ backgroundColor: "#fff" }} className={styles.history_list_activity_mob}>
-                      <div className={styles.history_list_head}>Activity</div>
-
-                      <div className={styles.history_list_activity_det}>
-                        <div className={styles.circle_with_line}>
-                          <div className={styles.line_mob}></div>
-                          <div className={styles.circle_mob}></div>
-                        </div>
-                        <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Appointment Schedule</div>
-                          <div className={styles.act_date}>27 Aug, 2024</div>
-                        </div>
-                      </div>
-                      <div className={styles.history_list_activity_det}>
-                        <div className={styles.circle_with_line}>
-                          <div className={styles.circle_mob}></div>
-                          <div className={styles.line_mob}></div>
-                        </div>
-                        <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Appointment Accepted</div>
-                          <div className={styles.act_date}>27 Aug, 2024</div>
-                        </div>
-                      </div>
-
-                      <div className={styles.history_list_activity_det}>
-                        <div className={styles.circle_with_line}>
-                          <div className={styles.circle_mob}></div>
-                          <div className={styles.line_mob}></div>
-                        </div>
-                        <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Appointment Date</div>
-                          <div className={styles.act_date}>29 Aug, 2024</div>
-                        </div>
-                      </div>
-
-                      <div className={styles.history_list_activity_det}>
-                        <div className={styles.circle_with_line}>
-                          <div className={styles.circle_mob}></div>
-                          <div className={styles.line_mob}></div>
-                        </div>
-                        <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Deal Won</div>
-                          <div className={styles.act_date}>30 Aug, 2024</div>
-                        </div>
-                      </div>
-
-                      <div className={styles.history_list_activity_det}>
-                        <div className={styles.circle_with_line}>
-                          <div className={styles.circle_mob}></div>
-                          <div className={styles.line_mob}></div>
-                        </div>
-                        <div className={styles.activity_info}>
-                          <div className={styles.act_head}>Proposal Sent</div>
-                          <div className={styles.act_date}>1 Sep, 2024</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-
-            </div>
-          ))}
+                  </>
+                )}
+              </div>
+            ))
+          ) : (
+            <DataNotFound />
+          )}
         </div>
 
 

@@ -131,12 +131,12 @@
 }
 
 .per-page-container select:hover {
-  border-color: #999;
+  border-color: #007bff;
 }
 
 .per-page-container select:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
 

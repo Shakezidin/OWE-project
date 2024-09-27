@@ -36,7 +36,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <div className="pagination-container">
       {onPerPageChange && (
         <div className="per-page-container">
-          <label htmlFor="perPageSelectText">Items per page:</label>
+          <label htmlFor="perPageSelectText">Items in page:</label>
           <select
             id="perPageSelect"
             value={perPage}

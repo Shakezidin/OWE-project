@@ -92,7 +92,7 @@ import LeadManagementDashboard from './ui/leadmanagement/LeadManagementDashboard
 import LeadManagementNew from './ui/leadmanagement/LeadManagementNew';
 import ConfirmaModel from './ui/leadmanagement/Modals/ConfirmModel';
 import RoutesForRole from './utiles/RoutesForRole';
-import LeradManagementHistory from './ui/leadmanagement/LeradManagementHistory';
+import LeradManagementHistory from './ui/leadmanagement/LeadManagementHistory';
 import LibraryHomepage from './ui/Library/LibraryHomepage';
 import LeadManamentSucessModel from './ui/leadmanagement/Modals/LeaderManamentSucessModel';
 import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap'
