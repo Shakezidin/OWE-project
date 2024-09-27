@@ -44,16 +44,16 @@ jobs:
         git clean -fd ../../
         git checkout ../../
         
-    - name: Migrating Databse
-      run: |
-        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
-        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
-        ./deploy-owehub.sh migrate_db
-    
     - name: Deploying Backend
       run: |
         ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
         cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
         ./deploy-owehub.sh backend
+
+    - name: Migrating Databse
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        ./deploy-owehub.sh migrate_db
     
         EOF
