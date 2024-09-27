@@ -1224,7 +1224,7 @@ const ProjectPerformence = () => {
             </table>
           </div>
 
-          <div className="page-heading-container">
+          {!isLoading && <div className="page-heading-container">
             {!!projectsCount && (
               <p className="page-heading">
                 {startIndex} -{' '}
@@ -1246,7 +1246,7 @@ const ProjectPerformence = () => {
                 perPage={perPage}
               />
             ) : null}
-          </div>
+          </div>}
         </div >
       </div >
     </div >
