@@ -152,12 +152,12 @@ const MyMapComponent: React.FC = () => {
 
         const data = await postCaller('get_user_address', {
           states:
-          createRePayData.state === 'All'
+            createRePayData.state === 'All'
               ? availableStateOptions.map((state) => state.value)
               : createRePayData.state === ''
                 ? ['']
                 : [createRePayData.state],
-              
+
         });
 
         if (data.status > 201) {
@@ -238,7 +238,7 @@ const MyMapComponent: React.FC = () => {
       state: newValue.value, // Update state with the selected state's value
     });
     setSearchValue('')
-    
+    setSearchedLocation(null)
   };
 
   useEffect(() => {
@@ -298,9 +298,9 @@ const MyMapComponent: React.FC = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLng / 2) *
-        Math.sin(dLng / 2);
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in miles
   };
@@ -674,6 +674,7 @@ const MyMapComponent: React.FC = () => {
     [filteredLocations, locations, createRePayData.state]
   );
 
+  console.log(searchedLocation, "searchloacesdtion")
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps...</div>;
 
@@ -713,8 +714,8 @@ const MyMapComponent: React.FC = () => {
                   value={
                     createRePayData.state // Dynamically show the selected state
                       ? (availableStates(newFormData) || []).find(
-                          (option) => option.value === createRePayData.state
-                        ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
+                        (option) => option.value === createRePayData.state
+                      ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
                       : { label: 'All State', value: 'All' }
                   }
                   menuStyles={{
@@ -760,7 +761,7 @@ const MyMapComponent: React.FC = () => {
                         onClick={() => {
                           setSearchValue(''); // Clear the search value
                           setFilteredLocations(locations);
-                          setSearchedLocation(null); 
+                          setSearchedLocation(null);
                           setSelectedMiles(10)// Reset to show all locations
 
                           if (mapRef.current) {
@@ -801,7 +802,7 @@ const MyMapComponent: React.FC = () => {
                 <div className={styles.kmWrap}>
                   <SelectOption
                     options={[
-                   
+
                       ...milesOptions.map((mile) => ({
                         label: `${mile.miles} miles`,
                         value: mile.miles.toString(),
@@ -811,11 +812,11 @@ const MyMapComponent: React.FC = () => {
                       newValue && handleMilesChange(newValue.value)
                     }
                     value={
-                       {
-                            value: selectedMiles,
-                            label: `${selectedMiles} miles`,
-                          }
-                        
+                      {
+                        value: selectedMiles,
+                        label: `${selectedMiles} miles`,
+                      }
+
                     }
                     menuStyles={{
                       width: 400,
@@ -890,18 +891,47 @@ const MyMapComponent: React.FC = () => {
         )} */}
 
                 {/* Searched location marker with different color */}
+                <></>
                 {searchedLocation && (
-                  <Marker
-                    position={searchedLocation}
-                    icon={{
-                      path: 'M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 9.75 6.3 11.77.3.36.82.36 1.12 0C14.5 18.75 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z',
-                      fillColor: 'blue', // Fully blue marker
-                      fillOpacity: 1,
-                      strokeWeight: 0, // No outline
-                      scale: 1.5, // Scale to size
-                      anchor: new google.maps.Point(12, 24), // Anchor at the bottom of the marker
-                    }}
-                  />
+                  // <Marker
+                  //   position={searchedLocation}
+                  //   icon={{
+                  //     path: 'M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 9.75 6.3 11.77.3.36.82.36 1.12 0C14.5 18.75 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z',
+                  //     fillColor: '#0D84F2', // color
+                  //     fillOpacity: 1,
+                  //     strokeColor: '#0059AC',
+                  //     strokeWeight: 1, // No outline
+                  //     scale: 2, // Scale to size
+                  //     anchor: new google.maps.Point(12, 24), // Anchor at the bottom of the marker
+                  //   }}
+                  // />
+                  <div>
+                    <Marker
+                      position={searchedLocation}
+                      icon={{
+                        path: 'M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 9.75 6.3 11.77.3.36.82.36 1.12 0C14.5 18.75 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z', //Outer circle
+                        fillColor: '#0D84F2', // Outer color
+                        fillOpacity: 1,
+                        strokeColor: '#0059AC',
+                        strokeWeight: 1,
+                        scale: 2,
+                        anchor: new google.maps.Point(12, 24),
+                      }}
+                    />
+                    <Marker
+                      position={searchedLocation}
+                      icon={{
+                        path: 'M12 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', // Inner circle
+                        fillColor: '#FFFFFF', // Inner circle color
+                        fillOpacity: 1,
+                        strokeColor: '#FFFFFF', // outline color of inner circle
+                        strokeWeight: 1,
+                        scale: 2,
+                        anchor: new google.maps.Point(12, 21), // Adjust anchor for inner circle
+                      }}
+                    />
+                  </div>
+
                 )}
 
                 {/* Display all or filtered markers */}
