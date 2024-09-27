@@ -116,8 +116,10 @@
 }
 
 .side-bar-logo img {
-  width: 31px;
-  height: 31px;
+  /* width: 31px;
+  height: 31px; */
+  width: auto;
+  height: 45px;
 }
 
 .side-bar-logo h3 {
