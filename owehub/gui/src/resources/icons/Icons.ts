@@ -163,6 +163,7 @@ export const ICONS = {
   LOGO: logo,
   MENU_1: require('../../resources/assets/menu_1.png'),
   sidebarLogo: require('../../resources/assets/comissionlogo.png'),
+  sidebarLogoSquare: require('../../resources/assets/comissionlogoSquare.png'),
   DOWN_ARROW: require('../../resources/assets/arrow-down.png'),
   VIEW_ARCHIVE: viewA,
   FILTER: filter,

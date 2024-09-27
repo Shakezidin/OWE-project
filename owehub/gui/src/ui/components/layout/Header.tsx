@@ -112,16 +112,18 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             )
           ) : (
             <img
-              src={ICONS.sidebarLogo}
+              src={toggleOpen ? ICONS.sidebarLogoSquare : ICONS.sidebarLogo}
               alt=""
               style={{
-                marginInline: toggleOpen ? 'auto' : undefined,
+                height: toggleOpen ? 30 : 45,
+                paddingLeft: toggleOpen ? 10 : '',
+                // marginInline: toggleOpen ? 'auto' : undefined,
               }}
             />
           )}
-          {toggleOpen || isTablet ? null : (
+          {/* {toggleOpen || isTablet ? null : (
             <h3 style={{ color: 'black' }}>OWE HUB</h3>
-          )}
+          )} */}
 
           {!isTablet && (
             <div
