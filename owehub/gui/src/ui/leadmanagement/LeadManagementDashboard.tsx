@@ -670,7 +670,7 @@ const handlePeriodChange = (
       <div className={styles.chartGrid}>
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            Overview
+            Overview 
             <div>Total leads: 200</div>
           </div>
           <div className={styles.cardContent}>
