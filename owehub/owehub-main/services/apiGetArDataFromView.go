@@ -358,8 +358,8 @@ func generateQuery(reportType, salePartner, sortBy string, statuses map[string]b
 }
 
 func PrepareardataFilters(dataFilter models.GetArDataReq, check, whereAdded bool) (filters string) {
-	log.EnterFn(0, "PrepareApptSettersFilters")
-	defer func() { log.ExitFn(0, "PrepareApptSettersFilters", nil) }()
+	log.EnterFn(0, "PrepareardataFilters")
+	defer func() { log.ExitFn(0, "PrepareardataFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 

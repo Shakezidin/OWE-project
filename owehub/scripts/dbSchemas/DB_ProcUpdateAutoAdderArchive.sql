@@ -16,7 +16,7 @@ SET
 WHERE ad.id = auto_adder_id;
 
 IF NOT FOUND THEN
-            RAISE EXCEPTION 'Record with ID % not found in commission_rates table', commission_id;
+            RAISE EXCEPTION 'Record with ID % not found in table', commission_id;
 END IF;
 
         v_auto_adder_id := auto_adder_id;

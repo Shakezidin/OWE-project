@@ -168,8 +168,8 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
  * RETURNS:    		void
  ******************************************************************************/
 func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareMarketingFeesFilters")
-	defer func() { log.ExitFn(0, "PrepareMarketingFeesFilters", nil) }()
+	log.EnterFn(0, "PrepareRepPaySettingsFilters")
+	defer func() { log.ExitFn(0, "PrepareRepPaySettingsFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	whereAdded := false // Flag to track if WHERE clause has been added

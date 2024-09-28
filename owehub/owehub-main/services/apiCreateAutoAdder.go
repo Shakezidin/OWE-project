@@ -21,7 +21,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateAptSetterRequest
+ * FUNCTION:		HandleCreateAutoAdderRequest
  * DESCRIPTION:     handler for create AutoAdder request
  * INPUT:			resp, req
  * RETURNS:    		void

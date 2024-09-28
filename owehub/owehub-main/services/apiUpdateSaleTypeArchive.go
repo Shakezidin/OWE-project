@@ -36,8 +36,8 @@ func HandleUpdateSaleTypeArchiveRequest(resp http.ResponseWriter, req *http.Requ
 		result               []interface{}
 	)
 
-	log.EnterFn(0, "HandleUpdateMarketingFeesArchiveRequest")
-	defer func() { log.ExitFn(0, "HandleUpdateMarketingFeesArchiveRequest", err) }()
+	log.EnterFn(0, "HandleUpdateSaleTypeArchiveRequest")
+	defer func() { log.ExitFn(0, "HandleUpdateSaleTypeArchiveRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update sale type Archive request")
