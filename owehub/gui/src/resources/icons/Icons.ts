@@ -152,6 +152,9 @@ import excelIcon from '../assets/excel-icon.svg'
 import recycleBin from '../assets/recycleBin.svg'
 import recycleBinColor from '../assets/recycleBinColor.svg'
 import folderImage from '../assets/folderimage.svg'
+import viedoImageOne from '../assets/videos-library-one.svg'
+import viedoplay from '../assets/video_play.svg'
+
 
 
 
@@ -327,4 +330,6 @@ export const ICONS = {
   recycleBin:recycleBin,
   recycleBinColor:recycleBinColor,
   folderImage,
+  viedoImageOne,
+  viedoplay,
 };

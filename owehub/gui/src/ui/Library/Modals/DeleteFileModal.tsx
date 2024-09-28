@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import classes from './styles/deletefile.module.css';
-import { useNavigate } from 'react-router-dom';
 import { ICONS } from '../../../resources/icons/Icons';
 
-const DeleteFileModal = () =>
-  {
-    const navigate = useNavigate();
-    // const [confirmModal, setConfirmModal]=useState(false);
-    const [visibleDiv, setVisibleDiv] = useState(1);
-
+interface propGet{
+  setIsVisible:(visible: boolean) => void;
+}
+const DeleteFileModal:React.FC<propGet> = ({setIsVisible}) => {
   
 
     return (
-      // <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
-      <div>
-        <div className="transparent-model">
+      
+        <div className={classes.transparent_lib}>
           <div className={classes.customer_wrapper_list}>
             
            
@@ -32,11 +28,14 @@ const DeleteFileModal = () =>
                 <div className={classes.survey_button}>
                   <button
                     className={classes.self}
-                  
+                    onClick={()=>setIsVisible(false)}
+                   
                   >
                     Cancel
                   </button>
-                  <button id="otherButtonId" className={classes.other}>
+                  <button id="otherButtonId" className={classes.other}
+                  onClick={()=>setIsVisible(false)}
+                  >
                     Delete
                   </button>
                 </div>
@@ -45,7 +44,7 @@ const DeleteFileModal = () =>
          
           </div>
         </div>
-      </div>
+      
     );
   };
 
