@@ -113,6 +113,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/edit_leads",
+		apiHandler.HandleEditLeadsRequest,
+		true,
+		leadsRoleGroup,
+	},
 }
 
 /******************************************************************************
