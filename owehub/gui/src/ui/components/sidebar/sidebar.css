@@ -120,6 +120,7 @@
   height: 31px; */
   width: auto;
   height: 45px;
+  transform: scale(1.2);
 }
 
 .side-bar-logo h3 {
