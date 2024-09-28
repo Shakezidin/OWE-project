@@ -81,6 +81,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 			RIGHT JOIN leads_status 
 				ON leads_info.status_id = leads_status.status_id 
 				AND leads_info.updated_at BETWEEN $2 AND $3
+				AND leads_info.is_archived = false
 			GROUP BY leads_status.status_id
 			HAVING leads_status.status_id NOT IN (5, 6) -- Excluding WON & LOST
 		) grp INNER JOIN leads_status s ON s.status_id = grp.status_id
@@ -117,7 +118,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 				WHERE (
 					(li.status_id = 5 AND li.proposal_created_date IS NULL)
 					OR (li.status_id = 3 AND li.appointment_date < CURRENT_TIMESTAMP)
-				) AND li.updated_at BETWEEN $2 AND $3
+				) AND li.updated_at BETWEEN $2 AND $3 AND li.is_archived = false
 			`
 
 			data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)

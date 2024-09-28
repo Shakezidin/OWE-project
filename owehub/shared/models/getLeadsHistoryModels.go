@@ -16,6 +16,7 @@ type GetLeadsHistoryRequest struct {
 	LeadsStatus int64  `json:"leads_status"`
 	StartDate   string `json:"start_date"`
 	EndDate     string `json:"end_date"`
+	IsArchived  bool   `json:"is_archived"`
 	PageSize    int    `json:"page_size"`   // page size
 	PageNumber  int    `json:"page_number"` // pagination page number
 	// SortBy      string `json:"sort_by"`     // sort according to deal won or loss

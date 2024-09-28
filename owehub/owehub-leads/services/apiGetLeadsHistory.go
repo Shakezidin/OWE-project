@@ -105,16 +105,24 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
          %s -- filter for status id
             AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')                       -- Start date 
             AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY')  + INTERVAL '1 day'    -- End date
+			AND li.is_archived = $4
         ORDER BY
              li.updated_at DESC
-        LIMIT $4  -- for page size
-        OFFSET $5  -- Offset for pagination
+        LIMIT $5  -- for page size
+        OFFSET $6  -- Offset for pagination
          `,
 		whereClause,
 	)
 
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
-	whereEleList = append(whereEleList, authenticatedUserEmail, dataReq.StartDate, dataReq.EndDate, pageSize, offset)
+	whereEleList = append(whereEleList,
+		authenticatedUserEmail,
+		dataReq.StartDate,
+		dataReq.EndDate,
+		dataReq.IsArchived,
+		pageSize,
+		offset,
+	)
 
 	// Execute the query
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryQuery, whereEleList)
