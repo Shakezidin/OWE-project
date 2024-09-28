@@ -12,10 +12,7 @@ const HistoryRedirect = () => {
     navigate('/leadmng-history');
   };
 
-  const HistoryButtonCalled = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setModalOpenClick((prevState) => !prevState);
-  };
+
 
   const ArchivesTable = () => {
     navigate('/lead-dashboard-archieves');
@@ -33,6 +30,12 @@ const HistoryRedirect = () => {
     paddingBottom: '0px',
   });
 
+
+  const HistoryButtonCalled = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    console.log("called")
+    setModalOpenClick((prevState) => !prevState);
+  };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (divRef.current && !divRef.current.contains(event.target as Node)) {
@@ -115,25 +118,10 @@ const HistoryRedirect = () => {
           onClick={(event) => event.stopPropagation()}
           ref={divRef}
         >
-          <ul style={{ borderRadius: '15px' }}>
-            <li
-              style={{ paddingTop: '0px', paddingBottom: '0px' }}
-              className={classes.history1}
-              onClick={handleHistory}
-            >
-              <span style={{ paddingTop: '0px', paddingBottom: '0px' }}>
-                {' '}
-                History
-              </span>
-            </li>
-            <br></br>
-            <li
-              style={{ paddingTop: '0px', paddingBottom: '0px' }}
-              className={classes.history1}
-              onClick={ArchivesTable}
-            >
-              Archives
-            </li>
+          <ul >
+            {/* <ul style={{ borderRadius: '15px' }}> */}
+            <li style={{color:"#000 !important"}}  onClick={handleHistory}>History </li>
+            <li style={{color:"#000 !important"}} onClick={ArchivesTable}> Archives</li>
           </ul>
         </div>
       )}
