@@ -119,8 +119,9 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			FROM get_leads_info_hierarchy($1) li
 			WHERE li.status_id = $2
 			AND li.is_archived = $3
-			AND li.created_at >= TO_DATE($4, 'DD-MM-YYYY')
-			AND li.created_at <= TO_DATE($5, 'DD-MM-YYYY')
+			AND li.updated_at >= TO_DATE($4, 'DD-MM-YYYY')
+			AND li.updated_at <= TO_DATE($5, 'DD-MM-YYYY')
+			ORDER BY li.updated_at DESC
 			LIMIT $6 OFFSET $7`
 
 		whereEleList = append(whereEleList,
