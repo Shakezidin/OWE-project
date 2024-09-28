@@ -125,7 +125,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 			Type = ""
 		}
 
-		// SaleTypeName
+		// HomeOwner
 		HomeOwner, ok := item["home_owner"].(string)
 		if !ok || HomeOwner == "" {
 			log.FuncErrorTrace(0, "Failed to get sale type name for Record ID %v. Item: %+v\n", UniqueId, item)

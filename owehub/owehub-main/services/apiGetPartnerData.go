@@ -101,7 +101,6 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
-		// Create a new GetSaleTypeData object
 		partnerData := models.GetPartnerData{
 			Record_Id:   RecordId,
 			PartnerName: PartnerName,
