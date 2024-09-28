@@ -13,11 +13,14 @@
   font-weight: 600;
   color: #263747;
 }
-.desktop-btn:disabled{
+
+.desktop-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.mobile-btn:disabled{
+
+
+.mobile-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -59,7 +62,9 @@
 
 .pipeline-export {
   margin-top: 1px;
-  padding: 9px 12px;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
 }
 
 .performance-exportbtn:hover {
@@ -1286,7 +1291,7 @@
     margin-top: 6.8rem !important;
   }
 
-  .active-queue{
+  .active-queue {
     top: 165px !important;
   }
 }
@@ -1299,7 +1304,8 @@
   .pipline-export-btn .performance-exportbtn {
     margin-top: 8.5rem !important;
   }
-  .active-queue{
+
+  .active-queue {
     top: 190px !important;
   }
 }
@@ -1871,13 +1877,15 @@
 }
 
 @media (max-width: 530px) {
-  .breadcrumb-container{
+  .breadcrumb-container {
     margin-left: 0px !important;
   }
+
   .status-boxes {
     margin-top: 1rem;
   }
-  .top-btns-wrapper{
+
+  .top-btns-wrapper {
     flex-direction: column;
     flex-wrap: wrap;
   }
