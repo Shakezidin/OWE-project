@@ -95,7 +95,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	leadsHistoryQuery = fmt.Sprintf(`
         SELECT
             li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
-            ls.status_name, li.updated_at, li.appointment_disposition_note,
+            ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
             li.appointment_scheduled_date, li.appointment_accepted_date, 
             li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
         FROM
@@ -131,14 +131,21 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	for _, item := range data {
 		timeline := getLeadHistoryTimeline(item)
+
+		streetAddress, ok := item["street_address"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get street address for Lead: %+v\n", item)
+			streetAddress = ""
+		}
 		LeadsHistory := models.GetLeadsHistoryResponse{
-			FirstName:   item["first_name"].(string),
-			LastName:    item["last_name"].(string),
-			EmailId:     item["email_id"].(string),
-			PhoneNumber: item["phone_number"].(string),
-			LeadsID:     item["leads_id"].(int64),
-			StatusID:    item["status_id"].(int64),
-			Timeline:    timeline,
+			FirstName:     item["first_name"].(string),
+			LastName:      item["last_name"].(string),
+			EmailId:       item["email_id"].(string),
+			PhoneNumber:   item["phone_number"].(string),
+			LeadsID:       item["leads_id"].(int64),
+			StatusID:      item["status_id"].(int64),
+			StreetAddress: streetAddress,
+			Timeline:      timeline,
 		}
 
 		LeadsHistoryResponse.LeadsHistoryList = append(LeadsHistoryResponse.LeadsHistoryList, LeadsHistory)

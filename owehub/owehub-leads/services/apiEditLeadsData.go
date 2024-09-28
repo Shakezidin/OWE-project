@@ -30,7 +30,6 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		updateFields []string
 		dataReq      models.EditLeadsDataReq
 		query        string
-		//
 	)
 
 	log.EnterFn(0, "HandleEditLeadsRequest")
@@ -65,32 +64,19 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// // Validate that at least one field is provided
-	// if len(dataReq.PhoneNumber) == 0 && len(dataReq.EmailId) == 0 && len(dataReq.StreetAddress) == 0 {
-	// 	err = fmt.Errorf("no fields provided to update")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "No fields provided to update", http.StatusBadRequest, nil)
-	// 	return
-	// }
-
-	// construct update query based on provided fields
-	//["phone_number = ?", "email_id = ?", "street_address = ?"]
-	//["123456789", "petwal@abc.com", "adddress"]
-
 	if len(dataReq.PhoneNumber) > 0 {
 		whereEleList = append(whereEleList, dataReq.PhoneNumber)
-		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d",len(whereEleList)))
+		updateFields = append(updateFields, fmt.Sprintf("phone_number = $%d", len(whereEleList)))
 	}
 	if len(dataReq.EmailId) > 0 {
 		whereEleList = append(whereEleList, dataReq.EmailId)
-		updateFields = append(updateFields, fmt.Sprintf("email_id = $%d",len(whereEleList)))
+		updateFields = append(updateFields, fmt.Sprintf("email_id = $%d", len(whereEleList)))
 	}
 	if len(dataReq.StreetAddress) > 0 {
 		whereEleList = append(whereEleList, dataReq.StreetAddress)
-		updateFields = append(updateFields, fmt.Sprintf("street_address = $%d",len(whereEleList)))
+		updateFields = append(updateFields, fmt.Sprintf("street_address = $%d", len(whereEleList)))
 	}
 
-	// checking for 0 fields
 	if len(updateFields) == 0 {
 		err = fmt.Errorf("no fields provided to update")
 		log.FuncErrorTrace(0, "%v", err)
@@ -98,18 +84,12 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Add LeadID for the WHERE clause
 	whereEleList = append(whereEleList, dataReq.LeadId)
-
-	// SQL query constuct
-
-	query = fmt.Sprintf("UPDATE leads_info SET %s WHERE leads_id = $%d", strings.Join(updateFields, ", "),len(whereEleList))
-	//UPDATE leads_info SET **phone_number = ?, email_id = ?**** WHERE leads_id = ?
+	query = fmt.Sprintf("UPDATE leads_info SET %s WHERE leads_id = $%d", strings.Join(updateFields, ", "), len(whereEleList))
 
 	err, res := db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 
 	if res == 0 {
-		//0 =  no rows were updated
 		log.FuncErrorTrace(0, "No rows updated for lead details: %v", err)
 		FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
 		return
