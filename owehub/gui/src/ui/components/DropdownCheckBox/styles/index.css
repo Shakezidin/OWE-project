@@ -1,4 +1,5 @@
 .dropdown-checkbox {
+    min-width: 143px;
     border-radius: 8px;
 }
 
@@ -11,6 +12,7 @@
     transition: all 0.3s ease;
 
 }
+
 .dropdown-checkbox .dropdown-toggle span{
     color: #377cf6;
 }
