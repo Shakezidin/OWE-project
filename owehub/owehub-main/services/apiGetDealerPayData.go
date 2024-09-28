@@ -369,8 +369,8 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 }
 
 func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, forDataCount, offset bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareDealerCreditFilters")
-	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
+	log.EnterFn(0, "PrepareDealerPayFilters")
+	defer func() { log.ExitFn(0, "PrepareDealerPayFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	// whereAdded := false // Flag to track if WHERE clause has been added

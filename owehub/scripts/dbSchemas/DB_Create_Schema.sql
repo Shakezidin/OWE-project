@@ -57,16 +57,9 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy loan_type (product_code,description,active,adder) FROM '/docker-entrypoint-initdb.d/loan_type.csv' DELIMITER ',' CSV;
 \copy dealer_tier(dealer_id,tier_id,start_date,end_date) FROM '/docker-entrypoint-initdb.d/dealer_tier1.csv' DELIMITER ',' CSV;
 \copy ar(unique_id,date,amount) FROM '/docker-entrypoint-initdb.d/ar.csv' DELIMITER ',' CSV;
-\copy referral_data(unique_id,new_customer,referrer_serial,referrer_name,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/referral_data.csv' DELIMITER ',' CSV;
 \copy rebate_data(unique_id,rep_doll_divby_per,amount,type,date) FROM '/docker-entrypoint-initdb.d/rebate_data.csv' DELIMITER ',' CSV;
-\copy dealer_credit(unique_id,date,exact_amount,per_kw_amount,approved_by,notes,total_amount,sys_size) FROM '/docker-entrypoint-initdb.d/dealer_credit.csv' DELIMITER '^' CSV;
-\copy dealer_repayment_bonus(unique_id,home_owner,sys_size,contract_$$,shaky_hand,repayment_bonus,remaining_repayment_bonus) FROM '/docker-entrypoint-initdb.d/dealer_repayment_bonus.csv' DELIMITER ',' CSV;
 \copy auto_adder(rep_percentage,unique_id) FROM '/docker-entrypoint-initdb.d/auto_adder.csv' DELIMITER ',' CSV;
 \copy dba(preferred_name,dba) FROM '/docker-entrypoint-initdb.d/dba.csv' DELIMITER ',' CSV;
-\copy rep_pay_settings(name,state_id,pay_scale,position,b_e,start_date,end_Date) FROM '/docker-entrypoint-initdb.d/rep_pay_settings.csv' DELIMITER ',' CSV;
-\copy noncomm_dlrpay(unique_id,date,exact_amount,approved_by,notes) FROM '/docker-entrypoint-initdb.d/non_comm.csv' DELIMITER ',' CSV;
-\copy dlr_oth(unique_id,payee,amount,date,description,balance,paid_amount,dba) FROM '/docker-entrypoint-initdb.d/dlr_oth.csv' DELIMITER ',' CSV;
-
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
 
@@ -101,21 +94,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRebateData.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateRebateData.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateRebateDataArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewReferralData.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealerCredit.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewNonCommDlrPay.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDealerCredit.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDealerCreditArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateReferralData.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateReferralDataArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateNonCommDlrPay.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateNonCommDlrPayArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDlrOth.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDlrOth.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDlrOthArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRepPaySettings.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepPaySettings.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepPaySettingsArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewArImport.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImport.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImportArchive.sql';

@@ -406,8 +406,8 @@ func paginate(repPayList []RepPay, page_number int, page_size int) []RepPay {
 }
 
 func prepareRepPayFilters(tableName string, dataFilter models.RepPayRequest, forDataCount, reportFilter bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareDealerCreditFilters")
-	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
+	log.EnterFn(0, "prepareRepPayFilters")
+	defer func() { log.ExitFn(0, "prepareRepPayFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(" WHERE net_comm != 'NaN' AND balance != 'NaN' AND")
