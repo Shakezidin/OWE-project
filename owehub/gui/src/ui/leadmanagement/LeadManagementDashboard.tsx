@@ -647,7 +647,7 @@ const LeadManagementDashboard = () => {
   };
 
 
-  // ************************ Line Chart API Integration By Saurabh ********************************\\
+  // ************************ Charts API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
   const [loading, setIsLoading] = useState(false);

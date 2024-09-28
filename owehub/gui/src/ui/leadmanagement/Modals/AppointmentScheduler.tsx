@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/appointmentScheduler.css';
+import { timeSlots } from '../../../resources/static_data/Constant';
 
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
@@ -28,20 +29,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     onTimeChange(time);
   };
 
-  const timeSlots = [
-    '06:00 AM',
-    '07:00 AM',
-    '08:00 AM',
-    '09:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '01:00 PM',
-    '02:00 PM',
-    '03:00 PM',
-    '04:00 PM',
-    '05:00 PM',
-  ];
+  
 
   return (
     <div className="appointmentSchedulerContainer">
