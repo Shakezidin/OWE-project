@@ -104,7 +104,7 @@ const CustomersList = ({ mapStyles = {} }) => {
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([])
   const [selectedTime, setSelectedTime] = useState<ITimeSlot>()
   const [isSurveyScheduled, setIsSurveyScheduled] = useState(false)
-  const [sortBy, setSortBy] = useState('All')
+  const [sortBy, setSortBy] = useState('New To Old')
   const getCustomers = async () => {
     try {
       setIsPending(true);
@@ -162,7 +162,6 @@ const CustomersList = ({ mapStyles = {} }) => {
     { id: 7, date: new Date(2024, 8, 30), progress: 95 },
   ];
   const sortOptions = [
-    { label: "All", value: "All" },
     { label: "New To Old", value: "New To Old" },
     { label: "Old To New", value: "Old To New" }
   ]
