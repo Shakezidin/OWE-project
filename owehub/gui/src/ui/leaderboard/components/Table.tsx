@@ -559,7 +559,7 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
-  exportPdf: (fn: () => void) => void;
+  exportPdf: () => void;
   isExporting: boolean;
   count: number;
   resetDealer: (value: string) => void;
@@ -813,9 +813,9 @@ const Table = ({
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-        <div className="export-trigger" onClick={toggleExportShow}>
+        <div className="export-trigger" onClick={() => (!isExporting && !isExportingData) && toggleExportShow()}>
           <FaUpload size={12} className="mr1" />
-          <span> Export </span>
+          <span> {isExporting || isExportingData ? "Exporting..." : "Export"} </span>
         </div>
         {exportShow && (
           <div className="export-opt">
@@ -823,7 +823,8 @@ const Table = ({
               className="export-btn"
               disabled={isExporting || isExportingData}
               onClick={() => {
-                exportPdf(toggleExportShow);
+                exportPdf();
+                setExportShow(false)
               }}
             >
               <span>Pdf</span>
@@ -831,7 +832,10 @@ const Table = ({
             <button
               disabled={isExportingData}
               className="export-btn export-btnn"
-              onClick={exportCsv}
+              onClick={() => {
+                exportCsv()
+                setExportShow(false)
+              }}
             >
               <span>Csv</span>
             </button>

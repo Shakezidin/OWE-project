@@ -601,7 +601,6 @@ const ProjectPerformence = () => {
         />
 
         <div className="pipeline-header-btns">
-
           {showDropdown &&
             <DropdownCheckbox
               label={selectedDealer.length === 1 ? "partner" : "partners"}
@@ -611,10 +610,10 @@ const ProjectPerformence = () => {
               onChange={((val) => {
                 setSelectedDealer(val)
                 setPage(1)
-              })} />
+              })}
+              disabled = {loading || isLoading}
+              />
           }
-
-
           <button
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
@@ -819,15 +818,6 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
-
-
-                <Link to="/map-address">
-                  <div className='pipeline-googlemap' onMouseEnter={() => setMapHovered(true)} onMouseLeave={() => setMapHovered(false)}>
-                    {mapHovered ? <RiMapPinFill /> : <RiMapPinLine />}
-                  </div></Link>
-
-
-
               </div >
             </div >
 
