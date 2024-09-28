@@ -13,6 +13,14 @@
   font-weight: 600;
   color: #263747;
 }
+.desktop-btn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.mobile-btn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .pipeline-googlemap {
   display: flex;
@@ -427,7 +435,7 @@
   display: none;
 }
 
-.pipeline-header-btns button:hover {
+.pipeline-header-btns button:not([disabled]):hover {
   background: #377cf6;
   color: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);

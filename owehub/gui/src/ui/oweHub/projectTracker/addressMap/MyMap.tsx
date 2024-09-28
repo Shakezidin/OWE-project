@@ -846,11 +846,11 @@ const MyMapComponent: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.headerRight}>
+        {/* <div className={styles.headerRight}>
           <div className={styles.mapClose} onClick={handleCalcClose}>
             <IoClose />
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div
