@@ -509,7 +509,7 @@ const DateFilter = ({
           onClick={() => setShowCalendar((prev) => !prev)}
           style={{ lineHeight: 0 }}
         >
-          <Calendar />
+          <Calendar disabled={disabled} />
         </span>
         {showCalendar  && !disabled && (
           <div className="leaderboard-data__datepicker-content">
