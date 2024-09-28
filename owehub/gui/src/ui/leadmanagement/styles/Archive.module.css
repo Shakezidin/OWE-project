@@ -1,7 +1,20 @@
 /* -----------------Rabindra----------------- */
 
-.CrossICONBTNHover:hover {
-    background-color: #377df64d;
+.CrossICONBTNHover1:hover {
+    background-color: #ddebff;
+    cursor: pointer;
+    border-radius: 8px;
+  
+  
+  }
+  
+  .CrossICONBTNHover1 {
+    height: 27px;
+    width: 27px;
+  }
+  
+  .CrossICONBTNHover:hover {
+    background-color:#ddebff;
     cursor: pointer;
     border-radius: 8px;
   
@@ -12,7 +25,8 @@
     height: 32px;
     width: 32px;
   }
-  
+
+
   .dashboard {
     padding: 24px;
     background-color: #f3f4f6;
@@ -326,7 +340,7 @@
     gap: 10px;
     /* Adds space between buttons */
   }
-  
+
   .rescheduleButton {
     background-color: #2979ff;
     /* Blue color */
@@ -368,6 +382,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    height: 100%;
   }
   
   .selectionInfo {
