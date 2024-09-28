@@ -1,5 +1,6 @@
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
+
   /* Styles for smartphones */
   .lineChart-wrapper .recharts-responsive-container {
     left: -6.5pc;
@@ -22,28 +23,67 @@
 .monthSelectFocus:focus-visible {
   outline: none;
 }
+
 .react-datepicker__day-name {
   font-weight: bold;
 }
+
 .monthSelect {
-  padding-right: 16px; /* Space on the right */
-  padding-left: 30px; /* Create space for the arrow on the left */
-  appearance: none; /* Hide the default arrow */
+  padding-right: 16px;
+  /* Space on the right */
+  padding-left: 30px;
+  /* Create space for the arrow on the left */
+  appearance: none;
+  /* Hide the default arrow */
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-color: #fff; /* Set background color */
+  background-color: #fff;
+  /* Set background color */
   position: relative;
 }
 
 .monthSelect::after {
-  content: '\25BC'; /* Unicode character for a down arrow */
+  content: '\25BC';
+  /* Unicode character for a down arrow */
   position: absolute;
-  left: 10px; /* Adjust this value to position the arrow */
-  pointer-events: none; /* Ensures the arrow doesn’t block clicks */
+  left: 10px;
+  /* Adjust this value to position the arrow */
+  pointer-events: none;
+  /* Ensures the arrow doesn’t block clicks */
   font-size: 12px;
-  color: #000; /* Arrow color */
+  color: #000;
+  /* Arrow color */
 }
 
 .monthSelectFocus:focus-visible {
   outline: none;
+}
+
+/* HistoryREDIRECT */
+.editedinParent {
+  border-radius: 8px !important;
+  border: 1px solid #929292 !important;
+  width: 152px !important;
+}
+
+.editedinParent li {
+  font-size: 18px !important;
+  padding-left: 7px !important;
+  color: #000 !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+}
+
+.editedinParent ul {
+  border-radius: 8px;
+}
+
+.editedinParent li:hover {
+  font-size: 18px !important;
+  padding-left: 7px !important;
+  color: #000 !important;
+  font-style: normal !important;
+  transform: scale(1) !important;
+  font-weight: normal !important;
+
 }
