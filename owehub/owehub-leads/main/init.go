@@ -127,6 +127,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/update_lead_status",
+		apiHandler.HandleUpdateLeadStatusRequest,
+		true,
+		leadsRoleGroup,
+	},
 }
 
 /******************************************************************************

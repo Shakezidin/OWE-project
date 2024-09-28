@@ -92,7 +92,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Email Function Call
-	err = sentAppointmentEmail(ClientEmail, &aptDate)
+	err = sentAppointmentEmail(ClientEmail, &aptDate, true)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send the email to the client %v", err)
