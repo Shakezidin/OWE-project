@@ -591,9 +591,10 @@ const ProjectPerformence = () => {
 
   return (
     <div className="">
-      <div className="flex justify-between p2 top-btns-wrapper">
+      <div className="flex justify-between items-center top-btns-wrapper" style={{ paddingTop: "calc(1rem - 8px)", paddingBottom: "1rem" }}>
         <Breadcrumb
           head=""
+          cssStyles={{ paddingBottom: 0 }}
           linkPara="Pipeline"
           route={''}
           linkparaSecond=""
