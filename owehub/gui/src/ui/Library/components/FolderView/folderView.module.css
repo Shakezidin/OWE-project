@@ -8,11 +8,13 @@
     gap: 28px;
     /* gap: 15px; */
     /* padding: 24px; */
-    padding-left: 24px;
     /* padding-right: 15px;  */
     background-color: #ffffff;
-    
-  }  
+/* padding-top: 14px;
+padding-left: 24px;     */
+padding: 14px 24px;
+border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;  }  
 
   .folderDiv {
     display: flex;
@@ -43,7 +45,7 @@
     justify-content: center;
     background-color: #afafaf;
     width: fit-content;
-    padding: 0px 5px;
+    padding: 0px 6px;
     border-radius: 50%;
     font-family: 'Poppins', sans-serif;
     font-size: 12px;

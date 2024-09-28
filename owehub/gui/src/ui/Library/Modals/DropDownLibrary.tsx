@@ -3,14 +3,15 @@ import classes from './styles/dropdownlibrary.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 interface DropDownLibraryProps {
+  selectedType: string;
   onSelectType: (type: string) => void;
 }
 
-const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
+const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ selectedType, onSelectType }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [selectedType, setSelectedType] = useState('all'); // New state for selected type
+  // const [selectedType, setSelectedType] = useState('All'); 
   const dropdownRef = useRef<HTMLUListElement | null>(null);
   const buttonRef = useRef<HTMLDivElement | null>(null);
 
@@ -20,7 +21,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
   };
 
   const handleSelect = (type: string) => {
-    setSelectedType(type); // Update selected type
+    // setSelectedType(type); 
     onSelectType(type);
     setIsVisible(false);
     setIsClicked(false);
@@ -55,6 +56,8 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
         className={classes.verticalDots}
+        style={{ backgroundColor: isHovered || isClicked ? '#EFF5FF' : '', borderColor: isHovered || isClicked ? '#377cf6' : '#8C8C8C' }} // Corrected inline style
+
       >
         <BsThreeDotsVertical
           style={{
@@ -68,32 +71,32 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
       {isVisible && (
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
           <li 
-            onClick={() => handleSelect('all')} 
-            className={`${classes.dropdownItem} ${selectedType === 'all' ? classes.selected : ''}`}
+            onClick={() => handleSelect('All')} 
+            className={`${classes.dropdownItem} ${selectedType === 'All' ? classes.selected : ''}`}
           >
             All
           </li>
           <li 
-            onClick={() => handleSelect('excel')} 
-            className={`${classes.dropdownItem} ${selectedType === 'excel' ? classes.selected : ''}`}
+            onClick={() => handleSelect('Excel')} 
+            className={`${classes.dropdownItem} ${selectedType === 'Excel' ? classes.selected : ''}`}
           >
             Excel
           </li>
           <li 
-            onClick={() => handleSelect('pdf')} 
-            className={`${classes.dropdownItem} ${selectedType === 'pdf' ? classes.selected : ''}`}
+            onClick={() => handleSelect('PDF Format')} 
+            className={`${classes.dropdownItem} ${selectedType === 'PDF Format' ? classes.selected : ''}`}
           >
             PDF Format
           </li>
           <li 
-            onClick={() => handleSelect('img')} 
-            className={`${classes.dropdownItem} ${selectedType === 'img' ? classes.selected : ''}`}
+            onClick={() => handleSelect('Images')} 
+            className={`${classes.dropdownItem} ${selectedType === 'Images' ? classes.selected : ''}`}
           >
             Images
           </li>
           <li 
-            onClick={() => handleSelect('mp4')} 
-            className={`${classes.dropdownItem} ${selectedType === 'mp4' ? classes.selected : ''}`}
+            onClick={() => handleSelect('Videos')} 
+            className={`${classes.dropdownItem} ${selectedType === 'Videos' ? classes.selected : ''}`}
           >
             Videos
           </li>

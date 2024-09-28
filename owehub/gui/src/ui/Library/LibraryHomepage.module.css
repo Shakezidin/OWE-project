@@ -8,14 +8,14 @@
 }
 
 .libraryHeader{
-  padding: 12px 0px !important;
+  padding: 12px 5px !important;
 }
 
 .libGridItem{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 16px;
-  padding: 16px;
+  padding: 25px;
   background-color: #ffffff;
   align-items: center;
 }
@@ -95,6 +95,23 @@
     cursor: pointer;
 }
 
+.filter_button{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: 18px;
+  border: 1px solid #377CF6;
+  padding: 2px 20px;
+    font-family: poppins;
+    font-weight: 500;
+    font-size: 16px;
+    color: #377CF6;
+    background-color: #fff;
+    cursor: pointer;
+}
+
 .buttons:hover {
   color: #377CF6; 
   background-color: #EFF5FF;
@@ -120,6 +137,7 @@
 
 .recycleBin:hover{
   border: 1px solid #377CF6;
+  background-color: #EFF5FF;
 
 }
 .recycleBin img:hover {
@@ -145,8 +163,8 @@
 }
 
 .recycleBin img {
-  height: 27px;
-  width: 27px;
+  height: 24px;
+  width: 24px;
   margin: 3px;
 }
 
@@ -192,12 +210,18 @@
   outline: none;
 }.searchWrapper input:hover{
   border: none;
+  /* background-color: #EFF5FF; */
 }.searchWrapper input:active{
   border: none;
+  /* background-color: #EFF5FF; */
 }.searchWrapper input:focus-visible{
   border: none;
+  /* background-color: #EFF5FF; */
+
 }.searchWrapper input:focus-within{
   border: none;
+  /* background-color: #EFF5FF; */
+
 }
 
 
@@ -283,6 +307,15 @@
   color: #CBCBCB;
 }
 
+.searchWrapper:hover .search_icon {
+  color: #377CF6; /* Change icon color on hover */
+}
+
+.searchWrapper:hover input::placeholder {
+  color: #377CF6; /* Change placeholder color on hover */
+}
+
+
 .recycleBinContent{
   position: absolute;
   top: 165px;
@@ -310,10 +343,13 @@
 
 .searchWrapper:hover{
   border: 1px solid #377cf6;
+  /* color: #EFF5FF; */
 }
 
 .verticalDots:active{
   border-color: #377cf6;
+  background-color: #EFF5FF;
+
 }
 
 
@@ -323,3 +359,8 @@
   font-weight: 600;
 }
 
+/* .libraryContainer{
+  background-color: #fff;
+  border-bottom-left-radius: 16px !important;
+  border-bottom-right-radius: 16px !important;
+} */

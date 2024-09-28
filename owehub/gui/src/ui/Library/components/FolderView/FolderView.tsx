@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ICONS } from '../../../../resources/icons/Icons';
 import styles from './folderView.module.css';
  
 function FolderView() {
+  const [isChecked, setIsChecked] = useState(false);
+
    const folderData = [
      {
        url: ICONS.folderImage,
@@ -34,7 +36,34 @@ function FolderView() {
     {
       url: ICONS.folderImage,
       name: 'Joy Robert',
+      date: '20 jan,24',
+      folderOf: 'Dealer Owner',
+      size: '300 KB',
+      fileType: 'folder',
+      quantity: '8 files',
+    },
+    {
+      url: ICONS.folderImage,
+      name: 'Joy Robert',
       date: '20 sep,24',
+      folderOf: 'Dealer Owner',
+      size: '565 KB',
+      fileType: 'folder',
+      quantity: '8 files',
+    },
+    {
+      url: ICONS.folderImage,
+      name: 'Joy Robert',
+      date: '20 sep,24',
+      folderOf: 'Dealer Owner',
+      size: '565 KB',
+      fileType: 'folder',
+      quantity: '8 files',
+    },
+    {
+      url: ICONS.folderImage,
+      name: 'Joy Robert',
+      date: '20 feb,24',
       folderOf: 'Dealer Owner',
       size: '565 KB',
       fileType: 'folder',
@@ -72,34 +101,7 @@ function FolderView() {
       name: 'Joy Robert',
       date: '20 sep,24',
       folderOf: 'Dealer Owner',
-      size: '565 KB',
-      fileType: 'folder',
-      quantity: '8 files',
-    },
-    {
-      url: ICONS.folderImage,
-      name: 'Joy Robert',
-      date: '20 sep,24',
-      folderOf: 'Dealer Owner',
-      size: '565 KB',
-      fileType: 'folder',
-      quantity: '8 files',
-    },
-    {
-      url: ICONS.folderImage,
-      name: 'Joy Robert',
-      date: '20 sep,24',
-      folderOf: 'Dealer Owner',
-      size: '565 KB',
-      fileType: 'folder',
-      quantity: '8 files',
-    },
-    {
-      url: ICONS.folderImage,
-      name: 'Joy Robert',
-      date: '20 sep,24',
-      folderOf: 'Dealer Owner',
-      size: '565 KB',
+      size: '800 KB',
       fileType: 'folder',
       quantity: '8 files',
     },

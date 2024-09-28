@@ -10,6 +10,8 @@ import DropDownLibrary from './Modals/DropDownLibrary';
 import SortByLibrary from './Modals/SortByLibrary';
 import NewFile from './Modals/NewFile';
 import { BiArrowBack } from 'react-icons/bi';
+import FolderView from './components/FolderView/FolderView';
+import { FaXmark } from 'react-icons/fa6';
 
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -17,7 +19,7 @@ const LibraryHomepage = () => {
     'files' | 'folders' | 'dropdown' | null
   >('files');
   const [isHovered, setIsHovered] = useState(false);
-  const [selectedType, setSelectedType] = useState('all');
+  const [selectedType, setSelectedType] = useState('All');
   const [sortOption, setSortOption] = useState<
     'none' | 'name' | 'date' | 'size'
   >('none');
@@ -161,14 +163,9 @@ const LibraryHomepage = () => {
   };
 
   const handleRecycleBinClick = () => {
-    // Toggle the recycle bin view based on the current state
     setIsRecycleBinView(!isRecycleBinView);
     setIsHovered(false);
   };
-
-  // const handleBackClick = () => {
-  //   setIsRecycleBinView(false);
-  // };
 
   const RecycleBinView = () => (
     <div className={styles.recycle_div}>
@@ -191,8 +188,6 @@ const LibraryHomepage = () => {
     </div>
   );
 
-
-
   const handleSectionClick = (section: 'files' | 'folders' | 'dropdown') => {
     setActiveSection(section);
   };
@@ -202,7 +197,11 @@ const LibraryHomepage = () => {
       data.iconName.toLowerCase().includes(searchValue.toLowerCase()) ||
       data.name.toLowerCase().includes(searchValue.toLowerCase());
     const matchesType =
-      selectedType === 'all' || data.FileType === selectedType;
+      selectedType === 'All' ||
+      (selectedType === 'Excel' && data.FileType === 'excel') ||
+      (selectedType === 'PDF Format' && data.FileType === 'pdf') ||
+      (selectedType === 'Images' && data.FileType === 'img') ||
+      (selectedType === 'Videos' && data.FileType === 'mp4');
     return matchesSearch && matchesType;
   });
 
@@ -221,12 +220,10 @@ const LibraryHomepage = () => {
     }
   });
 
-  // Handle click outside the dropdown to close it (if necessary)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (dropdownRef.current && !dropdownRef.current.contains(target)) {
-        // setActiveSection(null);
       }
     };
 
@@ -242,8 +239,6 @@ const LibraryHomepage = () => {
         <h3>Library</h3>
       </div>
 
-      {/* {isRecycleBinView && <RecycleBinView />} */}
-
       {isRecycleBinView ? (
         <RecycleBinView />
       ) : (
@@ -255,10 +250,10 @@ const LibraryHomepage = () => {
               style={{
                 color: activeSection === 'files' ? '#ffffff' : '',
                 backgroundColor: activeSection === 'files' ? '#377CF6' : '',
-                border: activeSection === 'files' ? '0px solid #377CF6' : '' 
+                border: activeSection === 'files' ? '0px solid #377CF6' : '',
               }}
             >
-              All files
+              Files
             </button>
 
             <button
@@ -267,36 +262,53 @@ const LibraryHomepage = () => {
               style={{
                 color: activeSection === 'folders' ? '#ffffff' : '',
                 backgroundColor: activeSection === 'folders' ? '#377CF6' : '',
-                border: activeSection === 'folders' ? '0px solid #377CF6' : ''
+                border: activeSection === 'folders' ? '0px solid #377CF6' : '',
               }}
             >
-              All folders
+              Folders
             </button>
 
-            <div
-              ref={dropdownRef}
-              className={styles.verticalDots}
-              onClick={handleDivClick}
-              style={toggleClick ? { borderColor: '#377cf6' } : {}}
+            {activeSection !== 'folders' && (
+              <div
+                ref={dropdownRef}
+                onClick={handleDivClick}
+                style={toggleClick ? { borderColor: '#377cf6' } : {}}
               >
-              <DropDownLibrary
-                onSelectType={(type: string) => {
-                  setSelectedType(type);
-                  handleSectionClick('dropdown');
-                }}
-              />
-            </div>
+                <DropDownLibrary
+                  selectedType={selectedType}
+                  onSelectType={(type: string) => {
+                    setSelectedType(type);
+                    setActiveSection(activeSection);
+                  }}
+                />
+              </div>
+            )}
+
+            {selectedType !== 'All' &&
+            activeSection !== 'folders' &&
+            ['Excel', 'PDF Format', 'Images', 'Videos'].includes(
+              selectedType
+            ) ? (
+              <button className={styles.filter_button}>
+                {selectedType}
+                <FaXmark
+                  onClick={() => setSelectedType('All')}
+                  color="#4E4E4E"
+                />
+              </button>
+            ) : null}
           </div>
 
           <div className={styles.libSecHeader_right}>
             <SortByLibrary
-              onSort={(option: 'none' | 'name' | 'date' | 'size') =>
-                setSortOption(option)
-              }
+              onSort={(option: 'none' | 'name' | 'date' | 'size') => {
+                setSortOption(option);
+                setActiveSection(activeSection);
+              }}
             />
 
             <div className={styles.searchWrapper}>
-              <IoMdSearch />
+              <IoMdSearch className={styles.search_icon} />
               <input
                 type="text"
                 value={searchValue}
@@ -310,7 +322,7 @@ const LibraryHomepage = () => {
               className={styles.recycleBin}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              onClick={handleRecycleBinClick} // Handle click to toggle RecycleBinView
+              onClick={handleRecycleBinClick}
             >
               <img
                 src={isHovered ? ICONS.recycleBinColor : ICONS.recycleBin}
@@ -321,126 +333,81 @@ const LibraryHomepage = () => {
         </div>
       )}
 
-
-      {activeSection === 'folders' ? (<p>Folder View</p>) : 
-      
-      <div className={styles.libSectionWrapper}>
-      <div className={styles.lib_Grid_Header}>
-        <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
-        <div className={styles.grid_item}>Uploaded by</div>
-        <div className={styles.grid_item}>Uploaded Date</div>
-        <div className={styles.grid_item}>Actions</div>
-      </div>
-
-      {filteredData.length > 0 ? (
-        sortedData.map((data, index) => (
-          <div className={styles.libGridItem} key={index}>
-            <div className={`${styles.file_icon} ${styles.image_div}`}>
-              <img
-                className={styles.cardImg}
-                src={data.url}
-                alt={`${data.iconName}-icon`}
-              />
-              <div>
-                <p className={styles.name}>{data.iconName}</p>
-                <p className={styles.size}>{data.size}</p>
-              </div>
-            </div>
-            <div className={styles.grid_item}>{data.name}</div>
-            <div className={styles.grid_item}>{data.date}</div>
-            <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-              {isRecycleBinView ? (
-                <div>
-                  <RiDeleteBinLine
-                    className={styles.icons}
-                    style={{
-                      height: '18px',
-                      width: '18px',
-                      color: '#667085',
-                    }}
-                  />
-                </div>
-              ) : (
-                <>
-                  <div>
-                    <RxDownload
-                      className={styles.icons}
-                      style={{
-                        height: '18px',
-                        width: '18px',
-                        color: '#667085',
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <RiDeleteBinLine
-                      className={styles.icons}
-                      style={{
-                        height: '18px',
-                        width: '18px',
-                        color: '#667085',
-                      }}
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        ))
+      {activeSection === 'folders' ? (
+        <FolderView />
       ) : (
-        <p>No matching files found.</p>
-      )}
-    </div>
-    }
+        <div className={styles.libSectionWrapper}>
+          <div className={styles.lib_Grid_Header}>
+            <div className={`${styles.grid_item} ${styles.table_name}`}>
+              Name
+            </div>
+            <div className={styles.grid_item}>Uploaded by</div>
+            <div className={styles.grid_item}>Uploaded Date</div>
+            <div className={styles.grid_item}>Actions</div>
+          </div>
 
-      
+          {filteredData.length > 0 ? (
+            sortedData.map((data, index) => (
+              <div className={styles.libGridItem} key={index}>
+                <div className={`${styles.file_icon} ${styles.image_div}`}>
+                  <img
+                    className={styles.cardImg}
+                    src={data.url}
+                    alt={`${data.iconName}-icon`}
+                  />
+                  <div>
+                    <p className={styles.name}>{data.iconName}</p>
+                    <p className={styles.size}>{data.size}</p>
+                  </div>
+                </div>
+                <div className={styles.grid_item}>{data.name}</div>
+                <div className={styles.grid_item}>{data.date}</div>
+                <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                  {isRecycleBinView ? (
+                    <div>
+                      <RiDeleteBinLine
+                        className={styles.icons}
+                        style={{
+                          height: '16px',
+                          width: '16px',
+                          color: '#667085',
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <RxDownload
+                          className={styles.icons}
+                          style={{
+                            height: '18px',
+                            width: '18px',
+                            color: '#667085',
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <RiDeleteBinLine
+                          className={styles.icons}
+                          style={{
+                            height: '18px',
+                            width: '18px',
+                            color: '#667085',
+                          }}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No matching files found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
 export default LibraryHomepage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
