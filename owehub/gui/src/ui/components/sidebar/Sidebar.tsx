@@ -415,6 +415,11 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             )}
           </div>
         ))}
+        <div style={{ marginTop: 32 }}>
+
+          <p style={{ fontSize: '12px', textAlign: 'center', fontWeight: 500, color: '#afadad' }}>© 2024 by Our World Energy.</p>
+          <p style={{ fontSize: '10px', textAlign: 'center', fontWeight: 500, color: '#afadad' }}>All rights reserved. eOS: v1.4</p>
+        </div>
       </div>
     </div>
   );

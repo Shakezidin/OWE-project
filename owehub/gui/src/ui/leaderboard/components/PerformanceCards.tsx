@@ -85,7 +85,7 @@ const PerformanceCards: React.FC<performance> = ({
                   onClick={shareImage}
                   disabled={isGenerating}
                 >
-                  <MdDownload className="share-svg" />
+                  <MdDownload className={`share-svg ${isGenerating ? "downloading-animation" : ""} `} />
                   <p> Download </p>
                 </button>
               )}

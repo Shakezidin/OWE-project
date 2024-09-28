@@ -132,6 +132,21 @@ input::-webkit-inner-spin-button {
   justify-content: center;
   height: 80vh;
 }
+
+.downloading-animation {
+  animation: 1.2s ease-in-out infinite download-animation;
+}
+
+@keyframes download-animation {
+  from {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(150%);
+    opacity: 0;
+  }
+}
 .data-not-found {
   display: flex;
   justify-content: center;

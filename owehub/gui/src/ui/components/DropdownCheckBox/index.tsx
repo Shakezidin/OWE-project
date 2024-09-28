@@ -76,7 +76,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
         updatedSelection = selectedOptions.filter((item) => item.value !== option.value);
       } else {
         updatedSelection = [...selectedOptions, option];
-        optionContainer.current?.scroll({ top: 0,behavior:"smooth" })
+        optionContainer.current?.scroll({ top: 0, behavior: "smooth" })
       }
       if (updatedSelection.length === options.length - 1 && options.some((opt) => opt.value === 'ALL')) {
         updatedSelection = [...options];
@@ -92,20 +92,20 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   const isAllSelected =
     selectedOptions.length === options.length ||
     selectedOptions.some((item) => item.value === 'ALL');
-    const sortedOptions = filteredOptions.sort((a, b) => {
-      const aIsSelected = selectedOptions.some((item) => item.value === a.value);
-      const bIsSelected = selectedOptions.some((item) => item.value === b.value);
-      if (aIsSelected === bIsSelected) {
-        return 0;
-      }
-      if (aIsSelected) {
-        return -1;
-      }
-      return 1;
-    });
+  const sortedOptions = filteredOptions.sort((a, b) => {
+    const aIsSelected = selectedOptions.some((item) => item.value === a.value);
+    const bIsSelected = selectedOptions.some((item) => item.value === b.value);
+    if (aIsSelected === bIsSelected) {
+      return 0;
+    }
+    if (aIsSelected) {
+      return -1;
+    }
+    return 1;
+  });
   return (
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
-      <div className="dropdown-toggle flex items-center" onClick={() => !disabled && setIsOpen(!isOpen)}>
+      <div className={`dropdown-toggle flex items-center ${disabled ? "disabled-dropdown" : ""}`} onClick={() => !disabled && setIsOpen(!isOpen)}>
         <span>
           {` ${selectedOptions.length} ${label}`}
         </span>
@@ -116,6 +116,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
           <input
             type="text"
             className="input"
+            style={{ paddingInline: 0, paddingLeft: 6 }}
             placeholder={placeholder}
             value={search}
             onChange={handleSearch}
@@ -124,10 +125,11 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
             <div className="dropdown-item">
               <input
                 type="checkbox"
+                className={disabled ? "disabled-checkbox" : ""}
                 checked={isAllSelected}
-                onChange={() => !disabled && handleSelectAll() }
+                onChange={() => !disabled && handleSelectAll()}
               />
-              <span>All</span>
+              <span className={disabled ? "disbaled-label" : ""} >All</span>
             </div>
           )}
           {sortedOptions.length > 0 ? (
@@ -136,12 +138,13 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
                 <input
                   type="checkbox"
                   style={{ flexShrink: 0 }}
+                  className={disabled ? "disabled-checkbox" : ""}
                   checked={selectedOptions.some(
                     (item) => item.value === option.value
                   )}
                   onChange={() => !disabled && handleOptionChange(option)}
                 />
-                <span>{option.label}</span>
+                <span className={disabled ? "disbaled-label" : ""} >{option.label}</span>
               </div>
             ))
           ) : (
