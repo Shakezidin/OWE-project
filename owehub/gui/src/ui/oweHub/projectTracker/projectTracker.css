@@ -13,6 +13,14 @@
   font-weight: 600;
   color: #263747;
 }
+.desktop-btn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.mobile-btn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .pipeline-googlemap {
   display: flex;

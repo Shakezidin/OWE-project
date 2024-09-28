@@ -611,10 +611,11 @@ const ProjectPerformence = () => {
                 setSelectedDealer(val)
                 setPage(1)
               })}
-              disabled = {loading || isLoading}
-              />
+              disabled={loading || isLoading}
+            />
           }
           <button
+            disabled={loading || isLoading}
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Active Queue'), setPage(1);
@@ -623,6 +624,7 @@ const ProjectPerformence = () => {
             Active
           </button>
           <button
+            disabled={loading || isLoading}
             className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Active Queue'), setPage(1);
@@ -633,6 +635,7 @@ const ProjectPerformence = () => {
 
 
           <button
+            disabled={loading || isLoading}
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Hold & Jeopardy'), setPage(1);
@@ -641,6 +644,7 @@ const ProjectPerformence = () => {
             Hold & Jeopardy
           </button>
           <button
+            disabled={loading || isLoading}
             className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Hold & Jeopardy'), setPage(1);
@@ -789,8 +793,10 @@ const ProjectPerformence = () => {
                   value={search}
                   name="Search for Unique ID or Name"
                   onChange={(e) => {
-                    handleSearchChange(e);
-                    setSearch(e.target.value);
+                    if (e.target.value.length <= 50) {
+                      handleSearchChange(e);
+                      setSearch(e.target.value);
+                    }
                   }}
                 />
               </div>

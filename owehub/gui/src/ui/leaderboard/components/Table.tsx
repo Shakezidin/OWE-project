@@ -132,10 +132,12 @@ const PeriodFilter = ({
   period,
   setPeriod,
   resetPage,
+  disabled
 }: {
   period: DateRangeWithLabel | null;
   setPeriod: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
+  disabled?:boolean
 }) => {
   const periodFilterOptions: DateRangeWithLabel[] = [
     {
@@ -179,6 +181,7 @@ const PeriodFilter = ({
               setPeriod(item);
               resetPage();
             }}
+            disabled={disabled}
             className={
               'leaderboard-data__btn' +
               (period?.label === item.label
@@ -204,6 +207,7 @@ const SelectableFilter = ({
   setSelected,
   resetPage,
   resetDealer,
+  disabled
 }: {
   label: string;
   options: { value: string; label: string }[];
@@ -211,6 +215,7 @@ const SelectableFilter = ({
   setSelected: (newVal: string) => void;
   resetPage: () => void;
   resetDealer: (value: string) => void;
+  disabled?:boolean
 }) => {
   return (
     <>
@@ -227,6 +232,7 @@ const SelectableFilter = ({
                     resetDealer(item.value);
                   }
                 }}
+                disabled={disabled}
                 className={
                   'leaderboard-data__btn' +
                   (item.value === selected
@@ -244,6 +250,7 @@ const SelectableFilter = ({
         <label>{label}</label>
         <Select
           options={options}
+          isDisabled={disabled}
           value={options.find((option) => option.value === selected)}
           onChange={(newVal) => {
             setSelected(newVal?.value ?? '');
@@ -309,10 +316,12 @@ const DateFilter = ({
   selected,
   setSelected,
   resetPage,
+  disabled
 }: {
   selected: DateRangeWithLabel;
   setSelected: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
+  disabled:boolean
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState(
@@ -420,6 +429,7 @@ const DateFilter = ({
         <Select
           options={periodFilterOptions}
           value={selected}
+          isDisabled={disabled}
           // placeholder={selected?"Custom"}
           isSearchable={false}
           onChange={(value) => value && setSelected(value)}
@@ -501,7 +511,7 @@ const DateFilter = ({
         >
           <Calendar />
         </span>
-        {showCalendar && (
+        {showCalendar  && !disabled && (
           <div className="leaderboard-data__datepicker-content">
             <DateRange
               editableDateInputs={true}
@@ -908,6 +918,8 @@ const Table = ({
             options={rankByOptions}
             resetPage={resetPage}
             selected={active}
+          
+            disabled={isLoading}
             resetDealer={resetDealer}
             setSelected={setActive}
           />
@@ -918,11 +930,13 @@ const Table = ({
             </div>
             <div className="flex items-center justify-end">
               <PeriodFilter
+                 disabled={isLoading}
                 resetPage={resetPage}
                 period={selectedRangeDate}
                 setPeriod={setSelectedRangeDate}
               />
               <DateFilter
+                 disabled={isLoading}
                 selected={selectedRangeDate}
                 resetPage={resetPage}
                 setSelected={setSelectedRangeDate}
@@ -933,6 +947,7 @@ const Table = ({
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Group by:"
+            disabled={isLoading}
             options={
               role === 'Admin' ||
                 role === TYPE_OF_USER.DEALER_OWNER ||
@@ -950,14 +965,14 @@ const Table = ({
 
           <div className="leaderbord-tab-container">
             <div
-              onClick={() => setActiveHead('kw')}
-              className={`tab ${activeHead === 'kw' ? 'activehead' : ''}`}
+              onClick={() => !isLoading && setActiveHead('kw')}
+              className={`tab  ${isLoading?"disabled-tab":""} ${activeHead === 'kw' ? 'activehead' : ''}`}
             >
               KW
             </div>
             <div
-              onClick={() => setActiveHead('count')}
-              className={`tab ${activeHead === 'count' ? 'activehead' : ''}`}
+              onClick={() => isLoading && setActiveHead('count')}
+              className={`tab ${isLoading?"disabled-tab":""} ${activeHead === 'count' ? 'activehead' : ''}`}
             >
               Count
             </div>

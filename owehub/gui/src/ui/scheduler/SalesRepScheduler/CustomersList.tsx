@@ -15,6 +15,7 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import DayPickerCalendar from '../components/ProgressCalendar/ProgressCalendar';
 import { IoIosInformationCircle } from "react-icons/io";
 import { format } from 'date-fns';
+import SelectOption from '../../components/selectOption/SelectOption';
 interface ITimeSlot {
   id: number;
   time: string;
@@ -103,6 +104,7 @@ const CustomersList = ({ mapStyles = {} }) => {
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([])
   const [selectedTime, setSelectedTime] = useState<ITimeSlot>()
   const [isSurveyScheduled, setIsSurveyScheduled] = useState(false)
+  const [sortBy, setSortBy] = useState('All')
   const getCustomers = async () => {
     try {
       setIsPending(true);
@@ -159,6 +161,11 @@ const CustomersList = ({ mapStyles = {} }) => {
     { id: 6, date: new Date(2024, 8, 27), progress: 20 },
     { id: 7, date: new Date(2024, 8, 30), progress: 95 },
   ];
+  const sortOptions = [
+    { label: "All", value: "All" },
+    { label: "New To Old", value: "New To Old" },
+    { label: "Old To New", value: "Old To New" }
+  ]
 
   return (
     <>
@@ -188,7 +195,12 @@ const CustomersList = ({ mapStyles = {} }) => {
 
             <div className={styles.filter}>
               <div className={styles.newproj}>
-                <SortingDropDown />
+                <SelectOption
+                  value={sortOptions.find(item => item.value === sortBy)}
+                  onChange={(e) => e && setSortBy(e.value)}
+                  options={sortOptions}
+                  controlStyles={{marginTop:0,minWidth:100}}
+                />
               </div>
               <div className={styles.filtericon} onClick={handleAddClick}>
                 <img src={ICONS.AddIconSr} alt="" />
