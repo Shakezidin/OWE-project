@@ -12,6 +12,7 @@ import { getProjects } from '../../../redux/apiSlice/projectManagement';
 import { FaUpload } from 'react-icons/fa';
 import Papa from 'papaparse';
 import { MdDownloading } from "react-icons/md";
+import 'react-tooltip/dist/react-tooltip.css'
 import {
   format,
   subDays,
@@ -42,9 +43,10 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
-import { RiMapPinFill, RiMapPinLine } from "react-icons/ri";
+import { LuImport } from "react-icons/lu";
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
 
 interface Option {
   value: string;
@@ -591,9 +593,10 @@ const ProjectPerformence = () => {
 
   return (
     <div className="">
-      <div className="flex justify-between p2 top-btns-wrapper">
+      <div className="flex justify-between items-center top-btns-wrapper" style={{ paddingTop: "calc(1rem - 8px)", paddingBottom: "1rem" }}>
         <Breadcrumb
           head=""
+          cssStyles={{ paddingBottom: 0 }}
           linkPara="Pipeline"
           route={''}
           linkparaSecond=""
@@ -827,14 +830,17 @@ const ProjectPerformence = () => {
               </div >
             </div >
 
-            <div className="perf-export-btn pipline-export-btn">
+            <div className="perf-export-btn relative pipline-export-btn">
               {!!(projectStatus.length && !loading) && <button
                 disabled={isExportingData}
                 onClick={ExportCsv}
-                className={`performance-exportbtn pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+                data-tooltip-id="export"
+                className={`performance-exportbtn flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
               >
-                {isExportingData ? <MdDownloading size={20} /> : <FaUpload size={16} />}
+                {isExportingData ? <MdDownloading className='downloading-animation' size={20} /> : <LuImport size={20} />}
               </button>}
+
+              <Tooltip style={{zIndex:20,background:"#f7f7f7",color:"#000",fontSize:12,paddingBlock:4}} offset={8} id='export' place="bottom" content='Export' />
             </div>
           </div >
 
