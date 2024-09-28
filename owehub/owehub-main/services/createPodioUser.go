@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"fmt"
 )
@@ -35,11 +36,11 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 	log.EnterFn(0, "HandleGetPodioDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetPodioDataRequest", err) }()
 
-	query = fmt.Sprintf(`SELECT name, item_id, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id 
+	query = fmt.Sprintf(`SELECT name, item_id, phone, work_email, position, dealer_id, dealer, welcome_email, sales_rep_item_id 
 	 					FROM sales_rep_dbhub_schema 
 						WHERE LOWER(work_email) = LOWER('%s')
 						AND LOWER(name) = LOWER('%s');`, reqData.EmailId, reqData.Name)
-	
+
 	SaleRepdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get sales_rep_dbhub_schema data from DB; email: %v; err: %v", reqData.EmailId, err)
@@ -47,6 +48,24 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 	}
 
 	if len(SaleRepdata) > 0 {
+		itemId, _ = SaleRepdata[0]["item_id"].(int64)
+		podioDealerName, _ := SaleRepdata[0]["dealer"].(string)
+		podionName, _ := SaleRepdata[0]["name"].(string)
+		podioPhone, _ := SaleRepdata[0]["phone"].(string)
+		podioEmail, _ := SaleRepdata[0]["work_email"].(string)
+		podioPosition, _ := SaleRepdata[0]["position"].(string)
+
+		normalizedPhone := normalizePhoneNumber(reqData.MobileNumber)
+		normalizedPodioPhone := normalizePhoneNumber(podioPhone)
+
+		if strings.EqualFold(reqData.Name, podionName) &&
+			strings.EqualFold(reqData.RoleName, podioPosition) &&
+			strings.EqualFold(reqData.EmailId, podioEmail) &&
+			normalizedPhone == normalizedPodioPhone &&
+			strings.EqualFold(reqData.Dealer, podioDealerName) {
+			log.FuncInfoTrace(0, "No changes detected for user %v; skipping update", reqData.Name)
+			return nil
+		}
 		userExists = true
 	}
 
