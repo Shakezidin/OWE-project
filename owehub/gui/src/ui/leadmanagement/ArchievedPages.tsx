@@ -13,15 +13,16 @@ import {
   Sector,
 } from 'recharts';
 import Select, { SingleValue, ActionMeta } from 'react-select';
-import styles from './styles/dashboard.module.css';
+import styles from './styles/Archive.module.css';
 import './styles/mediaQuery.css';
-import { ICONS } from '../../resources/icons/Icons';
-import { useNavigate } from 'react-router-dom';
+import CrossICONBtn from './Modals/Modalimages/CrossBTNICON.png';
+
+import { Navigate, useNavigate } from 'react-router-dom';
 import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import ThreeDotsImage from './Modals/Modalimages/ThreeDots.svg';
+import { ICONS } from '../../resources/icons/Icons';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -453,7 +454,7 @@ const CustomTooltip = ({
   return null;
 };
 
-const LeadManagementDashboard = () => {
+const ArchivedPages = () => {
   const [selectedMonth, setSelectedMonth] = useState('Aug');
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
@@ -463,7 +464,6 @@ const LeadManagementDashboard = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
-  const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -501,7 +501,6 @@ const LeadManagementDashboard = () => {
   };
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
   const [toggledId, setToggledId] = useState<string | null>(null);
@@ -551,14 +550,17 @@ const LeadManagementDashboard = () => {
   const itemsPerPage = 5;
   const navigate = useNavigate();
 
-  const handleHistory = () => {
-    navigate('/leadmng-history');
+  const onClickCrossIconBotton = () => {
+    navigate('/leadmng-dashboard');
   };
 
-  const handleAddLead = () => {
-    navigate('/leadmgt-addnew');
+  const Unarchived = () => {
+    navigate('/leadmng-dashboard');
   };
 
+  const RemoveArchived = () => {
+    navigate('/lead-mgmt-success-modal');
+  };
   useEffect(() => {
     const pieName = pieData[activeIndex].name;
     const newFilter = statusMap[pieName as keyof typeof statusMap];
@@ -580,10 +582,6 @@ const LeadManagementDashboard = () => {
     );
   };
 
-  const getLeadCount = (status: string) => {
-    return leads.filter((lead) => lead.status === status).length;
-  };
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstItem, indexOfLastItem);
@@ -600,15 +598,6 @@ const LeadManagementDashboard = () => {
       prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
     );
   };
-
-  const handleArchiveSelected = () => {
-    // Implement the logic to remove selected leads
-    setFilteredLeads((prev) =>
-      prev.filter((lead) => !selectedLeads.includes(lead))
-    );
-    setSelectedLeads([]);
-  };
-
   const handleReschedule = (lead: any) => {
     console.log(`Lead ${lead.name} is being rescheduled`);
     handleFilterClick('Pending'); // Switch to the "Pending" tab
@@ -632,10 +621,6 @@ const LeadManagementDashboard = () => {
     );
   };
 
-  const handleChevronClick = (id: string) => {
-    setToggledId((prevId) => (prevId === id ? null : id));
-  };
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -647,28 +632,11 @@ const LeadManagementDashboard = () => {
 
   return (
     <div className={styles.dashboard}>
-      <div style={{ marginLeft: 6, marginTop: 6 }}>
-        <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
-          <div className="bread-link">
-            <div className="" style={{ cursor: 'pointer' }}>
-              <h3>Lead Management</h3>
-            </div>
-            <div className="">
-              <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {showConfirmModal && (
         <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
       )}
 
-      {showArchiveModal && (
-        <ArchiveModal
-        // isOpen={filterOPen} handleClose={filterClose}
-        />
-      )}
+      {showArchiveModal && <ArchiveModal />}
 
       <div className={styles.chartGrid}>
         <div className={styles.card}>
@@ -712,7 +680,6 @@ const LeadManagementDashboard = () => {
         </div>
 
         <div className={`${styles.card} ${styles.lineCard}`}>
-          {/* shams start */}
           <div className={styles.cardHeader}>
             <span>Total Won Lost</span>
             <div className={styles.date_calendar}>
@@ -755,7 +722,7 @@ const LeadManagementDashboard = () => {
                 </div>
               )}
 
-              {/* RABINDR718.....DATE_PICKER STARTED */}
+              {/* RABINDR718..... */}
               <Select
                 value={selectedPeriod}
                 onChange={handlePeriodChange}
@@ -830,7 +797,7 @@ const LeadManagementDashboard = () => {
               </div>
             </div>
           </div>
-          {/* RABINDR718.....DATE_PICKER ENDED */}
+          {/* RABINDR718..... */}
           <div
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
@@ -876,62 +843,30 @@ const LeadManagementDashboard = () => {
 
       <div className={styles.card}>
         <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
-          {selectedLeads.length === 0 ? (
-            <>
-              <div className={styles.buttonGroup}>
-                {[
-                  'Pending',
-                  'Sent',
-                  'Accepted',
-                  'Declined',
-                  'Action Needed',
-                ].map((status) => (
-                  <button
-                    key={status}
-                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}
-                    ${status === 'Action Needed' ? styles.action_needed_btn : ''}`}
-                    onClick={() => handleFilterClick(status)}
-                  >
-                    <p
-                      className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}
-                    >
-                      {getLeadCount(status)}
-                    </p>
-                    {status}
-                  </button>
-                ))}
-              </div>
+          {/* HERE THE BUTTONS FOR FILTERING IF NEEDED */}
 
-              {/* RABINDRA */}
-              {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-              <HistoryRedirect />
-              <div className={styles.filterCallToAction}>
-                <div className={styles.filtericon} onClick={handleAddLead}>
-                  <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
-                </div>
-              </div>
-
-              {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-            </>
-          ) : (
-            <div className={styles.selectionHeader}>
-              <div className={styles.selectionInfo}>
-                <span
-                  className={styles.closeIcon}
-                  onClick={() => setSelectedLeads([])}
-                >
-                  <img src={ICONS.cross} alt="" height="26" width="26" />
-                </span>
-                <span>{selectedLeads.length} Selected</span>
-              </div>
-              <button
-                className={styles.removeButton}
-                onClick={handleArchiveSelected}
+          <div className={styles.selectionHeader}>
+            <div className={styles.selectionInfo}>
+              <span
+                className={styles.closeIcon}
+                onClick={() => setSelectedLeads([])}
               >
-                Archived
-              </button>
+                <img src={ICONS.cross} alt="" height="26" width="26" />
+              </span>
+              <span>{selectedLeads.length} Archived</span>
             </div>
-          )}
+            <div>
+              <img
+                className={styles.CrossICONBTNHover}
+                src={CrossICONBtn}
+                onClick={onClickCrossIconBotton}
+              ></img>
+            </div>
+          </div>
+
+          {/* <div><img className={styles.CrossICONBTNHover} src={CrossICONBtn} onClick={onClickCrossIconBotton}></img></div> */}
+
+          {/* HERE THE BUTTONS FOR FILTERING ENDED */}
         </div>
 
         <div className={styles.cardContent}>
@@ -942,12 +877,7 @@ const LeadManagementDashboard = () => {
                   <tr className={styles.history_lists}>
                     <td
                       className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                      onClick={() =>
-                        lead.status === 'Declined' ||
-                        lead.status === 'Action Needed'
-                          ? ''
-                          : handleOpenModal()
-                      }
+                      onClick={handleOpenModal}
                     >
                       <label>
                         <input
@@ -981,61 +911,29 @@ const LeadManagementDashboard = () => {
                         </span>
                       </div>
                       <div className={styles.address}>{lead.address}</div>
+                      <div>
+                        <button
+                          className={styles.UnArchiveButton}
+                          onClick={Unarchived}
+                        >
+                          Unarchived
+                        </button>
+                      </div>
+                      <div>
+                        <button
+                          className={styles.removeButton}
+                          onClick={RemoveArchived}
+                        >
+                          Remove
+                        </button>
+                      </div>
 
-                      {lead.status === 'Declined' && (
-                        <div className={styles.actionButtons}>
-                          <button
-                            onClick={() => handleReschedule(lead)}
-                            className={styles.rescheduleButton}
-                          >
-                            Reschedule
-                          </button>
-                          {isTablet ? (
-                            <button
-                              onClick={() => handleArchive(lead)}
-                              className={styles.archiveButton}
-                            >
-                              <img src={ICONS.declinedArchive} />
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => handleArchive(lead)}
-                              className={styles.archiveButton}
-                            >
-                              Archive
-                            </button>
-                          )}
-                        </div>
-                      )}
-
-                      {lead.status === 'Action Needed' && (
-                        <div className={styles.actionButtons}>
-                          <button
-                            onClick={() => handleReschedule(lead)}
-                            className={styles.rescheduleButton}
-                          >
-                            Reschedule
-                          </button>
-                        </div>
-                      )}
-
-                      <div
-                        className={styles.chevron_down}
-                        onClick={() => handleChevronClick(lead.id)}
-                      >
-                        <img
-                          src={
-                            toggledId === lead.id
-                              ? ICONS.chevronUp
-                              : ICONS.chevronDown
-                          }
-                          alt={
-                            toggledId === lead.id
-                              ? 'chevronUp-icon'
+                      {/* {lead.status === 'Declined' && (
+                       
                               : 'chevronDown-icon'
                           }
                         />
-                      </div>
+                      </div> */}
                     </td>
                   </tr>
                   {toggledId === lead.id && (
@@ -1094,4 +992,4 @@ const LeadManagementDashboard = () => {
   );
 };
 
-export default LeadManagementDashboard;
+export default ArchivedPages;

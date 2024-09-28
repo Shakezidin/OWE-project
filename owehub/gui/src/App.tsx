@@ -97,6 +97,7 @@ import LibraryHomepage from './ui/Library/LibraryHomepage';
 import LeadManamentSucessModel from './ui/leadmanagement/Modals/LeaderManamentSucessModel';
 import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap'
 import SaleRepCustomerForm from './ui/scheduler/SaleRepCustomerForm/SaleRepCustomerForm';
+import ArchivedPages from './ui/leadmanagement/ArchievedPages';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -412,6 +413,10 @@ function App() {
           <Route
             path={ROUTES.LEAD_MANAGEMENT_ADD_NEW}
             element={<LeadManagementNew />}
+          />
+            <Route
+            path={ROUTES.LEAD_MANAGEMENT_ARCHIEVES}
+            element={<ArchivedPages />}
           />
           <Route
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
