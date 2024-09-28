@@ -84,7 +84,7 @@ func SyncHubUsersToPodioOnInit() error {
 			continue
 		}
 
-		query = fmt.Sprintf(`SELECT name, item_id, phone, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id 
+		query = fmt.Sprintf(`SELECT name, item_id, phone, work_email, position, dealer_id, dealer, welcome_email, sales_rep_item_id 
 													FROM sales_rep_dbhub_schema
 													WHERE LOWER(name) = LOWER('%s') AND work_email = '%s'`, name, emailId)
 		SaleRepdata, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
@@ -99,11 +99,13 @@ func SyncHubUsersToPodioOnInit() error {
 			podionName, _ := SaleRepdata[0]["name"].(string)
 			podioPhone, _ := SaleRepdata[0]["phone"].(string)
 			podioEmail, _ := SaleRepdata[0]["work_email"].(string)
+			podioPosition, _ := SaleRepdata[0]["position"].(string)
 
 			normalizedPhone := normalizePhoneNumber(phone)
 			normalizedPodioPhone := normalizePhoneNumber(podioPhone)
 
 			if strings.EqualFold(name, podionName) &&
+				strings.EqualFold(userRole, podioPosition) &&
 				strings.EqualFold(emailId, podioEmail) &&
 				normalizedPhone == normalizedPodioPhone &&
 				strings.EqualFold(dealerName, podioDealerName) {

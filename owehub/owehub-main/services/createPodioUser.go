@@ -36,7 +36,7 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 	log.EnterFn(0, "HandleGetPodioDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetPodioDataRequest", err) }()
 
-	query = fmt.Sprintf(`SELECT name, item_id, phone, work_email, dealer_id, dealer, welcome_email, sales_rep_item_id 
+	query = fmt.Sprintf(`SELECT name, item_id, phone, work_email, position, dealer_id, dealer, welcome_email, sales_rep_item_id 
 	 					FROM sales_rep_dbhub_schema 
 						WHERE LOWER(work_email) = LOWER('%s')
 						AND LOWER(name) = LOWER('%s');`, reqData.EmailId, reqData.Name)
@@ -53,11 +53,13 @@ func HandleCreatePodioDataRequest(reqData models.CreateUserReq, userRole string)
 		podionName, _ := SaleRepdata[0]["name"].(string)
 		podioPhone, _ := SaleRepdata[0]["phone"].(string)
 		podioEmail, _ := SaleRepdata[0]["work_email"].(string)
+		podioPosition, _ := SaleRepdata[0]["position"].(string)
 
 		normalizedPhone := normalizePhoneNumber(reqData.MobileNumber)
 		normalizedPodioPhone := normalizePhoneNumber(podioPhone)
 
 		if strings.EqualFold(reqData.Name, podionName) &&
+			strings.EqualFold(reqData.RoleName, podioPosition) &&
 			strings.EqualFold(reqData.EmailId, podioEmail) &&
 			normalizedPhone == normalizedPodioPhone &&
 			strings.EqualFold(reqData.Dealer, podioDealerName) {
