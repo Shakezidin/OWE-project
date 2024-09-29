@@ -120,8 +120,6 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id
 	where pis.pv_completion_date IS NOT NULL`
 			dbIndex = db.RowDataDBIndex
-		case "rep_type":
-			query = "SELECT rep_type as data FROM " + db.TableName_rep_type
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil

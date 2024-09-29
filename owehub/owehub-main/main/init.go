@@ -468,32 +468,11 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_rep_type",
-		apiHandler.HandleGetRepTypeDataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/get_performance_tiledata",
-	// 	apiHandler.HandleManagePerformanceTileDataRequest,
-	// 	true,
-	// 	[]types.UserGroup{types.GroupEveryOne},
-	// },
-	{
-		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomance_leaderboard",
 		apiHandler.HandleGetLeaderBoardRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/get_perfomance_pie",
-	// 	apiHandler.HandleGetPerfomancePieDataRequest,
-	// 	true,
-	// 	[]types.UserGroup{types.GroupAdmin},
-	// },
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_leaderboarddatarequest",

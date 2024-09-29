@@ -68,7 +68,6 @@ const (
 	TableName_REP_PAY_APCALC         string = "rep_pay_cal_standard"
 	TableName_REP_PAY_APCALC_OVRD    string = "rep_pay_cal_ovrrd_standard"
 	TableName_slackconfig            string = "slackconfig"
-	TableName_rep_type               string = "rep_type"
 	TableName_Sales_Rep_DBhub        string = "sales_rep_dbhub_schema"
 
 	/* Battery Backup Calculator Tables and Procedures */
