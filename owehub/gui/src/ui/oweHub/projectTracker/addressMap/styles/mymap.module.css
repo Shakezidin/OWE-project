@@ -14,7 +14,7 @@
   margin-top: 10px;
 }
 
-.inputWrap{
+.inputWrap {
   position: relative;
   width: 300px;
 }
@@ -131,7 +131,7 @@
 .mapClose svg:hover {
   background-color: #ddebff;
   border-radius: 4px;
-  transform: scale(1.13)
+  transform: scale(1.13);
 }
 
 .mapIcon {
@@ -153,7 +153,6 @@
   margin-top: -3.5rem;
   padding-bottom: 2rem;
 }
-
 
 .hist_date {
   margin-right: 16px;
@@ -205,21 +204,21 @@
   height: 2.37rem;
   color: #000;
   padding: 0px 14px;
-  border: 1px solid #CBCBCB;
+  border: 1px solid #cbcbcb;
   border-radius: 6px;
   outline: 0;
   transition: border-color 0.3s ease;
 }
 
 .inputsearch:hover {
-  border-color: #377CF6;
+  border-color: #377cf6;
   border-width: 2px;
 }
 
 .inputsearch:hover,
 .inputsearch:focus,
 .inputsearch:not(:placeholder-shown) {
-  border-color: #377CF6;
+  border-color: #377cf6;
   border-width: 2px;
 }
 
@@ -233,13 +232,17 @@
   margin-top: -30px;
 }
 
-.dropdownstate .select-container .css-19mwi93-control .css-hlgwow .css-1i5rmfk-singleValue {
+.dropdownstate
+  .select-container
+  .css-19mwi93-control
+  .css-hlgwow
+  .css-1i5rmfk-singleValue {
   font-weight: 400 !important;
 }
 
 .dropdownselect span {
-  font-weight: lighter
-    /* You can adjust the label styling as needed */
+  font-weight: lighter;
+  /* You can adjust the label styling as needed */
 }
 
 .dropdownselect select {
@@ -248,7 +251,6 @@
   max-width: 200px;
   /* You can set a max width for the dropdown */
 }
-
 
 .date_parent {
   display: flex;
@@ -262,7 +264,6 @@
 .calender {
   cursor: pointer;
 }
-
 
 .dashboard {
   padding: 24px;
@@ -678,7 +679,6 @@ input[type='checkbox']:checked {
 
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
-
   /* Styles for smartphones */
   .button {
     transform: scale(0.9);
@@ -707,7 +707,6 @@ input[type='checkbox']:checked {
   }
 }
 
-
 @media (max-width: 768px) {
   .mapSearch {
     position: absolute;
@@ -718,7 +717,7 @@ input[type='checkbox']:checked {
   .cardHeader {
     margin-bottom: 8rem !important;
     border-bottom: none;
-    padding: 5px
+    padding: 5px;
   }
 
   .mapWrap {
@@ -742,7 +741,6 @@ input[type='checkbox']:checked {
   .headerDropDowns {
     top: 50px !important;
   }
-
 }
 
 @media (max-width: 520px) {
@@ -755,7 +753,7 @@ input[type='checkbox']:checked {
   .cardHeader {
     margin-bottom: 8rem !important;
   }
-  .projectCount{
+  .projectCount {
     top: 140px !important;
   }
 }
@@ -780,7 +778,6 @@ input[type='checkbox']:checked {
 
 /* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
-
   /* Styles for small desktops */
   /* .chart_main_grid {
         display: flex;

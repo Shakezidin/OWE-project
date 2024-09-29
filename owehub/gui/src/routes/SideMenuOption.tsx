@@ -6,9 +6,10 @@ import { GrDocumentConfig } from 'react-icons/gr';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
-import { RiCalendarScheduleLine } from "react-icons/ri";
+import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
-import { PiMapPinArea } from "react-icons/pi";
+import { PiMapPin } from 'react-icons/pi';
+
 const mob = {
   mob: [
     {
@@ -62,11 +63,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Install Map',
         icon: (
-          <PiMapPinArea
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
+          <PiMapPin size={20} style={{ marginLeft: '3px' }} color="black" />
         ),
       },
     },
@@ -103,11 +100,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Lead Management',
         icon: (
-          <IoListSharp
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
+          <IoListSharp size={20} style={{ marginLeft: '3px' }} color="black" />
         ),
       },
     },
@@ -146,7 +139,6 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
-
 
     // {
     //   path: ROUTES.CALENDAR,

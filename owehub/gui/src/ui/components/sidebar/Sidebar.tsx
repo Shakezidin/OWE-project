@@ -53,14 +53,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER
-            || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY)
+            item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY)
         ) {
-
-        }
-
-
-        else {
+        } else {
           newArr[0].mob.push(item);
         }
       });
@@ -69,15 +67,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
-          isStaging !== 'staging' &&
-          (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER)
-          || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY) {
-
-        }
-
-
-        else if (item.path !== ROUTES.CONFIG_PAGE) {
+          (isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+          item.path === ROUTES.LEAD_MANAGEMENT ||
+          item.path === ROUTES.LIBRARY
+        ) {
+        } else if (item.path !== ROUTES.CONFIG_PAGE) {
           newArr[0].mob.push(item);
         }
       });
@@ -88,14 +85,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         if (
           isStaging !== 'staging' &&
           (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY)
+            item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY)
         ) {
-
-        }
-
-
-
-        else if (
+        } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD
@@ -111,15 +106,15 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
-          isStaging !== 'staging' &&
-          (item.path === ROUTES.COMMISSION_DASHBOARD ||
-            item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER || item.path === ROUTES.SALES_REP_SCHEDULER)
-          || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY) {
-
-        }
-
-
-        else if (
+          (isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+          item.path === ROUTES.LEAD_MANAGEMENT ||
+          item.path === ROUTES.LIBRARY
+        ) {
+        } else if (
           item.path !== ROUTES.USER_MANAEMENT &&
           item.path !== ROUTES.CONFIG_PAGE &&
           item.path !== ROUTES.COMMISSION_DASHBOARD
@@ -133,15 +128,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            isStaging !== 'staging' &&
-            (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER)
-            || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY) {
-
-          }
-
-
-          else {
+            (isStaging !== 'staging' &&
+              (item.path === ROUTES.COMMISSION_DASHBOARD ||
+                item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY
+          ) {
+          } else {
             newArr[0].mob.push(item);
           }
         }
@@ -157,14 +151,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY)
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT ||
+              item.path === ROUTES.LIBRARY)
           ) {
-
-          }
-
-
-
-          else if (
+          } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.COMMISSION_DASHBOARD
@@ -182,16 +174,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
           if (
-            isStaging !== 'staging' &&
-            (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER)
-            || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY) {
-
-          }
-
-
-
-          else if (
+            (isStaging !== 'staging' &&
+              (item.path === ROUTES.COMMISSION_DASHBOARD ||
+                item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY
+          ) {
+          } else if (
             item.path !== ROUTES.USER_MANAEMENT &&
             item.path !== ROUTES.CONFIG_PAGE &&
             item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD
@@ -211,15 +201,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.PROJECT_STATUS
         ) {
           if (
-            isStaging !== 'staging' &&
-            (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER)
-            || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY) {
-
-          }
-
-
-          else {
+            (isStaging !== 'staging' &&
+              (item.path === ROUTES.COMMISSION_DASHBOARD ||
+                item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY
+          ) {
+          } else {
             newArr[0].mob.push(item);
           }
         }
@@ -232,15 +221,12 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           if (
             isStaging !== 'staging' &&
             (item.path === ROUTES.COMMISSION_DASHBOARD ||
-              item.path === ROUTES.CONFIG_PAGE || item.path === ROUTES.SALES_REP_SCHEDULER || item.path === ROUTES.LEAD_MANAGEMENT || item.path === ROUTES.LIBRARY)
-
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT ||
+              item.path === ROUTES.LIBRARY)
           ) {
-
-          }
-
-
-
-          else {
+          } else {
             newArr[0].mob.push(item);
           }
         }
@@ -296,8 +282,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       className={`side-bar-container ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div
-        className={`side-bar-content ${toggleOpen ? 'side-bar-content-active' : ''
-          }`}
+        className={`side-bar-content ${
+          toggleOpen ? 'side-bar-content-active' : ''
+        }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
         {filteredList().map((el: any, i: number) => (
@@ -325,10 +312,11 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                         setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
                       }, 500);
                     }}
-                    className={`side-icon-container ${location.pathname === oth.path
-                      ? 'active-link-bg'
-                      : 'not-active-link'
-                      }`}
+                    className={`side-icon-container ${
+                      location.pathname === oth.path
+                        ? 'active-link-bg'
+                        : 'not-active-link'
+                    }`}
                   >
                     <div
                       className={
@@ -416,9 +404,26 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           </div>
         ))}
         <div style={{ marginTop: 32 }}>
-
-          <p style={{ fontSize: '12px', textAlign: 'center', fontWeight: 500, color: '#afadad' }}>© 2024 by Our World Energy.</p>
-          <p style={{ fontSize: '10px', textAlign: 'center', fontWeight: 500, color: '#afadad' }}>All rights reserved. eOS: v1.4</p>
+          <p
+            style={{
+              fontSize: '12px',
+              textAlign: 'center',
+              fontWeight: 500,
+              color: '#afadad',
+            }}
+          >
+            © 2024 by Our World Energy.
+          </p>
+          <p
+            style={{
+              fontSize: '10px',
+              textAlign: 'center',
+              fontWeight: 500,
+              color: '#afadad',
+            }}
+          >
+            All rights reserved. eOS: v1.4
+          </p>
         </div>
       </div>
     </div>

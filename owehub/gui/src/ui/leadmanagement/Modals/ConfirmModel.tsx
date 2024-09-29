@@ -41,31 +41,24 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
     setIsModalOpen(true);
   };
 
-
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
-
-
-
-
 
   const handleSendAppointment = async () => {
     setLoad(true);
     try {
       const response = await postCaller('sent_appointment', {
-        "leads_id": 1,
-        "appointment_date": selectedDate
+        leads_id: 1,
+        appointment_date: selectedDate
           ? format(selectedDate, 'dd-MM-yyyy')
           : '',
-        "appointment_time": selectedTime ? selectedTime : ''
+        appointment_time: selectedTime ? selectedTime : '',
       });
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
-        setVisibleDiv(2)
+        setVisibleDiv(2);
       } else if (response.status >= 201) {
         toast.warn(response.message);
       }
@@ -76,14 +69,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
     }
   };
 
-
-
-
-
-
-
-
-
   return (
     <div>
       {isOpen1 && (
@@ -91,7 +76,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
-                <img className={classes.crossBtn} src={CrossIcon} onClick={HandleModal} />
+                <img
+                  className={classes.crossBtn}
+                  src={CrossIcon}
+                  onClick={HandleModal}
+                />
               </div>
               <div className={classes.pers_det_top}>
                 <div className={classes.Column1Details}>
@@ -145,24 +134,37 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
                     </span>
                   </span>
                   <div>
-                    {visibleDiv === 0 || visibleDiv === 1 &&
-                      <div
-                        className={classes.edit_modal_openMediaScreen}
-                        onClick={handleOpenModal}
-                      >
-                        <span className={classes.edit_modal_button2}>
-                          <img className={classes.editPenStyle} src={Pen} ></img> Edit
-                        </span>
-                      </div>
-                    }
+                    {visibleDiv === 0 ||
+                      (visibleDiv === 1 && (
+                        <div
+                          className={classes.edit_modal_openMediaScreen}
+                          onClick={handleOpenModal}
+                        >
+                          <span className={classes.edit_modal_button2}>
+                            <img
+                              className={classes.editPenStyle}
+                              src={Pen}
+                            ></img>{' '}
+                            Edit
+                          </span>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
               <div>
                 {(visibleDiv === 0 || visibleDiv === 1) && (
-                  <div className={classes.edit_modal_open} onClick={handleOpenModal}>
+                  <div
+                    className={classes.edit_modal_open}
+                    onClick={handleOpenModal}
+                  >
                     <span className={classes.edit_modal_button}>
-                      <img className={classes.editPenStyle} src={Pen} alt="Edit Pen" /> Edit
+                      <img
+                        className={classes.editPenStyle}
+                        src={Pen}
+                        alt="Edit Pen"
+                      />{' '}
+                      Edit
                     </span>
                   </div>
                 )}
@@ -199,13 +201,21 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
                   <div className={classes.survey_button}>
                     <button
                       className={classes.self}
-                      style={{ color: '#fff', border: 'none', cursor: load ? 'not-allowed' : 'pointer' }}
+                      style={{
+                        color: '#fff',
+                        border: 'none',
+                        cursor: load ? 'not-allowed' : 'pointer',
+                      }}
                       onClick={handleSendAppointment}
                       disabled={load}
                     >
                       {load ? 'Sending...' : 'CONFIRM, SENT APPOINTMENT'}
                     </button>
-                    <button id="otherButtonId" className={classes.other} onClick={handleOpenModal}>
+                    <button
+                      id="otherButtonId"
+                      className={classes.other}
+                      onClick={handleOpenModal}
+                    >
                       Edit customer details
                     </button>
                   </div>
@@ -229,7 +239,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
                     Appointment sent successfully{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''} {selectedTime}
+                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
+                    {selectedTime}
                   </span>
                 </div>
                 <div className={classes.survey_button}>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import classes from './styles/dropdownlibrary.module.css'; 
+import classes from './styles/dropdownlibrary.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 interface DropDownLibraryProps {
@@ -24,16 +24,15 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
     onSelectType(type);
     setIsVisible(false);
     setIsClicked(false);
-
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (
-        dropdownRef.current && 
-        buttonRef.current && 
-        !dropdownRef.current.contains(target) && 
+        dropdownRef.current &&
+        buttonRef.current &&
+        !dropdownRef.current.contains(target) &&
         !buttonRef.current.contains(target)
       ) {
         setIsVisible(false);
@@ -62,37 +61,37 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ onSelectType }) => {
             width: '20px',
             color: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
           }}
-        />      
+        />
       </div>
 
       {isVisible && (
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
-          <li 
-            onClick={() => handleSelect('all')} 
+          <li
+            onClick={() => handleSelect('all')}
             className={`${classes.dropdownItem} ${selectedType === 'all' ? classes.selected : ''}`}
           >
             All
           </li>
-          <li 
-            onClick={() => handleSelect('excel')} 
+          <li
+            onClick={() => handleSelect('excel')}
             className={`${classes.dropdownItem} ${selectedType === 'excel' ? classes.selected : ''}`}
           >
             Excel
           </li>
-          <li 
-            onClick={() => handleSelect('pdf')} 
+          <li
+            onClick={() => handleSelect('pdf')}
             className={`${classes.dropdownItem} ${selectedType === 'pdf' ? classes.selected : ''}`}
           >
             PDF Format
           </li>
-          <li 
-            onClick={() => handleSelect('img')} 
+          <li
+            onClick={() => handleSelect('img')}
             className={`${classes.dropdownItem} ${selectedType === 'img' ? classes.selected : ''}`}
           >
             Images
           </li>
-          <li 
-            onClick={() => handleSelect('mp4')} 
+          <li
+            onClick={() => handleSelect('mp4')}
             className={`${classes.dropdownItem} ${selectedType === 'mp4' ? classes.selected : ''}`}
           >
             Videos

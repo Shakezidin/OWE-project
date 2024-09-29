@@ -25,7 +25,7 @@
 
 .time_slot_pill {
   padding: 6px 9.5px;
-  border: 1px solid #4C4C4C;
+  border: 1px solid #4c4c4c;
   border-radius: 6px;
   background-color: #fff;
   outline: none;
@@ -47,8 +47,8 @@
 
 .time_slot_pill.inactive_time_slot:hover {
   transition: all 500ms;
-  background-color: #D5E4FF;
-  border-color: #D5E4FF;
+  background-color: #d5e4ff;
+  border-color: #d5e4ff;
 }
 
 .selected_time {
@@ -57,10 +57,10 @@
 }
 
 .time_slot_pill.active_time_slot {
-  background-color: #377CF6;
+  background-color: #377cf6;
   color: #fff;
   transition: all 500ms;
-  border-color: #377CF6;
+  border-color: #377cf6;
 }
 
 .calendar_wrapper {
@@ -183,7 +183,7 @@
 }
 
 .selected_active_customer {
-  background-color: #377CF6;
+  background-color: #377cf6;
   border: none;
   color: #fff;
 }
@@ -251,7 +251,7 @@
 .accordian_btn {
   border: none;
   border-radius: 50px;
-  background-color: #D5E4FF;
+  background-color: #d5e4ff;
   width: 32px;
   height: 32px;
   display: grid;
@@ -264,7 +264,6 @@
 .accordian_btn:focus-within {
   outline: none;
   background-color: #fff;
-
 }
 
 .accordian_btn:hover {
@@ -353,7 +352,6 @@
   gap: 11px;
 }
 
-
 .grid_items .head_det {
   display: flex;
   flex-direction: column;
@@ -368,7 +366,7 @@
 
 .customer_details:not(.selected_active_customer):hover {
   cursor: pointer;
-  background-color: #D5E4FF;
+  background-color: #d5e4ff;
 }
 
 .customer_details:hover .accordian_btn {
@@ -376,7 +374,7 @@
 }
 
 .customer_details_selected {
-  background-color: #377CF6;
+  background-color: #377cf6;
   color: #fff !important;
   flex-shrink: 0;
 
@@ -385,7 +383,7 @@
   /* border-radius: 8px; */
   display: flex;
   flex-direction: column;
-    padding: 18px 16px 18px 16px;
+  padding: 18px 16px 18px 16px;
   gap: 23px;
   max-height: max-content;
   transition: max-height 0.7s ease;
@@ -396,13 +394,12 @@
   max-height: 700px;
 }
 
-
 .customer_details_selected.open.accordian_btn {
   color: #fff !important;
 }
 
 .calendar_schedule_btn {
-  background-color: #377CF6;
+  background-color: #377cf6;
   max-width: 472px;
   width: 100%;
   display: flex;

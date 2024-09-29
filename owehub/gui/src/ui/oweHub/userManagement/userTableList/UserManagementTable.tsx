@@ -1,4 +1,10 @@
-import React, { SetStateAction, useEffect, useState, useCallback, useRef } from 'react';
+import React, {
+  SetStateAction,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import '../user.css';
 import '../../configure/configure.css';
 import UserTable from '../userManagerAllTable/UserTable';
@@ -403,7 +409,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           <div className="userManagementTable__search">
             <input
               type="text"
-              name='Search'
+              name="Search"
               placeholder="Search users..."
               value={search}
               onChange={(e) => {
@@ -411,7 +417,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                   e.target.value = e.target.value.replace(
                     /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
                     ''
-                  )
+                  );
                   handleSearchChange(e);
                   setSearch(e.target.value);
                 }

@@ -24,7 +24,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   onChange,
   placeholder = 'Search...',
   label,
-  disabled
+  disabled,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -52,7 +52,6 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [options]);
 
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase().trim();
     setSearch(searchTerm);
@@ -70,15 +69,21 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
     let updatedSelection: Option[];
 
     if (option.value === 'ALL') {
-      updatedSelection = selectedOptions.length === options.length ? [] : options;
+      updatedSelection =
+        selectedOptions.length === options.length ? [] : options;
     } else {
       if (selectedOptions.some((item) => item.value === option.value)) {
-        updatedSelection = selectedOptions.filter((item) => item.value !== option.value);
+        updatedSelection = selectedOptions.filter(
+          (item) => item.value !== option.value
+        );
       } else {
         updatedSelection = [...selectedOptions, option];
-        optionContainer.current?.scroll({ top: 0, behavior: "smooth" })
+        optionContainer.current?.scroll({ top: 0, behavior: 'smooth' });
       }
-      if (updatedSelection.length === options.length - 1 && options.some((opt) => opt.value === 'ALL')) {
+      if (
+        updatedSelection.length === options.length - 1 &&
+        options.some((opt) => opt.value === 'ALL')
+      ) {
         updatedSelection = [...options];
       }
     }
@@ -105,14 +110,26 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
   });
   return (
     <div className="dropdown-checkbox relative bg-white" ref={dropdownRef}>
-      <div className={`dropdown-toggle flex items-center ${disabled ? "disabled-dropdown" : ""}`} onClick={() => !disabled && setIsOpen(!isOpen)}>
-        <span>
-          {` ${selectedOptions.length} ${label}`}
-        </span>
-        <BiChevronDown className="ml1 " size={22} style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "all 550ms" }} />
+      <div
+        className={`dropdown-toggle flex items-center ${disabled ? 'disabled-dropdown' : ''}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+      >
+        <span>{` ${selectedOptions.length} ${label}`}</span>
+        <BiChevronDown
+          className="ml1 "
+          size={22}
+          style={{
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'all 550ms',
+          }}
+        />
       </div>
       {isOpen && (
-        <div ref={optionContainer} className="dropdown-menu scrollbar" style={{ overflowX: 'clip' }}>
+        <div
+          ref={optionContainer}
+          className="dropdown-menu scrollbar"
+          style={{ overflowX: 'clip' }}
+        >
           <input
             type="text"
             className="input"
@@ -125,11 +142,11 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
             <div className="dropdown-item">
               <input
                 type="checkbox"
-                className={disabled ? "disabled-checkbox" : ""}
+                className={disabled ? 'disabled-checkbox' : ''}
                 checked={isAllSelected}
                 onChange={() => !disabled && handleSelectAll()}
               />
-              <span className={disabled ? "disbaled-label" : ""} >All</span>
+              <span className={disabled ? 'disbaled-label' : ''}>All</span>
             </div>
           )}
           {sortedOptions.length > 0 ? (
@@ -138,13 +155,15 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
                 <input
                   type="checkbox"
                   style={{ flexShrink: 0 }}
-                  className={disabled ? "disabled-checkbox" : ""}
+                  className={disabled ? 'disabled-checkbox' : ''}
                   checked={selectedOptions.some(
                     (item) => item.value === option.value
                   )}
                   onChange={() => !disabled && handleOptionChange(option)}
                 />
-                <span className={disabled ? "disbaled-label" : ""} >{option.label}</span>
+                <span className={disabled ? 'disbaled-label' : ''}>
+                  {option.label}
+                </span>
               </div>
             ))
           ) : (

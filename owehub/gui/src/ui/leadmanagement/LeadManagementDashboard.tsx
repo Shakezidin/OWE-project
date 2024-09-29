@@ -112,8 +112,6 @@ const pieData = [
   { name: 'Action Needed', value: 10, color: '#63ACA3' },
 ];
 
-
-
 const leads = [
   {
     id: '1',
@@ -468,9 +466,10 @@ const LeadManagementDashboard = () => {
 
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(
-    periodFilterOptions.find((option) => option.label === 'This Week') || null
-  );
+  const [selectedPeriod, setSelectedPeriod] =
+    useState<DateRangeWithLabel | null>(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
@@ -560,10 +559,10 @@ const LeadManagementDashboard = () => {
 
   useEffect(() => {
     if (pieData.length > 0) {
-    const pieName = pieData[activeIndex].name;
-    const newFilter = statusMap[pieName as keyof typeof statusMap];
-    setCurrentFilter(newFilter);
-    setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+      const pieName = pieData[activeIndex].name;
+      const newFilter = statusMap[pieName as keyof typeof statusMap];
+      setCurrentFilter(newFilter);
+      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
     }
   }, [activeIndex]);
 
@@ -646,7 +645,6 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
-
   // ************************ Charts API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
@@ -694,7 +692,7 @@ const LeadManagementDashboard = () => {
       fetchData();
     }
   }, [isAuthenticated, selectedDates]);
-  
+
   const defaultData: DefaultData = {
     PENDING: { name: 'Pending leads', value: 0, color: '#FF832A' },
     SENT: { name: 'Appointment sent', value: 0, color: '#81A6E7' },
@@ -731,15 +729,21 @@ const LeadManagementDashboard = () => {
 
           if (response.status === 200) {
             const apiData = response.data.leads;
-            const formattedData = apiData.reduce((acc: DefaultData, item: any) => {
-              acc[item.status_name] = {
-                name: defaultData[item.status_name].name,
-                value: item.count,
-                color: defaultData[item.status_name].color,
-              };
-              return acc;
-            }, {} as DefaultData);
-            const mergedData = Object.values({ ...defaultData, ...formattedData }) as StatusData[];
+            const formattedData = apiData.reduce(
+              (acc: DefaultData, item: any) => {
+                acc[item.status_name] = {
+                  name: defaultData[item.status_name].name,
+                  value: item.count,
+                  color: defaultData[item.status_name].color,
+                };
+                return acc;
+              },
+              {} as DefaultData
+            );
+            const mergedData = Object.values({
+              ...defaultData,
+              ...formattedData,
+            }) as StatusData[];
             setPieData(mergedData);
           } else if (response.status > 201) {
             toast.error(response.data.message);
@@ -763,7 +767,6 @@ const LeadManagementDashboard = () => {
 
     calculateTotalValue();
   }, [pieData]);
-
 
   //************************************************************************************************ */
   return (
@@ -799,47 +802,51 @@ const LeadManagementDashboard = () => {
           </div>
           <div className={styles.cardContent}>
             {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <MicroLoader />
               </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart className={styles.pieChart}>
+                    <Pie
+                      activeIndex={activeIndex}
+                      activeShape={renderActiveShape}
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      onClick={handlePieClick}
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className={styles.legend}>
+                  {pieData.map((item) => (
+                    <div key={item.name} className={styles.legendItem}>
+                      <div
+                        className={styles.legendColor}
+                        style={{ backgroundColor: item.color }}
+                      ></div>
+                      <span className={styles.legendText}>{item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
-              lineData.length > 0 ? (
-                <>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <PieChart className={styles.pieChart}>
-                      <Pie
-                        activeIndex={activeIndex}
-                        activeShape={renderActiveShape}
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        onClick={handlePieClick}
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className={styles.legend}>
-                    {pieData.map((item) => (
-                      <div key={item.name} className={styles.legendItem}>
-                        <div
-                          className={styles.legendColor}
-                          style={{ backgroundColor: item.color }}
-                        ></div>
-                        <span className={styles.legendText}>{item.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <DataNotFound />
-              )
+              <DataNotFound />
             )}
           </div>
         </div>
@@ -968,52 +975,56 @@ const LeadManagementDashboard = () => {
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
             {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <MicroLoader />
               </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer
+                  className={styles.chart_main_grid}
+                  width="100%"
+                  height={300}
+                >
+                  <LineChart data={lineData}>
+                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend
+                      className={styles.lineChart_legend}
+                      formatter={(value) =>
+                        value === 'won' ? 'Total won' : 'Total Lost'
+                      }
+                      wrapperStyle={{
+                        fontSize: '12px',
+                        fontWeight: 550,
+                        marginBottom: -15,
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="won"
+                      stroke="#57B93A"
+                      strokeWidth={2}
+                      name="won"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="lost"
+                      stroke="#CD4040"
+                      strokeWidth={2}
+                      name="lost"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </>
             ) : (
-              lineData.length > 0 ? (
-                <>
-                  <ResponsiveContainer
-                    className={styles.chart_main_grid}
-                    width="100%"
-                    height={300}
-                  >
-                    <LineChart data={lineData}>
-                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend
-                        className={styles.lineChart_legend}
-                        formatter={(value) =>
-                          value === 'won' ? 'Total won' : 'Total Lost'
-                        }
-                        wrapperStyle={{
-                          fontSize: '12px',
-                          fontWeight: 550,
-                          marginBottom: -15,
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="won"
-                        stroke="#57B93A"
-                        strokeWidth={2}
-                        name="won"
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="lost"
-                        stroke="#CD4040"
-                        strokeWidth={2}
-                        name="lost"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </>
-              ) : (
-                <DataNotFound />
-              )
+              <DataNotFound />
             )}
           </div>
         </div>
@@ -1089,7 +1100,7 @@ const LeadManagementDashboard = () => {
                       className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
                       onClick={() =>
                         lead.status === 'Declined' ||
-                          lead.status === 'Action Needed'
+                        lead.status === 'Action Needed'
                           ? ''
                           : handleOpenModal()
                       }
