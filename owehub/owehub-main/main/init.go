@@ -196,34 +196,6 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_ar_import",
-		apiHandler.HandleCreateArImportDataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_ar_import",
-		apiHandler.HandleUpdateArImportDataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_ar_import",
-		apiHandler.HandleGetArImportDataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_ar_import_archive",
-		apiHandler.HandleUpdateArImportArchiveRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_ar",
 		apiHandler.HandleCreateARDataRequest,
 		true,
@@ -236,13 +208,7 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_ar_archive",
-		apiHandler.HandleUpdateARArchiveRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
+
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomancetiledata",
@@ -255,13 +221,6 @@ var apiRoutes = appserver.ApiRoutes{
 		"/owe-commisions-service/v1/get_perfomanceprojectstatus",
 		apiHandler.HandleGetPerfomanceProjectStatusRequest,
 		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_ar_data",
-		apiHandler.GetARDataFromView,
-		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{

@@ -7,8 +7,6 @@ create database owe_db;
 
 -- \i '/docker-entrypoint-initdb.d/DB_Create_OWEDB_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_Config_Schema.sql';
-\i '/docker-entrypoint-initdb.d/DB_Create_AR_Schema.sql';
-\i '/docker-entrypoint-initdb.d/DB_Create_RepPay_Schema.sql';
 
 /* Battery Backup Calcuator Schema */
 \i '/docker-entrypoint-initdb.d/DB_Create_Battery_BackupCalc_Schema.sql'
@@ -39,8 +37,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 
 /* Insert Default Data in all the rquried tables */
 \copy states(abbr,name) FROM '/docker-entrypoint-initdb.d/states.csv' DELIMITER ',' CSV;
-\copy project_status(status) FROM '/docker-entrypoint-initdb.d/project_status.csv' DELIMITER ',' CSV;
--- \copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
 \copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
 \copy ar(unique_id,date,amount) FROM '/docker-entrypoint-initdb.d/ar.csv' DELIMITER ',' CSV;
 /******************************SETTINGS DB TABLE END  ***********************************************/
@@ -49,25 +45,14 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 /******************************* Adding All Stored Procedures ***********************************/
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcSmallSysSizeCalc.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCommisionTypeCalc.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewCommission.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewPartner.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewState.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateCommission.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateCommissionArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateUser.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewArImport.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImport.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImportArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewAR.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateAR.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateARArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateProfile.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateVDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealerArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveApPda.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepTeam.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcDeleteTeamMember.sql';

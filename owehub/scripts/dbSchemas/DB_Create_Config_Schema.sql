@@ -112,32 +112,3 @@ CREATE TABLE partners (
     updated_at timestamp without time zone,
     PRIMARY KEY (partner_id)
 );
-
-CREATE TABLE project_status (
-    id serial NOT NULL,
-    status character varying,
-    description character varying,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE ar (
-    id serial NOT NULL,
-    unique_id varchar NOT NULL,
-    customer text,
-    partner INT,
-    date date,
-    amount float,
-    payment_type text,
-    bank text,
-    ced date,
-    total_paid float,
-    state INT,
-    is_archived BOOLEAN DEFAULT FALSE,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    FOREIGN KEY (partner) REFERENCES partners(partner_id),
-    FOREIGN KEY (state) REFERENCES states(state_id),
-    PRIMARY KEY (id)
-);
