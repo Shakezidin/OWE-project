@@ -868,39 +868,46 @@ const ArchivedPages = () => {
             </div>
           </div> */}
 
-<div className={styles.selectionHeader}>
-  <div className={styles.selectionInfo}>
-    <span
-      className={styles.closeIcon}
-      onClick={() => setSelectedLeads([])}
-    >
-      {selectedLeads.length === 0 ? '' : <img src={CrossICONBtn} alt="" className={styles.CrossICONBTNHover1} />}
-    </span>
-    <span>
-      {selectedLeads.length === 0 ? '' : <>{selectedLeads.length}{" "}</>}
-      Archived
-    </span>
-  </div>
-  <div>
-    {selectedLeads.length === 0 ? (
-      <img
-        className={styles.CrossICONBTNHover}
-        src={CrossICONBtn}
-        onClick={onClickCrossIconBotton}
-        style={{ visibility: 'visible' }} // Keep it visible
-      />
-    ) : (
-      <img
-        className={styles.CrossICONBTNHover}
-        src={CrossICONBtn}
-        onClick={onClickCrossIconBotton}
-        style={{ visibility: 'hidden' }} // Hide it but keep the space
-      />
-    )}
-  </div>
-</div>
+          <div className={styles.selectionHeader}>
+            <div className={styles.selectionInfo}>
+              <span
+                className={styles.closeIcon}
+                onClick={() => setSelectedLeads([])}
+              >
+                {selectedLeads.length === 0 ? (
+                  ''
+                ) : (
+                  <img
+                    src={CrossICONBtn}
+                    alt=""
+                    className={styles.CrossICONBTNHover1}
+                  />
+                )}
+              </span>
+              <span>
+                {selectedLeads.length === 0 ? '' : <>{selectedLeads.length} </>}
+                Archived
+              </span>
+            </div>
+            <div>
+              {selectedLeads.length === 0 ? (
+                <img
+                  className={styles.CrossICONBTNHover}
+                  src={CrossICONBtn}
+                  onClick={onClickCrossIconBotton}
+                  style={{ visibility: 'visible' }} // Keep it visible
+                />
+              ) : (
+                <img
+                  className={styles.CrossICONBTNHover}
+                  src={CrossICONBtn}
+                  onClick={onClickCrossIconBotton}
+                  style={{ visibility: 'hidden' }} // Hide it but keep the space
+                />
+              )}
+            </div>
+          </div>
 
-          
           {/* HERE THE BUTTONS FOR FILTERING ENDED */}
         </div>
 

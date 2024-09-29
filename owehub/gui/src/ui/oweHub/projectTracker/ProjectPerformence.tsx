@@ -11,8 +11,8 @@ import Select from 'react-select';
 import { getProjects } from '../../../redux/apiSlice/projectManagement';
 import { FaUpload } from 'react-icons/fa';
 import Papa from 'papaparse';
-import { MdDownloading } from "react-icons/md";
-import 'react-tooltip/dist/react-tooltip.css'
+import { MdDownloading } from 'react-icons/md';
+import 'react-tooltip/dist/react-tooltip.css';
 import {
   format,
   subDays,
@@ -43,7 +43,7 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
-import { LuImport } from "react-icons/lu";
+import { LuImport } from 'react-icons/lu';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
@@ -82,10 +82,13 @@ const ProjectPerformence = () => {
   }>({} as Option);
 
   const { authData } = useAuth();
-  const role = localStorage.getItem("role")
+  const role = localStorage.getItem('role');
 
-  const showDropdown = (role === TYPE_OF_USER.ADMIN || role === TYPE_OF_USER.FINANCE_ADMIN || role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role === TYPE_OF_USER.ACCOUNT_MANAGER)
-
+  const showDropdown =
+    role === TYPE_OF_USER.ADMIN ||
+    role === TYPE_OF_USER.FINANCE_ADMIN ||
+    role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+    role === TYPE_OF_USER.ACCOUNT_MANAGER;
 
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
@@ -127,7 +130,7 @@ const ProjectPerformence = () => {
   });
 
   const [exportShow, setExportShow] = useState<boolean>(false);
-  const [dealerOption, setDealerOption] = useState<Option[]>([])
+  const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [isExportingData, setIsExporting] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
   const toggleExportShow = () => {
@@ -219,7 +222,7 @@ const ProjectPerformence = () => {
       page_number: 1,
       page_size: projectsCount,
       selected_milestone: selectedMilestone,
-      dealer_names: selectedDealer.map(item => item.value),
+      dealer_names: selectedDealer.map((item) => item.value),
       project_status:
         activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
     });
@@ -281,7 +284,7 @@ const ProjectPerformence = () => {
   //   return () => toast.dismiss();
   // }, []);
 
-  // const showDropdown = 
+  // const showDropdown =
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -316,9 +319,9 @@ const ProjectPerformence = () => {
     }
     if (res.data?.dealer_name) {
       setSelectedDealer(leaderDealer(res.data));
-      setDealerOption(leaderDealer(res.data))
+      setDealerOption(leaderDealer(res.data));
     }
-    setIsFetched(true)
+    setIsFetched(true);
   };
 
   const periodFilterOptions: any = [
@@ -370,7 +373,7 @@ const ProjectPerformence = () => {
           const data = await postCaller('get_perfomancetiledata', {
             project_status:
               activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
-            dealer_names: selectedDealer.map(item => item.value)
+            dealer_names: selectedDealer.map((item) => item.value),
           });
 
           if (data.status > 201) {
@@ -381,7 +384,7 @@ const ProjectPerformence = () => {
           setLoading(false);
         } catch (error) {
           console.error(error);
-          toast.error((error as Error).message)
+          toast.error((error as Error).message);
         } finally {
         }
       })();
@@ -400,7 +403,7 @@ const ProjectPerformence = () => {
           selected_milestone: selectedMilestone,
           project_status:
             activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
-          dealer_names: selectedDealer.map(item => item.value)
+          dealer_names: selectedDealer.map((item) => item.value),
         })
       );
     }
@@ -413,17 +416,16 @@ const ProjectPerformence = () => {
     selectedMilestone,
     activeTab,
     selectedDealer,
-    isFetched
+    isFetched,
   ]);
 
   useEffect(() => {
     if (showDropdown) {
-
-      getNewFormData()
+      getNewFormData();
     } else {
-      setIsFetched(true)
+      setIsFetched(true);
     }
-  }, [showDropdown])
+  }, [showDropdown]);
 
   const calculateCompletionPercentage = (
     project: (typeof projectStatus)[0]
@@ -496,16 +498,39 @@ const ProjectPerformence = () => {
     },
   ];
 
-  const cardColors = ['#57B3F1', '#E0728C', '#63ACA3', '#6761DA', '#C470C7', '#A07FFF', '#EE6363'];
-  const hoverColors = ['#DCF1FF', '#FFE1E8', '#C3E7E3', '#DEDCFF', '#FEE0FF', '#E5D1FF', '#FFC9C9'];
-  const activeColors = ['#57B3F1', '#E1728C', '#63ACA3', '#6761DA', '#C470C7', '#A07FFF', '#EE6363'];
+  const cardColors = [
+    '#57B3F1',
+    '#E0728C',
+    '#63ACA3',
+    '#6761DA',
+    '#C470C7',
+    '#A07FFF',
+    '#EE6363',
+  ];
+  const hoverColors = [
+    '#DCF1FF',
+    '#FFE1E8',
+    '#C3E7E3',
+    '#DEDCFF',
+    '#FEE0FF',
+    '#E5D1FF',
+    '#FFC9C9',
+  ];
+  const activeColors = [
+    '#57B3F1',
+    '#E1728C',
+    '#63ACA3',
+    '#6761DA',
+    '#C470C7',
+    '#A07FFF',
+    '#EE6363',
+  ];
 
   const resetPage = () => {
     setPage(1);
   };
 
   const isMobile = useMatchMedia('(max-width: 767px)');
-
 
   const handlePendingRequest = (pending: any) => {
     setSelectedMilestone(pending);
@@ -557,17 +582,17 @@ const ProjectPerformence = () => {
       container.classList.add('active');
       startX = e.pageX - container.offsetLeft;
       scrollLeft = container.scrollLeft;
-      container.style.cursor = "grabbing";
+      container.style.cursor = 'grabbing';
     };
 
     const mouseLeaveHandler = () => {
       isDown = false;
-      container.style.cursor = "grab";
+      container.style.cursor = 'grab';
     };
 
     const mouseUpHandler = () => {
       isDown = false;
-      container.style.cursor = "grab";
+      container.style.cursor = 'grab';
     };
 
     const mouseMoveHandler = (e: MouseEvent) => {
@@ -593,7 +618,10 @@ const ProjectPerformence = () => {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center top-btns-wrapper" style={{ paddingTop: "calc(1rem - 8px)", paddingBottom: "1rem" }}>
+      <div
+        className="flex justify-between items-center top-btns-wrapper"
+        style={{ paddingTop: 'calc(1rem - 8px)', paddingBottom: '1rem' }}
+      >
         <Breadcrumb
           head=""
           cssStyles={{ paddingBottom: 0 }}
@@ -604,19 +632,19 @@ const ProjectPerformence = () => {
         />
 
         <div className="pipeline-header-btns">
-          {showDropdown &&
+          {showDropdown && (
             <DropdownCheckbox
-              label={selectedDealer.length === 1 ? "partner" : "partners"}
+              label={selectedDealer.length === 1 ? 'partner' : 'partners'}
               placeholder={'Search partners'}
               selectedOptions={selectedDealer}
               options={dealerOption}
-              onChange={((val) => {
-                setSelectedDealer(val)
-                setPage(1)
-              })}
+              onChange={(val) => {
+                setSelectedDealer(val);
+                setPage(1);
+              }}
               disabled={loading || isLoading}
             />
-          }
+          )}
           <button
             disabled={loading || isLoading}
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
@@ -636,7 +664,6 @@ const ProjectPerformence = () => {
             Active
           </button>
 
-
           <button
             disabled={loading || isLoading}
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
@@ -655,10 +682,7 @@ const ProjectPerformence = () => {
           >
             H&J
           </button>
-
-
         </div>
-
       </div>
       <div className="project-container">
         <div className="project-heading pipeline-heading">
@@ -696,11 +720,15 @@ const ProjectPerformence = () => {
                   };
 
                   return (
-                    <div className="flex items-center arrow-wrap" style={{ marginRight: '-20px' }}>
+                    <div
+                      className="flex items-center arrow-wrap"
+                      style={{ marginRight: '-20px' }}
+                    >
                       <div
                         key={card.id}
-                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
-                          } ${isActive ? 'active' : ''}`}
+                        className={`project-card ${
+                          index === topCardsData.length - 1 ? 'last-card' : ''
+                        } ${isActive ? 'active' : ''}`}
                         onMouseEnter={() => setIsHovered(index)}
                         onMouseLeave={() => setIsHovered(-1)}
                         style={{
@@ -709,7 +737,10 @@ const ProjectPerformence = () => {
                             : isHovered === index
                               ? hoverColor
                               : '#F6F6F6',
-                          border: isHovered === index ? `none` : `2px solid ${cardColor}`,
+                          border:
+                            isHovered === index
+                              ? `none`
+                              : `2px solid ${cardColor}`,
                         }}
                         onClick={(e) => {
                           handlePendingRequest(card?.pending);
@@ -739,13 +770,17 @@ const ProjectPerformence = () => {
                         </h2>
                       </div>
                       {index < topCardsData.length - 1 && (
-                        <div className="flex arrow-dir" style={{ padding: '0 5px' }}>
+                        <div
+                          className="flex arrow-dir"
+                          style={{ padding: '0 5px' }}
+                        >
                           <MdOutlineKeyboardDoubleArrowRight
                             style={{
                               width: '1.5rem',
                               height: '1.5rem',
                               color: cardColor,
-                              marginLeft: activeCardId === card.id ? '8px' : '0px',
+                              marginLeft:
+                                activeCardId === card.id ? '8px' : '0px',
                             }}
                           />
                           <MdOutlineKeyboardDoubleArrowRight
@@ -753,7 +788,8 @@ const ProjectPerformence = () => {
                               marginLeft: '-10px',
                               height: '1.5rem',
                               width: '1.5rem',
-                              color: cardColors[(index + 1) % cardColors.length],
+                              color:
+                                cardColors[(index + 1) % cardColors.length],
                             }}
                           />
                         </div>
@@ -765,7 +801,6 @@ const ProjectPerformence = () => {
             )}
           </div>
         </div>
-
       </div>
 
       <div
@@ -804,7 +839,10 @@ const ProjectPerformence = () => {
                 />
               </div>
 
-              <div className="performance-box-container pipeline-box-container" style={{ padding: "0.7rem 1rem" }}>
+              <div
+                className="performance-box-container pipeline-box-container"
+                style={{ padding: '0.7rem 1rem' }}
+              >
                 <p className="status-indicator">Status indicators</p>
                 <div className="progress-box-body">
                   <div
@@ -827,22 +865,43 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
-              </div >
-            </div >
+              </div>
+            </div>
 
             <div className="perf-export-btn relative pipline-export-btn">
-              {!!(projectStatus.length && !loading) && <button
-                disabled={isExportingData}
-                onClick={ExportCsv}
-                data-tooltip-id="export"
-                className={`performance-exportbtn flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-              >
-                {isExportingData ? <MdDownloading className='downloading-animation' size={20} /> : <LuImport size={20} />}
-              </button>}
+              {!!(projectStatus.length && !loading) && (
+                <button
+                  disabled={isExportingData}
+                  onClick={ExportCsv}
+                  data-tooltip-id="export"
+                  className={`performance-exportbtn flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+                >
+                  {isExportingData ? (
+                    <MdDownloading
+                      className="downloading-animation"
+                      size={20}
+                    />
+                  ) : (
+                    <LuImport size={20} />
+                  )}
+                </button>
+              )}
 
-              <Tooltip style={{zIndex:20,background:"#f7f7f7",color:"#000",fontSize:12,paddingBlock:4}} offset={8} id='export' place="bottom" content='Export' />
+              <Tooltip
+                style={{
+                  zIndex: 20,
+                  background: '#f7f7f7',
+                  color: '#000',
+                  fontSize: 12,
+                  paddingBlock: 4,
+                }}
+                offset={8}
+                id="export"
+                place="bottom"
+                content="Export"
+              />
             </div>
-          </div >
+          </div>
 
           <div className="performance-milestone-table">
             <table>
@@ -920,7 +979,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.qc.qc_action_required_count > 0
+                                        project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -946,7 +1005,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                          project.ntp.action_required_count > 0
+                                        project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1226,32 +1285,34 @@ const ProjectPerformence = () => {
             </table>
           </div>
 
-          {!isLoading && <div className="page-heading-container">
-            {!!projectsCount && (
-              <p className="page-heading">
-                {startIndex} -{' '}
-                {endIndex > projectsCount ? projectsCount : endIndex} of{' '}
-                {projectsCount} item
-              </p>
-            )}
+          {!isLoading && (
+            <div className="page-heading-container">
+              {!!projectsCount && (
+                <p className="page-heading">
+                  {startIndex} -{' '}
+                  {endIndex > projectsCount ? projectsCount : endIndex} of{' '}
+                  {projectsCount} item
+                </p>
+              )}
 
-            {projectStatus?.length > 0 ? (
-              <Pagination
-                currentPage={page}
-                totalPages={Math.ceil(projectsCount / perPage)}
-                paginate={(num) => setPage(num)}
-                currentPageData={projectStatus}
-                goToNextPage={() => setPage((prev) => prev + 1)}
-                goToPrevPage={() =>
-                  setPage((prev) => (prev < 1 ? prev - 1 : prev))
-                }
-                perPage={perPage}
-              />
-            ) : null}
-          </div>}
-        </div >
-      </div >
-    </div >
+              {projectStatus?.length > 0 ? (
+                <Pagination
+                  currentPage={page}
+                  totalPages={Math.ceil(projectsCount / perPage)}
+                  paginate={(num) => setPage(num)}
+                  currentPageData={projectStatus}
+                  goToNextPage={() => setPage((prev) => prev + 1)}
+                  goToPrevPage={() =>
+                    setPage((prev) => (prev < 1 ? prev - 1 : prev))
+                  }
+                  perPage={perPage}
+                />
+              ) : null}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
