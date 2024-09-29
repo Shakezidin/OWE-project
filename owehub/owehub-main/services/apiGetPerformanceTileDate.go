@@ -66,7 +66,8 @@ func HandleManagePerformanceTileDataRequest(resp http.ResponseWriter, req *http.
 	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
 
 	// change table name here
-	tableName := db.ViewName_REP_PAY
+	//tableName := db.ViewName_REP_PAY
+	var tableName string
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
 		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
