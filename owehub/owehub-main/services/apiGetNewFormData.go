@@ -86,8 +86,6 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			query = "SELECT name as data FROM " + db.TableName_states
 		case "teams":
 			query = "SELECT team_name as data FROM " + db.TableName_teams
-		case "source":
-			query = "SELECT name as data FROM " + db.TableName_source
 		case "roles":
 			query = "SELECT role_name as data FROM " + db.TableName_user_roles
 		case "users":

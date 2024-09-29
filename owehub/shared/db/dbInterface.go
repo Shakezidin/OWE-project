@@ -55,7 +55,6 @@ const (
 	TableName_users_details          string = "user_details"
 	TableName_partners               string = "partners"
 	TableName_states                 string = "states"
-	TableName_source                 string = "source"
 	TableName_user_roles             string = "user_roles"
 	TableName_SalesArCalc            string = "sales_ar_calc"
 	TableName_ArImport               string = "ar_import"

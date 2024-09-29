@@ -122,15 +122,6 @@ CREATE TABLE project_status (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE source (
-    id serial NOT NULL,
-    name character varying,
-    description character varying,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE ar (
     id serial NOT NULL,
     unique_id varchar NOT NULL,
