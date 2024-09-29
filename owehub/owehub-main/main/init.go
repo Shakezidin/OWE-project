@@ -96,13 +96,6 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/db_tables",
-	// 	apiHandler.HandleGetTableRequest,
-	// 	true,
-	// 	[]types.UserGroup{types.GroupAdmin},
-	// },
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/db_tables",
@@ -194,21 +187,6 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdminDealer},
 	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_ar",
-		apiHandler.HandleCreateARDataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_ar",
-		apiHandler.HandleUpdateARDataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomancetiledata",
@@ -309,20 +287,6 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_dealerpay",
-		apiHandler.HandleGetDealerPayDataRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_appda",
-		apiHandler.HandleCreateApPdaRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_slack_config",
 		apiHandler.HandleCreateSlackConfig,
 		true,
@@ -355,13 +319,6 @@ var apiRoutes = appserver.ApiRoutes{
 		apiHandler.HandleDeleteSlackConfigRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_rep_pay",
-		apiHandler.GetRepPayDataFromView,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
@@ -408,20 +365,6 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_team",
 		apiHandler.HandleUpdateTeamNameRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_dlrpay_tiledata",
-		apiHandler.HandleManageDlrPayTileDataRequest,
-		true,
-		[]types.UserGroup{types.GroupEveryOne},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_reppay_tiledata",
-		apiHandler.HandleManageRepPayTileDataRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},

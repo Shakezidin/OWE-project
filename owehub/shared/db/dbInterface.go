@@ -55,9 +55,6 @@ const (
 	TableName_finance_metrics_schema string = "finance_metrics_schema"
 	TableName_Pg_Stat_Activity       string = "pg_stat_activity"
 	TableName_v_dealer               string = "v_dealer"
-	TableName_DLR_PAY_APCALC         string = "dealer_pay_calc_standard"
-	TableName_REP_PAY_APCALC         string = "rep_pay_cal_standard"
-	TableName_REP_PAY_APCALC_OVRD    string = "rep_pay_cal_ovrrd_standard"
 	TableName_slackconfig            string = "slackconfig"
 	TableName_Sales_Rep_DBhub        string = "sales_rep_dbhub_schema"
 
@@ -68,7 +65,6 @@ const (
 	TableName_Prospect_Load             string = "prospect_load_info"
 	TableName_Breaker_Info              string = "breaker_info"
 	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
-	ViewName_REP_PAY                    string = "rep_pay_pr_data"
 
 	/* Leads Tables and Procedures */
 	TableName_Leads_Info string = "leads_info"
