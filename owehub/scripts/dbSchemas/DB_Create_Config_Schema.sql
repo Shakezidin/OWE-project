@@ -141,14 +141,6 @@ CREATE TABLE source (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE tier (
-    id serial NOT NULL,
-    tier_name character varying,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE ar (
     id serial NOT NULL,
     unique_id varchar NOT NULL,
@@ -167,13 +159,4 @@ CREATE TABLE ar (
     FOREIGN KEY (partner) REFERENCES partners(partner_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     PRIMARY KEY (id)
-);
-
-CREATE TABLE dba (
-    id serial NOT NULL,
-    preferred_name varchar,
-    dba varchar,
-    is_archived BOOLEAN DEFAULT FALSE,
-    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
 );

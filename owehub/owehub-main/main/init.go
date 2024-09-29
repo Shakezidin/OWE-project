@@ -364,27 +364,6 @@ var apiRoutes = appserver.ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_dba",
-		apiHandler.HandleCreateDBARequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_dba",
-		apiHandler.HandleUpdateDBARequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_dba",
-		apiHandler.HandleGetDBADataRequest,
-		true,
-		[]types.UserGroup{types.GroupAdmin},
-	},
-	{
-		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_slack_config",
 		apiHandler.HandleCreateSlackConfig,
 		true,

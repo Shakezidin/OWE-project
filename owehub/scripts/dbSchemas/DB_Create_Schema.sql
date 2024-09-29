@@ -44,9 +44,7 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \copy rep_type(rep_type) FROM '/docker-entrypoint-initdb.d/rep_type.csv' DELIMITER ',' CSV;
 \copy source(name,description) FROM '/docker-entrypoint-initdb.d/source.csv' DELIMITER ',' CSV;
 \copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
-\copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
 \copy ar(unique_id,date,amount) FROM '/docker-entrypoint-initdb.d/ar.csv' DELIMITER ',' CSV;
-\copy dba(preferred_name,dba) FROM '/docker-entrypoint-initdb.d/dba.csv' DELIMITER ',' CSV;
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
 
@@ -71,8 +69,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateVDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateVDealerArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDba.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDba.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArchiveApPda.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepTeam.sql';
