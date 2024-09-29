@@ -40,6 +40,7 @@ interface HistoryTableProp {
   deal_won_date: string | null;
   deal_lost_date: string | null;
   proposal_sent_date: string | null;
+  timeline: any
 }
 
 export type DateRangeWithLabel = {
@@ -412,8 +413,8 @@ const LeradManagementHistory = () => {
               <div className={styles.top_filters}>
                 <div>
                   {isMobile &&
-                  selectedDates.startDate &&
-                  selectedDates.endDate ? (
+                    selectedDates.startDate &&
+                    selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -455,8 +456,8 @@ const LeradManagementHistory = () => {
                   )}
 
                   {!isMobile &&
-                  selectedDates.startDate &&
-                  selectedDates.endDate ? (
+                    selectedDates.startDate &&
+                    selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -591,11 +592,11 @@ const LeradManagementHistory = () => {
                 style={
                   expandedItemIds.includes(item.leads_id)
                     ? {
-                        width: '100%',
-                        backgroundColor: '#EEF5FF',
-                        borderTopLeftRadius: '8px',
-                        borderTopRightRadius: '8px',
-                      }
+                      width: '100%',
+                      backgroundColor: '#EEF5FF',
+                      borderTopLeftRadius: '8px',
+                      borderTopRightRadius: '8px',
+                    }
                     : {}
                 }
                 className={styles.history_lists}
@@ -693,75 +694,18 @@ const LeradManagementHistory = () => {
                         <div className={styles.history_list_head}>Activity</div>
 
                         <div className={styles.history_list_activities}>
-                          <div className={styles.history_list_activity_det}>
-                            <div className={styles.circle_with_line}>
-                              <div className={styles.line1}></div>
-                              <div className={styles.circle}></div>
-                            </div>
-                            <div className={styles.activity_info}>
-                              <div className={styles.act_head}>
-                                Appointment Schedule
+                          {item.timeline.map((activity: any, index: number) => (
+                            <div key={index} className={styles.history_list_activity_det}>
+                              <div className={styles.circle_with_line}>
+                                <div className={styles.line1}></div>
+                                <div className={styles.circle}></div>
                               </div>
-                              <div className={styles.act_date}>
-                                27 Aug, 2024
+                              <div className={styles.activity_info}>
+                                <div className={styles.act_head}>{activity.label}</div>
+                                <div className={styles.act_date}>{new Date(activity.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                               </div>
                             </div>
-                          </div>
-                          <div className={styles.history_list_activity_det}>
-                            <div className={styles.circle_with_line}>
-                              <div className={styles.circle}></div>
-                              <div className={styles.line}></div>
-                            </div>
-                            <div className={styles.activity_info}>
-                              <div className={styles.act_head}>
-                                Appointment Accepted
-                              </div>
-                              <div className={styles.act_date}>
-                                27 Aug, 2024
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className={styles.history_list_activity_det}>
-                            <div className={styles.circle_with_line}>
-                              <div className={styles.circle}></div>
-                              <div className={styles.line}></div>
-                            </div>
-                            <div className={styles.activity_info}>
-                              <div className={styles.act_head}>
-                                Appointment Date
-                              </div>
-                              <div className={styles.act_date}>
-                                29 Aug, 2024
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className={styles.history_list_activity_det}>
-                            <div className={styles.circle_with_line}>
-                              <div className={styles.circle}></div>
-                              <div className={styles.line}></div>
-                            </div>
-                            <div className={styles.activity_info}>
-                              <div className={styles.act_head}>Deal Won</div>
-                              <div className={styles.act_date}>
-                                30 Aug, 2024
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className={styles.history_list_activity_det}>
-                            <div className={styles.circle_with_line}>
-                              <div className={styles.circle}></div>
-                              <div className={styles.line}></div>
-                            </div>
-                            <div className={styles.activity_info}>
-                              <div className={styles.act_head}>
-                                Proposal Sent
-                              </div>
-                              <div className={styles.act_date}>1 Sep, 2024</div>
-                            </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -793,66 +737,20 @@ const LeradManagementHistory = () => {
                         className={styles.history_list_activity_mob}
                       >
                         <div className={styles.history_list_head}>Activity</div>
-
-                        <div className={styles.history_list_activity_det}>
-                          <div className={styles.circle_with_line}>
-                            <div className={styles.line_mob}></div>
-                            <div className={styles.circle_mob}></div>
-                          </div>
-                          <div className={styles.activity_info}>
-                            <div className={styles.act_head}>
-                              Appointment Schedule
+                        {item.timeline.map((activity: any, index: number) => (
+                          <div key={index} className={styles.history_list_activity_det}>
+                            <div className={styles.circle_with_line}>
+                              <div className={styles.line_mob}></div>
+                              <div className={styles.circle_mob}></div>
                             </div>
-                            <div className={styles.act_date}>27 Aug, 2024</div>
-                          </div>
-                        </div>
-                        <div className={styles.history_list_activity_det}>
-                          <div className={styles.circle_with_line}>
-                            <div className={styles.circle_mob}></div>
-                            <div className={styles.line_mob}></div>
-                          </div>
-                          <div className={styles.activity_info}>
-                            <div className={styles.act_head}>
-                              Appointment Accepted
+                            <div className={styles.activity_info}>
+                              <div className={styles.act_head}>
+                                {activity.label}
+                              </div>
+                              <div className={styles.act_date}>{new Date(activity.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                             </div>
-                            <div className={styles.act_date}>27 Aug, 2024</div>
                           </div>
-                        </div>
-
-                        <div className={styles.history_list_activity_det}>
-                          <div className={styles.circle_with_line}>
-                            <div className={styles.circle_mob}></div>
-                            <div className={styles.line_mob}></div>
-                          </div>
-                          <div className={styles.activity_info}>
-                            <div className={styles.act_head}>
-                              Appointment Date
-                            </div>
-                            <div className={styles.act_date}>29 Aug, 2024</div>
-                          </div>
-                        </div>
-
-                        <div className={styles.history_list_activity_det}>
-                          <div className={styles.circle_with_line}>
-                            <div className={styles.circle_mob}></div>
-                            <div className={styles.line_mob}></div>
-                          </div>
-                          <div className={styles.activity_info}>
-                            <div className={styles.act_head}>Deal Won</div>
-                            <div className={styles.act_date}>30 Aug, 2024</div>
-                          </div>
-                        </div>
-
-                        <div className={styles.history_list_activity_det}>
-                          <div className={styles.circle_with_line}>
-                            <div className={styles.circle_mob}></div>
-                            <div className={styles.line_mob}></div>
-                          </div>
-                          <div className={styles.activity_info}>
-                            <div className={styles.act_head}>Proposal Sent</div>
-                            <div className={styles.act_date}>1 Sep, 2024</div>
-                          </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </>
