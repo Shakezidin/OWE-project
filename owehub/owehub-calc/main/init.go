@@ -19,7 +19,6 @@ import (
 	"strconv"
 	"strings"
 
-	apiHandler "OWEApp/owehub-calc/services"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -55,20 +54,6 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-calc-service/v1/httpconf",
 		handleDynamicHttpConf,
-		false,
-		[]types.UserGroup{},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owehub-calc-service/v1/config-update",
-		apiHandler.HandleConfigUpdateHandler,
-		false,
-		[]types.UserGroup{},
-	},
-	{
-		strings.ToUpper("POST"),
-		"/owehub-calc-service/v1/data-update",
-		apiHandler.HandleDataUpdateHandler,
 		false,
 		[]types.UserGroup{},
 	},
