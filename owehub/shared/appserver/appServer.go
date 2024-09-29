@@ -64,7 +64,7 @@ func StartServiceServer(httpSrvType string, isStandardAddr bool, router *mux.Rou
 				server.Addr = types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.Addr
 			}
 			err = server.ListenAndServe()
-			log.FuncInfoTrace(0, "Spawning Commissions HTTP service on %s ...", server.Addr)
+			log.FuncInfoTrace(0, "Spawning HTTP service on %s ...", server.Addr)
 			types.ExitChan <- err
 		} else {
 			if isStandardAddr {
@@ -72,7 +72,7 @@ func StartServiceServer(httpSrvType string, isStandardAddr bool, router *mux.Rou
 			} else {
 				server.Addr = types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddr
 			}
-			log.FuncInfoTrace(0, "Spawning Commissions HTTPS service on %s ...", server.Addr)
+			log.FuncInfoTrace(0, "Spawning HTTPS service on %s ...", server.Addr)
 			_ = configureTLS(server)
 			err = server.ListenAndServeTLS(types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ServerCertFile, types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ServerKeyFile)
 			types.ExitChan <- err

@@ -537,10 +537,10 @@ func init() {
 	var err error
 	defer func() {
 		if err != nil {
-			log.ConfInfoTrace(0, "Commissions Service Initialization failed. Exiting... %+v", err)
+			log.ConfInfoTrace(0, "OWEHub-Main Service Initialization failed. Exiting... %+v", err)
 			os.Exit(1)
 		}
-		log.ConfDebugTrace(0, "Commissions Service Initialized Successfully")
+		log.ConfDebugTrace(0, "OWEHub-Main Service Initialized Successfully")
 	}()
 
 	/* Initializing Logger package */

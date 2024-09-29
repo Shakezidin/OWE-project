@@ -413,7 +413,7 @@ func FetchDbCfg() (err error) {
 func InitHttpCallbackPath() {
 	log.EnterFn(0, "InitHttpCallbackPath")
 
-	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-commisions-service/v1"
+	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-leads-service/v1"
 
 	log.ExitFn(0, "InitHttpCallbackPath", nil)
 }

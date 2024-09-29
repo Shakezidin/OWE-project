@@ -88,7 +88,7 @@ func main() {
 	close(types.ExitChan)
 
 	log.ExitFn(0, "main", nil)
-	log.FuncErrorTrace(0, "Exiting Comm-App : reason=%v", err)
+	log.FuncErrorTrace(0, "Exiting Calc-App : reason=%v", err)
 }
 
 /******************************************************************************

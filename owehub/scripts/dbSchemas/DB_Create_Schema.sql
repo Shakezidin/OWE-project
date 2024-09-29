@@ -45,7 +45,6 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 /******************************* Adding All Stored Procedures ***********************************/
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewCommission.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewPartner.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewState.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateUser.sql';

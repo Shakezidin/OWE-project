@@ -46,14 +46,14 @@ const (
 var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/loggingconf",
+		"/owe-calc-service/v1/loggingconf",
 		handleDynamicLoggingConf,
 		false,
 		[]types.UserGroup{},
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/httpconf",
+		"/owe-calc-service/v1/httpconf",
 		handleDynamicHttpConf,
 		false,
 		[]types.UserGroup{},
@@ -372,7 +372,7 @@ func FetchDbCfg() (err error) {
 func InitHttpCallbackPath() {
 	log.EnterFn(0, "InitHttpCallbackPath")
 
-	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-commisions-service/v1"
+	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-calc-service/v1"
 
 	log.ExitFn(0, "InitHttpCallbackPath", nil)
 }
