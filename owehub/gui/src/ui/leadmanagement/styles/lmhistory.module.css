@@ -26,8 +26,9 @@
 }
 
 .history_lists:hover {
-  background-color: #eef5ff;
+  background-color: #EEF5FF;
 }
+
 
 /* .history_list_inner {
   display: flex;
@@ -39,6 +40,7 @@
   transition: all 0.3s ease;
 } */
 
+
 .history_list_inner {
   display: grid;
   grid-template-columns: repeat(3, minmax(12vw, 1fr)) 2fr minmax(12vw, 1fr);
@@ -48,14 +50,17 @@
   transition: all 0.3s ease;
 }
 
-.history_list_inner > *:last-child {
+.history_list_inner>*:last-child {
   justify-self: center;
 }
 
-.history_list_inner > *:nth-child(4) {
+.history_list_inner>*:nth-child(4) {
   justify-self: start;
   padding-left: 85px;
 }
+
+
+
 
 .email {
   display: flex;
@@ -120,6 +125,8 @@
   transform: scale(1.06);
 }
 
+
+
 .history_list_activity {
   display: flex;
   flex-direction: row;
@@ -129,6 +136,7 @@
   margin-top: 20px;
   padding: 35px 0px 20px 0px;
   width: 100%;
+
 }
 
 .history_list_activities {
@@ -241,7 +249,7 @@
 }
 
 .history_list_head {
-  color: #3e3e3e;
+  color: #3E3E3E;
   font-weight: 600;
   font-size: 16px;
   width: 10%;
@@ -252,7 +260,7 @@
 .lead_his_remove {
   width: 135px;
   height: 38px;
-  background-color: #ee4747;
+  background-color: #EE4747;
   font-weight: 500;
   font-size: 16px;
   color: #fff;
@@ -284,7 +292,7 @@
 .hist_date {
   font-weight: 500;
   font-size: 12px;
-  color: #377cf6;
+  color: #377CF6;
 }
 
 .hist_checkbox_count img {
@@ -305,6 +313,8 @@
   align-items: center;
   gap: 18px;
 }
+
+
 
 .monthSelect {
   background-color: #3b82f6;
@@ -331,10 +341,15 @@
   transform: scale(1.06);
 }
 
+
+
+
+
 @media screen and (max-width: 767px) {
   .h_screen {
     display: flex;
     align-items: center;
+
   }
 
   .customer_wrapper_list {
@@ -364,7 +379,7 @@
     padding: 22px 0px 20px 49px;
   }
 
-  .history_list_inner {
+  .history_list_inner{
     padding-right: 8px;
   }
 
@@ -450,6 +465,7 @@
     align-items: center;
     gap: 6px;
   }
+
 }
 
 .lead__datepicker_wrapper:hover {
@@ -481,6 +497,7 @@
   margin-right: 0.5rem;
 }
 
+
 @media screen and (max-width: 767px) {
   .monthSelect {
     width: 90px;
@@ -502,14 +519,15 @@
     padding-right: 6px;
   }
 
-  .history_list_inner > *:last-child {
+  .history_list_inner>*:last-child {
     justify-self: center;
   }
 
-  .history_list_inner > *:nth-child(4) {
+  .history_list_inner>*:nth-child(4) {
     justify-self: start;
     padding-left: 0;
   }
+
 
   .customer_wrapper_list {
     padding-inline: 3px;
@@ -529,7 +547,7 @@
   .phone_number_tab {
     font-weight: 400;
     font-size: 12px;
-    color: #3e3e3e;
+    color: #3E3E3E;
     margin-top: 10px;
     margin-left: 34px;
   }
@@ -540,7 +558,9 @@
 
   .act_head {
     max-width: 100px;
+    
   }
+
 }
 
 .page_heading_container {
