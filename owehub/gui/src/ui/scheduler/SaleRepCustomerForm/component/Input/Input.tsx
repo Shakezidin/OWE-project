@@ -11,6 +11,7 @@ const Input: React.FC<InputProps> = ({
   label,
   id,
   showIsEditing = true,
+  readOnly,
   ...rest
 }) => {
   const [isEditing, setIsEditing] = React.useState(false);
@@ -50,7 +51,7 @@ const Input: React.FC<InputProps> = ({
           ref={inputRef}
           id={id}
           {...rest}
-          readOnly={showIsEditing ? !isEditing : undefined}
+          readOnly={showIsEditing ? !isEditing : readOnly}
           className={`${styles.input_field} ${className}`}
         />
         {showIsEditing && (

@@ -34,6 +34,23 @@ const SaleRepCustomerForm = () => {
   const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
   const [selectedTime, setSelectedTime] = useState<ITimeSlot>();
 
+  const [formData, setFormData] = useState({
+    prospectId: '48594',
+    name: 'Peter Parket',
+    phoneNo: '983 4785 9298',
+    email: 'john@gmail.com',
+    address: '103, avenue street, Colorado, 267531',
+    salesRep: 'Ajay Negi'
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
   return (
     <div className={`py4 ${styles.form_wrapper}`}>
       <div className={styles.form_conatiner}>
@@ -100,37 +117,56 @@ const SaleRepCustomerForm = () => {
               style={{ flexBasis: step === 1 ? '70%' : '40%' }}
               className={`${styles.form_content} py3 ${step === 2 ? 'px4' : ''} `}
             >
-              <div className="mb2">
+              <div className='mb2'>
                 <Input
                   label="Prospect ID"
+                  name="prospectId"
+                  value={formData.prospectId}
+                  onChange={handleChange}
                   showIsEditing={false}
-                  value={'48594'}
+                  readOnly
                 />
               </div>
-
-              <div className="mb2">
-                <Input label="Name" value={'Peter Parket'} />
+              <div className='mb2'>
+                <Input
+                  label="Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
               </div>
-              <div className="mb2">
-                <Input label="Phone no." value={'983 4785 9298'} />
+              <div className='mb2'> 
+                <Input
+                  label="Phone no."
+                  name="phoneNo"
+                  value={formData.phoneNo}
+                  onChange={handleChange}
+                />
               </div>
-
-              <div className="mb2">
-                <Input label="Email" value={'john@gmail.com'} />
-              </div>
-
-              <div className="mb2">
+              <div className='mb2'>
                 <Input
                   label="Email"
-                  value={'103, avenue street, Colorado, 267531'}
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                 />
               </div>
-
-              <div className="">
+              <div className='mb2'>
                 <Input
-                  showIsEditing={false}
+                  label="Address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                />
+              </div>
+              <div >
+                <Input
                   label="Sales Rep"
-                  value={'Ajay Negi'}
+                  name="salesRep"
+                  value={formData.salesRep}
+                  onChange={handleChange}
+                  showIsEditing={false}
+                  readOnly
                 />
               </div>
             </div>
