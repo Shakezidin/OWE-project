@@ -57,7 +57,7 @@ const LeradManagementHistory = () => {
   const [itemsPerPage, setItemPerPage] = useState(10);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
-  const totalPage = Math.ceil(totalCount / 10);
+  const totalPage = Math.ceil(totalCount / itemsPerPage);
   const [checkedCount, setCheckedCount] = useState<number>(0);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
@@ -225,88 +225,7 @@ const LeradManagementHistory = () => {
     };
   }, []);
 
-  const dummyData = [
-    {
-      id: 1,
-      name: 'Sanju Samson',
-      status: 'Deal Loss',
-      phoneNumber: '+1 82-26-2356445',
-      email: 'sanjusamson19@gmail.com',
-      address: '12778 Domingo Ct, Parker, Arizona .CO 12312',
-    },
-    {
-      id: 2,
-      name: 'Rahul Dravid',
-      status: 'Deal Won',
-      phoneNumber: '+1 90-12-3456789',
-      email: 'rahuldravid@gmail.com',
-      address: '56432 Oak St, Denver, Colorado .CO 54321',
-    },
-    {
-      id: 3,
-      name: 'Virat Kohli',
-      status: 'Deal Won',
-      phoneNumber: '+1 78-45-2398433',
-      email: 'viratkohli@gmail.com',
-      address: '4321 Main St, Boulder, Colorado .CO 67890',
-    },
-    {
-      id: 4,
-      name: 'MS Dhoni',
-      status: 'Deal Loss',
-      phoneNumber: '+1 67-32-6574839',
-      email: 'msdhoni@gmail.com',
-      address: '789 Elm St, Phoenix, Arizona .CO 89101',
-    },
-    {
-      id: 5,
-      name: 'Sachin Tendulkar',
-      status: 'Deal Won',
-      phoneNumber: '+1 55-67-9082345',
-      email: 'sachintendulkar@gmail.com',
-      address: '15678 Pine Ave, Austin, Texas .TX 78701',
-    },
-    {
-      id: 6,
-      name: 'Rohit Sharma',
-      status: 'Deal Won',
-      phoneNumber: '+1 45-67-2839456',
-      email: 'rohitsharma@gmail.com',
-      address: '8934 Maple Rd, San Antonio, Texas .TX 78201',
-    },
-    {
-      id: 7,
-      name: 'Hardik Pandya',
-      status: 'Deal Won',
-      phoneNumber: '+1 34-98-2345987',
-      email: 'hardikpandya@gmail.com',
-      address: '34621 Birch St, Chicago, Illinois .IL 60601',
-    },
-    {
-      id: 8,
-      name: 'KL Rahul',
-      status: 'Deal Loss',
-      phoneNumber: '+1 29-87-9238475',
-      email: 'klrahul@gmail.com',
-      address: '12378 Cedar Blvd, Los Angeles, California .CA 90001',
-    },
-    {
-      id: 9,
-      name: 'Shikhar Dhawan',
-      status: 'Deal Won',
-      phoneNumber: '+1 56-34-2903498',
-      email: 'shikhardhawan@gmail.com',
-      address: '9876 Spruce Ln, San Francisco, California .CA 94101',
-    },
-    {
-      id: 10,
-      name: 'Jasprit Bumrah',
-      status: 'Deal Loss',
-      phoneNumber: '+1 78-34-9829345',
-      email: 'jaspritbumrah@gmail.com',
-      address: '56432 Redwood St, Seattle, Washington .WA 98101',
-    },
-  ];
+ 
 
   const [selectedValue, setSelectedValue] = useState<number>(-1);
 
@@ -433,6 +352,7 @@ const LeradManagementHistory = () => {
                   ) : null}
                 </div>
                 <div className={styles.filters}>
+                <div className={styles.lead__datepicker_wrapper}>
                   {isCalendarOpen && (
                     <div
                       className={styles.lead__datepicker_content}
@@ -454,7 +374,7 @@ const LeradManagementHistory = () => {
                       </div>
                     </div>
                   )}
-
+                  </div>
                   {!isMobile &&
                     selectedDates.startDate &&
                     selectedDates.endDate ? (
