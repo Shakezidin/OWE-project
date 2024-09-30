@@ -831,13 +831,13 @@ const MyMapComponent: React.FC = () => {
               ) : null}
             </div>
 
-            {/* Display total project count */}
+            {/* Display total project count
             {projectCount > 0 ? (
               <div className={styles.projectCount}>
                 <h3 className={styles.totalProjects}>Total Projects : </h3>
                 <span className={styles.projectCountValue}>{projectCount}</span>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </div>
 
