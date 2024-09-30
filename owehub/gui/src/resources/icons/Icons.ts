@@ -142,16 +142,24 @@ import historyLeadMgmt from '../../resources/assets/history-lead-mgmt.svg';
 import seemore from '../../resources/assets/see_more_lm.svg';
 import pdf from '../../resources/assets/pdf.svg';
 import leadMngExport from '../../resources/assets/export-lead.svg';
-import chevronDown from '../assets/chevron-down.svg';
-import chevronUp from '../assets/chevron-Up.svg';
-import declinedArchive from '../assets/archiveIcon.svg';
-import deleteFileLibrary from '../assets/delete-file-lib.svg';
-import imageIcon from '../assets/image-icon.svg';
-import mp4Icon from '../assets/mp4-icon.svg';
-import excelIcon from '../assets/excel-icon.svg';
-import recycleBin from '../assets/recycleBin.svg';
-import recycleBinColor from '../assets/recycleBinColor.svg';
-import folderImage from '../assets/folderimage.svg';
+import chevronDown from '../assets/chevron-down.svg'
+import chevronUp from '../assets/chevron-Up.svg'
+import declinedArchive from '../assets/archiveIcon.svg'
+import deleteFileLibrary from '../assets/delete-file-lib.svg'
+import imageIcon from '../assets/image-icon.svg'
+import mp4Icon from '../assets/mp4-icon.svg'
+import excelIcon from '../assets/excel-icon.svg'
+import recycleBin from '../assets/recycleBin.svg'
+import recycleBinColor from '../assets/recycleBinColor.svg'
+import folderImage from '../assets/folderimage.svg'
+import viedoImageOne from '../assets/videos-library-one.svg'
+import viedoplay from '../assets/video_play.svg'
+
+
+
+
+
+
 
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
@@ -322,4 +330,6 @@ export const ICONS = {
   recycleBin: recycleBin,
   recycleBinColor: recycleBinColor,
   folderImage,
+  viedoImageOne,
+  viedoplay,
 };
