@@ -19,6 +19,16 @@
   cursor: pointer;
 }
 
+.leaderboard-data__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab.disabled-tab {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .leaderboard-data__export:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -132,13 +142,14 @@
   cursor: pointer;
 }
 
-.leaderboard-data__btn:hover,
+.leaderboard-data__btn:not([disabled]):hover,
 .leaderboard-data__btn--active {
   background-color: var(--orange-color);
   color: var(--white-color);
   transition: all 500ms ease;
 }
-.leaderboard-data__btn--active:hover {
+
+.leaderboard-data__btn--active:not([disabled]):hover {
   background-color: #ec9d76;
 }
 
@@ -218,9 +229,11 @@
 .leaderboard-table tbody tr td:last-child {
   padding-right: 3rem;
 }
+
 .leaderboard-data__filter-row:nth-child(3) {
   margin-top: 1rem;
 }
+
 .leaderboard-table-container {
   position: relative;
   overflow-x: auto;
@@ -310,6 +323,7 @@
   top: 25px;
   transition: transform 0.3s ease;
 }
+
 .back-icon-sidebar.back-icon:hover {
   transform: scale(1.11);
 }
@@ -363,6 +377,7 @@
   color: #6d6d6d;
   display: block;
 }
+
 .unit {
   opacity: 0.8 !important;
   font-size: 10px !important;
@@ -386,6 +401,7 @@
   padding-inline: 21px;
   border-radius: 8px;
 }
+
 .leaderborder_filter-slect-wrapper {
   display: none;
 }
@@ -404,6 +420,7 @@
   cursor: pointer;
   transition: transform 0.3s ease;
 }
+
 .leader-stats-share-btn:hover {
   transform: scale(1.08);
 }
@@ -439,6 +456,7 @@
 .export-opt {
   overflow: hidden;
 }
+
 .export-btn {
   transition: all 300ms;
 }
@@ -448,6 +466,7 @@
   transform: scale(1.1);
   color: var(--orange-color);
 }
+
 .social-share-container {
   right: 5px;
   top: 40px;
@@ -461,6 +480,7 @@
   top: -162px;
   right: 0;
 }
+
 .mobile-card-wrapper {
   display: none;
 }
@@ -511,6 +531,7 @@
   .leaderboard-data__select-filter {
     display: none;
   }
+
   .leaderboard-table thead tr th {
     padding-left: 12px;
   }
@@ -518,6 +539,7 @@
   .leaderboard-table tbody tr td {
     padding-left: 12px;
   }
+
   .leaderboard-table tfoot tr td {
     padding-left: 12px;
   }
@@ -546,9 +568,11 @@
     grid-column: 1 / 2;
     grid-row: 2 / 3;
   }
+
   .leaderboard-data__select-filter label {
     white-space: nowrap;
   }
+
   .leaderbord-tab-container .tab {
     padding: 0.5rem !important;
   }
@@ -558,9 +582,11 @@
   .leaderboard-table-wrapper {
     display: none;
   }
+
   .children-container {
     padding-inline: 0;
   }
+
   .leaderboard-data {
     padding: 1rem;
     margin: 10px 0;
@@ -569,6 +595,7 @@
   .mobile-card-wrapper {
     display: block;
   }
+
   .mobile-rank-card {
     padding-top: 18px;
     border-top: 1px solid #d8e7ff;
@@ -585,10 +612,12 @@
   .mobile-rank-card .rank-standing {
     font-size: 0.75rem;
   }
+
   .mobile-rank-card .rank-card-body .rank-sm-text {
     font-size: 0.75rem;
     color: #9b9b9b;
   }
+
   .rank-card-stats {
     margin-top: 13px;
     gap: 36px;
@@ -599,6 +628,7 @@
     gap: 36px;
     margin-right: 10px;
   }
+
   .rank-card-statss .rank-stats-num {
     font-weight: 700;
   }
@@ -606,17 +636,21 @@
   .rank-card-stats .rank-stats-num {
     font-weight: 700;
   }
+
   .user-profile-sidebar-fixed .user-sidebar {
     width: 100%;
   }
 }
+
 .banner-main .edit-button {
   z-index: 115;
 }
+
 @media (max-width: 576px) {
   .banner-main .edit-button p {
     display: none;
   }
+
   .banner-main .edit-button {
     padding: 0;
     width: 32px;
@@ -631,6 +665,7 @@
   .dealer-toggler span span {
     display: none;
   }
+
   .leaderboard-data__selected-dates {
     font-size: 0.75rem;
   }
@@ -639,6 +674,7 @@
     overflow-x: auto;
     scroll-behavior: smooth;
   }
+
   .dealer-dropdown-filter {
     right: 13px;
   }
@@ -647,6 +683,7 @@
     width: 10px;
     height: 10px;
   }
+
   .leaderboard-table-container::-webkit-scrollbar {
     display: initial;
   }
@@ -655,13 +692,16 @@
     background-color: rgb(173, 173, 173);
     border-radius: 30px;
   }
+
   .leaderboard-table-container::-webkit-scrollbar-button {
     display: initial;
   }
+
   .leaderboard-table-container::-webkit-scrollbar {
     -ms-overflow-style: initial;
     scrollbar-width: thin;
   }
+
   .leaderboard-table-container::-webkit-scrollbar-corner {
     background-color: transparent;
   }

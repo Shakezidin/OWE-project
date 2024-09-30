@@ -1,6 +1,5 @@
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
-
   /* Styles for smartphones */
   .lineChart-wrapper .recharts-responsive-container {
     left: -6.5pc;
@@ -64,26 +63,31 @@
   border-radius: 8px !important;
   border: 1px solid #929292 !important;
   width: 152px !important;
-}
-
-.editedinParent li {
-  font-size: 18px !important;
-  padding-left: 7px !important;
-  color: #000 !important;
-  font-style: normal !important;
-  font-weight: normal !important;
+  padding: 0 !important;
+  margin-right: 14px !important;
+  /* padding: 10px 10px 10px 10px; */
+  /* height: 90px !important; */
 }
 
 .editedinParent ul {
   border-radius: 8px;
 }
 
-.editedinParent li:hover {
-  font-size: 18px !important;
-  padding-left: 7px !important;
+.editedinParent li {
+  font-size: 16px !important;
   color: #000 !important;
   font-style: normal !important;
+  font-weight: normal !important;
+  padding: 9px 7px 9px 7px !important;
+  height: 100% !important;
+}
+
+.editedinParent li:hover {
+  color: #000 !important;
+  font-size: 16px !important;
   transform: scale(1) !important;
   font-weight: normal !important;
-
+  padding: 9px 7px 9px 7px !important;
+  background-color: #ddebff;
+  border-radius: 8px !important;
 }

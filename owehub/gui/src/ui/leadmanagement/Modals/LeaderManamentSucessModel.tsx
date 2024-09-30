@@ -46,9 +46,9 @@ const LeadManamentSucessModel = () =>
 
     // onClick={handleClose}
 
-    const NoDeleteData=()=>{
-      navigate('/lead-dashboard-archieves')
-    }
+    const NoDeleteData = () => {
+      navigate('/lead-dashboard-archieves');
+    };
 
     return (
       // <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
@@ -143,13 +143,16 @@ const LeadManamentSucessModel = () =>
                   >
                     Yes
                   </button>
-                  <button id="otherButtonId" className={classes.other} onClick={NoDeleteData}>
+                  <button
+                    id="otherButtonId"
+                    className={classes.other}
+                    onClick={NoDeleteData}
+                  >
                     No
                   </button>
                 </div>
               </>
             )}
-           
           </div>
         </div>
       </div>

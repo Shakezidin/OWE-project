@@ -1,6 +1,5 @@
 /* -----------------Vaibhav Start----------------- */
 
-
 .dashboard {
   /* padding: 24px; */
   background-color: #f3f4f6;
@@ -24,6 +23,7 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 200px;
 }
 
 .cardHeader {
@@ -119,10 +119,9 @@
   font-weight: 500;
   padding-right: 12px;
   transition: all 500ms;
-
 }
 
-.button:hover{
+.button:hover {
   background-color: #ddebff;
 }
 
@@ -146,9 +145,8 @@
   color: white;
   border: unset !important;
 }
-.buttonActive:hover{
+.buttonActive:hover {
   background-color: #3b82f6;
-
 }
 
 .table {
@@ -198,7 +196,7 @@ table tbody tr:hover {
 .filterCallToAction {
   display: flex;
   gap: 10px;
-  transform: scale(0.7) translate(-1em,-4em);
+  transform: scale(0.7) translate(-1em, -4em);
   position: relative;
   /* top: -2pc; */
   right: -8px;
@@ -363,20 +361,18 @@ input[type='checkbox']:checked {
 }
 
 .paginationContainer {
-  display: flex;              
-  justify-content: space-between; 
-  align-items: center;   
-  height: 50px;   
-}
-
-.leadpagination {
-  display: flex;              
-  justify-content: space-between; 
-  align-items: center;     
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   height: 50px;
 }
 
-
+.leadpagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
 
 .chevron_down {
   display: none !important;
@@ -394,32 +390,29 @@ input[type='checkbox']:checked {
   gap: 10px;
 }
 
-.action_needed_btn{
-  width:auto;
+.action_needed_btn {
+  width: auto;
 }
 
-.tabs_setting{
+.tabs_setting {
   padding: 10px 0 0 5px;
-
 }
 
 /* -----------------Vaibhav End----------------- */
-
 
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
 
 /* For tablets and larger screens */
 @media (min-width: 768px) {
-  .tabs_setting{
+  .tabs_setting {
     padding: 10px 15px;
   }
   .history_list_inner_declined {
     display: grid;
     /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
-    grid-template-columns: 35px 1fr 1fr 2fr 1fr auto!important;
+    grid-template-columns: 35px 1fr 1fr 2fr 1fr auto !important;
     /* place-items: center; */
     align-items: center;
-
   }
   .chartGrid {
     grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
@@ -464,13 +457,11 @@ input[type='checkbox']:checked {
     grid-template-columns: 1fr 2fr 1fr 1fr !important;
     /* place-items: center; */
     align-items: start;
-
   }
   .history_list_inner {
     display: grid;
     grid-template-columns: auto 2fr auto !important;
     align-items: baseline;
-
   }
   .actionButtons {
     transform: scale(0.7) translate(0, -10px);
@@ -492,15 +483,14 @@ input[type='checkbox']:checked {
     display: flex;
     gap: 10px;
     transform: scale(0.8);
-    margin-right:-15px
+    margin-right: -15px;
   }
-  .date_calendar {  
+  .date_calendar {
     gap: unset !important;
   }
-  .user_name{
+  .user_name {
     transform: translate(5px, -5px);
   }
-
 }
 
 /* Tablets in both portrait and landscape */
@@ -511,7 +501,6 @@ input[type='checkbox']:checked {
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
     /* place-items: center; */
     align-items: center;
-
   }
 }
 
@@ -570,7 +559,6 @@ input[type='checkbox']:checked {
     align-items: start !important;
   }
 
-
   /* HERE MEDIA SCREEN */
   .leadpagination {
     display: flex !important;
@@ -579,7 +567,8 @@ input[type='checkbox']:checked {
     gap: 50px !important;
   }
 
-  .leftitem, .rightitem {
+  .leftitem,
+  .rightitem {
     align-items: flex-start; /* Optional: vertically center the items */
   }
 }
@@ -593,8 +582,6 @@ input[type='checkbox']:checked {
 @media only screen and (min-width: 1201px) {
   /* Styles for extra-large screens */
 }
-
-
 
 /*---------------- Shams Start-------------------- */
 
@@ -661,8 +648,8 @@ input[type='checkbox']:checked {
   background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
   background-repeat: no-repeat;
   background-position: right 10px center;
-  padding-right: 32px; 
-  padding-left: 15px; 
+  padding-right: 32px;
+  padding-left: 15px;
 }
 
 .calender {
@@ -691,8 +678,6 @@ input[type='checkbox']:checked {
   justify-content: right !important;
 }
 /*---------------- Shams Start-------------------- */
-
-
 
 /* styles={{
   control: (baseStyles, state) => ({
@@ -756,7 +741,6 @@ input[type='checkbox']:checked {
   }),
 }} */
 
-
 /* General style for the month select */
 /* General style for the month select */
 .monthSelect {
@@ -782,7 +766,7 @@ input[type='checkbox']:checked {
 
 /* Arrow in the dropdown */
 .monthSelect::after {
-  content: "▼"; /* Down arrow character */
+  content: '▼'; /* Down arrow character */
   font-size: 12px;
   color: #3e3e3e;
   position: absolute;
@@ -844,5 +828,3 @@ input[type='checkbox']:checked {
     width: 80px;
   }
 }
-
-

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/appointmentScheduler.css';
+import { timeSlots } from '../../../resources/static_data/Constant';
 
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
@@ -27,21 +28,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     setSelectedTime(time);
     onTimeChange(time);
   };
-
-  const timeSlots = [
-    '6:00 AM',
-    '7:00 AM',
-    '8:00 AM',
-    '9:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '1:00 PM',
-    '2:00 PM',
-    '3:00 PM',
-    '4:00 PM',
-    '5:00 PM',
-  ];
 
   return (
     <div className="appointmentSchedulerContainer">
@@ -124,22 +110,20 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       </div>
 
       <div className="sendAppointmentBtn">
-      <button 
-    onClick={() => {
-      if (selectedTime) {
-        setVisibleDiv(1);
-      } else {
-        console.log('Please select a time before proceeding.');
-      }
-    }}
-  >
-    SEND APPOINTMENT
-  </button>
-
+        <button
+          onClick={() => {
+            if (selectedTime) {
+              setVisibleDiv(1);
+            } else {
+              console.log('Please select a time before proceeding.');
+            }
+          }}
+        >
+          SEND APPOINTMENT
+        </button>
       </div>
     </div>
   );
 };
 
 export default AppointmentScheduler;
-

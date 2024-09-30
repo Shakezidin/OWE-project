@@ -44,3 +44,8 @@ type GetLeadsData struct {
 type DeleteLeadsRequest struct {
 	IDs []int64 `json:"ids"`
 }
+
+// This struct is for updating status WON
+type StatusWinRequest struct {
+	LeadsId int `json:"leads_id"`
+}
