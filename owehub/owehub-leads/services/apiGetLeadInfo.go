@@ -13,7 +13,7 @@ import (
 	models "OWEApp/shared/models"
 	"time"
 
-	// "OWEApp/shared/types" 
+	// "OWEApp/shared/types"
 	// "sort"
 	// "strings"
 	//"time"
@@ -24,7 +24,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetLeadInfo// 🔴🔴
+ * FUNCTION:		HandleGetLeadInfo
  * DESCRIPTION:     handler for get LeadsHistoy data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -35,7 +35,7 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		whereClause  string
 		whereEleList []interface{}
 		dataReq      models.GetLeadInfoRequest
-		data          []map[string]interface{}
+		data         []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleGetLeadInfo")
@@ -82,126 +82,69 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Access the first result (assuming one lead will be returned for the given ID)
+	leadData := data[0]
 
-	
-		// Access the first result (assuming one lead will be returned for the given ID)
-		leadData := data[0]
+	streetAddress, ok := leadData["street_address"].(string)
+	if !ok {
+		log.FuncErrorTrace(0, "Failed to assert street_address to string type Item: %+v", leadData)
+		streetAddress = ""
+	}
 
-		// Type assertion with proper handling of types
-		leadResponse := models.GetLeadInfoRes{
-			LeadsID:        leadData["leads_id"].(int64),           // LeadsID is asserted as int64
-			FirstName:      leadData["first_name"].(string),        // FirstName as string
-			LastName:       leadData["last_name"].(string),         // LastName as string
-			EmailId:        leadData["email_id"].(string),          // EmailId as string
-			PhoneNumber:    leadData["phone_number"].(string),      // PhoneNumber as string
-			StreetAddress:  leadData["street_address"].(string),    // StreetAddress as string
-			StatusID:       leadData["status_id"].(int64),          // StatusID as int64
+	// Type assertion with proper handling of types
+	leadResponse := models.GetLeadInfoRes{
+		LeadsID:       leadData["leads_id"].(int64),      // LeadsID is asserted as int64
+		FirstName:     leadData["first_name"].(string),   // FirstName as string
+		LastName:      leadData["last_name"].(string),    // LastName as string
+		EmailId:       leadData["email_id"].(string),     // EmailId as string
+		PhoneNumber:   leadData["phone_number"].(string), // PhoneNumber as string
+		StreetAddress: streetAddress,                     // StreetAddress as string
+		StatusID:      leadData["status_id"].(int64),     // StatusID as int64
+	}
+
+	switch leadResponse.StatusID {
+	case 0: // PENDING
+		if createdAt, ok := leadData["created_at"].(time.Time); ok {
+			leadResponse.CreatedAt = &createdAt
 		}
-
-
-		switch leadResponse.StatusID {
-			case 0: // PENDING
-				if createdAt, ok := leadData["created_at"].(time.Time); ok {
-					leadResponse.CreatedAt = &createdAt
-				}
-			case 1: // SENT
-				if createdAt, ok := leadData["created_at"].(time.Time); ok {
-					leadResponse.CreatedAt = &createdAt
-				}
-				if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-					leadResponse.AppointmentDate = &appointmentDate
-				}
-				if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-					leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-				}
-			case 2: // ACCEPTED
-				if createdAt, ok := leadData["created_at"].(time.Time); ok {
-					leadResponse.CreatedAt = &createdAt
-				}
-				if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-					leadResponse.AppointmentDate = &appointmentDate
-				}
-				if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-					leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-				}
-				if appointmentAcceptedDate, ok := leadData["appointment_accepted_date"].(time.Time); ok {
-					leadResponse.AppointmentAcceptedDate = &appointmentAcceptedDate
-				}
-			case 3: // DECLINED
-				if createdAt, ok := leadData["created_at"].(time.Time); ok {
-					leadResponse.CreatedAt = &createdAt
-				}
-				if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
-					leadResponse.AppointmentDate = &appointmentDate
-				}
-				if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
-					leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
-				}
-				if appointmentDeclinedDate, ok := leadData["appointment_declined_date"].(time.Time); ok {
-					leadResponse.AppointmentDeclinedDate = &appointmentDeclinedDate
-				}
-			}
-			
+	case 1: // SENT
+		if createdAt, ok := leadData["created_at"].(time.Time); ok {
+			leadResponse.CreatedAt = &createdAt
+		}
+		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
+			leadResponse.AppointmentDate = &appointmentDate
+		}
+		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
+			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
+		}
+	case 2: // ACCEPTED
+		if createdAt, ok := leadData["created_at"].(time.Time); ok {
+			leadResponse.CreatedAt = &createdAt
+		}
+		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
+			leadResponse.AppointmentDate = &appointmentDate
+		}
+		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
+			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
+		}
+		if appointmentAcceptedDate, ok := leadData["appointment_accepted_date"].(time.Time); ok {
+			leadResponse.AppointmentAcceptedDate = &appointmentAcceptedDate
+		}
+	case 3: // DECLINED
+		if createdAt, ok := leadData["created_at"].(time.Time); ok {
+			leadResponse.CreatedAt = &createdAt
+		}
+		if appointmentDate, ok := leadData["appointment_date"].(time.Time); ok {
+			leadResponse.AppointmentDate = &appointmentDate
+		}
+		if appointmentScheduledDate, ok := leadData["appointment_scheduled_date"].(time.Time); ok {
+			leadResponse.AppointmentScheduledDate = &appointmentScheduledDate
+		}
+		if appointmentDeclinedDate, ok := leadData["appointment_declined_date"].(time.Time); ok {
+			leadResponse.AppointmentDeclinedDate = &appointmentDeclinedDate
+		}
+	}
 
 	// Send the response
 	FormAndSendHttpResp(resp, "Lead Info Data", http.StatusOK, leadResponse, 1)
 }
-
-
-//❌❌❌❌❌❌❌❌//❌❌❌❌❌❌❌❌//❌❌❌❌❌❌❌❌
-/*// Additional fields based on lead status
-  switch leadResponse.StatusID {
-  case 0: // PENDING
-      leadResponse.CreatedAt = data["created_at"].(time.Time)
-  case 1: // SENT
-      leadResponse.CreatedAt = data["created_at"].(time.Time)
-      leadResponse.AppointmentDate = data["appointment_date"].(time.Time)
-      leadResponse.AppointmentScheduledDate = data["appointment_scheduled_date"].(time.Time)
-  case 2: // ACCEPTED
-      leadResponse.CreatedAt = data["created_at"].(time.Time)
-      leadResponse.AppointmentDate = data["appointment_date"].(time.Time)
-      leadResponse.AppointmentScheduledDate = data["appointment_scheduled_date"].(time.Time)
-      leadResponse.AppointmentAcceptedDate = data["appointment_accepted_date"].(time.Time)
-  case 3: // DECLINED
-      leadResponse.CreatedAt = data["created_at"].(time.Time)
-      leadResponse.AppointmentDate = data["appointment_date"].(time.Time)
-      leadResponse.AppointmentScheduledDate = data["appointment_scheduled_date"].(time.Time)
-      leadResponse.AppointmentDeclinedDate = data["appointment_declined_date"].(time.Time)
-  }
-*/
-
-// // Query based on status_id
-// whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.StatusID)
-
-//❌❌❌❌❌❌❌❌//❌❌❌❌❌❌❌❌//❌❌❌❌❌❌❌❌
-// // Construct the query based on status and requested fields
-// var leadsQuery string
-// switch dataReq.StatusID {
-// case 0: // PENDING
-// 	leadsQuery = `
-// 	SELECT li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id, li.created_at
-// 	FROM leads_info li
-// 	` + whereClause
-// case 1: // SENT
-// 	leadsQuery = `
-// 	SELECT li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id, li.created_at,
-// 	       li.appointment_date, li.appointment_scheduled_date
-// 	FROM leads_info li
-// 	` + whereClause
-// case 2: // ACCEPTED
-// 	leadsQuery = `
-// 	SELECT li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id, li.created_at,
-// 	       li.appointment_date, li.appointment_scheduled_date, li.appointment_accepted_date
-// 	FROM leads_info li
-// 	` + whereClause
-// case 3: // DECLINED
-// 	leadsQuery = `
-// 	SELECT li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id, li.created_at,
-// 	       li.appointment_date, li.appointment_scheduled_date, li.appointment_declined_date
-// 	FROM leads_info li
-// 	` + whereClause
-// default:
-// 	log.FuncErrorTrace(0, "Invalid status")
-// 	FormAndSendHttpResp(resp, "Invalid status", http.StatusBadRequest, nil)
-// 	return
-// }
