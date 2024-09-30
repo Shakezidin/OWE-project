@@ -47,6 +47,8 @@ const HistoryRedirect = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+ 
+
 
   useEffect(() => {
     const updateStyles = () => {
