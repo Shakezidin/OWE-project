@@ -23,12 +23,12 @@ import (
 )
 
 /******************************************************************************
-* FUNCTION:		HandleGetLeaderBoardDataRequest
-* DESCRIPTION:     handler for get LeaderBoard data request
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
-func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
+ * FUNCTION:		HandleGetLeaderBoardDataRequest
+ * DESCRIPTION:     handler for get LeaderBoard data request
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func HandleGetLeaderBoardRequestTemp(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                   error
 		dataReq               models.GetLeaderBoardRequest
@@ -87,7 +87,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	LeaderBoardList := models.GetLeaderBoardList{}
+	LeaderBoardList := models.GetLeaderBoardListData{}
 
 	if dataReq.Role == string(types.RoleAdmin) || dataReq.Role == string(types.RoleFinAdmin) ||
 		dataReq.Role == string(types.RoleAccountExecutive) || dataReq.Role == string(types.RoleAccountManager) {
@@ -104,10 +104,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		dataReq.Role != string(types.RoleAccountExecutive) && dataReq.Role != string(types.RoleAccountManager) &&
 		!(dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer") {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
-			where ud.email_id = '%v';
-		`, dataReq.Email)
+			 SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
+			 LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			 where ud.email_id = '%v';
+		 `, dataReq.Email)
 
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
 		if err != nil {
@@ -142,10 +142,10 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if dataReq.Role == string(types.RoleDealerOwner) && dataReq.GroupBy == "dealer" {
 		dealerOwnerFetchQuery = fmt.Sprintf(`
-			SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
-			LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
-			where ud.email_id = '%v';
-		`, dataReq.Email)
+			 SELECT vd.dealer_name AS dealer_name, name FROM user_details ud
+			 LEFT JOIN v_dealer vd ON ud.dealer_id = vd.id
+			 where ud.email_id = '%v';
+		 `, dataReq.Email)
 
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, dealerOwnerFetchQuery, nil)
 		if err != nil {
@@ -192,7 +192,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		leaderBoardQuery = fmt.Sprintf(" SELECT %v as name, ", dataReq.GroupBy)
 	}
 
-	filter, whereEleList = PrepareLeaderDateFilters(dataReq, adminCheck, dealerIn)
+	filter, whereEleList = PrepareLeaderDateFiltersTemp(dataReq, adminCheck, dealerIn)
 	leaderBoardQuery = leaderBoardQuery + filter
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, leaderBoardQuery, whereEleList)
@@ -329,7 +329,7 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 		LeaderBoardList.LeaderBoardList[i].Rank = i + 1
 	}
 
-	LeaderBoardList.TopLeaderBoardList = LeaderBoardList.LeaderBoardList[:3]
+	// LeaderBoardList.TopLeaderBoardList = LeaderBoardList.LeaderBoardList[:3]
 	LeaderBoardList.LeaderBoardList = Paginate(LeaderBoardList.LeaderBoardList, dataReq.PageNumber, dataReq.PageSize)
 
 	if (dataReq.Role == string(types.RoleSalesRep) || dataReq.Role == string(types.RoleApptSetter)) && (dataReq.GroupBy == "primary_sales_rep" || dataReq.GroupBy == "secondary_sales_rep") && add {
@@ -346,33 +346,13 @@ func HandleGetLeaderBoardRequest(resp http.ResponseWriter, req *http.Request) {
 }
 
 /******************************************************************************
-* FUNCTION:		PrepareLeaderDateFilters
-* DESCRIPTION:     handler for prepare primary filter
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
-func Paginate[T any](data []T, pageNumber int64, pageSize int64) []T {
-	start := (pageNumber - 1) * pageSize
-	if start >= int64(len(data)) {
-		return []T{}
-	}
+ * FUNCTION:		PrepareLeaderDateFilters
+ * DESCRIPTION:     handler for prepare primary filter
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
 
-	end := start + pageSize
-	if end > int64(len(data)) {
-		end = int64(len(data))
-	}
-
-	return data[start:end]
-}
-
-/******************************************************************************
-* FUNCTION:		PrepareLeaderDateFilters
-* DESCRIPTION:     handler for prepare primary filter
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
-
-func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck bool, dealerIn string) (filters string, whereEleList []interface{}) {
+func PrepareLeaderDateFiltersTemp(dataReq models.GetLeaderBoardRequest, adminCheck bool, dealerIn string) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareLeaderDateFilters")
 	defer func() { log.ExitFn(0, "PrepareLeaderDateFilters", nil) }()
 
@@ -427,10 +407,10 @@ func PrepareLeaderDateFilters(dataReq models.GetLeaderBoardRequest, adminCheck b
 	}
 
 	filtersBuilder.WriteString(` FROM customers_customers_schema cs 
-								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
-								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
-								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id 
-								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id`)
+								 LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
+								 LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
+								 LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id 
+								 LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id`)
 	if len(dealerIn) > 16 {
 		filtersBuilder.WriteString(" WHERE ")
 		filtersBuilder.WriteString(dealerIn)

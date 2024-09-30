@@ -4,6 +4,8 @@ import '../text_input/Input.css';
 import './styles/index.css';
 import { BiChevronDown } from 'react-icons/bi';
 import SelectOption from '../selectOption/SelectOption';
+import '../../oweHub/reppay/reppaydashboard/DropdownWithCheckboxes.css';
+
 interface Option {
   label: string;
   value: string;
