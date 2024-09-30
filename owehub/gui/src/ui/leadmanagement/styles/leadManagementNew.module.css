@@ -77,13 +77,13 @@
   align-items: center;
 }
 
-.main_head img{
+.main_head img {
   cursor: pointer;
   margin-right: 6px;
   transition: all 0.3s ease;
 }
 
-.main_head img:hover{
+.main_head img:hover {
   transform: scale(1.1);
 }
 .an_head {

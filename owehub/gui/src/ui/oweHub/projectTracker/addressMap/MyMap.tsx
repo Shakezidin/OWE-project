@@ -139,7 +139,7 @@ const MyMapComponent: React.FC = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
   const [createRePayData, setCreatePayData] = useState({
-    state: "All",
+    state: 'All',
     // other fields...
   });
   useEffect(() => {
@@ -157,7 +157,6 @@ const MyMapComponent: React.FC = () => {
               : createRePayData.state === ''
                 ? ['']
                 : [createRePayData.state],
-
         });
 
         if (data.status > 201) {
@@ -237,8 +236,8 @@ const MyMapComponent: React.FC = () => {
       ...createRePayData,
       state: newValue.value, // Update state with the selected state's value
     });
-    setSearchValue('')
-    setSearchedLocation(null)
+    setSearchValue('');
+    setSearchedLocation(null);
   };
 
   useEffect(() => {
@@ -249,7 +248,7 @@ const MyMapComponent: React.FC = () => {
     }
   }, [createRePayData.state]);
 
-  console.log(createRePayData.state, "all")
+  console.log(createRePayData.state, 'all');
 
   // const handleChange = (newValue: any, fieldName: string) => {
   //   // Extract the selected state's value, or set it to 'All' if nothing is selected
@@ -298,9 +297,9 @@ const MyMapComponent: React.FC = () => {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in miles
   };
@@ -674,7 +673,7 @@ const MyMapComponent: React.FC = () => {
     [filteredLocations, locations, createRePayData.state]
   );
 
-  console.log(searchedLocation, "searchloacesdtion")
+  console.log(searchedLocation, 'searchloacesdtion');
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps...</div>;
 
@@ -714,8 +713,8 @@ const MyMapComponent: React.FC = () => {
                   value={
                     createRePayData.state // Dynamically show the selected state
                       ? (availableStates(newFormData) || []).find(
-                        (option) => option.value === createRePayData.state
-                      ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
+                          (option) => option.value === createRePayData.state
+                        ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
                       : { label: 'All State', value: 'All' }
                   }
                   menuStyles={{
@@ -762,7 +761,7 @@ const MyMapComponent: React.FC = () => {
                           setSearchValue(''); // Clear the search value
                           setFilteredLocations(locations);
                           setSearchedLocation(null);
-                          setSelectedMiles(10)// Reset to show all locations
+                          setSelectedMiles(10); // Reset to show all locations
 
                           if (mapRef.current) {
                             const bounds = new google.maps.LatLngBounds();
@@ -802,7 +801,6 @@ const MyMapComponent: React.FC = () => {
                 <div className={styles.kmWrap}>
                   <SelectOption
                     options={[
-
                       ...milesOptions.map((mile) => ({
                         label: `${mile.miles} miles`,
                         value: mile.miles.toString(),
@@ -811,13 +809,10 @@ const MyMapComponent: React.FC = () => {
                     onChange={(newValue) =>
                       newValue && handleMilesChange(newValue.value)
                     }
-                    value={
-                      {
-                        value: selectedMiles,
-                        label: `${selectedMiles} miles`,
-                      }
-
-                    }
+                    value={{
+                      value: selectedMiles,
+                      label: `${selectedMiles} miles`,
+                    }}
                     menuStyles={{
                       width: 400,
                     }}
@@ -846,11 +841,11 @@ const MyMapComponent: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.headerRight}>
+        {/* <div className={styles.headerRight}>
           <div className={styles.mapClose} onClick={handleCalcClose}>
             <IoClose />
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div
@@ -931,7 +926,6 @@ const MyMapComponent: React.FC = () => {
                       }}
                     />
                   </div>
-
                 )}
 
                 {/* Display all or filtered markers */}

@@ -152,6 +152,9 @@ import excelIcon from '../assets/excel-icon.svg'
 import recycleBin from '../assets/recycleBin.svg'
 import recycleBinColor from '../assets/recycleBinColor.svg'
 import folderImage from '../assets/folderimage.svg'
+import viedoImageOne from '../assets/videos-library-one.svg'
+import viedoplay from '../assets/video_play.svg'
+
 
 
 
@@ -315,16 +318,18 @@ export const ICONS = {
   historyLeadMgmt: historyLeadMgmt,
   SeeMore: seemore,
   pdf: pdf,
-  LeadMngExport:leadMngExport,
-  chevronDown:chevronDown,
-  chevronUp:chevronUp,
-  declinedArchive:declinedArchive,
+  LeadMngExport: leadMngExport,
+  chevronDown: chevronDown,
+  chevronUp: chevronUp,
+  declinedArchive: declinedArchive,
   scheduleDoor,
-  deleteFileLibrary:deleteFileLibrary,
-  imageIcon:imageIcon,
-  mp4Icon:mp4Icon,
-  excelIcon:excelIcon,
-  recycleBin:recycleBin,
-  recycleBinColor:recycleBinColor,
+  deleteFileLibrary: deleteFileLibrary,
+  imageIcon: imageIcon,
+  mp4Icon: mp4Icon,
+  excelIcon: excelIcon,
+  recycleBin: recycleBin,
+  recycleBinColor: recycleBinColor,
   folderImage,
+  viedoImageOne,
+  viedoplay,
 };

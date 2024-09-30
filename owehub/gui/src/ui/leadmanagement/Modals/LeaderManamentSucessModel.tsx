@@ -17,7 +17,7 @@ const LeadManamentSucessModel = () =>
   {
     const navigate = useNavigate();
     // const [confirmModal, setConfirmModal]=useState(false);
-    const [visibleDiv, setVisibleDiv] = useState(1);
+    const [visibleDiv, setVisibleDiv] = useState(true);
 
     // const handleClick = () => {
     //   navigate('/salesrep-schedule');
@@ -45,6 +45,10 @@ const LeadManamentSucessModel = () =>
     // }, [isOpen, handleClose]);
 
     // onClick={handleClose}
+
+    const NoDeleteData = () => {
+      navigate('/lead-dashboard-archieves');
+    };
 
     return (
       // <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
@@ -98,7 +102,7 @@ const LeadManamentSucessModel = () =>
               </div>
             </div>
             {/* <div className={classes.createUserCrossButton} ></div> */}
-            {visibleDiv === 1 && (
+            {visibleDiv && (
               <>
                 {' '}
                 <div className={classes.success_not}>
@@ -135,38 +139,16 @@ const LeadManamentSucessModel = () =>
                   <button
                     className={classes.self}
                     style={{ color: '#fff', border: 'none' }}
-                    onClick={() => setVisibleDiv(2)}
+                    onClick={NoDeleteData}
                   >
                     Yes
                   </button>
-                  <button id="otherButtonId" className={classes.other}>
-                    No
-                  </button>
-                </div>
-              </>
-            )}
-            {visibleDiv === 2 && (
-              <>
-                <div className={classes.success_not}>
-                  <div>
-                    <img height="111px" width="111px" src={ConfirmationICON} />{' '}
-                  </div>
-                  <h2>Please confirm customer details </h2>
-                  <p>
-                    Ensure the email address and phone number are correct before
-                    sending the appointment
-                  </p>
-                </div>
-
-                <div className={classes.survey_button}>
                   <button
-                    className={classes.self}
-                    style={{ color: '#fff', border: 'none' }}
+                    id="otherButtonId"
+                    className={classes.other}
+                    onClick={NoDeleteData}
                   >
-                    Confirm, Sent Appointment
-                  </button>
-                  <button id="otherButtonId" className={classes.other}>
-                    Edit customer details
+                    No
                   </button>
                 </div>
               </>

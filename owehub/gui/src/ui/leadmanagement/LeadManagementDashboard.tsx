@@ -21,6 +21,7 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
+import ThreeDotsImage from './Modals/Modalimages/ThreeDots.svg';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -29,13 +30,20 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
 import {
   endOfWeek,
+  format,
   startOfMonth,
   startOfWeek,
   startOfYear,
   subDays,
 } from 'date-fns';
-import Breadcrumb from '../components/breadcrumb/Breadcrumb';
-
+import HistoryRedirect from '../Library/HistoryRedirect';
+import useAuth from '../../hooks/useAuth';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+import MicroLoader from '../components/loader/MicroLoader';
+import DataNotFound from '../components/loader/DataNotFound';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -44,6 +52,11 @@ export type DateRangeWithLabel = {
   start: Date;
   end: Date;
 };
+interface StatusData {
+  name: string;
+  value: number;
+  color: string;
+}
 
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -101,20 +114,7 @@ const pieData = [
   { name: 'Action Needed', value: 10, color: '#63ACA3' },
 ];
 
-const lineData = [
-  { name: 'Jan', won: 35, lost: 15 },
-  { name: 'Feb', won: 40, lost: 20 },
-  { name: 'Mar', won: 45, lost: 15 },
-  { name: 'Apr', won: 40, lost: 30 },
-  { name: 'May', won: 70, lost: 20 },
-  { name: 'Jun', won: 45, lost: 35 },
-  { name: 'Jul', won: 75, lost: 35 },
-  { name: 'Aug', won: 90, lost: 40 },
-  { name: 'Sep', won: 60, lost: 20 },
-  { name: 'Oct', won: 55, lost: 30 },
-  { name: 'Nov', won: 70, lost: 35 },
-  { name: 'Dec', won: 80, lost: 45 },
-];
+
 
 const leads = [
   {
@@ -244,7 +244,8 @@ const leads = [
     email: 'jasprit8772@gmail.com',
     address: '12333 Domingo Ct',
     status: 'Update Status',
-  }, {
+  },
+  {
     id: '17',
     name: 'Risabh Pant',
     phone: '+00 876472822',
@@ -289,7 +290,6 @@ const renderActiveShape = (props: any) => {
 
   // Center text in pie chart
 
-
   const splitText = (text: string, width: number) => {
     const words = text.split(' ');
     const lines = [];
@@ -323,7 +323,11 @@ const renderActiveShape = (props: any) => {
             key={index}
             x={cx}
             dy={index ? 15 : 0}
-            style={{ fontSize: '12.07px', wordBreak: 'break-word',fontWeight:550 }}
+            style={{
+              fontSize: '12.07px',
+              wordBreak: 'break-word',
+              fontWeight: 550,
+            }}
           >
             {line}
           </tspan>
@@ -460,13 +464,15 @@ const LeadManagementDashboard = () => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
   const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
+
   const width = useWindowWidth();
   const isTablet = width <= 1024;
-
-
+  console.log(currentFilter, "data i want to fetch")
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(
+    periodFilterOptions.find((option) => option.label === 'This Week') || null
+  );
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
@@ -475,8 +481,8 @@ const LeadManagementDashboard = () => {
     startDate: Date | null;
     endDate: Date | null;
   }>({
-    startDate: null,
-    endDate: null,
+    startDate: startOfThisWeek,
+    endDate: today,
   });
 
   const handleRangeChange = (ranges: any) => {
@@ -495,7 +501,6 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen(false);
   };
 
-
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -506,25 +511,22 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
 
-//CALLING FOR RANGE PICK IN USING SELECT CODE
-const handlePeriodChange = (
-  newValue: SingleValue<DateRangeWithLabel>, 
-  actionMeta: ActionMeta<DateRangeWithLabel>
-) => {
-  if (newValue) {
-    setSelectedDates({
-      startDate: newValue.start,
-      endDate: newValue.end,
-    });
-    setSelectedPeriod(newValue);
-  } else {
-    setSelectedDates({ startDate: null, endDate: null });
-  }
-};
-
-
-
-
+  //CALLING FOR RANGE PICK IN USING SELECT CODE
+  const handlePeriodChange = (
+    newValue: SingleValue<DateRangeWithLabel>,
+    actionMeta: ActionMeta<DateRangeWithLabel>
+  ) => {
+    if (newValue) {
+      setSelectedDates({
+        startDate: newValue.start,
+        endDate: newValue.end,
+      });
+      setSelectedPeriod(newValue);
+    } else {
+      setSelectedDates({ startDate: null, endDate: null });
+    }
+  };
+  //CALLING FOR HISTORY
 
   const handleClickOutside = (event: Event) => {
     if (
@@ -547,7 +549,7 @@ const handlePeriodChange = (
     };
   }, []);
   // shams end
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const navigate = useNavigate();
 
   const handleHistory = () => {
@@ -559,10 +561,12 @@ const handlePeriodChange = (
   };
 
   useEffect(() => {
-    const pieName = pieData[activeIndex].name;
-    const newFilter = statusMap[pieName as keyof typeof statusMap];
-    setCurrentFilter(newFilter);
-    setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+    if (pieData.length > 0) {
+      const pieName = pieData[activeIndex].name;
+      const newFilter = statusMap[pieName as keyof typeof statusMap];
+      setCurrentFilter(newFilter);
+      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+    }
   }, [activeIndex]);
 
   const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
@@ -621,16 +625,7 @@ const handlePeriodChange = (
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
   };
-  console.log('currentFilter', currentFilter);
-
-  const toggleLeadExpansion = (leadId: string) => {
-    setExpandedLeads((prev) =>
-      prev.includes(leadId)
-        ? prev.filter((id) => id !== leadId)
-        : [...prev, leadId]
-    );
-  };
-
+  
   const handleChevronClick = (id: string) => {
     setToggledId((prevId) => (prevId === id ? null : id));
   };
@@ -644,21 +639,185 @@ const handlePeriodChange = (
     setIsModalOpen(false);
   };
 
+
+  // ************************ API Integration By Saurabh ********************************\\
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const { authData, saveAuthData } = useAuth();
+  const [loading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
+  const [lineData, setLineData] = useState([]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await postCaller('get_periodic_won_lost_leads', {
+            start_date: selectedDates.startDate
+              ? format(selectedDates.startDate, 'dd-MM-yyyy')
+              : '',
+            end_date: selectedDates.endDate
+              ? format(selectedDates.endDate, 'dd-MM-yyyy')
+              : '',
+          });
+
+          if (response.status === 200) {
+            const apiData = response.data.periodic_list;
+            const formattedData = apiData.map((item: any) => ({
+              name: item.period_label,
+              won: item.won_count,
+              lost: item.lost_count,
+            }));
+            setLineData(formattedData);
+          } else if (response.status > 201) {
+            toast.error(response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isAuthenticated, selectedDates]);
+
+  const defaultData: DefaultData = {
+    PENDING: { name: 'Pending leads', value: 0, color: '#FF832A' },
+    SENT: { name: 'Appointment sent', value: 0, color: '#81A6E7' },
+    ACCEPTED: { name: 'Appointment accepted', value: 0, color: '#52B650' },
+    DECLINED: { name: 'Appointment declined', value: 0, color: '#CD4040' },
+    'ACTION NEEDED': { name: 'Action Needed', value: 0, color: '#63ACA3' },
+  };
+  interface DefaultData {
+    [key: string]: StatusData;
+  }
+  interface StatusData {
+    name: string;
+    value: number;
+    color: string;
+  }
+  const [pieData, setPieData] = useState<StatusData[]>([]);
+  const [totalValue, setTotalValue] = useState<number>(0);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await postCaller('get_leads_count_by_status', {
+            start_date: selectedDates.startDate
+              ? format(selectedDates.startDate, 'dd-MM-yyyy')
+              : '',
+            end_date: selectedDates.endDate
+              ? format(selectedDates.endDate, 'dd-MM-yyyy')
+              : '',
+          });
+
+          if (response.status === 200) {
+            const apiData = response.data.leads;
+            const formattedData = apiData.reduce((acc: DefaultData, item: any) => {
+              acc[item.status_name] = {
+                name: defaultData[item.status_name].name,
+                value: item.count,
+                color: defaultData[item.status_name].color,
+              };
+              return acc;
+            }, {} as DefaultData);
+            const mergedData = Object.values({ ...defaultData, ...formattedData }) as StatusData[];
+            setPieData(mergedData);
+          } else if (response.status > 201) {
+            toast.error(response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isAuthenticated, selectedDates]);
+
+  useEffect(() => {
+    const calculateTotalValue = () => {
+      const sum = pieData.reduce((acc, item) => acc + item.value, 0);
+      setTotalValue(sum);
+    };
+
+    calculateTotalValue();
+  }, [pieData]);
+
+
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector(
+    (state) => state.leadManagmentSlice
+  );
+  useEffect(() => {
+    if (isAuthenticated) {
+      let statusId;
+      switch (currentFilter) {
+        case 'Action Needed':
+          statusId = 4;
+          break;
+        case 'Pending':
+          statusId = 0;
+          break;
+        case 'Sent':
+          statusId = 1;
+          break;
+        case 'Accepted':
+          statusId = 2;
+          break;
+        case 'Declined':
+          statusId = 3;
+          break;
+        default:
+          statusId = 0;
+      }
+  
+      const data = {
+        start_date: selectedDates.startDate
+          ? format(selectedDates.startDate, 'dd-MM-yyyy')
+          : '',
+        end_date: selectedDates.endDate
+          ? format(selectedDates.endDate, 'dd-MM-yyyy')
+          : '',
+        status_id: statusId,
+        is_archived: false,
+        page_size: 10,
+        page_number: currentPage,
+      };
+  
+      dispatch(getLeads(data));
+    }
+  }, [selectedDates, isAuthenticated, itemsPerPage, currentPage, currentFilter]);
+
+  //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
-      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
-      <Breadcrumb
-          head=""
-          linkPara="Lead Management"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
+      <div style={{ marginLeft: 6, marginTop: 6 }}>
+        <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
+          <div className="bread-link">
+            <div className="" style={{ cursor: 'pointer' }}>
+              <h3>Lead Management</h3>
+            </div>
+            <div className="">
+              <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
+            </div>
+          </div>
+        </div>
       </div>
+
       {showConfirmModal && (
-        <ConfirmModel
-          isOpen1={isModalOpen} onClose1={handleCloseModal}
-        />
+        <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
       )}
 
       {showArchiveModal && (
@@ -670,41 +829,53 @@ const handlePeriodChange = (
       <div className={styles.chartGrid}>
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            Overview 
-            <div>Total leads: 200</div>
+            Overview
+            <div>Total leads: {totalValue ? totalValue : '0'}</div>
           </div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart className={styles.pieChart}>
-                <Pie
-                  activeIndex={activeIndex}
-                  activeShape={renderActiveShape}
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  onClick={handlePieClick}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className={styles.legend}>
-              {pieData.map((item) => (
-                <div key={item.name} className={styles.legendItem}>
-                  <div
-                    className={styles.legendColor}
-                    style={{ backgroundColor: item.color }}
-                  ></div>
-                  <span className={styles.legendText}>{item.name}</span>
-                </div>
-              ))}
-            </div>
+            {loading ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <MicroLoader />
+              </div>
+            ) : (
+              lineData.length > 0 ? (
+                <>
+                  <ResponsiveContainer width="100%" height={260}>
+                    <PieChart className={styles.pieChart}>
+                      <Pie
+                        activeIndex={activeIndex}
+                        activeShape={renderActiveShape}
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        onClick={handlePieClick}
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className={styles.legend}>
+                    {pieData.map((item) => (
+                      <div key={item.name} className={styles.legendItem}>
+                        <div
+                          className={styles.legendColor}
+                          style={{ backgroundColor: item.color }}
+                        ></div>
+                        <span className={styles.legendText}>{item.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <DataNotFound />
+              )
+            )}
           </div>
         </div>
 
@@ -752,154 +923,133 @@ const handlePeriodChange = (
                 </div>
               )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               {/* RABINDR718.....DATE_PICKER STARTED */}
-    <Select value={selectedPeriod}
-                    onChange={handlePeriodChange}
-                    options={periodFilterOptions}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: 'px',
-                        borderRadius: '8px',
-                        outline: 'none',
-                        color: '#3E3E3E',
-                        width: '140px',
-                        height: '36px',
-                        fontSize: '12px',
-                        border: '1px solid #d0d5dd',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        alignContent: 'center',
-                        backgroundColor: '#fffff',
-                        boxShadow: 'none',
-                        '@media only screen and (max-width: 767px)': {
-                          width: '80px',
-                          // width: 'fit-content',
-                        },
-                        '&:focus-within': {
-                          borderColor: '#377CF6',
-                          boxShadow: '0 0 0 1px #377CF6',
-                          caretColor: '#3E3E3E',
-                        },
-                      }),
-                      placeholder: (baseStyles) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                      }),
-                      indicatorSeparator: () => ({
-                        display: 'none',
-                      }),
-                      dropdownIndicator: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                        '&:hover': {
-                          color: '#3E3E3E',
-                        },
-
-                      }),
-                      option: (baseStyles, state) => ({
-                        ...baseStyles,
-                        fontSize: '13px',
-                        color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                        backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                        '&:hover': {
-                          backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                        },
-                        cursor: 'pointer',
-                      }),
-                      singleValue: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                      }),
-                      menu: (baseStyles) => ({
-                        ...baseStyles,
-                        width: '140px',
-                        marginTop: "0px"
-                      }),
-                    }}
-                  />
-<div
-                  ref={toggleRef}
-                  className={styles.calender}
-                  onClick={toggleCalendar}
-                >
-                  <img src={ICONS.includes_icon} alt="" />
-                </div>
+              <Select
+                value={selectedPeriod}
+                onChange={handlePeriodChange}
+                options={periodFilterOptions}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    marginTop: 'px',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    color: '#3E3E3E',
+                    width: '140px',
+                    height: '36px',
+                    fontSize: '12px',
+                    border: '1px solid #d0d5dd',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    alignContent: 'center',
+                    backgroundColor: '#fffff',
+                    boxShadow: 'none',
+                    '@media only screen and (max-width: 767px)': {
+                      width: '80px',
+                      // width: 'fit-content',
+                    },
+                    '&:focus-within': {
+                      borderColor: '#377CF6',
+                      boxShadow: '0 0 0 1px #377CF6',
+                      caretColor: '#3E3E3E',
+                    },
+                  }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none',
+                  }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                    '&:hover': {
+                      color: '#3E3E3E',
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: '13px',
+                    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                    },
+                    cursor: 'pointer',
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: '140px',
+                    marginTop: '0px',
+                  }),
+                }}
+              />
+              <div
+                ref={toggleRef}
+                className={styles.calender}
+                onClick={toggleCalendar}
+              >
+                <img src={ICONS.includes_icon} alt="" />
+              </div>
+            </div>
           </div>
-
-          </div>
-           {/* RABINDR718.....DATE_PICKER ENDED */}
-        
-          
-          
-          
-
+          {/* RABINDR718.....DATE_PICKER ENDED */}
           <div
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
-            <ResponsiveContainer
-              className={styles.chart_main_grid}
-              width="100%"
-              height={300}
-            >
-              <LineChart data={lineData}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  className={styles.lineChart_legend}
-                  formatter={(value) =>
-                    value === 'won' ? 'Total won' : 'Total Lost'
-                  }
-                  wrapperStyle={{ fontSize: '12px',fontWeight:550,marginBottom:-15 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="won"
-                  stroke="#57B93A"
-                  strokeWidth={2}
-                  name="won"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="lost"
-                  stroke="#CD4040"
-                  strokeWidth={2}
-                  name="lost"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {loading ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <MicroLoader />
+              </div>
+            ) : (
+              lineData.length > 0 ? (
+                <>
+                  <ResponsiveContainer
+                    className={styles.chart_main_grid}
+                    width="100%"
+                    height={300}
+                  >
+                    <LineChart data={lineData}>
+                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend
+                        className={styles.lineChart_legend}
+                        formatter={(value) =>
+                          value === 'won' ? 'Total won' : 'Total Lost'
+                        }
+                        wrapperStyle={{
+                          fontSize: '12px',
+                          fontWeight: 550,
+                          marginBottom: -15,
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="won"
+                        stroke="#57B93A"
+                        strokeWidth={2}
+                        name="won"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="lost"
+                        stroke="#CD4040"
+                        strokeWidth={2}
+                        name="lost"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </>
+              ) : (
+                <DataNotFound />
+              )
+            )}
           </div>
         </div>
       </div>
@@ -908,13 +1058,20 @@ const handlePeriodChange = (
         <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
           {selectedLeads.length === 0 ? (
             <>
-               <div className={styles.buttonGroup}>
-                {['Pending', 'Sent', 'Accepted', 'Declined','Action Needed'].map((status) => (
+              <div className={styles.buttonGroup}>
+                {[
+                  'Pending',
+                  'Sent',
+                  'Accepted',
+                  'Declined',
+                  'Action Needed',
+                ].map((status) => (
                   <button
                     key={status}
                     className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}
-                     ${status === 'Action Needed' ? styles.action_needed_btn : ''}`} 
-                     onClick={() => handleFilterClick(status)}>
+                    ${status === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                    onClick={() => handleFilterClick(status)}
+                  >
                     <p
                       className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}
                     >
@@ -924,19 +1081,17 @@ const handlePeriodChange = (
                   </button>
                 ))}
               </div>
+
+              {/* RABINDRA */}
+              {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
+              <HistoryRedirect />
               <div className={styles.filterCallToAction}>
-                <div className={styles.filtericon} onClick={handleHistory}>
-                  <img
-                    src={ICONS.historyLeadMgmt}
-                    alt=""
-                    width="100"
-                    height="100"
-                  />
-                </div>
                 <div className={styles.filtericon} onClick={handleAddLead}>
                   <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                 </div>
               </div>
+
+              {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
             </>
           ) : (
             <div className={styles.selectionHeader}>
@@ -965,7 +1120,15 @@ const handlePeriodChange = (
               {currentLeads.map((lead, index) => (
                 <React.Fragment key={index}>
                   <tr className={styles.history_lists}>
-                    <td className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
+                    <td
+                      className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
+                      onClick={() =>
+                        lead.status === 'Declined' ||
+                          lead.status === 'Action Needed'
+                          ? ''
+                          : handleOpenModal()
+                      }
+                    >
                       <label>
                         <input
                           type="checkbox"
@@ -998,7 +1161,6 @@ const handlePeriodChange = (
                         </span>
                       </div>
                       <div className={styles.address}>{lead.address}</div>
-                     
 
                       {lead.status === 'Declined' && (
                         <div className={styles.actionButtons}>
@@ -1008,27 +1170,25 @@ const handlePeriodChange = (
                           >
                             Reschedule
                           </button>
-                          {
-                            isTablet ?
+                          {isTablet ? (
                             <button
-                            onClick={() => handleArchive(lead)}
-                            className={styles.archiveButton}
+                              onClick={() => handleArchive(lead)}
+                              className={styles.archiveButton}
                             >
-                              <img src={ICONS.declinedArchive}/>
+                              <img src={ICONS.declinedArchive} />
                             </button>
-                            :
+                          ) : (
                             <button
-                            onClick={() => handleArchive(lead)}
-                            className={styles.archiveButton}
-                          >
-                            Archive
-                          </button>
-                          }
-                         
+                              onClick={() => handleArchive(lead)}
+                              className={styles.archiveButton}
+                            >
+                              Archive
+                            </button>
+                          )}
                         </div>
                       )}
 
-                    {lead.status === 'Action Needed' && (
+                      {lead.status === 'Action Needed' && (
                         <div className={styles.actionButtons}>
                           <button
                             onClick={() => handleReschedule(lead)}
@@ -1036,7 +1196,6 @@ const handlePeriodChange = (
                           >
                             Reschedule
                           </button>
-                         
                         </div>
                       )}
 
@@ -1084,36 +1243,31 @@ const handlePeriodChange = (
             </tbody>
           </table>
 
-    {/* HERE IMPLEMENT PAGINATION */}
+          {/* HERE IMPLEMENT PAGINATION */}
 
-    <div className={styles.leadpagination}>
+          <div className={styles.leadpagination}>
+            {filteredLeads.length > 0 && (
+              <div className={styles.leftitem}>
+                <p className={styles.pageHeading}>
+                  {indexOfFirstItem + 1} -{' '}
+                  {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
+                  {filteredLeads.length} items
+                </p>
+              </div>
+            )}
 
-{ filteredLeads.length > 0 && <div className={styles.leftitem}>
-        <p className={styles.pageHeading}>
-        {indexOfFirstItem + 1} -{' '}
-        {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
-        {filteredLeads.length} items
-      </p>
-</div>}
-
-
-
-  <div className={styles.rightitem}>
-  <Pagination
-      currentPage={currentPage}
-      totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
-      paginate={paginate}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-      perPage={itemsPerPage}
-      currentPageData={currentLeads}
-    />
-  </div>
-
-
-
-</div>
-
+            <div className={styles.rightitem}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
+                paginate={paginate}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+                currentPageData={currentLeads}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

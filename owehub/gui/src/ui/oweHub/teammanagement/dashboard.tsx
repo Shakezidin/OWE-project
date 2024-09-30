@@ -153,11 +153,11 @@ const TeamManagement: React.FC = () => {
         <NewTeam
           handleClose2={handleClose2}
           setRefetch={setRefetch}
-        // onSubmitCreateUser={onSubmitCreateTeam}
+          // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
 
-      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
         <Breadcrumb
           head=""
           linkPara="Teams"
@@ -176,7 +176,7 @@ const TeamManagement: React.FC = () => {
               return (
                 <div
                   key={index}
-                // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
+                  // className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
                   <div className="teamdash-header">
                     <h1>Total Teams: {teams?.length}</h1>
@@ -214,12 +214,12 @@ const TeamManagement: React.FC = () => {
                         ) : null}
                         {(roleAdmin === TYPE_OF_USER.ADMIN ||
                           roleAdmin === TYPE_OF_USER.FINANCE_ADMIN) && (
-                            <DropWithCheck
-                              selectedOptions={selectedOptions}
-                              setSelectedOptions={setSelectedOptions}
-                              options={dealerOption}
-                            />
-                          )}
+                          <DropWithCheck
+                            selectedOptions={selectedOptions}
+                            setSelectedOptions={setSelectedOptions}
+                            options={dealerOption}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -283,10 +283,10 @@ const TeamManagement: React.FC = () => {
                                     </h1>
                                   </div>
                                   {roleAdmin === TYPE_OF_USER.ADMIN ||
-                                    roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
-                                    roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
-                                    data?.role_in_team === 'manager' ||
-                                    roleAdmin ===
+                                  roleAdmin === TYPE_OF_USER.DEALER_OWNER ||
+                                  roleAdmin === TYPE_OF_USER.FINANCE_ADMIN ||
+                                  data?.role_in_team === 'manager' ||
+                                  roleAdmin ===
                                     TYPE_OF_USER.SUB_DEALER_OWNER ? (
                                     <input
                                       type="checkbox"
