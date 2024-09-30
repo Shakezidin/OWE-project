@@ -12,8 +12,6 @@ const HistoryRedirect = () => {
     navigate('/leadmng-history');
   };
 
-
-
   const ArchivesTable = () => {
     navigate('/lead-dashboard-archieves');
   };
@@ -30,10 +28,9 @@ const HistoryRedirect = () => {
     paddingBottom: '0px',
   });
 
-
   const HistoryButtonCalled = (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log("called")
+    console.log('called');
     setModalOpenClick((prevState) => !prevState);
   };
   useEffect(() => {
@@ -47,6 +44,8 @@ const HistoryRedirect = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+ 
+
 
   useEffect(() => {
     const updateStyles = () => {
@@ -118,10 +117,15 @@ const HistoryRedirect = () => {
           onClick={(event) => event.stopPropagation()}
           ref={divRef}
         >
-          <ul >
+          <ul>
             {/* <ul style={{ borderRadius: '15px' }}> */}
-            <li style={{color:"#000 !important"}}  onClick={handleHistory}>History </li>
-            <li style={{color:"#000 !important"}} onClick={ArchivesTable}> Archives</li>
+            <li style={{ color: '#000 !important' }} onClick={handleHistory}>
+              History{' '}
+            </li>
+            <li style={{ color: '#000 !important' }} onClick={ArchivesTable}>
+              {' '}
+              Archives
+            </li>
           </ul>
         </div>
       )}

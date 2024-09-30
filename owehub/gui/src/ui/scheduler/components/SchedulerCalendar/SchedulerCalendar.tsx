@@ -4,15 +4,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../SchedulerCalendar/schedulerCalendar.module.css';
 
 const SchedulerCalendar: React.FC = () => {
-    const [isDatePickerOpen, setIsDatePickerOpen] = useState(true);
-    const [selectedDate, setSelectedDate] = useState(new Date()); // Current date
-    const [selectedTime, setSelectedTime] = useState(
-      new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      })
-    ); // Current time in 12-hour format
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Current date
+  const [selectedTime, setSelectedTime] = useState(
+    new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+  ); // Current time in 12-hour format
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);

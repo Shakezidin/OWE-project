@@ -11,7 +11,7 @@ import { ICONS } from '../../resources/icons/Icons';
 import { toast } from 'react-toastify';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 const LeadManagementNew = () => {
   const [formData, setFormData] = useState({
     first_name: '',
@@ -22,7 +22,7 @@ const LeadManagementNew = () => {
     zip_code: '',
     notes: '',
   });
-  console.log(formData, "form data consoling ")
+  console.log(formData, 'form data consoling ');
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -49,12 +49,12 @@ const LeadManagementNew = () => {
       }
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
-      errors.first_name = "";
+      errors.first_name = '';
       if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
       } else {
         setEmailError('');
-        errors.first_name = "";
+        errors.first_name = '';
       }
       const trimmedValue = value.replace(/\s/g, '');
 
@@ -100,7 +100,6 @@ const LeadManagementNew = () => {
     notes: '',
   };
 
-
   const validateForm = (formData: any) => {
     const errors: { [key: string]: string } = {};
 
@@ -137,27 +136,23 @@ const LeadManagementNew = () => {
     if (Object.keys(errors).length === 0) {
       setLoad(true);
       try {
-        const response = await postCaller(
-          'create_leads',
-          {
-            first_name: formData.first_name,
-            last_name: formData.last_name,
-            phone_number: formData.mobile_number,
-            email_id: formData.email_id,
-            street_address: formData.address,
-            zipcode: "84101",
-            notes: formData.notes,
-          },
-        );
+        const response = await postCaller('create_leads', {
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          phone_number: formData.mobile_number,
+          email_id: formData.email_id,
+          street_address: formData.address,
+          zipcode: '84101',
+          notes: formData.notes,
+        });
         if (response.status === 200) {
-          toast.success("Lead Created Succesfully");
+          toast.success('Lead Created Succesfully');
           resetFormData();
         } else if (response.status >= 201) {
           toast.warn(response.message);
         }
         setLoad(false);
-      }
-      catch (error) {
+      } catch (error) {
         setLoad(false);
         console.error('Error submitting form:', error);
       }
@@ -170,23 +165,23 @@ const LeadManagementNew = () => {
   const navigate = useNavigate();
   const handleBack = () => {
     navigate('/leadmng-dashboard');
-  }
+  };
 
   return (
-    <>
-      <div className={`${classes.main_head} ${classes.form_header}`}>
-        Create New Lead
+   <div className={classes.ScrollableDivRemove}>
+    <div className={`${classes.main_head} ${classes.form_header}`} >
+Create New Lead
         <img src={ICONS.cross} alt="" onClick={handleBack} />
       </div>
-      <div className={`flex justify-between mt2 ${classes.h_screen}`}>
-        <div className={classes.customer_wrapper_list}>
+      <div className={`flex justify-between mt2 ${classes.h_screen}`}  >
+        <div className={classes.customer_wrapper_list} >
           <form onSubmit={handleSubmit}>
-            <div className="modal-body">
-              <div className={classes.an_head}>Fill the Form</div>
-              <div className="scroll-user">
-                <div className={classes.createProfileInputView}>
-                  <div className={classes.createProfileTextView}>
-                    <div className={classes.salrep_input_container}>
+            <div className="modal-body" >
+              <div className={classes.an_head} >Fill the Form</div>
+              <div className="scroll-user" >
+                <div className={classes.createProfileInputView} >
+                  <div className={classes.createProfileTextView} >
+                    <div className={classes.salrep_input_container} >
                       <div className={classes.srs_new_create}>
                         <Input
                           type="text"
@@ -196,7 +191,7 @@ const LeadManagementNew = () => {
                           onChange={handleInputChange}
                           name="first_name"
                           maxLength={100}
-                        // backgroundColor="#F3F3F3"
+                          // backgroundColor="#F3F3F3"
                         />
                         {errors.first_name && (
                           <span
@@ -235,7 +230,7 @@ const LeadManagementNew = () => {
                     <div className={classes.salrep_input_container}>
                       <div
                         className={classes.srs_new_create}
-                      // style={{ marginTop: '-4px' }}
+                        // style={{ marginTop: '-4px' }}
                       >
                         <label className="inputLabel">Phone Number</label>
                         <PhoneInput
@@ -253,9 +248,12 @@ const LeadManagementNew = () => {
                             }));
                           }}
                         />
-                        {phoneNumberError || errors.mobile_number && (
-                          <p className="error-message">{phoneNumberError || errors.mobile_number}</p>
-                        )}
+                        {phoneNumberError ||
+                          (errors.mobile_number && (
+                            <p className="error-message">
+                              {phoneNumberError || errors.mobile_number}
+                            </p>
+                          ))}
                       </div>
 
                       <div className={classes.srs_new_create}>
@@ -266,7 +264,7 @@ const LeadManagementNew = () => {
                           placeholder={'email@mymail.com'}
                           onChange={(e) => handleInputChange(e)}
                           name={'email_id'}
-                        // disabled={formData.isEdit}
+                          // disabled={formData.isEdit}
                         />
                         {(emailError || errors.email_id) && (
                           <div className="error-message">
@@ -308,7 +306,9 @@ const LeadManagementNew = () => {
                           maxLength={8}
                         />
                         {(zip_codeError || errors.zip_code) && (
-                          <div className="error-message">{zip_codeError || errors.zip_code}</div>
+                          <div className="error-message">
+                            {zip_codeError || errors.zip_code}
+                          </div>
                         )}
                       </div>
 
@@ -327,12 +327,12 @@ const LeadManagementNew = () => {
                           placeholder="Write"
                         ></textarea>
                         <p
-                          className={`character-count ${formData.notes.trim().length >= 500
-                            ? 'exceeded'
-                            : ''
-                            }`}
+                          className={`character-count ${
+                            formData.notes.trim().length >= 500
+                              ? 'exceeded'
+                              : ''
+                          }`}
                         >
-                          {/* {formData.notes.trim().length}/500 characters */}
                         </p>
                       </div>
                     </div>
@@ -345,7 +345,7 @@ const LeadManagementNew = () => {
                 className={classes.submitbut}
                 disabled={load}
                 onClick={handleSubmit}
-                style={{ pointerEvents: load ? "none" : "auto" }}
+                style={{ pointerEvents: load ? 'none' : 'auto' }}
               >
                 {load ? 'Submitting...' : 'Submit'}
               </button>
@@ -353,7 +353,7 @@ const LeadManagementNew = () => {
           </form>
         </div>
       </div>
-    </>
+   </div>
   );
 };
 

@@ -23,7 +23,7 @@ import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
-
+import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -140,7 +140,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <>
-      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
         <Breadcrumb
           head=""
           linkPara="Dealer Pay"
@@ -428,8 +428,9 @@ export const DashboardPage: React.FC = () => {
             <div className="dashboard-payroll">
               <div className="line-graph">
                 <div
-                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-line ${
+                    active === 0 ? 'active-filter-line' : ''
+                  }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -439,8 +440,9 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
-                    }`}
+                  className={`filter-disable ${
+                    active === 1 ? 'active-filter-line' : ''
+                  }`}
                   style={{ backgroundColor: '#377CF6' }}
                 >
                   {active === 1 ? (
@@ -474,7 +476,10 @@ export const DashboardPage: React.FC = () => {
                     style={{ height: '15px', width: '15px' }}
                   />
                 </div>
-                <button className={`performance-exportbtn  mt0 `} style={{height: "36px", padding: "8px 12px"}}>
+                <button
+                  className={`performance-exportbtn  mt0 `}
+                  style={{ height: '36px', padding: '8px 12px' }}
+                >
                   <FaUpload size={12} className="mr-1" />
                   <span>{' Export '}</span>
                 </button>

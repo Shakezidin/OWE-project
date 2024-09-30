@@ -14,7 +14,7 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const validateZipCode = (zipCode: string): boolean => {
-  return /^[0-9]{6,12}$/.test(zipCode.trim());
+  return /^[0-9]{5,12}$/.test(zipCode.trim());
 };
 
 export const validateMobileNumber = (mobileNumber: string): boolean => {

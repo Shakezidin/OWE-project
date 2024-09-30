@@ -29,8 +29,6 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
     onTimeChange(time);
   };
 
-  
-
   return (
     <div className="appointmentSchedulerContainer">
       <div className="selectorButtons">
@@ -112,22 +110,20 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       </div>
 
       <div className="sendAppointmentBtn">
-      <button 
-    onClick={() => {
-      if (selectedTime) {
-        setVisibleDiv(1);
-      } else {
-        console.log('Please select a time before proceeding.');
-      }
-    }}
-  >
-    SEND APPOINTMENT
-  </button>
-
+        <button
+          onClick={() => {
+            if (selectedTime) {
+              setVisibleDiv(1);
+            } else {
+              console.log('Please select a time before proceeding.');
+            }
+          }}
+        >
+          SEND APPOINTMENT
+        </button>
       </div>
     </div>
   );
 };
 
 export default AppointmentScheduler;
-
