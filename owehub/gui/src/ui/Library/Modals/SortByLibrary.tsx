@@ -8,27 +8,27 @@ interface SortByLibraryProps {
 
 const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<'none' | 'name' | 'date' | 'size'>('none');
-  const dropdownRef = useRef<HTMLDivElement | null>(null); // Ensure ref is applied correctly
+  const [selectedOption, setSelectedOption] = useState<
+    'none' | 'name' | 'date' | 'size'
+  >('none');
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleClick = () => {
-    setIsVisible(prev => !prev);
+    setIsVisible((prev) => !prev);
   };
 
   const handleSortChange = (option: 'none' | 'name' | 'date' | 'size') => {
     setSelectedOption(option);
     onSort(option);
-    setIsVisible(false); // Close dropdown when a sort option is selected
+    setIsVisible(false);
   };
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
-    // Debugging: Check if the ref and event.target are working as expected
-    console.log("Click event:", event.target);
-    console.log("Dropdown ref:", dropdownRef.current);
-
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsVisible(false); // Close dropdown if clicked outside
-      console.log("Clicked outside, closing dropdown");
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsVisible(false);
     }
   }, []);
 
@@ -46,17 +46,17 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
         className={`${classes.logo_sortby_botton} ${isVisible ? classes.active : ''}`}
       >
         Sort by
-        <FaChevronDown className={classes.icon} />
+        <FaChevronDown className={`${classes.icon} ${isVisible ? classes.icon_active : ''}`} />
       </button>
 
       {isVisible && (
-        // <ul className={classes.sortlibrary_inner_div}>
         <ul className={classes.dropdownMenu}>
-        {['none', 'name', 'date', 'size'].map(option => (
+          {['none', 'name', 'date', 'size'].map((option) => (
             <li
               key={option}
-              onClick={() => handleSortChange(option as 'none' | 'name' | 'date' | 'size')}
-              // className={`${classes.sortbylibrary_all} ${selectedOption === option ? classes.selected : ''}`}
+              onClick={() =>
+                handleSortChange(option as 'none' | 'name' | 'date' | 'size')
+              }
               className={`${classes.dropdownItem} ${selectedOption === option ? classes.selected : ''}`}
             >
               {option.charAt(0).toUpperCase() + option.slice(1)}

@@ -7,11 +7,13 @@ interface DropDownLibraryProps {
   onSelectType: (type: string) => void;
 }
 
-const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ selectedType, onSelectType }) => {
+const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
+  selectedType,
+  onSelectType,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  // const [selectedType, setSelectedType] = useState('All'); 
   const dropdownRef = useRef<HTMLUListElement | null>(null);
   const buttonRef = useRef<HTMLDivElement | null>(null);
 
@@ -21,7 +23,6 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ selectedType, onSelec
   };
 
   const handleSelect = (type: string) => {
-    // setSelectedType(type); 
     onSelectType(type);
     setIsVisible(false);
     setIsClicked(false);
@@ -55,8 +56,10 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ selectedType, onSelec
         onClick={toggleDropdown}
         onMouseLeave={() => setIsHovered(false)}
         className={classes.verticalDots}
-        style={{ backgroundColor: isHovered || isClicked ? '#EFF5FF' : '', borderColor: isHovered || isClicked ? '#377cf6' : '#8C8C8C' }} // Corrected inline style
-
+        style={{
+          backgroundColor: isHovered || isClicked ? '#EFF5FF' : '',
+          borderColor: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
+        }} 
       >
         <BsThreeDotsVertical
           style={{
@@ -69,32 +72,32 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ selectedType, onSelec
 
       {isVisible && (
         <ul ref={dropdownRef} className={classes.dropdownMenu}>
-          <li 
-            onClick={() => handleSelect('All')} 
+          <li
+            onClick={() => handleSelect('All')}
             className={`${classes.dropdownItem} ${selectedType === 'All' ? classes.selected : ''}`}
           >
             All
           </li>
-          <li 
-            onClick={() => handleSelect('Excel')} 
+          <li
+            onClick={() => handleSelect('Excel')}
             className={`${classes.dropdownItem} ${selectedType === 'Excel' ? classes.selected : ''}`}
           >
             Excel
           </li>
-          <li 
-            onClick={() => handleSelect('PDF Format')} 
+          <li
+            onClick={() => handleSelect('PDF Format')}
             className={`${classes.dropdownItem} ${selectedType === 'PDF Format' ? classes.selected : ''}`}
           >
             PDF Format
           </li>
-          <li 
-            onClick={() => handleSelect('Images')} 
+          <li
+            onClick={() => handleSelect('Images')}
             className={`${classes.dropdownItem} ${selectedType === 'Images' ? classes.selected : ''}`}
           >
             Images
           </li>
-          <li 
-            onClick={() => handleSelect('Videos')} 
+          <li
+            onClick={() => handleSelect('Videos')}
             className={`${classes.dropdownItem} ${selectedType === 'Videos' ? classes.selected : ''}`}
           >
             Videos

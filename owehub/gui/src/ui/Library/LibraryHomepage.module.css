@@ -7,8 +7,15 @@
   background-color: #eff5ff;
 }
 
-.libraryHeader{
-  padding: 12px 5px !important;
+.libraryHeader {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 30px;
+  text-align: left;
+  color: #263747;
 }
 
 .libGridItem {
@@ -37,12 +44,12 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff;
-    padding: 24px;
-    border-top-left-radius: 16px !important;
-    border-top-right-radius: 16px !important;
-  }
+  align-items: center;
+  background-color: #ffffff;
+  padding: 24px;
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+}
 
 .recycle_div {
   display: flex;
@@ -79,6 +86,7 @@
   gap: 15px;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .buttons {
@@ -93,21 +101,21 @@
   cursor: pointer;
 }
 
-.filter_button{
+.filter_button {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 14px;
   border-radius: 18px;
-  border: 1px solid #377CF6;
+  border: 1px solid #377cf6;
   padding: 2px 20px;
-    font-family: poppins;
-    font-weight: 500;
-    font-size: 16px;
-    color: #377CF6;
-    background-color: #fff;
-    cursor: pointer;
+  font-family: poppins;
+  font-weight: 500;
+  font-size: 16px;
+  color: #377cf6;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .buttons:hover {
@@ -116,25 +124,19 @@
   border: 1px solid #377cf6;
 }
 
-/* .clickedButton{
-  color: #377CF6; 
-  background-color: #EFF5FF;
-} */
-
 .recycleBin {
+  position: relative;
   display: flex;
   align-items: center;
   justify-items: center;
-  /* height: 30px;
-  width: 30px; */
+
   border-radius: 8px;
   border: 1px solid #afafaf;
 }
 
-.recycleBin:hover{
-  border: 1px solid #377CF6;
-  background-color: #EFF5FF;
-
+.recycleBin:hover {
+  border: 1px solid #377cf6;
+  background-color: #eff5ff;
 }
 .recycleBin img:hover {
   fill: #377cf6;
@@ -144,18 +146,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px; /* Adjust the size of the circle */
-  height: 30px; /* Make height equal to width for a perfect circle */
-  border: 1px solid #989898; /* Border for the circle */
-  border-radius: 50%; /* This makes the div a circle */
+  width: 30px;
+  height: 30px;
+  border: 1px solid #989898;
+  border-radius: 50%;
   cursor: pointer;
-  background-color: white; /* Optional: Set a background color */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
-  transition: background-color 0.2s ease; /* Optional: Add a hover effect */
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
 }
 
 .verticalDots:hover {
-  border: 1px solid #377cf6; /* Border for the circle */
+  border: 1px solid #377cf6;
 }
 
 .recycleBin img {
@@ -187,7 +189,6 @@
 }
 
 .customer_wrapper_list {
-  /* flex-basis: 100%; */
   width: 100%;
   border-radius: 8px;
   background-color: #fff;
@@ -201,18 +202,15 @@
 }
 .searchWrapper input:hover {
   border: none;
-  /* background-color: #EFF5FF; */
-}.searchWrapper input:active{
+}
+.searchWrapper input:active {
   border: none;
-  /* background-color: #EFF5FF; */
-}.searchWrapper input:focus-visible{
+}
+.searchWrapper input:focus-visible {
   border: none;
-  /* background-color: #EFF5FF; */
-
-}.searchWrapper input:focus-within{
+}
+.searchWrapper input:focus-within {
   border: none;
-  /* background-color: #EFF5FF; */
-
 }
 
 .sorting {
@@ -235,8 +233,6 @@
 .grid_icon {
   display: flex;
   flex-direction: row;
-  /* align-items: center;
-  justify-content: center; */
   gap: 16px;
 }
 
@@ -273,7 +269,7 @@
 }
 
 .libGridItem {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Black color with 10% opacity */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .size {
@@ -295,15 +291,14 @@
 }
 
 .searchWrapper:hover .search_icon {
-  color: #377CF6; /* Change icon color on hover */
+  color: #377cf6;
 }
 
 .searchWrapper:hover input::placeholder {
-  color: #377CF6; /* Change placeholder color on hover */
+  color: #377cf6;
 }
 
-
-.recycleBinContent{
+.recycleBinContent {
   position: absolute;
   top: 165px;
   right: 35px;
@@ -328,23 +323,81 @@
 
 .searchWrapper:hover {
   border: 1px solid #377cf6;
-  /* color: #EFF5FF; */
 }
 
 .verticalDots:active {
   border-color: #377cf6;
-  background-color: #EFF5FF;
-
+  background-color: #eff5ff;
 }
 
-.libraryHeader h3 {
-  font-size: 18px;
-  font-family: 'poppins', sans-serif;
+.deleteWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete_left {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete_right {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.undoButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.selectedCount {
+  font-family: 'poppins' sans-serif;
+  font-size: 15px;
   font-weight: 600;
 }
 
-/* .libraryContainer{
-  background-color: #fff;
-  border-bottom-left-radius: 16px !important;
-  border-bottom-right-radius: 16px !important;
-} */
+.DeleteButton {
+  font-family: 'poppins' sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  background-color: #ff0000;
+  cursor: pointer;
+}
+
+.noParagraph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'poppins', sans-serif;
+  font-weight: 600;
+  padding: 35px;
+}
+
+.recycleSpan {
+  position: absolute;
+  font-family: 'poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #377cf6;
+  top: 33px;
+  right: -52px;
+  visibility: hidden;
+  width: 100px;
+}
+
+.recycleBin:hover .recycleSpan {
+  visibility: visible;
+}
