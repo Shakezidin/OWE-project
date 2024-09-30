@@ -75,20 +75,6 @@ const ConfigurePage: React.FC = () => {
                   key={index}
                   className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
-                  <div
-                    className="configure-card-title"
-                    onClick={toggleAccordion(setIsOpen)}
-                  >
-                    <p className="payer-type">{title}</p>
-                    <div className="accordion-icon-container">
-                      {isOpen ? (
-                        <FaMinus className="accordion-icon" />
-                      ) : (
-                        <FaPlus className="accordion-icon" />
-                      )}
-                    </div>
-                  </div>
-
                   <div className={`configure-cards ${isOpen ? 'open' : ''}`}>
                     {data.map((item, index) => {
                       const colorIndex =

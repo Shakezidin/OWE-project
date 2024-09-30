@@ -1,40 +1,51 @@
 import React, { useState } from 'react';
 import classes from './styles/deletefile.module.css';
-import { useNavigate } from 'react-router-dom';
 import { ICONS } from '../../../resources/icons/Icons';
 
-const DeleteFileModal = () => {
-  const navigate = useNavigate();
-  // const [confirmModal, setConfirmModal]=useState(false);
-  const [visibleDiv, setVisibleDiv] = useState(1);
+interface propGet{
+  setIsVisible:(visible: boolean) => void;
+}
+const DeleteFileModal:React.FC<propGet> = ({setIsVisible}) => {
+  
 
-  return (
-    // <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
-    <div>
-      <div className="transparent-model">
-        <div className={classes.customer_wrapper_list}>
-          <>
-            {' '}
-            <div className={classes.success_not}>
-              <div className={classes.succicon}>
-                <img src={ICONS.deleteFileLibrary} alt="" />
-              </div>
-              <div className={classes.heading}>
-                <h2>Are You Sure? </h2>
-                <p>Do you really want to delete this?</p>
-              </div>
-            </div>
-            <div className={classes.survey_button}>
-              <button className={classes.self}>Cancel</button>
-              <button id="otherButtonId" className={classes.other}>
-                Delete
-              </button>
-            </div>
-          </>
+    return (
+      
+        <div className={classes.transparent_lib}>
+          <div className={classes.customer_wrapper_list}>
+            
+           
+              <>
+                {' '}
+                <div className={classes.success_not}>
+                  <div className={classes.succicon}>
+                     <img src={ICONS.deleteFileLibrary} alt="" />
+                  </div>
+                  <div className={classes.heading}>
+                        <h2>Are You Sure? </h2>
+                        <p>Do you really want to delete this?</p>
+                  </div>
+                </div>
+                <div className={classes.survey_button}>
+                  <button
+                    className={classes.self}
+                    onClick={()=>setIsVisible(false)}
+                   
+                  >
+                    Cancel
+                  </button>
+                  <button id="otherButtonId" className={classes.other}
+                  onClick={()=>setIsVisible(false)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+           
+         
+          </div>
         </div>
-      </div>
-    </div>
-  );
-};
+      
+    );
+  };
 
 export default DeleteFileModal;
