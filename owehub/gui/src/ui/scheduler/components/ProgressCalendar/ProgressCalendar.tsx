@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, memo } from 'react';
 import {
   DayPicker,
   DayButtonProps,
@@ -179,4 +179,4 @@ const DayPickerCalendar = ({
   );
 };
 
-export default DayPickerCalendar;
+export default memo(DayPickerCalendar);
