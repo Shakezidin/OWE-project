@@ -112,27 +112,6 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	//appointmentDate := data[0]["appointment_date"].(*time.Time)
-
-	// // Print the type of appointment_date
-	// log.FuncDebugTrace(0, "Type of appointment_date: %+v\n", appointmentDate)
-
-	// log.FuncDebugTrace(0, "Type of appointment_date: %T\n", appointmentDate)
-
-	//appointmentDate, ok := data[0]["appointment_date"].(*time.Time)
-	// if !ok {
-	// 	log.FuncErrorTrace(0, "Failed to get the appointmentDate from leads info table: %+v\n", data[0])
-	// 	FormAndSendHttpResp(resp, "Failed to get the appointmentDate from leads info table", http.StatusInternalServerError, nil, 0)
-	// 	return
-	// }
-	//**********************************************************************************************//
-
-	// Get the current time (equivalent to CURRENT_TIMESTAMP in SQL)
-	// currentTime := time.Now()
-
-	// Compare appointment date with the current time
-	// if appointmentDate.Before(currentTime) {
-
 	query = "UPDATE leads_info SET status_id = 5,updated_at = CURRENT_TIMESTAMP, lead_won_date = CURRENT_TIMESTAMP, last_updated_by = $1 WHERE leads_id = $2;"
 
 	whereEleList = append(whereEleList, creatorUserId)
@@ -147,5 +126,4 @@ func HandleWonRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	FormAndSendHttpResp(resp, "Won status updated successfully", http.StatusOK, nil, 0)
-	//}
 }

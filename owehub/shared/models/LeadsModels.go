@@ -38,6 +38,7 @@ type GetLeadsData struct {
 	AppointmentDispositionNote string     `json:"appointment_disposition_note"`
 	IsArchived                 bool       `json:"is_archived"`
 	Notes                      string     `json:"notes"`
+	ActionNeededMessage        string     `json:"action_needed_message"`
 }
 
 // This struct is for deleting Leads

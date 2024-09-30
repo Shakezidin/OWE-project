@@ -33,6 +33,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		query        string
 		offset       int
 		whereEleList []interface{}
+		whereClause  string
 	)
 
 	log.EnterFn(0, "HandleGetLeadsDataRequest")
@@ -95,7 +96,15 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			offset = (dataReq.PageNumber - 1) * dataReq.PageSize
 		}
 
-		query = `
+		if dataReq.LeadStatusId == 4 {
+			whereClause = "WHERE (li.status_id = 5 and proposal_created_date is NULL) or (li.status_id = 2 and appointment_date < CURRENT_TIMESTAMP)"
+		} else if dataReq.LeadStatusId == 2 {
+			whereClause = "WHERE li.status_id = 2 and li.appointment_date > CURRENT_TIMESTAMP"
+		} else {
+			whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.LeadStatusId)
+		}
+
+		query = fmt.Sprintf(`
 			SELECT
 				li.leads_id,
 				li.state,
@@ -115,13 +124,46 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.appointment_date,
 				li.appointment_disposition_note,
 				li.is_archived,
-				li.notes
+				li.notes,
+				li.status_id
+				
 			FROM get_leads_info_hierarchy($1) li
-			WHERE li.status_id = $2
+			%s
 			AND li.is_archived = $3
 			AND li.created_at >= TO_DATE($4, 'DD-MM-YYYY')
 			AND li.created_at <= TO_DATE($5, 'DD-MM-YYYY')
-			LIMIT $6 OFFSET $7`
+			LIMIT $6 OFFSET $7`,
+			whereClause,
+		)
+		// `
+		// 	SELECT
+		// 		li.leads_id,
+		// 		li.state,
+		// 		li.first_name,
+		// 		li.last_name,
+		// 		li.email_id,
+		// 		li.phone_number,
+		// 		li.street_address,
+		// 		li.city,
+		// 		li.zipcode,
+		// 		li.proposal_type,
+		// 		li.finance_type,
+		// 		li.finance_company,
+		// 		li.sale_submission_triggered,
+		// 		li.qc_audit,
+		// 		li.proposal_signed,
+		// 		li.appointment_date,
+		// 		li.appointment_disposition_note,
+		// 		li.is_archived,
+		// 		li.notes,
+		// 		li.status_id
+
+		// 	FROM get_leads_info_hierarchy($1) li
+		// 	WHERE li.status_id = $2
+		// 	AND li.is_archived = $3
+		// 	AND li.created_at >= TO_DATE($4, 'DD-MM-YYYY')
+		// 	AND li.created_at <= TO_DATE($5, 'DD-MM-YYYY')
+		// 	LIMIT $6 OFFSET $7`
 
 		whereEleList = append(whereEleList,
 			userEmail,
@@ -262,6 +304,26 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				notes = ""
 			}
 
+			status_id, ok := item["status_id"].(int64)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get won status from leads info Item: %+v\n", item)
+				notes = ""
+			}
+
+			// variable for action needed message
+			action_needed_message := ""
+
+			// cerating action needed message
+			if dataReq.LeadStatusId == 4 {
+				if status_id == 2 {
+					action_needed_message = "Update Status"
+				} else if status_id == 5 {
+					action_needed_message = "Deal Won"
+				} else {
+					action_needed_message = "Other"
+				}
+			}
+
 			LeadsData := models.GetLeadsData{
 				LeadID:                     leads_id,
 				State:                      state,
@@ -282,6 +344,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				AppointmentDispositionNote: appointment_disposition_note,
 				IsArchived:                 is_archived,
 				Notes:                      notes,
+				ActionNeededMessage:        action_needed_message,
 			}
 
 			LeadsDataList = append(LeadsDataList, LeadsData)
