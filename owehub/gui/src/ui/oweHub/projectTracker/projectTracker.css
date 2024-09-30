@@ -19,7 +19,6 @@
   cursor: not-allowed;
 }
 
-
 .mobile-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -42,7 +41,7 @@
 
 .pipeline-googlemap svg {
   font-size: 20px;
-  color: #377CF6;
+  color: #377cf6;
 }
 
 .performance-exportbtn {
@@ -56,7 +55,7 @@
   margin-top: 7px;
   height: 40px;
   width: 40px;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   width: fit-content;
 }
 
@@ -1310,7 +1309,6 @@
   }
 }
 
-
 @media (max-width: 1200px) {
   .project-status-head-card {
     flex-direction: column;
@@ -1412,7 +1410,6 @@
     width: 200px;
   }
 }
-
 
 @media (max-width: 890px) {
   .performance-bars {
@@ -1841,7 +1838,6 @@
 }
 
 @media (max-width: 768px) {
-
   .select-container .css-1n894bm-control,
   .select-container .css-xego5g-control {
     margin-top: 1rem;

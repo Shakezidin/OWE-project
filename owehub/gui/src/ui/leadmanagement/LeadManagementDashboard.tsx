@@ -42,6 +42,8 @@ import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -465,7 +467,7 @@ const LeadManagementDashboard = () => {
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
-
+  console.log(currentFilter, "data i want to fetch")
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(
@@ -547,7 +549,7 @@ const LeadManagementDashboard = () => {
     };
   }, []);
   // shams end
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const navigate = useNavigate();
 
   const handleHistory = () => {
@@ -560,10 +562,10 @@ const LeadManagementDashboard = () => {
 
   useEffect(() => {
     if (pieData.length > 0) {
-    const pieName = pieData[activeIndex].name;
-    const newFilter = statusMap[pieName as keyof typeof statusMap];
-    setCurrentFilter(newFilter);
-    setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+      const pieName = pieData[activeIndex].name;
+      const newFilter = statusMap[pieName as keyof typeof statusMap];
+      setCurrentFilter(newFilter);
+      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
     }
   }, [activeIndex]);
 
@@ -623,16 +625,7 @@ const LeadManagementDashboard = () => {
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
   };
-  console.log('currentFilter', currentFilter);
-
-  const toggleLeadExpansion = (leadId: string) => {
-    setExpandedLeads((prev) =>
-      prev.includes(leadId)
-        ? prev.filter((id) => id !== leadId)
-        : [...prev, leadId]
-    );
-  };
-
+  
   const handleChevronClick = (id: string) => {
     setToggledId((prevId) => (prevId === id ? null : id));
   };
@@ -647,7 +640,7 @@ const LeadManagementDashboard = () => {
   };
 
 
-  // ************************ Charts API Integration By Saurabh ********************************\\
+  // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
   const [loading, setIsLoading] = useState(false);
@@ -694,15 +687,13 @@ const LeadManagementDashboard = () => {
       fetchData();
     }
   }, [isAuthenticated, selectedDates]);
-  
+
   const defaultData: DefaultData = {
     PENDING: { name: 'Pending leads', value: 0, color: '#FF832A' },
     SENT: { name: 'Appointment sent', value: 0, color: '#81A6E7' },
     ACCEPTED: { name: 'Appointment accepted', value: 0, color: '#52B650' },
     DECLINED: { name: 'Appointment declined', value: 0, color: '#CD4040' },
     'ACTION NEEDED': { name: 'Action Needed', value: 0, color: '#63ACA3' },
-    WON: { name: 'Won', value: 0, color: '#FFC0CB' },
-    LOST: { name: 'Lost', value: 0, color: '#800080' },
   };
   interface DefaultData {
     [key: string]: StatusData;
@@ -764,6 +755,50 @@ const LeadManagementDashboard = () => {
     calculateTotalValue();
   }, [pieData]);
 
+
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector(
+    (state) => state.leadManagmentSlice
+  );
+  useEffect(() => {
+    if (isAuthenticated) {
+      let statusId;
+      switch (currentFilter) {
+        case 'Action Needed':
+          statusId = 4;
+          break;
+        case 'Pending':
+          statusId = 0;
+          break;
+        case 'Sent':
+          statusId = 1;
+          break;
+        case 'Accepted':
+          statusId = 2;
+          break;
+        case 'Declined':
+          statusId = 3;
+          break;
+        default:
+          statusId = 0;
+      }
+  
+      const data = {
+        start_date: selectedDates.startDate
+          ? format(selectedDates.startDate, 'dd-MM-yyyy')
+          : '',
+        end_date: selectedDates.endDate
+          ? format(selectedDates.endDate, 'dd-MM-yyyy')
+          : '',
+        status_id: statusId,
+        is_archived: false,
+        page_size: 10,
+        page_number: currentPage,
+      };
+  
+      dispatch(getLeads(data));
+    }
+  }, [selectedDates, isAuthenticated, itemsPerPage, currentPage, currentFilter]);
 
   //************************************************************************************************ */
   return (

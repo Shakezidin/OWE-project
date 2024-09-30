@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import classes from './styles/dropdownlibrary.module.css'; 
+import classes from './styles/dropdownlibrary.module.css';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 interface DropDownLibraryProps {
@@ -25,16 +25,15 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ selectedType, onSelec
     onSelectType(type);
     setIsVisible(false);
     setIsClicked(false);
-
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (
-        dropdownRef.current && 
-        buttonRef.current && 
-        !dropdownRef.current.contains(target) && 
+        dropdownRef.current &&
+        buttonRef.current &&
+        !dropdownRef.current.contains(target) &&
         !buttonRef.current.contains(target)
       ) {
         setIsVisible(false);
@@ -65,7 +64,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({ selectedType, onSelec
             width: '20px',
             color: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
           }}
-        />      
+        />
       </div>
 
       {isVisible && (

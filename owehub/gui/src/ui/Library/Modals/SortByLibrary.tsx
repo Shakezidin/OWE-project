@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import classes from './styles/sortby.module.css';
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from 'react-icons/fa6';
 
 interface SortByLibraryProps {
   onSort: (option: 'none' | 'name' | 'date' | 'size') => void;

@@ -435,8 +435,8 @@
   justify-content: flex-end;
   cursor: pointer;
 }
-.editPenStyle{
-padding-top: 1px;
+.editPenStyle {
+  padding-top: 1px;
 }
 
 .parentSpanBtn {
