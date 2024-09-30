@@ -9,6 +9,7 @@ interface textProps {
   linkparaSecond: string;
   route: string;
   marginLeftMobile?: string; // Added optional marginLeftMobile prop
+  cssStyles?: React.CSSProperties;
 }
 
 const Breadcrumb: React.FC<textProps> = ({
@@ -16,7 +17,8 @@ const Breadcrumb: React.FC<textProps> = ({
   linkPara,
   linkparaSecond,
   route,
-  marginLeftMobile = '0', // Default value for marginLeftMobile
+  marginLeftMobile = '0', // Default value for marginLeftMobile,
+  cssStyles,
 }) => {
   const navigate = useNavigate();
   const isMobile = useMatchMedia('(max-width: 767px)');
@@ -26,6 +28,7 @@ const Breadcrumb: React.FC<textProps> = ({
       className="breadcrumb-container"
       style={{
         marginLeft: isMobile ? marginLeftMobile : '0',
+        ...cssStyles,
       }}
     >
       <div className="bread-link">
@@ -36,7 +39,7 @@ const Breadcrumb: React.FC<textProps> = ({
         >
           <h3>{linkPara}</h3>
         </div>
-        <GoChevronRight style={{ color: '#8688A0' }} />
+        {/* <GoChevronRight style={{ color: '#8688A0' }} /> */}
         <div className="">
           <p style={{ color: '#04a5e8', fontSize: '14px' }}>{linkparaSecond}</p>
         </div>

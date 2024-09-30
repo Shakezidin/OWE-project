@@ -13,7 +13,7 @@ const initialState: UserOnboardingStateModel = {
   dealerList: [],
   userPerformanceList: [],
   dbTables: [],
-  loading: false,
+  loading: true,
   error: null,
   totalCount: 0,
   dealerCount: 0,
@@ -22,7 +22,11 @@ const initialState: UserOnboardingStateModel = {
 const userManagementSlice = createSlice({
   name: 'userManagement',
   initialState,
-  reducers: {},
+  reducers: {
+    shuffleArray(state, action) {
+      state.userRoleBasedList = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(
@@ -38,6 +42,7 @@ const userManagementSlice = createSlice({
           const { mapList, userPerformanceList } = action.payload;
           state.loading = false;
           state.error = null;
+
           state.userOnboardingList =
             mapList && mapList.length > 0 ? mapList : [];
           state.userPerformanceList =
@@ -89,7 +94,9 @@ const userManagementSlice = createSlice({
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
           state.error = null;
-          state.userRoleBasedList = action.payload.users_data_list;
+          state.userRoleBasedList = action.payload.users_data_list.sort(
+            (a: any, b: any) => a.user_code?.localeCompare?.(b.user_code)
+          );
           state.totalCount = action.payload.count;
         }
       )
@@ -126,5 +133,5 @@ const userManagementSlice = createSlice({
       );
   },
 });
-
+export const { shuffleArray } = userManagementSlice.actions;
 export default userManagementSlice.reducer;

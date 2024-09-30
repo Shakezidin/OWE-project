@@ -15,5 +15,10 @@ type GetUsMgmtOnbData struct {
 type GetUsMgmtOnbList struct {
 	UsrMgmtOnbList  []GetUsMgmtOnbData `json:"usermgmt_onboarding_list"`
 	ActiveSaleRep   int64              `json:"active_sale_rep"`
-	InactiveSaleRep int64            `json:"inactive_sale_rep"`
+	InactiveSaleRep int64              `json:"inactive_sale_rep"`
+	Users           []string           `json:"string"`
+}
+
+type GetUserMngmnt struct {
+	Usertype string `json:"user_type"`
 }

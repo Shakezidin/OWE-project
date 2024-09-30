@@ -10,6 +10,7 @@
   padding-inline: 20px;
   max-width: 950px;
   height: 575px;
+  margin-left: 20px;
 }
 
 .customer_wrapper_list::-webkit-scrollbar {
@@ -51,6 +52,7 @@
 
 .an_top {
   font-size: 18px;
+  padding-left: 20px;
   font-weight: 600;
 }
 

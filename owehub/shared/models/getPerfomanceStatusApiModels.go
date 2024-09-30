@@ -9,16 +9,39 @@ package models
 type EmptyReq struct{}
 
 type PerfomanceStatusReq struct {
-	PageNumber   int `json:"page_number"`
-	PageSize     int `json:"page_size"`
-	Email        string
-	UniqueIds    []string `json:"unique_ids"`
-	ProjectLimit int
-	DealerName   interface{}
-	IntervalDays string
-	ItemLastSeen int64  `json:"item_last_seen"`
-	StartDate    string `json:"start_date"`
-	EndDate      string `json:"end_date"`
+	PageNumber        int    `json:"page_number"`
+	PageSize          int    `json:"page_size"`
+	SelectedMilestone string `json:"selected_milestone"`
+	Email             string
+	UniqueIds         []string `json:"unique_ids"`
+	ProjectLimit      int
+	DealerNames       []string `json:"dealer_names"`
+	IntervalDays      string
+	ItemLastSeen      int64    `json:"item_last_seen"`
+	StartDate         string   `json:"start_date"`
+	EndDate           string   `json:"end_date"`
+	ProjectStatus     []string `json:"project_status"`
+}
+
+type PerfomanceTileDataReq struct {
+	Email         string
+	ProjectLimit  int
+	DealerNames   []string `json:"dealer_names"`
+	IntervalDays  string
+	StartDate     string   `json:"start_date"`
+	EndDate       string   `json:"end_date"`
+	ProjectStatus []string `json:"project_status"`
+}
+
+type PerfomanceTileDataResponse struct {
+	SiteSurveyCount  int64 `json:"site_survey_count"`
+	CadDesignCount   int64 `json:"cad_design_count"`
+	PerimittingCount int64 `json:"permitting_count"`
+	RoofingCount     int64 `json:"roofing_count"`
+	InstallCount     int64 `json:"isntall_count"`
+	ElectricalCount  int64 `json:"electrical_count"`
+	InspectionCount  int64 `json:"inspection_count"`
+	ActivationCount  int64 `json:"activation_count"`
 }
 
 type PerfomanceResponse struct {
@@ -40,30 +63,29 @@ type PerfomanceResponse struct {
 	ElectricalColour  string `json:"electrical_colour"`
 	InspectionsColour string `json:"inspectionsColour"`
 	ActivationColour  string `json:"activation_colour"`
+	CADLink           string `json:"cad_link"`
+	DATLink           string `json:"dat_link"`
+	PodioLink         string `json:"podio_link"`
+	CoStatus          string `json:"co_status"`
+	Ntp               NTP    `json:"ntp"`
+	Qc                QC     `json:"qc"`
+	NTPdate           string `json:"ntp_date"`
 }
 
 type PerfomanceListResponse struct {
-	PerfomanceList   []PerfomanceResponse `json:"perfomance_response_list"`
-	SiteSurveyCount  int64                `json:"site_survey_count"`
-	CadDesignCount   int64                `json:"cad_design_count"`
-	PerimittingCount int64                `json:"permitting_count"`
-	RoofingCount     int64                `json:"roofing_count"`
-	InstallCount     int64                `json:"isntall_count"`
-	ElectricalCount  int64                `json:"electrical_count"`
-	InspectionCount  int64                `json:"inspection_count"`
-	ActivationCount  int64                `json:"activation_count"`
+	PerfomanceList []PerfomanceResponse `json:"perfomance_response_list"`
 }
 
 // shift the below struct to project
 
 type ProjectStatusReq struct {
-	Email        string
-	UniqueId     string `json:"unique_id"`
-	Customer     string `json:"customer"`
-	UniqueIds    []string
-	ProjectLimit int
-	DealerName   interface{}
-	IntervalDays string
+	Email         string
+	UniqueId      string `json:"unique_id"`
+	Customer      string `json:"customer"`
+	UniqueIds     []string
+	ProjectLimit  int
+	ProjectStatus []string `json:"project_status"`
+	DealerName    interface{}
 }
 
 // project management list
@@ -87,6 +109,7 @@ type ProjectListResponse struct {
 	CADLink     string            `json:"cad_link"`
 	DATLink     string            `json:"dat_link"`
 	PodioLink   string            `json:"podio_link"`
+	CoStatus    string            `json:"co_status"`
 	Ntp         NTP               `json:"ntp"`
 	Qc          QC                `json:"qc"`
 }
@@ -102,19 +125,11 @@ type QC struct {
 }
 
 type NTP struct {
-	ProductionDiscrepancy                       string `json:"production_discrepancy"`
-	Sunpixel                                    string `json:"sunpixel"`
-	LeaseAgreementUploaded                      string `json:"lease_agreement_uploaded"`
-	LightReachDesignVerification                string `json:"light_reach_design_verification"`
-	OWEAgreementUploaded                        string `json:"owe_agreement_uploaded"`
-	HOFUploaded                                 string `json:"hof_uploaded"`
-	UtilityAcknowledgementAndDisclaimerUploaded string `json:"utility_acknowledgement_and_disclaimer_uploaded"`
-	ACHWaiverCashCustomerOnlyUploaded           string `json:"ach_waiver_cash_customers_only_uploaded"`
-	FinanceNTPOfProject                         string `json:"finance_ntp_of_project"`
-	FntpApproved                                string `json:"F.NTP_approved"`
-	UtilityBillUploaded                         string `json:"utility_bill_uploaded"`
-	PowerClerkSignaturesComplete                string `json:"powerclerk_signatures_complete"`
-	ActionRequiredCount                         int64  `json:"action_required_count"`
+	ProductionDiscrepancy        string `json:"production_discrepancy"`
+	FinanceNTPOfProject          string `json:"finance_NTP_of_project"`
+	UtilityBillUploaded          string `json:"utility_bill_uploaded"`
+	PowerClerkSignaturesComplete string `json:"powerclerk_signatures_complete"`
+	ActionRequiredCount          int64  `json:"action_required_count"`
 }
 
 type ProjectResponse struct {

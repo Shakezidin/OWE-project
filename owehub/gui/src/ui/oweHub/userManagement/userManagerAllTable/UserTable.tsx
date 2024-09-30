@@ -7,6 +7,9 @@ import { UserManagementTableColumn as UserColumns } from '../../../../resources/
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import useAuth from '../../../../hooks/useAuth';
+import { useAppDispatch } from '../../../../redux/hooks';
+import { shuffleArray } from '../../../../redux/apiSlice/userManagementSlice/userManagementSlice';
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
@@ -34,38 +37,46 @@ const UserTable: React.FC<UserTableProps> = ({
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [email, setEmail] = useState('');
+  const { authData } = useAuth();
+  const dispatch = useAppDispatch();
+
   const handleSort = (key: string) => {
-    console.log(key);
+    const direction =
+      sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc';
     if (sortKey === key) {
-      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+      setSortDirection(direction);
     } else {
       setSortKey(key);
-      setSortDirection('asc');
+      setSortDirection(direction);
     }
+    sortArray(key, direction);
   };
 
-  let sortedData = [...data]; // Create a shallow copy of the original data array
-  if (sortKey) {
-    sortedData.sort((a: any, b: any) => {
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
+  const sortArray = (sortKey: string, direction: string) => {
+    let sortedData = [...data];
+    if (sortKey) {
+      sortedData.sort((a: any, b: any) => {
+        const aValue = a[sortKey];
+        const bValue = b[sortKey];
 
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc'
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      } else {
-        // Ensure numeric values for arithmetic operations
-        const numericAValue =
-          typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue =
-          typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc'
-          ? numericAValue - numericBValue
-          : numericBValue - numericAValue;
-      }
-    });
-  }
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        } else {
+          // Ensure numeric values for arithmetic operations
+          const numericAValue =
+            typeof aValue === 'number' ? aValue : parseFloat(aValue);
+          const numericBValue =
+            typeof bValue === 'number' ? bValue : parseFloat(bValue);
+          return sortDirection === 'asc'
+            ? numericAValue - numericBValue
+            : numericBValue - numericAValue;
+        }
+      });
+    }
+    dispatch(shuffleArray(sortedData));
+  };
 
   const UserManagementTableColumn = useMemo(() => {
     const col = [...UserColumns];
@@ -76,17 +87,25 @@ const UserTable: React.FC<UserTableProps> = ({
         type: 'string',
         isCheckbox: false,
       });
+    } else if (selectedValue === TYPE_OF_USER.ALL) {
+      col.splice(3, 0, {
+        name: 'role_name',
+        displayName: 'Role',
+        type: 'string',
+        isCheckbox: false,
+      });
     }
     return col;
   }, [selectedValue, UserColumns]);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem('email');
+    const storedEmail = authData?.email;
     if (storedEmail) {
       setEmail(storedEmail);
     }
-  }, []);
+  }, [authData]);
 
+  console.log(selectedValue, 'ghjsfghsdf');
   return (
     <div
       className="UserManageTable"
@@ -123,8 +142,8 @@ const UserTable: React.FC<UserTableProps> = ({
         </thead>
 
         <tbody>
-          {sortedData?.length > 0 ? (
-            sortedData?.map((el: UserRoleBasedListModel, i: number) => (
+          {data?.length > 0 ? (
+            data?.map((el: UserRoleBasedListModel, i: number) => (
               <tr key={el.email_id}>
                 <td>
                   <div className="flex-check">
@@ -146,6 +165,9 @@ const UserTable: React.FC<UserTableProps> = ({
                   </div>
                 </td>
                 <td>{el.name}</td>
+                {selectedValue === TYPE_OF_USER.ALL && (
+                  <td>{el.role_name ? el.role_name : 'NA'}</td>
+                )}
                 {/* <td>{el.role_name}</td> */}
                 {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
@@ -153,6 +175,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
+
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {el.description ? el.description : 'NA'}
                 </td>

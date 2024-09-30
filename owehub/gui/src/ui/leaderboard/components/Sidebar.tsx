@@ -11,15 +11,10 @@ import { toast } from 'react-toastify';
 import { format, subDays } from 'date-fns';
 import { HiDownload } from 'react-icons/hi';
 import { toCanvas } from 'html-to-image';
-import {
-  Calendar,
-  Dollar,
-  FirstAwardIcon,
-  SecondAwardIcon,
-  ThirdAwardIcon,
-} from './Icons';
+import { FirstAwardIcon, SecondAwardIcon, ThirdAwardIcon } from './Icons';
 import SocialShare from '../../batterBackupCalculator/components/SocialShare';
-import { useAppSelector } from '../../../redux/hooks';
+import useAuth, { AuthData } from '../../../hooks/useAuth';
+
 interface IDealer {
   dealer?: string;
   rep_name?: string;
@@ -60,24 +55,7 @@ const switchIcons = (rank: number) => {
       );
   }
 };
-const rangeOptData = [
-  {
-    label: 'Today',
-    value: `${format(today, 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Weekly',
-    value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Monthly',
-    value: `${format(subDays(today, 30), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-  {
-    label: 'Yearly',
-    value: `${format(subDays(today, 365), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
-  },
-];
+
 const Sidebar = ({
   isOpen,
   setIsOpen,
@@ -90,6 +68,7 @@ const Sidebar = ({
   unit: string;
 }) => {
   const [data, setData] = useState<any>({});
+  const { authData } = useAuth();
   const [selectedRangeDate, setSelectedRangeDate] = useState({
     label: 'Weekly',
     value: `${format(subDays(today, 7), 'dd-MM-yyyy')},${format(today, 'dd-MM-yyyy')}`,
@@ -98,9 +77,15 @@ const Sidebar = ({
   const [socialUrl, setSocialUrl] = useState('');
   const [isShareOpen, setIsShareOpen] = useState(false);
   const topCards = useRef<HTMLDivElement | null>(null);
-  const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
-  );
+  const [isAuthenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
   const getLeaderDetail = async () => {
     try {
       const data = await postCaller('get_leaderboardprofiledatarequest', {
@@ -225,82 +210,6 @@ const Sidebar = ({
               <h4 className="h4" style={{ fontWeight: 600 }}>
                 Performance
               </h4>
-
-              {/* <div className="slect-wrapper">
-                <Select
-                  options={rangeOptData}
-                  value={selectedRangeDate}
-                  onChange={(value) => setSelectedRangeDate(value!)}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      fontSize: '11px',
-                      fontWeight: '500',
-                      borderRadius: '4px',
-                      outline: 'none',
-                      width: 'fit-content',
-                      minWidth: '92px',
-                      height: '28px',
-                      alignContent: 'center',
-                      cursor: 'pointer',
-                      boxShadow: 'none',
-                      border: '1px solid #EE824D',
-                      minHeight: 30,
-                    }),
-                    valueContainer: (provided, state) => ({
-                      ...provided,
-                      height: '30px',
-                      padding: '0 6px',
-                    }),
-                    placeholder: (baseStyles) => ({
-                      ...baseStyles,
-                      color: '#EE824D',
-                    }),
-                    indicatorSeparator: () => ({
-                      display: 'none',
-                    }),
-                    dropdownIndicator: (baseStyles, state) => ({
-                      ...baseStyles,
-                      svg: {
-                        fill: '#EE824D',
-                      },
-                      marginLeft: '-18px',
-                    }),
-
-                    option: (baseStyles, state) => ({
-                      ...baseStyles,
-                      fontSize: '12px',
-                      color: '#fff',
-                      transition: 'all 500ms',
-                      '&:hover': {
-                        transform: 'scale(1.1)',
-                        background: 'none',
-                        transition: 'all 500ms',
-                      },
-                      background: '#EE824D',
-                      transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
-                    }),
-
-                    singleValue: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: '#EE824D',
-                      fontSize: 11,
-                      padding: '0 8px',
-                    }),
-                    menu: (baseStyles) => ({
-                      ...baseStyles,
-                      width: '92px',
-                      zIndex: 999,
-                      color: '#FFFFFF',
-                    }),
-                    menuList: (base) => ({
-                      ...base,
-                      background: '#EE824D',
-                    }),
-                    input: (base) => ({ ...base, margin: 0 }),
-                  }}
-                />
-              </div> */}
             </div>
             <div className="mt2">
               <div

@@ -9,7 +9,8 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 200px;
-  height: 32px;
+  height: 36px;
+  border-radius: 8px;
 }
 
 .userManagementTable__search input:focus {
@@ -43,7 +44,15 @@
   color: var(--para-color);
 }
 .admin-user {
+  display: flex;
+  gap: 8px;
   margin-top: 1.2rem;
+}
+.admin-user img {
+  transition: all 0.3s ease;
+}
+.admin-user img:hover {
+  transform: scale(1.2);
 }
 .user-new-button {
   display: flex;

@@ -38,14 +38,12 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
   return (
     <th>
       <div className="flex-check">
-        {isCheckbox === true ? (
+        {isCheckbox ? (
           <div>
             <CheckBox
-              checked={
-                data.length ? selectAllChecked || isAllRowsSelected : false
-              }
+              checked={data?.length ? isAllRowsSelected : false}
               onChange={() => {
-                if (data?.length === null) {
+                if (data?.length === 0) {
                   setSelectAllChecked(false);
                 } else {
                   toggleAllRows(
@@ -60,6 +58,7 @@ const SortableHeader: React.FC<SortableHeaderProps> = ({
             />
           </div>
         ) : null}
+
         <div className="table-header" onClick={handleClick}>
           <p>{titleName}</p>{' '}
           {sortDirection !== 'desc' ? (

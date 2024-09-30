@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -43,21 +44,21 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get v dealer data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get v dealer data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get v dealer data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get v dealer data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get v dealer data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -74,7 +75,7 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get v Dealer data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -153,14 +154,14 @@ func HandleGetVDealerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get v dealer data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of v Dealer List fetched : %v list %+v", len(vDealerList.VDealersList), vDealerList)
-	FormAndSendHttpResp(resp, "V Dealer Data", http.StatusOK, vDealerList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "V Dealer Data", http.StatusOK, vDealerList, RecordCount)
 }
 
 /******************************************************************************
@@ -193,7 +194,7 @@ func PrepareVdealerFilters(tableName string, dataFilter models.DataRequestBody, 
 			// Determine the operator and value based on the filter operation
 			operator := GetFilterDBMappedOperator(filter.Operation)
 			value := filter.Data
-			if column == "dealer_name" && value != ""{
+			if column == "dealer_name" && value != "" {
 				nameSearch = true
 			}
 

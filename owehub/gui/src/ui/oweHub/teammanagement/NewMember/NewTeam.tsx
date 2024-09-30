@@ -12,6 +12,7 @@ import { resetSuccess } from '../../../../redux/apiSlice/teamManagementSlice.tsx
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import useAuth from '../../../../hooks/useAuth';
 
 interface CreateUserProps {
   handleClose2: () => void;
@@ -36,6 +37,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     description: '',
     first_name: '',
   });
+  const { authData } = useAuth();
 
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
   const [selectedOption2, setSelectedOption2] = useState<string>('');
@@ -61,8 +63,8 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   console.log(newFormData, 'form data');
 
   useEffect(() => {
-    if (localStorage.getItem('role')) {
-      const roleAdmin = localStorage.getItem('role');
+    if (authData?.role) {
+      const roleAdmin = authData.role;
       if (roleAdmin !== null) {
         setUserRole(roleAdmin);
       } else {
@@ -71,7 +73,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     } else {
       console.log('role key does not exist in localStorage');
     }
-  }, []);
+  }, [authData]);
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -160,70 +162,17 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
     }
   };
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   console.log('jdkfgh');
-  //   e.preventDefault();
-  //   const roleAdmin = localStorage.getItem('role');
-  //   const email = localStorage.getItem('email');
-  //   let userCode;
-  //   if (
-  //     roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
-  //     roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
-  //   ) {
-  //     userCode = managers.find((item) => item.email === email);
-  //   }
-  //   console.log(
-  //     userCode,
-  //     'user',
-  //     selectedOptions2,
-  //     'memeber',
-  //     selectedOptions,
-  //     'managers'
-  //   );
-  //   const validationErrors: { [key: string]: string } = {};
-
-  //   if (formData.first_name.trim() === '') {
-  //     validationErrors.first_name = 'Team Name is required.';
-  //   }
-
-  //   if (selectedOptions2.length === 0) {
-  //     validationErrors.managers = 'Please select at least one manager';
-  //   }
-
-  //   if (Object.keys(validationErrors).length > 0) {
-  //     setErrors(validationErrors);
-  //     return;
-  //   }
-
-  //   const data = {
-  //     team_name: formData.first_name,
-  //     sale_rep_ids: selectedOptions.map((option) => option.value),
-  //     manager_ids:
-  //       roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
-  //       roleAdmin === TYPE_OF_USER.REGIONAL_MANGER
-  //         ? [
-  //             userCode?.rep_code,
-  //             ...selectedOptions2.map((option) => option.value),
-  //           ]
-  //         : selectedOptions2.map((option) => option.value),
-  //     description: formData.description,
-  //     dealer_name: selectedOption3 || undefined,
-  //   };
-  //   dispatch(createTeam(data));
-  // };
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('jdkfgh');
     e.preventDefault();
 
     if (isSubmitting) return; // Prevent multiple form submissions
 
     setIsSubmitting(true); // Set submitting state to true
 
-    const roleAdmin = localStorage.getItem('role');
-    const email = localStorage.getItem('email');
+    const roleAdmin = authData?.role;
+    const email = authData?.email;
     let userCode;
     if (
       roleAdmin === TYPE_OF_USER.SALE_MANAGER ||
@@ -247,6 +196,10 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
 
     if (selectedOptions2.length === 0) {
       validationErrors.managers = 'Please select at least one manager';
+    }
+
+    if (selectedOption3.length === 0) {
+      validationErrors.dealer = 'Please select at least one dealer';
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -281,7 +234,7 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   };
 
   useEffect(() => {
-    const roleAdmin = localStorage.getItem('role');
+    const roleAdmin = authData?.role;
     if (
       roleAdmin !== TYPE_OF_USER.ADMIN ||
       roleAdmin !== TYPE_OF_USER.FINANCE_ADMIN
@@ -323,13 +276,27 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
   }, [isSuccess]);
 
   const handleClose = () => {};
-
   const handleSelectChange3 = async (selectedOption3: Option | null) => {
-    setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
+    const selectedValue = selectedOption3 ? selectedOption3.value : '';
+    setSelectedOption3(selectedValue);
+
+    // validation for dealer
+    if (!selectedValue) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        dealer: '',
+      }));
+    }
+
     if (selectedOption3?.value) {
       const data: { [key: string]: any } = await getUsersByDealer(
         selectedOption3.value
       );
+
       if (data?.data?.sale_rep_list) {
         const managers =
           data?.data?.sale_rep_list
@@ -345,11 +312,13 @@ const NewTeam: React.FC<CreateUserProps> = ({ handleClose2, setRefetch }) => {
             label: item.name,
             value: item.rep_code,
           })) || [];
+
         setManagerOptions(managers);
         setMembersOption(members);
       }
     }
   };
+
   const selectedDealer = newFormData.find(
     (option) => option === selectedOption3
   );

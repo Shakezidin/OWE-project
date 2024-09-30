@@ -14,7 +14,7 @@
   padding: 10px;
   z-index: 999;
   margin-top: -22px;
-  border-radius: 8px;
+  border-radius: 0px !important;
 }
 
 .pr-dropdown ul {
@@ -38,7 +38,7 @@
 }
 
 .sort_btn {
-  background-color: #4372e9;
+  background-color: #377cf6 !important;
   border: none;
   border-radius: 8px;
   padding: 5px;
@@ -49,4 +49,8 @@
 .sort_btn:hover {
   transform: scale(1.04);
   background-color: #0045f4;
+}
+
+.active_sorting {
+  color: #0045f4;
 }

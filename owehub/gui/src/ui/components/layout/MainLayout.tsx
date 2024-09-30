@@ -16,29 +16,15 @@ import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePass
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
-import { ROUTES } from '../../../routes/routes';
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-}
+import useAuth from '../../../hooks/useAuth';
+import ChatSupport from './ChatSupport';
 
 const MainLayout = () => {
-  const width = useWindowWidth();
-  const isMobile = width < 768;
-
+  const { authData, filterAuthData } = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [isOpenChangePassword, setIsOpenChangePassword] = useState(
-    localStorage.getItem('is_password_change_required') === 'true'
-  );
+  const [isOpenChangePassword, setIsOpenChangePassword] = useState(false);
   const isTablet = useMatchMedia('(max-width: 1024px)');
   const [toggleOpen, setToggleOpen] = useState<boolean>(false);
   const isAuthenticated = useSelector(
@@ -47,12 +33,22 @@ const MainLayout = () => {
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
 
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setIsOpenChangePassword(isPasswordChangeRequired === 'true');
+  }, [authData]);
+
   /** TODO: temp solution for session logout. Need to change in future */
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const expirationTime = localStorage.getItem('expirationTime');
-    const expirationTimeInMin = localStorage.getItem('expirationTimeInMin');
+    const user = localStorage.getItem('authData');
+    const userData = user ? JSON.parse(user) : {};
 
+    const token = userData?.token;
+    const expirationTime = userData?.expirationTime;
+    const expirationTimeInMin = userData?.expirationTimeInMin;
+    console.log('userData', userData);
     if (token && expirationTime && expirationTimeInMin) {
       const currentTime = Date.now();
       if (currentTime < parseInt(expirationTime, 10)) {
@@ -61,6 +57,7 @@ const MainLayout = () => {
           () => {
             dispatch(activeSessionTimeout());
             dispatch(logout());
+            filterAuthData();
             navigate('/login');
             toast.error('Session time expired. Please login again..');
           },
@@ -72,6 +69,7 @@ const MainLayout = () => {
         // Token has expired
         dispatch(activeSessionTimeout());
         dispatch(logout());
+        filterAuthData();
         navigate('/login');
 
         toast.error('Session time expired. Please login again..');
@@ -81,7 +79,7 @@ const MainLayout = () => {
 
   /** check whether user exist or not */
   useEffect(() => {
-    const email = localStorage.getItem('email');
+    const email = authData?.email;
 
     if (email) {
       dispatch(checkUserExists(email))
@@ -90,6 +88,7 @@ const MainLayout = () => {
           } else {
             // User does not exist, log out
             dispatch(logout());
+            filterAuthData();
             navigate('/login');
             toast.error('User does not exist. Please register..');
             cancelAllRequests();
@@ -99,14 +98,21 @@ const MainLayout = () => {
           console.error('Error checking user existence:', error);
         });
     }
-  }, [dispatch, navigate]);
-
+  }, [dispatch, navigate, authData]);
+  const isStaging = process.env.REACT_APP_ENV;
   useEffect(() => {
     setToggleOpen(isTablet);
+    if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {
+      localStorage.setItem('version', process.env.REACT_APP_VERSION!);
+      window.location.reload();
+    }
   }, [isTablet]);
 
   return isAuthenticated ? (
     <div className="main-container">
+      {/* {isStaging === 'staging' ? (
+        <ChatSupport isAuthenticated={isAuthenticated} />
+      ) : null} */}
       <Header
         toggleOpen={toggleOpen}
         setToggleOpen={setToggleOpen}

@@ -7,13 +7,13 @@
   padding-inline: 79px;
   padding-bottom: 79px;
   border-radius: 10px;
-  width: 100%; 
+  width: 100%;
   max-width: 700px;
   margin: auto;
   box-sizing: border-box;
   min-height: 100vh;
 }
-.absolute_info_icon{
+.absolute_info_icon {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -28,7 +28,8 @@
   max-width: 700px;
   margin: auto;
 }
-.prospect-input-field input {
+.prospect-input-field input,
+.prospect-input-field textarea {
   padding-block: 17px;
   border: none;
   border-radius: 8px;

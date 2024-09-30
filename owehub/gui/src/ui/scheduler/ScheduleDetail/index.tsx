@@ -16,8 +16,8 @@ import Pagination from '../../components/pagination/Pagination';
 import SuccessPopup from './components/Popup/SuccessPopup';
 import { Link, useSearchParams } from 'react-router-dom';
 import FilterDropDown from './components/FilterDropdown/FilterDropDown';
-import { ICONS } from "../../../resources/icons/Icons"
-import { FaCircleCheck } from "react-icons/fa6";
+import { ICONS } from '../../../resources/icons/Icons';
+import { FaCircleCheck } from 'react-icons/fa6';
 const current = new Date();
 interface IOptions {
   label: string;
@@ -58,52 +58,58 @@ interface Isurvyors {
   }[];
 }
 
-const mockedData: Isurvyors[]
-  = [
-    {
-      id: 3,
-      name: 'John Doe',
-      busySlot: [{ startTime: '8:00 AM', endTime: '12:00 PM', id: '!3331ff' }, { startTime: '1:30 PM', endTime: '6:00 PM', id: '!3331ff' }],
-      availableSlot: [
-        { startTime: '12:00 PM', endTime: '1:30 PM', id: '!2444' },
-      ],
-      bookedSlot: []
-    },
-    {
-      id: 5,
-      name: 'Peter Doe',
-      busySlot: [
-        { startTime: '8:00 AM', endTime: '1:00 PM', id: '!32ff' },
-        { startTime: '5:00 PM', endTime: '6:00 PM', id: '!3feeff' },
-      ],
-      availableSlot: [{ startTime: '1:00 PM', endTime: '5:00 PM', id: '!221' }],
-      bookedSlot: []
-
-    },
-    {
-      id: 9,
-      name: 'Sandra Doe',
-      busySlot: [{ startTime: '8:00 AM', endTime: '10:00 AM', id: '54638' }],
-      availableSlot: [
-        { startTime: '10:00 AM', endTime: '6:00 PM', id: '28383' },
-      ],
-      bookedSlot: []
-
-    },
-  ];
+const mockedData: Isurvyors[] = [
+  {
+    id: 3,
+    name: 'John Doe',
+    busySlot: [
+      { startTime: '8:00 AM', endTime: '12:00 PM', id: '!3331ff' },
+      { startTime: '1:30 PM', endTime: '6:00 PM', id: '!3331ff' },
+    ],
+    availableSlot: [{ startTime: '12:00 PM', endTime: '1:30 PM', id: '!2444' }],
+    bookedSlot: [],
+  },
+  {
+    id: 5,
+    name: 'Peter Doe',
+    busySlot: [
+      { startTime: '8:00 AM', endTime: '1:00 PM', id: '!32ff' },
+      { startTime: '5:00 PM', endTime: '6:00 PM', id: '!3feeff' },
+    ],
+    availableSlot: [{ startTime: '1:00 PM', endTime: '5:00 PM', id: '!221' }],
+    bookedSlot: [],
+  },
+  {
+    id: 9,
+    name: 'Sandra Doe',
+    busySlot: [
+      { startTime: '8:00 AM', endTime: '10:00 AM', id: '54638' },
+      { startTime: '2:00 PM', endTime: '4:00 PM', id: '54f38' },
+    ],
+    availableSlot: [
+      {
+        startTime: '10:00 AM',
+        endTime: '2:00 PM',
+        id: '!21444',
+      },
+      { startTime: '4:00 PM', endTime: '6:00 PM', id: '54f38' },
+    ],
+    bookedSlot: [],
+  },
+];
 
 const Index = () => {
   const [activeDate, setActiveDate] = useState(arr[0]);
   const [endTimeOptions, setEndTimeOptions] = useState([...timeSlots]);
   const [startTime, setStartTime] = useState<IOptions>(timeSlots[0]);
   const [dividerCords, setDividerCords] = useState({ start: 0, end: 0 });
-  const [surveyorsList, setSurveyorsList] = useState(mockedData)
+  const [surveyorsList, setSurveyorsList] = useState(mockedData);
   const [endTime, setEndTime] = useState<IOptions | undefined>(
     timeSlots[timeSlots.length - 1]
   );
   const [scheduleBtnCord, setScheduleBtnCord] = useState<{
-    start: { ind: 0, pos: string }[];
-    end: { ind: 0, pos: string }[];
+    start: { ind: 0; pos: string }[];
+    end: { ind: 0; pos: string }[];
     parentId: string[];
   }>({ start: [], end: [], parentId: [] });
   const [infoCardCords, setInfoCardCors] = useState({
@@ -121,20 +127,19 @@ const Index = () => {
     left: 0,
     opacity: 0,
   });
-  const [isSwapSucceeded, setIsSwapSucceeded] = useState(false)
+  const [isSwapSucceeded, setIsSwapSucceeded] = useState(false);
   const infoCardRef = useRef<HTMLDivElement>(null);
   const scheduleRef = useRef<HTMLDivElement>(null);
   const swapWrapper = useRef<HTMLDivElement>(null);
   const timeOutIds = useRef<NodeJS.Timeout[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [searchParams] = useSearchParams()
-  const isEditing = searchParams.get("isEditing")
+  const [searchParams] = useSearchParams();
+  const isEditing = searchParams.get('isEditing');
 
   const getCordsOnChange = (id: string, type: 'start' | 'end') => {
     const findElm = document.querySelectorAll(
       `[data-time-id="${id}"]`
     ) as NodeListOf<HTMLDivElement>;
-    console.log(findElm, "findElm");
 
     if (findElm) {
       const ids: string[] = [];
@@ -145,6 +150,12 @@ const Index = () => {
           foundElm = item;
           current = item;
         }
+        if (type === 'end') {
+          console.log(
+            item.parentElement?.parentElement?.previousSibling,
+            'parentNodes'
+          );
+        }
       });
       let totalOffset = 0;
       while (current && !current.classList.contains('survey_wrapper')) {
@@ -153,11 +164,17 @@ const Index = () => {
       }
 
       setDividerCords((prev) => ({ ...prev, [type]: totalOffset - 1 }));
-      const cordIds: { ind: number, pos: string }[] = []
+      const cordIds: { ind: number; pos: string }[] = [];
       findElm.forEach((item, ind) => {
-        if (item.parentElement?.dataset.parentId && item.dataset?.timeAvailable) {
+        if (
+          item.parentElement?.dataset.parentId &&
+          item.dataset?.timeAvailable
+        ) {
           ids.push(item.parentElement.dataset.parentId);
-          cordIds.push({ ind: parseInt(item.id), pos: item.parentElement.dataset.cordId as string })
+          cordIds.push({
+            ind: parseInt(item.id),
+            pos: item.parentElement.dataset.cordId as string,
+          });
         }
       });
       setScheduleBtnCord((prev) => ({
@@ -165,18 +182,17 @@ const Index = () => {
         [type]: cordIds,
         parentId: ids,
       }));
-
     }
   };
 
   useEffect(() => {
     if (isEditing) {
-      const surveyors = [...surveyorsList]
-      surveyors[1].bookedSlot = surveyors[1].availableSlot
-      surveyors[1].availableSlot = []
-      setSurveyorsList([...surveyors])
-      getCordsOnChange("1:00 PM", "start")
-      getCordsOnChange("5:00 PM", "end")
+      const surveyors = [...surveyorsList];
+      surveyors[1].bookedSlot = surveyors[1].availableSlot;
+      surveyors[1].availableSlot = [];
+      setSurveyorsList([...surveyors]);
+      getCordsOnChange('1:00 PM', 'start');
+      getCordsOnChange('5:00 PM', 'end');
     }
     // clearing timeouts
     return () => {
@@ -237,11 +253,15 @@ const Index = () => {
 
   const getScheduledInfo = (
     e: React.MouseEvent<HTMLDivElement | HTMLButtonElement, MouseEvent>,
-    type: 'form' | 'schedule' | "swap"
+    type: 'form' | 'schedule' | 'swap'
   ) => {
     const elm = e.currentTarget as HTMLDivElement | HTMLButtonElement;
     const infoCardObj =
-      type === 'form' ? scheduleRef.current! : type === "swap" ? swapWrapper.current! : infoCardRef.current!;
+      type === 'form'
+        ? scheduleRef.current!
+        : type === 'swap'
+          ? swapWrapper.current!
+          : infoCardRef.current!;
     infoCardObj.style.opacity = '0';
     const { left, top, height } = elm.getBoundingClientRect();
     const cardWidth = infoCardObj.clientWidth || 0;
@@ -262,33 +282,30 @@ const Index = () => {
       infoCardObj.style.opacity = '1';
       if (type === 'form') {
         setSubmitFormCords({ left: offsetLeft, top: offsetTop, opacity: 1 });
-        return
+        return;
       }
-      if (type === "swap") {
-        setSwapCords({ left: offsetLeft, top: offsetTop, opacity: 1 })
-        return
-      }
-      else {
+      if (type === 'swap') {
+        setSwapCords({ left: offsetLeft, top: offsetTop, opacity: 1 });
+        return;
+      } else {
         setInfoCardCors({ left: offsetLeft, top: offsetTop, opacity: 1 });
-        return
+        return;
       }
     }, 300);
     timeOutIds.current.push(id);
   };
 
   const handleSwap = async () => {
-    setIsSwapSucceeded(true)
+    setIsSwapSucceeded(true);
     const id = setTimeout(() => {
-      setSwapCords(prev => ({ ...prev, opacity: 0 }))
+      setSwapCords((prev) => ({ ...prev, opacity: 0 }));
       const id = setTimeout(() => {
-        setIsSwapSucceeded(false)
-      }, 500)
+        setIsSwapSucceeded(false);
+      }, 500);
       timeOutIds.current.push(id);
-    }, 1000)
+    }, 1000);
     timeOutIds.current.push(id);
-  }
-
-
+  };
 
   return (
     <>
@@ -310,55 +327,57 @@ const Index = () => {
           </div>
         </div>
 
-        {!isEditing && <div className="flex " style={{ gap: 15 }}>
-          <SelectOption
-            dropdownIndicatorStyles={{ display: 'none' }}
-            width="157px"
-            options={timeSlots}
-            value={startTime}
-            onChange={(e) => handleTimeChange(e, 'start')}
-            optionStyles={{
-              '&:hover': {
-                backgroundColor: '#fff ',
-                color: '#377CF6',
-              },
-              background: '#fff',
-              color: '#000',
-            }}
-            controlStyles={{ marginTop: 0 }}
-            singleValueStyles={{ color: '#000000', fontWeight: 600 }}
-          />
+        {!isEditing && (
+          <div className="flex " style={{ gap: 15 }}>
+            <SelectOption
+              dropdownIndicatorStyles={{ display: 'none' }}
+              width="157px"
+              options={timeSlots}
+              value={startTime}
+              onChange={(e) => handleTimeChange(e, 'start')}
+              optionStyles={{
+                '&:hover': {
+                  backgroundColor: '#fff ',
+                  color: '#377CF6',
+                },
+                background: '#fff',
+                color: '#000',
+              }}
+              controlStyles={{ marginTop: 0 }}
+              singleValueStyles={{ color: '#000000', fontWeight: 600 }}
+            />
 
-          <SelectOption
-            dropdownIndicatorStyles={{ display: 'none' }}
-            width="157px"
-            options={endTimeOptions}
-            value={endTime}
-            onChange={(e) => handleTimeChange(e, 'end')}
-            optionStyles={{
-              '&:hover': {
-                backgroundColor: '#fff ',
-                color: '#377CF6',
-              },
-              background: '#fff',
-              color: '#000',
-            }}
-            controlStyles={{ marginTop: 0 }}
-            singleValueStyles={{ color: '#000000', fontWeight: 600 }}
-          />
+            <SelectOption
+              dropdownIndicatorStyles={{ display: 'none' }}
+              width="157px"
+              options={endTimeOptions}
+              value={endTime}
+              onChange={(e) => handleTimeChange(e, 'end')}
+              optionStyles={{
+                '&:hover': {
+                  backgroundColor: '#fff ',
+                  color: '#377CF6',
+                },
+                background: '#fff',
+                color: '#000',
+              }}
+              controlStyles={{ marginTop: 0 }}
+              singleValueStyles={{ color: '#000000', fontWeight: 600 }}
+            />
 
-          <button className={styles.refresh_btn}>
-            <LuRefreshCcw size={22} color="#377CF6" />
-          </button>
+            <button className={styles.refresh_btn}>
+              <LuRefreshCcw size={22} color="#377CF6" />
+            </button>
 
-          <div
-            className={` flex relative items-center  ${styles.available_slot_wrapper}`}
-          >
-            <span className={styles.top_overlay}>35%</span>
-            <span className={` pl1 ${styles.top_overlay}`}>Available</span>
-            <div className={styles.bg_available_progress} />
+            <div
+              className={` flex relative items-center  ${styles.available_slot_wrapper}`}
+            >
+              <span className={styles.top_overlay}>35%</span>
+              <span className={` pl1 ${styles.top_overlay}`}>Available</span>
+              <div className={styles.bg_available_progress} />
+            </div>
           </div>
-        </div>}
+        )}
       </div>
 
       <div className="mt3">
@@ -375,13 +394,15 @@ const Index = () => {
             </div>
 
             <div className={styles.date_wrapper}>
-              <div className={`px2 items-center  ${styles.date_grid_container}`}>
+              <div
+                className={`px2 items-center  ${styles.date_grid_container}`}
+              >
                 {arr.map((item, ind) => {
                   return (
                     <div className="date_container" key={ind}>
                       <div
                         style={{ width: 'fit-content', cursor: 'pointer' }}
-                        className={`mx-auto cursor-pointer  ${item === activeDate ? styles.active_date : ''}`}
+                        className={`mx-auto cursor-pointer  ${item === activeDate ? styles.active_date : styles.inactive_date}`}
                         onClick={() => setActiveDate(item)}
                       >
                         <span style={{ fontSize: 18, fontWeight: 500 }}>
@@ -426,20 +447,24 @@ const Index = () => {
           </div>
           <div className="flex flex-column flex-auto justify-between">
             <div className="relative survey_wrapper">
-              {
-                ((startTime.value !== '8:00 AM' ||
-                  endTime?.value !== '6:00 PM') || isEditing) && (
-                  <>
-                    {!!dividerCords.start && <div
+              {(startTime.value !== '8:00 AM' ||
+                endTime?.value !== '6:00 PM' ||
+                isEditing) && (
+                <>
+                  {!!dividerCords.start && (
+                    <div
                       className={styles.absolute_vertical_line}
                       style={{ left: dividerCords.start }}
-                    />}
-                    {!!dividerCords.end && <div
+                    />
+                  )}
+                  {!!dividerCords.end && (
+                    <div
                       className={styles.absolute_vertical_line}
                       style={{ left: dividerCords.end }}
-                    />}
-                  </>
-                )}
+                    />
+                  )}
+                </>
+              )}
 
               {surveyorsList.map((person, idx) => {
                 return (
@@ -462,8 +487,12 @@ const Index = () => {
                             avail.startTime,
                             avail.endTime
                           );
-                          const start = scheduleBtnCord.start.find(item => item.ind === idx)?.pos
-                          const end = scheduleBtnCord.end.find(item => item.ind === idx)?.pos
+                          const start = scheduleBtnCord.start.find(
+                            (item) => item.ind === idx
+                          )?.pos;
+                          const end = scheduleBtnCord.end.find(
+                            (item) => item.ind === idx
+                          )?.pos;
                           return (
                             <div
                               key={avail.id}
@@ -478,7 +507,7 @@ const Index = () => {
                                 return (
                                   <div
                                     key={ind * index + 1}
-                                    className={`relative ${styles.half_hour_span_wrapper}  ${(isInterecting) ? styles.masked_img : ''}`}
+                                    className={`relative ${styles.half_hour_span_wrapper}  ${isInterecting ? styles.masked_img : ''}`}
                                     data-cord-id={ind + 1}
                                     data-parent-id={avail.id}
                                   >
@@ -498,26 +527,36 @@ const Index = () => {
                                 );
                               })}
 
-                              {(scheduleBtnCord.parentId.includes(avail.id) && start) && (
-                                <div
-                                  style={{
-                                    gridColumn: `${start}/${end}`,
-                                  }}
-                                  className={styles.schdule_btn_wrapper}
-                                >
-                                  {isEditing ?
-                                    <button className={styles.swap_btn} onClick={(e) => getScheduledInfo(e, "swap")}>
-                                      Change
-                                    </button>
-
-                                    : <button
-                                      onClick={(e) => getScheduledInfo(e, 'form')}
-                                      className={` ${styles.available_btn}`}
-                                    >
-                                      <FaPlus size={18} />
-                                    </button>}
-                                </div>
-                              )}
+                              {scheduleBtnCord.parentId.includes(avail.id) &&
+                                start &&
+                                (end ? end > start : true) && (
+                                  <div
+                                    style={{
+                                      gridColumn: `${end && end > start ? start : 0}/${end && end > start ? end : 0}`,
+                                    }}
+                                    className={styles.schdule_btn_wrapper}
+                                  >
+                                    {isEditing ? (
+                                      <button
+                                        className={styles.swap_btn}
+                                        onClick={(e) =>
+                                          getScheduledInfo(e, 'swap')
+                                        }
+                                      >
+                                        Change
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={(e) =>
+                                          getScheduledInfo(e, 'form')
+                                        }
+                                        className={` ${styles.available_btn}`}
+                                      >
+                                        <FaPlus size={18} />
+                                      </button>
+                                    )}
+                                  </div>
+                                )}
                             </div>
                           );
                         })}
@@ -800,28 +839,49 @@ const Index = () => {
             </div>
           </div>
 
-          {isEditing && <div style={{
-            top: swapCords.top,
-            left: swapCords.left,
-            opacity: swapCords.opacity,
-            pointerEvents: swapCords.opacity ? 'all' : 'none',
-          }} ref={swapWrapper} className={styles.swap_wrapper}>
-
-            {isSwapSucceeded ? <FaCircleCheck size={46} className='mx-auto' color='#20963A' /> : <img width={144} src={ICONS.userSwap} alt="" />}
-            <p className='text-center mt2 px2' >{isSwapSucceeded ? `Surveyor changed
-successfully`: `Are you sure, you want to
-              change surveyor ?`}</p>
-            {!isSwapSucceeded && <div className="flex mt2 items-center">
-              <button onClick={handleSwap} className={styles.swap_primary_btn}>
-                Confirm
-              </button>
-              <button onClick={() => setSwapCords(prev => ({ ...prev, opacity: 0 }))} className={styles.swap_secondary_btn}>
-                Cancel
-              </button>
-            </div>}
-
-
-          </div>}
+          {isEditing && (
+            <div
+              style={{
+                top: swapCords.top,
+                left: swapCords.left,
+                opacity: swapCords.opacity,
+                pointerEvents: swapCords.opacity ? 'all' : 'none',
+              }}
+              ref={swapWrapper}
+              className={styles.swap_wrapper}
+            >
+              {isSwapSucceeded ? (
+                <FaCircleCheck size={46} className="mx-auto" color="#20963A" />
+              ) : (
+                <img width={144} src={ICONS.userSwap} alt="" />
+              )}
+              <p className="text-center mt2 px2">
+                {isSwapSucceeded
+                  ? `Surveyor changed
+successfully`
+                  : `Are you sure, you want to
+              change surveyor ?`}
+              </p>
+              {!isSwapSucceeded && (
+                <div className="flex mt2 items-center">
+                  <button
+                    onClick={handleSwap}
+                    className={styles.swap_primary_btn}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={() =>
+                      setSwapCords((prev) => ({ ...prev, opacity: 0 }))
+                    }
+                    className={styles.swap_secondary_btn}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       {isSuccess && <SuccessPopup setIsOpen={setIsSuccess} />}

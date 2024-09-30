@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 func SalesRepRetrieveQueryFunc() string {
 	salerRepRetrieveQuery := `
     WITH RECURSIVE RegionalManagerHierarchy AS (
@@ -65,7 +67,10 @@ func SalesMetricsRetrieveQueryFunc() string {
             intOpsMetSchema.pto_date,
             salMetSchema.contract_date,
             salMetSchema.dealer,
-            salMetSchema.primary_sales_rep
+            salMetSchema.primary_sales_rep,
+            salMetSchema.ntp_date,
+            secondFieldOpsSchema.roofing_status
+
         FROM
             internal_ops_metrics_schema AS intOpsMetSchema
         LEFT JOIN sales_metrics_schema AS salMetSchema 
@@ -83,12 +88,7 @@ func SalesRetrieveQueryFunc() string {
         SELECT intOpsMetSchema.unique_id, intOpsMetSchema.home_owner
         FROM internal_ops_metrics_schema intOpsMetSchema
         LEFT JOIN sales_metrics_schema AS salMetSchema 
-            ON intOpsMetSchema.unique_id = salMetSchema.unique_id 
-        WHERE intOpsMetSchema.unique_id IS NOT NULL
-            AND intOpsMetSchema.unique_id <> ''
-            AND intOpsMetSchema.system_size IS NOT NULL
-            AND intOpsMetSchema.system_size > 0 
-    `
+            ON intOpsMetSchema.unique_id = salMetSchema.unique_id `
 	return SalesMetricsRetrieveQuery
 }
 
@@ -106,6 +106,7 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
 }
 
 func ProjectMngmntRetrieveQueryFunc() string {
+
 	ProjectMngmntRetrieveQuery := `
         SELECT unique_id, contract_date, ntp_working_date, 
         ntp_date, site_survey_scheduled_date, site_survey_rescheduled_date, 
@@ -128,4 +129,74 @@ func ProjectMngmntRetrieveQueryFunc() string {
         FROM consolidated_data_view
     `
 	return ProjectMngmntRetrieveQuery
+}
+
+func QcNtpRetrieveQueryFunc() string {
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(`
+        SELECT 
+            ips.unique_id,
+            n.production_discrepancy, 
+            n.finance_ntp_of_project, 
+            n.utility_bill_uploaded, 
+            n.powerclerk_signatures_complete, 
+            n.change_order_status,
+            split_part(ss.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
+            ips.utility_company,
+            ss.state,
+            ips.home_owner,
+            ss.ntp_date,
+            CASE 
+                WHEN ips.utility_company = 'APS' THEN p.powerclerk_sent_az
+                ELSE 'Not Needed' 
+            END AS powerclerk_sent_az,
+            CASE 
+                WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
+                ELSE 'Not Needed'
+            END AS ach_waiver_sent_and_signed_cash_only,
+            CASE 
+                WHEN ss.state = 'NM :: New Mexico' THEN p.green_area_nm_only
+                ELSE 'Not Needed'
+            END AS green_area_nm_only,
+            CASE 
+                WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
+                ELSE 'Not Needed'
+            END AS finance_credit_approved_loan_or_lease,
+            CASE 
+                WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
+                ELSE 'Not Needed'
+            END AS finance_agreement_completed_loan_or_lease,
+            CASE 
+                WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
+                ELSE 'Not Needed'
+            END AS owe_documents_completed
+        FROM internal_ops_metrics_schema ips
+        LEFT JOIN sales_metrics_schema ss 
+            ON ips.unique_id = ss.unique_id
+        LEFT JOIN ntp_ntp_schema n 
+            ON ips.unique_id = n.unique_id
+        LEFT JOIN prospects_customers_schema p 
+            ON split_part(ss.prospectid_dealerid_salesrepid, ',', 1) = p.item_id::text
+    `)
+
+	return filtersBuilder.String()
+}
+
+func CsvDownloadRetrieveQueryFunc() string {
+	// Build the SQL Query
+	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(`
+        SELECT cs.unique_id,cdv.home_owner,cs.email_address,
+        cs.phone_number,cs.address,cs.state,
+        scs.contracted_system_size_parent, 
+        cs.sale_date,ns.ntp_complete_date, pis.pv_completion_date, 
+        cdv.pto_date, cdv.canceled_date, cs.primary_sales_rep, 
+        cs.secondary_sales_rep FROM customers_customers_schema cs 
+								LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
+								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
+								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id 
+								LEFT JOIN system_customers_schema scs ON scs.customer_id = cs.unique_id 
+        `)
+
+	return filtersBuilder.String()
 }

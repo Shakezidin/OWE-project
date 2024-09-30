@@ -14,25 +14,25 @@ const BreakdownAccordion = () => {
   // Add your accordion content here
   return (
     <>
-      <tr style={{ backgroundColor: '#DDEBFF' }}>
-        <td colSpan={2} style={{ paddingLeft: '70px' }}>
+      <tr>
+        <td colSpan={2} style={{ paddingLeft: '2.5rem' }}>
           Adder content goes here
         </td>
       </tr>
-      <tr style={{ backgroundColor: '#DDEBFF' }}>
-        <td style={{ paddingLeft: '70px' }}>Small System Size</td>
+      <tr>
+        <td style={{ paddingLeft: '2.5rem' }}>Small System Size</td>
         <td>21250</td>
       </tr>
-      <tr style={{ backgroundColor: '#DDEBFF' }}>
-        <td style={{ paddingLeft: '70px' }}>Credit</td>
+      <tr>
+        <td style={{ paddingLeft: '2.5rem' }}>Credit</td>
         <td>21250</td>
       </tr>
-      <tr style={{ backgroundColor: '#DDEBFF' }}>
-        <td style={{ paddingLeft: '70px' }}>Referal</td>
+      <tr>
+        <td style={{ paddingLeft: '2.5rem' }}>Referal</td>
         <td>21250</td>
       </tr>
-      <tr style={{ backgroundColor: '#DDEBFF' }}>
-        <td style={{ paddingLeft: '70px' }}>Rebates</td>
+      <tr>
+        <td style={{ paddingLeft: '2.5rem' }}>Rebates</td>
         <td>21250</td>
       </tr>
     </>
@@ -51,7 +51,7 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({ handleClose }) => {
             <h5>Project ID</h5>
           </div>
           <div className="breakdown-img" onClick={handleClose}>
-            <img src={ICONS.closeIcon} alt="" />
+            <img className="close-popup-btn" src={ICONS.closeIcon} alt="" />
           </div>
         </div>
         <div className="modal-body-down">
@@ -83,7 +83,7 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({ handleClose }) => {
 
                 <tr
                   onClick={() => setToggleOpen(!toggleOpen)}
-                  style={{ backgroundColor: '#B5D1F9' }}
+                  style={{ backgroundColor: '#D5E4FF' }}
                 >
                   <td style={{ cursor: 'pointer' }}>
                     Adder{' '}

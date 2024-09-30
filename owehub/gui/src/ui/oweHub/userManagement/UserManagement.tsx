@@ -27,7 +27,6 @@ import {
   userResetForm,
 } from '../../../redux/apiSlice/userManagementSlice/createUserSlice';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
-import Loading from '../../components/loader/Loading';
 import { toast } from 'react-toastify';
 import { unwrapResult } from '@reduxjs/toolkit';
 import {
@@ -35,6 +34,8 @@ import {
   ALL_USER_ROLE_LIST as USERLIST,
 } from '../../../resources/static_data/Constant';
 import { showAlert } from '../../components/alert/ShowAlert';
+import useAuth from '../../../hooks/useAuth';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -46,6 +47,9 @@ const UserManagement: React.FC = () => {
   const [tablePermissions, setTablePermissions] = useState({});
   const [page, setPage] = useState(1);
   const [logoUrl, setLogoUrl] = useState('');
+  const { authData } = useAuth();
+
+  const [selectedOption, setSelectedOption] = useState<any>(USERLIST[0]);
 
   const ALL_USER_ROLE_LIST = useMemo(() => {
     let role = USERLIST;
@@ -58,10 +62,10 @@ const UserManagement: React.FC = () => {
           role.value !== TYPE_OF_USER.DB_USER &&
           role.value !== TYPE_OF_USER.PARTNER
       );
+      setSelectedOption(role[0]);
     }
     return role;
   }, []);
-  const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
   const {
     loading,
     userOnboardingList,
@@ -75,6 +79,15 @@ const UserManagement: React.FC = () => {
     createUserResult,
     deleteUserResult,
   } = useAppSelector((state) => state.createOnboardUser);
+
+  const [activeSalesRep, setActiveSalesRep] = useState('');
+
+  const handleCrossClick = () => {
+    setActiveSalesRep('');
+  };
+
+  const [isClicked, setIsClicked] = useState(false);
+  const [isClicked1, setIsClicked1] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -98,16 +111,57 @@ const UserManagement: React.FC = () => {
   }, [selectedOption]);
 
   /** role based get data */
+
+  // useEffect(() => {
+  //   const data = {
+  //     page_number: page,
+  //     page_size: 25,
+  //     filters: [
+  //       {
+  //         Column: 'role_name',
+  //         Operation: '=',
+  //         Data: selectedOption.value,
+  //       },
+  //       {
+  //         Column: 'name',
+  //         Operation: 'cont',
+  //         Data: searchTerm,
+  //       },
+  //     ],
+  //   };
+
+  //   const dataa = {
+  //     page_number: page,
+  //     page_size: 25,
+  //     filters: [
+  //       {
+  //         Column: 'dealer_name',
+  //         Operation: 'cont',
+  //         Data: searchTerm,
+  //       },
+  //     ],
+  //   };
+  //   const fetchList = async () => {
+  //     await dispatch(fetchUserListBasedOnRole(data));
+  //   };
+
+  //   if (selectedOption.value !== 'Partner') {
+  //     fetchList();
+  //   }
+
+  //   const fetchDealer = async () => {
+  //     await dispatch(fetchDealerList(dataa));
+  //   };
+  //   if (selectedOption.value === 'Partner') {
+  //     fetchDealer();
+  //   }
+  // }, [selectedOption, createUserResult, deleteUserResult, page, searchTerm]);
+
   useEffect(() => {
     const data = {
       page_number: page,
       page_size: 25,
       filters: [
-        {
-          Column: 'role_name',
-          Operation: '=',
-          Data: selectedOption.value,
-        },
         {
           Column: 'name',
           Operation: 'cont',
@@ -127,7 +181,15 @@ const UserManagement: React.FC = () => {
         },
       ],
     };
+
     const fetchList = async () => {
+      if (selectedOption.value !== '') {
+        data.filters.push({
+          Column: 'role_name',
+          Operation: '=',
+          Data: selectedOption.value,
+        });
+      }
       await dispatch(fetchUserListBasedOnRole(data));
     };
 
@@ -138,6 +200,7 @@ const UserManagement: React.FC = () => {
     const fetchDealer = async () => {
       await dispatch(fetchDealerList(dataa));
     };
+
     if (selectedOption.value === 'Partner') {
       fetchDealer();
     }
@@ -181,6 +244,9 @@ const UserManagement: React.FC = () => {
       }
     }
   };
+  const handleValueChange = (value: string) => {
+    setActiveSalesRep(value);
+  };
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
@@ -210,6 +276,13 @@ const UserManagement: React.FC = () => {
           tables_permissions: tablePermissions,
           description: formData.description.trim(),
           dealer_logo: logoUrl,
+          podio_checked:
+            formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
+            formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+            formData.role_name === TYPE_OF_USER.REGIONAL_MANGER ||
+            formData.role_name === TYPE_OF_USER.DEALER_OWNER
+              ? data.podio_checked
+              : undefined,
         })
       );
       const result = unwrapResult(actionResult);
@@ -299,21 +372,19 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-
-  // useEffect(() => {
-  //   if(formData.assigned_Manager){
-  //     dispatch(updateUserForm({ field: 'assigned_Manager', value: '' }));
-  //   }
-  // },[formData.assigned_Manager])
-
+  console.log(userRoleBasedList, 'userRoleBasedList');
   /** render UI */
   return (
     <>
-      {loading && (
-        <div>
-          <Loading /> {loading}
-        </div>
-      )}
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+        <Breadcrumb
+          head=""
+          linkPara="Users"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}
@@ -337,6 +408,9 @@ const UserManagement: React.FC = () => {
           onboardingList={userOnboardingList}
           userPerformanceList={userPerformanceList}
           loading={loading}
+          setSelectedOption={setSelectedOption}
+          onValueChange={handleValueChange}
+          activeSalesRep={activeSalesRep}
         />
       </div>
 
@@ -350,6 +424,8 @@ const UserManagement: React.FC = () => {
               }}
             />
           }
+          activeSalesRep={activeSalesRep}
+          handleCrossClick={handleCrossClick}
           currentPage1={page}
           setCurrentPage1={setPage}
           selectedRows={selectedRows}
@@ -378,12 +454,18 @@ const UserManagement: React.FC = () => {
             );
             const usernames = Array.from(selectedRows).map((index) => {
               const user = userRoleBasedList[index];
-              return user.role_name === 'DB User'
+              return user.role_name === TYPE_OF_USER.DB_USER
                 ? user.db_username
                 : user.name.split(' ').join('_');
             });
             if (deleteRows.length > 0) {
               deleteUserRequest(deleteRows, usernames);
+              console.log(
+                deleteRows,
+                usernames,
+                userRoleBasedList,
+                'deleteRows, usernames,userRoleBasedList'
+              );
             } else {
               toast.info('Please select user');
             }

@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -37,21 +38,21 @@ func HandleUpdateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update RateAdjustments request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update RateAdjustments request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateRateAdjustmentsReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update RateAdjustments request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update RateAdjustments request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update RateAdjustments request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -59,28 +60,28 @@ func HandleUpdateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 		(len(updateRateAdjustmentsReq.Position) <= 0) || (len(updateRateAdjustmentsReq.Adjustment) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateRateAdjustmentsReq.MinRate <= float64(0) {
 		err = fmt.Errorf("Invalid MinRate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid MinRate Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid MinRate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateRateAdjustmentsReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateRateAdjustmentsReq.MaxRate <= float64(0) {
 		err = fmt.Errorf("Invalid MaxRate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid MaxRate Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid MaxRate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -96,12 +97,12 @@ func HandleUpdateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRateAdjustmentsFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add RateAdjustments in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update RateAdjustments", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update RateAdjustments", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "RateAdjustments updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "RateAdjustments updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "RateAdjustments updated Successfully", http.StatusOK, nil)
 }

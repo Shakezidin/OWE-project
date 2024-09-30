@@ -1,0 +1,51 @@
+FROM owe_base_os:v1
+
+#we need the go version installed from apk to bootstrap the custom version built from source
+#RUN apk update && apk add go gcc bash musl-dev openssl-dev ca-certificates && update-ca-certificates
+#FROM ubuntu:latest
+LABEL maintainer="OWE_TEAM"
+
+RUN apt-get update \
+    && apt-get install -y golang \
+    gcc \
+    bash \
+    tar \
+    gzip \
+    sudo \
+    tcpdump \
+    net-tools \
+    gdb \
+    vim \
+    file \
+    libssl-dev \
+    wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG GOLANG_VERSION=1.17.5
+RUN wget https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz
+RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go$GOLANG_VERSION.linux-amd64.tar.gz
+
+#RUN cd /usr/local/go/src
+
+ENV PATH=$PATH:/usr/local/go/bin
+
+RUN rm go$GOLANG_VERSION.linux-amd64.tar.gz
+
+#we delete the apk installed version to avoid conflict
+#RUN yum -y rm go
+
+#RUN go version
+
+#installing tools
+#RUN yum -y update && yum clean all && yum -y install bash && yum -y install gcc && yum -y install make && yum -y install rpm && yum -y install rpm-devel && yum -y install tar && yum -y install gzip && yum -y install lm_sensors && yum -y install cpio && yum -y install sudo && yum -y install openssh-clients && yum -y install libselinux-utils && yum -y install rpm-build && yum -y install nfs-utils nfs-utils-lib nfs-common && yum -y install net-tools && yum -y install tcpdump* && yum -y install gdb && yum install -y jq && yum -y install vim && yum -y install file
+
+#deploying app
+
+ADD owehub-leads/bin /app/bin
+ADD owehub-leads/json /app/bin/json
+WORKDIR /app/bin/
+RUN cd /app/bin/
+RUN chmod +x /app/bin/owehub-leads.bin
+CMD ./owehub-leads.bin
+

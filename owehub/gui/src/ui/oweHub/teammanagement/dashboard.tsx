@@ -16,6 +16,8 @@ import DataNotFound from '../../components/loader/DataNotFound';
 import { showAlert } from '../../components/alert/ShowAlert';
 import { resetTeams } from '../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import useAuth from '../../../hooks/useAuth';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 interface AccordionSection {
   data: any;
@@ -27,8 +29,8 @@ interface Option {
 }
 
 const TeamManagement: React.FC = () => {
-  const cardColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
-  const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
+  const cardColors = ['#E0728C', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
+  const arrowColors = ['#E0728C', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
   const [refetch, setRefetch] = useState(1);
   const [newFormData, setNewFormData] = useState<any>([]);
   const [, setSelectedDealer] = useState(null);
@@ -38,6 +40,10 @@ const TeamManagement: React.FC = () => {
   const [isFetched, setIsFetched] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [isPending, setIspending] = useState(false);
+  const { authData } = useAuth();
+  const roleAdmin = authData?.role;
+  const isMobile = useMatchMedia('(max-width: 767px)');
+
   const getnewformData = async () => {
     const tableData = {
       tableNames: ['dealer_name'],
@@ -140,8 +146,6 @@ const TeamManagement: React.FC = () => {
       console.error(error);
     }
   };
-  const roleAdmin = localStorage.getItem('role');
-  const isMobile = useMatchMedia('(max-width: 767px)');
 
   return (
     <>
@@ -152,6 +156,16 @@ const TeamManagement: React.FC = () => {
           // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
+
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+        <Breadcrumb
+          head=""
+          linkPara="Teams"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
 
       <div className="team-container">
         <div className="team-main">
@@ -295,6 +309,7 @@ const TeamManagement: React.FC = () => {
                                     <img
                                       src={ICONS.teamgroup}
                                       alt="team-group"
+                                      style={{ maxWidth: 77 }}
                                     />
                                     <h4>{item.team_strength} members</h4>
                                   </div>

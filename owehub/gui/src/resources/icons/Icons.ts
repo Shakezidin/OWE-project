@@ -6,6 +6,7 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg';
+import scheduleDoor from '../../resources/assets/schedule_door.png';
 import dashIcon from '../../resources/assets/dashIcon.svg';
 import ConfigIcon from '../../resources/assets/config.svg';
 import userManIcon from '../../resources/assets/userManag.svg';
@@ -103,13 +104,13 @@ import user from '../../resources/assets/sales.svg';
 import vector from '../../resources/assets/Vector1.svg';
 import lable_img from '../../resources/assets/lable_img.svg';
 import dbm from '../../resources/assets/dbm.svg';
-import teamgroup from '../../resources/assets/teamgroup.svg';
+import teamgroup from '../../resources/assets/teamgroup.png';
 import addicon from '../../resources/assets/addnew.svg';
 import TeamEdit from '../../resources/assets/TeamEdit.svg';
 import cutOff from '../../resources/assets/cutoff_icon.svg';
 import BannerLogo from '../../resources/assets/banner-logo.svg';
 import OWEBannerLogo from '../../resources/assets/owe-banner-logo.svg';
-import BannerTrophy from '../../resources/assets/banner-trophy.svg';
+import BannerTrophy from '../../resources/assets/banner.png';
 import Performars from '../../resources/assets/performars.svg';
 import PerformanceBackground from '../../resources/assets/performars-background.svg';
 import GreyTwo from '../../resources/assets/greyTwo.svg';
@@ -135,12 +136,37 @@ import up from '../../resources/assets/Polygon 14.svg';
 import down from '../../resources/assets/Polygon 15.svg';
 import QCTICK from '../../resources/assets/qctick.svg';
 import QCLine from '../../resources/assets/QCLine.svg';
-import userSwap from "../../resources/assets/user_swap.png"
+import userSwap from '../../resources/assets/user_swap.png';
+import pendingqc from '../../resources/assets/pendingqcntp.svg';
+import historyLeadMgmt from '../../resources/assets/history-lead-mgmt.svg';
+import seemore from '../../resources/assets/see_more_lm.svg';
+import pdf from '../../resources/assets/pdf.svg';
+import leadMngExport from '../../resources/assets/export-lead.svg';
+import chevronDown from '../assets/chevron-down.svg'
+import chevronUp from '../assets/chevron-Up.svg'
+import declinedArchive from '../assets/archiveIcon.svg'
+import deleteFileLibrary from '../assets/delete-file-lib.svg'
+import imageIcon from '../assets/image-icon.svg'
+import mp4Icon from '../assets/mp4-icon.svg'
+import excelIcon from '../assets/excel-icon.svg'
+import recycleBin from '../assets/recycleBin.svg'
+import recycleBinColor from '../assets/recycleBinColor.svg'
+import folderImage from '../assets/folderimage.svg'
+import viedoImageOne from '../assets/videos-library-one.svg'
+import viedoplay from '../assets/video_play.svg'
+
+
+
+
+
+
+
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
   LOGO: logo,
   MENU_1: require('../../resources/assets/menu_1.png'),
   sidebarLogo: require('../../resources/assets/comissionlogo.png'),
+  sidebarLogoSquare: require('../../resources/assets/comissionlogoSquare.png'),
   DOWN_ARROW: require('../../resources/assets/arrow-down.png'),
   VIEW_ARCHIVE: viewA,
   FILTER: filter,
@@ -287,5 +313,23 @@ export const ICONS = {
   DOWN: down,
   QCTICK: QCTICK,
   QCLine: QCLine,
-  userSwap
+  userSwap,
+  Pendingqc: pendingqc,
+  historyLeadMgmt: historyLeadMgmt,
+  SeeMore: seemore,
+  pdf: pdf,
+  LeadMngExport: leadMngExport,
+  chevronDown: chevronDown,
+  chevronUp: chevronUp,
+  declinedArchive: declinedArchive,
+  scheduleDoor,
+  deleteFileLibrary: deleteFileLibrary,
+  imageIcon: imageIcon,
+  mp4Icon: mp4Icon,
+  excelIcon: excelIcon,
+  recycleBin: recycleBin,
+  recycleBinColor: recycleBinColor,
+  folderImage,
+  viedoImageOne,
+  viedoplay,
 };

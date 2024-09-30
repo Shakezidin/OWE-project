@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -35,28 +36,28 @@ func HandleDeleteTeamMemberRequest(resp http.ResponseWriter, req *http.Request) 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in delete team member request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from delete team member request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &deleteData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal delete team member request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal delete team member request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal delete team member request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if deleteData.TeamMemberID <= 0 {
 		err = fmt.Errorf("Invalid team member ID in API request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid team member ID in API request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid team member ID in API request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -68,9 +69,9 @@ func HandleDeleteTeamMemberRequest(resp http.ResponseWriter, req *http.Request) 
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.DeleteTeamMember, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to delete team member from DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to delete team member", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to delete team member", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Team member deleted succesfully", http.StatusOK, nil, 0)
+	appserver.FormAndSendHttpResp(resp, "Team member deleted succesfully", http.StatusOK, nil, 0)
 }

@@ -11,7 +11,7 @@ interface AuthState {
   role_name: string | null;
   access_token: string | null;
   isAuthenticated: boolean;
-  is_password_change_required: boolean;
+  isPasswordChangeRequired: boolean;
   status: number | null;
   sessionTimeout: boolean;
 }
@@ -24,9 +24,7 @@ const initialState: AuthState = {
   access_token: localStorage.getItem('token'),
   isAuthenticated: localStorage.getItem('token') ? true : false,
   status: null,
-  is_password_change_required: localStorage.getItem(
-    'is_password_change_required'
-  )
+  isPasswordChangeRequired: localStorage.getItem('isPasswordChangeRequired')
     ? true
     : false,
   sessionTimeout: false,
@@ -36,13 +34,6 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // loginSuccess(state, action) {
-    //   const { email_id, role_name, access_token } = action.payload;
-    //   state.email_id = email_id;
-    //   state.role_name = role_name;
-    //   state.access_token = access_token;
-    //   state.isAuthenticated = true;
-    // },
     activeSessionTimeout: (state) => {
       state.sessionTimeout = true;
     },
@@ -84,7 +75,7 @@ const authSlice = createSlice({
           state.role_name = data.role_name;
           state.access_token = data.access_token;
           state.isAuthenticated = true;
-          state.is_password_change_required = data.is_password_change_required;
+          state.isPasswordChangeRequired = data.isPasswordChangeRequired;
         }
       })
       .addCase(loginAction.rejected, (state: AuthState, action) => {

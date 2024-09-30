@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -36,27 +37,27 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get users data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	var dataReq models.GetSalesRep
 	if err := json.NewDecoder(req.Body).Decode(&dataReq); err != nil {
 		log.FuncErrorTrace(0, "Failed to decode HTTP Request body from get users data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	role := req.Context().Value("rolename").(string)
 	if role == "Sale Representative" {
 		log.FuncErrorTrace(0, "sale rep accessing")
-		FormAndSendHttpResp(resp, "unauthorized user", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "unauthorized user", http.StatusBadRequest, nil)
 		return
 	}
 
 	if role == "Admin" && len(dataReq.DealerName) <= 0 {
 		log.FuncErrorTrace(0, "for admins, dealer should be selected for team creation")
-		FormAndSendHttpResp(resp, "dealer not selected for team creation", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "dealer not selected for team creation", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -64,7 +65,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// Get dealer_id based on email of logged-in user
 		dataReq.Email = req.Context().Value("emailid").(string)
 		if dataReq.Email == "" {
-			FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 			return
 		}
 		userEmail := dataReq.Email
@@ -76,14 +77,14 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{userEmail})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get dealers ID from DB with err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get dealers ID", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get dealers ID", http.StatusBadRequest, nil)
 			return
 		}
 
 		if len(data) == 0 {
 			err = fmt.Errorf("no dealer found for the given email")
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "No dealer found for the given email", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "No dealer found for the given email", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -100,14 +101,14 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{dealerName})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get dealer ID from DB with err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get dealer ID", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get dealer ID", http.StatusBadRequest, nil)
 			return
 		}
 
 		if len(data) == 0 {
 			err = fmt.Errorf("no dealer found with the given name")
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "No dealer found with the given name", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "No dealer found with the given name", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -139,7 +140,7 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -189,5 +190,5 @@ func HandleGetSalesRepDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersNameList.SaleRepList), usersNameList)
-	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersNameList)
+	appserver.FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersNameList)
 }

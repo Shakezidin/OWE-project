@@ -74,6 +74,9 @@ const (
 	CreateRepStatusFuntion                   string = "create_rep_status"
 	CreateRepCreditFuntion                   string = "create_rep_credit"
 	CreateDBAFuntion                         string = "create_dba"
+	CreateSlackConfigFuntion                 string = "create_slack_config"
+	UpdateSlackConfigArchiveFuntion          string = "update_slack_config_archive"
+	UpdateSlackConfigFuntion                 string = "update_slack_config"
 	AddTeamMembers                           string = "add_team_members"
 	DeleteTeamMember                         string = "delete_team_member"
 	DeleteTeams                              string = "delete_teams"
@@ -220,10 +223,12 @@ const (
 	TableName_ap_pda                         string = "ap_pda"
 	TableName_ap_adv                         string = "ap_adv"
 	TableName_dba                            string = "dba"
+	TableName_slackconfig                    string = "slackconfig"
 	TableName_rep_incent                     string = "rep_incent"
 	TableName_rep_status                     string = "rep_status"
 	TableName_rep_credit                     string = "rep_credit"
 	TableName_rep_type                       string = "rep_type"
+	TableName_Sales_Rep_DBhub                string = "sales_rep_dbhub_schema"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
 	// TableName_DLR_PAY_APCALC                 string = "dealer_pay_calc_standard"
@@ -237,6 +242,10 @@ const (
 	TableName_Breaker_Info              string = "breaker_info"
 	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
 	ViewName_REP_PAY                    string = "rep_pay_pr_data"
+
+	/* Leads Tables and Procedures */
+	TableName_Leads_Info string = "leads_info"
+	CreateLeadFunction   string = "create_lead"
 
 	/* Scheduling Tables and Procedures */
 	TableName_SchedulingProjects    string = "scheduling_projects"

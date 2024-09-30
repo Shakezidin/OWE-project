@@ -8,14 +8,15 @@ import {
   useState,
 } from 'react';
 import { DateRange } from 'react-date-range';
+
 import {
-  format,
+  endOfMonth,
   subDays,
   startOfMonth,
-  endOfMonth,
   startOfWeek,
   endOfWeek,
   startOfYear,
+  format,
 } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
@@ -33,10 +34,11 @@ import {
   SecondAwardIcon,
   ThirdAwardIcon,
 } from './Icons';
-import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
-import { useAppSelector } from '../../../redux/hooks';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
-import jsPDF from 'jspdf';
+import useAuth, { AuthData } from '../../../hooks/useAuth';
+import { toZonedTime } from 'date-fns-tz';
+import { MdDownloading } from 'react-icons/md';
+
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
   rank: number;
@@ -69,13 +71,12 @@ const rankByOptions = [
   { label: 'Cancel', value: 'cancel' },
 ];
 
-const role = localStorage.getItem('role');
-
 const groupByOptionss = [
   { label: 'Sale Rep', value: 'primary_sales_rep' },
   { label: 'Team', value: 'team' },
   { label: 'State', value: 'state' },
   { label: 'Region', value: 'region' },
+  { label: 'Setter', value: 'setter' },
 ];
 
 const groupByOptions = [
@@ -97,11 +98,27 @@ export const RankColumn = ({ rank }: { rank: number }) => {
 //
 // PERIOD FILTER
 //
-const today = new Date();
+
+function getUserTimezone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+// Function to get current date in the user's timezone
+function getCurrentDateInUserTimezone() {
+  const now = new Date();
+  const userTimezone = getUserTimezone();
+  return toZonedTime(now, userTimezone);
+}
+const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
 const startOfThisMonth = startOfMonth(today);
 const startOfThisYear = startOfYear(today);
 const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+const startOfThreeMonthsAgo = new Date(
+  today.getFullYear(),
+  today.getMonth() - 2,
+  1
+);
 const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
 
 // Calculate the start and end of last week
@@ -112,43 +129,50 @@ const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
   weekStartsOn: 1,
 });
 
-const periodFilterOptions: DateRangeWithLabel[] = [
-  {
-    label: 'This Week',
-    start: startOfThisWeek,
-    end: today,
-  },
-  {
-    label: 'Last Week',
-    start: startOfLastWeek,
-    end: endOfLastWeek,
-  },
-  {
-    label: 'This Month',
-    start: startOfThisMonth,
-    end: today,
-  },
-  {
-    label: 'Last Month',
-    start: startOfLastMonth,
-    end: endOfLastMonth,
-  },
-  {
-    label: 'This Year',
-    start: startOfThisYear,
-    end: today,
-  },
-];
-
 const PeriodFilter = ({
   period,
   setPeriod,
   resetPage,
+  disabled,
 }: {
   period: DateRangeWithLabel | null;
   setPeriod: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
+  disabled?: boolean;
 }) => {
+  const periodFilterOptions: DateRangeWithLabel[] = [
+    {
+      label: 'This Week',
+      start: startOfThisWeek,
+      end: today,
+    },
+    {
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
+    },
+    {
+      label: 'This Month',
+      start: startOfThisMonth,
+      end: new Date(),
+    },
+    {
+      label: 'Last Month',
+      start: startOfLastMonth,
+      end: endOfLastMonth,
+    },
+    {
+      label: 'This Quarter',
+      start: startOfThreeMonthsAgo,
+      end: today,
+    },
+    {
+      label: 'This Year',
+      start: startOfThisYear,
+      end: today,
+    },
+  ];
+
   return (
     <ul className="leaderboard-data__btn-group">
       {periodFilterOptions.map((item) => (
@@ -158,6 +182,7 @@ const PeriodFilter = ({
               setPeriod(item);
               resetPage();
             }}
+            disabled={disabled}
             className={
               'leaderboard-data__btn' +
               (period?.label === item.label
@@ -183,6 +208,7 @@ const SelectableFilter = ({
   setSelected,
   resetPage,
   resetDealer,
+  disabled,
 }: {
   label: string;
   options: { value: string; label: string }[];
@@ -190,6 +216,7 @@ const SelectableFilter = ({
   setSelected: (newVal: string) => void;
   resetPage: () => void;
   resetDealer: (value: string) => void;
+  disabled?: boolean;
 }) => {
   return (
     <>
@@ -206,6 +233,7 @@ const SelectableFilter = ({
                     resetDealer(item.value);
                   }
                 }}
+                disabled={disabled}
                 className={
                   'leaderboard-data__btn' +
                   (item.value === selected
@@ -223,6 +251,7 @@ const SelectableFilter = ({
         <label>{label}</label>
         <Select
           options={options}
+          isDisabled={disabled}
           value={options.find((option) => option.value === selected)}
           onChange={(newVal) => {
             setSelected(newVal?.value ?? '');
@@ -288,10 +317,12 @@ const DateFilter = ({
   selected,
   setSelected,
   resetPage,
+  disabled,
 }: {
   selected: DateRangeWithLabel;
   setSelected: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
+  disabled: boolean;
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState(
@@ -360,6 +391,38 @@ const DateFilter = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+  const periodFilterOptions: DateRangeWithLabel[] = [
+    {
+      label: 'This Week',
+      start: startOfThisWeek,
+      end: today,
+    },
+    {
+      label: 'Last Week',
+      start: startOfLastWeek,
+      end: endOfLastWeek,
+    },
+    {
+      label: 'This Month',
+      start: startOfThisMonth,
+      end: new Date(),
+    },
+    {
+      label: 'Last Month',
+      start: startOfLastMonth,
+      end: endOfLastMonth,
+    },
+    {
+      label: 'This Quarter',
+      start: startOfThreeMonthsAgo,
+      end: today,
+    },
+    {
+      label: 'This Year',
+      start: startOfThisYear,
+      end: today,
+    },
+  ];
 
   return (
     <div className="flex items-center justify-end">
@@ -367,6 +430,7 @@ const DateFilter = ({
         <Select
           options={periodFilterOptions}
           value={selected}
+          isDisabled={disabled}
           // placeholder={selected?"Custom"}
           isSearchable={false}
           onChange={(value) => value && setSelected(value)}
@@ -428,7 +492,7 @@ const DateFilter = ({
             }),
             menu: (baseStyles) => ({
               ...baseStyles,
-              width: '92px',
+              width: '109px',
               zIndex: 999,
               color: '#FFFFFF',
             }),
@@ -446,9 +510,9 @@ const DateFilter = ({
           onClick={() => setShowCalendar((prev) => !prev)}
           style={{ lineHeight: 0 }}
         >
-          <Calendar />
+          <Calendar disabled={disabled} />
         </span>
-        {showCalendar && (
+        {showCalendar && !disabled && (
           <div className="leaderboard-data__datepicker-content">
             <DateRange
               editableDateInputs={true}
@@ -506,7 +570,7 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
-  exportPdf: (fn: () => void) => void;
+  exportPdf: () => void;
   isExporting: boolean;
   count: number;
   resetDealer: (value: string) => void;
@@ -522,11 +586,18 @@ const Table = ({
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
+  const { authData, saveAuthData } = useAuth();
+
   const [totalStats, setTotalStats] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 25;
-  const [isAuthenticated] = useState(
-    localStorage.getItem('is_password_change_required') === 'false'
-  );
+  const [isAuthenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
 
   useEffect(() => {
     if (isAuthenticated && isFetched) {
@@ -591,9 +662,11 @@ const Table = ({
     setPage(page - 1);
   };
 
-  const sortedPage = leaderTable
-    .slice()
-    .sort((a, b) => (a.hightlight || b.hightlight ? -1 : 1));
+  const sortedPage = leaderTable.slice().sort((a, b) => {
+    if (a.hightlight && !b.hightlight) return -1;
+    if (!a.hightlight && b.hightlight) return 1;
+    return 0;
+  });
 
   function formatSaleValue(value: any) {
     if (value === null || value === undefined) return ''; // Handle null or undefined values
@@ -602,7 +675,7 @@ const Table = ({
     if (sale % 1 === 0) return sale.toString(); // If the number is an integer, return it as a string without .00
     return sale.toFixed(2); // Otherwise, format it to 2 decimal places
   }
-  const role = localStorage.getItem('role');
+  const role = authData?.role;
   const getTotal = (column: keyof ILeaderBordUser): number => {
     return sortedPage.reduce((sum, item) => {
       const value = item[column];
@@ -635,7 +708,9 @@ const Table = ({
     if (
       (role === TYPE_OF_USER.ADMIN ||
         role === TYPE_OF_USER.DEALER_OWNER ||
-        role === TYPE_OF_USER.FINANCE_ADMIN) &&
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER) &&
       groupBy !== 'dealer'
     ) {
       return true;
@@ -643,44 +718,64 @@ const Table = ({
     if (
       role !== TYPE_OF_USER.ADMIN &&
       role !== TYPE_OF_USER.DEALER_OWNER &&
-      role !== TYPE_OF_USER.FINANCE_ADMIN
+      role !== TYPE_OF_USER.FINANCE_ADMIN &&
+      role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+      role !== TYPE_OF_USER.ACCOUNT_MANAGER
     ) {
       return true;
     } else {
       return false;
     }
-  }, [groupBy, role]);
+  }, [groupBy, role, authData]);
 
   const exportCsv = async () => {
     // Define the headers for the CSV
 
     setIsExporting(true);
-    const headers = ['Rank', 'Name', 'Sale', 'NTP', 'Install', 'Cancel'];
-    if (showPartner) {
-      headers.splice(2, 0, 'Partner');
-    }
-    const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
-      type: activeHead,
-      dealer: selectDealer.map((item) => item.value),
-      page_size: count,
-      page_number: 1,
+    const headers = [
+      'UniqueID',
+      'Homeowner Name',
+      'Homeowner Email',
+      'Homeowner Phone',
+      'Address',
+      'State',
+      'Contract $',
+      'Sys Size',
+      'Sale Date',
+      'NTP Date',
+      'Install Date',
+      'Pto Date',
+      'Cancel Date',
+      'Primary Sales Rep',
+      'Secondary Sales Rep',
+    ];
+
+    const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
+      dealer_names: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-      sort_by: active,
       group_by: groupBy,
     });
     if (getAllLeaders.status > 201) {
       toast.error(getAllLeaders.message);
       return;
     }
-    const csvData = getAllLeaders?.data?.ap_ded_list?.map?.((item: any) => [
-      item.rank,
-      item.rep_name,
-      showPartner ? item.dealer : '',
-      formatSaleValue(item.sale),
-      formatSaleValue(item.ntp),
-      formatSaleValue(item.install),
-      formatSaleValue(item.cancel),
+    const csvData = getAllLeaders?.data?.map?.((item: any) => [
+      item.unique_id,
+      item.home_owner,
+      item.customer_email,
+      item.customer_phone_number,
+      item.address,
+      item.state,
+      item.contract_total,
+      item.system_size,
+      item.contract_date,
+      item.ntp_date,
+      item.pv_install_completed_date,
+      item.pto_date,
+      item.canceled_date,
+      item.primary_sales_rep,
+      item.secondary_sales_rep,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -698,14 +793,50 @@ const Table = ({
     setIsExporting(false);
     setExportShow(false);
   };
-
+  console.log(groupBy, 'groupBy');
+  const getName = useMemo(() => {
+    if (groupBy === 'primary_sales_rep') {
+      return 'Sale Rep Name';
+    }
+    if (groupBy === 'dealer') {
+      if (role === TYPE_OF_USER.DEALER_OWNER) {
+        return 'Code Name';
+      } else {
+        return 'Partner Name';
+      }
+    }
+    if (groupBy === 'region') {
+      return 'Region Name';
+    }
+    if (groupBy === 'state') {
+      return 'State Name';
+    }
+    if (groupBy === 'team') {
+      return 'Team Name';
+    }
+    if (groupBy === 'setter') {
+      return 'Setter Name';
+    } else {
+      return 'Partner Name';
+    }
+  }, [role, authData, groupBy]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-        <div onClick={toggleExportShow}>
-          <FaUpload size={12} className="mr1" />
-          <span> Export </span>
+        <div
+          className="export-trigger overflow-hidden"
+          onClick={() => !isExporting && !isExportingData && toggleExportShow()}
+        >
+          {isExporting || isExportingData ? (
+            <MdDownloading className="downloading-animation" size={20} />
+          ) : (
+            <FaUpload size={12} className="mr1" />
+          )}
+          <span>
+            {' '}
+            {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
+          </span>
         </div>
         {exportShow && (
           <div className="export-opt">
@@ -713,7 +844,8 @@ const Table = ({
               className="export-btn"
               disabled={isExporting || isExportingData}
               onClick={() => {
-                exportPdf(toggleExportShow);
+                exportPdf();
+                setExportShow(false);
               }}
             >
               <span>Pdf</span>
@@ -721,7 +853,10 @@ const Table = ({
             <button
               disabled={isExportingData}
               className="export-btn export-btnn"
-              onClick={exportCsv}
+              onClick={() => {
+                exportCsv();
+                setExportShow(false);
+              }}
             >
               <span>Csv</span>
             </button>
@@ -794,6 +929,7 @@ const Table = ({
             options={rankByOptions}
             resetPage={resetPage}
             selected={active}
+            disabled={isLoading}
             resetDealer={resetDealer}
             setSelected={setActive}
           />
@@ -804,11 +940,13 @@ const Table = ({
             </div>
             <div className="flex items-center justify-end">
               <PeriodFilter
+                disabled={isLoading}
                 resetPage={resetPage}
                 period={selectedRangeDate}
                 setPeriod={setSelectedRangeDate}
               />
               <DateFilter
+                disabled={isLoading}
                 selected={selectedRangeDate}
                 resetPage={resetPage}
                 setSelected={setSelectedRangeDate}
@@ -819,10 +957,13 @@ const Table = ({
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Group by:"
+            disabled={isLoading}
             options={
               role === 'Admin' ||
               role === TYPE_OF_USER.DEALER_OWNER ||
-              role === TYPE_OF_USER.FINANCE_ADMIN
+              role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+              role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -834,14 +975,14 @@ const Table = ({
 
           <div className="leaderbord-tab-container">
             <div
-              onClick={() => setActiveHead('kw')}
-              className={`tab ${activeHead === 'kw' ? 'activehead' : ''}`}
+              onClick={() => !isLoading && setActiveHead('kw')}
+              className={`tab  ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'kw' ? 'activehead' : ''}`}
             >
               KW
             </div>
             <div
-              onClick={() => setActiveHead('count')}
-              className={`tab ${activeHead === 'count' ? 'activehead' : ''}`}
+              onClick={() => isLoading && setActiveHead('count')}
+              className={`tab ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'count' ? 'activehead' : ''}`}
             >
               Count
             </div>
@@ -973,14 +1114,7 @@ const Table = ({
               <tr>
                 <th>Rank</th>
 
-                <th>
-                  {(role === TYPE_OF_USER.ADMIN ||
-                    role === TYPE_OF_USER.FINANCE_ADMIN ||
-                    role === TYPE_OF_USER.DEALER_OWNER) &&
-                  groupBy === 'dealer'
-                    ? 'Code Name'
-                    : 'Name'}
-                </th>
+                <th>{getName}</th>
 
                 {showPartner && <th>Partner</th>}
                 <th>
@@ -1103,23 +1237,25 @@ const Table = ({
         </div>
       </div>
 
-      {leaderTable?.length > 0 ? (
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
-            {totalCount} item
-          </p>
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            paginate={paginate}
-            currentPageData={leaderTable}
-            goToNextPage={goToNextPage}
-            goToPrevPage={goToPrevPage}
-            perPage={itemsPerPage}
-          />
-        </div>
-      ) : null}
+      <div className="page-heading-container">
+        {leaderTable?.length > 0 && !isLoading ? (
+          <>
+            <p className="page-heading">
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {totalCount} item
+            </p>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              paginate={paginate}
+              currentPageData={leaderTable}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+            />
+          </>
+        ) : null}
+      </div>
     </div>
   );
 };

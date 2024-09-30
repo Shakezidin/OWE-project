@@ -67,12 +67,18 @@ export const getPerfomanceStatus = createAsyncThunk(
       startDate,
       endDate,
       uniqueId,
+      selected_milestone,
+      project_status,
+      dealer_names,
     }: {
       page: number;
       perPage: number;
       startDate: string;
       endDate: string;
       uniqueId?: any;
+      selected_milestone: string;
+      project_status: any;
+      dealer_names: string[];
     },
     { rejectWithValue }
   ) => {
@@ -83,6 +89,9 @@ export const getPerfomanceStatus = createAsyncThunk(
         start_date: startDate,
         end_date: endDate,
         ...(uniqueId && { unique_ids: [uniqueId] }),
+        selected_milestone: selected_milestone,
+        project_status: project_status,
+        dealer_names,
       });
 
       if (data.status > 201) {
@@ -114,7 +123,7 @@ interface IState {
 const initialState: IState = {
   perfomaceSale: [],
   error: '',
-  isLoading: false,
+  isLoading: true,
   isSuccess: 0,
   commisionMetrics: {} as ICommision,
   projectStatus: [],

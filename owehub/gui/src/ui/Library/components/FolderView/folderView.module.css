@@ -1,0 +1,108 @@
+/* folderView.module.css */
+
+.folderMain_wrapper {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  flex-wrap: wrap;
+  gap: 28px;
+  /* gap: 15px; */
+  /* padding: 24px; */
+  padding-left: 24px;
+  /* padding-right: 15px;  */
+  background-color: #ffffff;
+}
+
+.folderDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.folderDiv:hover .charDiv {
+  background-color: #377cf6;
+}
+
+.folderIcon_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #f2f2f2;
+  width: 108px;
+  margin-top: 15px;
+  padding: 8px 22px;
+  border-radius: 8px;
+}
+
+.charDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #afafaf;
+  width: fit-content;
+  padding: 0px 5px;
+  border-radius: 50%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  position: relative;
+  right: 15px;
+}
+.folderIcon_wrapper img {
+  width: 56px;
+  height: 45px;
+  position: relative;
+  left: 3px;
+}
+
+.folderInput {
+  height: 15px !important;
+  width: 15px !important;
+  border: 0.5px solid rgba(175, 175, 175, 0.5) !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  position: relative;
+  left: 64px;
+  top: 3px;
+  background-color: #afafaf;
+  visibility: hidden;
+}
+.folderDiv:hover .folderInput {
+  visibility: visible;
+}
+
+.folderContent_wrapper {
+  margin-top: 5px;
+  width: 108px;
+  /* border: 1px solid black; */
+}
+
+.folder_name {
+  font-family: 'poppins';
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+}
+.folderInfo_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.foldersize {
+  font-family: 'poppins';
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 15px;
+  color: #929292;
+}
+.folderdate {
+  font-family: 'poppins';
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 15px;
+  color: #929292;
+}

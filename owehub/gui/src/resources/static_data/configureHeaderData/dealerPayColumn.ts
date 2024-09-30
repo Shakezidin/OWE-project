@@ -7,7 +7,7 @@ export default [
   },
   {
     name: 'dealer',
-    displayName: 'Dealer Name',
+    displayName: 'Sales Partner',
     type: 'string',
     isCheckbox: false,
   },

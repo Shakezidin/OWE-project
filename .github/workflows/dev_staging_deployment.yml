@@ -23,12 +23,6 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.OWEHUB_STAGING_SSH_PRIVATE_KEY }}
-    
-    - name: Bump version and create a new tag
-      run: |
-        npm install
-        npx standard-version
-        git push --follow-tags
 
     - name: Checkout latest dev branch
       run: |
@@ -50,16 +44,16 @@ jobs:
         git clean -fd ../../
         git checkout ../../
         
-    - name: Migrating Databse
-      run: |
-        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
-        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
-        ./deploy-owehub.sh migrate_db
-    
     - name: Deploying Backend
       run: |
         ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
         cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
         ./deploy-owehub.sh backend
+
+    - name: Migrating Databse
+      run: |
+        ssh -p ${{ secrets.OWEHUB_STAGING_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.OWEHUB_STAGING_USERNAME }}@${{ secrets.OWEHUB_STAGING_SERVER }} << 'EOF'
+        cd /home/ubuntu/deploy/OweAppPlatform/owehub/scripts/
+        ./deploy-owehub.sh migrate_db
     
         EOF

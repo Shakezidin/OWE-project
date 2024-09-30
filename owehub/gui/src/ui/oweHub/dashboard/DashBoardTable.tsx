@@ -36,7 +36,7 @@ const DashBoardTable = ({
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
   const [editMode, setEditMode] = useState(false);
-  const itemsPerPage = 10;
+  const itemsPerPage = 25;
   const totalPages = Math.ceil(count / itemsPerPage);
   const currentPageData = data?.slice();
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
@@ -131,12 +131,7 @@ const DashBoardTable = ({
               ) : currentPageData.length > 0 ? (
                 currentPageData.map((el: any, index: any) => (
                   <tr key={index}>
-                    <td
-                      style={{ fontWeight: '500' }}
-                      onClick={() => {
-                        setOpen(true);
-                      }}
-                    >
+                    <td style={{ fontWeight: '500' }}>
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(index)}
@@ -154,7 +149,14 @@ const DashBoardTable = ({
                             }
                           }}
                         />
-                        <span className="zoom-out-td">{el.unique_id}</span>
+                        <span
+                          className="zoom-out-td"
+                          onClick={() => {
+                            setOpen(true);
+                          }}
+                        >
+                          {el.unique_id}
+                        </span>
                       </div>
                     </td>
 
@@ -168,16 +170,16 @@ const DashBoardTable = ({
                         'N/A'}
                     </td>
                     <td style={{ color: '#101828' }}>
-                      {el.contract_value ?? 'N/A'}
+                      ${el.contract_value ?? 'N/A'}
                     </td>
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
-                      {el.amount ?? 'N/A'}
+                      ${el.amount ?? 'N/A'}
                     </td>
                     <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
-                      {el.amt_paid ?? 'N/A'}
+                      ${el.amt_paid ?? 'N/A'}
                     </td>
                     <td style={{ color: '#379DE3', fontWeight: '500' }}>
-                      {el.balance ?? 'N/A'}
+                      ${el.balance ?? 'N/A'}
                     </td>
                     <td style={{ color: '#15C31B', fontWeight: '500' }}>
                       {el.credit ?? 'N/A'}
@@ -214,9 +216,11 @@ const DashBoardTable = ({
                           </span>
                         )}
                       </td> */}
-                    <td>{el.epc || 'N/A'}</td>
-                    <td>{el.net_epc || 'N/A'}</td>
-                    <td>{el.net_rev || 'N/A'}</td>
+                    <td>{el.epc ? Number(el.epc).toFixed(2) : 'N/A'}</td>
+                    <td>
+                      {el.net_epc ? Number(el.net_epc).toFixed(2) : 'N/A'}
+                    </td>
+                    <td>{el.net_rev ? el.net_rev : 'N/A'}</td>
                     <td>{el.current_status || 'N/A'}</td>
                     <td>{el.state || 'N/A'}</td>
                     <td>{el.dba || 'N/A'}</td>
@@ -289,15 +293,7 @@ const DashBoardTable = ({
         />
       )}
       {openIcon && (
-        <HelpDashboard
-          data={{
-            id: editData.unique_id,
-            name: editData.dealer,
-            state: editData.state,
-            status: editData.current_status,
-          }}
-          handleClose={handleIconClose}
-        />
+        <HelpDashboard data={editData} handleClose={handleIconClose} />
       )}
     </>
   );

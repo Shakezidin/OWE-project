@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UserIcon = ({ color = '#EE824D' }) => (
+const UserIcon = ({ color = '#E0728C' }) => (
   <svg
     width="32"
     height="32"

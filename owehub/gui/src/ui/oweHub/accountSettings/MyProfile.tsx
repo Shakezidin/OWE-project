@@ -13,11 +13,11 @@ import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { toast } from 'react-toastify';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import useAuth from '../../../hooks/useAuth';
 
 const MyProfile = () => {
-  const [stateOptions, setStateOptions] = useState<any[]>([]);
   const dispatch = useAppDispatch();
-  const { userDetail, userUpdate, isFormSubmitting } = useAppSelector(
+  const { userDetail, isFormSubmitting } = useAppSelector(
     (state) => state.userSlice
   );
 
@@ -29,8 +29,9 @@ const MyProfile = () => {
   const [preferredName, setPreferredName] = useState<any>('');
   const [dealerCode, setDealerCode] = useState('');
   const [newFormData, setNewFormData] = useState<any>([]);
+  const { authData } = useAuth();
 
-  const role = localStorage.getItem('role');
+  const role = authData?.role;
   const tableData = {
     tableNames: [
       'partners',

@@ -22,5 +22,21 @@ cd "$DOCKER_PATH" || exit 1
 # Start the Docker containers using docker-compose
 docker-compose -f docker-compose-backend.yaml up -d
 
+
+CONTAINER_NAME="postgres_db_latest"
+
+CONTAINER_ID=$(docker ps -qf "name=$CONTAINER_NAME")
+
+if [ -z "$CONTAINER_ID" ]; then
+  echo "Error: Container with name '$CONTAINER_NAME' is not running."
+  exit 1
+fi
+
+docker exec -it $CONTAINER_ID /bin/bash -c "sed -i 's/^#*\s*wal_level\s*=.*/wal_level = logical/' /var/lib/postgresql/data/postgresql.conf"
+
+docker restart "$CONTAINER_ID"
+
+echo "wal_level set to logical and The container has been restarted."
+
 cd -
 

@@ -9,18 +9,28 @@ package types
 
 import (
 	CfgModels "OWEApp/shared/models"
+
+	"github.com/dgrijalva/jwt-go"
 )
+
+type Claims struct {
+	EmailId  string `json:"emailid"`
+	RoleName string `json:"rolename"`
+	jwt.StandardClaims
+}
 
 type UserGroup string
 type UserRoles string
 
 const (
-	GroupAdmin           UserGroup = "GroupAdmin"
-	GroupDealerFinance   UserGroup = "GroupDealerFinance"
-	GroupSalesManagement UserGroup = "GroupSalesManagement"
-	GroupEveryOne        UserGroup = "GroupEveryOne"
-	GroupDb              UserGroup = "GroupDb"
-	GroupAdminDealer     UserGroup = "GroupAdminDealer"
+	GroupAdmin               UserGroup = "GroupAdmin"
+	GroupDealerFinance       UserGroup = "GroupDealerFinance"
+	GroupSalesManagement     UserGroup = "GroupSalesManagement"
+	GroupEveryOne            UserGroup = "GroupEveryOne"
+	GroupDb                  UserGroup = "GroupDb"
+	GroupAdminDealer         UserGroup = "GroupAdminDealer"
+	GroupAdminAccounts       UserGroup = "GroupAdminAccounts"
+	GroupAdminDealerAccounts UserGroup = "GroupAdminDealerAccounts"
 )
 
 var (
@@ -57,21 +67,34 @@ var (
 			RoleApptSetter,
 			RoleFinAdmin,
 			RoleDbUser,
+			RoleAccountExecutive,
+			RoleAccountManager,
+		}, GroupAdminAccounts: {
+			RoleAdmin,
+			RoleAccountManager,
+			RoleAccountExecutive,
+		}, GroupAdminDealerAccounts: {
+			RoleAdmin,
+			RoleDealerOwner,
+			RoleAccountManager,
+			RoleAccountExecutive,
 		},
 	}
 )
 
 const (
-	RoleAdmin           UserRoles = "Admin"
-	RoleDealerOwner     UserRoles = "Dealer Owner"
-	RoleSubDealerOwner  UserRoles = "SubDealer Owner"
-	RolePartner         UserRoles = "Partner"
-	RoleRegionalManager UserRoles = "Regional Manager"
-	RoleSalesManager    UserRoles = "Sales Manager"
-	RoleSalesRep        UserRoles = "Sale Representative"
-	RoleApptSetter      UserRoles = "Appointment Setter"
-	RoleFinAdmin        UserRoles = "Finance Admin"
-	RoleDbUser          UserRoles = "DB User"
+	RoleAdmin            UserRoles = "Admin"
+	RoleDealerOwner      UserRoles = "Dealer Owner"
+	RoleSubDealerOwner   UserRoles = "SubDealer Owner"
+	RolePartner          UserRoles = "Partner"
+	RoleRegionalManager  UserRoles = "Regional Manager"
+	RoleSalesManager     UserRoles = "Sales Manager"
+	RoleSalesRep         UserRoles = "Sale Representative"
+	RoleApptSetter       UserRoles = "Appointment Setter"
+	RoleFinAdmin         UserRoles = "Finance Admin"
+	RoleDbUser           UserRoles = "DB User"
+	RoleAccountManager   UserRoles = "Account Manager"
+	RoleAccountExecutive UserRoles = "Account Executive"
 )
 
 var (

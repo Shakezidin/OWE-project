@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -35,6 +36,7 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		filter            string
 		RecordCount       int64
 		SelectedTableName string
+		tableName         string
 	)
 
 	type Response struct {
@@ -49,25 +51,27 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get any table data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get any table data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get any table data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get any table data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get any table data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
-	tableName := dataReq.Filters[0].Data.(string)
+	if len(dataReq.Filters) > 0 {
+		tableName = dataReq.Filters[0].Data.(string)
+	}
 
 	switch tableName {
 	case "adder_data_cfg_schema":
@@ -96,22 +100,23 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get any table data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get any table data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get any table data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
 	countquery := fmt.Sprintf("SELECT COUNT(*) AS record_count FROM %s", SelectedTableName)
 	countData, err := db.ReteriveFromDB(db.RowDataDBIndex, countquery, whereEleList)
-	if err != nil {
+	if err != nil || len(countData) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get count of table data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
 		return
 	}
+
 	countValue, ok := countData[0]["record_count"].(int64)
 	if !ok {
 		// Handle the case where the type assertion fails
 		log.FuncErrorTrace(0, "Failed to assert record count to int64")
-		FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
 		return
 	}
 

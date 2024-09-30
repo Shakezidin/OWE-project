@@ -1,28 +1,11 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './sidebar.css';
-import { ICONS } from '../../../resources/icons/Icons';
-import { Link, useLocation } from 'react-router-dom';
-import { MdOutlinePayment } from 'react-icons/md';
-import { FiLayers } from 'react-icons/fi';
-import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowRight,
-  MdKeyboardArrowUp,
-} from 'react-icons/md';
-import { MdKeyboardArrowLeft } from 'react-icons/md';
-import { LuWallet } from 'react-icons/lu';
+import { Link, Routes, useLocation } from 'react-router-dom';
 import { createSideMenuList } from '../../../routes/SideMenuOption';
-import { GrDocumentPerformance } from 'react-icons/gr';
-import { AiOutlineProject } from 'react-icons/ai';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import { ROUTES } from '../../../routes/routes';
+import useAuth from '../../../hooks/useAuth';
 
 interface Child {
   path: string;
@@ -38,23 +21,11 @@ interface Toggleprops {
   sidebarChange: number;
 }
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-}
-
 const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
-  const [repay, setRepay] = useState<boolean>(false);
-  const [db, setDb] = useState<boolean>(false);
-  const [project, setProject] = useState<boolean>(false);
+  const [, setDb] = useState<boolean>(false);
+  const [, setProject] = useState<boolean>(false);
 
+  const { authData } = useAuth();
   const [cords, setCords] = useState<{
     left: number;
     top: number;
@@ -70,36 +41,103 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const role = localStorage.getItem('role');
 
   const dealer = localStorage.getItem('dealer');
-  console.log(dealer, "sidebar dealer")
+  console.log(dealer, 'sidebar dealer');
 
-  const filteredList = useMemo(() => {
+  const filteredList = () => {
     let list = [...createSideMenuList()];
-    if ( role === TYPE_OF_USER.ADMIN) {
+    const isStaging = process.env.REACT_APP_ENV;
+
+    if (role === TYPE_OF_USER.ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        newArr[0].mob.push(item);
+        if (
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY)
+        ) {
+        } else {
+          newArr[0].mob.push(item);
+        }
       });
       return newArr;
-    }else if (role === TYPE_OF_USER.DEALER_OWNER) {
-      if (dealer === "WhyGen Solar") {
-        return list;
-      } else {
-        const newArr: any[] = [{ mob: [] }];
-        list[0].mob.forEach((item: any) => {
-          if (
-            item.path !== ROUTES.PROJECT_PERFORMANCE &&
-            item.path !== ROUTES.PROJECT_STATUS
-          ) {
-            newArr[0].mob.push(item);
-          }
-        });
-        return newArr;
-      }
-    } else if ( role === TYPE_OF_USER.FINANCE_ADMIN) {
+    } else if (role === TYPE_OF_USER.DEALER_OWNER) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          (isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+          item.path === ROUTES.LEAD_MANAGEMENT ||
+          item.path === ROUTES.LIBRARY
+        ) {
+        } else if (item.path !== ROUTES.CONFIG_PAGE) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    } else if (role === TYPE_OF_USER.SALES_REPRESENTATIVE) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          isStaging !== 'staging' &&
+          (item.path === ROUTES.COMMISSION_DASHBOARD ||
+            item.path === ROUTES.CONFIG_PAGE ||
+            item.path === ROUTES.SALES_REP_SCHEDULER ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY)
+        ) {
+        } else if (
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.CONFIG_PAGE &&
+          item.path !== ROUTES.COMMISSION_DASHBOARD
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    } else if (
+      role === TYPE_OF_USER.REGIONAL_MANGER ||
+      role === TYPE_OF_USER.SALE_MANAGER
+    ) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (
+          (isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+          item.path === ROUTES.LEAD_MANAGEMENT ||
+          item.path === ROUTES.LIBRARY
+        ) {
+        } else if (
+          item.path !== ROUTES.USER_MANAEMENT &&
+          item.path !== ROUTES.CONFIG_PAGE &&
+          item.path !== ROUTES.COMMISSION_DASHBOARD
+        ) {
+          newArr[0].mob.push(item);
+        }
+      });
+      return newArr;
+    } else if (role === TYPE_OF_USER.FINANCE_ADMIN) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (item.path !== ROUTES.USER_MANAEMENT) {
-          newArr[0].mob.push(item);
+          if (
+            (isStaging !== 'staging' &&
+              (item.path === ROUTES.COMMISSION_DASHBOARD ||
+                item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY
+          ) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
@@ -108,16 +146,52 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       list[0].mob.forEach((item: any) => {
         if (
           item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD &&
-          item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === "WhyGen Solar") ||
-            (item.path !== ROUTES.PROJECT_PERFORMANCE &&
-              item.path !== ROUTES.PROJECT_STATUS))
+          item.path !== ROUTES.USER_MANAEMENT
         ) {
-          newArr[0].mob.push(item);
+          if (
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT ||
+              item.path === ROUTES.LIBRARY)
+          ) {
+          } else if (
+            item.path !== ROUTES.USER_MANAEMENT &&
+            item.path !== ROUTES.CONFIG_PAGE &&
+            item.path !== ROUTES.COMMISSION_DASHBOARD
+          ) {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
-    }else if (role === TYPE_OF_USER.DB_USER) {
+    } else if (
+      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+      role === TYPE_OF_USER.ACCOUNT_MANAGER
+    ) {
+      const newArr: any[] = [{ mob: [] }];
+      list[0].mob.forEach((item: any) => {
+        if (item.path !== ROUTES.USER_MANAEMENT) {
+          if (
+            (isStaging !== 'staging' &&
+              (item.path === ROUTES.COMMISSION_DASHBOARD ||
+                item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY
+          ) {
+          } else if (
+            item.path !== ROUTES.USER_MANAEMENT &&
+            item.path !== ROUTES.CONFIG_PAGE &&
+            item.path !== ROUTES.TEAM_MANAGEMENT_DASHBOARD
+          ) {
+            newArr[0].mob.push(item);
+          }
+        }
+      });
+      return newArr;
+    } else if (role === TYPE_OF_USER.DB_USER) {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
         if (
@@ -126,26 +200,40 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           item.path !== ROUTES.PROJECT_PERFORMANCE &&
           item.path !== ROUTES.PROJECT_STATUS
         ) {
-          newArr[0].mob.push(item);
+          if (
+            (isStaging !== 'staging' &&
+              (item.path === ROUTES.COMMISSION_DASHBOARD ||
+                item.path === ROUTES.CONFIG_PAGE ||
+                item.path === ROUTES.SALES_REP_SCHEDULER)) ||
+            item.path === ROUTES.LEAD_MANAGEMENT ||
+            item.path === ROUTES.LIBRARY
+          ) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
     } else {
       const newArr: any[] = [{ mob: [] }];
       list[0].mob.forEach((item: any) => {
-        if (
-          item.path !== ROUTES.USER_MANAEMENT &&
-          ((dealer && dealer === "WhyGen Solar") ||
-            (item.path !== ROUTES.PROJECT_PERFORMANCE &&
-              item.path !== ROUTES.PROJECT_STATUS))
-        ) {
-          newArr[0].mob.push(item);
+        if (item.path !== ROUTES.USER_MANAEMENT) {
+          if (
+            isStaging !== 'staging' &&
+            (item.path === ROUTES.COMMISSION_DASHBOARD ||
+              item.path === ROUTES.CONFIG_PAGE ||
+              item.path === ROUTES.SALES_REP_SCHEDULER ||
+              item.path === ROUTES.LEAD_MANAGEMENT ||
+              item.path === ROUTES.LIBRARY)
+          ) {
+          } else {
+            newArr[0].mob.push(item);
+          }
         }
       });
       return newArr;
     }
-  }, [createSideMenuList, role]);
-
+  };
 
   const handleMouseover = (
     e: React.MouseEvent<HTMLAnchorElement | MouseEvent>,
@@ -183,18 +271,15 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     }
   }, [toggleOpen]);
 
-  const width = useWindowWidth();
-
   // TODO showing required routes for now
   // const isMobile = width < 768;
   const isMobile = true;
 
-
-  console.log(dealer, "dealer")
+  console.log(filteredList(), 'dealer');
   return (
     <div
       style={{ zIndex: '30' }}
-      className={`side-bar-container ${toggleOpen ? 'side-bar-active hidden' : 'show'}`}
+      className={`side-bar-container ${toggleOpen ? 'side-bar-active sidebar-hidden' : 'show'}`}
     >
       <div
         className={`side-bar-content ${
@@ -202,7 +287,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         }`}
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
-        {filteredList.map((el: any, i: number) => (
+        {filteredList().map((el: any, i: number) => (
           <div className="" key={i}>
             {isMobile && (
               <div className="" style={{ marginTop: toggleOpen ? 0 : '-2px' }}>
@@ -318,6 +403,28 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             )}
           </div>
         ))}
+        <div style={{ marginTop: 32 }}>
+          <p
+            style={{
+              fontSize: '12px',
+              textAlign: 'center',
+              fontWeight: 500,
+              color: '#afadad',
+            }}
+          >
+            © 2024 by Our World Energy.
+          </p>
+          <p
+            style={{
+              fontSize: '10px',
+              textAlign: 'center',
+              fontWeight: 500,
+              color: '#afadad',
+            }}
+          >
+            All rights reserved. eOS: v1.4
+          </p>
+        </div>
       </div>
     </div>
   );

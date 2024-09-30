@@ -78,6 +78,23 @@
   transition: background 500ms;
 }
 
+.inactive_date {
+  padding: 6px 11px;
+  min-width: 54px;
+  border-radius: 6px;
+  max-width: 54px;
+  transition: all 500ms;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.inactive_date:hover {
+  background-color: #e8e8e8;
+  transition: all 500ms;
+}
+
 .schedule_form_wrapper {
   position: fixed;
   background-color: #fff;
@@ -198,8 +215,9 @@
   grid-auto-flow: column;
   overflow: hidden;
 }
-.bg_booked_slot{
-  background: #377CF6;
+
+.bg_booked_slot {
+  background: #377cf6;
   height: 100%;
   display: grid;
   place-items: center;
@@ -207,7 +225,7 @@
   overflow: hidden;
 }
 
-.swap_wrapper{
+.swap_wrapper {
   position: fixed;
   background-color: #fff;
   width: 100%;
@@ -223,32 +241,34 @@
   box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.swap_btn{
+.swap_btn {
   padding: 4px 38px;
   background-color: #fff;
   border-radius: 11.5px;
-  color: #8CE38A;
+  color: #8ce38a;
   font-weight: 600;
   border: none;
   opacity: 0;
   cursor: pointer;
 }
-.swap_primary_btn{
+
+.swap_primary_btn {
   padding: 4px 24px;
   border-radius: 4px;
   color: #fff;
-  background-color: #377CF6;
+  background-color: #377cf6;
   font-size: 14px;
   cursor: pointer;
   border: none;
 }
-.swap_secondary_btn{
+
+.swap_secondary_btn {
   padding: 4px 24px;
   border-radius: 4px;
   margin-left: 9px;
   cursor: pointer;
   color: #767676;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   font-weight: 500;
   font-size: 14px;
   border: none;
@@ -376,7 +396,8 @@
   opacity: 1;
   transition: all 500ms;
 }
-.bg_available_slot:hover .swap_btn{
+
+.bg_available_slot:hover .swap_btn {
   opacity: 1;
   transition: all 500ms;
 }
