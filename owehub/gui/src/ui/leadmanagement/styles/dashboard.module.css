@@ -140,6 +140,7 @@
   transition: all 500ms;
 }
 
+
 .button:hover {
   background-color: #ddebff;
 }
@@ -607,16 +608,21 @@ input[type='checkbox']:checked {
 }
 
 /*---------------- Shams Start-------------------- */
-
+.lead__datepicker_wrapper {
+  position: relative;
+  line-height: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 11;
+}
 .lead__datepicker_content {
   position: absolute;
-  right: 26px;
-  z-index: 10;
+  left: 46px;
+  z-index: 100;
   background-color: var(--white-color);
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  top: 160px;
-  right: 60px;
+  top: 20px;
 }
 
 .lead__datepicker_btns {
