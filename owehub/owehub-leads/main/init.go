@@ -145,6 +145,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_lead_info",
+		apiHandler.HandleGetLeadInfo,
+		true,
+		leadsRoleGroup,
+	},
 }
 
 /******************************************************************************
