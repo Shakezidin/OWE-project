@@ -30,6 +30,7 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err     error
 		dataReq models.ToggleArchiveRequest
+		data    []map[string]interface{}
 		query   string
 	)
 
@@ -53,9 +54,6 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Log the received request body for debugging
-	log.FuncErrorTrace(0, "Received request body: %s", string(reqBody))
-
 	//Unmarshal the request body into the ToggleArchiveLeadsReq struct
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
@@ -73,22 +71,43 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	placeholders := make([]string, length)
-	for i := 0; i < length; i++ {
-		placeholders[i] = fmt.Sprintf("$%d", i+2) // Start from $2 because $1 is for is_archived
+	placeholders := []string{}
+	queryParameters := []interface{}{dataReq.IsArchived}
+	inputLeadIds := ""
+
+	for i, id := range dataReq.LeadID {
+		queryParameters = append(queryParameters, id)
+		placeholders = append(placeholders, fmt.Sprintf("$%d", len(queryParameters)))
+
+		if i != 0 {
+			inputLeadIds += ", "
+		}
+
+		inputLeadIds += fmt.Sprintf("(%d)", id)
+	}
+
+	// CHECK if the leads exist in the database
+	query = fmt.Sprintf(`
+		WITH leads_id_check(id) AS (VALUES %s)
+		SELECT leads_id_check.id FROM leads_info RIGHT JOIN leads_id_check ON leads_id = id
+		WHERE leads_id IS NULL
+	`, inputLeadIds)
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+
+	if len(data) > 0 {
+		ids := []int64{}
+		for _, item := range data {
+			ids = append(ids, item["id"].(int64))
+		}
+		err = fmt.Errorf("Couldnt find the following leads in the database: %v", ids)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Couldnt find one or more leads in the database", http.StatusBadRequest, nil)
+		return
 	}
 
 	// Create the WHERE clause with placeholders
 	query = fmt.Sprintf("UPDATE leads_info SET is_archived = $1 WHERE leads_id IN (%s)", strings.Join(placeholders, ", "))
-
-	//Prepare the list of arguments for the query
-
-	queryParameters := make([]interface{}, length+1)
-	queryParameters[0] = dataReq.IsArchived
-	//queryParameters = append(queryParameters, dataReq.IsArchived)
-	for i, id := range dataReq.LeadID {
-		queryParameters[i+1] = id
-	}
 
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, queryParameters)
 	if err != nil {
