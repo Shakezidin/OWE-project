@@ -168,20 +168,20 @@ const LeadManagementNew = () => {
   };
 
   return (
-    <>
-      <div className={`${classes.main_head} ${classes.form_header}`}>
-        Create New Lead
+   <div className={classes.ScrollableDivRemove}>
+    <div className={`${classes.main_head} ${classes.form_header}`} >
+Create New Lead
         <img src={ICONS.cross} alt="" onClick={handleBack} />
       </div>
-      <div className={`flex justify-between mt2 ${classes.h_screen}`}>
-        <div className={classes.customer_wrapper_list}>
+      <div className={`flex justify-between mt2 ${classes.h_screen}`}  >
+        <div className={classes.customer_wrapper_list} >
           <form onSubmit={handleSubmit}>
-            <div className="modal-body">
-              <div className={classes.an_head}>Fill the Form</div>
-              <div className="scroll-user">
-                <div className={classes.createProfileInputView}>
-                  <div className={classes.createProfileTextView}>
-                    <div className={classes.salrep_input_container}>
+            <div className="modal-body" >
+              <div className={classes.an_head} >Fill the Form</div>
+              <div className="scroll-user" >
+                <div className={classes.createProfileInputView} >
+                  <div className={classes.createProfileTextView} >
+                    <div className={classes.salrep_input_container} >
                       <div className={classes.srs_new_create}>
                         <Input
                           type="text"
@@ -333,7 +333,6 @@ const LeadManagementNew = () => {
                               : ''
                           }`}
                         >
-                          {/* {formData.notes.trim().length}/500 characters */}
                         </p>
                       </div>
                     </div>
@@ -354,7 +353,7 @@ const LeadManagementNew = () => {
           </form>
         </div>
       </div>
-    </>
+   </div>
   );
 };
 

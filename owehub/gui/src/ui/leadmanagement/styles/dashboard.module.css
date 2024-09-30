@@ -25,6 +25,15 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   min-height: 200px;
 }
+.cardHeaderFirst{
+  padding: 18px 16px 16px 16px;
+  /* border-bottom: 1px solid #e5e7eb; */
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
 
 .cardHeader {
   padding: 16px;
@@ -33,6 +42,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.cardHeaderSecond{
+  padding: 10.8px 16px 16px 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -7px;
+
+
 }
 
 .cardContent {
@@ -130,10 +149,13 @@
   border-radius: 50%;
   padding: 4px;
   color: #377cf6;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .statusInactive {
   background: #dfdfdf !important;
@@ -184,6 +206,7 @@ table tbody tr:hover {
   background-color: #377cf6;
   cursor: pointer;
   transition: all 0.3s ease;
+  
 }
 .filtericon:hover {
   background-color: #005eff;
