@@ -31,7 +31,8 @@
   gap: 1.2rem;
 }
 
-.inact-sr, .act-sr{
+.inact-sr,
+.act-sr {
   font-size: 14px;
 }
 

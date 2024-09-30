@@ -68,6 +68,7 @@ import apAdvSlice from './apiSlice/configSlice/config_get_slice/apAdvSlice';
 import apDedSlice from './apiSlice/configSlice/config_get_slice/apDedSlice';
 import teamManagmentSlice from './apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 import slackConfigSlice from './apiSlice/configSlice/config_get_slice/slackConfigSlice';
+import leadManagmentSlice from './apiSlice/leadManagementSlice/leadsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -143,6 +144,7 @@ export const store = configureStore({
     apAdvSlice,
     apDedSlice,
     teamManagmentSlice,
+    leadManagmentSlice,
   },
 });
 

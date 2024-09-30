@@ -24,13 +24,13 @@
 /* Global CSS to target the Google Maps Autocomplete dropdown */
 
 /* Dialogue Map Hover css  */
-.gm-style .gm-style-iw-c{
+.gm-style .gm-style-iw-c {
   padding: 0 !important;
 }
-.gm-style .gm-style-iw-c:focus-visible{
- outline: none !important;
+.gm-style .gm-style-iw-c:focus-visible {
+  outline: none !important;
 }
-.gm-style-iw-chr{
+.gm-style-iw-chr {
   display: none !important;
 }
 
@@ -53,12 +53,12 @@
   font-size: inherit !important;
 }
 
-.pac-item .pac-icon{
+.pac-item .pac-icon {
   display: none !important;
 }
 
 .pac-item .pac-item-query {
-  font-size: 12px !important; 
+  font-size: 12px !important;
 }
 
 /* Highlighting items when hovered */
@@ -131,6 +131,21 @@ input::-webkit-inner-spin-button {
   display: flex;
   justify-content: center;
   height: 80vh;
+}
+
+.downloading-animation {
+  animation: 1.2s ease-in-out infinite download-animation;
+}
+
+@keyframes download-animation {
+  from {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(150%);
+    opacity: 0;
+  }
 }
 .data-not-found {
   display: flex;

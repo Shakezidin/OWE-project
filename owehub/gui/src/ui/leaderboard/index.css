@@ -20,7 +20,7 @@
 }
 
 .leaderboard-data__btn:disabled {
-  opacity: .5;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -332,9 +332,11 @@
   width: 408px;
   min-height: 100vh;
   overflow-y: auto;
-  background: linear-gradient(to bottom,
-      rgba(0, 148, 205, 1) 30%,
-      rgba(255, 255, 255, 100%));
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 148, 205, 1) 30%,
+    rgba(255, 255, 255, 100%)
+  );
   padding-inline: 10px;
   padding-top: 45px;
 }
@@ -525,7 +527,6 @@
 }
 
 @media (max-width: 1024px) {
-
   .leaderboard-data__btn-group,
   .leaderboard-data__select-filter {
     display: none;

@@ -7,9 +7,14 @@ interface propTypes {
   default?: 'asc' | 'desc' | 'all';
 }
 
-const SortingDropDown = ({ default: defaultSort = '' as 'asc' | 'desc' | 'all', onChange }: propTypes) => {
+const SortingDropDown = ({
+  default: defaultSort = '' as 'asc' | 'desc' | 'all',
+  onChange,
+}: propTypes) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all' | ''>(defaultSort); // no value selected by default
+  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all' | ''>(
+    defaultSort
+  ); // no value selected by default
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);

@@ -13,13 +13,13 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import DayPickerCalendar from '../components/ProgressCalendar/ProgressCalendar';
-import { IoIosInformationCircle } from "react-icons/io";
+import { IoIosInformationCircle } from 'react-icons/io';
 import { format } from 'date-fns';
 import SelectOption from '../../components/selectOption/SelectOption';
 interface ITimeSlot {
   id: number;
   time: string;
-  uniqueId: number
+  uniqueId: number;
 }
 const Marker = ({
   text,
@@ -91,20 +91,19 @@ const customers = [
     system_size: '450 KW',
     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
-
 ];
 const CustomersList = ({ mapStyles = {} }) => {
   const navigate = useNavigate();
   const [customer, setCustomers] = useState<ICustomer[]>(customers);
-  const [selectedCustomer, setSelectedCustomer] = useState(-1)
-  const [collapse, setCollapse] = useState(-1)
+  const [selectedCustomer, setSelectedCustomer] = useState(-1);
+  const [collapse, setCollapse] = useState(-1);
   const [isPending, setIsPending] = useState(true);
   const [page, setPage] = useState(1);
-  const [selectedDate, setSelectedDate] = useState<Date>()
-  const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([])
-  const [selectedTime, setSelectedTime] = useState<ITimeSlot>()
-  const [isSurveyScheduled, setIsSurveyScheduled] = useState(false)
-  const [sortBy, setSortBy] = useState('All')
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [availableSlots, setAvailableSlots] = useState<ITimeSlot[]>([]);
+  const [selectedTime, setSelectedTime] = useState<ITimeSlot>();
+  const [isSurveyScheduled, setIsSurveyScheduled] = useState(false);
+  const [sortBy, setSortBy] = useState('New To Old');
   const getCustomers = async () => {
     try {
       setIsPending(true);
@@ -131,8 +130,6 @@ const CustomersList = ({ mapStyles = {} }) => {
     getCustomers();
   }, [page]);
 
-
-
   const handleAddClick = () => {
     navigate('/add-new-salesrep-schedule');
   };
@@ -145,11 +142,11 @@ const CustomersList = ({ mapStyles = {} }) => {
     zoom: 11,
   };
   const timeSlots = [
-    { id: 1, time: "6:00 Am - 9:00 Am", uniqueId: 1 },
-    { id: 2, time: "9:30 Am - 12:30 Pm", uniqueId: 2 },
-    { id: 3, time: "1:00 Pm - 4:00 Pm", uniqueId: 3 },
-    { id: 1, time: "4:30 Pm - 7:30 Pm", uniqueId: 4 },
-    { id: 2, time: "8:00 Pm - 11:00 Pm", uniqueId: 5 },
+    { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
+    { id: 2, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
+    { id: 3, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
+    { id: 1, time: '4:30 Pm - 7:30 Pm', uniqueId: 4 },
+    { id: 2, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
   ];
 
   const dayWithProgress = [
@@ -162,10 +159,9 @@ const CustomersList = ({ mapStyles = {} }) => {
     { id: 7, date: new Date(2024, 8, 30), progress: 95 },
   ];
   const sortOptions = [
-    { label: "All", value: "All" },
-    { label: "New To Old", value: "New To Old" },
-    { label: "Old To New", value: "Old To New" }
-  ]
+    { label: 'New To Old', value: 'New To Old' },
+    { label: 'Old To New', value: 'Old To New' },
+  ];
 
   return (
     <>
@@ -196,10 +192,10 @@ const CustomersList = ({ mapStyles = {} }) => {
             <div className={styles.filter}>
               <div className={styles.newproj}>
                 <SelectOption
-                  value={sortOptions.find(item => item.value === sortBy)}
+                  value={sortOptions.find((item) => item.value === sortBy)}
                   onChange={(e) => e && setSortBy(e.value)}
                   options={sortOptions}
-                  controlStyles={{marginTop:0,minWidth:100}}
+                  controlStyles={{ marginTop: 0, minWidth: 100 }}
                 />
               </div>
               <div className={styles.filtericon} onClick={handleAddClick}>
@@ -222,12 +218,13 @@ const CustomersList = ({ mapStyles = {} }) => {
                 <div
                   key={index}
                   onClick={() => {
-                    setSelectedCustomer(index)
+                    setSelectedCustomer(index);
                     if (collapse !== selectedCustomer) {
-                      setCollapse(-1)
+                      setCollapse(-1);
                     }
                   }}
-                  className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${selectedCustomer === index ? styles.selected_active_customer : ""} `}                >
+                  className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${selectedCustomer === index ? styles.selected_active_customer : ''} `}
+                >
                   <div className={styles.cust_det_top}>
                     <div className={styles.cust_name}>
                       <div className={styles.name}>
@@ -244,19 +241,20 @@ const CustomersList = ({ mapStyles = {} }) => {
                       <button
                         className={styles.accordian_btn}
                         onClick={(e) => {
-                          e.stopPropagation()
-                          setCollapse(prev => prev === index ? -1 : index)
+                          e.stopPropagation();
+                          setCollapse((prev) => (prev === index ? -1 : index));
                           if (selectedCustomer !== index) {
-                            setSelectedCustomer(index)
+                            setSelectedCustomer(index);
                           }
                         }}
                       >
                         <TbChevronDown
                           size={22}
                           style={{
-                            transform: selectedCustomer === index && collapse === index
-                              ? 'rotate(180deg)'
-                              : undefined,
+                            transform:
+                              selectedCustomer === index && collapse === index
+                                ? 'rotate(180deg)'
+                                : undefined,
                             transition: 'all 500ms',
                           }}
                         />
@@ -285,16 +283,15 @@ const CustomersList = ({ mapStyles = {} }) => {
                         className={`${styles.cust_name} ${styles.icon_and_content}`}
                       >
                         <div className={styles.head_det}>
-                          <div
-
-                            className={styles.name_icon}
-                          >
-                            <BiPhone size={15} style={{ transform: "translateX(10px)" }} />
+                          <div className={styles.name_icon}>
+                            <BiPhone
+                              size={15}
+                              style={{ transform: 'translateX(10px)' }}
+                            />
                           </div>
                           <span>{customer.customer_phone_number}</span>
                         </div>
                       </div>
-
                     </div>
                   </div>
                   {selectedCustomer === index && collapse === index && (
@@ -303,10 +300,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                       <div
                         className={`${styles.grid_items} ${styles.grid_items}`}
                       >
-                        <div
-
-                          className={styles.name_icon}
-                        >
+                        <div className={styles.name_icon}>
                           <img width={13} src={ICONS.scheduleDoor} alt="img" />
                         </div>
                         <div className={styles.head_det}>
@@ -318,11 +312,13 @@ const CustomersList = ({ mapStyles = {} }) => {
                       <div
                         className={`${styles.grid_items} ${styles.rooftype_align}`}
                       >
-                        <div
-
-                          className={styles.name_icon}
-                        >
-                          <img style={{ filter: "brightness(10)" }} src={ICONS.RoofType} width={15} alt="img" />
+                        <div className={styles.name_icon}>
+                          <img
+                            style={{ filter: 'brightness(10)' }}
+                            src={ICONS.RoofType}
+                            width={15}
+                            alt="img"
+                          />
                         </div>
                         <div className={styles.head_det}>
                           <span> {customer.roof_type} </span>
@@ -332,10 +328,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                       {/* address */}
 
                       <div className={`${styles.grid_items}`}>
-                        <div
-
-                          className={styles.name_icon}
-                        >
+                        <div className={styles.name_icon}>
                           <IoLocationOutline />
                         </div>
                         <div className={styles.head_det}>
@@ -350,49 +343,91 @@ const CustomersList = ({ mapStyles = {} }) => {
           </div>
         </div>
 
-        <div className={` bg-white ${styles.calendar_wrapper}`} >
-          {
-            !isSurveyScheduled ?
-
-              <>
-                <h5 style={{ fontWeight: 500, fontSize: 16 }} className='mb3 ml2' >Select Date & Time</h5>
-                <div className={`flex items-start ${selectedDate ? "justify-between" : "justify-center"}`}>
-                  <DayPickerCalendar onClick={(e) => {
-                    setSelectedDate(e.date)
-                    setSelectedTime(undefined)
-                    setAvailableSlots([...timeSlots.filter(slot => slot.id === e.event.id)])
-                  }} dayWithProgress={dayWithProgress} />
-                  {selectedDate ? <div className='flex flex-column  justify-center'>
-                    <h5 className=' mb2' style={{ fontSize: 14, fontWeight: 500 }}> Select time slot</h5>
-                    <div className='flex flex-column items-center justify-center'>
-                      {!!availableSlots.length ? availableSlots.map((slot) => {
-                        return <button onClick={() => setSelectedTime(slot)} key={slot.uniqueId} className={`${styles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? styles.active_time_slot : styles.inactive_time_slot} `}>
-                          {slot.time}
-                        </button>
-                      }) : <h5>No Slot Available</h5>}
+        <div className={` bg-white ${styles.calendar_wrapper}`}>
+          {!isSurveyScheduled ? (
+            <>
+              <h5 style={{ fontWeight: 500, fontSize: 16 }} className="mb3 ml2">
+                Select Date & Time
+              </h5>
+              <div
+                className={`flex items-start ${selectedDate ? 'justify-between' : 'justify-center'}`}
+              >
+                <DayPickerCalendar
+                  onClick={(e) => {
+                    setSelectedDate(e.date);
+                    setSelectedTime(undefined);
+                    setAvailableSlots([
+                      ...timeSlots.filter((slot) => slot.id === e.event.id),
+                    ]);
+                  }}
+                  dayWithProgress={dayWithProgress}
+                />
+                {selectedDate ? (
+                  <div className="flex flex-column  justify-center">
+                    <h5
+                      className=" mb2"
+                      style={{ fontSize: 14, fontWeight: 500 }}
+                    >
+                      {' '}
+                      Select time slot
+                    </h5>
+                    <div className="flex flex-column items-center justify-center">
+                      {!!availableSlots.length ? (
+                        availableSlots.map((slot) => {
+                          return (
+                            <button
+                              onClick={() => setSelectedTime(slot)}
+                              key={slot.uniqueId}
+                              className={`${styles.time_slot_pill} ${selectedTime?.uniqueId === slot.uniqueId ? styles.active_time_slot : styles.inactive_time_slot} `}
+                            >
+                              {slot.time}
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <h5>No Slot Available</h5>
+                      )}
                     </div>
-                  </div> : ""}
-                </div>
-                {selectedTime && selectedDate &&
-                  <div className='mt4'>
-                    <div className="flex mb2 items-center justify-center">
-                      <h5 className={styles.selected_time}>{format(selectedDate, "EEEE, dd MMM")}  {selectedTime.time} </h5>
-                      <IoIosInformationCircle className='ml1' color='#1F2937' size={17} />
-                    </div>
-                    <button onClick={() => setIsSurveyScheduled(true)} className={`mx-auto ${styles.calendar_schedule_btn}`} >
-                      Submit
-                    </button>
                   </div>
-                }
-              </>
-              : <div className='flex items-center flex-column justify-center' style={{ height: "calc(100vh - 200px)" }}>
-                <h3 className={styles.survey_success_message}>Site survey scheduled 👍</h3>
-                <h5 className={styles.selected_time}>{selectedDate && format(selectedDate, "EEEE, dd MMM")}  {selectedTime?.time} </h5>
+                ) : (
+                  ''
+                )}
               </div>
-
-          }
-
-
+              {selectedTime && selectedDate && (
+                <div className="mt4">
+                  <div className="flex mb2 items-center justify-center">
+                    <h5 className={styles.selected_time}>
+                      {format(selectedDate, 'EEEE, dd MMM')} {selectedTime.time}{' '}
+                    </h5>
+                    <IoIosInformationCircle
+                      className="ml1"
+                      color="#1F2937"
+                      size={17}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setIsSurveyScheduled(true)}
+                    className={`mx-auto ${styles.calendar_schedule_btn}`}
+                  >
+                    Submit
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div
+              className="flex items-center flex-column justify-center"
+              style={{ height: 'calc(100vh - 200px)' }}
+            >
+              <h3 className={styles.survey_success_message}>
+                Site survey scheduled 👍
+              </h3>
+              <h5 className={styles.selected_time}>
+                {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
+                {selectedTime?.time}{' '}
+              </h5>
+            </div>
+          )}
         </div>
       </div>
     </>

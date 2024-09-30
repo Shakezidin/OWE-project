@@ -37,6 +37,7 @@ import {
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import { toZonedTime } from 'date-fns-tz';
+import { MdDownloading } from 'react-icons/md';
 
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
@@ -132,12 +133,12 @@ const PeriodFilter = ({
   period,
   setPeriod,
   resetPage,
-  disabled
+  disabled,
 }: {
   period: DateRangeWithLabel | null;
   setPeriod: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
-  disabled?:boolean
+  disabled?: boolean;
 }) => {
   const periodFilterOptions: DateRangeWithLabel[] = [
     {
@@ -207,7 +208,7 @@ const SelectableFilter = ({
   setSelected,
   resetPage,
   resetDealer,
-  disabled
+  disabled,
 }: {
   label: string;
   options: { value: string; label: string }[];
@@ -215,7 +216,7 @@ const SelectableFilter = ({
   setSelected: (newVal: string) => void;
   resetPage: () => void;
   resetDealer: (value: string) => void;
-  disabled?:boolean
+  disabled?: boolean;
 }) => {
   return (
     <>
@@ -316,23 +317,23 @@ const DateFilter = ({
   selected,
   setSelected,
   resetPage,
-  disabled
+  disabled,
 }: {
   selected: DateRangeWithLabel;
   setSelected: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
-  disabled:boolean
+  disabled: boolean;
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -511,7 +512,7 @@ const DateFilter = ({
         >
           <Calendar disabled={disabled} />
         </span>
-        {showCalendar  && !disabled && (
+        {showCalendar && !disabled && (
           <div className="leaderboard-data__datepicker-content">
             <DateRange
               editableDateInputs={true}
@@ -823,9 +824,19 @@ const Table = ({
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-        <div className="export-trigger" onClick={() => (!isExporting && !isExportingData) && toggleExportShow()}>
-          <FaUpload size={12} className="mr1" />
-          <span> {isExporting || isExportingData ? "Exporting..." : "Export"} </span>
+        <div
+          className="export-trigger overflow-hidden"
+          onClick={() => !isExporting && !isExportingData && toggleExportShow()}
+        >
+          {isExporting || isExportingData ? (
+            <MdDownloading className="downloading-animation" size={20} />
+          ) : (
+            <FaUpload size={12} className="mr1" />
+          )}
+          <span>
+            {' '}
+            {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
+          </span>
         </div>
         {exportShow && (
           <div className="export-opt">
@@ -834,7 +845,7 @@ const Table = ({
               disabled={isExporting || isExportingData}
               onClick={() => {
                 exportPdf();
-                setExportShow(false)
+                setExportShow(false);
               }}
             >
               <span>Pdf</span>
@@ -843,8 +854,8 @@ const Table = ({
               disabled={isExportingData}
               className="export-btn export-btnn"
               onClick={() => {
-                exportCsv()
-                setExportShow(false)
+                exportCsv();
+                setExportShow(false);
               }}
             >
               <span>Csv</span>
@@ -918,7 +929,6 @@ const Table = ({
             options={rankByOptions}
             resetPage={resetPage}
             selected={active}
-          
             disabled={isLoading}
             resetDealer={resetDealer}
             setSelected={setActive}
@@ -930,13 +940,13 @@ const Table = ({
             </div>
             <div className="flex items-center justify-end">
               <PeriodFilter
-                 disabled={isLoading}
+                disabled={isLoading}
                 resetPage={resetPage}
                 period={selectedRangeDate}
                 setPeriod={setSelectedRangeDate}
               />
               <DateFilter
-                 disabled={isLoading}
+                disabled={isLoading}
                 selected={selectedRangeDate}
                 resetPage={resetPage}
                 setSelected={setSelectedRangeDate}
@@ -950,10 +960,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN ||
-                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                role === TYPE_OF_USER.ACCOUNT_MANAGER
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+              role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }
@@ -966,13 +976,13 @@ const Table = ({
           <div className="leaderbord-tab-container">
             <div
               onClick={() => !isLoading && setActiveHead('kw')}
-              className={`tab  ${isLoading?"disabled-tab":""} ${activeHead === 'kw' ? 'activehead' : ''}`}
+              className={`tab  ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'kw' ? 'activehead' : ''}`}
             >
               KW
             </div>
             <div
               onClick={() => isLoading && setActiveHead('count')}
-              className={`tab ${isLoading?"disabled-tab":""} ${activeHead === 'count' ? 'activehead' : ''}`}
+              className={`tab ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'count' ? 'activehead' : ''}`}
             >
               Count
             </div>
@@ -1227,29 +1237,25 @@ const Table = ({
         </div>
       </div>
 
-
       <div className="page-heading-container">
-        {
-          leaderTable?.length > 0 && !isLoading ?
-            <>
-              <p className="page-heading">
-                {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
-                {totalCount} item
-              </p>
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                paginate={paginate}
-                currentPageData={leaderTable}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-                perPage={itemsPerPage}
-              />
-            </>
-            : null
-        }
+        {leaderTable?.length > 0 && !isLoading ? (
+          <>
+            <p className="page-heading">
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {totalCount} item
+            </p>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              paginate={paginate}
+              currentPageData={leaderTable}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+            />
+          </>
+        ) : null}
       </div>
-
     </div>
   );
 };

@@ -338,11 +338,11 @@ export const Calendar = ({ disabled }: { disabled?: boolean }) => {
   };
   useEffect(() => {
     if (disabled) {
-      setFillColor('rgba(236, 157, 118, 0.5)')
+      setFillColor('rgba(236, 157, 118, 0.5)');
     } else {
       setFillColor('#ec9d76');
     }
-  }, [disabled])
+  }, [disabled]);
 
   const handleMouseLeave = () => {
     setFillColor('#EE824D'); // Revert back to the original color

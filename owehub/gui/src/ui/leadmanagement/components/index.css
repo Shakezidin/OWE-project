@@ -48,7 +48,7 @@
 }
 .sort_btn:hover {
   transform: scale(1.04);
-  background-color: #0045f4;
+  background-color: #00298f;
 }
 
 .active_sorting {
