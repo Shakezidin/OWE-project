@@ -23,7 +23,7 @@ import { format } from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import DropdownCheckbox from '../../components/DropdownCheckBox';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
-
+import '../../oweHub/reppay/reppaydashboard/repdasboard.css';
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
