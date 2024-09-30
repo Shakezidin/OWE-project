@@ -455,7 +455,7 @@ const LeadManagementDashboard = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
- 
+
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   // shams start
@@ -587,7 +587,7 @@ const LeadManagementDashboard = () => {
   };
 
 
- 
+
   const handleLeadSelection = (lead: Lead) => {
     setSelectedLeads((prev) =>
       prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
@@ -750,7 +750,7 @@ const LeadManagementDashboard = () => {
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
- 
+
   useEffect(() => {
     if (isAuthenticated) {
       let statusId;
@@ -791,12 +791,12 @@ const LeadManagementDashboard = () => {
       dispatch(getLeads(data));
     }
   }, [selectedDates, isAuthenticated, itemsPerPage, page, currentFilter]);
-  
+
   useEffect(() => {
-    if(leadsData.length > 0){
+    if (leadsData.length > 0) {
       setTotalCount(totalcount);
     }
-  },[leadsData])
+  }, [leadsData])
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -881,27 +881,29 @@ const LeadManagementDashboard = () => {
           <div className={styles.cardHeaderSecond}>
             <span>Total Won Lost</span>
             <div className={styles.date_calendar}>
-              {isCalendarOpen && (
-                <div
-                  ref={calendarRef}
-                  className={styles.lead__datepicker_content}
-                >
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={handleRangeChange}
-                    moveRangeOnFirstSelection={false}
-                    ranges={selectedRanges}
-                  />
-                  <div className={styles.lead__datepicker_btns}>
-                    <button className="reset-calender" onClick={onReset}>
-                      Reset
-                    </button>
-                    <button className="apply-calender" onClick={onApply}>
-                      Apply
-                    </button>
+              <div className={styles.lead__datepicker_wrapper}>
+                {isCalendarOpen && (
+                  <div
+                    ref={calendarRef}
+                    className={styles.lead__datepicker_content}
+                  >
+                    <DateRange
+                      editableDateInputs={true}
+                      onChange={handleRangeChange}
+                      moveRangeOnFirstSelection={false}
+                      ranges={selectedRanges}
+                    />
+                    <div className={styles.lead__datepicker_btns}>
+                      <button className="reset-calender" onClick={onReset}>
+                        Reset
+                      </button>
+                      <button className="apply-calender" onClick={onApply}>
+                        Apply
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
               {selectedDates.startDate && selectedDates.endDate && (
                 <div className={styles.hist_date}>
                   <span className={styles.date_display}>
@@ -968,7 +970,7 @@ const LeadManagementDashboard = () => {
                   option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: '13px',
-                    fontWeight:"400",
+                    fontWeight: "400",
                     color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
                     backgroundColor: state.isSelected ? '#fffff' : '#fffff',
                     '&:hover': {
@@ -1277,7 +1279,7 @@ const LeadManagementDashboard = () => {
             </tbody>
           </table>
 
-         
+
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
 
