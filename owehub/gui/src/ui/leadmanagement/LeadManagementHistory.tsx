@@ -262,7 +262,7 @@ const LeradManagementHistory = () => {
               : '',
             page_size: itemsPerPage,
             page_number: page,
-          });
+          },true);
 
           if (response.status > 201) {
             toast.error(response.data.message);

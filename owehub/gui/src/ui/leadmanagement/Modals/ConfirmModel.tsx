@@ -54,7 +54,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
           ? format(selectedDate, 'dd-MM-yyyy')
           : '',
         appointment_time: selectedTime ? selectedTime : '',
-      });
+      },true);
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
