@@ -219,11 +219,11 @@ table tbody tr:hover {
 }
 .filterCallToAction {
   display: flex;
-  gap: 10px;
-  transform: scale(0.7) translate(-1em, -4em);
+  gap: 3px;
+  transform: scale(0.75);
   position: relative;
   /* top: -2pc; */
-  right: -8px;
+  /* right: -8px; */
 }
 
 .pieChart :focus {
@@ -458,6 +458,7 @@ input[type='checkbox']:checked {
     gap: 10px;
     transform: scale(1);
     position: unset;
+    padding-left: 10px;
   }
   .mobile_view_table {
     display: flex;
