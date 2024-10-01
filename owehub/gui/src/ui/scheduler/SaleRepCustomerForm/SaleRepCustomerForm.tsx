@@ -6,12 +6,14 @@ import shardeStyles from '../SalesRepScheduler/styles/customerlist.module.css';
 import { IoIosInformationCircle } from 'react-icons/io';
 import { format } from 'date-fns';
 import { MdKeyboardBackspace } from 'react-icons/md';
+import useMatchMedia from '../../../hooks/useMatchMedia';
+import { IoClose } from 'react-icons/io5';
 const timeSlots = [
   { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
-  { id: 2, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
-  { id: 3, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
+  { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
+  { id: 7, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
   { id: 1, time: '4:30 Pm - 7:30 Pm', uniqueId: 4 },
-  { id: 2, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
+  { id: 7, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
 ];
 
 const dayWithProgress = [
@@ -21,7 +23,7 @@ const dayWithProgress = [
   { id: 4, date: new Date(2024, 8, 25), progress: 63 },
   { id: 5, date: new Date(2024, 8, 26), progress: 79 },
   { id: 6, date: new Date(2024, 8, 27), progress: 20 },
-  { id: 7, date: new Date(2024, 8, 30), progress: 95 },
+  { id: 7, date: new Date(2024, 9, 1), progress: 95 },
 ];
 interface ITimeSlot {
   id: number;
@@ -43,6 +45,9 @@ const SaleRepCustomerForm = () => {
     salesRep: 'Ajay Negi'
   });
 
+  const isSmallScreen = useMatchMedia('(max-width:968px)');
+  const isMobile = useMatchMedia('(max-width:450px)');
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -52,8 +57,8 @@ const SaleRepCustomerForm = () => {
   };
 
   return (
-    <div className={`py4 ${styles.form_wrapper}`}>
-      <div className={styles.form_conatiner}>
+    <div className={`py4 ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""}`}>
+      <div className={`${styles.form_conatiner} ${step === 2 ? styles.bg_transparent : ""} `}>
         <div
           className={` flex items-center justify-center ${styles.form_header}`}
         >
@@ -61,14 +66,15 @@ const SaleRepCustomerForm = () => {
             <>
               <div
                 className="flex items-center"
-                style={{ flexBasis: step === 2 ? '40%' : undefined }}
+                style={{ flexBasis: step === 2 && !isSmallScreen ? '40%' : undefined }}
               >
                 {step > 1 && (
                   <MdKeyboardBackspace
                     style={{ cursor: 'pointer' }}
-                    className="curosr-pointer ml3"
+                    className={`curosr-pointer ml3 ${styles.back_btn}`}
                     color="#fff"
-                    size={21}
+              
+                    
                     onClick={() => setStep(1)}
                   />
                 )}
@@ -78,7 +84,7 @@ const SaleRepCustomerForm = () => {
                       ? 'flex flex-column items-center justify-center '
                       : 'mx-auto'
                   }
-                  style={{ width: step === 2 ? 'fit-content' : undefined }}
+                  style={{ width: step === 2 && !isSmallScreen ? 'fit-content' : undefined }}
                 >
                   <h3>Customer Information</h3>
                   <p>Change the customer information if incorrect</p>
@@ -86,7 +92,7 @@ const SaleRepCustomerForm = () => {
               </div>
 
               {step === 2 && (
-                <div style={{ flexBasis: '60%' }}>
+                <div style={{ flexBasis: '60%' }} className={styles.date_header_label}>
                   <div className="flex items-center justify-center">
                     <h3 className="text-white text-center">
                       Select Date & Time
@@ -114,8 +120,11 @@ const SaleRepCustomerForm = () => {
         <div className="flex">
           {step <= 2 && (
             <div
-              style={{ flexBasis: step === 1 ? '70%' : '40%' }}
-              className={`${styles.form_content} py3 ${step === 2 ? 'px4' : ''} `}
+              style={{
+                flexBasis: step === 1 ? isSmallScreen ? "100%" : '70%' : isSmallScreen ?
+                  undefined : '40%'
+              }}
+              className={`${styles.form_content}  ${step === 2 ? styles.mobile_hidden : ""} py3 ${step === 2 ? 'px4' : ''} `}
             >
               <div className='mb2'>
                 <Input
@@ -135,7 +144,7 @@ const SaleRepCustomerForm = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className='mb2'> 
+              <div className='mb2'>
                 <Input
                   label="Phone no."
                   name="phoneNo"
@@ -172,13 +181,32 @@ const SaleRepCustomerForm = () => {
             </div>
           )}
           {step === 2 && (
-            <div className={styles.date_time_wrapper}>
+            <div style={{ flex: "1" }} className={styles.date_time_container}>
+              <div className={`  items-center justify-between  px2 ${styles.sm_date_close_header}`}>
+                <h5 style={{ fontWeight: 500, fontSize: 16 }} className="">
+                  Select Date & Time
+                </h5>
+
+                <button onClick={() => {
+                  setSelectedDate(undefined)
+                  setSelectedTime(undefined)
+                  setAvailableSlots([])
+
+                }} className={`${shardeStyles.calendar_close_btn_mobile} ml2`}>
+                  <IoClose size={24} />
+                </button>
+
+              </div>
               <div
-                className={` flex items-start  py3  ${selectedDate ? 'justify-between px3' : 'justify-center'} `}
+                className={`flex items-start mt3 ${shardeStyles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
               >
                 <DayPickerCalendar
+                  dayCellClassName={shardeStyles.day_cell}
+                  circleSize={isMobile ? 44 : 50}
+                  selectedDate={selectedDate}
                   onClick={(e) => {
                     setSelectedDate(e.date);
+
                     setSelectedTime(undefined);
                     setAvailableSlots([
                       ...timeSlots.filter((slot) => slot.id === e.event.id),
@@ -187,15 +215,16 @@ const SaleRepCustomerForm = () => {
                   dayWithProgress={dayWithProgress}
                 />
                 {selectedDate ? (
-                  <div className="flex flex-column  justify-center">
+                  <div className="flex flex-column  justify-center" style={{ width: "100%" }}>
                     <h5
-                      className=" mb2"
-                      style={{ fontSize: 14, fontWeight: 500 }}
+                      className={`mb2 ${shardeStyles.time_slot_label}`}
+                      style={{ fontSize: 14, fontWeight: 500, textAlign: "center" }}
+
                     >
                       {' '}
                       Select time slot
                     </h5>
-                    <div className="flex flex-column items-center justify-center">
+                    <div className={` ${styles.sm_padding} ${shardeStyles.time_slot_pill_wrapper}`}>
                       {!!availableSlots.length ? (
                         availableSlots.map((slot) => {
                           return (
@@ -216,10 +245,11 @@ const SaleRepCustomerForm = () => {
                 ) : (
                   ''
                 )}
-              </div>
 
+
+              </div>
               {selectedTime && selectedDate && (
-                <div className="mt2">
+                <div className={`mt2 ${styles.btn_wrapper}`}>
                   <div className="flex mb2 items-center justify-center">
                     <h5 className={shardeStyles.selected_time}>
                       {format(selectedDate, 'EEEE, dd MMM')} {selectedTime.time}{' '}
@@ -243,7 +273,7 @@ const SaleRepCustomerForm = () => {
         </div>
 
         {step === 1 && (
-          <div className="bg-white mt3">
+          <div className={`bg-white mt3 ${styles.sm_padding}`}>
             <p style={{ fontSize: 12 }} className="text-center mb2">
               Make sure all the information is correct before confirming
             </p>
