@@ -683,7 +683,7 @@ const LeradManagementHistory = () => {
         </div>
 
         {!!totalCount && (
-          <div className={styles.page_heading_container}>
+          <div className="page_heading_container">
             <p className="page-heading">
               {startIndex} - {endIndex} of {totalCount} item
             </p>

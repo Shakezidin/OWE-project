@@ -17,6 +17,8 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 import { toast } from 'react-toastify';
+import MicroLoader from '../components/loader/MicroLoader';
+import DataNotFound from '../components/loader/DataNotFound';
 
 
 interface HistoryRedirectProps {
@@ -338,6 +340,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                     className={styles.CrossICONBTNHover1}
                   />
                 )}
+
               </span>
               <span>
                 {selectedLeads.length === 0 ? '' : <>{selectedLeads.length} </>}
@@ -416,14 +419,21 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
               </div>
             </div>
           </div>
-
-          {/* HERE THE BUTTONS FOR FILTERING ENDED */}
         </div>
 
         <div className={styles.cardContent}>
           <table className={styles.table}>
-            <tbody>
-              {leadsData?.map((lead: any, index: number) => (
+          <tbody>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={leadsData.length}>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <MicroLoader />
+                      </div>
+                    </td>
+                  </tr>
+                ) : leadsData.length > 0 ? (
+                  leadsData.map((lead: any, index: number) => (
                 <React.Fragment key={index}>
                   <tr className={styles.history_lists}>
                     <td
@@ -503,9 +513,16 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                     </tr>
                   )}
                 </React.Fragment>
-              ))}
-            </tbody>
-          </table>
+             ))
+            ) : (
+              <tr style={{ border: 0 }}>
+                <td colSpan={10}>
+                  <DataNotFound />
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
         </div>
       </div>
