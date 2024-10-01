@@ -66,6 +66,14 @@ const (
 	TableName_Breaker_Info              string = "breaker_info"
 	TableName_Prospect_LoadBreaker_Map  string = "prospect_load_breakers"
 
+	/*Commissions Config Tables*/
+	TableName_DealerOverrideCommisionsDbhub          string = "dealer_override_commisions_dbhub"
+	TableName_DealerCreditsCommisionsDbhub           string = "dealer_credits_commisions_dbhub"
+	TableName_DealerPaymentsCommisionsDbhub          string = "dealer_payments_commisions_dbhub"
+	TableName_SalesPartnerPayScheduleCommisionsDbhub string = "sales_partner_pay_schedule_commisions_dbhub"
+	TableName_FinanceScheduleCommisionsDbhub         string = "finance_schedule_commisions_dbhub"
+	TableName_FinanceTypesCommisionsDbhub            string = "finance_types_commisions_dbhub"
+
 	/* Leads Tables and Procedures */
 	TableName_Leads_Info string = "leads_info"
 	CreateLeadFunction   string = "create_lead"

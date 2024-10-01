@@ -6,7 +6,12 @@
 
 package oweconfig
 
-import "time"
+import (
+	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
+	"fmt"
+	"time"
+)
 
 type DealerOverrideStruct struct {
 	ItemID    int64     `json:"item_id"`
@@ -23,6 +28,49 @@ type DealerOverride struct {
 	DealerOverrideData []DealerOverrideStruct
 }
 
-func (dlrOvrd *DealerOverride) LoadConfigFromDB() {
+var (
+	dlrRespCfg DealerOverride
+)
 
+func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB() (err error) {
+	var (
+		data         []map[string]interface{}
+		whereEleList []interface{}
+		query        string
+	)
+	log.EnterFn(0, "LoadDealerOverrideConfigFromDB")
+	defer func() { log.ExitFn(0, "LoadDealerOverrideConfigFromDB", err) }()
+
+	query = `SELECT * FROM ` + db.TableName_DealerOverrideCommisionsDbhub
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if (err != nil) || (data == nil) {
+		log.FuncErrorTrace(0, "Failed to get dealer override data from DB err: %v", err)
+		return err
+	}
+
+	if len(data) == 0 {
+		err = fmt.Errorf("No Data found in DB for DealerOverride Configuration.")
+		return err
+	}
+
+	/* Reset the DealerOverrideData slice */
+	dlrRespCfg.DealerOverrideData = dlrRespCfg.DealerOverrideData[:0]
+
+	for _, item := range data {
+		DealerOverrideStructList := DealerOverrideStruct{
+			ItemID:    getInt64(item, "item_id"),
+			PodioLink: getString(item, "podio_link"),
+			SubDealer: getString(item, "sub_dealer"),
+			Dealer:    getString(item, "dealer"),
+			PayRate:   getFloat64(item, "pay_rate"),
+			State:     getString(item, "state"),
+			StartDate: getTime(item, "start_date"),
+			EndDate:   getTime(item, "end_date"),
+		}
+
+		dlrRespCfg.DealerOverrideData = append(dlrRespCfg.DealerOverrideData, DealerOverrideStructList)
+	}
+
+	return err
 }
