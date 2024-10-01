@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, memo } from 'react';
 import {
   DayPicker,
   DayButtonProps,
@@ -22,12 +22,17 @@ type TEvent = {
 type DayPickerCalendarProps = {
   dayWithProgress?: DayWithProgress[];
   onClick?: ({ date, event }: { date: Date; event: TEvent }) => void;
+  dayCellClassName?: string;
+  circleSize?: number,
+  selectedDate?: Date | undefined
 };
 
 interface ExtendedDayButtonProps extends DayButtonProps {
   dayWithProgress: DayWithProgress[] | undefined;
   selected: Date | undefined;
   onDateSelect?: ({ date, event }: { date: Date; event: TEvent }) => void;
+  dayCellClassName?: string,
+  circleSize?: number
 }
 
 const getCurrentDayExcludedHoliday = (): Date => {
@@ -63,6 +68,8 @@ const DayButton = ({
   dayWithProgress,
   className,
   onDateSelect,
+  dayCellClassName,
+  circleSize = 50,
   ...buttonProps
 }: ExtendedDayButtonProps) => {
   const nextSevenWeekdays = useMemo(getNextSevenWeekdays, []);
@@ -84,17 +91,18 @@ const DayButton = ({
     <button
       {...buttonProps}
       disabled={!isNext}
-      className={`${className} ${!isNext ? styles.disable_day_cell : ''}`}
+      className={`${className} ${!isNext ? styles.disable_day_cell : ''}  ${dayCellClassName}`}
       onClick={() =>
         onDateSelect?.({ date: day.date, event: { id: findDay?.id! } })
       }
-      style={{ width: '52px' }}
+      style={{ width: dayCellClassName ? undefined : 52 }}
+
     >
       {isNext ? (
         <CircularProgress
           filledColor={getColor}
           strokeWidth={5.5}
-          size={50}
+          size={circleSize}
           progress={colorProgress || 0}
         >
           <button
@@ -113,9 +121,16 @@ const DayButton = ({
 const DayPickerCalendar = ({
   dayWithProgress,
   onClick,
+  dayCellClassName,
+  circleSize,
+  selectedDate
 }: DayPickerCalendarProps) => {
   const [selected, setSelected] = useState<Date>();
   const defaultClassNames = getDefaultClassNames();
+
+  useEffect(() => {
+    setSelected(selectedDate)
+  }, [selectedDate])
 
   return (
     <div>
@@ -148,8 +163,10 @@ const DayPickerCalendar = ({
           DayButton: (props) => (
             <DayButton
               {...props}
+              circleSize={circleSize}
               selected={selected}
               dayWithProgress={dayWithProgress}
+              dayCellClassName={dayCellClassName}
               onDateSelect={(day) => {
                 onClick?.(day);
                 setSelected(day.date);
@@ -162,4 +179,4 @@ const DayPickerCalendar = ({
   );
 };
 
-export default DayPickerCalendar;
+export default memo(DayPickerCalendar);

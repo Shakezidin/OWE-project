@@ -16,6 +16,9 @@ import DayPickerCalendar from '../components/ProgressCalendar/ProgressCalendar';
 import { IoIosInformationCircle } from 'react-icons/io';
 import { format } from 'date-fns';
 import SelectOption from '../../components/selectOption/SelectOption';
+import { CalendarIcon } from './components/Icons';
+import useMatchMedia from '../../../hooks/useMatchMedia';
+import { IoClose } from "react-icons/io5";
 interface ITimeSlot {
   id: number;
   time: string;
@@ -92,7 +95,7 @@ const customers = [
     address: '2443 Sierra Nevada Road, Mammoth Lakes CA 93546',
   },
 ];
-const CustomersList = ({ mapStyles = {} }) => {
+const CustomersList = () => {
   const navigate = useNavigate();
   const [customer, setCustomers] = useState<ICustomer[]>(customers);
   const [selectedCustomer, setSelectedCustomer] = useState(-1);
@@ -104,6 +107,8 @@ const CustomersList = ({ mapStyles = {} }) => {
   const [selectedTime, setSelectedTime] = useState<ITimeSlot>();
   const [isSurveyScheduled, setIsSurveyScheduled] = useState(false);
   const [sortBy, setSortBy] = useState('New To Old');
+  const isSmallScreen = useMatchMedia('(max-width:968px)');
+  const isMobile = useMatchMedia('(max-width:450px)');
   const getCustomers = async () => {
     try {
       setIsPending(true);
@@ -143,10 +148,10 @@ const CustomersList = ({ mapStyles = {} }) => {
   };
   const timeSlots = [
     { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
-    { id: 2, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
-    { id: 3, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
+    { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
+    { id: 7, time: '1:00 Pm - 4:00 Pm', uniqueId: 3 },
     { id: 1, time: '4:30 Pm - 7:30 Pm', uniqueId: 4 },
-    { id: 2, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
+    { id: 7, time: '8:00 Pm - 11:00 Pm', uniqueId: 5 },
   ];
 
   const dayWithProgress = [
@@ -164,21 +169,17 @@ const CustomersList = ({ mapStyles = {} }) => {
   ];
 
   return (
-    <>
-      <div>
+    <div className={styles.schedule_page_wrapper}>
+      <div className={`flex items-center justify-between ${styles.schedule_header}`}>
         <h1 className={styles.schedule_detail}>Schedule</h1>
-        <div className="flex items-center">
-          <h5 style={{ fontSize: 12 }} className={styles.primary_heading}>
-            Customer Queue {`>`}{' '}
-          </h5>
-          <span className="ml1" style={{ fontSize: 12 }}>
-            {' '}
-            Schedule{' '}
-          </span>
-        </div>
+        <button className={styles.calendar_btn_mobile}>
+          <CalendarIcon />
+        </button>
+
       </div>
-      <div className={`flex justify-between mt2 `}>
-        <div className={styles.customer_wrapper_list}>
+
+      <div className={`flex justify-between  `}>
+        <div className={` ${selectedCustomer === -1 ? styles.show_mobile : styles.hide_mobile} ${styles.customer_wrapper_list}`}>
           <div className={styles.sr_top}>
             <div className={styles.pending}>
               <>
@@ -223,7 +224,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                       setCollapse(-1);
                     }
                   }}
-                  className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${selectedCustomer === index ? styles.selected_active_customer : ''} `}
+                  className={`${(selectedCustomer === index) ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${(isSmallScreen ? collapse === index : selectedCustomer === index) ? styles.selected_active_customer : ''} `}
                 >
                   <div className={styles.cust_det_top}>
                     <div className={styles.cust_name}>
@@ -243,7 +244,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                         onClick={(e) => {
                           e.stopPropagation();
                           setCollapse((prev) => (prev === index ? -1 : index));
-                          if (selectedCustomer !== index) {
+                          if (selectedCustomer !== index && !isSmallScreen) {
                             setSelectedCustomer(index);
                           }
                         }}
@@ -252,7 +253,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                           size={22}
                           style={{
                             transform:
-                              selectedCustomer === index && collapse === index
+                              (isSmallScreen || selectedCustomer === index) && collapse === index
                                 ? 'rotate(180deg)'
                                 : undefined,
                             transition: 'all 500ms',
@@ -294,7 +295,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                       </div>
                     </div>
                   </div>
-                  {selectedCustomer === index && collapse === index && (
+                  {(isSmallScreen || (selectedCustomer === index)) && collapse === index && (
                     <div className={styles.cust_det_bot}>
                       {/* kilo Watt */}
                       <div
@@ -343,18 +344,34 @@ const CustomersList = ({ mapStyles = {} }) => {
           </div>
         </div>
 
-        <div className={` bg-white ${styles.calendar_wrapper}`}>
+        <div className={` ${selectedCustomer > -1 ? styles.show_mobile : styles.hide_mobile} bg-white ${styles.calendar_wrapper}`}>
           {!isSurveyScheduled ? (
             <>
-              <h5 style={{ fontWeight: 500, fontSize: 16 }} className="mb3 ml2">
-                Select Date & Time
-              </h5>
+              <div className="flex items-center justify-between mb3">
+                <h5 style={{ fontWeight: 500, fontSize: 16 }} className=" ml2">
+                  Select Date & Time
+                </h5>
+
+                <button onClick={() => {
+                  setSelectedDate(undefined)
+                  setSelectedTime(undefined)
+                  setAvailableSlots([])
+                  setSelectedCustomer(-1)
+                }} className={`${styles.calendar_close_btn_mobile} ml2`}>
+                  <IoClose size={24} />
+                </button>
+
+              </div>
               <div
-                className={`flex items-start ${selectedDate ? 'justify-between' : 'justify-center'}`}
+                className={`flex items-start ${styles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
               >
                 <DayPickerCalendar
+                  dayCellClassName={styles.day_cell}
+                  circleSize={isMobile ? 44 : 50}
+                  selectedDate = {selectedDate}
                   onClick={(e) => {
                     setSelectedDate(e.date);
+
                     setSelectedTime(undefined);
                     setAvailableSlots([
                       ...timeSlots.filter((slot) => slot.id === e.event.id),
@@ -363,15 +380,16 @@ const CustomersList = ({ mapStyles = {} }) => {
                   dayWithProgress={dayWithProgress}
                 />
                 {selectedDate ? (
-                  <div className="flex flex-column  justify-center">
+                  <div className="flex flex-column  justify-center" style={{ width: "100%" }}>
                     <h5
-                      className=" mb2"
+                      className={`mb2 ${styles.time_slot_label}`}
                       style={{ fontSize: 14, fontWeight: 500 }}
+
                     >
                       {' '}
                       Select time slot
                     </h5>
-                    <div className="flex flex-column items-center justify-center">
+                    <div className={styles.time_slot_pill_wrapper}>
                       {!!availableSlots.length ? (
                         availableSlots.map((slot) => {
                           return (
@@ -394,7 +412,7 @@ const CustomersList = ({ mapStyles = {} }) => {
                 )}
               </div>
               {selectedTime && selectedDate && (
-                <div className="mt4">
+                <div className={styles.schedule_confirmation_wrapper}>
                   <div className="flex mb2 items-center justify-center">
                     <h5 className={styles.selected_time}>
                       {format(selectedDate, 'EEEE, dd MMM')} {selectedTime.time}{' '}
@@ -430,7 +448,7 @@ const CustomersList = ({ mapStyles = {} }) => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
