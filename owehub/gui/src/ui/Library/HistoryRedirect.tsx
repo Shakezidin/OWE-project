@@ -2,20 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classes from './stylesFolder/HistoryRedirect.module.css';
 import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
-// import '../.././index.css';
-const HistoryRedirect = () => {
+interface HistoryRedirectProps {
+  setArchive: (value: boolean) => void;
+}
+
+const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
   const divRef = useRef<HTMLDivElement | null>(null);
-
+  
   const handleHistory = () => {
     navigate('/leadmng-history');
   };
 
   const ArchivesTable = () => {
-    navigate('/lead-dashboard-archieves');
+    setArchive(true);
   };
-
+  
   /* HERE FOR RESPONSIVESNESS */
   const [styles, setStyles] = useState({
     transform: 'scale(1) translate(0, 0)',
@@ -47,60 +50,16 @@ const HistoryRedirect = () => {
  
 
 
-  useEffect(() => {
-    const updateStyles = () => {
-      if (window.innerWidth === 390 && window.innerHeight === 844) {
-        setStyles({
-          ...styles,
 
-          marginTop: '-62px',
-          paddingRight: '40px',
-          paddingTop: '0px',
-          paddingBottom: '0px',
-        });
-      } else if (window.innerWidth === 844 && window.innerHeight === 390) {
-        setStyles({
-          ...styles,
+  // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***
 
-          paddingRight: '20px',
-          paddingTop: '0px',
-          paddingBottom: '20px',
-        });
-      } else if (window.innerWidth >= 1201) {
-        setStyles({
-          ...styles,
-
-          marginBottom: '0px',
-          paddingRight: '37px',
-          paddingTop: '0px',
-          paddingBottom: '0px',
-        });
-      } else {
-        setStyles({
-          ...styles,
-
-          marginTop: '-61px',
-          paddingRight: '0px',
-          paddingTop: '0px',
-          paddingBottom: '0px',
-        });
-      }
-    };
-
-    window.addEventListener('resize', updateStyles);
-    updateStyles();
-
-    return () => {
-      window.removeEventListener('resize', updateStyles);
-    };
-  }, []);
 
   return (
     <div className="relative drop-ref-container">
       <div
         className={classes.filtericonHistory}
         onClick={HistoryButtonCalled}
-        style={styles}
+        
       >
         <img
           className={classes.ICONSTYLETHREEDOT}
@@ -118,7 +77,7 @@ const HistoryRedirect = () => {
           ref={divRef}
         >
           <ul>
-            {/* <ul style={{ borderRadius: '15px' }}> */}
+           
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>
               History{' '}
             </li>

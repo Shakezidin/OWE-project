@@ -161,7 +161,7 @@ const CustomersList = () => {
     { id: 4, date: new Date(2024, 8, 25), progress: 63 },
     { id: 5, date: new Date(2024, 8, 26), progress: 79 },
     { id: 6, date: new Date(2024, 8, 27), progress: 20 },
-    { id: 7, date: new Date(2024, 8, 30), progress: 95 },
+    { id: 7, date: new Date(2024, 9, 1), progress: 95 },
   ];
   const sortOptions = [
     { label: 'New To Old', value: 'New To Old' },
@@ -383,7 +383,7 @@ const CustomersList = () => {
                   <div className="flex flex-column  justify-center" style={{ width: "100%" }}>
                     <h5
                       className={`mb2 ${styles.time_slot_label}`}
-                      style={{ fontSize: 14, fontWeight: 500 }}
+                      style={{ fontSize: 14, fontWeight: 500,textAlign:"center" }}
 
                     >
                       {' '}

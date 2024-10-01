@@ -449,6 +449,11 @@
     padding: 5px;
     cursor: pointer;
   }
+  .calendar_schedule_btn{
+    padding-block:6px;
+    font-size: 16px;
+    border-radius: 6px;
+  }
 
   .time_slot_pill {
     margin-bottom: 0;
