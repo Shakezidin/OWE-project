@@ -465,6 +465,10 @@ input[type='checkbox']:checked {
   }
 }
 
+@media screen and (min-width: 336px) and (max-width: 410px) {
+
+}
+
 /* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 480px) {
   /* Styles for smartphones */

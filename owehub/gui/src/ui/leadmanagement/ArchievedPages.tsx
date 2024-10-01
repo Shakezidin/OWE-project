@@ -865,76 +865,76 @@ const ArchivedPages = () => {
               </span>
             </div>
 
-{/* HERE CONDITIONAL BUTTONS AFTER 2 ITEMS SELECTED */}
+            {/* HERE CONDITIONAL BUTTONS AFTER 2 ITEMS SELECTED */}
 
-<div className={styles.SecondChildContain}>
-<div className={styles.ConditionButtonArea}> 
-  {selectedLeads.length >1 ? (
-                 <div className={styles.ConditionalButtons} style={{ visibility: 'visible' }}>
-                  <div className={styles.selectionHeader}>
-              
-                 <button
-                   className={styles.archieveButtonA}
-                   
-                 >
-                   Archived
-                 </button>
-               </div> <div >
-                 
-                 <button
-                   className={styles.archieveButtonX}
-                   
-                 >
-                   Remove
-                 </button>
-               </div></div>
+            <div className={styles.SecondChildContain}>
+              <div className={styles.ConditionButtonArea}>
+                {selectedLeads.length > 0 ? (
+                  <div className={styles.ConditionalButtons} style={{ visibility: 'visible' }}>
+                    <div className={styles.selectionHeader}>
 
-              ) : (
-                
-                  
-                  <div className={styles.ConditionalButtons} style={{ visibility: 'hidden'}}>
-                <div className={styles.selectionHeader}>
-              
-            
-               <button
-                 className={styles.archieveButtonA}
-                 
-               >
-                 Archived
-               </button>
-             </div> <div >
-               
-               <button
-                 className={styles.archieveButtonX}
-                 
-               >
-                 Remove
-               </button>
-             </div></div>
-              )}
+                      <button
+                        className={styles.archieveButtonA}
+
+                      >
+                        Unarchived
+                      </button>
+                    </div> <div >
+
+                      <button
+                        className={styles.archieveButtonX}
+
+                      >
+                        Remove
+                      </button>
+                    </div></div>
+
+                ) : (
+
+
+                  <div className={styles.ConditionalButtons} style={{ visibility: 'hidden' }}>
+                    <div className={styles.selectionHeader}>
+
+
+                      <button
+                        className={styles.archieveButtonA}
+
+                      >
+                        Archived
+                      </button>
+                    </div> <div >
+
+                      <button
+                        className={styles.archieveButtonX}
+
+                      >
+                        Remove
+                      </button>
+                    </div></div>
+                )}
+              </div>
+
+              {/* HERE NOT NEED TO EDITED */}
+              <div>
+                {selectedLeads.length === 0 ? (
+                  <img
+                    className={styles.CrossICONBTNHover}
+                    src={CrossICONBtn}
+                    onClick={onClickCrossIconBotton}
+                    style={{ visibility: 'visible' }}
+                  />
+                ) : (
+                  <img
+                    className={styles.CrossICONBTNHover}
+                    src={CrossICONBtn}
+                    onClick={onClickCrossIconBotton}
+                    style={{ display: 'none' }}
+                  />
+                )}
+
+
+              </div>
             </div>
-                          
-{/* HERE NOT NEED TO EDITED */}
-            <div>
-              {selectedLeads.length === 0 ? (
-                <img
-                  className={styles.CrossICONBTNHover}
-                  src={CrossICONBtn}
-                  onClick={onClickCrossIconBotton}
-                  style={{ visibility: 'visible' }}
-                />
-              ) : (
-                <img
-                  className={styles.CrossICONBTNHover}
-                  src={CrossICONBtn}
-                  onClick={onClickCrossIconBotton}
-                  style={{ display: 'none' }}
-                />
-              )}
-              
-
-            </div>
-</div>
           </div>
 
           {/* HERE THE BUTTONS FOR FILTERING ENDED */}
@@ -983,7 +983,7 @@ const ArchivedPages = () => {
                       </div>
                       <div className={styles.address}>{lead.address}</div>
 
-                     {/* { selectedLeads.length >1 ? <button 
+                      {/* { selectedLeads.length >1 ? <button 
                           className={styles.UnArchiveButton}
                           onClick={Unarchived} disabled
                         >
@@ -1006,22 +1006,41 @@ const ArchivedPages = () => {
                         >
                           Remove
                         </button></>} */}
-                      <div> 
-                      <button 
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      {selectedLeads.length > 0 ? " " : <div>
+                        <button
                           className={styles.UnArchiveButton}
-                          onClick={Unarchived}  disabled={selectedLeads.length > 1}
+                          onClick={Unarchived} disabled={selectedLeads.length > 1}
                         >
                           Unarchived
-                        </button>                       
-                      </div>
-                      <div><button
-                          className={styles.removeButton}
-                          onClick={RemoveArchived}
-                          disabled={selectedLeads.length > 1}
+                        </button>
+                      </div>}
 
-                        >
-                          Remove
-                        </button></div>
+
+
+                      {selectedLeads.length > 0 ? " " : <div><button
+                        className={styles.removeButton}
+                        onClick={RemoveArchived}
+                        disabled={selectedLeads.length > 1}
+
+                      >
+                        Remove
+                      </button></div>}
+
+                      {/* 
+                       */}
                     </td>
                   </tr>
                   {toggledId === lead.id && (
