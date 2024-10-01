@@ -465,7 +465,27 @@ input[type='checkbox']:checked {
   }
 }
 
-@media screen and (min-width: 336px) and (max-width: 410px) {
+@media screen and (min-width: 336px) and (max-width: 436px) {
+  .date_calendar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: right !important;
+    gap: 4px !important;
+  
+  }
+
+}
+
+@media screen and (min-width: 349px) and (max-width: 405px) {
+  .date_calendar {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    padding:  17px 16px 17px 35px !important;
+    margin:  17px 16px 17px 35px !important;
+  
+  }
 
 }
 
@@ -513,9 +533,9 @@ input[type='checkbox']:checked {
     transform: scale(0.8);
     margin-right: -15px;
   }
-  .date_calendar {
+  /* .date_calendar {
     gap: unset !important;
-  }
+  } */
   .user_name {
     transform: translate(5px, -5px);
   }
@@ -705,74 +725,13 @@ input[type='checkbox']:checked {
 .date_calendar {
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  gap: 5px !important;
   align-items: center;
   flex-wrap: wrap;
   justify-content: right !important;
 }
-/*---------------- Shams Start-------------------- */
 
-/* styles={{
-  control: (baseStyles, state) => ({
-    ...baseStyles,
-    marginTop: 'px',
-    borderRadius: '8px',
-    outline: 'none',
-    color: '#3E3E3E',
-    width: '140px',
-    height: '36px',
-    fontSize: '12px',
-    border: '1px solid #d0d5dd',
-    fontWeight: '500',
-    cursor: 'pointer',
-    alignContent: 'center',
-    backgroundColor: '#fffff',
-    boxShadow: 'none',
-    '@media only screen and (max-width: 767px)': {
-      width: '80px',
-      // width: 'fit-content',
-    },
-    '&:focus-within': {
-      borderColor: '#377CF6',
-      boxShadow: '0 0 0 1px #377CF6',
-      caretColor: '#3E3E3E',
-    },
-  }),
-  placeholder: (baseStyles) => ({
-    ...baseStyles,
-    color: '#3E3E3E',
-  }),
-  indicatorSeparator: () => ({
-    display: 'none',
-  }),
-  dropdownIndicator: (baseStyles, state) => ({
-    ...baseStyles,
-    color: '#3E3E3E',
-    '&:hover': {
-      color: '#3E3E3E',
-    },
 
-  }),
-  option: (baseStyles, state) => ({
-    ...baseStyles,
-    fontSize: '13px',
-    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-    '&:hover': {
-      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-    },
-    cursor: 'pointer',
-  }),
-  singleValue: (baseStyles, state) => ({
-    ...baseStyles,
-    color: '#3E3E3E',
-  }),
-  menu: (baseStyles) => ({
-    ...baseStyles,
-    width: '140px',
-    marginTop: "0px"
-  }),
-}} */
 
 /* General style for the month select */
 /* General style for the month select */
@@ -857,7 +816,28 @@ input[type='checkbox']:checked {
 }
 
 @media only screen and (max-width: 767px) {
+
+ 
+  .cardHeaderSecond span{
+    font-size: 14px;
+    text-align: left;
+  
+
+  }
   .monthSelect {
     width: 80px;
   }
+
+  .lead__datepicker_content {
+    position: absolute;
+
+    left: -140px;
+    z-index: 100;
+    background-color: var(--white-color);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    top: 57px;
+  }
 }
+
+
