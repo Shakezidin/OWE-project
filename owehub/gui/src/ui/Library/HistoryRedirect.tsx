@@ -50,60 +50,16 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
  
 
 
-  useEffect(() => {
-    const updateStyles = () => {
-      if (window.innerWidth === 390 && window.innerHeight === 844) {
-        setStyles({
-          ...styles,
 
-          marginTop: '-62px',
-          paddingRight: '40px',
-          paddingTop: '0px',
-          paddingBottom: '0px',
-        });
-      } else if (window.innerWidth === 844 && window.innerHeight === 390) {
-        setStyles({
-          ...styles,
+  // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***
 
-          paddingRight: '20px',
-          paddingTop: '0px',
-          paddingBottom: '20px',
-        });
-      } else if (window.innerWidth >= 1201) {
-        setStyles({
-          ...styles,
-
-          marginBottom: '0px',
-          paddingRight: '37px',
-          paddingTop: '0px',
-          paddingBottom: '0px',
-        });
-      } else {
-        setStyles({
-          ...styles,
-
-          marginTop: '-61px',
-          paddingRight: '0px',
-          paddingTop: '0px',
-          paddingBottom: '0px',
-        });
-      }
-    };
-
-    window.addEventListener('resize', updateStyles);
-    updateStyles();
-
-    return () => {
-      window.removeEventListener('resize', updateStyles);
-    };
-  }, []);
 
   return (
     <div className="relative drop-ref-container">
       <div
         className={classes.filtericonHistory}
         onClick={HistoryButtonCalled}
-        style={styles}
+        
       >
         <img
           className={classes.ICONSTYLETHREEDOT}
@@ -121,7 +77,7 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
           ref={divRef}
         >
           <ul>
-            {/* <ul style={{ borderRadius: '15px' }}> */}
+           
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>
               History{' '}
             </li>
