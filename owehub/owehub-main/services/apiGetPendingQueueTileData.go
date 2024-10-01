@@ -248,7 +248,7 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" ss.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -276,7 +276,7 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 			}
 
 			// Add the IN clause with the placeholders to the query
-			filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(placeholders, ",")))
+			filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.dealer IN (%s)", strings.Join(placeholders, ",")))
 		}
 	}
 
@@ -286,11 +286,11 @@ func PrepareAdminDlrPendingQueueTileFilters(tableName string, dataFilter models.
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` ips.unique_id IS NOT NULL
-			  AND ips.unique_id <> ''
-			  AND ips.system_size IS NOT NULL
-			  AND ips.system_size > 0
-			  AND ss.project_status IN ('ACTIVE')`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			  AND customers_customers_schema.unique_id <> ''
+			  AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			  AND system_customers_schema.contracted_system_size_parent > 0
+			  AND customers_customers_schema.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -323,7 +323,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE ss.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -336,7 +336,7 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" ss.primary_sales_rep IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -365,15 +365,15 @@ func PrepareSaleRepPendingQueueTileFilters(tableName string, dataFilter models.P
 		}
 
 		// Add the IN clause with dealer names directly in the query
-		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(dealerNames, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.dealer IN (%s)", strings.Join(dealerNames, ",")))
 	}
 
 	// Add the always-included filters
-	filtersBuilder.WriteString(` AND ips.unique_id IS NOT NULL
-			  AND ips.unique_id <> ''
-			  AND ips.system_size IS NOT NULL
-			  AND ips.system_size > 0 
-			  AND ss.project_status IN ('ACTIVE')`)
+	filtersBuilder.WriteString(` AND customers_customers_schema.unique_id IS NOT NULL
+			  AND customers_customers_schema.unique_id <> ''
+			  AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			  AND system_customers_schema.contracted_system_size_parent > 0 
+			  AND customers_customers_schema.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
