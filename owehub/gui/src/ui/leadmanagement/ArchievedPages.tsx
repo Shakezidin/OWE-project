@@ -1,18 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  Sector,
-} from 'recharts';
-import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/Archive.module.css';
 import './styles/mediaQuery.css';
 import CrossICONBtn from './Modals/Modalimages/CrossBTNICON.png';
@@ -28,17 +14,15 @@ import { ICONS } from '../../resources/icons/Icons';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { toZonedTime } from 'date-fns-tz';
-import {
-  endOfWeek,
-  startOfMonth,
-  startOfWeek,
-  startOfYear,
-  subDays,
-} from 'date-fns';
-import HistoryRedirect from '../Library/HistoryRedirect';
-// import { Select } from 'react-day-picker';
-// import styles from './styles/lmhistory.module.css';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+
+
+interface HistoryRedirectProps {
+  setArchive: (value: boolean) => void;
+
+}
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -46,43 +30,8 @@ export type DateRangeWithLabel = {
   end: Date;
 };
 
-function getUserTimezone() {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone;
-}
 
-function getCurrentDateInUserTimezone() {
-  const now = new Date();
-  const userTimezone = getUserTimezone();
-  return toZonedTime(now, userTimezone);
-}
 
-const today = getCurrentDateInUserTimezone();
-const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 });
-const startOfThisMonth = startOfMonth(today);
-const startOfThisYear = startOfYear(today);
-const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-const startOfThreeMonthsAgo = new Date(
-  today.getFullYear(),
-  today.getMonth() - 2,
-  1
-);
-const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-
-const startOfLastWeek = startOfWeek(subDays(startOfThisWeek, 1), {
-  weekStartsOn: 1,
-});
-const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
-  weekStartsOn: 1,
-});
-
-const periodFilterOptions: DateRangeWithLabel[] = [
-  { label: 'This Week', start: startOfThisWeek, end: today },
-  { label: 'Last Week', start: startOfLastWeek, end: endOfLastWeek },
-  { label: 'This Month', start: startOfThisMonth, end: today },
-  { label: 'Last Month', start: startOfLastMonth, end: endOfLastMonth },
-  { label: 'This Quarter', start: startOfThreeMonthsAgo, end: today },
-  { label: 'This Year', start: startOfThisYear, end: today },
-];
 // shams end
 
 type Lead = {
@@ -94,28 +43,7 @@ type Lead = {
   status: string;
 };
 
-const pieData = [
-  { name: 'Pending leads', value: 135, color: '#FF832A' },
-  { name: 'Appointment sent', value: 29, color: '#81A6E7' },
-  { name: 'Appointment accepted', value: 21, color: '#52B650' },
-  { name: 'Appointment declined', value: 15, color: '#CD4040' },
-  { name: 'Action Needed', value: 10, color: '#63ACA3' },
-];
 
-const lineData = [
-  { name: 'Jan', won: 35, lost: 15 },
-  { name: 'Feb', won: 40, lost: 20 },
-  { name: 'Mar', won: 45, lost: 15 },
-  { name: 'Apr', won: 40, lost: 30 },
-  { name: 'May', won: 70, lost: 20 },
-  { name: 'Jun', won: 45, lost: 35 },
-  { name: 'Jul', won: 75, lost: 35 },
-  { name: 'Aug', won: 90, lost: 40 },
-  { name: 'Sep', won: 60, lost: 20 },
-  { name: 'Oct', won: 55, lost: 30 },
-  { name: 'Nov', won: 70, lost: 35 },
-  { name: 'Dec', won: 80, lost: 45 },
-];
 
 const leads = [
   {
@@ -264,206 +192,18 @@ const leads = [
   },
 ];
 
-const renderActiveShape = (props: any) => {
-  const RADIAN = Math.PI / 180;
-  const {
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    startAngle,
-    endAngle,
-    fill,
-    payload,
-    percent,
-    value,
-  } = props;
-  const sin = Math.sin(-RADIAN * midAngle);
-  const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius + 10) * cos;
-  const sy = cy + (outerRadius + 10) * sin;
-  const mx = cx + (outerRadius + 30) * cos;
-  const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-  const ey = my;
-  const textAnchor = cos >= 0 ? 'start' : 'end';
 
-  // Center text in pie chart
 
-  const splitText = (text: string, width: number) => {
-    const words = text.split(' ');
-    const lines = [];
-    let line = '';
 
-    words.forEach((word: string) => {
-      const testLine = line + word + ' ';
-      if (testLine.length > width) {
-        lines.push(line.trim());
-        line = word + ' ';
-      } else {
-        line = testLine;
-      }
-    });
-    lines.push(line.trim());
-    return lines;
-  };
-
-  const lines = splitText(payload.name, 15);
-
-  return (
-    <g>
-      <text
-        x={cx}
-        y={cy - (lines.length - 1) * 6}
-        textAnchor="middle"
-        fill={fill}
-      >
-        {lines.map((line, index) => (
-          <tspan
-            key={index}
-            x={cx}
-            dy={index ? 15 : 0}
-            style={{
-              fontSize: '12.07px',
-              wordBreak: 'break-word',
-              fontWeight: 550,
-            }}
-          >
-            {line}
-          </tspan>
-        ))}
-      </text>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-      />
-      <Sector
-        cx={cx}
-        cy={cy}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={outerRadius + 6}
-        outerRadius={outerRadius + 10}
-        fill={fill}
-      />
-      <path
-        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
-        fill="none"
-      />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        textAnchor={textAnchor}
-        fill="#333"
-        style={{ fontSize: '12.07px' }}
-      >
-        {`${value}`}
-      </text>
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        dy={18}
-        textAnchor={textAnchor}
-        fill="#999"
-        style={{ fontSize: '12.07px' }}
-      >
-        {`(${(percent * 100).toFixed(2)}%)`}
-      </text>
-    </g>
-  );
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Pending':
-      return '#FF832A';
-    case 'Sent':
-      return '#81A6E7';
-    case 'Accepted':
-      return '#52B650';
-    case 'Declined':
-      return '#CD4040';
-    case 'Action Needed':
-      return '#63ACA3';
-    default:
-      return '#000000';
-  }
-};
-
-// const ActionNeeded={
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-//   'Action Needed': 'Action Needed',
-// }
-const statusMap = {
-  'Pending leads': 'Pending',
-  'Appointment accepted': 'Accepted',
-  'Appointment sent': 'Sent',
-  'Appointment declined': 'Declined',
-  'Action Needed': 'Action Needed',
-};
-
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: any[];
-  label?: string;
-}) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        style={{
-          backgroundColor: 'white',
-          padding: '5px 10px',
-          // border: '1px solid #f0f0f0',
-          borderRadius: '4px',
-          // boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}
-      >
-        <p
-          style={{
-            margin: '2px 0',
-            color: '#57B93A',
-            fontWeight: 'bold',
-            fontSize: 11,
-          }}
-        >{`${payload[0].value} Closed Won`}</p>
-        <p
-          style={{
-            margin: '2px 0',
-            color: '#CD4040',
-            fontWeight: 'bold',
-            fontSize: 11,
-          }}
-        >{`${payload[1].value} Closed Lost`}</p>
-      </div>
-    );
-  }
-  return null;
-};
-
-const ArchivedPages = () => {
+const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
   const [selectedMonth, setSelectedMonth] = useState('Aug');
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [filteredLeads, setFilteredLeads] = useState(leads);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
+  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
-  const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -476,55 +216,13 @@ const ArchivedPages = () => {
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
 
-  const [selectedDates, setSelectedDates] = useState<{
-    startDate: Date | null;
-    endDate: Date | null;
-  }>({
-    startDate: null,
-    endDate: null,
-  });
-
-  const handleRangeChange = (ranges: any) => {
-    setSelectedRanges([ranges.selection]);
-  };
-
-  const onReset = () => {
-    setSelectedDates({ startDate: new Date(), endDate: new Date() });
-    setIsCalendarOpen(false);
-  };
-
-  const onApply = () => {
-    const startDate = selectedRanges[0].startDate;
-    const endDate = selectedRanges[0].endDate;
-    setSelectedDates({ startDate, endDate });
-    setIsCalendarOpen(false);
-  };
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
   const [toggledId, setToggledId] = useState<string | null>(null);
 
-  const toggleCalendar = () => {
-    setIsCalendarOpen((prevState) => !prevState);
-  };
 
-  //CALLING FOR RANGE PICK IN USING SELECT CODE
-  const handlePeriodChange = (
-    newValue: SingleValue<DateRangeWithLabel>,
-    actionMeta: ActionMeta<DateRangeWithLabel>
-  ) => {
-    if (newValue) {
-      setSelectedDates({
-        startDate: newValue.start,
-        endDate: newValue.end,
-      });
-      setSelectedPeriod(newValue);
-    } else {
-      setSelectedDates({ startDate: null, endDate: null });
-    }
-  };
-  //CALLING FOR HISTORY
 
   const handleClickOutside = (event: Event) => {
     if (
@@ -551,62 +249,25 @@ const ArchivedPages = () => {
   const navigate = useNavigate();
 
   const onClickCrossIconBotton = () => {
-    navigate('/leadmng-dashboard');
+    setArchive(false);
   };
 
   const Unarchived = () => {
-    navigate('/leadmng-dashboard');
+    setArchive(false);
   };
 
   const RemoveArchived = () => {
     navigate('/lead-mgmt-success-modal');
   };
-  useEffect(() => {
-    const pieName = pieData[activeIndex].name;
-    const newFilter = statusMap[pieName as keyof typeof statusMap];
-    setCurrentFilter(newFilter);
-    setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
-  }, [activeIndex]);
 
-  const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
-    setActiveIndex(index);
-  };
-
-  const handleFilterClick = (filter: string) => {
-    setCurrentFilter(filter);
-    setFilteredLeads(leads.filter((lead) => lead.status === filter));
-    setActiveIndex(
-      pieData.findIndex(
-        (item) => statusMap[item.name as keyof typeof statusMap] === filter
-      )
-    );
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentLeads = filteredLeads.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const goToNextPage = () =>
-    setCurrentPage((prev) =>
-      Math.min(prev + 1, Math.ceil(filteredLeads.length / itemsPerPage))
-    );
-  const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
-  const handleLeadSelection = (lead: Lead) => {
+  const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
-      prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
+      prev.includes(leadId) ? prev.filter((id) => id !== leadId) : [...prev, leadId]
     );
   };
-  const handleReschedule = (lead: any) => {
-    console.log(`Lead ${lead.name} is being rescheduled`);
-    handleFilterClick('Pending'); // Switch to the "Pending" tab
-  };
 
-  const handleArchive = (lead: Lead) => {
-    setLeadToArchive(lead); // Store the lead to be archived
-    setShowArchiveModal(true); // Show the modal
-  };
+  console.log(selectedLeads, "wtf i am doing")
+
 
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
@@ -630,216 +291,35 @@ const ArchivedPages = () => {
     setIsModalOpen(false);
   };
 
+  const { isLoading, leadsData, totalcount } = useAppSelector(
+    (state) => state.leadManagmentSlice
+  );
+
+  const deleteLeads = async () => {
+    try {
+      const response = await postCaller('delete_lead', {
+         ids: selectedLeads,
+      },true);
+  
+      if (response.status === 200) {
+        toast.success("Leads deleted successfully");
+      } else {
+        toast.warn(response.message);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+    }
+  };
+
+
+
   return (
-    <div className={styles.dashboard}>
+    <div>
       {showConfirmModal && (
         <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
       )}
 
       {showArchiveModal && <ArchiveModal />}
-
-      <div className={styles.chartGrid}>
-        <div className={styles.card}>
-          <div className={styles.cardHeaderFirst}>
-            Overview
-            <div>Total leads: 200</div>
-          </div>
-          <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart className={styles.pieChart}>
-                <Pie
-                  activeIndex={activeIndex}
-                  activeShape={renderActiveShape}
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  onClick={handlePieClick}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className={styles.legend}>
-              {pieData.map((item) => (
-                <div key={item.name} className={styles.legendItem}>
-                  <div
-                    className={styles.legendColor}
-                    style={{ backgroundColor: item.color }}
-                  ></div>
-                  <span className={styles.legendText}>{item.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className={`${styles.card} ${styles.lineCard}`}>
-          <div className={styles.cardHeaderSecond}>
-            <span>Total Won Lost</span>
-            <div className={styles.date_calendar}>
-              {isCalendarOpen && (
-                <div
-                  ref={calendarRef}
-                  className={styles.lead__datepicker_content}
-                >
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={handleRangeChange}
-                    moveRangeOnFirstSelection={false}
-                    ranges={selectedRanges}
-                  />
-                  <div className={styles.lead__datepicker_btns}>
-                    <button className="reset-calender" onClick={onReset}>
-                      Reset
-                    </button>
-                    <button className="apply-calender" onClick={onApply}>
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              )}
-              {selectedDates.startDate && selectedDates.endDate && (
-                <div className={styles.hist_date}>
-                  <span className={styles.date_display}>
-                    {selectedDates.startDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                    {' - '}
-                    {selectedDates.endDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </div>
-              )}
-
-              {/* RABINDR718..... */}
-              <Select
-                value={selectedPeriod}
-                onChange={handlePeriodChange}
-                options={periodFilterOptions}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    marginTop: 'px',
-                    borderRadius: '8px',
-                    outline: 'none',
-                    color: '#3E3E3E',
-                    width: '140px',
-                    height: '36px',
-                    fontSize: '12px',
-                    border: '1px solid #d0d5dd',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    alignContent: 'center',
-                    backgroundColor: '#fffff',
-                    boxShadow: 'none',
-                    '@media only screen and (max-width: 767px)': {
-                      width: '80px',
-                      // width: 'fit-content',
-                    },
-                    '&:focus-within': {
-                      borderColor: '#377CF6',
-                      boxShadow: '0 0 0 1px #377CF6',
-                      caretColor: '#3E3E3E',
-                    },
-                  }),
-                  placeholder: (baseStyles) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                    '&:hover': {
-                      color: '#3E3E3E',
-                    },
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                    },
-                    cursor: 'pointer',
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#3E3E3E',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '140px',
-                    marginTop: '0px',
-                  }),
-                }}
-              />
-              <div
-                ref={toggleRef}
-                className={styles.calender}
-                onClick={toggleCalendar}
-              >
-                <img src={ICONS.includes_icon} alt="" />
-              </div>
-            </div>
-          </div>
-          {/* RABINDR718..... */}
-          <div
-            className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
-          >
-            <ResponsiveContainer
-              className={styles.chart_main_grid}
-              width="100%"
-              height={300}
-            >
-              <LineChart data={lineData}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  className={styles.lineChart_legend}
-                  formatter={(value) =>
-                    value === 'won' ? 'Total won' : 'Total Lost'
-                  }
-                  wrapperStyle={{
-                    fontSize: '12px',
-                    fontWeight: 550,
-                    marginBottom: -15,
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="won"
-                  stroke="#57B93A"
-                  strokeWidth={2}
-                  name="won"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="lost"
-                  stroke="#CD4040"
-                  strokeWidth={2}
-                  name="lost"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
 
       <div className={styles.card}>
         <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
@@ -877,13 +357,13 @@ const ArchivedPages = () => {
                         className={styles.archieveButtonA}
 
                       >
-                        Unarchived
+                        Unarchive
                       </button>
                     </div> <div >
 
                       <button
                         className={styles.archieveButtonX}
-
+                        onClick={deleteLeads}
                       >
                         Remove
                       </button>
@@ -943,7 +423,7 @@ const ArchivedPages = () => {
         <div className={styles.cardContent}>
           <table className={styles.table}>
             <tbody>
-              {currentLeads.map((lead, index) => (
+              {leadsData?.map((lead: any, index: number) => (
                 <React.Fragment key={index}>
                   <tr className={styles.history_lists}>
                     <td
@@ -953,8 +433,8 @@ const ArchivedPages = () => {
                       <label>
                         <input
                           type="checkbox"
-                          checked={selectedLeads.includes(lead)}
-                          onChange={() => handleLeadSelection(lead)}
+                          checked={selectedLeads.includes(lead["leads_id "])}
+                          onChange={() => handleLeadSelection(lead["leads_id "])}
                         />
                       </label>
                       <div
@@ -963,15 +443,15 @@ const ArchivedPages = () => {
                           currentFilter == 'Pending' && handleDetailModal(lead)
                         }
                       >
-                        <h2>{lead.name}</h2>
-                        <p style={{ color: getStatusColor(lead.status) }}>
-                          {lead.status}
+                        <h2>{lead.first_name} {lead.last_name}</h2>
+                        <p>
+                          {lead.leads_status ? lead.leads_status : 'N/A'}
                         </p>
                       </div>
-                      <div className={styles.phone_number}>{lead.phone}</div>
+                      <div className={styles.phone_number}>{lead.phone_number}</div>
                       <div className={styles.email}>
                         <span>
-                          {lead.email}
+                          {lead.email_id}
                           <img
                             className="ml1"
                             height={15}
@@ -981,50 +461,13 @@ const ArchivedPages = () => {
                           />
                         </span>
                       </div>
-                      <div className={styles.address}>{lead.address}</div>
-
-                      {/* { selectedLeads.length >1 ? <button 
-                          className={styles.UnArchiveButton}
-                          onClick={Unarchived} disabled
-                        >
-                          Unarchived
-                        </button> : <><button  disabled
-                          className={styles.UnArchiveButton}
-                          onClick={Unarchived}  
-                        >
-                          Unarchived
-                        </button></>}
-
-                        { selectedLeads.length >1 ? <button
-                          className={styles.removeButton}
-                          onClick={RemoveArchived}
-                        >
-                          Remove
-                        </button> : <><button
-                          className={styles.removeButton}
-                          onClick={RemoveArchived}
-                        >
-                          Remove
-                        </button></>} */}
-
-
-
-
-
-
-
-
-
-
-
-
-
+                      <div className={styles.address}>{lead.street_address ? lead.street_address : "N/A"}</div>
                       {selectedLeads.length > 0 ? " " : <div>
                         <button
                           className={styles.UnArchiveButton}
                           onClick={Unarchived} disabled={selectedLeads.length > 1}
                         >
-                          Unarchived
+                          Unarchive
                         </button>
                       </div>}
 
@@ -1032,15 +475,11 @@ const ArchivedPages = () => {
 
                       {selectedLeads.length > 0 ? " " : <div><button
                         className={styles.removeButton}
-                        onClick={RemoveArchived}
-                        disabled={selectedLeads.length > 1}
-
+                        onClick={deleteLeads}
+                        // disabled={selectedLeads.length > 1}
                       >
                         Remove
                       </button></div>}
-
-                      {/* 
-                       */}
                     </td>
                   </tr>
                   {toggledId === lead.id && (
@@ -1049,7 +488,7 @@ const ArchivedPages = () => {
                         <div className={''}>{lead.phone}</div>
                         <div className={''}>
                           <span>
-                            {lead.email}
+                            {lead.email_id}
                             <img
                               className="ml1"
                               height={15}
@@ -1059,7 +498,7 @@ const ArchivedPages = () => {
                             />
                           </span>
                         </div>
-                        <div className={''}>{lead.address}</div>
+                        <div className={''}>{lead.street_address}</div>
                       </td>
                     </tr>
                   )}
@@ -1068,31 +507,6 @@ const ArchivedPages = () => {
             </tbody>
           </table>
 
-          {/* HERE IMPLEMENT PAGINATION */}
-
-          <div className={styles.leadpagination}>
-            {filteredLeads.length > 0 && (
-              <div className={styles.leftitem}>
-                <p className={styles.pageHeading}>
-                  {indexOfFirstItem + 1} -{' '}
-                  {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
-                  {filteredLeads.length} items
-                </p>
-              </div>
-            )}
-
-            <div className={styles.rightitem}>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
-                paginate={paginate}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-                perPage={itemsPerPage}
-                currentPageData={currentLeads}
-              />
-            </div>
-          </div>
         </div>
       </div>
     </div>

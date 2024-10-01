@@ -2,20 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classes from './stylesFolder/HistoryRedirect.module.css';
 import ThreeDotsImage from './stylesFolder/ThreeDots.svg';
-// import '../.././index.css';
-const HistoryRedirect = () => {
+interface HistoryRedirectProps {
+  setArchive: (value: boolean) => void;
+}
+
+const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
   const divRef = useRef<HTMLDivElement | null>(null);
-
+  
   const handleHistory = () => {
     navigate('/leadmng-history');
   };
 
   const ArchivesTable = () => {
-    navigate('/lead-dashboard-archieves');
+    setArchive(true);
   };
-
+  
   /* HERE FOR RESPONSIVESNESS */
   const [styles, setStyles] = useState({
     transform: 'scale(1) translate(0, 0)',
