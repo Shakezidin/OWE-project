@@ -305,6 +305,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				LeadID:                     leads_id,
 				State:                      state,
 				FirstName:                  first_name,
+				StatusID:                   status_id,
 				LastName:                   last_name,
 				EmailID:                    email_id,
 				PhoneNumber:                phone_number,
