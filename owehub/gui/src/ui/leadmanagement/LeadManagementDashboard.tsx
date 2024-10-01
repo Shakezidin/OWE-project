@@ -604,8 +604,7 @@ const LeadManagementDashboard = () => {
   };
 
   const handleReschedule = (lead: any) => {
-    console.log(`Lead ${lead.name} is being rescheduled`);
-    handleFilterClick('Pending'); // Switch to the "Pending" tab
+    setShowConfirmModal(true);
   };
 
   const handleArchive = (lead: Lead) => {
