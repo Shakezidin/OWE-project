@@ -20,6 +20,7 @@ interface BannerProps {
   isShowDropdown: boolean;
   isGenerating: boolean;
   setIsFetched: React.Dispatch<SetStateAction<boolean>>;
+  isLoading:boolean;
 }
 
 const Banner: React.FC<BannerProps> = ({
@@ -28,6 +29,7 @@ const Banner: React.FC<BannerProps> = ({
   isShowDropdown,
   setIsFetched,
   isGenerating,
+  isLoading
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
@@ -380,6 +382,7 @@ const Banner: React.FC<BannerProps> = ({
                   placeholder="Search Dealers"
                   style={{ width: '100%' }}
                   value={search}
+                  disabled={isLoading}
                   onChange={(e) => {
                     setSearch(e.target.value);
                     if (e.target.value.trim()) {
@@ -420,6 +423,7 @@ const Banner: React.FC<BannerProps> = ({
                   <input
                     type="checkbox"
                     style={{ flexShrink: 0 }}
+                    disabled={isLoading}
                     checked={selectDealer?.some(
                       (item) => item.value === option.value
                     )}

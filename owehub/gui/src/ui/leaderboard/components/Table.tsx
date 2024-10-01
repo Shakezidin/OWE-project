@@ -544,6 +544,8 @@ const DateFilter = ({
 const Table = ({
   setIsOpen,
   setDealer,
+  setPage,
+  page,
   active,
   setActive,
   setGroupBy,
@@ -558,10 +560,19 @@ const Table = ({
   count,
   resetDealer,
   isFetched,
+  tableData,
+  setIsLoading,
+  isLoading
+
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
+  setIsLoading:Dispatch<SetStateAction<boolean>>;
+  isLoading:any;
+  setPage:Dispatch<SetStateAction<number>>;
+  page:number;
   active: string;
+  tableData:any;
   groupBy: string;
   setActive: Dispatch<SetStateAction<string>>;
   setGroupBy: Dispatch<SetStateAction<string>>;
@@ -576,11 +587,11 @@ const Table = ({
   resetDealer: (value: string) => void;
   isFetched: boolean;
 }) => {
-  const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
-  const [page, setPage] = useState(1);
+  const [leaderTable, setLeaderTable] = useState<any>([]);
+
 
   const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
@@ -599,40 +610,19 @@ const Table = ({
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
+
+  console.log(tableData, "tableData")
+
+  
   useEffect(() => {
-    if (isAuthenticated && isFetched) {
-      (async () => {
-        try {
-          setIsLoading(true);
-          const data = await postCaller('get_perfomance_leaderboard', {
-            type: activeHead,
-            dealer: selectDealer.map((item) => item.value),
-            page_size: itemsPerPage,
-            page_number: page,
-            start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-            end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-            sort_by: active,
-            group_by: groupBy,
-          });
-          if (data.status > 201) {
-            setIsLoading(false);
-            toast.error(data.message);
-            return;
-          }
-          if (data.data?.ap_ded_list) {
-            setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-            setTotalCount(data?.dbRecCount);
-            setTotalStats(data.data);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-    }
-  }, [
-    activeHead,
+   if(tableData){
+    // setLeaderTable(tableData.data.leader_board_list
+    // );
+    setLeaderTable(tableData?.data?.leader_board_list)
+    setTotalCount(tableData?.data?.dbRecCount)
+   }
+  
+  },[ activeHead,
     active,
     selectedRangeDate,
     itemsPerPage,
@@ -640,8 +630,51 @@ const Table = ({
     selectDealer,
     groupBy,
     isAuthenticated,
-    isFetched,
-  ]);
+    isFetched, tableData])
+
+  // useEffect(() => {
+  //   if (isAuthenticated && isFetched) {
+  //     (async () => {
+  //       try {
+  //         setIsLoading(true);
+  //         const data = await postCaller('get_perfomance_leaderboard', {
+  //           type: activeHead,
+  //           dealer: selectDealer.map((item) => item.value),
+  //           page_size: itemsPerPage,
+  //           page_number: page,
+  //           start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+  //           end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+  //           sort_by: active,
+  //           group_by: groupBy,
+  //         });
+  //         if (data.status > 201) {
+  //           setIsLoading(false);
+  //           toast.error(data.message);
+  //           return;
+  //         }
+  //         if (data.data?.ap_ded_list) {
+  //           setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+  //           setTotalCount(data?.dbRecCount);
+  //           setTotalStats(data.data);
+  //         }
+  //       } catch (error) {
+  //         console.error(error);
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     })();
+  //   }
+  // }, [
+  //   activeHead,
+  //   active,
+  //   selectedRangeDate,
+  //   itemsPerPage,
+  //   page,
+  //   selectDealer,
+  //   groupBy,
+  //   isAuthenticated,
+  //   isFetched,
+  // ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -662,7 +695,7 @@ const Table = ({
     setPage(page - 1);
   };
 
-  const sortedPage = leaderTable.slice().sort((a, b) => {
+  const sortedPage = leaderTable?.slice().sort((a:any, b:any) => {
     if (a.hightlight && !b.hightlight) return -1;
     if (!a.hightlight && b.hightlight) return 1;
     return 0;
@@ -677,7 +710,7 @@ const Table = ({
   }
   const role = authData?.role;
   const getTotal = (column: keyof ILeaderBordUser): number => {
-    return sortedPage.reduce((sum, item) => {
+    return sortedPage.reduce((sum:any, item:any) => {
       const value = item[column];
       // Ensure value is a number
       return sum + (typeof value === 'number' ? value : 0);
@@ -999,9 +1032,9 @@ const Table = ({
           >
             <MicroLoader />
           </div>
-        ) : sortedPage.length ? (
+        ) : sortedPage?.length ? (
           <>
-            {sortedPage.map((item) => {
+            {sortedPage?.map((item:any) => {
               return (
                 <div
                   onClick={() => {
@@ -1158,8 +1191,8 @@ const Table = ({
                     </div>
                   </td>
                 </tr>
-              ) : sortedPage.length ? (
-                sortedPage.map((item) => {
+              ) : sortedPage?.length ? (
+                sortedPage?.map((item:any) => {
                   return (
                     <tr
                       className="pointer"

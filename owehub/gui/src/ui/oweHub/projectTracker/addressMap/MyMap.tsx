@@ -715,7 +715,7 @@ const MyMapComponent: React.FC = () => {
                       ? (availableStates(newFormData) || []).find(
                           (option) => option.value === createRePayData.state
                         ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
-                      : { label: 'All State', value: 'All' }
+                      : { label: '-', value: '' }
                   }
                   menuStyles={{
                     width: 400,
