@@ -17,12 +17,12 @@ type DealerPaymentsStruct struct {
 	ItemID        int64     `json:"item_id"`
 	PodioLink     string    `json:"podio_link"`
 	Customer      string    `json:"customer"`
-	UniqueId      string    `json:"unique-id"`
-	SalesPartner  string    `json:"sales-partner"`
-	TypeOfPayment string    `json:"type-of-payment"`
-	PaymentDate   time.Time `json:"payment-date"`
-	PaymentAmount string    `json:"payment-amount"`
-	PaymentMethod string    `json:"payment-method"`
+	UniqueId      string    `json:"unique_id"`
+	SalesPartner  string    `json:"sales_partner"`
+	TypeOfPayment string    `json:"type_of_payment"`
+	PaymentDate   time.Time `json:"payment_date"`
+	PaymentAmount string    `json:"payment_amount"`
+	PaymentMethod string    `json:"payment_method"`
 	Transaction   string    `json:"transaction"`
 	Notes         string    `json:"notes"`
 }
@@ -66,7 +66,7 @@ func (dlrCreds *DealerPayments) LoadDealerPaymentsConfigFromDB() (err error) {
 			ItemID:        getInt64(item, "item_id"),
 			PodioLink:     getString(item, "podio_link"),
 			Customer:      getString(item, "customer"),
-			UniqueId:      getString(item, "unique-id"),
+			UniqueId:      getString(item, "unique_id"),
 			SalesPartner:  getString(item, "sales_partner"),
 			TypeOfPayment: getString(item, "type_of_payment"),
 			PaymentDate:   getTime(item, "payment_date"),

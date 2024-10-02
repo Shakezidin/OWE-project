@@ -8,6 +8,7 @@
 package main
 
 import (
+	apiHandler "OWEApp/owehub-calc/services"
 	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
 	"encoding/json"
@@ -56,6 +57,48 @@ var apiRoutes = appserver.ApiRoutes{
 		handleDynamicHttpConf,
 		false,
 		[]types.UserGroup{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/create_slack_config",
+		apiHandler.HandleCreateSlackConfig,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/update_slack_config",
+		apiHandler.HandleUpdateSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/update_slack_config_archive",
+		apiHandler.HandleArchiveSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_slack_config",
+		apiHandler.HandleGetSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/delete_slack_config",
+		apiHandler.HandleDeleteSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_dealercredit",
+		apiHandler.HandleGetDealerCreditConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
 	},
 }
 
