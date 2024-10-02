@@ -46,10 +46,10 @@ type FinanceTypes struct {
 }
 
 var (
-	financeTypesRespCfg FinanceTypes
+	FinanceTypesRespCfg FinanceTypes
 )
 
-func (dlrCreds *FinanceTypes) LoadFinanceTypesConfigFromDB() (err error) {
+func (finType *FinanceTypes) LoadFinanceTypesConfigFromDB() (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -58,7 +58,7 @@ func (dlrCreds *FinanceTypes) LoadFinanceTypesConfigFromDB() (err error) {
 	log.EnterFn(0, "LoadFinanceTypesConfigFromDB")
 	defer func() { log.ExitFn(0, "LoadFinanceTypesConfigFromDB", err) }()
 
-	query = `SELECT * FROM ` + db.TableName_SalesPartnerPayTypesCommisionsDbhub
+	query = `SELECT * FROM ` + db.TableName_FinanceTypesCommisionsDbhub
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
@@ -72,7 +72,7 @@ func (dlrCreds *FinanceTypes) LoadFinanceTypesConfigFromDB() (err error) {
 	}
 
 	/* Reset the FinanceTypesData slice */
-	financeTypesRespCfg.FinanceTypesData = financeTypesRespCfg.FinanceTypesData[:0]
+	finType.FinanceTypesData = finType.FinanceTypesData[:0]
 
 	for _, item := range data {
 		FinanceTypesStructList := FinanceTypesStruct{
@@ -103,7 +103,7 @@ func (dlrCreds *FinanceTypes) LoadFinanceTypesConfigFromDB() (err error) {
 			FinanceTypeUid:           getString(item, "finance_type_uid"),
 		}
 
-		financeTypesRespCfg.FinanceTypesData = append(financeTypesRespCfg.FinanceTypesData, FinanceTypesStructList)
+		finType.FinanceTypesData = append(finType.FinanceTypesData, FinanceTypesStructList)
 	}
 
 	return err

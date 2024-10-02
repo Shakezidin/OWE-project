@@ -19,26 +19,20 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetDealerCreditDataRequest
+ * FUNCTION:		HandleGetDealerCreditConfigRequest
  * DESCRIPTION:     handler for get DealerCredit data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetDealerCreditConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		dataReq         models.DataRequestBody
-		data            []map[string]interface{}
-		whereEleList    []interface{}
-		query           string
-		queryWithFiler  string
-		queryForAlldata string
-		filter          string
-		RecordCount     int64
+		err         error
+		dataReq     models.DataRequestBody
+		RecordCount int
 	)
 
-	log.EnterFn(0, "HandleGetDealerCreditDataRequest")
-	defer func() { log.ExitFn(0, "HandleGetDealerCreditDataRequest", err) }()
+	log.EnterFn(0, "HandleGetDealerCreditConfigRequest")
+	defer func() { log.ExitFn(0, "HandleGetDealerCreditConfigRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get dealer credit data request")
@@ -62,32 +56,32 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	/*Load Condiguration from database*/
-	err = oweconfig.dlrCreditRespCfg.LoadDealerCreditsConfigFromDB(dataReq)
-	err != nil {
+	err = oweconfig.DlrCreditRespCfg.LoadDealerCreditsConfigFromDB(dataReq)
+	if err != nil {
 		log.FuncErrorTrace(0, "Failed to load dealer credit config from DB. err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to load dealer credit config from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	dlrCreditCgf := oweconfig.dlrCreditRespCfg.DealerCreditsData
+	dlrCreditCgf := oweconfig.DlrCreditRespCfg.DealerCreditsData
 
-	RecordCount = int64(len(dlrCreditCgf))
+	RecordCount = int(len(dlrCreditCgf))
 	log.FuncDebugTrace(0, "Dealer Credit Config Total No of Records: %v", RecordCount)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
 		offset := (dataReq.PageNumber - 1) * dataReq.PageSize
-		if offset < RecordCount {      // Ensure the offset is within the total record count
+		if offset < RecordCount { // Ensure the offset is within the total record count
 			end := offset + dataReq.PageSize
-			if end > RecordCount {      // Adjust the end index if it exceeds the total count
+			if end > RecordCount { // Adjust the end index if it exceeds the total count
 				end = RecordCount
 			}
 			dlrCreditCgf = dlrCreditCgf[offset:end]
 		} else {
-			dlrCreditCgf = []oweconfig.dlrCreditRespCfg.DealerCreditsStruct{}
+			dlrCreditCgf = []oweconfig.DealerCreditsStruct{}
 		}
 	}
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of dealer credit List fetched : %v list %+v", len(dlrCreditCgf), dlrCreditCgf)
-	appserver.FormAndSendHttpResp(resp, "Dealer Credit Data", http.StatusOK, dlrCreditCgf, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Dealer Credit Data", http.StatusOK, dlrCreditCgf, int64(RecordCount))
 }

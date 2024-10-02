@@ -36,10 +36,10 @@ type PartnerPaySchedule struct {
 }
 
 var (
-	dlrPaySchedRespCfg PartnerPaySchedule
+	PartnerPaySchedRespCfg PartnerPaySchedule
 )
 
-func (dlrCreds *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB() (err error) {
+func (partnerPaySched *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB() (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -62,7 +62,7 @@ func (dlrCreds *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB() (err er
 	}
 
 	/* Reset the PartnerPayScheduleData slice */
-	dlrPaySchedRespCfg.PartnerPayScheduleData = dlrPaySchedRespCfg.PartnerPayScheduleData[:0]
+	partnerPaySched.PartnerPayScheduleData = partnerPaySched.PartnerPayScheduleData[:0]
 
 	for _, item := range data {
 		PartnerPayScheduleStructList := PartnerPayScheduleStruct{
@@ -84,7 +84,7 @@ func (dlrCreds *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB() (err er
 			ActiveDateEnd:                getTime(item, "active_date_end"),
 		}
 
-		dlrPaySchedRespCfg.PartnerPayScheduleData = append(dlrPaySchedRespCfg.PartnerPayScheduleData, PartnerPayScheduleStructList)
+		partnerPaySched.PartnerPayScheduleData = append(partnerPaySched.PartnerPayScheduleData, PartnerPayScheduleStructList)
 	}
 
 	return err

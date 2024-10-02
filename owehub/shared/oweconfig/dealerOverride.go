@@ -29,7 +29,7 @@ type DealerOverride struct {
 }
 
 var (
-	dlrRespCfg DealerOverride
+	DlrOverrideRespCfg DealerOverride
 )
 
 func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB() (err error) {
@@ -55,7 +55,7 @@ func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB() (err error) {
 	}
 
 	/* Reset the DealerOverrideData slice */
-	dlrRespCfg.DealerOverrideData = dlrRespCfg.DealerOverrideData[:0]
+	dlrOvrd.DealerOverrideData = dlrOvrd.DealerOverrideData[:0]
 
 	for _, item := range data {
 		DealerOverrideStructList := DealerOverrideStruct{
@@ -69,7 +69,7 @@ func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB() (err error) {
 			EndDate:   getTime(item, "end_date"),
 		}
 
-		dlrRespCfg.DealerOverrideData = append(dlrRespCfg.DealerOverrideData, DealerOverrideStructList)
+		dlrOvrd.DealerOverrideData = append(dlrOvrd.DealerOverrideData, DealerOverrideStructList)
 	}
 
 	return err

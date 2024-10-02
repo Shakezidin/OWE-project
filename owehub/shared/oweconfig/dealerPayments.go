@@ -32,10 +32,10 @@ type DealerPayments struct {
 }
 
 var (
-	dlrPaymentRespCfg DealerPayments
+	DlrPaymentRespCfg DealerPayments
 )
 
-func (dlrCreds *DealerPayments) LoadDealerPaymentsConfigFromDB() (err error) {
+func (dlrPayment *DealerPayments) LoadDealerPaymentsConfigFromDB() (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -58,7 +58,7 @@ func (dlrCreds *DealerPayments) LoadDealerPaymentsConfigFromDB() (err error) {
 	}
 
 	/* Reset the DealerPaymentsData slice */
-	dlrPaymentRespCfg.DealerPaymentsData = dlrPaymentRespCfg.DealerPaymentsData[:0]
+	dlrPayment.DealerPaymentsData = dlrPayment.DealerPaymentsData[:0]
 
 	for _, item := range data {
 		DealerPaymentsStructList := DealerPaymentsStruct{
@@ -75,7 +75,7 @@ func (dlrCreds *DealerPayments) LoadDealerPaymentsConfigFromDB() (err error) {
 			Transaction:   getString(item, "transaction"),
 			Notes:         getString(item, "notes"),
 		}
-		dlrPaymentRespCfg.DealerPaymentsData = append(dlrPaymentRespCfg.DealerPaymentsData, DealerPaymentsStructList)
+		dlrPayment.DealerPaymentsData = append(dlrPayment.DealerPaymentsData, DealerPaymentsStructList)
 	}
 
 	return err

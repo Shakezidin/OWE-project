@@ -31,7 +31,7 @@ type DealerCredits struct {
 }
 
 var (
-	dlrCreditRespCfg DealerCredits
+	DlrCreditRespCfg DealerCredits
 )
 
 func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.DataRequestBody) (err error) {
@@ -63,7 +63,7 @@ func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.D
 	}
 
 	/* Reset the DealerCreditsData slice */
-	dlrCreditRespCfg.DealerCreditsData = dlrCreditRespCfg.DealerCreditsData[:0]
+	dlrCreds.DealerCreditsData = dlrCreds.DealerCreditsData[:0]
 
 	for _, item := range data {
 		DealerCreditsStructList := DealerCreditsStruct{
@@ -78,7 +78,7 @@ func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.D
 			Notes:        getString(item, "notes"),
 		}
 
-		dlrCreditRespCfg.DealerCreditsData = append(dlrCreditRespCfg.DealerCreditsData, DealerCreditsStructList)
+		dlrCreds.DealerCreditsData = append(dlrCreds.DealerCreditsData, DealerCreditsStructList)
 	}
 
 	return err

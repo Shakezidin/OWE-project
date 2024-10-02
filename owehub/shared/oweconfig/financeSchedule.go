@@ -34,10 +34,10 @@ type FinanceSchedule struct {
 }
 
 var (
-	financeSchedRespCfg FinanceSchedule
+	FinanceSchedRespCfg FinanceSchedule
 )
 
-func (dlrCreds *FinanceSchedule) LoadFinanceScheduleConfigFromDB() (err error) {
+func (financeSched *FinanceSchedule) LoadFinanceScheduleConfigFromDB() (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -60,7 +60,7 @@ func (dlrCreds *FinanceSchedule) LoadFinanceScheduleConfigFromDB() (err error) {
 	}
 
 	/* Reset the FinanceScheduleData slice */
-	financeSchedRespCfg.FinanceScheduleData = financeSchedRespCfg.FinanceScheduleData[:0]
+	financeSched.FinanceScheduleData = financeSched.FinanceScheduleData[:0]
 
 	for _, item := range data {
 		FinanceScheduleStructList := FinanceScheduleStruct{
@@ -80,7 +80,7 @@ func (dlrCreds *FinanceSchedule) LoadFinanceScheduleConfigFromDB() (err error) {
 			NoEndDateCanaryH: getString(item, "no_end_date_canary_h"),
 		}
 
-		financeSchedRespCfg.FinanceScheduleData = append(financeSchedRespCfg.FinanceScheduleData, FinanceScheduleStructList)
+		financeSched.FinanceScheduleData = append(financeSched.FinanceScheduleData, FinanceScheduleStructList)
 	}
 
 	return err

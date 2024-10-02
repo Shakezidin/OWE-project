@@ -97,7 +97,7 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-calc-service/v1/get_dealercredit",
 		apiHandler.HandleGetDealerCreditConfigRequest,
-		true,
+		false,
 		[]types.UserGroup{types.GroupAdmin},
 	},
 }
