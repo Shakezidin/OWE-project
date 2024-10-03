@@ -89,6 +89,12 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	err, res := db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update lead info: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update lead info", http.StatusInternalServerError, nil)
+		return
+	}
+	
 	if res == 0 {
 		log.FuncErrorTrace(0, "No rows updated for lead details: %v", err)
 		FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
