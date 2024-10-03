@@ -290,7 +290,7 @@ const AddNew = () => {
                       </div>
                     </div>
 
-                    <div className={styles.salrep_input_container}>
+                    <div className={` ${styles.reverse_col} ${styles.salrep_input_container}`}>
                       <div className={styles.srs_new_create}>
                         <label
                           className={`${styles.custom_label} inputLabel-select selected-fields-onboard`}

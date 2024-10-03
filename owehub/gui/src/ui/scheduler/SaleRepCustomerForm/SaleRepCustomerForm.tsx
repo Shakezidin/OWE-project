@@ -20,10 +20,10 @@ const dayWithProgress = [
   { id: 1, date: new Date(2024, 8, 20), progress: 75 },
   { id: 2, date: new Date(2024, 8, 23), progress: 35 },
   { id: 3, date: new Date(2024, 8, 24), progress: 70 },
-  { id: 4, date: new Date(2024, 8, 25), progress: 63 },
-  { id: 5, date: new Date(2024, 8, 26), progress: 79 },
-  { id: 6, date: new Date(2024, 8, 27), progress: 20 },
-  { id: 7, date: new Date(2024, 9, 1), progress: 95 },
+  { id: 4, date: new Date(2024, 8, 5), progress: 63 },
+  { id: 5, date: new Date(2024, 8, 4), progress: 79 },
+  { id: 6, date: new Date(2024, 8, 2), progress: 20 },
+  { id: 7, date: new Date(2024, 9, 3), progress: 95 },
 ];
 interface ITimeSlot {
   id: number;
@@ -57,7 +57,7 @@ const SaleRepCustomerForm = () => {
   };
 
   return (
-    <div className={`py4 ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""}`}>
+    <div className={` ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""} scrollbar`}>
       <div className={`${styles.form_conatiner} ${step === 2 ? styles.bg_transparent : ""} `}>
         <div
           className={` flex items-center justify-center ${styles.form_header}`}
@@ -82,7 +82,7 @@ const SaleRepCustomerForm = () => {
                   className={
                     step === 1
                       ? 'flex flex-column items-center justify-center '
-                      : 'mx-auto'
+                      : styles.header_title
                   }
                   style={{ width: step === 2 && !isSmallScreen ? 'fit-content' : undefined }}
                 >
@@ -146,7 +146,7 @@ const SaleRepCustomerForm = () => {
               </div>
               <div className='mb2'>
                 <Input
-                  label="Phone no."
+                  label="Phone No."
                   name="phoneNo"
                   value={formData.phoneNo}
                   onChange={handleChange}
@@ -215,10 +215,10 @@ const SaleRepCustomerForm = () => {
                   dayWithProgress={dayWithProgress}
                 />
                 {selectedDate ? (
-                  <div className="flex flex-column  justify-center" style={{ width: "100%" }}>
+                  <div className={`flex flex-column  justify-center ${styles.slot_wrapper}`} style={{ width: "100%" }}>
                     <h5
-                      className={`mb2 ${shardeStyles.time_slot_label}`}
-                      style={{ fontSize: 14, fontWeight: 500, textAlign: "center" }}
+                      className={`mb2 ${shardeStyles.time_slot_label} `}
+                      style={{ fontSize: 14, fontWeight: 500, }}
 
                     >
                       {' '}
@@ -273,7 +273,7 @@ const SaleRepCustomerForm = () => {
         </div>
 
         {step === 1 && (
-          <div className={`bg-white mt3 ${styles.sm_padding}`}>
+          <div className={`bg-white mt3  ${styles.sm_padding}`}>
             <p style={{ fontSize: 12 }} className="text-center mb2">
               Make sure all the information is correct before confirming
             </p>

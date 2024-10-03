@@ -62,7 +62,7 @@ const Input: React.FC<InputProps> = ({
             {isEditing ? (
               <FaCheck size={21} color="#377CF6" />
             ) : (
-              <AiOutlineEdit size={15} color="#C1C1C1" />
+              <AiOutlineEdit size={20} color="#C1C1C1" />
             )}
           </span>
         )}
