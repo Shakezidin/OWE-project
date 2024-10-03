@@ -57,7 +57,7 @@ const SaleRepCustomerForm = () => {
   };
 
   return (
-    <div className={` ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""}`}>
+    <div className={` ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""} scrollbar`}>
       <div className={`${styles.form_conatiner} ${step === 2 ? styles.bg_transparent : ""} `}>
         <div
           className={` flex items-center justify-center ${styles.form_header}`}
@@ -82,7 +82,7 @@ const SaleRepCustomerForm = () => {
                   className={
                     step === 1
                       ? 'flex flex-column items-center justify-center '
-                      : 'mx-auto'
+                      : styles.header_title
                   }
                   style={{ width: step === 2 && !isSmallScreen ? 'fit-content' : undefined }}
                 >
@@ -146,7 +146,7 @@ const SaleRepCustomerForm = () => {
               </div>
               <div className='mb2'>
                 <Input
-                  label="Phone no."
+                  label="Phone No."
                   name="phoneNo"
                   value={formData.phoneNo}
                   onChange={handleChange}
@@ -215,10 +215,10 @@ const SaleRepCustomerForm = () => {
                   dayWithProgress={dayWithProgress}
                 />
                 {selectedDate ? (
-                  <div className="flex flex-column  justify-center" style={{ width: "100%" }}>
+                  <div className={`flex flex-column  justify-center ${styles.slot_wrapper}`} style={{ width: "100%" }}>
                     <h5
-                      className={`mb2 ${shardeStyles.time_slot_label}`}
-                      style={{ fontSize: 14, fontWeight: 500, textAlign: "center" }}
+                      className={`mb2 ${shardeStyles.time_slot_label} `}
+                      style={{ fontSize: 14, fontWeight: 500, }}
 
                     >
                       {' '}
@@ -273,7 +273,7 @@ const SaleRepCustomerForm = () => {
         </div>
 
         {step === 1 && (
-          <div className={`bg-white mt3 ${styles.sm_padding}`}>
+          <div className={`bg-white mt3  ${styles.sm_padding}`}>
             <p style={{ fontSize: 12 }} className="text-center mb2">
               Make sure all the information is correct before confirming
             </p>
