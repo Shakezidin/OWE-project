@@ -273,13 +273,13 @@ table tbody tr:hover {
 }
 
 .history_list_inner {
-  display: grid;
-  grid-template-columns:
+  display: grid !important;
+  grid-template-columns :
     auto minmax(0, 0.5fr) minmax(0, 0.5fr) minmax(0, 1fr) minmax(0, 1fr)
-    auto auto;
-  align-items: center;
-  padding: 16px;
-  gap: 16px;
+    auto auto !important;
+  align-items: center !important;
+  padding: 16px !important;
+  gap: 16px !important;
 }
 
 .user_name {
@@ -657,7 +657,7 @@ input[type='checkbox']:checked {
     align-items: center; /* Centers the image vertically inside the flex container */
     border-radius: 5px;
     margin-bottom: -10px;
-    transform: translate(0, 5px);
+    transform: translate(0, -7px);
     padding-top: 5px;
     justify-self: center; /* Centers the entire .BOXDelete div horizontally inside the grid cell */
     align-self: center; /* Centers the .BOXDelete vertically inside the grid cell */

@@ -451,7 +451,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                       //     :  styles.history_list_inner)}`}
 
                         // className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                  className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : (selectedLeads.length > 0 ? styles.history_list_inner_Mobile_View:styles.history_list_inner) }`}
+                  className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : (selectedLeads.length > 0 && isMobile ? styles.history_list_inner_Mobile_View:styles.history_list_inner) }`}
 
                         onClick={handleOpenModal}
                       >
