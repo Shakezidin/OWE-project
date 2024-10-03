@@ -452,7 +452,7 @@ const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [filteredLeads, setFilteredLeads] = useState(leads);
-  const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
+  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
@@ -502,6 +502,9 @@ const LeadManagementDashboard = () => {
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
   const totalPage = Math.ceil(totalCount / 10);
+  const [refresh, setRefresh] = useState(1);
+  const [archived, setArchived] = useState(false);
+  const [leadId, setLeadId] = useState(0);
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -589,19 +592,13 @@ const LeadManagementDashboard = () => {
 
 
 
-  const handleLeadSelection = (lead: Lead) => {
+  const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
-      prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
+      prev.includes(leadId) ? prev.filter((id) => id !== leadId) : [...prev, leadId]
     );
   };
 
-  const handleArchiveSelected = () => {
-    // Implement the logic to remove selected leads
-    setFilteredLeads((prev) =>
-      prev.filter((lead) => !selectedLeads.includes(lead))
-    );
-    setSelectedLeads([]);
-  };
+
 
   const handleReschedule = (lead: any) => {
     setShowConfirmModal(true);
@@ -658,7 +655,7 @@ const LeadManagementDashboard = () => {
             end_date: selectedDates.endDate
               ? format(selectedDates.endDate, 'dd-MM-yyyy')
               : '',
-            },true);
+          }, true);
 
           if (response.status === 200) {
             const apiData = response.data.periodic_list;
@@ -713,7 +710,7 @@ const LeadManagementDashboard = () => {
             end_date: selectedDates.endDate
               ? format(selectedDates.endDate, 'dd-MM-yyyy')
               : '',
-          },true);
+          }, true);
 
           if (response.status === 200) {
             const apiData = response.data.leads;
@@ -795,13 +792,39 @@ const LeadManagementDashboard = () => {
 
       dispatch(getLeads(data));
     }
-  }, [selectedDates, archive, isAuthenticated, itemsPerPage, page, currentFilter]);
+  }, [selectedDates,isModalOpen, archive, isAuthenticated, itemsPerPage, page, currentFilter, refresh]);
 
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
     }
   }, [leadsData])
+
+  const handleArchiveSelected = async () => {
+    setArchived(true);
+    try {
+      const response = await postCaller('toggle_archive', {
+        ids: selectedLeads,
+        is_archived: true
+      }, true);
+
+      if (response.status === 200) {
+        toast.success("Leads Archieved successfully");
+        setSelectedLeads([])
+        setRefresh((prev) => prev + 1);
+        setArchived(false);
+      } else {
+        toast.warn(response.message);
+        setArchived(false);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+      setArchived(false);
+    }
+    setArchived(false);
+  };
+
+  console.log(currentFilter, "sajhgdhjasgdhj")
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -819,7 +842,7 @@ const LeadManagementDashboard = () => {
       </div>
 
       {showConfirmModal && (
-        <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
+        <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} leadId={leadId} refresh={refresh} setRefresh={setRefresh}/>
       )}
 
       {showArchiveModal && (
@@ -920,7 +943,7 @@ const LeadManagementDashboard = () => {
                       selectedDates.startDate.toLocaleDateString('en-US', {
                         month: 'short',
                       }) +
-                      ', ' +
+                      ' ' +
                       selectedDates.startDate.getFullYear()
                     }
                     {' - '}
@@ -932,7 +955,7 @@ const LeadManagementDashboard = () => {
                       selectedDates.endDate.toLocaleDateString('en-US', {
                         month: 'short',
                       }) +
-                      ', ' +
+                      ' ' +
                       selectedDates.endDate.getFullYear()
                     }
                   </span>
@@ -1142,16 +1165,21 @@ const LeadManagementDashboard = () => {
                   <span>{selectedLeads.length} Selected</span>
                 </div>
                 <button
+                  style={{
+                    pointerEvents: archived ? 'none' : 'auto',
+                    opacity: archived ? 0.6 : 1,
+                    cursor: archived ? 'not-allowed' : 'pointer',
+                  }}
                   className={styles.removeButton}
                   onClick={handleArchiveSelected}
+                  disabled={archived}
                 >
-                  Archived
+                  {archived ? "Archiving..." : "Archive"}
                 </button>
               </div>
             )}
           </div>
         }
-
         <div className={styles.cardContent}>
           {archive == false &&
             <table className={styles.table}>
@@ -1169,19 +1197,24 @@ const LeadManagementDashboard = () => {
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                          onClick={() =>
-                            lead.status === 'Declined' ||
-                              lead.status === 'Action Needed'
-                              ? ''
-                              : handleOpenModal()
-                          }
+                          className={`${lead.status === 'Declined' || lead.status === 'Action Needed'
+                            ? styles.history_list_inner_declined
+                            : styles.history_list_inner
+                            }`}
+                          onClick={(e) => {
+                            setLeadId(lead["leads_id"]);
+                            if (!(e.target as HTMLElement).closest('label')) {
+                              if (currentFilter !== 'Declined' && currentFilter !== 'Action Needed') {
+                                handleOpenModal();
+                              }
+                            }
+                          }}
                         >
                           <label>
                             <input
                               type="checkbox"
-                              checked={selectedLeads.includes(lead)}
-                              onChange={() => handleLeadSelection(lead)}
+                              checked={selectedLeads.includes(lead["leads_id"])}
+                              onChange={() => handleLeadSelection(lead["leads_id"])}
                             />
                           </label>
                           <div
@@ -1208,12 +1241,14 @@ const LeadManagementDashboard = () => {
                               />
                             </span>
                           </div>
-                          <div className={styles.address}>{lead.city ? lead.city : "N/A"}</div>
+                          <div className={styles.address}>{lead.street_address ? lead.street_address : "N/A"}</div>
 
                           {currentFilter === 'Declined' && (
                             <div className={styles.actionButtons}>
                               <button
-                                onClick={() => handleReschedule(lead)}
+                                onClick={() => {
+                                  handleOpenModal();
+                                }}
                                 className={styles.rescheduleButton}
                               >
                                 Reschedule
@@ -1239,7 +1274,9 @@ const LeadManagementDashboard = () => {
                           {currentFilter === 'Action Needed' && (
                             <div className={styles.actionButtons}>
                               <button
-                                onClick={() => handleReschedule(lead)}
+                                 onClick={() => {
+                                  handleOpenModal();
+                                }}
                                 className={styles.rescheduleButton}
                               >
                                 Reschedule
@@ -1249,17 +1286,17 @@ const LeadManagementDashboard = () => {
 
                           <div
                             className={styles.chevron_down}
-                            onClick={() => handleChevronClick(lead["leads_id "])}
+                            onClick={() => handleChevronClick(lead["leads_id"])}
 
                           >
                             <img
                               src={
-                                toggledId.includes(lead["leads_id "])
+                                toggledId.includes(lead["leads_id"])
                                   ? ICONS.chevronUp
                                   : ICONS.chevronDown
                               }
                               alt={
-                                toggledId.includes(lead["leads_id "])
+                                toggledId.includes(lead["leads_id"])
                                   ? 'chevronUp-icon'
                                   : 'chevronDown-icon'
                               }
@@ -1268,7 +1305,7 @@ const LeadManagementDashboard = () => {
                         </td>
                       </tr>
 
-                      {toggledId.includes(lead["leads_id "]) && (
+                      {toggledId.includes(lead["leads_id"]) && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
                             <div className={''}>{lead.phone_number}</div>
@@ -1284,7 +1321,7 @@ const LeadManagementDashboard = () => {
                                 />
                               </span>
                             </div>
-                            <div className={''}>{lead.city ? lead.city : "N/A"}</div>
+                            <div className={''}>{lead.street_address ? lead.street_address : "N/A"}</div>
                           </td>
                         </tr>
                       )}

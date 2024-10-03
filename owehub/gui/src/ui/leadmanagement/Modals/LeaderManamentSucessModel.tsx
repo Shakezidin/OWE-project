@@ -1,58 +1,23 @@
 import React, { useState } from 'react';
 import classes from '../styles/LeadManagementSucess.module.css';
 import { useNavigate } from 'react-router-dom';
-import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
 
-// interface TableProps {
-//   handleClose: () => void;
-//   isOpen?: boolean;
-// }
 
-// const LeadManamentSucessModel: React.FC<TableProps> = ({
+
+
 const LeadManamentSucessModel = () =>
-  // {
-  //   handleClose,
-  //   isOpen = false,
-  // }
   {
     const navigate = useNavigate();
     // const [confirmModal, setConfirmModal]=useState(false);
     const [visibleDiv, setVisibleDiv] = useState(true);
 
-    // const handleClick = () => {
-    //   navigate('/salesrep-schedule');
-    //   handleClose();
-    // };
-    // const handleSchedule = () => {
-    //   navigate('/schedule-sales-rep');
-    //   handleClose();
-    // };
-
-    // useEffect(() => {
-    //   const handleEscKey = (event: any) => {
-    //     if (event.key === 'Escape') {
-    //       handleClose();
-    //     }
-    //   };
-
-    //   if (isOpen) {
-    //     document.addEventListener('keydown', handleEscKey);
-    //   }
-
-    //   return () => {
-    //     document.removeEventListener('keydown', handleEscKey);
-    //   };
-    // }, [isOpen, handleClose]);
-
-    // onClick={handleClose}
-
     const NoDeleteData = () => {
-      navigate('/lead-dashboard-archieves');
+      setVisibleDiv(false);
     };
 
     return (
-      // <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
       <div>
+        {visibleDiv && (
         <div className="transparent-model">
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
@@ -102,7 +67,7 @@ const LeadManamentSucessModel = () =>
               </div>
             </div>
             {/* <div className={classes.createUserCrossButton} ></div> */}
-            {visibleDiv && (
+          
               <>
                 {' '}
                 <div className={classes.success_not}>
@@ -152,9 +117,10 @@ const LeadManamentSucessModel = () =>
                   </button>
                 </div>
               </>
-            )}
+            
           </div>
         </div>
+          )}
       </div>
     );
   };

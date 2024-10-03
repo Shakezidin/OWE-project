@@ -17,3 +17,18 @@ export const getLeads = createAsyncThunk(
     }
   }
 );
+
+export const getLeadById = createAsyncThunk(
+  'fetchLead/get_leadById',
+  async (leadId: number, { rejectWithValue, dispatch }) => {
+    try {
+      const data = await postCaller('get_lead_info', { leads_id: leadId }, true);
+      if (data.status > 201) {
+        return rejectWithValue((data as Error).message);
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
