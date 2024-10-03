@@ -1572,6 +1572,13 @@ var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomance_leaderboard",
+		apiHandler.HandleGetLeaderBoardRequestTemp,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_perfomance_leaderboard_data",
 		apiHandler.HandleGetLeaderBoardRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
@@ -1643,6 +1650,13 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_user_address",
 		apiHandler.HandleGetUserAddressDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_graph_api_access_token",
+		apiHandler.HandleGraphApiAccessToken,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},

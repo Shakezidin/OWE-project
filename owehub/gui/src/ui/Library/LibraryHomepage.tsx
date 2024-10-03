@@ -191,8 +191,6 @@ const LibraryHomepage = () => {
     </div>
   );
 
-
-
   const handleSectionClick = (section: 'files' | 'folders' | 'dropdown') => {
     setActiveSection(section);
   };
@@ -255,7 +253,7 @@ const LibraryHomepage = () => {
               style={{
                 color: activeSection === 'files' ? '#ffffff' : '',
                 backgroundColor: activeSection === 'files' ? '#377CF6' : '',
-                border: activeSection === 'files' ? '0px solid #377CF6' : '' 
+                border: activeSection === 'files' ? '0px solid #377CF6' : '',
               }}
             >
               All files
@@ -267,7 +265,7 @@ const LibraryHomepage = () => {
               style={{
                 color: activeSection === 'folders' ? '#ffffff' : '',
                 backgroundColor: activeSection === 'folders' ? '#377CF6' : '',
-                border: activeSection === 'folders' ? '0px solid #377CF6' : ''
+                border: activeSection === 'folders' ? '0px solid #377CF6' : '',
               }}
             >
               All folders
@@ -278,7 +276,7 @@ const LibraryHomepage = () => {
               className={styles.verticalDots}
               onClick={handleDivClick}
               style={toggleClick ? { borderColor: '#377cf6' } : {}}
-              >
+            >
               <DropDownLibrary
                 onSelectType={(type: string) => {
                   setSelectedType(type);
@@ -321,126 +319,81 @@ const LibraryHomepage = () => {
         </div>
       )}
 
-
-      {activeSection === 'folders' ? (<p>Folder View</p>) : 
-      
-      <div className={styles.libSectionWrapper}>
-      <div className={styles.lib_Grid_Header}>
-        <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
-        <div className={styles.grid_item}>Uploaded by</div>
-        <div className={styles.grid_item}>Uploaded Date</div>
-        <div className={styles.grid_item}>Actions</div>
-      </div>
-
-      {filteredData.length > 0 ? (
-        sortedData.map((data, index) => (
-          <div className={styles.libGridItem} key={index}>
-            <div className={`${styles.file_icon} ${styles.image_div}`}>
-              <img
-                className={styles.cardImg}
-                src={data.url}
-                alt={`${data.iconName}-icon`}
-              />
-              <div>
-                <p className={styles.name}>{data.iconName}</p>
-                <p className={styles.size}>{data.size}</p>
-              </div>
-            </div>
-            <div className={styles.grid_item}>{data.name}</div>
-            <div className={styles.grid_item}>{data.date}</div>
-            <div className={`${styles.grid_item} ${styles.grid_icon}`}>
-              {isRecycleBinView ? (
-                <div>
-                  <RiDeleteBinLine
-                    className={styles.icons}
-                    style={{
-                      height: '18px',
-                      width: '18px',
-                      color: '#667085',
-                    }}
-                  />
-                </div>
-              ) : (
-                <>
-                  <div>
-                    <RxDownload
-                      className={styles.icons}
-                      style={{
-                        height: '18px',
-                        width: '18px',
-                        color: '#667085',
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <RiDeleteBinLine
-                      className={styles.icons}
-                      style={{
-                        height: '18px',
-                        width: '18px',
-                        color: '#667085',
-                      }}
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        ))
+      {activeSection === 'folders' ? (
+        <p>Folder View</p>
       ) : (
-        <p>No matching files found.</p>
-      )}
-    </div>
-    }
+        <div className={styles.libSectionWrapper}>
+          <div className={styles.lib_Grid_Header}>
+            <div className={`${styles.grid_item} ${styles.table_name}`}>
+              Name
+            </div>
+            <div className={styles.grid_item}>Uploaded by</div>
+            <div className={styles.grid_item}>Uploaded Date</div>
+            <div className={styles.grid_item}>Actions</div>
+          </div>
 
-      
+          {filteredData.length > 0 ? (
+            sortedData.map((data, index) => (
+              <div className={styles.libGridItem} key={index}>
+                <div className={`${styles.file_icon} ${styles.image_div}`}>
+                  <img
+                    className={styles.cardImg}
+                    src={data.url}
+                    alt={`${data.iconName}-icon`}
+                  />
+                  <div>
+                    <p className={styles.name}>{data.iconName}</p>
+                    <p className={styles.size}>{data.size}</p>
+                  </div>
+                </div>
+                <div className={styles.grid_item}>{data.name}</div>
+                <div className={styles.grid_item}>{data.date}</div>
+                <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                  {isRecycleBinView ? (
+                    <div>
+                      <RiDeleteBinLine
+                        className={styles.icons}
+                        style={{
+                          height: '18px',
+                          width: '18px',
+                          color: '#667085',
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <RxDownload
+                          className={styles.icons}
+                          style={{
+                            height: '18px',
+                            width: '18px',
+                            color: '#667085',
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <RiDeleteBinLine
+                          className={styles.icons}
+                          style={{
+                            height: '18px',
+                            width: '18px',
+                            color: '#667085',
+                          }}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No matching files found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
 export default LibraryHomepage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

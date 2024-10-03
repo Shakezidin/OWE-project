@@ -91,7 +91,7 @@ const PendingQueue = () => {
 
   return (
     <>
-      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
         <Breadcrumb
           head=""
           linkPara="Pending Actions"
@@ -185,10 +185,10 @@ const PendingQueue = () => {
                   onClick={
                     pre
                       ? () => {
-                        setActive('qc');
-                        setPage(1);
-                        setSearch('');
-                      }
+                          setActive('qc');
+                          setPage(1);
+                          setSearch('');
+                        }
                       : undefined
                   }
                 >
@@ -238,7 +238,10 @@ const PendingQueue = () => {
                     ? 'NTP Checklist'
                     : 'C/O Status'}
               </h3>
-              <div className={`performance-box-container ${styles.pendingBoxContainer}`} style={{ padding: "0.6rem 1rem" }}>
+              <div
+                className={`performance-box-container ${styles.pendingBoxContainer}`}
+                style={{ padding: '0.6rem 1rem' }}
+              >
                 <p className="status-indicator">Checklist Indicators</p>
                 <div className="progress-box-body">
                   <div
@@ -375,7 +378,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                        'Pending (Action Required)'
+                                      'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'

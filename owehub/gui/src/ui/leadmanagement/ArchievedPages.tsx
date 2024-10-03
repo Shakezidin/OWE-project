@@ -640,7 +640,7 @@ const ArchivedPages = () => {
 
       <div className={styles.chartGrid}>
         <div className={styles.card}>
-          <div className={styles.cardHeader}>
+          <div className={styles.cardHeaderFirst}>
             Overview
             <div>Total leads: 200</div>
           </div>
@@ -680,7 +680,7 @@ const ArchivedPages = () => {
         </div>
 
         <div className={`${styles.card} ${styles.lineCard}`}>
-          <div className={styles.cardHeader}>
+          <div className={styles.cardHeaderSecond}>
             <span>Total Won Lost</span>
             <div className={styles.date_calendar}>
               {isCalendarOpen && (
@@ -843,28 +843,99 @@ const ArchivedPages = () => {
 
       <div className={styles.card}>
         <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
-          {/* HERE THE BUTTONS FOR FILTERING IF NEEDED */}
-
           <div className={styles.selectionHeader}>
             <div className={styles.selectionInfo}>
               <span
                 className={styles.closeIcon}
                 onClick={() => setSelectedLeads([])}
               >
-                <img src={ICONS.cross} alt="" height="26" width="26" />
+                {selectedLeads.length === 0 ? (
+                  ''
+                ) : (
+                  <img
+                    src={CrossICONBtn}
+                    alt=""
+                    className={styles.CrossICONBTNHover1}
+                  />
+                )}
               </span>
-              <span>{selectedLeads.length} Archived</span>
+              <span>
+                {selectedLeads.length === 0 ? '' : <>{selectedLeads.length} </>}
+                Archived
+              </span>
             </div>
-            <div>
-              <img
-                className={styles.CrossICONBTNHover}
-                src={CrossICONBtn}
-                onClick={onClickCrossIconBotton}
-              ></img>
-            </div>
-          </div>
 
-          {/* <div><img className={styles.CrossICONBTNHover} src={CrossICONBtn} onClick={onClickCrossIconBotton}></img></div> */}
+{/* HERE CONDITIONAL BUTTONS AFTER 2 ITEMS SELECTED */}
+
+<div className={styles.SecondChildContain}>
+<div className={styles.ConditionButtonArea}> 
+  {selectedLeads.length >1 ? (
+                 <div className={styles.ConditionalButtons} style={{ visibility: 'visible' }}>
+                  <div className={styles.selectionHeader}>
+              
+                 <button
+                   className={styles.archieveButtonA}
+                   
+                 >
+                   Archived
+                 </button>
+               </div> <div >
+                 
+                 <button
+                   className={styles.archieveButtonX}
+                   
+                 >
+                   Remove
+                 </button>
+               </div></div>
+
+              ) : (
+                
+                  
+                  <div className={styles.ConditionalButtons} style={{ visibility: 'hidden'}}>
+                <div className={styles.selectionHeader}>
+              
+            
+               <button
+                 className={styles.archieveButtonA}
+                 
+               >
+                 Archived
+               </button>
+             </div> <div >
+               
+               <button
+                 className={styles.archieveButtonX}
+                 
+               >
+                 Remove
+               </button>
+             </div></div>
+              )}
+            </div>
+                          
+{/* HERE NOT NEED TO EDITED */}
+            <div>
+              {selectedLeads.length === 0 ? (
+                <img
+                  className={styles.CrossICONBTNHover}
+                  src={CrossICONBtn}
+                  onClick={onClickCrossIconBotton}
+                  style={{ visibility: 'visible' }}
+                />
+              ) : (
+                <img
+                  className={styles.CrossICONBTNHover}
+                  src={CrossICONBtn}
+                  onClick={onClickCrossIconBotton}
+                  style={{ display: 'none' }}
+                />
+              )}
+              
+
+            </div>
+</div>
+          </div>
 
           {/* HERE THE BUTTONS FOR FILTERING ENDED */}
         </div>
@@ -911,29 +982,46 @@ const ArchivedPages = () => {
                         </span>
                       </div>
                       <div className={styles.address}>{lead.address}</div>
-                      <div>
-                        <button
+
+                     {/* { selectedLeads.length >1 ? <button 
                           className={styles.UnArchiveButton}
-                          onClick={Unarchived}
+                          onClick={Unarchived} disabled
                         >
                           Unarchived
-                        </button>
-                      </div>
-                      <div>
-                        <button
+                        </button> : <><button  disabled
+                          className={styles.UnArchiveButton}
+                          onClick={Unarchived}  
+                        >
+                          Unarchived
+                        </button></>}
+
+                        { selectedLeads.length >1 ? <button
                           className={styles.removeButton}
                           onClick={RemoveArchived}
                         >
                           Remove
-                        </button>
+                        </button> : <><button
+                          className={styles.removeButton}
+                          onClick={RemoveArchived}
+                        >
+                          Remove
+                        </button></>} */}
+                      <div> 
+                      <button 
+                          className={styles.UnArchiveButton}
+                          onClick={Unarchived}  disabled={selectedLeads.length > 1}
+                        >
+                          Unarchived
+                        </button>                       
                       </div>
+                      <div><button
+                          className={styles.removeButton}
+                          onClick={RemoveArchived}
+                          disabled={selectedLeads.length > 1}
 
-                      {/* {lead.status === 'Declined' && (
-                       
-                              : 'chevronDown-icon'
-                          }
-                        />
-                      </div> */}
+                        >
+                          Remove
+                        </button></div>
                     </td>
                   </tr>
                   {toggledId === lead.id && (

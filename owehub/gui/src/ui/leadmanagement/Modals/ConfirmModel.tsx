@@ -11,17 +11,20 @@ import EditModal from './EditModal';
 import AppointmentScheduler from './AppointmentScheduler';
 import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
+import { toast } from 'react-toastify';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { format } from 'date-fns';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
 }
-  const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
+const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
-
+  const [load, setLoad] = useState(false);
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
   };
@@ -38,17 +41,34 @@ interface EditModalProps {
     setIsModalOpen(true);
   };
 
-
-  
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
+  const handleSendAppointment = async () => {
+    setLoad(true);
+    try {
+      const response = await postCaller('sent_appointment', {
+        leads_id: 1,
+        appointment_date: selectedDate
+          ? format(selectedDate, 'dd-MM-yyyy')
+          : '',
+        appointment_time: selectedTime ? selectedTime : '',
+      });
 
-  
+      if (response.status === 200) {
+        toast.success('Appointment Sent Successfully');
+        setVisibleDiv(2);
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
+    }
+  };
 
-
- 
   return (
     <div>
       {isOpen1 && (
@@ -56,7 +76,11 @@ interface EditModalProps {
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
-                <img className={classes.crossBtn} src={CrossIcon}  onClick={HandleModal}/>
+                <img
+                  className={classes.crossBtn}
+                  src={CrossIcon}
+                  onClick={HandleModal}
+                />
               </div>
               <div className={classes.pers_det_top}>
                 <div className={classes.Column1Details}>
@@ -110,37 +134,50 @@ interface EditModalProps {
                     </span>
                   </span>
                   <div>
-                    <div
-                      className={classes.edit_modal_openMediaScreen}
-                      onClick={handleOpenModal}
-                    >
-                      {/* <RiEdit2Line  />  I have USed Custom PNG Image instead of Library for PEN <img src={Pen}> in the EDIT BUTTON */}
-                      <span className={classes.edit_modal_button2}>
-                      <img className={classes.editPenStyle} src={Pen} ></img> Edit
-                      </span>
-                    </div>
+                    {visibleDiv === 0 ||
+                      (visibleDiv === 1 && (
+                        <div
+                          className={classes.edit_modal_openMediaScreen}
+                          onClick={handleOpenModal}
+                        >
+                          <span className={classes.edit_modal_button2}>
+                            <img
+                              className={classes.editPenStyle}
+                              src={Pen}
+                            ></img>{' '}
+                            Edit
+                          </span>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
               <div>
-                <div
-                  className={classes.edit_modal_open}
-                  onClick={handleOpenModal}
-                >
-                  <span className={classes.edit_modal_button}>
-                    <img className={classes.editPenStyle} src={Pen} ></img> Edit
-                  </span>
-                </div>
+                {(visibleDiv === 0 || visibleDiv === 1) && (
+                  <div
+                    className={classes.edit_modal_open}
+                    onClick={handleOpenModal}
+                  >
+                    <span className={classes.edit_modal_button}>
+                      <img
+                        className={classes.editPenStyle}
+                        src={Pen}
+                        alt="Edit Pen"
+                      />{' '}
+                      Edit
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
             <EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
             {/* <div style={{marginTop:"-308px"}}> </div> */}
             {visibleDiv === 0 && (
               <AppointmentScheduler
-              setVisibleDiv={setVisibleDiv}
-              onDateChange={handleDateChange}
-              onTimeChange={handleTimeChange}
-            />
+                setVisibleDiv={setVisibleDiv}
+                onDateChange={handleDateChange}
+                onTimeChange={handleTimeChange}
+              />
             )}
             {visibleDiv === 1 && (
               <>
@@ -164,12 +201,21 @@ interface EditModalProps {
                   <div className={classes.survey_button}>
                     <button
                       className={classes.self}
-                      style={{ color: '#fff', border: 'none' }}
-                      onClick={() => setVisibleDiv(2)}
+                      style={{
+                        color: '#fff',
+                        border: 'none',
+                        cursor: load ? 'not-allowed' : 'pointer',
+                      }}
+                      onClick={handleSendAppointment}
+                      disabled={load}
                     >
-                      CONFIRM, SENT APPOINTMENT
+                      {load ? 'Sending...' : 'CONFIRM, SENT APPOINTMENT'}
                     </button>
-                    <button id="otherButtonId" className={classes.other}>
+                    <button
+                      id="otherButtonId"
+                      className={classes.other}
+                      onClick={handleOpenModal}
+                    >
                       Edit customer details
                     </button>
                   </div>
@@ -183,7 +229,7 @@ interface EditModalProps {
                   <div>
                     <img
                       className={classes.thumbsImg}
-                      onClick={() => setVisibleDiv(3)}
+                      // onClick={() => setVisibleDiv(3)}
                       height="111px"
                       width="111px"
                       src={ThumbsSucess}
@@ -193,12 +239,13 @@ interface EditModalProps {
                     Appointment sent successfully{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    27 Aug ,2024. 12:00 PM
+                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
+                    {selectedTime}
                   </span>
                 </div>
                 <div className={classes.survey_button}>
                   <span className={classes.AppSentDate2}>
-                    Appointment sent on 25, Aug, 2024
+                    Appointment sent on {format(new Date(), 'dd MMM, yyyy')}
                   </span>
                   <span className={classes.AppSentDate2}>
                     Waiting for confirmation
