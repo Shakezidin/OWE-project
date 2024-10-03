@@ -113,8 +113,8 @@ const AddNew = () => {
                 </span>
               </div>
               <div className={`scroll-user ${styles.scroll_user}`}>
-              <div className={`createProfileInputView ${styles.inputView}`}>
-              <div className={`createProfileTextView ${styles.inputView}`}>
+                <div className={`createProfileInputView ${styles.inputView}`}>
+                  <div className={`createProfileTextView ${styles.inputView}`}>
                     <div className={styles.salrep_input_container}>
                       <div className={styles.srs_new_create}>
                         <Input
@@ -230,11 +230,13 @@ const AddNew = () => {
                           }}
                           controlStyles={{
                             backgroundColor: '#F3F3F3',
-                            width: '300px', 
-                            borderStyle: 'none', 
+                            width: '85%',
+                            borderStyle: 'none',
+                            '@media only screen and (max-width: 750px)': {
+                              width: '240%',
+                            },
                           }}
                           enableHoverEffect={false}
-                          
                         />
                       </div>
                     </div>
