@@ -715,7 +715,7 @@ const MyMapComponent: React.FC = () => {
                       ? (availableStates(newFormData) || []).find(
                           (option) => option.value === createRePayData.state
                         ) || { label: 'All State', value: 'All' } // Default to "All State" if no selection
-                      : { label: 'All State', value: 'All' }
+                      : { label: '-', value: '' }
                   }
                   menuStyles={{
                     width: 400,
@@ -831,13 +831,13 @@ const MyMapComponent: React.FC = () => {
               ) : null}
             </div>
 
-            {/* Display total project count */}
+            {/* Display total project count
             {projectCount > 0 ? (
               <div className={styles.projectCount}>
                 <h3 className={styles.totalProjects}>Total Projects : </h3>
                 <span className={styles.projectCountValue}>{projectCount}</span>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </div>
 

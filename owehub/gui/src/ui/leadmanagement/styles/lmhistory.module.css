@@ -474,12 +474,12 @@
 
 .lead__datepicker_content {
   position: absolute;
-  right: 26px;
+  left: 29px;
   z-index: 10;
   background-color: var(--white-color);
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  top: 140px;
+  top: 20px;
 }
 
 .lead__datepicker_btns {
@@ -495,6 +495,16 @@
 
 .lead__datepicker_btns button:first-child {
   margin-right: 0.5rem;
+}
+.lead__datepicker_wrapper {
+  position: relative;
+  line-height: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 11;
+}
+.lead__datepicker_wrapper:hover {
+  z-index: 11;
 }
 
 

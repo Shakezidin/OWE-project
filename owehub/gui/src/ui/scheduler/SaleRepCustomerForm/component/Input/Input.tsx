@@ -11,6 +11,7 @@ const Input: React.FC<InputProps> = ({
   label,
   id,
   showIsEditing = true,
+  readOnly,
   ...rest
 }) => {
   const [isEditing, setIsEditing] = React.useState(false);
@@ -50,7 +51,7 @@ const Input: React.FC<InputProps> = ({
           ref={inputRef}
           id={id}
           {...rest}
-          readOnly={showIsEditing ? !isEditing : undefined}
+          readOnly={showIsEditing ? !isEditing : readOnly}
           className={`${styles.input_field} ${className}`}
         />
         {showIsEditing && (
@@ -61,7 +62,7 @@ const Input: React.FC<InputProps> = ({
             {isEditing ? (
               <FaCheck size={21} color="#377CF6" />
             ) : (
-              <AiOutlineEdit size={15} color="#C1C1C1" />
+              <AiOutlineEdit size={20} color="#C1C1C1" />
             )}
           </span>
         )}

@@ -103,8 +103,8 @@ func HandleGraphApiAccessToken(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	accessCodeMap := map[string]string{}
-	accessCodeMap["access-code "] = accessToken
+	// accessCodeMap := map[string]string{}
+	// accessCodeMap["access-code "] = accessToken
 	log.FuncInfoTrace(0, fmt.Sprintf("Access Token for Outlook graph API: %v", accessToken))
-	appserver.FormAndSendHttpResp(resp, "Access Token generated", http.StatusOK, accessCodeMap)
+	appserver.FormAndSendHttpResp(resp, "Access Token generated", http.StatusOK, result)
 }

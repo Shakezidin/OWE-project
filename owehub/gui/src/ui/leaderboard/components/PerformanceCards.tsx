@@ -112,7 +112,7 @@ const PerformanceCards: React.FC<performance> = ({
             <MicroLoader />
           </div>
         )}
-        {!isLoading && details.length ? (
+        {!isLoading && details?.length ? (
           <div className="cards flex justify-between">
             {rank2 && !isLoading ? (
               <div className="card-one">

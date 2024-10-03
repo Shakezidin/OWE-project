@@ -29,13 +29,11 @@ const LeadManagementNew = () => {
   const [zip_codeError, setZip_codeError] = useState('');
   const [load, setLoad] = useState(false);
 
+
+
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     const lettersAndSpacesPattern = /^[A-Za-z\s]+$/;
-
-    if (name === 'zip_code' && value.length > 12) {
-      return;
-    }
 
     if (name === 'first_name' || name === 'last_name') {
       if (value === '' || lettersAndSpacesPattern.test(value)) {
@@ -49,24 +47,26 @@ const LeadManagementNew = () => {
       }
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
-      errors.first_name = '';
+     
       if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
       } else {
         setEmailError('');
-        errors.first_name = '';
+   
       }
       const trimmedValue = value.replace(/\s/g, '');
-
       setFormData((prevData) => ({
         ...prevData,
         [name]: trimmedValue,
       }));
-    } else if (name === 'zip_code') {
-      const trimmedValue = value.trim();
-      const isValidZipCode = validateZipCode(trimmedValue);
 
-      if (trimmedValue.length > 10) {
+
+
+    } else if (name === 'zip_code') {
+      const trimmedValueC = value.trim();
+      const isValidZipCode = validateZipCode(trimmedValueC);
+
+      if (trimmedValueC.length > 10) {
         setZip_codeError('Zip code should not exceed 10 characters');
       } else if (!isValidZipCode) {
         setZip_codeError('Please enter a valid ZipCode');
@@ -84,7 +84,7 @@ const LeadManagementNew = () => {
         [name]: value,
       }));
 
-      // Clear any existing error for this field
+  
       const err = { ...errors };
       delete err[name];
       setErrors(err);
@@ -104,22 +104,22 @@ const LeadManagementNew = () => {
     const errors: { [key: string]: string } = {};
 
     if (formData.first_name.trim() === '') {
-      errors.first_name = 'First name is required';
+      errors.first_name = 'First Name is required';
     }
     if (formData.last_name.trim() === '') {
-      errors.last_name = 'Last name is required';
+      errors.last_name = 'Last Name is required';
     }
     if (formData.email_id.trim() === '') {
       errors.email_id = 'Email is required';
     }
     if (formData.mobile_number.trim() === '') {
-      errors.mobile_number = 'Mobile number is required';
+      errors.mobile_number = 'Phone number is required';
     }
     if (formData.address.trim() === '') {
       errors.address = 'Address is required';
     }
     if (formData.zip_code.trim() === '') {
-      errors.zip_code = 'Zip code is required';
+      errors.zip_code = 'Zip Code is required';
     }
     if (formData.notes.trim() === '') {
       errors.notes = 'Notes are required';
@@ -144,7 +144,7 @@ const LeadManagementNew = () => {
           street_address: formData.address,
           zipcode: '84101',
           notes: formData.notes,
-        });
+        }, true);
         if (response.status === 200) {
           toast.success('Lead Created Succesfully');
           resetFormData();
@@ -258,8 +258,8 @@ Create New Lead
 
                       <div className={classes.srs_new_create}>
                         <Input
-                          type={'text'}
-                          label="Email ID"
+                          type="email"
+                          label="Email"
                           value={formData.email_id}
                           placeholder={'email@mymail.com'}
                           onChange={(e) => handleInputChange(e)}

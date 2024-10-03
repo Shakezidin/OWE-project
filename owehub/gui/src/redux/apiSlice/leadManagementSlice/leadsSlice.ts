@@ -8,7 +8,7 @@ interface IState {
   isLoading: boolean;
   isFormSubmitting: boolean;
   error: string;
-  leads: any[];
+  leadsData: any[];
   isSuccess: boolean;
   totalcount: number;
 }
@@ -17,7 +17,7 @@ const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   error: '',
-  leads: [],
+  leadsData: [],
   isSuccess: false,
   totalcount: 0,
 };
@@ -37,7 +37,7 @@ const leadManagementSlice = createSlice({
       })
       .addCase(getLeads.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.leads = action.payload.data || [];
+        state.leadsData = action.payload.data || [];
         state.totalcount = action.payload.dbRecCount || 0;
       })
       .addCase(getLeads.rejected, (state, action) => {

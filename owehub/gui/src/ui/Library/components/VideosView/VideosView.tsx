@@ -1,84 +1,60 @@
 import React from 'react';
 import { ICONS } from '../../../../resources/icons/Icons';
 import styles from './videosview.module.css';
-import { PiLineVerticalThin } from "react-icons/pi";
- 
-function VideosView() {
-    const folderData = [
-        {
-          url: ICONS.viedoImageOne,
-          url_play:ICONS.viedoplay,
-          name: 'Joy Robert',
-          date: '2 Aug 2024',
-          folderOf: 'UNTD SOLAR_.PDF',
-          size: '34.82 MB',
-          fileType: 'folder',
-          quantity: '8 files',
-        },
-    
-        {
-            url: ICONS.viedoImageOne,
-            url_play:ICONS.viedoplay,
-            name: 'Joy Robert',
-            date: '2 Aug 2404',
-            folderOf: 'UNTD SOLAR_.PDF',
-            size: '34.82 MB',
-            fileType: 'folder',
-            quantity: '8 files',
-          },
-          {
-            url: ICONS.viedoImageOne,
-            url_play:ICONS.viedoplay,
-            name: 'Joy Robert',
-            date: '2 Aug 2404',
-            folderOf: 'UNTD SOLAR_.PDF',
-            size: '34.82 MB',
-            fileType: 'folder',
-            quantity: '8 files',
-          }, {
-            url: ICONS.viedoImageOne,
-            url_play:ICONS.viedoplay,
-            name: 'Joy Robert',
-            date: '2 Aug 2404',
-            folderOf: 'UNTD SOLAR_.PDF',
-            size: '34.82 MB',
-            fileType: 'folder',
-            quantity: '8 files',
-          }
-    ]
-   
- 
+import { PiLineVerticalThin } from 'react-icons/pi';
+
+// Define the interface for the video data
+interface VideoData {
+  url: string;
+  name: string;
+  date: string;
+  iconName: string;
+  size: string;
+  FileType?: string; // Marking it as optional if some entries don't have it
+  url_play?: string;
+  duration?: string;
+  fileType?: string; // Optional, only relevant for video files
+}
+
+interface VideosViewProps {
+  videoData: VideoData[]; // Expect an array of VideoData objects
+}
+
+function VideosView({ videoData }: VideosViewProps) {
   return (
     <div className={styles.folderMain_wrapper}>
-    {folderData.map((folder, index) => (
-     <div className={styles.folderDiv} key={index}>
-         
-         <div className={styles.videoImage_wrapper}>
-         <div className={styles.transparent_play}>
-            <img src={folder.url_play} alt="" className={styles.transparent_play_botton} />
-         </div>
-            <div className={styles.video_time}>23.45</div>
-            <img src={folder.url} alt=""  className={styles.videosview_images} />    
-         </div>
-        
-        
+      {videoData.map((video: VideoData, index: number) => (
+        <div className={styles.folderDiv} key={index}>
+          <div className={styles.videoImage_wrapper}>
+            <div className={styles.transparent_play}>
+              <img
+                src={video.url_play}
+                alt="Play"
+                className={styles.transparent_play_botton}
+              />
+            </div>
+            <div className={styles.video_time}>{video.duration}</div>
+            <img
+              src={video.url}
+              alt="Video Thumbnail"
+              className={styles.videosview_images}
+            />
+          </div>
 
-       <div className={styles.folderContent_wrapper}>
-            <div className={styles.videosview_name}>{folder.folderOf}</div>
+          <div className={styles.folderContent_wrapper}>
+            <div className={styles.videosview_name}>{video.iconName}</div>
             <div className={styles.videoInfo_wrapper}>
-                  <div className={styles.videosSize}>{folder.size}</div>
-                 <PiLineVerticalThin className={styles.videos_piline}/>
-                <div className={styles.videosdate}>{folder.date}</div>
-                 <PiLineVerticalThin className={styles.videos_piline}/>
-                 <div className={styles.video_name}>{folder.name}</div>
-           </div> 
-         
-       </div>
-     </div>
-   ))} 
-
- </div>
+              <div className={styles.videosSize}>{video.size}</div>
+              <PiLineVerticalThin className={styles.videos_piline} />
+              <div className={styles.videosdate}>{video.date}</div>
+              <PiLineVerticalThin className={styles.videos_piline} />
+              <div className={styles.video_name}>{video.name}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
- 
+
 export default VideosView;

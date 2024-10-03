@@ -18,7 +18,8 @@ type GetLeadsRequest struct {
 }
 
 type GetLeadsData struct {
-	LeadID                     int64      `json:"leads_id "`
+	LeadID                     int64      `json:"leads_id"`
+	StatusID                   int64      `json:"status_id"`
 	FirstName                  string     `json:"first_name"`
 	LastName                   string     `json:"last_name"`
 	EmailID                    string     `json:"email_id"`
@@ -38,6 +39,7 @@ type GetLeadsData struct {
 	AppointmentDispositionNote string     `json:"appointment_disposition_note"`
 	IsArchived                 bool       `json:"is_archived"`
 	Notes                      string     `json:"notes"`
+	ActionNeededMessage        string     `json:"action_needed_message"`
 }
 
 // This struct is for deleting Leads

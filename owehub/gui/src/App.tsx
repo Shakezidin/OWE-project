@@ -133,10 +133,6 @@ function App() {
             element={<LeadManagementNew />}
           />
           <Route
-            path={ROUTES.LEAD_MANAGEMENT_ARCHIEVES}
-            element={<ArchivedPages />}
-          />
-          <Route
             path={ROUTES.LEAD_MANAGEMENT_HISTORY}
             element={<LeradManagementHistory />}
           />

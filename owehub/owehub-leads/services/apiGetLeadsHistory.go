@@ -31,13 +31,14 @@ import (
  ******************************************************************************/
 func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err               error
-		whereClause       string
-		whereEleList      []interface{}
-		leadsHistoryQuery string
-		dataReq           models.GetLeadsHistoryRequest
-		data              []map[string]interface{}
-		RecordCount       int
+		err                    error
+		whereClause            string
+		whereEleList           []interface{}
+		leadsHistoryQuery      string
+		leadsHistoryCountQuery string
+		dataReq                models.GetLeadsHistoryRequest
+		data                   []map[string]interface{}
+		recordCount            int64
 	)
 
 	log.EnterFn(0, "HandleGetLeadsHistory")
@@ -92,6 +93,13 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 		whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.LeadsStatus)
 	}
 
+	whereClause = fmt.Sprintf(`
+		%s 
+		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY') 
+		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY')  + INTERVAL '1 day'
+		AND li.is_archived = $4
+	`, whereClause)
+
 	leadsHistoryQuery = fmt.Sprintf(`
         SELECT
             li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
@@ -102,10 +110,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
             get_leads_info_hierarchy($1) li
         JOIN
             leads_status ls ON li.status_id = ls.status_id
-         %s -- filter for status id
-            AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')                       -- Start date 
-            AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY')  + INTERVAL '1 day'    -- End date
-			AND li.is_archived = $4
+         %s
         ORDER BY
              li.updated_at DESC
         LIMIT $5  -- for page size
@@ -159,9 +164,24 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 		LeadsHistoryResponse.LeadsHistoryList = append(LeadsHistoryResponse.LeadsHistoryList, LeadsHistory)
 	}
 
-	// Return the response
-	RecordCount = len(LeadsHistoryResponse.LeadsHistoryList)
-	FormAndSendHttpResp(resp, "Leads History Data", http.StatusOK, LeadsHistoryResponse, int64(RecordCount))
+	// Count total records from db
+	leadsHistoryCountQuery = fmt.Sprintf(`
+		SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
+		JOIN
+			leads_status ls ON li.status_id = ls.status_id
+		%s
+		`, whereClause)
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryCountQuery, whereEleList[0:4])
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get lead history count from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to fetch lead history count", http.StatusInternalServerError, nil)
+		return
+	}
+
+	recordCount = data[0]["count"].(int64)
+
+	FormAndSendHttpResp(resp, "Leads History Data", http.StatusOK, LeadsHistoryResponse, recordCount)
 
 }
 
