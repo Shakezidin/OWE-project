@@ -134,3 +134,9 @@
   .videos_piline{
     color: #959595;
   }
+
+  .videos_piline{
+    background-color: #959595;
+    height: 15px;
+    width: 0.9px;
+  }
