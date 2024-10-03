@@ -14,7 +14,13 @@ import FolderView from './components/FolderView/FolderView';
 import { FaXmark } from 'react-icons/fa6';
 import VideosView from './components/VideosView/VideosView';
 import DeleteFileModal from './Modals/DeleteFileModal';
-
+import { getCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { format } from 'date-fns';
+import MicroLoader from '../components/loader/MicroLoader';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<'files' | 'folders' | 'dropdown' | null>('files');
@@ -177,7 +183,145 @@ const LibraryHomepage = () => {
       FileType: 'img',
     },
   ]);
+    //Ajay Chaudhary Code Start from Here
 
+const [expirationTime, setExpirationTime] = useState<number | null>(null);
+const [isFetchingToken, setIsFetchingToken] = useState(false);
+
+const getToken = async () => {
+  if (isFetchingToken) return; // Prevent duplicate calls
+  setIsFetchingToken(true);
+  try {
+    const response = await postCaller("get_graph_api_access_token", {});
+    const token =await response.data.access_token;
+    const tokenDuration = await response.data.expires_in;
+    const currentTime = Math.floor(Date.now() / 1000);
+    const expTime = currentTime + tokenDuration;
+
+    Cookies.set('myToken', token, { expires: expTime });
+    // Cookies.set('tokenExpiration', expTime.toString(), { expires: 7 });
+    setExpirationTime(expTime);
+
+  } catch (error) {
+    console.error(error);
+  }
+  finally {
+    setIsFetchingToken(false);
+  }
+};
+
+
+useEffect(() => {
+  const token = Cookies.get('myToken');
+  console.log(token,"testtttt")
+    if(!token)
+    {
+      getToken();
+    }
+}, []);
+
+console.log("Thiis is my cookiessssssssssssssssssss-----  ",Cookies);
+  const checkTokenValidity = () => {
+  const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+  const storedExpirationTime = parseInt(expirationTime?.toString() || '0', 10);
+  return currentTime < storedExpirationTime;
+};
+
+
+
+useEffect(() => {
+  if (!checkTokenValidity()) {
+    console.error('Token expired or not found in cookies.');
+    getToken();
+  } else {
+    console.log("Token is valid");
+  }
+}, [expirationTime]);
+interface User {
+  // Define the properties of the user object as needed
+  id: string;
+  displayName: string;
+}
+
+interface FileData {
+  hashes: Record<string, string>; // Assuming it could have multiple hash types
+  mimeType: string;
+}
+
+interface FileOrFolder {
+  id: string;
+  name: string;
+  folder?: object;  // Optional for folders
+  file?: FileData;  // Optional for files
+  createdBy: { user: User };
+  createdDateTime: string;
+  eTag: string;
+  lastModifiedBy: { user: User };
+  lastModifiedDateTime: string;
+  webUrl: string; // URL to the file
+  size: number; 
+  shared:object;
+  childCount:number;
+  "@microsoft.graph.downloadUrl":string;
+  // File size in bytes
+  // Include any other properties you expect
+}
+const [allData, setAllData] = useState<FileOrFolder[] | null>(null);
+  const [fileData, setFileData] = useState<FileOrFolder[]>([]);
+  const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
+  const [loading,setLoading]=useState<boolean>(false);
+const fetchDataFromGraphAPI = async () => {
+  setLoading(true);
+  const url = 'https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/root/children'; //endpoint
+  const token = Cookies.get('myToken'); // fetching my token from cookie
+
+  if (!token) {
+    console.error('Token not found in cookies.');
+    return; // Exit if the token is not available, should i need to call my getToken function here?? doubt
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await axios.get(url, config);
+    console.log('Fetched data:', response.data.value);
+    setAllData(response.data.value);
+
+    
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+  setLoading(false);
+};
+useEffect(()=>{
+  fetchDataFromGraphAPI();
+},[]);
+
+useEffect(() => {
+  if (allData) {
+    const folders: FileOrFolder[] = [];
+    const files: FileOrFolder[] = [];
+
+    allData.forEach((data) => {
+      if (data.folder) {
+        folders.push(data);
+      } else {
+        files.push(data);
+      }
+    });
+
+    setFolderData(folders);
+    setFileData(files);
+  }
+}, [allData]);
+// console.log(folderData,"This is folder data");
+// console.log(fileData,"This is file data");
+//Ajay Chaudhary Code Ends Here
+ 
   const handleDivClick = () => {
     setToggleClick(!toggleClick);
   };
@@ -408,6 +552,7 @@ const LibraryHomepage = () => {
           onCheckboxChange={handleCheckboxChange}
           sortOption={sortOption}
           checkedFolders={checkedFolders}
+          folderData={folderData}
         />
       );
     }
@@ -430,22 +575,22 @@ const LibraryHomepage = () => {
           <div className={styles.grid_item}>Actions</div>
         </div>
 
-        {sortedData.length > 0 ? (
-          sortedData.map((data, index) => (
-            <div className={styles.libGridItem} key={index}>
+        {loading?<div className={styles.filesLoader}> <MicroLoader/></div>:fileData.length > 0 ? (
+          fileData.map((data) => (
+            <div className={styles.libGridItem} key={data.id}>
               <div className={`${styles.file_icon} ${styles.image_div}`}>
                 <img
                   className={styles.cardImg}
-                  src={data.url}
-                  alt={`${data.iconName}-icon`}
+                  src={data[`@microsoft.graph.downloadUrl`]}
+                  alt={`null`}
                 />
                 <div>
-                  <p className={styles.name}>{data.iconName}</p>
-                  <p className={styles.size}>{data.size}</p>
+                  <p className={styles.name}>{data.name.substring(0,10)}_.JPG</p>
+                  <p className={styles.size}>{}</p>
                 </div>
               </div>
-              <div className={styles.grid_item}>{data.name}</div>
-              <div className={styles.grid_item}>{data.date}</div>
+              <div className={styles.grid_item}>{data.lastModifiedBy.user.displayName}</div>
+              <div className={styles.grid_item}>{format(new Date(data.lastModifiedDateTime),'dd-MM-yyyy')}</div>
               <div className={`${styles.grid_item} ${styles.grid_icon}`}>
                 {isRecycleBinView ? (
                   <div>
@@ -456,8 +601,8 @@ const LibraryHomepage = () => {
                         width: '16px',
                         color: '#667085',
                       }}
-                      onClick={() => handleClickdeleted(index)} />
-                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(index)} />)}
+                      onClick={() => handleClickdeleted(parseInt(data.id))} />
+                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(parseInt(data.id))} />)}
                   </div>
                 ) : (
                   <>
@@ -478,8 +623,8 @@ const LibraryHomepage = () => {
                           height: '18px',
                           width: '18px',
                           color: '#667085',
-                        }} onClick={() => handleClickdeleted(index)} />
-                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(index)} />)}
+                        }} onClick={() => handleClickdeleted(parseInt(data.id))} />
+                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(parseInt(data.id))} />)}
                     </div>
                   </>
                 )}
@@ -487,7 +632,7 @@ const LibraryHomepage = () => {
             </div>
           ))
         ) : (
-          <p className={styles.noParagraph}>No matching files found.</p>
+          <p className={styles.noParagraph}>No files found.</p>
         )}
       </div>
     );
