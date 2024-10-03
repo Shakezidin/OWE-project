@@ -683,10 +683,11 @@ const LeradManagementHistory = () => {
         </div>
 
         {!!totalCount && (
-          <div className="page_heading_container">
+          <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex} of {totalCount} item
             </p>
+
 
             <Pagination
               currentPage={page}
