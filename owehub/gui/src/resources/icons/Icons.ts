@@ -154,6 +154,7 @@ import recycleBinColor from '../assets/recycleBinColor.svg'
 import folderImage from '../assets/folderimage.svg'
 import viedoImageOne from '../assets/videos-library-one.svg'
 import viedoplay from '../assets/video_play.svg'
+import DeleteICONBOX from "../assets/DeleteICONBOX.svg"
 
 
 
@@ -190,6 +191,7 @@ export const ICONS = {
   cutOff,
 
   groupActiveIcon: groupActive,
+  DeleteICONBOX:DeleteICONBOX,
   viewChart: viewChart,
   viewActive: viewActive,
   dashHead: dashHead,

@@ -274,11 +274,9 @@ table tbody tr:hover {
 
 .history_list_inner {
   display: grid;
-  /* grid-template-columns: auto 1fr 1fr 1.5fr 1.5fr auto; */
-  grid-template-columns: auto minmax(0, 0.5fr) minmax(0, 0.5fr) minmax(0, 1fr) minmax(
-      0,
-      1fr
-    ) auto auto;
+  grid-template-columns:
+    auto minmax(0, 0.5fr) minmax(0, 0.5fr) minmax(0, 1fr) minmax(0, 1fr)
+    auto auto;
   align-items: center;
   padding: 16px;
   gap: 16px;
@@ -328,14 +326,13 @@ input[type='checkbox']:checked {
   border-color: #3b82f6;
 }
 
-.cardHeaderFirst{
+.cardHeaderFirst {
   padding: 18px 16px 16px 16px;
   /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
 }
 
 .cardHeader {
@@ -346,15 +343,13 @@ input[type='checkbox']:checked {
   justify-content: space-between;
   align-items: center;
 }
-.cardHeaderSecond{
+.cardHeaderSecond {
   padding: 10.8px 16px 16px 16px;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: -7px;
-
-
 }
 
 .actionButtons {
@@ -398,7 +393,6 @@ input[type='checkbox']:checked {
   color: white;
 }
 
-
 .selectionInfo {
   display: flex;
   align-items: center;
@@ -421,7 +415,7 @@ input[type='checkbox']:checked {
   transform: scale(1.04);
 }
 
-.SecondChildContain{
+.SecondChildContain {
   display: flex;
   justify-content: flex-end;
   /* margin-right: 3px !important; */
@@ -431,11 +425,10 @@ input[type='checkbox']:checked {
   background: #377cf630;
   border-radius: 5px;
 }
-.ConditionalButtons{
+.ConditionalButtons {
   display: flex;
   gap: 9px;
   margin-right: 11.9px;
- 
 }
 
 .selectionHeader {
@@ -447,10 +440,9 @@ input[type='checkbox']:checked {
 }
 
 .archieveButtonX {
-
   background-color: #ee4747;
   border: 1px solid #929292;
-  padding: 0px 0px 0px 0px; 
+  padding: 0px 0px 0px 0px;
   border-radius: 26px;
   cursor: pointer;
   font-size: 14px;
@@ -468,7 +460,7 @@ input[type='checkbox']:checked {
 .archieveButtonA {
   color: #929292;
   border: 1px solid #929292;
-  padding: 0px 0px 0px 0px; 
+  padding: 0px 0px 0px 0px;
   border-radius: 26px;
   cursor: pointer;
   font-size: 14px;
@@ -477,7 +469,6 @@ input[type='checkbox']:checked {
   height: 38px;
   text-align: center;
   transition: all 0.3s ease;
-  
 }
 .archieveButtonA:hover {
   transform: scale(1.05);
@@ -493,7 +484,7 @@ input[type='checkbox']:checked {
   color: white;
   text-align: center;
   border: none;
-  padding: 0px 20px 0px 20px; 
+  padding: 0px 20px 0px 20px;
   border-radius: 26px;
   cursor: pointer;
   width: 120px;
@@ -511,7 +502,7 @@ input[type='checkbox']:checked {
 .removeButton {
   color: #929292;
   border: 1px solid #929292;
-  padding: 0px 0px 0px 0px; 
+  padding: 0px 0px 0px 0px;
   border-radius: 26px;
   cursor: pointer;
   font-size: 14px;
@@ -520,7 +511,6 @@ input[type='checkbox']:checked {
   height: 38px;
   text-align: center;
   transition: all 0.3s ease;
-
 }
 
 .removeButton:hover {
@@ -632,13 +622,18 @@ input[type='checkbox']:checked {
   .history_list_inner_declined {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr 1fr !important;
-    /* place-items: center; */
     align-items: start;
   }
 
   .history_list_inner {
     display: grid;
-    grid-template-columns: auto 2fr auto !important;
+    grid-template-columns: 0.2fr auto 0.4fr 0.4fr 0.2fr !important;
+    align-items: baseline;
+  }
+
+  .history_list_inner_Mobile_View{
+    display: grid;
+    grid-template-columns: 0.2fr 3fr 0.4fr  !important;
     align-items: baseline;
   }
 
@@ -655,6 +650,17 @@ input[type='checkbox']:checked {
     justify-content: center !important;
     align-items: center !important;
     border-radius: 5px;
+  }
+  .BOXDelete {
+    display: flex;
+    justify-content: center; /* Centers the image horizontally inside the flex container */
+    align-items: center; /* Centers the image vertically inside the flex container */
+    border-radius: 5px;
+    margin-bottom: -10px;
+    transform: translate(0, 5px);
+    padding-top: 5px;
+    justify-self: center; /* Centers the entire .BOXDelete div horizontally inside the grid cell */
+    align-self: center; /* Centers the .BOXDelete vertically inside the grid cell */
   }
 
   .hist_date {
@@ -674,6 +680,93 @@ input[type='checkbox']:checked {
 
   .user_name {
     transform: translate(5px, -5px);
+  }
+
+  .archieveButtonX {
+    /* all: unset; */
+    background-color: #ee4747;
+    border: 1px solid #929292;
+    padding: 0px 0px 0px 0px;
+    border-radius: 26px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    width: 84px;
+    height: 31px;
+    text-align: center;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  .archieveButtonX:hover {
+    transform: scale(1.05);
+  }
+
+  .archieveButtonA {
+    color: #929292;
+    border: 1px solid #929292;
+    padding: 0px 0px 0px 0px;
+    border-radius: 26px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    width: 80px;
+    height: 31px;
+    text-align: center;
+    transition: all 0.3s ease;
+    /* all: unset; */
+  }
+  .archieveButtonA:hover {
+    transform: scale(1.05);
+  }
+
+  .archieveButton:hover {
+    background-color: #ee4747;
+    transform: scale(1.05);
+  }
+
+  .UnArchiveButton {
+    background-color: #377cf6;
+    color: white;
+    text-align: center;
+    border: none;
+    padding: 0px 20px 0px 20px;
+    border-radius: 26px;
+    cursor: pointer;
+    width: 99px;
+    height: 31px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+
+  .UnArchiveButton:hover {
+    background-color: #377cf6;
+    transform: scale(1.05);
+  }
+
+  .removeButton {
+    color: #929292;
+    border: 1px solid #929292;
+    padding: 0px 0px 0px 0px;
+    border-radius: 26px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    width: 75px;
+    height: 31px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .removeButton:hover {
+    transform: scale(1.05);
+  }
+  .CrossICONBTNHover {
+    all: unset;
+    margin-right: 9px !important;
+    margin-bottom: -19px;
   }
 }
 
@@ -740,7 +833,7 @@ input[type='checkbox']:checked {
 
   .history_list_inner {
     display: grid;
-    grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
+    grid-template-columns: 0.4fr 2fr 1.5fr auto auto auto !important;
     justify-content: center !important;
     align-items: start !important;
   }
