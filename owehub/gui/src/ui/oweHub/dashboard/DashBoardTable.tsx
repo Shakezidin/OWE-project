@@ -226,6 +226,14 @@ const DashBoardTable = ({
                     <td>{el.dba || 'N/A'}</td>
                     <td>{el.status_date || 'N/A'}</td>
                     <td>{el.sys_size || 'N/A'}</td>
+                    <td>{el.dealer_code || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.today || 'N/A'}</td>
+                    <td>{el.contract || 'N/A'}</td>
+                    <td>{el.setter || 'N/A'}</td>
+                    <td>{el.rep_pay || 'N/A'}</td>
+                    <td>{el.st || 'N/A'}</td>
+                    <td>{el.sub_total || 'N/A'}</td>
                     <td>{el.loan_fee || 'N/A'}</td>
                     <td>{el.draw_amt || 'N/A'}</td>
                     <td>{el.rl || 'N/A'}</td>
