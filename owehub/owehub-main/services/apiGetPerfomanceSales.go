@@ -614,8 +614,8 @@ func PrepareAeAmFilter(dealerList []string, dataFilter models.PerfomanceTileData
 	}
 	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
 			AND customers_customers_schema.unique_id <> ''
-			AND system_customers_schema.system_size IS NOT NULL
-			AND system_customers_schema.system_size > 0`)
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		var statusValues []string
@@ -715,8 +715,8 @@ func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTi
 	// Add the always-included filters
 	filtersBuilder.WriteString(` AND customers_customers_schema.unique_id IS NOT NULL
 			AND customers_customers_schema.unique_id <> ''
-			AND system_customers_schema.system_size IS NOT NULL
-			AND system_customers_schema.system_size > 0`)
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from '../styles/confirmmodal.module.css';
 import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
 import ThumbsSucess from './Modalimages//Thumbs.svg';
@@ -14,21 +14,42 @@ import Pen from '../Modals/Modalimages/Vector.png';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format } from 'date-fns';
+import { getLeadById, getLeads } from '../../../redux/apiActions/leadManagement/LeadManagementAction';
+import { useDispatch } from 'react-redux';
+import useAuth from '../../../hooks/useAuth';
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
+  leadId?: number
+  refresh?: number,
+  setRefresh?: (value: number) => void;
 }
-const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
+interface LeadData {
+  first_name: string;
+  last_name: string;
+  email_id: string;
+  phone_number: string;
+  street_address: string;
+  status_id: number;
+  created_at: string;
+  appointment_date: string;
+  appointment_scheduled_date: string;
+  appointment_accepted_date: string;
+}
+const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, refresh, setRefresh }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [load, setLoad] = useState(false);
+  const [leadData, setLeadData] = useState<LeadData | null>(null);
+
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
   };
-
   const handleTimeChange = (time: string) => {
     setSelectedTime(time);
   };
@@ -44,17 +65,18 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+  const dispatch = useDispatch();
 
   const handleSendAppointment = async () => {
     setLoad(true);
     try {
       const response = await postCaller('sent_appointment', {
-        leads_id: 1,
+        leads_id: leadId,
         appointment_date: selectedDate
           ? format(selectedDate, 'dd-MM-yyyy')
           : '',
         appointment_time: selectedTime ? selectedTime : '',
-      },true);
+      }, true);
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
@@ -69,6 +91,41 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
     }
   };
 
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const { authData, saveAuthData } = useAuth();
+  const [loading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await postCaller('get_lead_info', {
+            "leads_id": leadId
+          }, true);
+
+          if (response.status === 200) {
+            setLeadData(response.data);
+          } else if (response.status >= 201) {
+            toast.warn(response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isAuthenticated, leadId, isModalOpen]);
+
+
   return (
     <div>
       {isOpen1 && (
@@ -82,76 +139,87 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
                   onClick={HandleModal}
                 />
               </div>
-              <div className={classes.pers_det_top}>
-                <div className={classes.Column1Details}>
-                  <div className={classes.main_name}>
-                    Adam Samson{' '}
-                    <img
-                      onClick={HandleModal}
-                      className={classes.crossIconImg}
-                      src={CrossIcon}
-                    />
-                  </div>
-                  <span className={classes.mobileNumber}>+91 8739273728</span>
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <MicroLoader />
                 </div>
-                <div className={classes.Column2Details}>
-                  <span className={classes.addresshead}>
-                    12778 Domingo Ct, Parker, COLARDO, 2312
-                  </span>
-                  <span className={classes.emailStyle}>
-                    Sampletest@gmail.com{' '}
-                    <span className={classes.verified}>
-                      <svg
-                        className={classes.verifiedMarked}
-                        width="13"
-                        height="13"
-                        viewBox="0 0 13 13"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clipPath="url(#clip0_6615_16896)">
-                          <path
-                            d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
-                            fill="#20963A"
-                          />
-                          <path
-                            d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
-                            fill="white"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_6615_16896">
-                            <rect
-                              width="12.16"
-                              height="12.16"
-                              fill="white"
-                              transform="translate(0 0.421875)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>{' '}
-                      <span className={classes.verifyLetter}> Verified</span>
+              ) : leadData ? (
+                <div className={classes.pers_det_top}>
+
+                  <div className={classes.Column1Details}>
+                    <div className={classes.main_name}>
+                      {leadData?.first_name} {leadData?.last_name}{' '}
+                      <img
+                        onClick={HandleModal}
+                        className={classes.crossIconImg}
+                        src={CrossIcon}
+                      />
+                    </div>
+                    <span className={classes.mobileNumber}>{leadData?.phone_number}</span>
+                  </div>
+                  <div className={classes.Column2Details}>
+                    <span className={classes.addresshead}>
+                      {leadData?.street_address ? leadData?.street_address : "N/A"}
                     </span>
-                  </span>
-                  <div>
-                    {visibleDiv === 0 ||
-                      (visibleDiv === 1 && (
-                        <div
-                          className={classes.edit_modal_openMediaScreen}
-                          onClick={handleOpenModal}
+                    <span className={classes.emailStyle}>
+                      {leadData?.email_id}{' '}
+                      <span className={classes.verified}>
+                        <svg
+                          className={classes.verifiedMarked}
+                          width="13"
+                          height="13"
+                          viewBox="0 0 13 13"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          <span className={classes.edit_modal_button2}>
-                            <img
-                              className={classes.editPenStyle}
-                              src={Pen}
-                            ></img>{' '}
-                            Edit
-                          </span>
-                        </div>
-                      ))}
+                          <g clipPath="url(#clip0_6615_16896)">
+                            <path
+                              d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
+                              fill="#20963A"
+                            />
+                            <path
+                              d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
+                              fill="white"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_6615_16896">
+                              <rect
+                                width="12.16"
+                                height="12.16"
+                                fill="white"
+                                transform="translate(0 0.421875)"
+                              />
+                            </clipPath>
+                          </defs>
+                        </svg>{' '}
+                        <span className={classes.verifyLetter}> Verified</span>
+                      </span>
+                    </span>
+                    <div>
+                      {visibleDiv === 0 ||
+                        (visibleDiv === 1 && (
+                          <div
+                            className={classes.edit_modal_openMediaScreen}
+                            onClick={handleOpenModal}
+                          >
+                            <span className={classes.edit_modal_button2}>
+                              <img
+                                className={classes.editPenStyle}
+                                src={Pen}
+                              ></img>{' '}
+                              Edit
+                            </span>
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  "No Data Found"
+                </div>
+              )}
               <div>
                 {(visibleDiv === 0 || visibleDiv === 1) && (
                   <div
@@ -170,8 +238,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
                 )}
               </div>
             </div>
-            <EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
-            {/* <div style={{marginTop:"-308px"}}> </div> */}
+            <EditModal isOpen={isModalOpen} onClose={handleCloseModal} leadData={leadData} />
+
             {visibleDiv === 0 && (
               <AppointmentScheduler
                 setVisibleDiv={setVisibleDiv}
