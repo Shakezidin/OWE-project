@@ -278,7 +278,7 @@ table tbody tr:hover {
   grid-template-columns: auto minmax(0, 0.5fr) minmax(0, 0.5fr) minmax(0, 1fr) minmax(
       0,
       1fr
-    ) minmax(0, 0.5fr) minmax(0, 0.5fr);
+    ) auto auto;
   align-items: center;
   padding: 16px;
   gap: 16px;
@@ -434,6 +434,7 @@ input[type='checkbox']:checked {
 .ConditionalButtons{
   display: flex;
   gap: 9px;
+  margin-right: 11.9px;
  
 }
 
@@ -446,23 +447,7 @@ input[type='checkbox']:checked {
 }
 
 .archieveButtonX {
-  color: #929292;
-  border: 1px solid #929292;
-  padding: 0px 0px 0px 0px; 
-  border-radius: 26px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  width: 140px;
-  height: 38px;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-.archieveButtonX:hover {
-  transform: scale(1.05);
-}
 
-.archieveButtonA {
   background-color: #ee4747;
   border: 1px solid #929292;
   padding: 0px 0px 0px 0px; 
@@ -475,6 +460,24 @@ input[type='checkbox']:checked {
   text-align: center;
   color: white;
   transition: all 0.3s ease;
+}
+.archieveButtonX:hover {
+  transform: scale(1.05);
+}
+
+.archieveButtonA {
+  color: #929292;
+  border: 1px solid #929292;
+  padding: 0px 0px 0px 0px; 
+  border-radius: 26px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  width: 140px;
+  height: 38px;
+  text-align: center;
+  transition: all 0.3s ease;
+  
 }
 .archieveButtonA:hover {
   transform: scale(1.05);

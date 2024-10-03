@@ -44,6 +44,7 @@ import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import ArchivedPages from './ArchievedPages';
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -494,7 +495,7 @@ const LeadManagementDashboard = () => {
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
-  const [toggledId, setToggledId] = useState<string | null>(null);
+  const [toggledId, setToggledId] = useState<number[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
   const [itemsPerPage, setItemPerPage] = useState(10);
@@ -603,8 +604,7 @@ const LeadManagementDashboard = () => {
   };
 
   const handleReschedule = (lead: any) => {
-    console.log(`Lead ${lead.name} is being rescheduled`);
-    handleFilterClick('Pending'); // Switch to the "Pending" tab
+    setShowConfirmModal(true);
   };
 
   const handleArchive = (lead: Lead) => {
@@ -616,10 +616,14 @@ const LeadManagementDashboard = () => {
     setShowConfirmModal(true); // Show detail modal
   };
 
-  const handleChevronClick = (id: string) => {
-    setToggledId((prevId) => (prevId === id ? null : id));
+  const handleChevronClick = (itemId: number) => {
+    console.log(itemId);
+    setToggledId((prevToggledId) =>
+      prevToggledId.includes(itemId)
+        ? []
+        : [itemId]
+    );
   };
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -654,7 +658,7 @@ const LeadManagementDashboard = () => {
             end_date: selectedDates.endDate
               ? format(selectedDates.endDate, 'dd-MM-yyyy')
               : '',
-          });
+            },true);
 
           if (response.status === 200) {
             const apiData = response.data.periodic_list;
@@ -695,6 +699,7 @@ const LeadManagementDashboard = () => {
   }
   const [pieData, setPieData] = useState<StatusData[]>([]);
   const [totalValue, setTotalValue] = useState<number>(0);
+  const [archive, setArchive] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -708,7 +713,7 @@ const LeadManagementDashboard = () => {
             end_date: selectedDates.endDate
               ? format(selectedDates.endDate, 'dd-MM-yyyy')
               : '',
-          });
+          },true);
 
           if (response.status === 200) {
             const apiData = response.data.leads;
@@ -783,14 +788,14 @@ const LeadManagementDashboard = () => {
           ? format(selectedDates.endDate, 'dd-MM-yyyy')
           : '',
         status_id: statusId,
-        is_archived: false,
+        is_archived: archive,
         page_size: 10,
         page_number: page,
       };
 
       dispatch(getLeads(data));
     }
-  }, [selectedDates, isAuthenticated, itemsPerPage, page, currentFilter]);
+  }, [selectedDates, archive, isAuthenticated, itemsPerPage, page, currentFilter]);
 
   useEffect(() => {
     if (leadsData.length > 0) {
@@ -907,17 +912,29 @@ const LeadManagementDashboard = () => {
               {selectedDates.startDate && selectedDates.endDate && (
                 <div className={styles.hist_date}>
                   <span className={styles.date_display}>
-                    {selectedDates.startDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {
+                      selectedDates.startDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                      ' ' +
+                      selectedDates.startDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                      }) +
+                      ', ' +
+                      selectedDates.startDate.getFullYear()
+                    }
                     {' - '}
-                    {selectedDates.endDate.toLocaleDateString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {
+                      selectedDates.endDate.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                      }) +
+                      ' ' +
+                      selectedDates.endDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                      }) +
+                      ', ' +
+                      selectedDates.endDate.getFullYear()
+                    }
                   </span>
                 </div>
               )}
@@ -943,10 +960,6 @@ const LeadManagementDashboard = () => {
                     alignContent: 'center',
                     backgroundColor: '#fffff',
                     boxShadow: 'none',
-                    '@media only screen and (max-width: 767px)': {
-                      width: '80px',
-                      // width: 'fit-content',
-                    },
                     '&:focus-within': {
                       borderColor: '#377CF6',
                       boxShadow: '0 0 0 1px #377CF6',
@@ -1057,201 +1070,133 @@ const LeadManagementDashboard = () => {
       </div>
 
       <div className={styles.card}>
-        <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
-          {selectedLeads.length === 0 ? (
-            <>
-              <div className={styles.buttonGroup}>
-                {pieData.map((data) => {
-                  let displayStatus = '';
-                  switch (data.name) {
-                    case 'Pending leads':
-                      displayStatus = 'Pending';
-                      break;
-                    case 'Appointment sent':
-                      displayStatus = 'Sent';
-                      break;
-                    case 'Appointment accepted':
-                      displayStatus = 'Accepted';
-                      break;
-                    case 'Appointment declined':
-                      displayStatus = 'Declined';
-                      break;
-                    case 'Action Needed':
-                      displayStatus = 'Action Needed';
-                      break;
-                    default:
-                      displayStatus = data.name;
-                  }
+        {
+          archive == true &&
+          <ArchivedPages setArchive={setArchive} />
+        }
+        {archive == false &&
+          <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
+            {selectedLeads.length === 0 ? (
+              <>
+                <div className={styles.buttonGroup}>
+                  {pieData.map((data) => {
+                    let displayStatus = '';
+                    switch (data.name) {
+                      case 'Pending leads':
+                        displayStatus = 'Pending';
+                        break;
+                      case 'Appointment sent':
+                        displayStatus = 'Sent';
+                        break;
+                      case 'Appointment accepted':
+                        displayStatus = 'Accepted';
+                        break;
+                      case 'Appointment declined':
+                        displayStatus = 'Declined';
+                        break;
+                      case 'Action Needed':
+                        displayStatus = 'Action Needed';
+                        break;
+                      default:
+                        displayStatus = data.name;
+                    }
 
-                  return (
-                    <button
-                      key={data.name}
-                      className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
+                    return (
+                      <button
+                        key={data.name}
+                        className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
                          ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
-                      onClick={() => handleFilterClick(displayStatus)}
-                    >
-                      <p
-                        className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
+                        onClick={() => handleFilterClick(displayStatus)}
                       >
-                        {data.value}
-                      </p>
-                      {displayStatus}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* RABINDRA */}
-              {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-              <HistoryRedirect />
-              <div className={styles.filterCallToAction}>
-                <div className={styles.filtericon} onClick={handleAddLead}>
-                  <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                        <p
+                          className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
+                        >
+                          {data.value}
+                        </p>
+                        {displayStatus}
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
 
-              {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
-            </>
-          ) : (
-            <div className={styles.selectionHeader}>
-              <div className={styles.selectionInfo}>
-                <span
-                  className={styles.closeIcon}
-                  onClick={() => setSelectedLeads([])}
+                {/* RABINDRA */}
+                {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
+                <HistoryRedirect setArchive={setArchive} />
+
+                <div className={styles.filterCallToAction}>
+                  <div className={styles.filtericon} onClick={handleAddLead}>
+                    <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                  </div>
+                </div>
+
+              </>
+            ) : (
+              <div className={styles.selectionHeader}>
+                <div className={styles.selectionInfo}>
+                  <span
+                    className={styles.closeIcon}
+                    onClick={() => setSelectedLeads([])}
+                  >
+                    <img src={ICONS.cross} alt="" height="26" width="26" />
+                  </span>
+                  <span>{selectedLeads.length} Selected</span>
+                </div>
+                <button
+                  className={styles.removeButton}
+                  onClick={handleArchiveSelected}
                 >
-                  <img src={ICONS.cross} alt="" height="26" width="26" />
-                </span>
-                <span>{selectedLeads.length} Selected</span>
+                  Archived
+                </button>
               </div>
-              <button
-                className={styles.removeButton}
-                onClick={handleArchiveSelected}
-              >
-                Archived
-              </button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        }
 
         <div className={styles.cardContent}>
-          <table className={styles.table}>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={leadsData.length}>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <MicroLoader />
-                    </div>
-                  </td>
-                </tr>
-              ) : leadsData.length > 0 ? (
-                leadsData.map((lead: any, index: number) => (
-                  <React.Fragment key={index}>
-                    <tr className={styles.history_lists}>
-                      <td
-                        className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                        onClick={() =>
-                          lead.status === 'Declined' ||
-                            lead.status === 'Action Needed'
-                            ? ''
-                            : handleOpenModal()
-                        }
-                      >
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={selectedLeads.includes(lead)}
-                            onChange={() => handleLeadSelection(lead)}
-                          />
-                        </label>
-                        <div
-                          className={styles.user_name}
+          {archive == false &&
+            <table className={styles.table}>
+              <tbody>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={leadsData.length}>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <MicroLoader />
+                      </div>
+                    </td>
+                  </tr>
+                ) : leadsData.length > 0 ? (
+                  leadsData.map((lead: any, index: number) => (
+                    <React.Fragment key={index}>
+                      <tr className={styles.history_lists}>
+                        <td
+                          className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
                           onClick={() =>
-                            currentFilter == 'Pending' && handleDetailModal(lead)
+                            lead.status === 'Declined' ||
+                              lead.status === 'Action Needed'
+                              ? ''
+                              : handleOpenModal()
                           }
                         >
-                          <h2>{lead.first_name} {lead.last_name}</h2>
-                          <p style={{ color: getStatusColor(currentFilter) }}>
-                            {currentFilter}
-                          </p>
-                        </div>
-                        <div className={styles.phone_number}>{lead.phone_number}</div>
-                        <div className={styles.email}>
-                          <span>
-                            {lead.email_id}
-                            <img
-                              className="ml1"
-                              height={15}
-                              width={15}
-                              src={ICONS.complete}
-                              alt="verified"
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={selectedLeads.includes(lead)}
+                              onChange={() => handleLeadSelection(lead)}
                             />
-                          </span>
-                        </div>
-                        <div className={styles.address}>{lead.city ? lead.city : "N/A"}</div>
-
-                        {currentFilter === 'Declined' && (
-                          <div className={styles.actionButtons}>
-                            <button
-                              onClick={() => handleReschedule(lead)}
-                              className={styles.rescheduleButton}
-                            >
-                              Reschedule
-                            </button>
-                            {isTablet ? (
-                              <button
-                                onClick={() => handleArchive(lead)}
-                                className={styles.archiveButton}
-                              >
-                                <img src={ICONS.declinedArchive} />
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => handleArchive(lead)}
-                                className={styles.archiveButton}
-                              >
-                                Archive
-                              </button>
-                            )}
-                          </div>
-                        )}
-
-                        {currentFilter === 'Action Needed' && (
-                          <div className={styles.actionButtons}>
-                            <button
-                              onClick={() => handleReschedule(lead)}
-                              className={styles.rescheduleButton}
-                            >
-                              Reschedule
-                            </button>
-                          </div>
-                        )}
-
-                        <div
-                          className={styles.chevron_down}
-                          onClick={() => handleChevronClick(lead.id)}
-                        >
-                          <img
-                            src={
-                              toggledId === lead.id
-                                ? ICONS.chevronUp
-                                : ICONS.chevronDown
+                          </label>
+                          <div
+                            className={styles.user_name}
+                            onClick={() =>
+                              currentFilter == 'Pending' && handleDetailModal(lead)
                             }
-                            alt={
-                              toggledId === lead.id
-                                ? 'chevronUp-icon'
-                                : 'chevronDown-icon'
-                            }
-                          />
-                        </div>
-                      </td>
-                    </tr>
-
-                    {toggledId === lead.leads_id && (
-                      <tr>
-                        <td colSpan={5} className={styles.detailsRow}>
-                          <div className={''}>{lead.phone_number}</div>
-                          <div className={''}>
+                          >
+                            <h2>{lead.first_name} {lead.last_name}</h2>
+                            <p style={{ color: getStatusColor(currentFilter) }}>
+                              {currentFilter}
+                            </p>
+                          </div>
+                          <div className={styles.phone_number}>{lead.phone_number}</div>
+                          <div className={styles.email}>
                             <span>
                               {lead.email_id}
                               <img
@@ -1263,21 +1208,98 @@ const LeadManagementDashboard = () => {
                               />
                             </span>
                           </div>
-                          <div className={''}>{lead.city ? lead.city : "N/A"}</div>
+                          <div className={styles.address}>{lead.city ? lead.city : "N/A"}</div>
+
+                          {currentFilter === 'Declined' && (
+                            <div className={styles.actionButtons}>
+                              <button
+                                onClick={() => handleReschedule(lead)}
+                                className={styles.rescheduleButton}
+                              >
+                                Reschedule
+                              </button>
+                              {isTablet ? (
+                                <button
+                                  onClick={() => handleArchive(lead)}
+                                  className={styles.archiveButton}
+                                >
+                                  <img src={ICONS.declinedArchive} />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleArchive(lead)}
+                                  className={styles.archiveButton}
+                                >
+                                  Archive
+                                </button>
+                              )}
+                            </div>
+                          )}
+
+                          {currentFilter === 'Action Needed' && (
+                            <div className={styles.actionButtons}>
+                              <button
+                                onClick={() => handleReschedule(lead)}
+                                className={styles.rescheduleButton}
+                              >
+                                Reschedule
+                              </button>
+                            </div>
+                          )}
+
+                          <div
+                            className={styles.chevron_down}
+                            onClick={() => handleChevronClick(lead["leads_id "])}
+
+                          >
+                            <img
+                              src={
+                                toggledId.includes(lead["leads_id "])
+                                  ? ICONS.chevronUp
+                                  : ICONS.chevronDown
+                              }
+                              alt={
+                                toggledId.includes(lead["leads_id "])
+                                  ? 'chevronUp-icon'
+                                  : 'chevronDown-icon'
+                              }
+                            />
+                          </div>
                         </td>
                       </tr>
-                    )}
-                  </React.Fragment>
-                ))
-              ) : (
-                <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
-                    <DataNotFound />
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+
+                      {toggledId.includes(lead["leads_id "]) && (
+                        <tr>
+                          <td colSpan={5} className={styles.detailsRow}>
+                            <div className={''}>{lead.phone_number}</div>
+                            <div className={''}>
+                              <span>
+                                {lead.email_id}
+                                <img
+                                  className="ml1"
+                                  height={15}
+                                  width={15}
+                                  src={ICONS.complete}
+                                  alt="verified"
+                                />
+                              </span>
+                            </div>
+                            <div className={''}>{lead.city ? lead.city : "N/A"}</div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <tr style={{ border: 0 }}>
+                    <td colSpan={10}>
+                      <DataNotFound />
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          }
 
 
           {leadsData.length > 0 && (

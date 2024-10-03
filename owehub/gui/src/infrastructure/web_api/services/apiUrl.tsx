@@ -9,6 +9,7 @@ import { Credentials } from '../../../core/models/api_models/AuthModel';
 import { EndPoints } from '../api_client/EndPoints';
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
+const LEADS_BASE_URL = `${process.env.REACT_APP_LEADS_URL}`;
 // authService.ts
 
 export interface LoginResponse {
@@ -38,7 +39,8 @@ export const login = async (
 };
 export const postCaller = async (
   endpoint: string,
-  postData: any
+  postData: any,
+  hasChangedBaseUrl: boolean = false
 ): Promise<any> => {
   const config: AxiosRequestConfig = {
     headers: {
@@ -46,9 +48,10 @@ export const postCaller = async (
       // 'Content-Type': 'application/json',
     },
   };
+
   try {
     const response: AxiosResponse = await axios.post(
-      `${BASE_URL}/${endpoint}`,
+      `${hasChangedBaseUrl ? LEADS_BASE_URL : BASE_URL}/${endpoint}`,
       postData,
       config
     );

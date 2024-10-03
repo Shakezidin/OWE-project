@@ -42,8 +42,12 @@ const ConfigurePage: React.FC = () => {
       data: [
         { title: 'Dealer OverRides', route: ROUTES.CONFIG_DEALER_OVER },
         { title: 'Dealer Credit', route: ROUTES.CONFIG_DEALER_CREDIT },
-        { title: 'Slack Config', route: ROUTES.CONFIG_SLACK },
       ],
+      state: useState<boolean>(true),
+    },
+    {
+      title: 'Common',
+      data: [{ title: 'Slack Config', route: ROUTES.CONFIG_SLACK }],
       state: useState<boolean>(true),
     },
   ];
@@ -75,6 +79,20 @@ const ConfigurePage: React.FC = () => {
                   key={index}
                   className={`${title.toLowerCase()} ${isOpen ? 'open' : ''}`}
                 >
+                  <div
+                    className="configure-card-title"
+                    onClick={toggleAccordion(setIsOpen)}
+                  >
+                    <p className="payer-type">{title}</p>
+                    <div className="accordion-icon-container">
+                      {isOpen ? (
+                        <FaMinus className="accordion-icon" />
+                      ) : (
+                        <FaPlus className="accordion-icon" />
+                      )}
+                    </div>
+                  </div>
+
                   <div className={`configure-cards ${isOpen ? 'open' : ''}`}>
                     {data.map((item, index) => {
                       const colorIndex =
