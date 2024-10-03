@@ -2,6 +2,9 @@
   background-color: #f6f6f6;
   padding-inline: 2rem;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .form_conatiner {
@@ -55,18 +58,22 @@
   color: #fff;
   cursor: pointer;
 }
-.sm_date_close_header{
+
+.sm_date_close_header {
   display: none;
 }
-.back_btn{
+
+.back_btn {
   font-size: 21px;
 
 }
+
 @media (max-width:968px) {
   .form_wrapper.no_inner_padding {
     padding-inline: 0;
   }
-  .sm_padding{
+
+  .sm_padding {
     padding-inline: 2rem;
   }
 
@@ -76,7 +83,7 @@
     padding-inline: 0;
   }
 
-  .date_time_container{
+  .date_time_container {
     width: 100%;
     background: #fff;
     margin-top: 32px;
@@ -84,32 +91,40 @@
     margin-inline: 20px;
     border-radius: 8px;
   }
-  .btn_wrapper{
+
+  .btn_wrapper {
     padding-bottom: 16px;
     padding-inline: 20px;
   }
-  .sm_padding{
+
+  .sm_padding {
     padding-inline: 20px;
   }
-  .sm_date_close_header{
+
+  .sm_date_close_header {
     display: flex;
   }
-  .back_btn{
+
+  .back_btn {
     position: absolute;
     font-size: 34px;
     left: 0;
 
   }
-.date_time_container{
-  border: none;
-}
+
+  .date_time_container {
+    border: none;
+  }
+
   .form_conatiner {
     border-radius: 0;
 
   }
-  .form_conatiner.bg_transparent{
+
+  .form_conatiner.bg_transparent {
     background-color: transparent;
   }
+
   .form_content.mobile_hidden {
     display: none;
   }
@@ -134,7 +149,7 @@
 }
 
 @media (max-width:450px) {
-  .back_btn{
+  .back_btn {
     margin-left: 0 !important;
     left: 20px;
     font-size: 24px;

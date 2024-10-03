@@ -20,10 +20,10 @@ const dayWithProgress = [
   { id: 1, date: new Date(2024, 8, 20), progress: 75 },
   { id: 2, date: new Date(2024, 8, 23), progress: 35 },
   { id: 3, date: new Date(2024, 8, 24), progress: 70 },
-  { id: 4, date: new Date(2024, 8, 25), progress: 63 },
-  { id: 5, date: new Date(2024, 8, 26), progress: 79 },
-  { id: 6, date: new Date(2024, 8, 27), progress: 20 },
-  { id: 7, date: new Date(2024, 9, 1), progress: 95 },
+  { id: 4, date: new Date(2024, 8, 5), progress: 63 },
+  { id: 5, date: new Date(2024, 8, 4), progress: 79 },
+  { id: 6, date: new Date(2024, 8, 2), progress: 20 },
+  { id: 7, date: new Date(2024, 9, 3), progress: 95 },
 ];
 interface ITimeSlot {
   id: number;
@@ -57,7 +57,7 @@ const SaleRepCustomerForm = () => {
   };
 
   return (
-    <div className={`py4 ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""}`}>
+    <div className={` ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""}`}>
       <div className={`${styles.form_conatiner} ${step === 2 ? styles.bg_transparent : ""} `}>
         <div
           className={` flex items-center justify-center ${styles.form_header}`}
