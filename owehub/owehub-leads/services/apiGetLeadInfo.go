@@ -24,7 +24,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetLeadInfo
+ * FUNCTION:		HandleGetLeadInfo// 🔴🔴
  * DESCRIPTION:     handler for get LeadsHistoy data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -85,21 +85,15 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 	// Access the first result (assuming one lead will be returned for the given ID)
 	leadData := data[0]
 
-	streetAddress, ok := leadData["street_address"].(string)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to assert street_address to string type Item: %+v", leadData)
-		streetAddress = ""
-	}
-
 	// Type assertion with proper handling of types
 	leadResponse := models.GetLeadInfoRes{
-		LeadsID:       leadData["leads_id"].(int64),      // LeadsID is asserted as int64
-		FirstName:     leadData["first_name"].(string),   // FirstName as string
-		LastName:      leadData["last_name"].(string),    // LastName as string
-		EmailId:       leadData["email_id"].(string),     // EmailId as string
-		PhoneNumber:   leadData["phone_number"].(string), // PhoneNumber as string
-		StreetAddress: streetAddress,                     // StreetAddress as string
-		StatusID:      leadData["status_id"].(int64),     // StatusID as int64
+		LeadsID:       leadData["leads_id"].(int64),        // LeadsID is asserted as int64
+		FirstName:     leadData["first_name"].(string),     // FirstName as string
+		LastName:      leadData["last_name"].(string),      // LastName as string
+		EmailId:       leadData["email_id"].(string),       // EmailId as string
+		PhoneNumber:   leadData["phone_number"].(string),   // PhoneNumber as string
+		StreetAddress: leadData["street_address"].(string), // StreetAddress as string
+		StatusID:      leadData["status_id"].(int64),       // StatusID as int64
 	}
 
 	switch leadResponse.StatusID {

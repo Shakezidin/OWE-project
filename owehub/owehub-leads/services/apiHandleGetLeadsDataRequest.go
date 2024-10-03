@@ -28,6 +28,8 @@ import (
 func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
+		startTime    time.Time
+		endTime      time.Time
 		dataReq      models.GetLeadsRequest
 		data         []map[string]interface{}
 		query        string
@@ -70,7 +72,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// validating start date
-	_, err = time.Parse("02-01-2006", dataReq.StartDate)
+	startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
 		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
@@ -78,7 +80,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// validating end date
-	_, err = time.Parse("02-01-2006", dataReq.EndDate)
+	endTime, err = time.Parse("02-01-2006", dataReq.EndDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
 		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
@@ -98,7 +100,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		if dataReq.LeadStatusId == 4 {
-			whereClause = "WHERE (li.status_id = 5 and proposal_created_date is NULL) or (li.status_id = 2 and appointment_date < CURRENT_TIMESTAMP)"
+			whereClause = "WHERE ((li.status_id = 5 and proposal_created_date is NULL) or (li.status_id = 2 and appointment_date < CURRENT_TIMESTAMP))"
 		} else if dataReq.LeadStatusId == 2 {
 			whereClause = "WHERE li.status_id = 2 and li.appointment_date > CURRENT_TIMESTAMP"
 		} else {
@@ -108,8 +110,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		whereClause = fmt.Sprintf(`
 			%s 
 			AND li.is_archived = $2
-			AND li.created_at >= TO_DATE($3, 'DD-MM-YYYY')
-			AND li.created_at <= TO_DATE($4, 'DD-MM-YYYY')`,
+			AND li.updated_at BETWEEN $3 AND $4
+		`,
 			whereClause,
 		)
 
@@ -144,8 +146,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		whereEleList = append(whereEleList,
 			userEmail,
 			dataReq.IsArchived,
-			dataReq.StartDate,
-			dataReq.EndDate,
+			time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
+			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
 			dataReq.PageSize,
 			offset,
 		)
@@ -303,6 +305,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				LeadID:                     leads_id,
 				State:                      state,
 				FirstName:                  first_name,
+				StatusID:                   status_id,
 				LastName:                   last_name,
 				EmailID:                    email_id,
 				PhoneNumber:                phone_number,
