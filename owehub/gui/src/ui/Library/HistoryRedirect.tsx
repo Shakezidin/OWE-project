@@ -10,7 +10,7 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   const [modenIsOpenX, setModalOpenClick] = useState(false);
   const navigate = useNavigate();
   const divRef = useRef<HTMLDivElement | null>(null);
-  
+
   const handleHistory = () => {
     navigate('/leadmng-history');
   };
@@ -18,7 +18,7 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
   const ArchivesTable = () => {
     setArchive(true);
   };
-  
+
   /* HERE FOR RESPONSIVESNESS */
   const [styles, setStyles] = useState({
     transform: 'scale(1) translate(0, 0)',
@@ -47,20 +47,12 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
- 
-
-
 
   // ***NOT WRITE INSIDE BUTTONS DUE TO INCREASE BUTTONS INSIDE ITEMS***
 
-
   return (
     <div className="relative drop-ref-container">
-      <div
-        className={classes.filtericonHistory}
-        onClick={HistoryButtonCalled}
-        
-      >
+      <div className={classes.filtericonHistory} onClick={HistoryButtonCalled}>
         <img
           className={classes.ICONSTYLETHREEDOT}
           src={ThreeDotsImage}
@@ -77,7 +69,6 @@ const HistoryRedirect = ({ setArchive }: HistoryRedirectProps) => {
           ref={divRef}
         >
           <ul>
-           
             <li style={{ color: '#000 !important' }} onClick={handleHistory}>
               History{' '}
             </li>

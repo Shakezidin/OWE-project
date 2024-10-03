@@ -52,10 +52,10 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(-1);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
- 
+
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
-  const [tableData,setTableData] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [activeHead, setActiveHead] = useState('count');
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
@@ -145,7 +145,7 @@ const Index = () => {
             return;
           }
           setDetails(data.data?.top_leader_board_list);
-          setTableData(data)
+          setTableData(data);
           setIsLoading(false);
           setCount(data?.dbRecCount || 0);
         } catch (error) {
@@ -165,7 +165,7 @@ const Index = () => {
     authData,
   ]);
 
-  console.log(tableData, 'data')
+  console.log(tableData, 'data');
   const shareImage = () => {
     if (topCards.current) {
       const element = topCards.current;
@@ -345,7 +345,6 @@ const Index = () => {
         setActiveHead={setActiveHead}
         setIsLoading={setIsLoading}
         isLoading={isLoading}
-        
         active={active}
         isExporting={isExporting}
         resetDealer={resetDealer}

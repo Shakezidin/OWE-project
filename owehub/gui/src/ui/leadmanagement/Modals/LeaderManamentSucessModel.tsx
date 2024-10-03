@@ -1,58 +1,19 @@
 import React, { useState } from 'react';
 import classes from '../styles/LeadManagementSucess.module.css';
 import { useNavigate } from 'react-router-dom';
-import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
 
-// interface TableProps {
-//   handleClose: () => void;
-//   isOpen?: boolean;
-// }
+const LeadManamentSucessModel = () => {
+  const navigate = useNavigate();
+  // const [confirmModal, setConfirmModal]=useState(false);
+  const [visibleDiv, setVisibleDiv] = useState(true);
 
-// const LeadManamentSucessModel: React.FC<TableProps> = ({
-const LeadManamentSucessModel = () =>
-  // {
-  //   handleClose,
-  //   isOpen = false,
-  // }
-  {
-    const navigate = useNavigate();
-    // const [confirmModal, setConfirmModal]=useState(false);
-    const [visibleDiv, setVisibleDiv] = useState(true);
+  const NoDeleteData = () => {
+    setVisibleDiv(false);
+  };
 
-    // const handleClick = () => {
-    //   navigate('/salesrep-schedule');
-    //   handleClose();
-    // };
-    // const handleSchedule = () => {
-    //   navigate('/schedule-sales-rep');
-    //   handleClose();
-    // };
-
-    // useEffect(() => {
-    //   const handleEscKey = (event: any) => {
-    //     if (event.key === 'Escape') {
-    //       handleClose();
-    //     }
-    //   };
-
-    //   if (isOpen) {
-    //     document.addEventListener('keydown', handleEscKey);
-    //   }
-
-    //   return () => {
-    //     document.removeEventListener('keydown', handleEscKey);
-    //   };
-    // }, [isOpen, handleClose]);
-
-    // onClick={handleClose}
-
-    const NoDeleteData = () => {
-      navigate('/lead-dashboard-archieves');
-    };
-
-    return (
-      // <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
-      <div>
+  return (
+    <div>
+      {visibleDiv && (
         <div className="transparent-model">
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
@@ -102,11 +63,18 @@ const LeadManamentSucessModel = () =>
               </div>
             </div>
             {/* <div className={classes.createUserCrossButton} ></div> */}
-            {visibleDiv && (
-              <>
-                {' '}
-                <div className={classes.success_not}>
-                  <div className={classes.succicon}>
+
+            <>
+              {' '}
+              <div className={classes.success_not}>
+                <div className={classes.succicon}>
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <svg
                       width="32"
                       height="32"
@@ -114,49 +82,42 @@ const LeadManamentSucessModel = () =>
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <svg
-                        width="32"
-                        height="32"
-                        viewBox="0 0 32 32"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M2.70247 31.9919C2.01419 31.9919 1.32591 31.7301 0.802979 31.2033C-0.246826 30.1534 -0.246826 28.4515 0.802979 27.4016L27.409 0.795658C28.4594 -0.254803 30.1614 -0.254803 31.2112 0.795658C32.261 1.84546 32.261 3.54746 31.2112 4.59726L4.60458 31.2033C4.07443 31.7301 3.38681 31.9919 2.70247 31.9919Z"
-                          fill="white"
-                        />
-                      </svg>
                       <path
-                        d="M29.3005 31.9919C28.6129 31.9919 27.9246 31.7301 27.4016 31.2033L0.795658 4.59726C-0.254803 3.54746 -0.254803 1.84546 0.795658 0.795658C1.84546 -0.254803 3.54746 -0.254803 4.59726 0.795658L31.2033 27.4016C32.2537 28.4515 32.2537 30.1534 31.2033 31.2033C30.677 31.7301 29.9888 31.9919 29.3005 31.9919Z"
+                        d="M2.70247 31.9919C2.01419 31.9919 1.32591 31.7301 0.802979 31.2033C-0.246826 30.1534 -0.246826 28.4515 0.802979 27.4016L27.409 0.795658C28.4594 -0.254803 30.1614 -0.254803 31.2112 0.795658C32.261 1.84546 32.261 3.54746 31.2112 4.59726L4.60458 31.2033C4.07443 31.7301 3.38681 31.9919 2.70247 31.9919Z"
                         fill="white"
                       />
                     </svg>
-                  </div>
-                  <h2>Are You Sure? </h2>
-                  <p>Do you really want to archived this lead</p>
+                    <path
+                      d="M29.3005 31.9919C28.6129 31.9919 27.9246 31.7301 27.4016 31.2033L0.795658 4.59726C-0.254803 3.54746 -0.254803 1.84546 0.795658 0.795658C1.84546 -0.254803 3.54746 -0.254803 4.59726 0.795658L31.2033 27.4016C32.2537 28.4515 32.2537 30.1534 31.2033 31.2033C30.677 31.7301 29.9888 31.9919 29.3005 31.9919Z"
+                      fill="white"
+                    />
+                  </svg>
                 </div>
-                <div className={classes.survey_button}>
-                  <button
-                    className={classes.self}
-                    style={{ color: '#fff', border: 'none' }}
-                    onClick={NoDeleteData}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    id="otherButtonId"
-                    className={classes.other}
-                    onClick={NoDeleteData}
-                  >
-                    No
-                  </button>
-                </div>
-              </>
-            )}
+                <h2>Are You Sure? </h2>
+                <p>Do you really want to archived this lead</p>
+              </div>
+              <div className={classes.survey_button}>
+                <button
+                  className={classes.self}
+                  style={{ color: '#fff', border: 'none' }}
+                  onClick={NoDeleteData}
+                >
+                  Yes
+                </button>
+                <button
+                  id="otherButtonId"
+                  className={classes.other}
+                  onClick={NoDeleteData}
+                >
+                  No
+                </button>
+              </div>
+            </>
           </div>
         </div>
-      </div>
-    );
-  };
+      )}
+    </div>
+  );
+};
 
 export default LeadManamentSucessModel;

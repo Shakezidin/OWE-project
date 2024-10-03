@@ -1,7 +1,7 @@
 export default [
   {
     name: 'unique_id',
-    displayName: 'Project ID',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },
@@ -69,7 +69,7 @@ export default [
     isCheckbox: false,
   },
   { name: 'state', displayName: 'State', type: 'string', isCheckbox: false },
-  { name: 'dba', displayName: 'Dba', type: 'string', isCheckbox: false },
+  { name: 'dba', displayName: 'DBA', type: 'string', isCheckbox: false },
   {
     name: 'status_date',
     displayName: 'Status Date',
@@ -79,6 +79,54 @@ export default [
   {
     name: 'sys_size',
     displayName: 'Sys Size',
+    type: 'number',
+    isCheckbox: false,
+  },
+  {
+    name: 'dealer_code',
+    displayName: 'Dealer Code',
+    type: 'number',
+    isCheckbox: false,
+  },
+  {
+    name: 'type',
+    displayName: 'Type',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'today',
+    displayName: 'Today',
+    type: 'number',
+    isCheckbox: false,
+  },
+  {
+    name: 'contract',
+    displayName: 'Contract $$',
+    type: 'number',
+    isCheckbox: false,
+  },
+  {
+    name: 'setter',
+    displayName: 'Setter',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'rep_pay',
+    displayName: 'Rep Pay',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'st',
+    displayName: 'ST',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'sub_total',
+    displayName: 'Sub Total',
     type: 'number',
     isCheckbox: false,
   },

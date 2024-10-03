@@ -59,7 +59,7 @@ const DropDownLibrary: React.FC<DropDownLibraryProps> = ({
         style={{
           backgroundColor: isHovered || isClicked ? '#EFF5FF' : '',
           borderColor: isHovered || isClicked ? '#377cf6' : '#8C8C8C',
-        }} 
+        }}
       >
         <BsThreeDotsVertical
           style={{

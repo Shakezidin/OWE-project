@@ -17,10 +17,14 @@ import DeleteFileModal from './Modals/DeleteFileModal';
 
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
-  const [activeSection, setActiveSection] = useState<'files' | 'folders' | 'dropdown' | null>('files');
+  const [activeSection, setActiveSection] = useState<
+    'files' | 'folders' | 'dropdown' | null
+  >('files');
   const [isHovered, setIsHovered] = useState(false);
   const [selectedType, setSelectedType] = useState('All');
-  const [sortOption, setSortOption] = useState<'none' | 'name' | 'date' | 'size'>('none');
+  const [sortOption, setSortOption] = useState<
+    'none' | 'name' | 'date' | 'size'
+  >('none');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isRecycleBinView, setIsRecycleBinView] = useState(false);
   const [toggleClick, setToggleClick] = useState(false);
@@ -48,7 +52,7 @@ const LibraryHomepage = () => {
     },
     {
       url: ICONS.viedoImageOne,
-          url_play:ICONS.viedoplay,
+      url_play: ICONS.viedoplay,
       name: 'Jordan Ulmer',
       date: '14 Sep 2024',
       iconName: 'Meeting recording.MP4',
@@ -74,7 +78,7 @@ const LibraryHomepage = () => {
     },
     {
       url: ICONS.viedoImageOne,
-          url_play:ICONS.viedoplay,
+      url_play: ICONS.viedoplay,
       name: 'Jordan Ulmer',
       date: '14 Sep 2024',
       iconName: 'Meeting recording.MP4',
@@ -84,7 +88,7 @@ const LibraryHomepage = () => {
     },
     {
       url: ICONS.viedoImageOne,
-          url_play:ICONS.viedoplay,
+      url_play: ICONS.viedoplay,
       name: 'Jordan Ulmer',
       date: '14 Sep 2024',
       iconName: 'Meeting recording.MP4',
@@ -118,7 +122,7 @@ const LibraryHomepage = () => {
     },
     {
       url: ICONS.viedoImageOne,
-          url_play:ICONS.viedoplay,
+      url_play: ICONS.viedoplay,
       name: 'Jordan Ulmer',
       date: '14 Sep 2024',
       iconName: 'Meeting recording.MP4',
@@ -152,7 +156,7 @@ const LibraryHomepage = () => {
     },
     {
       url: ICONS.viedoImageOne,
-          url_play:ICONS.viedoplay,
+      url_play: ICONS.viedoplay,
       name: 'Jordan Ulmer',
       date: '14 Sep 2024',
       iconName: 'Meeting recording.MP4',
@@ -167,7 +171,7 @@ const LibraryHomepage = () => {
       iconName: 'Screenshot_1234.jpeg',
       size: '34.82 KB',
       FileType: 'img',
-    },    
+    },
     {
       url: ICONS.imageIcon,
       name: 'Jordan Ulmer',
@@ -218,8 +222,15 @@ const LibraryHomepage = () => {
   };
 
   const filteredData = libData.filter((data) => {
-    const matchesSearch = data.iconName.toLowerCase().includes(searchValue.toLowerCase()) || data.name.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.FileType === 'excel') || (selectedType === 'PDF Format' && data.FileType === 'pdf') || (selectedType === 'Images' && data.FileType === 'img') || (selectedType === 'Videos' && data.FileType === 'mp4');
+    const matchesSearch =
+      data.iconName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      data.name.toLowerCase().includes(searchValue.toLowerCase());
+    const matchesType =
+      selectedType === 'All' ||
+      (selectedType === 'Excel' && data.FileType === 'excel') ||
+      (selectedType === 'PDF Format' && data.FileType === 'pdf') ||
+      (selectedType === 'Images' && data.FileType === 'img') ||
+      (selectedType === 'Videos' && data.FileType === 'mp4');
     return matchesSearch && matchesType;
   });
 
@@ -227,11 +238,16 @@ const LibraryHomepage = () => {
     const [size, unit] = sizeString.split(' ');
     const sizeNumber = parseFloat(size);
     switch (unit.toLowerCase()) {
-      case 'kb': return sizeNumber * 1024;
-      case 'mb': return sizeNumber * 1024 * 1024;
-      case 'gb': return sizeNumber * 1024 * 1024 * 1024;
-      case 'tb': return sizeNumber * 1024 * 1024 * 1024 * 1024;
-      default: return sizeNumber;
+      case 'kb':
+        return sizeNumber * 1024;
+      case 'mb':
+        return sizeNumber * 1024 * 1024;
+      case 'gb':
+        return sizeNumber * 1024 * 1024 * 1024;
+      case 'tb':
+        return sizeNumber * 1024 * 1024 * 1024 * 1024;
+      default:
+        return sizeNumber;
     }
   };
 
@@ -256,15 +272,15 @@ const LibraryHomepage = () => {
 
   const handleCheckboxChange = (isChecked: boolean, index: number) => {
     setCheckedItems((prev) => (isChecked ? prev + 1 : prev - 1));
-    setCheckedFolders((prev) => 
-      isChecked 
-        ? [...prev, index] 
-        : prev.filter((item) => item !== index)
+    setCheckedFolders((prev) =>
+      isChecked ? [...prev, index] : prev.filter((item) => item !== index)
     );
   };
 
   const handleDelete = () => {
-    const newLibData = libData.filter((_, index) => !checkedFolders.includes(index));
+    const newLibData = libData.filter(
+      (_, index) => !checkedFolders.includes(index)
+    );
     setLibData(newLibData);
     setCheckedItems(0);
     setCheckedFolders([]);
@@ -281,10 +297,12 @@ const LibraryHomepage = () => {
         <>
           <div className={styles.delete_left}>
             <div className={styles.undoButton} onClick={handleUndo}>
-              <FaXmark style={{
-                        height: '20px',
-                        width: '20px',
-                      }} />
+              <FaXmark
+                style={{
+                  height: '20px',
+                  width: '20px',
+                }}
+              />
             </div>
             <span className={styles.selectedCount}>
               {checkedItems} folder{checkedItems > 1 ? 's' : ''} selected
@@ -367,20 +385,22 @@ const LibraryHomepage = () => {
           </div>
           <NewFile activeSection={activeSection} />
 
-{activeSection == 'files' ? (          <div
-            className={styles.recycleBin}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={handleRecycleBinClick}
-          >
-            <img
-              src={isHovered ? ICONS.recycleBinColor : ICONS.recycleBin}
-              alt="recycle-bin"
-            />
-            <span className={styles.recycleSpan}>Recycle Bin</span>
-          </div>) : ""}
-
-
+          {activeSection == 'files' ? (
+            <div
+              className={styles.recycleBin}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={handleRecycleBinClick}
+            >
+              <img
+                src={isHovered ? ICONS.recycleBinColor : ICONS.recycleBin}
+                alt="recycle-bin"
+              />
+              <span className={styles.recycleSpan}>Recycle Bin</span>
+            </div>
+          ) : (
+            ''
+          )}
         </div>
       </>
     );
@@ -393,10 +413,7 @@ const LibraryHomepage = () => {
           {recycleBinItems.length === 0 ? (
             <p>No items in recycle bin</p>
           ) : (
-            recycleBinItems.map((item, index) => (
-              <div key={index}>
-              </div>
-            ))
+            recycleBinItems.map((item, index) => <div key={index}></div>)
           )}
         </div>
       );
@@ -415,8 +432,11 @@ const LibraryHomepage = () => {
     if (selectedType === 'Videos') {
       return (
         <div>
-          {selectedType === 'Videos' && <VideosView videoData={sortedData
-              .filter((data) => data.FileType === 'mp4')} />}
+          {selectedType === 'Videos' && (
+            <VideosView
+              videoData={sortedData.filter((data) => data.FileType === 'mp4')}
+            />
+          )}
         </div>
       );
     }
@@ -456,8 +476,14 @@ const LibraryHomepage = () => {
                         width: '16px',
                         color: '#667085',
                       }}
-                      onClick={() => handleClickdeleted(index)} />
-                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(index)} />)}
+                      onClick={() => handleClickdeleted(index)}
+                    />
+                    {isVisible && (
+                      <DeleteFileModal
+                        setIsVisible={setIsVisible}
+                        onDelete={() => handleClickdeleted(index)}
+                      />
+                    )}
                   </div>
                 ) : (
                   <>
@@ -478,8 +504,15 @@ const LibraryHomepage = () => {
                           height: '18px',
                           width: '18px',
                           color: '#667085',
-                        }} onClick={() => handleClickdeleted(index)} />
-                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(index)} />)}
+                        }}
+                        onClick={() => handleClickdeleted(index)}
+                      />
+                      {isVisible && (
+                        <DeleteFileModal
+                          setIsVisible={setIsVisible}
+                          onDelete={() => handleClickdeleted(index)}
+                        />
+                      )}
                     </div>
                   </>
                 )}

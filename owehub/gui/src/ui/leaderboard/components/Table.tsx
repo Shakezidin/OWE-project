@@ -562,17 +562,16 @@ const Table = ({
   isFetched,
   tableData,
   setIsLoading,
-  isLoading
-
+  isLoading,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
-  setIsLoading:Dispatch<SetStateAction<boolean>>;
-  isLoading:any;
-  setPage:Dispatch<SetStateAction<number>>;
-  page:number;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  isLoading: any;
+  setPage: Dispatch<SetStateAction<number>>;
+  page: number;
   active: string;
-  tableData:any;
+  tableData: any;
   groupBy: string;
   setActive: Dispatch<SetStateAction<string>>;
   setGroupBy: Dispatch<SetStateAction<string>>;
@@ -588,7 +587,6 @@ const Table = ({
   isFetched: boolean;
 }) => {
   const [leaderTable, setLeaderTable] = useState<any>([]);
-
 
   const [totalCount, setTotalCount] = useState(0);
   // const [isLoading, setIsLoading] = useState(true);
@@ -610,19 +608,17 @@ const Table = ({
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
+  console.log(tableData, 'tableData');
 
-  console.log(tableData, "tableData")
-
-  
   useEffect(() => {
-   if(tableData){
-    // setLeaderTable(tableData.data.leader_board_list
-    // );
-    setLeaderTable(tableData?.data?.leader_board_list)
-    setTotalCount(tableData?.data?.dbRecCount)
-   }
-  
-  },[ activeHead,
+    if (tableData) {
+      // setLeaderTable(tableData.data.leader_board_list
+      // );
+      setLeaderTable(tableData?.data?.leader_board_list);
+      setTotalCount(tableData?.data?.dbRecCount);
+    }
+  }, [
+    activeHead,
     active,
     selectedRangeDate,
     itemsPerPage,
@@ -630,7 +626,9 @@ const Table = ({
     selectDealer,
     groupBy,
     isAuthenticated,
-    isFetched, tableData])
+    isFetched,
+    tableData,
+  ]);
 
   // useEffect(() => {
   //   if (isAuthenticated && isFetched) {
@@ -695,7 +693,7 @@ const Table = ({
     setPage(page - 1);
   };
 
-  const sortedPage = leaderTable?.slice().sort((a:any, b:any) => {
+  const sortedPage = leaderTable?.slice().sort((a: any, b: any) => {
     if (a.hightlight && !b.hightlight) return -1;
     if (!a.hightlight && b.hightlight) return 1;
     return 0;
@@ -710,7 +708,7 @@ const Table = ({
   }
   const role = authData?.role;
   const getTotal = (column: keyof ILeaderBordUser): number => {
-    return sortedPage.reduce((sum:any, item:any) => {
+    return sortedPage.reduce((sum: any, item: any) => {
       const value = item[column];
       // Ensure value is a number
       return sum + (typeof value === 'number' ? value : 0);
@@ -1034,7 +1032,7 @@ const Table = ({
           </div>
         ) : sortedPage?.length ? (
           <>
-            {sortedPage?.map((item:any) => {
+            {sortedPage?.map((item: any) => {
               return (
                 <div
                   onClick={() => {
@@ -1192,7 +1190,7 @@ const Table = ({
                   </td>
                 </tr>
               ) : sortedPage?.length ? (
-                sortedPage?.map((item:any) => {
+                sortedPage?.map((item: any) => {
                   return (
                     <tr
                       className="pointer"
