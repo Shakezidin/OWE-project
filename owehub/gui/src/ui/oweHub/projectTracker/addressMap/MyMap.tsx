@@ -204,19 +204,7 @@ const MyMapComponent: React.FC = () => {
     }, 100),
     []
   );
-
-  const handleCalcClose = () => {
-    navigate(-1);
-  };
-
-  const kmsOptions = [
-    { km: 10 },
-    { km: 50 },
-    { km: 100 },
-    { km: 200 },
-    { km: 500 },
-    { km: 1000 },
-  ];
+ 
   const milesOptions = [
     { miles: 5 },
     { miles: 10 },
@@ -226,8 +214,7 @@ const MyMapComponent: React.FC = () => {
     { miles: 200 },
   ];
 
-  const [selectedKm, setSelectedKm] = useState<any>(10);
-
+ 
   const [selectedMiles, setSelectedMiles] = useState<any>(10); // Default to 10 miles
 
   // Handle change function
@@ -250,40 +237,7 @@ const MyMapComponent: React.FC = () => {
 
   console.log(createRePayData.state, 'all');
 
-  // const handleChange = (newValue: any, fieldName: string) => {
-  //   // Extract the selected state's value, or set it to 'All' if nothing is selected
-  //   const updatedValue = newValue ? newValue.value : 'All';
-
-  //   setCreatePayData((prevData) => {
-  //     const availableStateOptions = availableStates(newFormData); // Call the function to get the states
-
-  //     // Handle if "All" is selected (assign all states)
-  //     if (updatedValue === 'All') {
-  //       return {
-  //         ...prevData,
-  //         [fieldName]: availableStateOptions.map((state) => state.value), // Set all state values
-  //       };
-  //     }
-  //     // Handle if "-" is selected (assign empty)
-  //     else if (updatedValue === '-') {
-  //       return {
-  //         ...prevData,
-  //         [fieldName]: [], // Set an empty state value
-  //       };
-  //     }
-  //     // Handle if a specific state is selected
-  //     else {
-  //       return {
-  //         ...prevData,
-  //         [fieldName]: [updatedValue], // Set only the selected state
-  //       };
-  //     }
-  //   });
-
-  //   // Reset the search value when a new state is selected
-  //   setSearchValue('');
-  // };
-
+ 
   // Function to calculate the distance between two points in miles
   const calculateDistanceInMiles = (
     lat1: number,
@@ -343,44 +297,7 @@ const MyMapComponent: React.FC = () => {
     }
   };
 
-  // const handleKMChange = (newKm: any) => {
-  //   setSelectedKm(newKm);
-  //   if (searchedLocation) {
-  //     filterLocationsByKm(searchedLocation, newKm); // Call the filter function
-  //   }
-  // };
-
-  // Function to filter locations within the selected KM range
-  // const filterLocationsByKm = (searchedLocation: LatLng, km: number) => {
-  //   const neighboringLocations = locations.filter((location) => {
-  //     const distance = calculateDistance(
-  //       searchedLocation.lat,
-  //       searchedLocation.lng,
-  //       location.lat,
-  //       location.lng
-  //     );
-  //     return distance <= km;
-  //   });
-
-  //   setFilteredLocations(neighboringLocations); // Set the new filtered locations
-  //   setNeighboring(neighboringLocations);
-
-  //   // Update map bounds to show the filtered locations
-  //   const bounds = new window.google.maps.LatLngBounds();
-  //   bounds.extend(searchedLocation);
-  //   neighboringLocations.forEach((location) => {
-  //     bounds.extend({ lat: location.lat, lng: location.lng });
-  //   });
-
-  //   if (mapRef.current) {
-  //     if (neighboringLocations.length > 0) {
-  //       mapRef.current.fitBounds(bounds);
-  //     } else {
-  //       mapRef.current.setCenter(searchedLocation);
-  //       mapRef.current.setZoom(10); // Zoom out if no neighboring locations found
-  //     }
-  //   }
-  // };
+ 
 
   // Function to handle search location change
   const onPlaceChanged = () => {
@@ -466,79 +383,7 @@ const MyMapComponent: React.FC = () => {
     getNewFormData();
   }, []);
 
-  // // Function to calculate the distance between two points (Haversine formula)
-  // const calculateDistance = (
-  //   lat1: number,
-  //   lng1: number,
-  //   lat2: number,
-  //   lng2: number
-  // ): number => {
-  //   const R = 6371; // Earth's radius in kilometers
-  //   const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  //   const dLng = ((lng2 - lng1) * Math.PI) / 180;
-  //   const a =
-  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-  //     Math.cos((lat1 * Math.PI) / 180) *
-  //       Math.cos((lat2 * Math.PI) / 180) *
-  //       Math.sin(dLng / 2) *
-  //       Math.sin(dLng / 2);
-  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  //   return R * c; // Distance in kilometers
-  // };
-
-  // Handle search changes in the Autocomplete input
-  // const onPlaceChanged = () => {
-  //   const place = autocompleteRef.current?.getPlace();
-
-  //   if (!place || !place.geometry || !place.geometry.location) {
-  //     toast.error('No details available for the selected place.');
-  //     return;
-  //   }
-
-  //   const searchedLocation: LatLng = {
-  //     lat: place.geometry.location.lat(),
-  //     lng: place.geometry.location.lng(),
-  //   };
-
-  //   const selectedAddress = place.formatted_address || place.name || '';
-  //   setSearchValue(selectedAddress);
-  //   setSearchedLocation(searchedLocation);
-  //   setCenter(searchedLocation);
-
-  //   // Filter locations within 10 km of the searched address
-  //   const neighboringLocations = locations.filter((location) => {
-  //     const distance = calculateDistance(
-  //       searchedLocation.lat,
-  //       searchedLocation.lng,
-  //       location.lat,
-  //       location.lng
-  //     );
-  //     return distance <= 10;
-  //   });
-
-  //   setFilteredLocations(neighboringLocations);
-  //   setNeighboring(neighboringLocations);
-
-  //   // Adjust the map bounds to show both the searched location and neighboring markers
-  //   const bounds = new window.google.maps.LatLngBounds();
-  //   bounds.extend(searchedLocation);
-
-  //   neighboringLocations.forEach((location) => {
-  //     bounds.extend({ lat: location.lat, lng: location.lng });
-  //   });
-
-  //   if (mapRef.current) {
-  //     if (neighboringLocations.length > 0) {
-  //       // If there are neighboring locations, fit bounds to show all markers
-  //       mapRef.current.fitBounds(bounds);
-  //     } else {
-  //       // If no neighboring locations, set a default zoom level (zoom out)
-  //       mapRef.current.setCenter(searchedLocation);
-  //       mapRef.current.setZoom(10); // Adjust zoom level to show a larger area
-  //     }
-  //   }
-  // };
-
+  
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
 
@@ -691,10 +536,7 @@ const MyMapComponent: React.FC = () => {
     autocompleteRef.current = autocomplete;
   };
 
-  console.log(filteredLocations, 'klkogjd');
-  console.log(projectCount, 'projectcount');
-  console.log(neighboring.length, 'negughtb');
-  console.log(searchedLocation, 'searchloaction');
+   
 
   return (
     <div className={styles.mapWrap}>
@@ -752,7 +594,7 @@ const MyMapComponent: React.FC = () => {
                       }}
                       onChange={handleInputChange}
                       value={searchValue}
-                      disabled={isSearchDisabled} // Disable search when a state is selected
+                      // disabled={isSearchDisabled} // Disable search when a state is selected
                     />
                     {searchValue && (
                       <button
