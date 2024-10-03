@@ -11,6 +11,7 @@
   max-width: 950px;
   height: max-content;
   margin-left: 35px;
+  margin-right: 35px;
   border: 1px solid #D8D8D8 ;
 }
 
@@ -59,6 +60,7 @@
 .an_top {
   font-size: 18px;
   padding-left: 38px;
+  padding-right: 38px;
   padding-top: 15px;
   /* padding-bottom: 2px; */
   font-weight: 600;
@@ -151,7 +153,7 @@
     border: 0;
     border-radius: 0;
     outline: 0;
-    width: 85% !important;
+    width: 80% !important;
   }
 
 .custom_label{
@@ -164,7 +166,7 @@
 
 .innerView{
   border: none !important;
-  width: 85% !important;
+  width: 80% !important;
 
 }
 

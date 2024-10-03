@@ -230,7 +230,7 @@ const AddNew = () => {
                           }}
                           controlStyles={{
                             backgroundColor: '#F3F3F3',
-                            width: '85%',
+                            width: '80%',
                             borderStyle: 'none',
                             '@media only screen and (max-width: 750px)': {
                               width: '240%',
