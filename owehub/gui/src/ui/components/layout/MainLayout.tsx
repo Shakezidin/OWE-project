@@ -32,6 +32,7 @@ const MainLayout = () => {
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
 
+  /** logout  */
   const logoutUser = (message?: string) => {
     dispatch(activeSessionTimeout());
     dispatch(logout());
@@ -42,8 +43,10 @@ const MainLayout = () => {
     );
   };
 
+  /** check idle time  */
   useIdleTimer({ onIdle: logoutUser, timeout: 900000 });
 
+  /** reset paswword */
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
@@ -76,7 +79,7 @@ const MainLayout = () => {
         logoutUser('Session time expired. Please login again..');
       }
     }
-  }, [dispatch, isAuthenticated, authData]);
+  }, [dispatch, isAuthenticated, navigate]);
 
   /** check whether user exist or not */
   useEffect(() => {

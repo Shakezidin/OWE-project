@@ -1,8 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
-
-
 export const getLeads = createAsyncThunk(
   'fetchLead/get_leads',
   async (params: any, { rejectWithValue, dispatch }) => {
@@ -22,7 +20,11 @@ export const getLeadById = createAsyncThunk(
   'fetchLead/get_leadById',
   async (leadId: number, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('get_lead_info', { leads_id: leadId }, true);
+      const data = await postCaller(
+        'get_lead_info',
+        { leads_id: leadId },
+        true
+      );
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }

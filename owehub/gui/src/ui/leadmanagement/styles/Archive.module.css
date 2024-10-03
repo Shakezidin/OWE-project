@@ -274,7 +274,7 @@ table tbody tr:hover {
 
 .history_list_inner {
   display: grid !important;
-  grid-template-columns :
+  grid-template-columns:
     auto minmax(0, 0.5fr) minmax(0, 0.5fr) minmax(0, 1fr) minmax(0, 1fr)
     auto auto !important;
   align-items: center !important;
@@ -631,9 +631,9 @@ input[type='checkbox']:checked {
     align-items: baseline;
   }
 
-  .history_list_inner_Mobile_View{
+  .history_list_inner_Mobile_View {
     display: grid;
-    grid-template-columns: 0.2fr 3fr 0.4fr  !important;
+    grid-template-columns: 0.2fr 3fr 0.4fr !important;
     align-items: baseline;
   }
 

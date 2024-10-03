@@ -1,8 +1,7 @@
 import React from 'react';
 import { ICONS } from '../../../../resources/icons/Icons';
 import styles from './videosview.module.css';
- 
- 
+
 // Define the interface for the video data
 interface VideoData {
   url: string;
@@ -15,11 +14,11 @@ interface VideoData {
   duration?: string;
   fileType?: string; // Optional, only relevant for video files
 }
- 
+
 interface VideosViewProps {
   videoData: VideoData[]; // Expect an array of VideoData objects
 }
- 
+
 function VideosView({ videoData }: VideosViewProps) {
   return (
     <div className={styles.folderMain_wrapper}>
@@ -40,7 +39,7 @@ function VideosView({ videoData }: VideosViewProps) {
               className={styles.videosview_images}
             />
           </div>
- 
+
           <div className={styles.folderContent_wrapper}>
             <div className={styles.videosview_name}>{video.iconName}</div>
             <div className={styles.videoInfo_wrapper}>
@@ -56,5 +55,5 @@ function VideosView({ videoData }: VideosViewProps) {
     </div>
   );
 }
- 
+
 export default VideosView;

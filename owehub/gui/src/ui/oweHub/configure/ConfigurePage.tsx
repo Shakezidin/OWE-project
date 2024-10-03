@@ -6,7 +6,7 @@ import { RiArrowRightLine } from 'react-icons/ri';
 import './ConfigurePage.css';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
-interface AccordionSection { 
+interface AccordionSection {
   title: string;
   data: { title: string; route: string }[];
   state: [boolean, React.Dispatch<React.SetStateAction<boolean>>] | undefined;
@@ -42,7 +42,7 @@ const ConfigurePage: React.FC = () => {
       data: [
         { title: 'Dealer OverRides', route: ROUTES.CONFIG_DEALER_OVER },
         { title: 'Dealer Credit', route: ROUTES.CONFIG_DEALER_CREDIT },
-        {title:'Dealer Payments', route:ROUTES.CONFIG_DEALERPAYMENTS}
+        { title: 'Dealer Payments', route: ROUTES.CONFIG_DEALERPAYMENTS },
       ],
       state: useState<boolean>(true),
     },

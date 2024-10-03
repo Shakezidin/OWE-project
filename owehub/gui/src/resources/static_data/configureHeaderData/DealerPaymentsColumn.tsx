@@ -14,14 +14,24 @@ export const DealerPaymentsColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'sales_partner', displayName: 'Sales Partner', type: 'string', isCheckbox: false },
+  {
+    name: 'sales_partner',
+    displayName: 'Sales Partner',
+    type: 'string',
+    isCheckbox: false,
+  },
   {
     name: 'type_of_payment',
     displayName: 'Type of Payment',
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'payment_date', displayName: 'Payment Date', type: 'date', isCheckbox: false },
+  {
+    name: 'payment_date',
+    displayName: 'Payment Date',
+    type: 'date',
+    isCheckbox: false,
+  },
   {
     name: 'payment_amount',
     displayName: 'Payment Amount',
@@ -46,5 +56,4 @@ export const DealerPaymentsColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-
 ];

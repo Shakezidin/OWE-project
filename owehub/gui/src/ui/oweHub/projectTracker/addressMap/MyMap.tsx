@@ -204,7 +204,7 @@ const MyMapComponent: React.FC = () => {
     }, 100),
     []
   );
- 
+
   const milesOptions = [
     { miles: 5 },
     { miles: 10 },
@@ -214,7 +214,6 @@ const MyMapComponent: React.FC = () => {
     { miles: 200 },
   ];
 
- 
   const [selectedMiles, setSelectedMiles] = useState<any>(10); // Default to 10 miles
 
   // Handle change function
@@ -237,7 +236,6 @@ const MyMapComponent: React.FC = () => {
 
   console.log(createRePayData.state, 'all');
 
- 
   // Function to calculate the distance between two points in miles
   const calculateDistanceInMiles = (
     lat1: number,
@@ -296,8 +294,6 @@ const MyMapComponent: React.FC = () => {
       filterLocationsByMiles(searchedLocation, newMiles); // Call the filter function for miles
     }
   };
-
- 
 
   // Function to handle search location change
   const onPlaceChanged = () => {
@@ -383,7 +379,6 @@ const MyMapComponent: React.FC = () => {
     getNewFormData();
   }, []);
 
-  
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
 
@@ -535,8 +530,6 @@ const MyMapComponent: React.FC = () => {
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
     autocompleteRef.current = autocomplete;
   };
-
-   
 
   return (
     <div className={styles.mapWrap}>

@@ -10,15 +10,13 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
 
 interface EditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  leadData: any,
+  leadData: any;
 }
-
-
 
 const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -76,7 +74,6 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
     }
   };
 
-
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
@@ -97,12 +94,22 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
     if (Object.keys(errors).length === 0) {
       setLoad(true);
       try {
-        const response = await postCaller('edit_leads', {
-          leads_id: leadData?.leads_id,
-          email_id: leadData?.email_id ? leadData?.email_id : formData.email_id,
-          mobile_number: leadData?.phone_number ? leadData?.phone_number : formData.mobile_number,
-          address: leadData?.street_address ? leadData?.street_address : formData.address,
-        }, true);
+        const response = await postCaller(
+          'edit_leads',
+          {
+            leads_id: leadData?.leads_id,
+            email_id: leadData?.email_id
+              ? leadData?.email_id
+              : formData.email_id,
+            mobile_number: leadData?.phone_number
+              ? leadData?.phone_number
+              : formData.mobile_number,
+            address: leadData?.street_address
+              ? leadData?.street_address
+              : formData.address,
+          },
+          true
+        );
         if (response.status === 200) {
           toast.success('Lead Updated Succesfully');
           onClose();
@@ -133,12 +140,19 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
 
               <div className={classes.notEditable}>
                 <div className={classes.Column1DetailsEdited_Mode}>
-                  <span className={classes.main_name}> {leadData?.first_name} {leadData?.last_name}{' '}</span>
-                  <span className={classes.mobileNumber}>{leadData?.phone_number}</span>
+                  <span className={classes.main_name}>
+                    {' '}
+                    {leadData?.first_name} {leadData?.last_name}{' '}
+                  </span>
+                  <span className={classes.mobileNumber}>
+                    {leadData?.phone_number}
+                  </span>
                 </div>
                 <div className={classes.Column2Details_Edited_Mode}>
                   <span className={classes.addresshead}>
-                    {leadData?.street_address ? leadData?.street_address : "N/A"}
+                    {leadData?.street_address
+                      ? leadData?.street_address
+                      : 'N/A'}
                   </span>
                   <span className={classes.emailStyle}>
                     {leadData?.email_id}{' '}
@@ -194,16 +208,16 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   onChange={handleInputChange}
                   name="email_id"
                   maxLength={100}
-                // backgroundColor="#9cc3fb"
+                  // backgroundColor="#9cc3fb"
                 />
                 <Input
                   type="text"
-                  value={ formData.address || leadData?.street_address || ''}
+                  value={formData.address || leadData?.street_address || ''}
                   placeholder="12778 Domingo Ct, Parker, COLARDO, 2312"
                   onChange={handleInputChange}
                   name="address"
                   maxLength={100}
-                // backgroundColor="#9cc3fb"
+                  // backgroundColor="#9cc3fb"
                 />
               </div>
 

@@ -10,7 +10,7 @@ interface IState {
   isFormSubmitting: boolean;
   error: string;
   leadsData: any[];
-  leadDetail:any;
+  leadDetail: any;
   isSuccess: boolean;
   totalcount: number;
 }
@@ -61,8 +61,7 @@ const leadManagementSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
         toast.error(action.payload as string);
-      })
-      
+      });
   },
 });
 

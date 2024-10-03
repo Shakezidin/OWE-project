@@ -58,7 +58,7 @@ function App() {
       { path: ROUTES.CONFIG_DEALER_OVER, element: <DealerOverRides /> },
       { path: ROUTES.CONFIG_DEALER_CREDIT, element: <DealerCredit /> },
       { path: ROUTES.CONFIG_SLACK, element: <Slack /> },
-      {path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments />}
+      { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
     ];
   };
 

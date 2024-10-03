@@ -184,10 +184,10 @@
   transform: scale(1.05);
 }
 
-.edit-button-load{
-  opacity: 0.6
+.edit-button-load {
+  opacity: 0.6;
 }
-.edit-button-load:hover{
+.edit-button-load:hover {
   transform: scale(1);
   cursor: not-allowed;
 }

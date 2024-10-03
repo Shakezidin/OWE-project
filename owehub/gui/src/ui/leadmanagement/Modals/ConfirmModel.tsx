@@ -14,7 +14,10 @@ import Pen from '../Modals/Modalimages/Vector.png';
 import { toast } from 'react-toastify';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { format } from 'date-fns';
-import { getLeadById, getLeads } from '../../../redux/apiActions/leadManagement/LeadManagementAction';
+import {
+  getLeadById,
+  getLeads,
+} from '../../../redux/apiActions/leadManagement/LeadManagementAction';
 import { useDispatch } from 'react-redux';
 import useAuth from '../../../hooks/useAuth';
 import MicroLoader from '../../components/loader/MicroLoader';
@@ -22,8 +25,8 @@ import DataNotFound from '../../components/loader/DataNotFound';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
-  leadId?: number
-  refresh?: number,
+  leadId?: number;
+  refresh?: number;
   setRefresh?: (value: number) => void;
 }
 interface LeadData {
@@ -38,7 +41,13 @@ interface LeadData {
   appointment_scheduled_date: string;
   appointment_accepted_date: string;
 }
-const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, refresh, setRefresh }) => {
+const ConfirmaModel: React.FC<EditModalProps> = ({
+  isOpen1,
+  onClose1,
+  leadId,
+  refresh,
+  setRefresh,
+}) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
@@ -70,13 +79,17 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, re
   const handleSendAppointment = async () => {
     setLoad(true);
     try {
-      const response = await postCaller('sent_appointment', {
-        leads_id: leadId,
-        appointment_date: selectedDate
-          ? format(selectedDate, 'dd-MM-yyyy')
-          : '',
-        appointment_time: selectedTime ? selectedTime : '',
-      }, true);
+      const response = await postCaller(
+        'sent_appointment',
+        {
+          leads_id: leadId,
+          appointment_date: selectedDate
+            ? format(selectedDate, 'dd-MM-yyyy')
+            : '',
+          appointment_time: selectedTime ? selectedTime : '',
+        },
+        true
+      );
 
       if (response.status === 200) {
         toast.success('Appointment Sent Successfully');
@@ -105,9 +118,13 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, re
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller('get_lead_info', {
-            "leads_id": leadId
-          }, true);
+          const response = await postCaller(
+            'get_lead_info',
+            {
+              leads_id: leadId,
+            },
+            true
+          );
 
           if (response.status === 200) {
             setLeadData(response.data);
@@ -124,7 +141,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, re
       fetchData();
     }
   }, [isAuthenticated, leadId, isModalOpen]);
-
 
   return (
     <div>
@@ -145,7 +161,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, re
                 </div>
               ) : leadData ? (
                 <div className={classes.pers_det_top}>
-
                   <div className={classes.Column1Details}>
                     <div className={classes.main_name}>
                       {leadData?.first_name} {leadData?.last_name}{' '}
@@ -155,11 +170,15 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, re
                         src={CrossIcon}
                       />
                     </div>
-                    <span className={classes.mobileNumber}>{leadData?.phone_number}</span>
+                    <span className={classes.mobileNumber}>
+                      {leadData?.phone_number}
+                    </span>
                   </div>
                   <div className={classes.Column2Details}>
                     <span className={classes.addresshead}>
-                      {leadData?.street_address ? leadData?.street_address : "N/A"}
+                      {leadData?.street_address
+                        ? leadData?.street_address
+                        : 'N/A'}
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
@@ -238,8 +257,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1, leadId, re
                 )}
               </div>
             </div>
-            <EditModal isOpen={isModalOpen} onClose={handleCloseModal} leadData={leadData} />
-
+            <EditModal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              leadData={leadData}
+            />
             {visibleDiv === 0 && (
               <AppointmentScheduler
                 setVisibleDiv={setVisibleDiv}

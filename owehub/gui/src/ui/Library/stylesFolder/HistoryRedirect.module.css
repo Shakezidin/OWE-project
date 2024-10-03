@@ -22,11 +22,9 @@
   .filtericonHistory {
     margin-top: -2px !important;
   }
- 
 }
 
 @media screen and (max-width: 768px) {
-
   .filtericonHistory {
     display: flex;
     align-items: center;

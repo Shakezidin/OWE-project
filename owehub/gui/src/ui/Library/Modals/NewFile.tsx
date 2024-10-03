@@ -56,13 +56,13 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort }) => {
         <ul className={classes.dropdownMenu}>
           {activeSection === 'folders' ? (
             <>
-              <li 
+              <li
                 className={`${classes.dropdownItem} ${selectedOption === 'Upload folder' ? classes.selected : ''}`}
                 onClick={() => handleOptionClick('Upload folder')}
               >
                 + Upload folder
               </li>
-              <li 
+              <li
                 className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
                 onClick={() => handleOptionClick('New folder')}
               >
@@ -70,7 +70,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort }) => {
               </li>
             </>
           ) : (
-            <li 
+            <li
               className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
               onClick={() => handleOptionClick('Upload file')}
             >
