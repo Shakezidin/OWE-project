@@ -62,17 +62,19 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	// Construct the query to fetch lead data by lead_id
-	whereClause = "WHERE li.leads_id = $1"
-	query := `
-        SELECT
-            li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id,
-            li.created_at, li.appointment_date, li.appointment_scheduled_date, li.appointment_accepted_date, li.appointment_declined_date
-        FROM
-            leads_info li
-        ` + whereClause
+	whereClause = "WHERE li.leads_id = $2" //
+	query := fmt.Sprintf(`
+			SELECT
+				li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.street_address, li.status_id,
+				li.created_at, li.appointment_date, li.appointment_scheduled_date, li.appointment_accepted_date, li.appointment_declined_date
+			FROM
+				get_leads_info_hierarchy($1) li
+			%s
+			`, whereClause)
 
-	whereEleList = append(whereEleList, dataReq.LeadsID)
+	whereEleList = append(whereEleList, authenticatedUserEmail, dataReq.LeadsID)
 
 	// Execute the query
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -82,6 +84,11 @@ func HandleGetLeadInfo(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if len(data) == 0 {
+		log.FuncErrorTrace(0, "No lead info found for given lead id")
+		FormAndSendHttpResp(resp, "No lead info found", http.StatusNotFound, nil)
+		return
+	}
 	// Access the first result (assuming one lead will be returned for the given ID)
 	leadData := data[0]
 

@@ -73,6 +73,22 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// validating start date
+	_, err = time.Parse("02-01-2006", dataReq.StartDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
+		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+		return
+	}
+
+	// validating end date
+	_, err = time.Parse("02-01-2006", dataReq.EndDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
+		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+		return
+	}
+
 	// Calculate for pagination
 	pageSize := dataReq.PageSize
 	pageNumber := dataReq.PageNumber
