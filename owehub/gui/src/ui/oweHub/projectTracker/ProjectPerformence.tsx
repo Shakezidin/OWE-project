@@ -721,14 +721,14 @@ const ProjectPerformence = () => {
 
                   return (
                     <div
+                      key={card.id}
                       className="flex items-center arrow-wrap"
                       style={{ marginRight: '-20px' }}
                     >
                       <div
                         key={card.id}
-                        className={`project-card ${
-                          index === topCardsData.length - 1 ? 'last-card' : ''
-                        } ${isActive ? 'active' : ''}`}
+                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
+                          } ${isActive ? 'active' : ''}`}
                         onMouseEnter={() => setIsHovered(index)}
                         onMouseLeave={() => setIsHovered(-1)}
                         style={{
@@ -979,7 +979,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.qc.qc_action_required_count > 0
+                                          project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1005,7 +1005,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.ntp.action_required_count > 0
+                                          project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }

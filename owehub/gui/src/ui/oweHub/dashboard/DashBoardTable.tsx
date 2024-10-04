@@ -226,7 +226,7 @@ const DashBoardTable = ({
                     <td>{el.contract || 'N/A'}</td>
                     <td>{el.setter || 'N/A'}</td>
                     <td>{el.rep_pay || 'N/A'}</td>
-                    <td>{el.st || 'N/A'}</td>
+                    <td>{el.state || 'N/A'}</td>
                     <td>{el.sub_total || 'N/A'}</td>
                     <td>{el.loan_fee || 'N/A'}</td>
                     <td>{el.draw_amt || 'N/A'}</td>
