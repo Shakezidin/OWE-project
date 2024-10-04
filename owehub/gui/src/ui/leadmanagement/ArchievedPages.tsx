@@ -416,14 +416,27 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                   <React.Fragment key={index}>
                     <tr className={styles.history_lists}>
                       <td
-                        // className={`${(lead.status === 'Declined' || lead.status === 'Action Needed')
-                        //   ? styles.history_list_inner_declined
-                        //   : (leadsData.length > 0
-                        //     ? styles.history_list_inner_Mobile_View
-                        //     :  styles.history_list_inner)}`}
+                      //WORKING CODE RIGHT For MOBILE && PCs
+                        // className={`${
+                        //   lead.status === 'Declined' ||
+                        //   lead.status === 'Action Needed'
+                        //     ? styles.history_list_inner_declined
+                        //     : selectedLeads.length > 0 && isMobile 
+                        //       ?
+                        //         styles.history_list_inner_Mobile_View
+                        //       : styles.history_list_inner
+                        // }`}
+                        // NEED FOR TABLET EDIT
+                        className={`${
+                          lead.status === 'Declined' ||             
+                          lead.status === 'Action Needed'           
+                            ? styles.history_list_inner_declined 
 
-                        // className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                        className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : selectedLeads.length > 0 && isMobile ? styles.history_list_inner_Mobile_View : styles.history_list_inner}`}
+                            : (selectedLeads.length > 0 && isMobile ?
+                              styles.history_list_inner_Mobile_View 
+                               :(selectedLeads.length > 0 && 
+                              isTablet?styles.history_list_inner_Tablet_View :styles.history_list_inner ))
+                        }`}
                         onClick={handleOpenModal}
                       >
                         <label>
@@ -482,7 +495,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                           ' '
                         ) : (
                           <div>
-                            {isMobile ? (
+                            {isMobile || isTablet ? (
                               <div className={styles.BOXDelete}>
                                 <img src={ICONS.DeleteICONBOX} />
                               </div>
@@ -497,7 +510,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                             )}
                           </div>
                         )}
-                        {isMobile ? (
+                        {isMobile || isTablet ? (
                           <div
                             className={styles.chevron_down}
                             onClick={() => handleChevronClick(lead['leads_id'])}
