@@ -227,10 +227,10 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
 
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT intOpsMetSchema.unique_id, intOpsMetSchema.home_owner
-        FROM internal_ops_metrics_schema intOpsMetSchema
-        LEFT JOIN sales_metrics_schema AS salMetSchema 
-            ON intOpsMetSchema.unique_id = salMetSchema.unique_id `
+        SELECT customers_customers_schema.unique_id, customers_customers_schema.customer_name AS home_owner
+        FROM customers_customers_schema
+        LEFT JOIN system_customers_schema 
+            ON customers_customers_schema.unique_id = system_customers_schema.customer_id `
 	return SalesMetricsRetrieveQuery
 }
 
@@ -416,7 +416,7 @@ func QcNtpRetrieveQueryFunc() string {
             customers_customers_schema.state,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date,
-            split_part(sales_metrics_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
+            split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
             CASE 
                 WHEN customers_customers_schema.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
                 ELSE 'Not Needed' 
@@ -446,10 +446,8 @@ func QcNtpRetrieveQueryFunc() string {
             ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
         LEFT JOIN system_customers_schema  
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
-        LEFT JOIN sales_metrics_schema  
-            ON customers_customers_schema.unique_id = sales_metrics_schema.unique_id
         LEFT JOIN prospects_customers_schema 
-                ON split_part(sales_metrics_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
+                ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
     `)
 
 	return filtersBuilder.String()
