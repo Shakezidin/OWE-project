@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { MdKeyboardBackspace } from 'react-icons/md';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoClose } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 const timeSlots = [
   { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
   { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
@@ -23,7 +24,7 @@ const dayWithProgress = [
   { id: 4, date: new Date(2024, 8, 5), progress: 63 },
   { id: 5, date: new Date(2024, 8, 4), progress: 79 },
   { id: 6, date: new Date(2024, 8, 2), progress: 20 },
-  { id: 7, date: new Date(2024, 9, 3), progress: 95 },
+  { id: 7, date: new Date(2024, 9, 4), progress: 95 },
 ];
 interface ITimeSlot {
   id: number;
@@ -58,7 +59,7 @@ const SaleRepCustomerForm = () => {
 
   return (
     <div
-      className={` ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ''} scrollbar`}
+      className={`scrollbar ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ''} `}
     >
       <div
         className={`${styles.form_conatiner} ${step === 2 ? styles.bg_transparent : ''} `}
@@ -75,12 +76,13 @@ const SaleRepCustomerForm = () => {
                 }}
               >
                 {step > 1 && (
-                  <MdKeyboardBackspace
-                    style={{ cursor: 'pointer' }}
-                    className={`curosr-pointer ml3 ${styles.back_btn}`}
-                    color="#fff"
-                    onClick={() => setStep(1)}
-                  />
+                  <div className={`${styles.back_btn} curosr-pointer ml3`}>
+
+                    <MdKeyboardBackspace
+                      style={{ cursor: 'pointer' }}                
+                      onClick={() => setStep(1)}
+                    />
+                  </div>
                 )}
                 <div
                   className={
@@ -93,7 +95,7 @@ const SaleRepCustomerForm = () => {
                       step === 2 && !isSmallScreen ? 'fit-content' : undefined,
                   }}
                 >
-                  <h3>Customer Information</h3>
+                  <h3>Site survey Scheduling Form</h3>
                   <p>Change the customer information if incorrect</p>
                 </div>
               </div>
@@ -118,13 +120,20 @@ const SaleRepCustomerForm = () => {
             className="flex items-center flex-column justify-center"
             style={{ width: '100%', height: '500px' }}
           >
-            <h3 className={shardeStyles.survey_success_message}>
-              Site survey scheduled 👍
-            </h3>
-            <h5 className={shardeStyles.selected_time}>
+             <h5 className={` mb2  ${shardeStyles.selected_time}`} style={{fontSize:18,fontWeight:300}}>
               {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
               {selectedTime?.time}{' '}
             </h5>
+            <h3 className={`${shardeStyles.survey_success_message} text-center mb2`}>
+              Site survey appointment information submitted 👍
+            </h3>
+            <p  style={{fontSize:14,textAlign:"center",fontWeight:300}}>The team will review the information and schedule the survey. 
+              <br />
+              You will be notified via email once the arrangements are made</p>
+             
+            <Link to="/login" className={styles.navigate_btn} >
+            Go to dashboard
+            </Link>
           </div>
         )}
         <div className="flex">

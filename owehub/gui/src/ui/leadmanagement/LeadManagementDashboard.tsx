@@ -45,6 +45,7 @@ import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
+import useMatchMedia from '../../hooks/useMatchMedia';
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -502,6 +503,8 @@ const LeadManagementDashboard = () => {
   const [refresh, setRefresh] = useState(1);
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
+  const isMobile = useMatchMedia('(max-width: 1024px)');
+
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -623,6 +626,17 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
+  const [isArcModalOpen, setIsArcModalOpen] = useState(false);
+  const handleOpenArcModal = () => {
+    console.log("click on arch")
+    setIsArcModalOpen(true);
+    console.log(isArcModalOpen)
+  };
+
+  const handleCloseArcModal = () => {
+    setIsArcModalOpen(false);
+  };
+
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
@@ -693,6 +707,7 @@ const LeadManagementDashboard = () => {
   const [pieData, setPieData] = useState<StatusData[]>([]);
   const [totalValue, setTotalValue] = useState<number>(0);
   const [archive, setArchive] = useState(false);
+  const [ref, setRef] = useState(0);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -742,7 +757,7 @@ const LeadManagementDashboard = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates]);
+  }, [isAuthenticated, selectedDates, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -791,7 +806,7 @@ const LeadManagementDashboard = () => {
         status_id: statusId,
         is_archived: archive,
         page_size: 10,
-        page_number: page,
+        page_number: archive ? 1 : page,
       };
 
       dispatch(getLeads(data));
@@ -805,6 +820,7 @@ const LeadManagementDashboard = () => {
     page,
     currentFilter,
     refresh,
+    ref
   ]);
 
   useEffect(() => {
@@ -841,7 +857,6 @@ const LeadManagementDashboard = () => {
     setArchived(false);
   };
 
-  console.log(currentFilter, 'sajhgdhjasgdhj');
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -858,21 +873,25 @@ const LeadManagementDashboard = () => {
         </div>
       </div>
 
-      {showConfirmModal && (
-        <ConfirmModel
-          isOpen1={isModalOpen}
-          onClose1={handleCloseModal}
-          leadId={leadId}
-          refresh={refresh}
-          setRefresh={setRefresh}
-        />
-      )}
 
-      {showArchiveModal && (
-        <ArchiveModal
-        // isOpen={filterOPen} handleClose={filterClose}
-        />
-      )}
+      <ConfirmModel
+        isOpen1={isModalOpen}
+        onClose1={handleCloseModal}
+        leadId={leadId}
+        refresh={refresh}
+        setRefresh={setRefresh}
+      />
+
+
+
+      <ArchiveModal
+        isArcOpen={isArcModalOpen}
+        onArcClose={handleCloseArcModal}
+        leadId={leadId}
+        activeIndex={ref}
+        setActiveIndex={setRef}
+      />
+
 
       <div className={styles.chartGrid}>
         <div className={styles.card}>
@@ -1011,6 +1030,10 @@ const LeadManagementDashboard = () => {
                       boxShadow: '0 0 0 1px #377CF6',
                       caretColor: '#3E3E3E',
                     },
+                    '&:hover': {
+                      borderColor: '#377CF6',
+                      boxShadow: '0 0 0 1px #377CF6',
+                    },
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
@@ -1118,7 +1141,13 @@ const LeadManagementDashboard = () => {
       </div>
 
       <div className={styles.card}>
-        {archive == true && <ArchivedPages setArchive={setArchive} />}
+        {archive == true && (
+          <ArchivedPages
+            setArchive={setArchive}
+            activeIndex={ref}
+            setActiveIndex={setRef}
+          />
+        )}
         {archive == false && (
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             {selectedLeads.length === 0 ? (
@@ -1220,21 +1249,24 @@ const LeadManagementDashboard = () => {
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${
-                            lead.status === 'Declined' ||
+                          className={`${lead.status === 'Declined' ||
                             lead.status === 'Action Needed'
-                              ? styles.history_list_inner_declined
-                              : styles.history_list_inner
-                          }`}
+                            ? styles.history_list_inner_declined
+                            : styles.history_list_inner
+                            }`}
                           onClick={(e) => {
                             setLeadId(lead['leads_id']);
-                            if (!(e.target as HTMLElement).closest('label')) {
+                            if (
+                              !(e.target as HTMLElement).closest('label') &&
+                              !(e.target as HTMLElement).closest(`.${styles.chevron_down}`)
+                            )  {
                               if (
                                 currentFilter !== 'Declined' &&
                                 currentFilter !== 'Action Needed'
                               ) {
                                 handleOpenModal();
                               }
+
                             }
                           }}
                         >
@@ -1267,17 +1299,21 @@ const LeadManagementDashboard = () => {
                           <div className={styles.email}>
                             <span>
                               {lead.email_id}
-                              <img
-                                className="ml1"
-                                height={15}
-                                width={15}
-                                src={ICONS.complete}
-                                alt="verified"
-                              />
                             </span>
+                            <img
+                              className="ml1"
+                              height={15}
+                              width={15}
+                              src={ICONS.complete}
+                              alt="verified"
+                            />
                           </div>
                           <div className={styles.address}>
-                            {lead.street_address ? lead.street_address : 'N/A'}
+                            {lead?.street_address
+                              ? lead.street_address.length >= 20
+                                ? `${lead.street_address.slice(0, 45)}...`
+                                : lead.street_address
+                              : 'N/A'}
                           </div>
 
                           {currentFilter === 'Declined' && (
@@ -1299,7 +1335,7 @@ const LeadManagementDashboard = () => {
                                 </button>
                               ) : (
                                 <button
-                                  onClick={() => handleArchive(lead)}
+                                  onClick={() => handleOpenArcModal()}
                                   className={styles.archiveButton}
                                 >
                                   Archive
@@ -1341,7 +1377,7 @@ const LeadManagementDashboard = () => {
                         </td>
                       </tr>
 
-                      {toggledId.includes(lead['leads_id']) && (
+                      {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
                             <div className={''}>{lead.phone_number}</div>
@@ -1358,8 +1394,10 @@ const LeadManagementDashboard = () => {
                               </span>
                             </div>
                             <div className={''}>
-                              {lead.street_address
-                                ? lead.street_address
+                              {lead?.street_address
+                                ? lead.street_address.length > 20
+                                  ? `${lead.street_address.slice(0, 20)}...`
+                                  : lead.street_address
                                 : 'N/A'}
                             </div>
                           </td>
