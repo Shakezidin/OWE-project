@@ -273,7 +273,12 @@ const PendingQueue = () => {
                 value={search}
                 name="Search for Unique ID or Name"
                 onChange={(e) => {
-                  setSearch(e.target.value);
+                  const input = e.target.value;
+                  const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+
+                  if (regex.test(input)) {
+                    setSearch(input); // Only update state if input is valid
+                  }
                 }}
               />
             </div>
