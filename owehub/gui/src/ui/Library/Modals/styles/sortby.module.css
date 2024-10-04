@@ -22,6 +22,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  cursor: pointer;
 }
 .logo_sortby_botton:hover {
   border: 1px solid #377cf6;
