@@ -9,8 +9,6 @@ import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
 import { ICONS } from '../../resources/icons/Icons';
-
-// shams start
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -20,10 +18,8 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../components/loader/MicroLoader';
 import DataNotFound from '../components/loader/DataNotFound';
 
-
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
-
 }
 
 export type DateRangeWithLabel = {
@@ -31,10 +27,6 @@ export type DateRangeWithLabel = {
   start: Date;
   end: Date;
 };
-
-
-
-// shams end
 
 type Lead = {
   id: string;
@@ -44,8 +36,6 @@ type Lead = {
   address: string;
   status: string;
 };
-
-
 
 const leads = [
   {
@@ -194,9 +184,6 @@ const leads = [
   },
 ];
 
-
-
-
 const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
   const [selectedMonth, setSelectedMonth] = useState('Aug');
   const [activeIndex, setActiveIndex] = useState(0);
@@ -209,6 +196,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
+  const isMobile = width <= 767;
 
   // shams start
   const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
@@ -218,13 +206,10 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
 
-
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
-  const [toggledId, setToggledId] = useState<string | null>(null);
-
-
+  const [toggledId, setToggledId] = useState<number[]>([]);
 
   const handleClickOutside = (event: Event) => {
     if (
@@ -257,6 +242,12 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
   const Unarchived = () => {
     setArchive(false);
   };
+  const handleChevronClick = (itemId: number) => {
+    console.log(itemId);
+    setToggledId((prevToggledId) =>
+      prevToggledId.includes(itemId) ? [] : [itemId]
+    );
+  };
 
   const RemoveArchived = () => {
     navigate('/lead-mgmt-success-modal');
@@ -264,17 +255,15 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
 
   const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
-      prev.includes(leadId) ? prev.filter((id) => id !== leadId) : [...prev, leadId]
+      prev.includes(leadId)
+        ? prev.filter((id) => id !== leadId)
+        : [...prev, leadId]
     );
   };
-
-  console.log(selectedLeads, "wtf i am doing")
-
 
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
   };
-  console.log('currentFilter', currentFilter);
 
   const toggleLeadExpansion = (leadId: string) => {
     setExpandedLeads((prev) =>
@@ -299,12 +288,16 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
 
   const deleteLeads = async () => {
     try {
-      const response = await postCaller('delete_lead', {
-         ids: selectedLeads,
-      },true);
-  
+      const response = await postCaller(
+        'delete_lead',
+        {
+          ids: selectedLeads,
+        },
+        true
+      );
+
       if (response.status === 200) {
-        toast.success("Leads deleted successfully");
+        toast.success('Leads deleted successfully');
       } else {
         toast.warn(response.message);
       }
@@ -312,8 +305,6 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
       console.error('Error deleting leads:', error);
     }
   };
-
-
 
   return (
     <div>
@@ -340,7 +331,6 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                     className={styles.CrossICONBTNHover1}
                   />
                 )}
-
               </span>
               <span>
                 {selectedLeads.length === 0 ? '' : <>{selectedLeads.length} </>}
@@ -353,47 +343,38 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
             <div className={styles.SecondChildContain}>
               <div className={styles.ConditionButtonArea}>
                 {selectedLeads.length > 0 ? (
-                  <div className={styles.ConditionalButtons} style={{ visibility: 'visible' }}>
+                  <div
+                    className={styles.ConditionalButtons}
+                    style={{ visibility: 'visible' }}
+                  >
                     <div className={styles.selectionHeader}>
-
-                      <button
-                        className={styles.archieveButtonA}
-
-                      >
+                      <button className={styles.archieveButtonA}>
                         Unarchive
                       </button>
-                    </div> <div >
-
+                    </div>{' '}
+                    <div>
                       <button
                         className={styles.archieveButtonX}
                         onClick={deleteLeads}
                       >
                         Remove
                       </button>
-                    </div></div>
-
+                    </div>
+                  </div>
                 ) : (
-
-
-                  <div className={styles.ConditionalButtons} style={{ visibility: 'hidden' }}>
+                  <div
+                    className={styles.ConditionalButtons}
+                    style={{ visibility: 'hidden' }}
+                  >
                     <div className={styles.selectionHeader}>
-
-
-                      <button
-                        className={styles.archieveButtonA}
-
-                      >
+                      <button className={styles.archieveButtonA}>
                         Archived
                       </button>
-                    </div> <div >
-
-                      <button
-                        className={styles.archieveButtonX}
-
-                      >
-                        Remove
-                      </button>
-                    </div></div>
+                    </div>{' '}
+                    <div>
+                      <button className={styles.archieveButtonX}>Remove</button>
+                    </div>
+                  </div>
                 )}
               </div>
 
@@ -414,8 +395,6 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                     style={{ display: 'none' }}
                   />
                 )}
-
-
               </div>
             </div>
           </div>
@@ -423,80 +402,55 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
 
         <div className={styles.cardContent}>
           <table className={styles.table}>
-          <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={leadsData.length}>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <MicroLoader />
-                      </div>
-                    </td>
-                  </tr>
-                ) : leadsData.length > 0 ? (
-                  leadsData.map((lead: any, index: number) => (
-                <React.Fragment key={index}>
-                  <tr className={styles.history_lists}>
-                    <td
-                      className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                      onClick={handleOpenModal}
-                    >
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={selectedLeads.includes(lead["leads_id "])}
-                          onChange={() => handleLeadSelection(lead["leads_id "])}
-                        />
-                      </label>
-                      <div
-                        className={styles.user_name}
-                        onClick={() =>
-                          currentFilter == 'Pending' && handleDetailModal(lead)
-                        }
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={leadsData.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : leadsData.length > 0 ? (
+                leadsData.map((lead: any, index: number) => (
+                  <React.Fragment key={index}>
+                    <tr className={styles.history_lists}>
+                      <td
+                        // className={`${(lead.status === 'Declined' || lead.status === 'Action Needed')
+                        //   ? styles.history_list_inner_declined
+                        //   : (leadsData.length > 0
+                        //     ? styles.history_list_inner_Mobile_View
+                        //     :  styles.history_list_inner)}`}
+
+                        // className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
+                        className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : selectedLeads.length > 0 && isMobile ? styles.history_list_inner_Mobile_View : styles.history_list_inner}`}
+                        onClick={handleOpenModal}
                       >
-                        <h2>{lead.first_name} {lead.last_name}</h2>
-                        <p>
-                          {lead.leads_status ? lead.leads_status : 'N/A'}
-                        </p>
-                      </div>
-                      <div className={styles.phone_number}>{lead.phone_number}</div>
-                      <div className={styles.email}>
-                        <span>
-                          {lead.email_id}
-                          <img
-                            className="ml1"
-                            height={15}
-                            width={15}
-                            src={ICONS.complete}
-                            alt="verified"
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={selectedLeads.includes(lead['leads_id'])}
+                            onChange={() =>
+                              handleLeadSelection(lead['leads_id'])
+                            }
                           />
-                        </span>
-                      </div>
-                      <div className={styles.address}>{lead.street_address ? lead.street_address : "N/A"}</div>
-                      {selectedLeads.length > 0 ? " " : <div>
-                        <button
-                          className={styles.UnArchiveButton}
-                          onClick={Unarchived} disabled={selectedLeads.length > 1}
+                        </label>
+                        <div
+                          className={styles.user_name}
+                          onClick={() =>
+                            currentFilter == 'Pending' &&
+                            handleDetailModal(lead)
+                          }
                         >
-                          Unarchive
-                        </button>
-                      </div>}
-
-
-
-                      {selectedLeads.length > 0 ? " " : <div><button
-                        className={styles.removeButton}
-                        onClick={deleteLeads}
-                        // disabled={selectedLeads.length > 1}
-                      >
-                        Remove
-                      </button></div>}
-                    </td>
-                  </tr>
-                  {toggledId === lead.id && (
-                    <tr>
-                      <td colSpan={5} className={styles.detailsRow}>
-                        <div className={''}>{lead.phone}</div>
-                        <div className={''}>
+                          <h2>
+                            {lead.first_name} {lead.last_name}
+                          </h2>
+                          <p>{lead.leads_status ? lead.leads_status : 'N/A'}</p>
+                        </div>
+                        <div className={styles.phone_number}>
+                          {lead.phone_number}
+                        </div>
+                        <div className={styles.email}>
                           <span>
                             {lead.email_id}
                             <img
@@ -508,22 +462,117 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                             />
                           </span>
                         </div>
-                        <div className={''}>{lead.street_address}</div>
+                        <div className={styles.address}>
+                          {lead.street_address ? lead.street_address : 'N/A'}
+                        </div>
+                        {selectedLeads.length > 0 ? (
+                          ' '
+                        ) : (
+                          <div>
+                            <button
+                              className={styles.UnArchiveButton}
+                              onClick={Unarchived}
+                              disabled={selectedLeads.length > 1}
+                            >
+                              Unarchive
+                            </button>
+                          </div>
+                        )}
+                        {selectedLeads.length > 0 ? (
+                          ' '
+                        ) : (
+                          <div>
+                            {isMobile ? (
+                              <div className={styles.BOXDelete}>
+                                <img src={ICONS.DeleteICONBOX} />
+                              </div>
+                            ) : (
+                              <button
+                                className={styles.removeButton}
+                                onClick={deleteLeads}
+                              >
+                                {' '}
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        )}
+                        {isMobile ? (
+                          <div
+                            className={styles.chevron_down}
+                            onClick={() => handleChevronClick(lead['leads_id'])}
+                          >
+                            <img
+                              src={
+                                toggledId.includes(lead['leads_id'])
+                                  ? ICONS.chevronUp
+                                  : ICONS.chevronDown
+                              }
+                              alt={
+                                toggledId.includes(lead['leads_id'])
+                                  ? 'chevronUp-icon'
+                                  : 'chevronDown-icon'
+                              }
+                            />
+                          </div>
+                        ) : (
+                          ''
+                        )}
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-             ))
-            ) : (
-              <tr style={{ border: 0 }}>
-                <td colSpan={10}>
-                  <DataNotFound />
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
+                    {toggledId.includes(lead['leads_id']) && (
+                      <tr>
+                        <td colSpan={5} className={styles.detailsRow}>
+                          <div className={''}>{lead.phone_number}</div>
+                          <div className={''}>
+                            <span>
+                              {lead.email_id}
+                              <img
+                                className="ml1"
+                                height={15}
+                                width={15}
+                                src={ICONS.complete}
+                                alt="verified"
+                              />
+                            </span>
+                          </div>
+                          <div className={''}>
+                            {lead.street_address ? lead.street_address : 'N/A'}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    {toggledId === lead.id && (
+                      <tr>
+                        <td colSpan={5} className={styles.detailsRow}>
+                          <div className={''}>{lead.phone}</div>
+                          <div className={''}>
+                            <span>
+                              {lead.email_id}
+                              <img
+                                className="ml1"
+                                height={15}
+                                width={15}
+                                src={ICONS.complete}
+                                alt="verified"
+                              />
+                            </span>
+                          </div>
+                          <div className={''}>{lead.street_address}</div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <DataNotFound />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

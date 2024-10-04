@@ -40,7 +40,7 @@ interface HistoryTableProp {
   deal_won_date: string | null;
   deal_lost_date: string | null;
   proposal_sent_date: string | null;
-  timeline: any
+  timeline: any;
 }
 
 export type DateRangeWithLabel = {
@@ -225,8 +225,6 @@ const LeradManagementHistory = () => {
     };
   }, []);
 
- 
-
   const [selectedValue, setSelectedValue] = useState<number>(-1);
 
   const handleSortingChange = (value: number) => {
@@ -252,17 +250,21 @@ const LeradManagementHistory = () => {
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller('leads_history', {
-            leads_status: selectedValue,
-            start_date: selectedDates.startDate
-              ? format(selectedDates.startDate, 'dd-MM-yyyy')
-              : '',
-            end_date: selectedDates.endDate
-              ? format(selectedDates.endDate, 'dd-MM-yyyy')
-              : '',
-            page_size: itemsPerPage,
-            page_number: page,
-          },true);
+          const response = await postCaller(
+            'leads_history',
+            {
+              leads_status: selectedValue,
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+              page_size: itemsPerPage,
+              page_number: page,
+            },
+            true
+          );
 
           if (response.status > 201) {
             toast.error(response.data.message);
@@ -332,8 +334,8 @@ const LeradManagementHistory = () => {
               <div className={styles.top_filters}>
                 <div>
                   {isMobile &&
-                    selectedDates.startDate &&
-                    selectedDates.endDate ? (
+                  selectedDates.startDate &&
+                  selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -352,32 +354,32 @@ const LeradManagementHistory = () => {
                   ) : null}
                 </div>
                 <div className={styles.filters}>
-                <div className={styles.lead__datepicker_wrapper}>
-                  {isCalendarOpen && (
-                    <div
-                      className={styles.lead__datepicker_content}
-                      ref={dateRangeRef}
-                    >
-                      <DateRange
-                        editableDateInputs={true}
-                        onChange={handleRangeChange}
-                        moveRangeOnFirstSelection={false}
-                        ranges={selectedRanges}
-                      />
-                      <div className={styles.lead__datepicker_btns}>
-                        <button className="reset-calender" onClick={onReset}>
-                          Reset
-                        </button>
-                        <button className="apply-calender" onClick={onApply}>
-                          Apply
-                        </button>
+                  <div className={styles.lead__datepicker_wrapper}>
+                    {isCalendarOpen && (
+                      <div
+                        className={styles.lead__datepicker_content}
+                        ref={dateRangeRef}
+                      >
+                        <DateRange
+                          editableDateInputs={true}
+                          onChange={handleRangeChange}
+                          moveRangeOnFirstSelection={false}
+                          ranges={selectedRanges}
+                        />
+                        <div className={styles.lead__datepicker_btns}>
+                          <button className="reset-calender" onClick={onReset}>
+                            Reset
+                          </button>
+                          <button className="apply-calender" onClick={onApply}>
+                            Apply
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </div>
                   {!isMobile &&
-                    selectedDates.startDate &&
-                    selectedDates.endDate ? (
+                  selectedDates.startDate &&
+                  selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -512,11 +514,11 @@ const LeradManagementHistory = () => {
                 style={
                   expandedItemIds.includes(item.leads_id)
                     ? {
-                      width: '100%',
-                      backgroundColor: '#EEF5FF',
-                      borderTopLeftRadius: '8px',
-                      borderTopRightRadius: '8px',
-                    }
+                        width: '100%',
+                        backgroundColor: '#EEF5FF',
+                        borderTopLeftRadius: '8px',
+                        borderTopRightRadius: '8px',
+                      }
                     : {}
                 }
                 className={styles.history_lists}
@@ -615,14 +617,28 @@ const LeradManagementHistory = () => {
 
                         <div className={styles.history_list_activities}>
                           {item.timeline.map((activity: any, index: number) => (
-                            <div key={index} className={styles.history_list_activity_det}>
+                            <div
+                              key={index}
+                              className={styles.history_list_activity_det}
+                            >
                               <div className={styles.circle_with_line}>
                                 <div className={styles.line1}></div>
                                 <div className={styles.circle}></div>
                               </div>
                               <div className={styles.activity_info}>
-                                <div className={styles.act_head}>{activity.label}</div>
-                                <div className={styles.act_date}>{new Date(activity.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                                <div className={styles.act_head}>
+                                  {activity.label}
+                                </div>
+                                <div className={styles.act_date}>
+                                  {new Date(activity.date).toLocaleDateString(
+                                    'en-US',
+                                    {
+                                      day: 'numeric',
+                                      month: 'short',
+                                      year: 'numeric',
+                                    }
+                                  )}
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -658,7 +674,10 @@ const LeradManagementHistory = () => {
                       >
                         <div className={styles.history_list_head}>Activity</div>
                         {item.timeline.map((activity: any, index: number) => (
-                          <div key={index} className={styles.history_list_activity_det}>
+                          <div
+                            key={index}
+                            className={styles.history_list_activity_det}
+                          >
                             <div className={styles.circle_with_line}>
                               <div className={styles.line_mob}></div>
                               <div className={styles.circle_mob}></div>
@@ -667,7 +686,16 @@ const LeradManagementHistory = () => {
                               <div className={styles.act_head}>
                                 {activity.label}
                               </div>
-                              <div className={styles.act_date}>{new Date(activity.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                              <div className={styles.act_date}>
+                                {new Date(activity.date).toLocaleDateString(
+                                  'en-US',
+                                  {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric',
+                                  }
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -683,7 +711,7 @@ const LeradManagementHistory = () => {
         </div>
 
         {!!totalCount && (
-          <div className="page_heading_container">
+          <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex} of {totalCount} item
             </p>
