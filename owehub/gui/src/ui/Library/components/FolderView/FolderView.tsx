@@ -4,7 +4,7 @@ import styles from './folderView.module.css';
 import { format } from 'date-fns';
 
 interface FolderViewProps {
-  onCheckboxChange: (isChecked: boolean, index: number) => void;
+  onCheckboxChange: (isChecked: boolean, index: number, id:string) => void;
   sortOption: 'none' | 'name' | 'date' | 'size';
   checkedFolders: number[];
   folderData:FileOrFolder[];
@@ -56,11 +56,13 @@ function FolderView({
     setMyFolderData(sortedData);
   }, [sortOption]);
   useEffect(()=>{
-    console.log(myFolderData, "This is folder data");
-  },[]);
+    setMyFolderData(folderData);
+  },[folderData]);
+
+  
   return (
     <div className={styles.folderMain_wrapper}>
-      {myFolderData.map((folder) => (
+      {myFolderData.map((folder,index) => (
         <div
           className={styles.folderDiv}
           key={folder.id}
@@ -83,8 +85,9 @@ function FolderView({
                     : styles.hidden
                 }`}
                 type="checkbox"
-                onChange={(e) => onCheckboxChange(e.target.checked, parseInt(folder.id))}
-                checked={checkedFolders.includes(parseInt(folder.id))}
+                onChange={(e) => onCheckboxChange(e.target.checked, index,folder.id)}
+                checked={checkedFolders.includes(index)}
+
               />
             </div>
           </div>
