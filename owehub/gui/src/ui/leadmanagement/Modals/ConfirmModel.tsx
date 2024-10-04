@@ -80,9 +80,10 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     setLoad(true);
     try {
       const response = await postCaller(
-        'sent_appointment',
+        'update_lead_status',
         {
           leads_id: leadId,
+          status_id: 1,
           appointment_date: selectedDate
             ? format(selectedDate, 'dd-MM-yyyy')
             : '',
@@ -176,9 +177,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   </div>
                   <div className={classes.Column2Details}>
                     <span className={classes.addresshead}>
-                      {leadData?.street_address
-                        ? leadData?.street_address
-                        : 'N/A'}
+                    {leadData?.street_address
+                      ? leadData.street_address.length > 20
+                        ? `${leadData.street_address.slice(0, 20)}...`
+                        : leadData.street_address
+                      : 'N/A'}
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
