@@ -400,7 +400,7 @@ const ProjectPerformence = () => {
           startDate: '',
           endDate: '',
           uniqueId: searchValue ? searchValue : '',
-          selected_milestone: selectedMilestone,
+          selected_milestone: activeCardId ? selectedMilestone : '',
           project_status:
             activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
           dealer_names: selectedDealer.map((item) => item.value),
@@ -417,6 +417,7 @@ const ProjectPerformence = () => {
     activeTab,
     selectedDealer,
     isFetched,
+    activeCardId
   ]);
 
   useEffect(() => {
@@ -831,9 +832,13 @@ const ProjectPerformence = () => {
                   value={search}
                   name="Search for Unique ID or Name"
                   onChange={(e) => {
-                    if (e.target.value.length <= 50) {
+                    const input = e.target.value;
+                    const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+
+                    // Check if input contains valid characters and length is <= 50
+                    if (regex.test(input) && input.length <= 50) {
+                      setSearch(input);
                       handleSearchChange(e);
-                      setSearch(e.target.value);
                     }
                   }}
                 />
