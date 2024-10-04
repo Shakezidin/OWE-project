@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classes from './styles/newfile.module.css';
+import CreateNewFolderLibrary from './CreateNewFolderLibrary';
+import LibraryModel from '../components/LibraryModals (1)/LibraryModals/LibModal';
+
 
 interface NewFileProps {
   activeSection: 'files' | 'folders' | 'dropdown' | null;
@@ -10,20 +13,33 @@ type Option = 'Upload folder' | 'New folder' | 'Upload file';
 
 const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isVisibleNewFolder, setIsVisibleNewFolder] = useState(false);
+  const [isVisibleuploadFile,setIsVisibleuploadFile]=useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
 
   const handleClick = () => {
     setIsVisible(!isVisible);
+    setIsVisibleuploadFile(false);
+
+  };
+  const handleClickNewFolder = () => {
+    setIsVisibleNewFolder(!isVisibleNewFolder);
+    
   };
 
-  const handleOptionClick = (option: Option) => {
-    setSelectedOption(option);
-    if (onSort) {
-      onSort(option);
-    }
-    setIsVisible(false);
+  const handleOptionClick = () => {
+    setIsVisibleuploadFile(!isVisibleuploadFile);
   };
+
+  const handleOptionClickFile=()=>{
+    
+    setIsVisibleuploadFile(!isVisibleuploadFile);
+    console.log("hello")
+   
+     
+    
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,30 +72,44 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort }) => {
         <ul className={classes.dropdownMenu}>
           {activeSection === 'folders' ? (
             <>
-              <li
+              <li 
                 className={`${classes.dropdownItem} ${selectedOption === 'Upload folder' ? classes.selected : ''}`}
-                onClick={() => handleOptionClick('Upload folder')}
+                onClick={handleOptionClick}
               >
                 + Upload folder
               </li>
-              <li
+              {isVisibleuploadFile &&  (<LibraryModel/>)}
+              <li 
                 className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
-                onClick={() => handleOptionClick('New folder')}
+                onClick={handleClickNewFolder}
               >
                 + New folder
               </li>
+              {isVisibleNewFolder && (<CreateNewFolderLibrary setIsVisibleNewFolder={setIsVisibleNewFolder} onDelete={function (): void {
+                throw new Error('Function not implemented.');
+              } }/>)}
+           
             </>
           ) : (
-            <li
-              className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
-              onClick={() => handleOptionClick('Upload file')}
-            >
-              + Upload file
-            </li>
+            <>
+            <li className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
+              onClick={handleOptionClickFile}>
+                   + Upload file
+                   
+                   </li>
+                   {isVisibleuploadFile &&  (<LibraryModel/>)}
+                   
+                  
+           
+               
+            </>  
           )}
+         
         </ul>
+        
       )}
     </div>
+    
   );
 };
 

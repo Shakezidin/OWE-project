@@ -5,6 +5,7 @@
   max-width: 620px;
   width: 620px;
   height: 289px;
+  border: 1px solid #377CF6;
 }
 
 .success_header {
@@ -22,7 +23,8 @@
   color: #101828;
   margin-left: 33px;
 }
-.success_crossimg {
+.success_crossing:hover {
+  cursor: pointer;
 }
 .success_hrline {
   border: 1px solid #000000;
