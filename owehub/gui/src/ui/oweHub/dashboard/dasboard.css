@@ -368,7 +368,7 @@
   background-color: var(--children-bg-color);
   padding: 0.5rem 1.2rem;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   height: calc(100vh - 64px);
   scroll-behavior: smooth;
 }
