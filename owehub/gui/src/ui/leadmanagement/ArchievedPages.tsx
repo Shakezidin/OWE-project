@@ -410,7 +410,13 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                           </span>
                         </div>
                         <div className={styles.address}>
-                          {lead.street_address ? lead.street_address : 'N/A'}
+                          {/* {lead.street_address ? lead.street_address : 'N/A'} */}
+                       
+                                 {lead?.street_address
+                          ? lead.street_address.length > 20
+                            ? `${lead.street_address.slice(0, 20)}...`
+                            : lead.street_address
+                          : 'N/A'}
                         </div>
                         {selectedLeads.length > 0 ? (
                           ' '
@@ -507,7 +513,13 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                             </span>
                           </div>
                           <div className={''}>
-                            {lead.street_address ? lead.street_address : 'N/A'}
+                            {/* {lead.street_address ? lead.street_address : 'N/A'} */}
+                            
+                                 {lead?.street_address
+                          ? lead.street_address.length > 20
+                            ? `${lead.street_address.slice(0, 20)}...`
+                            : lead.street_address
+                          : 'N/A'}
                           </div>
                         </td>
                       </tr>
@@ -528,7 +540,15 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                               />
                             </span>
                           </div>
-                          <div className={''}>{lead.street_address}</div>
+                          <div className={''}>
+                         
+                                 {lead?.street_address
+                          ? lead.street_address.length > 20
+                            ? `${lead.street_address.slice(0, 20)}...`
+                            : lead.street_address
+                          : 'N/A'}
+                            {/* {lead.street_address} */}
+                            </div>
                         </td>
                       </tr>
                     )}
