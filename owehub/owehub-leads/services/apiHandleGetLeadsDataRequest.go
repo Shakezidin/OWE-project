@@ -140,7 +140,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				
 			FROM get_leads_info_hierarchy($1) li
 			%s
-			LIMIT $5 OFFSET $6
+			ORDER BY li.updated_at DESC
+			LIMIT $5 OFFSET $6;
 		`, whereClause)
 
 		whereEleList = append(whereEleList,
