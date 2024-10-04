@@ -611,7 +611,11 @@ const LeradManagementHistory = () => {
                         />
                       </div>
                       <div className={styles.address}>
-                        {item.street_address ? item.street_address : 'N/A'}
+                        {item?.street_address
+                          ? item.street_address.length > 20
+                            ? `${item.street_address.slice(0, 20)}...`
+                            : item.street_address
+                          : 'N/A'}
                       </div>
                     </>
                   )}
@@ -698,7 +702,12 @@ const LeradManagementHistory = () => {
                         />
                       </div>
                       <div className={styles.address}>
-                        {item.street_address ? item.street_address : 'N/A'}
+
+                        {item?.street_address
+                          ? item.street_address.length > 20
+                            ? `${item.street_address.slice(0, 20)}...`
+                            : item.street_address
+                          : 'N/A'}
                       </div>
                     </div>
 
