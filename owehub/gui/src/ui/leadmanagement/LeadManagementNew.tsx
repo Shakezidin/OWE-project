@@ -154,6 +154,7 @@ const LeadManagementNew = () => {
         console.error('Error submitting form:', error);
       }
     }
+    navigate('/leadmng-dashboard')
   };
 
   const resetFormData = () => {
