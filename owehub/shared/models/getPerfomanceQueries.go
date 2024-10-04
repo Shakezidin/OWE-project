@@ -281,10 +281,10 @@ func ProjectMngmntRetrieveQueryFunc() string {
         ntp_ntp_schema.ahj, 
         customers_customers_schema.project_status, 
         customers_customers_schema.state, 
-        --CASE
-           -- WHEN ((system_customers_schema.contracted_system_size_parent IS NULL) OR (system_customers_schema.contracted_system_size_parent <= (0)::double precision)) THEN (0)::double precision
-            --ELSE (customers_customers_schema.total_system_cost/ (system_customers_schema.contracted_system_size_parent * (1000)::double precision))
-       -- END AS epc,
+        CASE
+            WHEN ((system_customers_schema.contracted_system_size_parent IS NULL) OR (system_customers_schema.contracted_system_size_parent <= (0)::double precision)) THEN (0)::double precision
+            ELSE (customers_customers_schema.total_system_cost_calc_h/ (system_customers_schema.contracted_system_size_parent * (1000)::double precision))
+        END AS epc,
         customers_customers_schema.total_system_cost AS contract_total, 
         ntp_ntp_schema.finance AS finance_company, 
         ntp_ntp_schema.net_epc,
