@@ -238,6 +238,8 @@ const LeradManagementHistory = () => {
   const { authData, saveAuthData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [historyTable, setHistoryTable] = useState<HistoryTableProp[]>([]);
+  const [refresh, setRefresh] = useState(1);
+  const [remove, setRemove] = useState(false);
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
@@ -286,7 +288,7 @@ const LeradManagementHistory = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates, itemsPerPage, page, selectedValue]);
+  }, [isAuthenticated, selectedDates, itemsPerPage, page, selectedValue, refresh]);
 
   const handlePeriodChange = (
     selectedOption: SingleValue<DateRangeWithLabel>
@@ -301,6 +303,31 @@ const LeradManagementHistory = () => {
       setSelectedDates({ startDate: null, endDate: null });
       setSelectedPeriod(null);
     }
+  };
+
+  const deleteLeads = async () => {
+    setRemove(true);
+    try {
+      const response = await postCaller(
+        'delete_lead',
+        {
+          ids: selectedItemIds,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        setRefresh((prev) => (prev + 1));
+        toast.success('Lead History deleted successfully');
+        setRemove(false);
+        handleCrossClick();
+      } else {
+        toast.warn(response.message);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+    }
+    setRemove(false);
   };
 
   const handlePerPageChange = (selectedPerPage: number) => {
@@ -334,8 +361,8 @@ const LeradManagementHistory = () => {
               <div className={styles.top_filters}>
                 <div>
                   {isMobile &&
-                  selectedDates.startDate &&
-                  selectedDates.endDate ? (
+                    selectedDates.startDate &&
+                    selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -378,8 +405,8 @@ const LeradManagementHistory = () => {
                     )}
                   </div>
                   {!isMobile &&
-                  selectedDates.startDate &&
-                  selectedDates.endDate ? (
+                    selectedDates.startDate &&
+                    selectedDates.endDate ? (
                     <div className={styles.hist_date}>
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
@@ -425,6 +452,10 @@ const LeradManagementHistory = () => {
                           borderColor: '#377CF6',
                           boxShadow: '0 0 0 1px #377CF6',
                           caretColor: '#3E3E3E',
+                        },
+                        '&:hover': {
+                          borderColor: '#377CF6',
+                          boxShadow: '0 0 0 1px #377CF6',
                         },
                       }),
                       placeholder: (baseStyles) => ({
@@ -493,7 +524,11 @@ const LeradManagementHistory = () => {
             </>
           )}
           {checkedCount != 0 && (
-            <div className={styles.lead_his_remove}>Remove</div>
+            <div style={{
+              pointerEvents: remove ? 'none' : 'auto',
+              opacity: remove ? 0.6 : 1,
+              cursor: remove ? 'not-allowed' : 'pointer',
+            }} onClick={deleteLeads} className={styles.lead_his_remove}>{remove ? "Removing..." : "Remove"}</div>
           )}
         </div>
 
@@ -514,11 +549,11 @@ const LeradManagementHistory = () => {
                 style={
                   expandedItemIds.includes(item.leads_id)
                     ? {
-                        width: '100%',
-                        backgroundColor: '#EEF5FF',
-                        borderTopLeftRadius: '8px',
-                        borderTopRightRadius: '8px',
-                      }
+                      width: '100%',
+                      backgroundColor: '#EEF5FF',
+                      borderTopLeftRadius: '8px',
+                      borderTopRightRadius: '8px',
+                    }
                     : {}
                 }
                 className={styles.history_lists}

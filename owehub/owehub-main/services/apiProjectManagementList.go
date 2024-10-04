@@ -193,7 +193,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf("salMetSchema.dealer = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 		whereAdded = true
 	}
@@ -205,10 +205,10 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		filtersBuilder.WriteString(" AND ")
 	}
 	// Add the always-included filters
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		if !whereAdded {
@@ -226,7 +226,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` customers_customers_schema.project_status IN (%s)`, statusList))
 	}
 
 	filters = filtersBuilder.String()
@@ -257,7 +257,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString("salMetSchema.primary_sales_rep IN (")
+		filtersBuilder.WriteString("customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -278,7 +278,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(fmt.Sprintf("salMetSchema.dealer = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
@@ -291,10 +291,10 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 	}
 
 	filtersBuilder.WriteString(`
-		intOpsMetSchema.unique_id IS NOT NULL
-		AND intOpsMetSchema.unique_id <> ''
-		AND intOpsMetSchema.system_size IS NOT NULL
-		AND intOpsMetSchema.system_size > 0`)
+		customers_customers_schema.unique_id IS NOT NULL
+		AND customers_customers_schema.unique_id <> ''
+		AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+		AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	// Handle the project status filter
 	if len(dataFilter.ProjectStatus) > 0 {
@@ -313,7 +313,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.project_status IN (%s)", statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.project_status IN (%s)", statusList))
 	}
 
 	filters = filtersBuilder.String()
@@ -348,7 +348,7 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.dealer IN (%s) ", strings.Join(placeholders, ",")))
 		for _, dealer := range dealerList {
 			whereEleList = append(whereEleList, dealer)
 		}
@@ -360,10 +360,10 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 		filtersBuilder.WriteString(" WHERE")
 		whereAdded = true
 	}
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		var statusValues []string
@@ -371,9 +371,9 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
 		}
 		statusList := strings.Join(statusValues, ", ")
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()
