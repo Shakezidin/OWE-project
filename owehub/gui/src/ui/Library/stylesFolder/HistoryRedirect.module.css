@@ -9,7 +9,7 @@
   /* transition: all 0.3s ease; */
 }
 .filtericonHistory:hover{
-  
+  background-color: #ddebff;
   transform: scale(1.05);
 
 }
