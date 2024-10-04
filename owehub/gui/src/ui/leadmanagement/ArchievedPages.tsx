@@ -20,6 +20,8 @@ import DataNotFound from '../components/loader/DataNotFound';
 
 interface HistoryRedirectProps {
   setArchive: (value: boolean) => void;
+  activeIndex: number;
+  setActiveIndex: (value: number | ((prev: number) => number)) => void;
 }
 
 export type DateRangeWithLabel = {
@@ -37,162 +39,15 @@ type Lead = {
   status: string;
 };
 
-const leads = [
-  {
-    id: '1',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '2',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '3',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '4',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Pending',
-  },
-  {
-    id: '5',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '6',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'adamsamson8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '7',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Kilewanditcho8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '8',
-    name: 'Adam Samson',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Sent',
-  },
-  {
-    id: '9',
-    name: 'Rabindra Kumar Sharma',
-    phone: '+00 876472822',
-    email: 'rabindr718@gmail.com',
-    address: 'Patel Nagar, Dehradun, UK',
-    status: 'Accepted',
-  },
-  {
-    id: '10',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Declined',
-  },
-  {
-    id: '11',
-    name: 'Adam',
-    phone: '+00 876472822',
-    email: 'adam8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '12',
-    name: 'Kilewan dicho',
-    phone: '+00 876472822',
-    email: 'Paul mark8772@gmail.com',
-    address: '12778 Domingo Ct, 1233Parker, CO',
-    status: 'Accepted',
-  },
-  {
-    id: '13',
-    name: 'XYZ Name',
-    phone: '+00 876472822',
-    email: 'xyz8772@gmail.com',
-    address: '12778 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '14',
-    name: 'Virendra Sehwag',
-    phone: '+00 876472822',
-    email: 'sehwag8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Action Needed',
-  },
-  {
-    id: '15',
-    name: 'Bhuvneshwar Kumar',
-    phone: '+00 876472822',
-    email: 'bhuvi8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'No Response',
-  },
-  {
-    id: '16',
-    name: 'Jasprit Bumrah',
-    phone: '+00 876472822',
-    email: 'jasprit8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Update Status',
-  },
-  {
-    id: '17',
-    name: 'Risabh Pant',
-    phone: '+00 876472822',
-    email: 'rp8772@gmail.com',
-    address: 'haridwar, Delhi',
-    status: 'No Response',
-  },
-  {
-    id: '18',
-    name: 'Virat Kohli',
-    phone: '+00 876472822',
-    email: 'king8772@gmail.com',
-    address: '12333 Domingo Ct',
-    status: 'Deal Won',
-  },
-];
 
-const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
+
+const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedirectProps) => {
   const [selectedMonth, setSelectedMonth] = useState('Aug');
-  const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
-  const [filteredLeads, setFilteredLeads] = useState(leads);
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
+
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -231,17 +86,12 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, []);
-  // shams end
-  const itemsPerPage = 5;
-  const navigate = useNavigate();
 
   const onClickCrossIconBotton = () => {
     setArchive(false);
   };
 
-  const Unarchived = () => {
-    setArchive(false);
-  };
+
   const handleChevronClick = (itemId: number) => {
     console.log(itemId);
     setToggledId((prevToggledId) =>
@@ -249,9 +99,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
     );
   };
 
-  const RemoveArchived = () => {
-    navigate('/lead-mgmt-success-modal');
-  };
+
 
   const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
@@ -265,13 +113,6 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
     setShowConfirmModal(true); // Show detail modal
   };
 
-  const toggleLeadExpansion = (leadId: string) => {
-    setExpandedLeads((prev) =>
-      prev.includes(leadId)
-        ? prev.filter((id) => id !== leadId)
-        : [...prev, leadId]
-    );
-  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
@@ -286,7 +127,13 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
     (state) => state.leadManagmentSlice
   );
 
+  const [pending, setPending] = useState(false);
+  const [pending1, setPending1] = useState(false);
+  const [pending2, setPending2] = useState(false);
+  const [pending3, setPending3] = useState(false);
+
   const deleteLeads = async () => {
+    setPending(true)
     try {
       const response = await postCaller(
         'delete_lead',
@@ -297,6 +144,8 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
       );
 
       if (response.status === 200) {
+        setSelectedLeads([]);
+        setActiveIndex((prev) => (prev + 1));
         toast.success('Leads deleted successfully');
       } else {
         toast.warn(response.message);
@@ -304,6 +153,82 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
     } catch (error) {
       console.error('Error deleting leads:', error);
     }
+    setPending(false);
+  };
+
+  const unArchiveLeads = async () => {
+    setPending1(true)
+    try {
+      const response = await postCaller(
+        'toggle_archive',
+        {
+          ids: selectedLeads,
+          is_archived: false,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        setSelectedLeads([]);
+        setActiveIndex((prev) => (prev + 1));
+        toast.success('Leads Unarcived successfully');
+      } else {
+        toast.warn(response.message);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+    }
+    setPending1(false)
+  };
+
+  const deleteLead = async (leadId: number) => {
+    setPending2(true)
+    try {
+      const response = await postCaller(
+        'delete_lead',
+        {
+          ids: [leadId],
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        setActiveIndex((prev) => (prev + 1));
+        setSelectedLeads(prevSelectedLeads =>
+          prevSelectedLeads.filter(id => id !== leadId)
+        );
+        toast.success('Lead deleted successfully');
+      } else {
+        toast.warn(response.message);
+      }
+    } catch (error) {
+      console.error('Error deleting lead:', error);
+    }
+    setPending2(false)
+  };
+
+  const handleUnArchiveSelected = async (leadId: number) => {
+    setPending3(true);
+    try {
+      const response = await postCaller(
+        'toggle_archive',
+        {
+          ids: [leadId],
+          is_archived: false,
+        },
+        true
+      );
+      if (response.status === 200) {
+        setActiveIndex((prev) => (prev + 1));
+        toast.success('Leads UnArchieved successfully');
+        setSelectedLeads([]);
+      } else {
+        toast.warn(response.message);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+    }
+    setPending3(false);
   };
 
   return (
@@ -312,7 +237,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
         <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
       )}
 
-      {showArchiveModal && <ArchiveModal />}
+      {/* {showArchiveModal && <ArchiveModal />} */}
 
       <div className={styles.card}>
         <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
@@ -348,16 +273,25 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                     style={{ visibility: 'visible' }}
                   >
                     <div className={styles.selectionHeader}>
-                      <button className={styles.archieveButtonA}>
-                        Unarchive
+                      <button className={styles.archieveButtonA} onClick={unArchiveLeads} style={{
+                        pointerEvents: pending1 ? 'none' : 'auto',
+                        opacity: pending1 ? 0.6 : 1,
+                        cursor: pending1 ? 'not-allowed' : 'pointer',
+                      }}>
+                        {pending1 ? "Unarchiving..." : "Unarchive"}
                       </button>
                     </div>{' '}
                     <div>
                       <button
                         className={styles.archieveButtonX}
                         onClick={deleteLeads}
+                        style={{
+                          pointerEvents: pending ? 'none' : 'auto',
+                          opacity: pending ? 0.6 : 1,
+                          cursor: pending ? 'not-allowed' : 'pointer',
+                        }}
                       >
-                        Remove
+                        {pending ? "Removing..." : "Remove"}
                       </button>
                     </div>
                   </div>
@@ -368,7 +302,7 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                   >
                     <div className={styles.selectionHeader}>
                       <button className={styles.archieveButtonA}>
-                        Archived
+                        Archive
                       </button>
                     </div>{' '}
                     <div>
@@ -484,10 +418,17 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                           <div>
                             <button
                               className={styles.UnArchiveButton}
-                              onClick={Unarchived}
+                              onClick={() => {
+                                handleUnArchiveSelected(lead.leads_id);
+                              }}
                               disabled={selectedLeads.length > 1}
+                              style={{
+                                pointerEvents: pending3 ? 'none' : 'auto',
+                                opacity: pending3 ? 0.6 : 1,
+                                cursor: pending3 ? 'not-allowed' : 'pointer',
+                              }}
                             >
-                              Unarchive
+                              {pending3 ? "Unarchiving..." : "Unarchive"}
                             </button>
                           </div>
                         )}
@@ -496,16 +437,32 @@ const ArchivedPages = ({ setArchive }: HistoryRedirectProps) => {
                         ) : (
                           <div>
                             {isMobile || isTablet ? (
-                              <div className={styles.BOXDelete}>
+                              <div className={styles.BOXDelete}
+                                onClick={() => {
+                                  deleteLead(lead.leads_id);
+                                }}
+                                style={{
+                                  pointerEvents: pending2 ? 'none' : 'auto',
+                                  opacity: pending2 ? 0.6 : 1,
+                                  cursor: pending2 ? 'not-allowed' : 'pointer',
+                                }}
+                              >
                                 <img src={ICONS.DeleteICONBOX} />
                               </div>
                             ) : (
                               <button
                                 className={styles.removeButton}
-                                onClick={deleteLeads}
+                                onClick={() => {
+                                  deleteLead(lead.leads_id);
+                                }}
+                                style={{
+                                  pointerEvents: pending2 ? 'none' : 'auto',
+                                  opacity: pending2 ? 0.6 : 1,
+                                  cursor: pending2 ? 'not-allowed' : 'pointer',
+                                }}
                               >
                                 {' '}
-                                Remove
+                                {pending2 ? "Removing..." : "Remove"}
                               </button>
                             )}
                           </div>

@@ -139,10 +139,6 @@ function App() {
             element={<LeradManagementHistory />}
           />
           <Route
-            path={ROUTES.LEAD_MANAGEMENT_SUCCESS_MODAl}
-            element={<LeadManamentSucessModel />}
-          />
-          <Route
             path={ROUTES.SCHEDULE_SALES_REP_SURVEY}
             element={<SchedulerBar />}
           />

@@ -623,6 +623,17 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
+  const [isArcModalOpen, setIsArcModalOpen] = useState(false);
+  const handleOpenArcModal = () => {
+    console.log("click on arch")
+    setIsArcModalOpen(true);
+    console.log(isArcModalOpen)
+  };
+
+  const handleCloseArcModal = () => {
+    setIsArcModalOpen(false);
+  };
+
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
   const { authData, saveAuthData } = useAuth();
@@ -693,6 +704,7 @@ const LeadManagementDashboard = () => {
   const [pieData, setPieData] = useState<StatusData[]>([]);
   const [totalValue, setTotalValue] = useState<number>(0);
   const [archive, setArchive] = useState(false);
+  const [ref, setRef] = useState(0);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -742,7 +754,7 @@ const LeadManagementDashboard = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates]);
+  }, [isAuthenticated, selectedDates, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -805,6 +817,7 @@ const LeadManagementDashboard = () => {
     page,
     currentFilter,
     refresh,
+    ref
   ]);
 
   useEffect(() => {
@@ -841,7 +854,6 @@ const LeadManagementDashboard = () => {
     setArchived(false);
   };
 
-  console.log(currentFilter, 'sajhgdhjasgdhj');
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -858,7 +870,7 @@ const LeadManagementDashboard = () => {
         </div>
       </div>
 
-      {showConfirmModal && (
+     
         <ConfirmModel
           isOpen1={isModalOpen}
           onClose1={handleCloseModal}
@@ -866,13 +878,17 @@ const LeadManagementDashboard = () => {
           refresh={refresh}
           setRefresh={setRefresh}
         />
-      )}
+   
 
-      {showArchiveModal && (
+    
         <ArchiveModal
-        // isOpen={filterOPen} handleClose={filterClose}
+          isArcOpen={isArcModalOpen}
+          onArcClose={handleCloseArcModal}
+          leadId={leadId}
+          activeIndex={ref}
+          setActiveIndex={setRef}
         />
-      )}
+      
 
       <div className={styles.chartGrid}>
         <div className={styles.card}>
@@ -1011,6 +1027,10 @@ const LeadManagementDashboard = () => {
                       boxShadow: '0 0 0 1px #377CF6',
                       caretColor: '#3E3E3E',
                     },
+                    '&:hover': {
+                      borderColor: '#377CF6',
+                      boxShadow: '0 0 0 1px #377CF6',
+                    },
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
@@ -1118,7 +1138,13 @@ const LeadManagementDashboard = () => {
       </div>
 
       <div className={styles.card}>
-        {archive == true && <ArchivedPages setArchive={setArchive} />}
+        {archive == true && (
+          <ArchivedPages
+            setArchive={setArchive}
+            activeIndex={ref}
+            setActiveIndex={setRef}
+          />
+        )}
         {archive == false && (
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             {selectedLeads.length === 0 ? (
@@ -1220,12 +1246,11 @@ const LeadManagementDashboard = () => {
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${
-                            lead.status === 'Declined' ||
+                          className={`${lead.status === 'Declined' ||
                             lead.status === 'Action Needed'
-                              ? styles.history_list_inner_declined
-                              : styles.history_list_inner
-                          }`}
+                            ? styles.history_list_inner_declined
+                            : styles.history_list_inner
+                            }`}
                           onClick={(e) => {
                             setLeadId(lead['leads_id']);
                             if (!(e.target as HTMLElement).closest('label')) {
@@ -1235,6 +1260,7 @@ const LeadManagementDashboard = () => {
                               ) {
                                 handleOpenModal();
                               }
+                             
                             }
                           }}
                         >
@@ -1299,7 +1325,7 @@ const LeadManagementDashboard = () => {
                                 </button>
                               ) : (
                                 <button
-                                  onClick={() => handleArchive(lead)}
+                                  onClick={() => handleOpenArcModal()}
                                   className={styles.archiveButton}
                                 >
                                   Archive
