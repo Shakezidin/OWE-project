@@ -88,7 +88,7 @@ const customers = [
   },
   {
     roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
+    home_owner: 'Jon Jones',
     customer_email: 'Alexsimon322@gmail.com',
     customer_phone_number: '(831) 544-1235',
     system_size: '450 KW',
@@ -237,7 +237,11 @@ const CustomersList = () => {
                           className={styles.name_icon}
                         >
                           <span>
-                            {customer.home_owner.slice(0, 2).toUpperCase()}
+                            {customer.home_owner
+                              .split(' ')
+                              .map((name) => name[0]) 
+                              .join('') 
+                              .toUpperCase()}{' '}
                           </span>
                         </div>
                         {customer.home_owner}
