@@ -1860,6 +1860,12 @@
   .progress-box {
     border-radius: 4px !important;
   }
+  .pipeline-header-btns{
+    padding-right: 12px;
+  }
+  .top-btns-wrapper{
+    padding-bottom: 0 !important;
+  }
 }
 
 @media (max-width: 1280px) {
@@ -1884,6 +1890,11 @@
   .top-btns-wrapper {
     flex-direction: column;
     flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .pipeline-header-btns{
+    padding-right: 0;
   }
 
   .pipeline-header-btns .desktop-btn {
