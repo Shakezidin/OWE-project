@@ -107,10 +107,6 @@ type Lead = {
   status: string;
 };
 
-
-
-
-
 const leads = [
   {
     id: '1',
@@ -452,7 +448,7 @@ const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [filteredLeads, setFilteredLeads] = useState(leads);
-  const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
+  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
@@ -460,9 +456,10 @@ const LeadManagementDashboard = () => {
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   // shams start
-  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(
-    periodFilterOptions.find((option) => option.label === 'This Week') || null
-  );
+  const [selectedPeriod, setSelectedPeriod] =
+    useState<DateRangeWithLabel | null>(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
@@ -502,6 +499,9 @@ const LeadManagementDashboard = () => {
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
   const totalPage = Math.ceil(totalCount / 10);
+  const [refresh, setRefresh] = useState(1);
+  const [archived, setArchived] = useState(false);
+  const [leadId, setLeadId] = useState(0);
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -587,20 +587,12 @@ const LeadManagementDashboard = () => {
     );
   };
 
-
-
-  const handleLeadSelection = (lead: Lead) => {
+  const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
-      prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
+      prev.includes(leadId)
+        ? prev.filter((id) => id !== leadId)
+        : [...prev, leadId]
     );
-  };
-
-  const handleArchiveSelected = () => {
-    // Implement the logic to remove selected leads
-    setFilteredLeads((prev) =>
-      prev.filter((lead) => !selectedLeads.includes(lead))
-    );
-    setSelectedLeads([]);
   };
 
   const handleReschedule = (lead: any) => {
@@ -619,9 +611,7 @@ const LeadManagementDashboard = () => {
   const handleChevronClick = (itemId: number) => {
     console.log(itemId);
     setToggledId((prevToggledId) =>
-      prevToggledId.includes(itemId)
-        ? []
-        : [itemId]
+      prevToggledId.includes(itemId) ? [] : [itemId]
     );
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -632,7 +622,6 @@ const LeadManagementDashboard = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -651,14 +640,18 @@ const LeadManagementDashboard = () => {
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller('get_periodic_won_lost_leads', {
-            start_date: selectedDates.startDate
-              ? format(selectedDates.startDate, 'dd-MM-yyyy')
-              : '',
-            end_date: selectedDates.endDate
-              ? format(selectedDates.endDate, 'dd-MM-yyyy')
-              : '',
-            },true);
+          const response = await postCaller(
+            'get_periodic_won_lost_leads',
+            {
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+            },
+            true
+          );
 
           if (response.status === 200) {
             const apiData = response.data.periodic_list;
@@ -706,26 +699,36 @@ const LeadManagementDashboard = () => {
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller('get_leads_count_by_status', {
-            start_date: selectedDates.startDate
-              ? format(selectedDates.startDate, 'dd-MM-yyyy')
-              : '',
-            end_date: selectedDates.endDate
-              ? format(selectedDates.endDate, 'dd-MM-yyyy')
-              : '',
-          },true);
+          const response = await postCaller(
+            'get_leads_count_by_status',
+            {
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+            },
+            true
+          );
 
           if (response.status === 200) {
             const apiData = response.data.leads;
-            const formattedData = apiData.reduce((acc: DefaultData, item: any) => {
-              acc[item.status_name] = {
-                name: defaultData[item.status_name].name,
-                value: item.count,
-                color: defaultData[item.status_name].color,
-              };
-              return acc;
-            }, {} as DefaultData);
-            const mergedData = Object.values({ ...defaultData, ...formattedData }) as StatusData[];
+            const formattedData = apiData.reduce(
+              (acc: DefaultData, item: any) => {
+                acc[item.status_name] = {
+                  name: defaultData[item.status_name].name,
+                  value: item.count,
+                  color: defaultData[item.status_name].color,
+                };
+                return acc;
+              },
+              {} as DefaultData
+            );
+            const mergedData = Object.values({
+              ...defaultData,
+              ...formattedData,
+            }) as StatusData[];
             setPieData(mergedData);
           } else if (response.status > 201) {
             toast.error(response.data.message);
@@ -749,7 +752,6 @@ const LeadManagementDashboard = () => {
 
     calculateTotalValue();
   }, [pieData]);
-
 
   const dispatch = useAppDispatch();
   const { isLoading, leadsData, totalcount } = useAppSelector(
@@ -779,7 +781,6 @@ const LeadManagementDashboard = () => {
           statusId = 0;
       }
 
-
       const data = {
         start_date: selectedDates.startDate
           ? format(selectedDates.startDate, 'dd-MM-yyyy')
@@ -795,13 +796,52 @@ const LeadManagementDashboard = () => {
 
       dispatch(getLeads(data));
     }
-  }, [selectedDates, archive, isAuthenticated, itemsPerPage, page, currentFilter]);
+  }, [
+    selectedDates,
+    isModalOpen,
+    archive,
+    isAuthenticated,
+    itemsPerPage,
+    page,
+    currentFilter,
+    refresh,
+  ]);
 
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
     }
-  }, [leadsData])
+  }, [leadsData]);
+
+  const handleArchiveSelected = async () => {
+    setArchived(true);
+    try {
+      const response = await postCaller(
+        'toggle_archive',
+        {
+          ids: selectedLeads,
+          is_archived: true,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Leads Archieved successfully');
+        setSelectedLeads([]);
+        setRefresh((prev) => prev + 1);
+        setArchived(false);
+      } else {
+        toast.warn(response.message);
+        setArchived(false);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+      setArchived(false);
+    }
+    setArchived(false);
+  };
+
+  console.log(currentFilter, 'sajhgdhjasgdhj');
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -819,7 +859,13 @@ const LeadManagementDashboard = () => {
       </div>
 
       {showConfirmModal && (
-        <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
+        <ConfirmModel
+          isOpen1={isModalOpen}
+          onClose1={handleCloseModal}
+          leadId={leadId}
+          refresh={refresh}
+          setRefresh={setRefresh}
+        />
       )}
 
       {showArchiveModal && (
@@ -836,47 +882,51 @@ const LeadManagementDashboard = () => {
           </div>
           <div className={styles.cardContent}>
             {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <MicroLoader />
               </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart className={styles.pieChart}>
+                    <Pie
+                      activeIndex={activeIndex}
+                      activeShape={renderActiveShape}
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      onClick={handlePieClick}
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className={styles.legend}>
+                  {pieData.map((item) => (
+                    <div key={item.name} className={styles.legendItem}>
+                      <div
+                        className={styles.legendColor}
+                        style={{ backgroundColor: item.color }}
+                      ></div>
+                      <span className={styles.legendText}>{item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
-              lineData.length > 0 ? (
-                <>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <PieChart className={styles.pieChart}>
-                      <Pie
-                        activeIndex={activeIndex}
-                        activeShape={renderActiveShape}
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        onClick={handlePieClick}
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className={styles.legend}>
-                    {pieData.map((item) => (
-                      <div key={item.name} className={styles.legendItem}>
-                        <div
-                          className={styles.legendColor}
-                          style={{ backgroundColor: item.color }}
-                        ></div>
-                        <span className={styles.legendText}>{item.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <DataNotFound />
-              )
+              <DataNotFound />
             )}
           </div>
         </div>
@@ -912,29 +962,25 @@ const LeadManagementDashboard = () => {
               {selectedDates.startDate && selectedDates.endDate && (
                 <div className={styles.hist_date}>
                   <span className={styles.date_display}>
-                    {
-                      selectedDates.startDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
+                    {selectedDates.startDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                    }) +
                       ' ' +
                       selectedDates.startDate.toLocaleDateString('en-US', {
                         month: 'short',
                       }) +
-                      ', ' +
-                      selectedDates.startDate.getFullYear()
-                    }
+                      ' ' +
+                      selectedDates.startDate.getFullYear()}
                     {' - '}
-                    {
-                      selectedDates.endDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
+                    {selectedDates.endDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                    }) +
                       ' ' +
                       selectedDates.endDate.toLocaleDateString('en-US', {
                         month: 'short',
                       }) +
-                      ', ' +
-                      selectedDates.endDate.getFullYear()
-                    }
+                      ' ' +
+                      selectedDates.endDate.getFullYear()}
                   </span>
                 </div>
               )}
@@ -983,13 +1029,11 @@ const LeadManagementDashboard = () => {
                   option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: '13px',
-                    fontWeight: "400",
+                    fontWeight: '400',
                     color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
                     backgroundColor: state.isSelected ? '#fffff' : '#fffff',
                     '&:hover': {
-                      backgroundColor: state.isSelected
-                        ? '#ddebff'
-                        : '#ddebff',
+                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
                     },
                     cursor: 'pointer',
                   }),
@@ -1018,63 +1062,64 @@ const LeadManagementDashboard = () => {
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
             {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <MicroLoader />
               </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer
+                  className={styles.chart_main_grid}
+                  width="100%"
+                  height={300}
+                >
+                  <LineChart data={lineData}>
+                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend
+                      className={styles.lineChart_legend}
+                      formatter={(value) =>
+                        value === 'won' ? 'Total won' : 'Total Lost'
+                      }
+                      wrapperStyle={{
+                        fontSize: '12px',
+                        fontWeight: 550,
+                        marginBottom: -15,
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="won"
+                      stroke="#57B93A"
+                      strokeWidth={2}
+                      name="won"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="lost"
+                      stroke="#CD4040"
+                      strokeWidth={2}
+                      name="lost"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </>
             ) : (
-              lineData.length > 0 ? (
-                <>
-                  <ResponsiveContainer
-                    className={styles.chart_main_grid}
-                    width="100%"
-                    height={300}
-                  >
-                    <LineChart data={lineData}>
-                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend
-                        className={styles.lineChart_legend}
-                        formatter={(value) =>
-                          value === 'won' ? 'Total won' : 'Total Lost'
-                        }
-                        wrapperStyle={{
-                          fontSize: '12px',
-                          fontWeight: 550,
-                          marginBottom: -15,
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="won"
-                        stroke="#57B93A"
-                        strokeWidth={2}
-                        name="won"
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="lost"
-                        stroke="#CD4040"
-                        strokeWidth={2}
-                        name="lost"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </>
-              ) : (
-                <DataNotFound />
-              )
+              <DataNotFound />
             )}
           </div>
         </div>
       </div>
 
       <div className={styles.card}>
-        {
-          archive == true &&
-          <ArchivedPages setArchive={setArchive} />
-        }
-        {archive == false &&
+        {archive == true && <ArchivedPages setArchive={setArchive} />}
+        {archive == false && (
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             {selectedLeads.length === 0 ? (
               <>
@@ -1128,7 +1173,6 @@ const LeadManagementDashboard = () => {
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
                 </div>
-
               </>
             ) : (
               <div className={styles.selectionHeader}>
@@ -1142,24 +1186,31 @@ const LeadManagementDashboard = () => {
                   <span>{selectedLeads.length} Selected</span>
                 </div>
                 <button
+                  style={{
+                    pointerEvents: archived ? 'none' : 'auto',
+                    opacity: archived ? 0.6 : 1,
+                    cursor: archived ? 'not-allowed' : 'pointer',
+                  }}
                   className={styles.removeButton}
                   onClick={handleArchiveSelected}
+                  disabled={archived}
                 >
-                  Archived
+                  {archived ? 'Archiving...' : 'Archive'}
                 </button>
               </div>
             )}
           </div>
-        }
-
+        )}
         <div className={styles.cardContent}>
-          {archive == false &&
+          {archive == false && (
             <table className={styles.table}>
               <tbody>
                 {isLoading ? (
                   <tr>
                     <td colSpan={leadsData.length}>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
                         <MicroLoader />
                       </div>
                     </td>
@@ -1169,33 +1220,50 @@ const LeadManagementDashboard = () => {
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                          onClick={() =>
+                          className={`${
                             lead.status === 'Declined' ||
-                              lead.status === 'Action Needed'
-                              ? ''
-                              : handleOpenModal()
-                          }
+                            lead.status === 'Action Needed'
+                              ? styles.history_list_inner_declined
+                              : styles.history_list_inner
+                          }`}
+                          onClick={(e) => {
+                            setLeadId(lead['leads_id']);
+                            if (!(e.target as HTMLElement).closest('label')) {
+                              if (
+                                currentFilter !== 'Declined' &&
+                                currentFilter !== 'Action Needed'
+                              ) {
+                                handleOpenModal();
+                              }
+                            }
+                          }}
                         >
                           <label>
                             <input
                               type="checkbox"
-                              checked={selectedLeads.includes(lead)}
-                              onChange={() => handleLeadSelection(lead)}
+                              checked={selectedLeads.includes(lead['leads_id'])}
+                              onChange={() =>
+                                handleLeadSelection(lead['leads_id'])
+                              }
                             />
                           </label>
                           <div
                             className={styles.user_name}
                             onClick={() =>
-                              currentFilter == 'Pending' && handleDetailModal(lead)
+                              currentFilter == 'Pending' &&
+                              handleDetailModal(lead)
                             }
                           >
-                            <h2>{lead.first_name} {lead.last_name}</h2>
+                            <h2>
+                              {lead.first_name} {lead.last_name}
+                            </h2>
                             <p style={{ color: getStatusColor(currentFilter) }}>
                               {currentFilter}
                             </p>
                           </div>
-                          <div className={styles.phone_number}>{lead.phone_number}</div>
+                          <div className={styles.phone_number}>
+                            {lead.phone_number}
+                          </div>
                           <div className={styles.email}>
                             <span>
                               {lead.email_id}
@@ -1208,12 +1276,16 @@ const LeadManagementDashboard = () => {
                               />
                             </span>
                           </div>
-                          <div className={styles.address}>{lead.city ? lead.city : "N/A"}</div>
+                          <div className={styles.address}>
+                            {lead.street_address ? lead.street_address : 'N/A'}
+                          </div>
 
                           {currentFilter === 'Declined' && (
                             <div className={styles.actionButtons}>
                               <button
-                                onClick={() => handleReschedule(lead)}
+                                onClick={() => {
+                                  handleOpenModal();
+                                }}
                                 className={styles.rescheduleButton}
                               >
                                 Reschedule
@@ -1239,7 +1311,9 @@ const LeadManagementDashboard = () => {
                           {currentFilter === 'Action Needed' && (
                             <div className={styles.actionButtons}>
                               <button
-                                onClick={() => handleReschedule(lead)}
+                                onClick={() => {
+                                  handleOpenModal();
+                                }}
                                 className={styles.rescheduleButton}
                               >
                                 Reschedule
@@ -1249,17 +1323,16 @@ const LeadManagementDashboard = () => {
 
                           <div
                             className={styles.chevron_down}
-                            onClick={() => handleChevronClick(lead["leads_id "])}
-
+                            onClick={() => handleChevronClick(lead['leads_id'])}
                           >
                             <img
                               src={
-                                toggledId.includes(lead["leads_id "])
+                                toggledId.includes(lead['leads_id'])
                                   ? ICONS.chevronUp
                                   : ICONS.chevronDown
                               }
                               alt={
-                                toggledId.includes(lead["leads_id "])
+                                toggledId.includes(lead['leads_id'])
                                   ? 'chevronUp-icon'
                                   : 'chevronDown-icon'
                               }
@@ -1268,7 +1341,7 @@ const LeadManagementDashboard = () => {
                         </td>
                       </tr>
 
-                      {toggledId.includes(lead["leads_id "]) && (
+                      {toggledId.includes(lead['leads_id']) && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
                             <div className={''}>{lead.phone_number}</div>
@@ -1284,7 +1357,11 @@ const LeadManagementDashboard = () => {
                                 />
                               </span>
                             </div>
-                            <div className={''}>{lead.city ? lead.city : "N/A"}</div>
+                            <div className={''}>
+                              {lead.street_address
+                                ? lead.street_address
+                                : 'N/A'}
+                            </div>
                           </td>
                         </tr>
                       )}
@@ -1299,12 +1376,10 @@ const LeadManagementDashboard = () => {
                 )}
               </tbody>
             </table>
-          }
-
+          )}
 
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
-
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
                   {startIndex} - {endIndex} of {totalcount} item

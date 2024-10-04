@@ -39,6 +39,7 @@ import LeadManamentSucessModel from './ui/leadmanagement/Modals/LeaderManamentSu
 import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap';
 import SaleRepCustomerForm from './ui/scheduler/SaleRepCustomerForm/SaleRepCustomerForm';
 import ArchivedPages from './ui/leadmanagement/ArchievedPages';
+import DealerPayments from './ui/oweHub/configure/dealerPayments/DealerPayments';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -57,6 +58,7 @@ function App() {
       { path: ROUTES.CONFIG_DEALER_OVER, element: <DealerOverRides /> },
       { path: ROUTES.CONFIG_DEALER_CREDIT, element: <DealerCredit /> },
       { path: ROUTES.CONFIG_SLACK, element: <Slack /> },
+      { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
     ];
   };
 

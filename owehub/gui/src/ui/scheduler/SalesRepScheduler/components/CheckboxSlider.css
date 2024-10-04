@@ -19,19 +19,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #f1f1f1;
   transition: 0.4s;
   border-radius: 34px;
+  height: 20px;
+  width: 34px;
 }
 
 .check-slider:before {
   position: absolute;
   content: '';
-  height: 13px;
-  width: 13px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #d4d4d4;
   transition: 0.4s;
   border-radius: 50%;
 }

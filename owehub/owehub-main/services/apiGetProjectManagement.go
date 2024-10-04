@@ -173,18 +173,12 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	var filtersBuilder strings.Builder
-	whereEleList = nil
-	filtersBuilder.WriteString(fmt.Sprintf(
-		"SELECT c.current_live_cad, c.system_sold_er, c.podio_link, n.production_discrepancy, "+
-			"n.finance_ntp_of_project, n.utility_bill_uploaded, n.powerclerk_signatures_complete,"+
-			"n.over_net_3point6_per_w, n.premium_panel_adder_10c, n.change_order_status "+
-			"FROM customers_customers_schema c "+
-			"LEFT JOIN ntp_ntp_schema n ON c.unique_id = n.unique_id "+
-			"WHERE c.unique_id = '%s'", uniqueId)) // Check if there are filters
+	var ntp models.NTP
+	var qc models.QC
+	var actionRequiredCount, count int64
 
-	linkQuery := filtersBuilder.String()
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
+	linkQuery := models.QcNtpRetrieveQueryFunc() + fmt.Sprintf("WHERE customers_customers_schema.unique_id = '%s'", uniqueId)
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
@@ -214,15 +208,12 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		} else {
 			projectList.CoStatus = "" // or a default value
 		}
-	}
 
-	var ntp models.NTP
-	var qc models.QC
-	var actionRequiredCount, count int64
-	var prospectId string
+		prospectId, prospectIdok := data[0]["first_value"].(string)
+		if prospectId == "" || !prospectIdok {
+			prospectId = ""
+		}
 
-	// Assign values from the data map to the struct fields
-	if len(data) > 0 {
 		ntp.ProductionDiscrepancy, count = getStringValue(data[0], "production_discrepancy", ntpDate, prospectId)
 		actionRequiredCount += count
 		ntp.FinanceNTPOfProject, count = getStringValue(data[0], "finance_ntp_of_project", ntpDate, prospectId)
@@ -233,86 +224,44 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 		actionRequiredCount += count
 		ntp.ActionRequiredCount = actionRequiredCount
 		actionRequiredCount = 0
-	}
 
-	var filtersBuilders strings.Builder
-	whereEleList = nil
+		var flag bool
+		if _, powerclerkSentAZOk := data[0]["powerclerk_sent_az"]; !powerclerkSentAZOk {
+			if _, achWaiverOk := data[0]["ach_waiver_sent_and_signed_cash_only"]; !achWaiverOk {
+				if _, greenAreaNMOk := data[0]["green_area_nm_only"]; !greenAreaNMOk {
+					if _, financeCreditApprovedOk := data[0]["finance_credit_approved_loan_or_lease"]; !financeCreditApprovedOk {
+						if _, financeAgreementCompletedOk := data[0]["finance_agreement_completed_loan_or_lease"]; !financeAgreementCompletedOk {
+							if _, oweDocumentsCompletedOk := data[0]["owe_documents_completed"]; !oweDocumentsCompletedOk {
+								qc.PowerClerk = "Completed"
+								qc.ACHWaiveSendandSignedCashOnly = "Completed"
+								qc.GreenAreaNMOnly = "Completed"
+								qc.FinanceCreditApprovalLoanorLease = "Completed"
+								qc.FinanceAgreementCompletedLoanorLease = "Completed"
+								qc.OWEDocumentsCompleted = "Completed"
+								flag = true
 
-	filtersBuilders.WriteString(fmt.Sprintf(
-		`WITH extracted_values AS (
-					SELECT
-						unique_id, 
-						utility_company,  
-						state,
-						split_part(prospectid_dealerid_salesrepid, ',', 1) AS first_value
-					FROM
-						consolidated_data_view
-					WHERE
-						unique_id = '%v'
-				)
-				SELECT
-					e.first_value,
-					CASE 
-						WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
-						ELSE 'Not Needed' 
-					END AS powerclerk_sent_az,
-					CASE 
-						WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
-						ELSE 'Not Needed'
-					END AS ach_waiver_sent_and_signed_cash_only,
-					CASE 
-						WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
-						ELSE 'Not Needed'
-					END AS green_area_nm_only,
-					CASE 
-						WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_credit_approved_loan_or_lease
-						ELSE 'Not Needed'
-					END AS finance_credit_approved_loan_or_lease,
-					CASE 
-						WHEN p.payment_method = 'Lease' OR p.payment_method = 'Loan' THEN p.finance_agreement_completed_loan_or_lease
-						ELSE 'Not Needed'
-					END AS finance_agreement_completed_loan_or_lease,
-					CASE 
-						WHEN p.payment_method = 'Cash' OR p.payment_method = 'Loan' THEN p.owe_documents_completed
-						ELSE 'Not Needed'
-					END AS owe_documents_completed
-				FROM
-					extracted_values e
-				JOIN
-					prospects_customers_schema p
-				ON
-					e.first_value = p.item_id::text;
-			`, uniqueId))
+							}
+						}
+					}
+				}
+			}
+		}
 
-	linkQuery = filtersBuilders.String()
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, linkQuery, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
-		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
-		return
-	}
-
-	if len(data) > 0 {
-		qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az", ntpDate, prospectId)
-		actionRequiredCount += count
-		qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only", ntpDate, prospectId)
-		actionRequiredCount += count
-		qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only", ntpDate, prospectId)
-		actionRequiredCount += count
-		qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease", ntpDate, prospectId)
-		actionRequiredCount += count
-		qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease", ntpDate, prospectId)
-		actionRequiredCount += count
-		qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed", ntpDate, prospectId)
-		actionRequiredCount += count
-		qc.ActionRequiredCount = actionRequiredCount
-	} else {
-		qc.PowerClerk = "Completed"
-		qc.ACHWaiveSendandSignedCashOnly = "Completed"
-		qc.GreenAreaNMOnly = "Completed"
-		qc.FinanceCreditApprovalLoanorLease = "Completed"
-		qc.FinanceAgreementCompletedLoanorLease = "Completed"
-		qc.OWEDocumentsCompleted = "Completed"
+		if !flag {
+			qc.PowerClerk, count = getStringValue(data[0], "powerclerk_sent_az", ntpDate, prospectId)
+			actionRequiredCount += count
+			qc.ACHWaiveSendandSignedCashOnly, count = getStringValue(data[0], "ach_waiver_sent_and_signed_cash_only", ntpDate, prospectId)
+			actionRequiredCount += count
+			qc.GreenAreaNMOnly, count = getStringValue(data[0], "green_area_nm_only", ntpDate, prospectId)
+			actionRequiredCount += count
+			qc.FinanceCreditApprovalLoanorLease, count = getStringValue(data[0], "finance_credit_approved_loan_or_lease", ntpDate, prospectId)
+			actionRequiredCount += count
+			qc.FinanceAgreementCompletedLoanorLease, count = getStringValue(data[0], "finance_agreement_completed_loan_or_lease", ntpDate, prospectId)
+			actionRequiredCount += count
+			qc.OWEDocumentsCompleted, count = getStringValue(data[0], "owe_documents_completed", ntpDate, prospectId)
+			actionRequiredCount += count
+			qc.ActionRequiredCount = actionRequiredCount
+		}
 	}
 
 	projectList.Ntp = ntp
@@ -404,8 +353,8 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 
 	filtersBuilder.WriteString(" WHERE")
 
-	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR home_owner ILIKE $%d", len(whereEleList)+2))
+	filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.unique_id = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR customers_customers_schema.customer_name ILIKE $%d", len(whereEleList)+2))
 
 	// Append parameters to whereEleList
 	whereEleList = append(whereEleList, dataFilter.UniqueId)
@@ -415,7 +364,7 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 	if len(dataFilter.UniqueIds) > 0 {
 
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" unique_id IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -436,7 +385,7 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -455,12 +404,17 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf("dealer = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(" LIMIT $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.ProjectLimit)
+	if whereAdded {
+		filtersBuilder.WriteString(" AND ")
+	} else {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
+	}
+	filtersBuilder.WriteString(" customers_customers_schema.unique_id <> ''")
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
@@ -481,8 +435,8 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 	whereAdded := true
 	filtersBuilder.WriteString(" WHERE")
 
-	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR home_owner ILIKE $%d", len(whereEleList)+2))
+	filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.unique_id = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR customers_customers_schema.customer_name ILIKE $%d", len(whereEleList)+2))
 
 	// Append parameters to whereEleList
 	whereEleList = append(whereEleList, dataFilter.UniqueId)
@@ -492,7 +446,7 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 	if len(dataFilter.UniqueIds) > 0 {
 		// whereAdded = true
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" unique_id IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -513,7 +467,7 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -530,9 +484,10 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 		filtersBuilder.WriteString(" AND ")
 	} else {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
 	}
 
-	filtersBuilder.WriteString(" primary_sales_rep IN (")
+	filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
 	for i, sale := range saleRepList {
 		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, sale)
@@ -542,8 +497,17 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d LIMIT $%d", len(whereEleList)+1, len(whereEleList)+2))
-	whereEleList = append(whereEleList, dataFilter.DealerName, dataFilter.ProjectLimit)
+	filtersBuilder.WriteString(fmt.Sprintf(") AND customers_customers_schema.dealer = $%d ", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.DealerName)
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND ")
+	} else {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
+	}
+	filtersBuilder.WriteString(" customers_customers_schema.unique_id <> ''")
+
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)

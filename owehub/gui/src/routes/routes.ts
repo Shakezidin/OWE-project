@@ -50,6 +50,7 @@ export const ROUTES = {
   CONFIG_APOTH: '/config/ap-oth',
   CONFIG_APPDA: '/config/ap-pda',
   CONFIG_APDEALER: '/config/ap-dealer',
+  CONFIG_DEALERPAYMENTS: '/config/dealer-payments',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
