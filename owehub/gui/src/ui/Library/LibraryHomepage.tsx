@@ -34,7 +34,7 @@ const LibraryHomepage = () => {
   const [checkedFolders, setCheckedFolders] = useState<number[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [recycleBinItems, setRecycleBinItems] = useState<any[]>([]);
-
+  const [selectedDelete,setSelecetedDelete]=useState("");
   const [libData, setLibData] = useState([
     {
       url: ICONS.pdf,
@@ -198,6 +198,7 @@ const getToken = async () => {
     const expTime = new Date(Date.now()+ 100)
    expTime.setMinutes(expTime.getMinutes() + Math.floor(tokenDuration/60))
     Cookies.set('myToken', token, { expires: expTime,path:"/"});
+    fetchDataFromGraphAPI();
   } catch (error) {
     console.error(error);
   }
@@ -212,6 +213,9 @@ useEffect(() => {
     if(!token )
     {
       getToken();
+    }
+    else{
+      fetchDataFromGraphAPI();
     }
 }, []);
 //   const checkTokenValidity = () => {
@@ -261,6 +265,7 @@ interface FileOrFolder {
 }
 const [allData, setAllData] = useState<FileOrFolder[] | null>(null);
   const [fileData, setFileData] = useState<FileOrFolder[]>([]);
+  
   const [folderData, setFolderData] = useState<FileOrFolder[]>([]);
   const [loading,setLoading]=useState<boolean>(false);
 const fetchDataFromGraphAPI = async () => {
@@ -288,10 +293,10 @@ const fetchDataFromGraphAPI = async () => {
   }
   setLoading(false);
 };
-useEffect(()=>{
-  fetchDataFromGraphAPI();
-},[Cookies.get('myToken')]);
-
+// useEffect(()=>{
+ 
+// },[Cookies.get('myToken')]);
+const [originalFileData,setOriginalFileData]=useState<FileOrFolder[]>([]);
 useEffect(() => {
   if (allData) {
     const folders: FileOrFolder[] = [];
@@ -302,11 +307,13 @@ useEffect(() => {
         folders.push(data);
       } else {
         files.push(data);
+        
       }
     });
 
     setFolderData([...folders]);
     setFileData([...files]);
+    setOriginalFileData([...files]);
   }
 }, [allData]);
 
@@ -323,17 +330,57 @@ const DeleteHandler=async(itemId : string)=>{
   const url=`https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${itemId}`;
   try{
     const response=await axios.delete(url,config);
-    
   }
   catch(err)
   {
     console.log("Error",err);
   }
 };
-
 //Find File
 
-const SearchFile=async()=>{
+// const SearchFile=async()=>{
+//   setLoading(true);
+//   const token=Cookies.get("myToken");
+//   const config = {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   };
+//   const url=`https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root/search(q='${searchValue}')`;
+//   try{
+//     const response=await axios.get(url,config);
+//     const results:FileOrFolder[] = response.data.value || []; // Ensure results is an array
+
+//   // Initialize arrays to hold files and folders
+//   const filteredFolders:FileOrFolder[] = [];
+//   if(searchValue==='')
+//     fetchDataFromGraphAPI();
+//   results.forEach((item) => {
+//     // Check if searchValue is not empty
+//     if (searchValue.length > 0) {
+//        if (activeSection === 'folders' && item.folder) {
+//         filteredFolders.push(item); // Push folders to the array
+//       }
+//     }
+//   });
+//    if (activeSection === 'folders') {
+//     setFolderData(filteredFolders);
+//   }
+
+//   }
+//   catch(err)
+//   {
+//     toast.error("Sorry, ERROR");
+//   }
+//   setLoading(false);
+// }
+
+// //SEARCH HANDLER
+
+// const SearchHandler=()=>{
+//   SearchFile();
+// }
+const SearchFileAndFolders=async()=>{
   setLoading(true);
   const token=Cookies.get("myToken");
   const config = {
@@ -347,23 +394,18 @@ const SearchFile=async()=>{
     const results:FileOrFolder[] = response.data.value || []; // Ensure results is an array
 
   // Initialize arrays to hold files and folders
-  const filteredFiles:FileOrFolder[] = [];
   const filteredFolders:FileOrFolder[] = [];
   if(searchValue==='')
     fetchDataFromGraphAPI();
   results.forEach((item) => {
     // Check if searchValue is not empty
     if (searchValue.length > 0) {
-      if (activeSection === 'files' && !item.folder) {
-        filteredFiles.push(item); // Push files to the array
-      } else if (activeSection === 'folders' && item.folder) {
+       if (activeSection === 'folders' && item.folder) {
         filteredFolders.push(item); // Push folders to the array
       }
     }
   });
-  if (activeSection === 'files') {
-    setFileData(filteredFiles);
-  } else if (activeSection === 'folders') {
+   if (activeSection === 'folders') {
     setFolderData(filteredFolders);
   }
 
@@ -374,11 +416,46 @@ const SearchFile=async()=>{
   }
   setLoading(false);
 }
-
-//SEARCH HANDLER
-
 const SearchHandler=()=>{
-  SearchFile();
+  
+}
+
+const HandleSearch=(e:any)=>{
+  setSearchValue(e.target.value);
+  // setFileData(fileData.filter((file)=>file.name.toLowerCase().includes(searchValue.toLowerCase())));
+  if (e.target.value === '') {
+    setFileData(originalFileData);
+  } else {
+    // Filter the file data based on the search input
+    const filteredData = originalFileData.filter((file) =>
+      file.name.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setFileData(filteredData);
+  }
+}
+
+
+//Function for Deleting files
+const deleteMyFiles=async()=>{
+  const token=Cookies.get("myToken");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const url=`https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${selectedDelete}`
+  try{
+    
+    const response=await axios.delete(url,config);
+    toast.success("Deleted.......");
+    fetchDataFromGraphAPI();
+  }
+  catch(err)
+  {
+ 
+    
+    console.log("Error     ",err);
+  }
 }
 // console.log(folderData,"This is folder data");
 // console.log(fileData,"This is file data");
@@ -594,7 +671,7 @@ const SearchHandler=()=>{
             <input
               type="text"
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={HandleSearch}
               placeholder="Search by file name or person"
               className={styles.searchInput}
             />
@@ -675,8 +752,8 @@ const SearchHandler=()=>{
                   alt={`null`}
                 />
                 <div>
-                  <p className={styles.name}>{data.name.substring(0,10)}_.JPG</p>
-                  <p className={styles.size}>{}</p>
+                  <p className={styles.name}>{data.name.substring(0,10)}{data.name.length>10?`__.png`:``}</p>
+                  <p className={styles.size}>{data.size<1024?data.size:Math.round(data.size/1024)} {data.size<1024?'byte':'kb'}</p>
                 </div>
               </div>
               <div className={styles.grid_item}>{data.lastModifiedBy.user.displayName}</div>
@@ -713,8 +790,10 @@ const SearchHandler=()=>{
                           height: '18px',
                           width: '18px',
                           color: '#667085',
-                        }} onClick={OpenModal} />
-                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => handleClickdeleted(data.id)} />)}
+                        }} onClick={()=>{OpenModal()
+                          setSelecetedDelete(data.id)
+                        }} />
+                      {isVisible && (<DeleteFileModal setIsVisible={setIsVisible} onDelete={() => deleteMyFiles()} />)}
                     </div>
                   </>
                 )}
