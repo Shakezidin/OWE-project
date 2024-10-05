@@ -8,6 +8,7 @@
 package main
 
 import (
+	leadsService "OWEApp/owehub-leads/common"
 	apiHandler "OWEApp/owehub-leads/services"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -31,6 +32,7 @@ type CfgFilePaths struct {
 	LoggingConfJsonPath string
 	HTTPConfJsonPath    string
 	DbConfJsonPath      string
+	AuroraConfJsonPath  string
 }
 
 var (
@@ -333,6 +335,12 @@ func InitConfigFromFiles() (err error) {
 		return err
 	}
 
+	/* Read and Initialize Aurora configuration from cfg */
+	if err := FetchAuroraCfg(); err != nil {
+		log.ConfErrorTrace(0, "FetchAuroraCfg failed %+v", err)
+		return err
+	}
+
 	/* Set HTTP Callback paths*/
 	InitHttpCallbackPath()
 
@@ -354,6 +362,7 @@ func InitCfgPaths() {
 	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
+	gCfgFilePaths.AuroraConfJsonPath = gCfgFilePaths.CfgJsonDir + "auroraConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
 }
@@ -439,6 +448,36 @@ func FetchDbCfg() (err error) {
 	err = json.Unmarshal(bVal, &dbCfgList)
 	types.CommGlbCfg.DbConfList = dbCfgList
 	log.ConfDebugTrace(0, "Database Configurations: %+v", types.CommGlbCfg.DbConfList)
+	return err
+}
+
+/******************************************************************************
+ * FUNCTION:        FetchAuroraCfg
+ *
+ * DESCRIPTION:   function is used to get the Aurora configuration
+ * INPUT:        service name to be initialized
+ * RETURNS:      error
+ ******************************************************************************/
+func FetchAuroraCfg() (err error) {
+	log.EnterFn(0, "FetchAuroraCfg")
+	defer func() { log.ExitFn(0, "FetchAuroraCfg", err) }()
+
+	var auroraCfg leadsService.AuroraConfig
+	log.ConfDebugTrace(0, "Reading Aurora Config from: %+v", gCfgFilePaths.AuroraConfJsonPath)
+	file, err := os.Open(gCfgFilePaths.AuroraConfJsonPath)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		panic(err)
+	}
+	bVal, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &auroraCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.AuroraConfJsonPath, err)
+		panic(err)
+	}
+	leadsService.AuroraCfg = auroraCfg
+	log.ConfDebugTrace(0, "Aurora Configurations: %+v", leadsService.AuroraCfg)
+
 	return err
 }
 
