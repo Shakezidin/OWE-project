@@ -6,6 +6,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -41,21 +42,21 @@ func HandleGetPeriodicWonLostLeadsRequest(resp http.ResponseWriter, req *http.Re
 	reqBody, err = ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get periodic won lost data req err:  %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get periodic won lost request body err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get periodic won lost request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get periodic won lost request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	periodicLabelsAndDates, err = getPeriodicLabelsAndDates(dataReq.StartDate, dataReq.EndDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get periodic labels and dates err: %v", err)
-		FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusBadRequest, nil)
 		return
 	}
 
@@ -84,7 +85,7 @@ func HandleGetPeriodicWonLostLeadsRequest(resp http.ResponseWriter, req *http.Re
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get periodic won lost data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get periodic won lost data", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get periodic won lost data", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -108,7 +109,7 @@ func HandleGetPeriodicWonLostLeadsRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	log.FuncDebugTrace(0, "Retrieved periodic won lost: %v", apiResponse.PeriodicList)
-	FormAndSendHttpResp(resp, "Get periodic won lost", http.StatusOK, apiResponse, int64(len(apiResponse.PeriodicList)))
+	appserver.FormAndSendHttpResp(resp, "Get periodic won lost", http.StatusOK, apiResponse, int64(len(apiResponse.PeriodicList)))
 }
 
 /******************************************************************************

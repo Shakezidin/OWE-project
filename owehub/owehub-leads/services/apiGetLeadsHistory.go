@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -45,21 +46,21 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get Leads data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Leads data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get Leads History request body err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Leads History request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get Leads History request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -67,7 +68,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	LS := dataReq.LeadsStatus
 	if LS != 5 && LS != 6 && LS != -1 {
 		log.FuncErrorTrace(0, "Not a correct Lead status")
-		FormAndSendHttpResp(resp, "Correct Leads status is required", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Correct Leads status is required", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -120,7 +121,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get lead history from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to fetch lead history", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch lead history", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -162,6 +163,6 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	// Return the response
 	RecordCount = len(LeadsHistoryResponse.LeadsHistoryList)
-	FormAndSendHttpResp(resp, "Leads History Data", http.StatusOK, LeadsHistoryResponse, int64(RecordCount))
+	appserver.FormAndSendHttpResp(resp, "Leads History Data", http.StatusOK, LeadsHistoryResponse, int64(RecordCount))
 
 }

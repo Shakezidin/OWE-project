@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -33,7 +34,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 	authenticatedEmail, ok := req.Context().Value("emailid").(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get emailid from context")
-		FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -50,7 +51,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get leads count by status with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -78,5 +79,5 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	log.FuncDebugTrace(0, "Retrieved leads count by status: %v", apiResponse.Leads)
-	FormAndSendHttpResp(resp, "Get leads count by status", http.StatusOK, apiResponse)
+	appserver.FormAndSendHttpResp(resp, "Get leads count by status", http.StatusOK, apiResponse)
 }
