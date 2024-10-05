@@ -518,14 +518,20 @@ const ProjectStatus = () => {
       };
       console.log('val', val);
       setSelectedProject(val);
-      dispatch(getProjectDetail(projectOption[0]?.value));
+      
+     
     }
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
     if (selectedProject.value) {
       dispatch(getProjectDetail(selectedProject.value));
+       
+    } else if(projectOption.length) {
+      dispatch(getProjectDetail(projectOption[0]?.value));
     }
+
+    
   }, [selectedProject.value]);
 
   useEffect(() => {
@@ -592,7 +598,7 @@ const ProjectStatus = () => {
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
-  const [isHovered, setIsHovered] = useState(-1)
+  const [isHovered, setIsHovered] = useState(-1);
 
   return (
     <>
@@ -609,7 +615,7 @@ const ProjectStatus = () => {
       />
 
       <div className="">
-        <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+        <div style={{ marginLeft: '6px', marginTop: '6px' }}>
           <Breadcrumb
             head=""
             linkPara="Project Manager"
@@ -668,14 +674,16 @@ const ProjectStatus = () => {
                       className="rounded-8"
                       style={{
                         padding: 3,
-                        border: isHovered === i ? 'none' : `1px dashed ${el.bgColor}`,
+                        border:
+                          isHovered === i ? 'none' : `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
                       }}
                     >
                       <div
                         className=" flex items-center rounded-8 justify-center relative status-card-wrp"
                         style={{
-                          background: isHovered === i ? el.hoverColor : el.bgColor,
+                          background:
+                            isHovered === i ? el.hoverColor : el.bgColor,
                           height: 83,
                           zIndex: i === 1 ? 50 : undefined,
                         }}
@@ -694,7 +702,7 @@ const ProjectStatus = () => {
                           </p>
                           <span className="span-para">
                             {el.key === 'adders_total' ||
-                              el.key === 'contract_amount'
+                            el.key === 'contract_amount'
                               ? '$'
                               : ''}
 
@@ -709,7 +717,7 @@ const ProjectStatus = () => {
                         </div>
                         {el.viewButton ? (
                           <div
-                            className='view-flex'
+                            className="view-flex"
                             ref={refBtn}
                             onClick={() => setActivePopups((prev) => !prev)}
                           >
@@ -728,23 +736,23 @@ const ProjectStatus = () => {
                               {
                                 // @ts-ignore
                                 projectDetail.adder_breakdown_and_total &&
-                                Object.keys(
-                                  // @ts-ignore
-                                  projectDetail.adder_breakdown_and_total
-                                ).map((item, ind) => {
-                                  // @ts-ignore
-                                  return (
-                                    <li key={ind} className="order-list-name">
-                                      {' '}
-                                      {item} :{' '}
-                                      {
-                                        // @ts-ignore
-                                        projectDetail
-                                          .adder_breakdown_and_total[item]
-                                      }{' '}
-                                    </li>
-                                  );
-                                })
+                                  Object.keys(
+                                    // @ts-ignore
+                                    projectDetail.adder_breakdown_and_total
+                                  ).map((item, ind) => {
+                                    // @ts-ignore
+                                    return (
+                                      <li key={ind} className="order-list-name">
+                                        {' '}
+                                        {item} :{' '}
+                                        {
+                                          // @ts-ignore
+                                          projectDetail
+                                            .adder_breakdown_and_total[item]
+                                        }{' '}
+                                      </li>
+                                    );
+                                  })
                               }
                             </ol>
                           </div>
@@ -941,19 +949,19 @@ const ProjectStatus = () => {
                                         {!(
                                           el.key &&
                                           projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                            el.key as keyof typeof projectDetail
                                           ]
                                         ) && (
-                                            <span
-                                              className="date-para"
-                                              style={{
-                                                color: el.color,
-                                                fontSize: '9px',
-                                              }}
-                                            >
-                                              ETA
-                                            </span>
-                                          )}
+                                          <span
+                                            className="date-para"
+                                            style={{
+                                              color: el.color,
+                                              fontSize: '9px',
+                                            }}
+                                          >
+                                            ETA
+                                          </span>
+                                        )}
                                         <p
                                           style={{
                                             color: el.color,
@@ -961,22 +969,22 @@ const ProjectStatus = () => {
                                           }}
                                         >
                                           {el.key &&
-                                            projectDetail[
+                                          projectDetail[
                                             el.key as keyof typeof projectDetail
-                                            ]
+                                          ]
                                             ? format(
-                                              new Date(
-                                                projectDetail[
-                                                el.key as keyof typeof projectDetail
-                                                ]
-                                              ),
-                                              'dd MMMM'
-                                            ).slice(0, 6)
+                                                new Date(
+                                                  projectDetail[
+                                                    el.key as keyof typeof projectDetail
+                                                  ]
+                                                ),
+                                                'dd MMMM'
+                                              ).slice(0, 6)
                                             : 'N/A'}
                                         </p>
                                         {el.key &&
                                           projectDetail[
-                                          el.key as keyof typeof projectDetail
+                                            el.key as keyof typeof projectDetail
                                           ] && (
                                             <p
                                               className="stage-1-para"
@@ -989,7 +997,7 @@ const ProjectStatus = () => {
                                               {format(
                                                 new Date(
                                                   projectDetail[
-                                                  el.key as keyof typeof projectDetail
+                                                    el.key as keyof typeof projectDetail
                                                   ]
                                                 ),
                                                 'yyyy'

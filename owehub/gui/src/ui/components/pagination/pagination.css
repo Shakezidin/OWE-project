@@ -160,4 +160,8 @@
   .pagination {
     gap: 0.3rem;
   }
+  .pagination-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

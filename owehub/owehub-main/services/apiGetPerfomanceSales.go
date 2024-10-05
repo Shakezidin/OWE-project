@@ -489,7 +489,7 @@ func PrepareAdminDlrTalesFilters(tableName string, dataFilter models.PerfomanceT
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -513,7 +513,7 @@ func PrepareAdminDlrTalesFilters(tableName string, dataFilter models.PerfomanceT
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
 		for i, dealer := range dataFilter.DealerNames {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, dealer)
@@ -531,10 +531,10 @@ func PrepareAdminDlrTalesFilters(tableName string, dataFilter models.PerfomanceT
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause
@@ -546,9 +546,9 @@ func PrepareAdminDlrTalesFilters(tableName string, dataFilter models.PerfomanceT
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 
 	}
 
@@ -584,7 +584,7 @@ func PrepareAeAmFilter(dealerList []string, dataFilter models.PerfomanceTileData
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -600,7 +600,7 @@ func PrepareAeAmFilter(dealerList []string, dataFilter models.PerfomanceTileData
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.dealer IN (%s) ", strings.Join(placeholders, ",")))
 		for _, dealer := range dealerList {
 			whereEleList = append(whereEleList, dealer)
 		}
@@ -612,10 +612,10 @@ func PrepareAeAmFilter(dealerList []string, dataFilter models.PerfomanceTileData
 		filtersBuilder.WriteString(" WHERE")
 		whereAdded = true
 	}
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		var statusValues []string
@@ -623,9 +623,9 @@ func PrepareAeAmFilter(dealerList []string, dataFilter models.PerfomanceTileData
 			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
 		}
 		statusList := strings.Join(statusValues, ", ")
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()
@@ -657,7 +657,7 @@ func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTi
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -670,7 +670,7 @@ func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTi
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.primary_sales_rep IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -700,7 +700,7 @@ func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTi
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
 		for i, dealer := range dataFilter.DealerNames {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, dealer)
@@ -713,10 +713,10 @@ func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTi
 	}
 
 	// Add the always-included filters
-	filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` AND customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause
@@ -728,9 +728,9 @@ func PrepareSaleRepTalesFilters(tableName string, dataFilter models.PerfomanceTi
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()

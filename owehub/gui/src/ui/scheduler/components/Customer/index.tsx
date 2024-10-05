@@ -10,7 +10,7 @@ import roofIcon from '../../../../resources/assets/roof_top.svg';
 import { ICONS } from '../../../../resources/icons/Icons';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../../routes/routes';
-import { MdLocationOn } from "react-icons/md";
+import { MdLocationOn } from 'react-icons/md';
 const Marker = ({
   text,
   lat,
@@ -19,7 +19,7 @@ const Marker = ({
   text: string;
   lat: number;
   lng: number;
-}) => <MdLocationOn color='red' size={36}/>;
+}) => <MdLocationOn color="red" size={36} />;
 interface propTypes {
   withSecondaryBtn?: boolean;
   mapStyles?: CSSProperties;
@@ -44,7 +44,7 @@ const Index = ({
   const defaultProps = {
     center: {
       lat: 28.5355,
-      lng: 77.3910,
+      lng: 77.391,
     },
     zoom: 11,
   };
@@ -165,7 +165,8 @@ const Index = ({
               </div>
             )}
             <div className="flex items-center ">
-              <Link to={"/schedule-detail/1"}
+              <Link
+                to={'/schedule-detail/1'}
                 className={`${styles.primary_btn}  ${styles.schedule_btn}`}
               >
                 Schedule
@@ -182,7 +183,10 @@ const Index = ({
           </div>
 
           <div style={mapStyles}>
-            <div className={styles.map_wrapper} style={{height:withSecondaryBtn?101:170}}  >
+            <div
+              className={styles.map_wrapper}
+              style={{ height: withSecondaryBtn ? 101 : 170 }}
+            >
               <GoogleMapReact
                 bootstrapURLKeys={{
                   key: 'AIzaSyDestipqgaIX-VsZUuhDSGbNk_bKAV9dX0',
@@ -191,7 +195,7 @@ const Index = ({
                 defaultZoom={defaultProps.zoom}
                 yesIWantToUseGoogleMapApiInternals
               >
-                 <Marker lat={28.5355} lng={77.3910} text="Noida, India" />
+                <Marker lat={28.5355} lng={77.391} text="Noida, India" />
               </GoogleMapReact>
             </div>
             <div className="flex items-center mt1">

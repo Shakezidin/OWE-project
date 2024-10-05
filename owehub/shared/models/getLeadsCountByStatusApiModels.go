@@ -6,6 +6,11 @@
 
 package models
 
+type GetLeadsCountByStatusRequest struct {
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
+}
+
 type GetLeadsCountByStatus struct {
 	Count      int64  `json:"count"`
 	StatusName string `json:"status_name"`

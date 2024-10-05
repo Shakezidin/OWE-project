@@ -1,7 +1,14 @@
 .schedule_detail {
-  font-size: 20px;
+  font-size: 16px;
   color: #263747;
-  font-size: 600;
+  font-weight: 600;
+  padding-top: 8px;
+  padding-bottom: 14px;
+  line-height: 30px;
+}
+
+.day_cell {
+  width: 52px !important;
 }
 
 .primary_heading {
@@ -11,6 +18,10 @@
 
 .h_screen {
   min-height: 100vh;
+}
+
+.calendar_btn_mobile {
+  display: none;
 }
 
 .customer_wrapper_list {
@@ -25,7 +36,7 @@
 
 .time_slot_pill {
   padding: 6px 9.5px;
-  border: 1px solid #4C4C4C;
+  border: 1px solid #4c4c4c;
   border-radius: 6px;
   background-color: #fff;
   outline: none;
@@ -47,8 +58,8 @@
 
 .time_slot_pill.inactive_time_slot:hover {
   transition: all 500ms;
-  background-color: #D5E4FF;
-  border-color: #D5E4FF;
+  background-color: #d5e4ff;
+  border-color: #d5e4ff;
 }
 
 .selected_time {
@@ -57,10 +68,10 @@
 }
 
 .time_slot_pill.active_time_slot {
-  background-color: #377CF6;
+  background-color: #377cf6;
   color: #fff;
   transition: all 500ms;
-  border-color: #377CF6;
+  border-color: #377cf6;
 }
 
 .calendar_wrapper {
@@ -91,14 +102,15 @@
 }
 
 .pending h3 {
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 16px;
   color: #263747;
 }
 
 .notification {
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
   align-items: center;
   text-align: center;
   width: 42px;
@@ -183,7 +195,7 @@
 }
 
 .selected_active_customer {
-  background-color: #377CF6;
+  background-color: #377cf6;
   border: none;
   color: #fff;
 }
@@ -251,7 +263,7 @@
 .accordian_btn {
   border: none;
   border-radius: 50px;
-  background-color: #D5E4FF;
+  background-color: #d5e4ff;
   width: 32px;
   height: 32px;
   display: grid;
@@ -264,7 +276,6 @@
 .accordian_btn:focus-within {
   outline: none;
   background-color: #fff;
-
 }
 
 .accordian_btn:hover {
@@ -313,6 +324,10 @@
   cursor: pointer;
 }
 
+.schedule_confirmation_wrapper {
+  margin-top: 46px;
+}
+
 .cust_det_button span {
   transition: all 0.3s ease;
 }
@@ -353,7 +368,6 @@
   gap: 11px;
 }
 
-
 .grid_items .head_det {
   display: flex;
   flex-direction: column;
@@ -368,7 +382,7 @@
 
 .customer_details:not(.selected_active_customer):hover {
   cursor: pointer;
-  background-color: #D5E4FF;
+  background-color: #d5e4ff;
 }
 
 .customer_details:hover .accordian_btn {
@@ -376,7 +390,7 @@
 }
 
 .customer_details_selected {
-  background-color: #377CF6;
+  background-color: #377cf6;
   color: #fff !important;
   flex-shrink: 0;
 
@@ -385,7 +399,7 @@
   /* border-radius: 8px; */
   display: flex;
   flex-direction: column;
-    padding: 18px 16px 18px 16px;
+  padding: 18px 16px 18px 16px;
   gap: 23px;
   max-height: max-content;
   transition: max-height 0.7s ease;
@@ -396,13 +410,20 @@
   max-height: 700px;
 }
 
+.time_slot_pill_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
 
 .customer_details_selected.open.accordian_btn {
   color: #fff !important;
 }
 
 .calendar_schedule_btn {
-  background-color: #377CF6;
+  background-color: #377cf6;
   max-width: 472px;
   width: 100%;
   display: flex;
@@ -414,4 +435,141 @@
   border-radius: 12px;
   color: #fff;
   cursor: pointer;
+}
+.calendar_close_btn_mobile {
+  display: none;
+}
+
+@media (max-width: 968px) {
+  .calendar_btn_mobile {
+    display: inline-flex;
+    background-color: #377cf6;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    padding: 5px;
+    cursor: pointer;
+  }
+  .calendar_schedule_btn {
+    padding-block: 6px;
+    font-size: 16px;
+    border-radius: 6px;
+  }
+
+  .time_slot_pill {
+    margin-bottom: 0;
+  }
+
+  .date_time_wrapper div:first-child {
+    margin-inline: auto;
+  }
+  .calendar_close_btn_mobile {
+    display: block;
+    border: none;
+    background-color: transparent;
+  }
+
+  .time_slot_pill_wrapper {
+    width: 100%;
+    display: grid;
+    gap: 16px;
+    border-top: 1px solid #929292;
+    padding-top: 20px;
+    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
+  }
+
+  .schedule_confirmation_wrapper {
+    margin-top: 6px;
+    padding-bottom: 20px;
+  }
+
+  .date_time_wrapper {
+    flex-direction: column;
+  }
+
+  .time_slot_label {
+    display: none;
+  }
+
+  .schedule_detail {
+    font-size: 16px;
+    padding-bottom: 0;
+    padding-top: 0;
+  }
+
+  .hide_mobile {
+    display: none;
+  }
+
+  .schedule_page_wrapper {
+    padding-inline: 20px;
+  }
+
+  .schedule_header {
+    padding-block: 14px;
+  }
+
+  .schedule_page_wrapper {
+    padding-block: 14px;
+  }
+
+  .show_mobile {
+    display: block;
+  }
+
+  .notification {
+    width: 32px;
+    height: 32px;
+  }
+
+  .customer_wrapper_list,
+  .calendar_wrapper {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 450px) {
+  .sr_top {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .calendar_wrapper {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .customer_details {
+    padding: 12px 8px 12px 8px;
+  }
+
+  .cust_det_list {
+    margin-top: 0;
+  }
+
+  .head_det span,
+  .name_icon span {
+    font-size: 12px;
+  }
+
+  .pending h3 {
+    line-height: 20px;
+    font-size: 12px;
+  }
+
+  .day_cell {
+    width: 40px !important;
+  }
+
+  .day_cell button {
+    font-size: 12px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .schedule_page_wrapper {
+    padding-block: 0;
+    padding-inline: 8px;
+  }
 }

@@ -152,47 +152,45 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         </div>
         <div
           className="header-logo flex items-center"
-          style={{ 
-            marginLeft: isTablet ? "unset !important" : 25, 
-            height: isTablet ? '100%' :'',
-            alignSelf: isTablet ? "center" : '',
-            display: isTablet ? "none" : "flex",
-            alignItems: isTablet ? "center" :''
-
-           }}
+          style={{
+            marginLeft: isTablet ? 'unset !important' : 25,
+            height: isTablet ? '100%' : '',
+            alignSelf: isTablet ? 'center' : '',
+            display: isTablet ? 'none' : 'flex',
+            alignItems: isTablet ? 'center' : '',
+          }}
         >
           <object
             type="image/svg+xml"
             data={ICONS.LOGO}
             aria-label="login-icon"
           ></object>
-           <img
-              src={ICONS.sidebarLogo}
-              alt=""
-              style={{
-                height: 45,
-                alignSelf: "center",
-                display: isTablet ? "flex" : "none",
-                alignItems: "center",
-                // paddingLeft: toggleOpen ? 10 : '',
-                // marginInline: toggleOpen ? 'auto' : undefined,
-              }}
-            />
+          <img
+            src={ICONS.sidebarLogo}
+            alt=""
+            style={{
+              height: 45,
+              alignSelf: 'center',
+              display: isTablet ? 'flex' : 'none',
+              alignItems: 'center',
+              // paddingLeft: toggleOpen ? 10 : '',
+              // marginInline: toggleOpen ? 'auto' : undefined,
+            }}
+          />
           <></>
-
         </div>
         <img
-              src={ICONS.sidebarLogo}
-              alt=""
-              style={{
-                height: 45,
-                alignSelf: "center",
-                display: isTablet ? "flex" : "none",
-                alignItems: "center",
-                // paddingLeft: toggleOpen ? 10 : '',
-                // marginInline: toggleOpen ? 'auto' : undefined,
-              }}
-            />
+          src={ICONS.sidebarLogo}
+          alt=""
+          style={{
+            height: 45,
+            alignSelf: 'center',
+            display: isTablet ? 'flex' : 'none',
+            alignItems: 'center',
+            // paddingLeft: toggleOpen ? 10 : '',
+            // marginInline: toggleOpen ? 'auto' : undefined,
+          }}
+        />
       </div>
       {!isMobile && (
         <div className="search-container">

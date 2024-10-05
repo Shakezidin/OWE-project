@@ -596,73 +596,57 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(
 		`WITH base_query AS (
-        SELECT 
-            ips.unique_id, 
-            c.current_live_cad, 
-            c.system_sold_er, 
-            c.podio_link,
-            n.production_discrepancy, 
-            n.finance_ntp_of_project, 
-            n.utility_bill_uploaded, 
-            n.powerclerk_signatures_complete, 
-            n.over_net_3point6_per_w, 
-            n.premium_panel_adder_10c, 
-            n.change_order_status
-        FROM 
-            internal_ops_metrics_schema ips
-        LEFT JOIN 
-            customers_customers_schema c ON ips.unique_id = c.unique_id
-        LEFT JOIN 
-            ntp_ntp_schema n ON ips.unique_id = n.unique_id
-        WHERE 
-            ips.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
-    ), 
-    extracted_values AS (
-        SELECT 
-            ips.unique_id, 
-            ips.utility_company, 
-            ss.state,
-            split_part(ss.prospectid_dealerid_salesrepid, ',', 1) AS first_value
-        FROM 
-            internal_ops_metrics_schema ips
-        LEFT JOIN 
-            sales_metrics_schema ss ON ips.unique_id = ss.unique_id
-        WHERE 
-            ips.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
-    )
     SELECT 
-        b.*, 
-        e.first_value,
-        CASE 
-            WHEN e.utility_company = 'APS' THEN p.powerclerk_sent_az
-            ELSE 'Not Needed' 
-        END AS powerclerk_sent_az,
-        CASE 
-            WHEN p.payment_method = 'Cash' THEN p.ach_waiver_sent_and_signed_cash_only
-            ELSE 'Not Needed'
-        END AS ach_waiver_sent_and_signed_cash_only,
-        CASE 
-            WHEN e.state = 'NM :: New Mexico' THEN p.green_area_nm_only
-            ELSE 'Not Needed'
-        END AS green_area_nm_only,
-        CASE 
-            WHEN p.payment_method IN ('Lease', 'Loan') THEN p.finance_credit_approved_loan_or_lease
-            ELSE 'Not Needed'
-        END AS finance_credit_approved_loan_or_lease,
-        CASE 
-            WHEN p.payment_method IN ('Lease', 'Loan') THEN p.finance_agreement_completed_loan_or_lease
-            ELSE 'Not Needed'
-        END AS finance_agreement_completed_loan_or_lease,
-        CASE 
-            WHEN p.payment_method IN ('Cash', 'Loan') THEN p.owe_documents_completed
-            ELSE 'Not Needed'
-        END AS owe_documents_completed
+        customers_customers_schema.unique_id, 
+        customers_customers_schema.current_live_cad, 
+        customers_customers_schema.system_sold_er, 
+        customers_customers_schema.podio_link,
+        ntp_ntp_schema.production_discrepancy, 
+        ntp_ntp_schema.finance_ntp_of_project, 
+        ntp_ntp_schema.utility_bill_uploaded, 
+        ntp_ntp_schema.powerclerk_signatures_complete, 
+        ntp_ntp_schema.change_order_status,
+        customers_customers_schema.utility_company,
+        customers_customers_schema.state,
+        split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
     FROM 
-        base_query b
-    LEFT JOIN 
-        extracted_values e ON b.unique_id = e.unique_id
-    LEFT JOIN 
-        prospects_customers_schema p ON e.first_value = p.item_id::text;`)
+        customers_customers_schema
+    LEFT JOIN ntp_ntp_schema 
+        ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
+    WHERE 
+        customers_customers_schema.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
+)
+SELECT 
+    b.*, 
+    CASE 
+        WHEN b.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
+        ELSE 'Not Needed' 
+    END AS powerclerk_sent_az,
+    CASE 
+        WHEN prospects_customers_schema.payment_method = 'Cash' THEN prospects_customers_schema.ach_waiver_sent_and_signed_cash_only
+        ELSE 'Not Needed'
+    END AS ach_waiver_sent_and_signed_cash_only,
+    CASE 
+        WHEN b.state = 'NM :: New Mexico' THEN prospects_customers_schema.green_area_nm_only
+        ELSE 'Not Needed'
+    END AS green_area_nm_only,
+    CASE 
+        WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_credit_approved_loan_or_lease
+        ELSE 'Not Needed'
+    END AS finance_credit_approved_loan_or_lease,
+    CASE 
+        WHEN prospects_customers_schema.payment_method IN ('Lease', 'Loan') THEN prospects_customers_schema.finance_agreement_completed_loan_or_lease
+        ELSE 'Not Needed'
+    END AS finance_agreement_completed_loan_or_lease,
+    CASE 
+        WHEN prospects_customers_schema.payment_method IN ('Cash', 'Loan') THEN prospects_customers_schema.owe_documents_completed
+        ELSE 'Not Needed'
+    END AS owe_documents_completed
+FROM 
+    base_query b
+LEFT JOIN 
+    prospects_customers_schema ON b.first_value::text = prospects_customers_schema.item_id::text;
+`)
 
 	linkQuery := filtersBuilder.String()
 
@@ -787,7 +771,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -802,7 +786,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		}
 
 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
+		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -814,7 +798,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString(") ")
 
 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
@@ -826,7 +810,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString("])")
 
 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -850,7 +834,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
 		for i, dealer := range dataFilter.DealerNames {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, dealer)
@@ -868,10 +852,10 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause
@@ -883,9 +867,9 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 
 	}
 
@@ -920,7 +904,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -935,7 +919,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 
 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(intOpsMetSchema.unique_id) IN (")
+		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -947,7 +931,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		filtersBuilder.WriteString(") ")
 
 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR LOWER(intOpsMetSchema.unique_id) ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
@@ -959,7 +943,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		filtersBuilder.WriteString("])")
 
 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR intOpsMetSchema.home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -984,7 +968,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.primary_sales_rep IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -1004,7 +988,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
 		for i, dealer := range dataFilter.DealerNames {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, dealer)
@@ -1017,10 +1001,10 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	}
 
 	// Add the always-included filters
-	filtersBuilder.WriteString(` AND intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` AND customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause
@@ -1032,9 +1016,9 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()

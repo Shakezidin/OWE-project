@@ -76,7 +76,9 @@ func HandleGetPeriodicWonLostLeadsRequest(resp http.ResponseWriter, req *http.Re
 			SUM((li.status_id = 5)::int) AS won_count,
 			SUM((li.status_id = 6)::int) AS lost_count
 		FROM get_leads_info_hierarchy($1) li
-		RIGHT JOIN periodic_values ON li.updated_at BETWEEN periodic_values.start_date AND periodic_values.end_date
+		RIGHT JOIN periodic_values 
+			ON li.updated_at BETWEEN periodic_values.start_date AND periodic_values.end_date
+			AND li.is_archived = false
 		GROUP BY periodic_values.period_index
 		ORDER BY periodic_values.period_index
 		`,

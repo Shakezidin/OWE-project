@@ -29,11 +29,15 @@ import (
 func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
+		startTime    time.Time
+		endTime      time.Time
 		dataReq      models.GetLeadsRequest
 		data         []map[string]interface{}
 		query        string
 		offset       int
 		whereEleList []interface{}
+		whereClause  string
+		recordCount  int64
 	)
 
 	log.EnterFn(0, "HandleGetLeadsDataRequest")
@@ -69,7 +73,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// validating start date
-	_, err = time.Parse("02-01-2006", dataReq.StartDate)
+	startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
 		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
@@ -77,7 +81,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// validating end date
-	_, err = time.Parse("02-01-2006", dataReq.EndDate)
+	endTime, err = time.Parse("02-01-2006", dataReq.EndDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
 		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
@@ -96,7 +100,23 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 			offset = (dataReq.PageNumber - 1) * dataReq.PageSize
 		}
 
-		query = `
+		if dataReq.LeadStatusId == 4 {
+			whereClause = "WHERE ((li.status_id = 5 and proposal_created_date is NULL) or (li.status_id = 2 and appointment_date < CURRENT_TIMESTAMP))"
+		} else if dataReq.LeadStatusId == 2 {
+			whereClause = "WHERE li.status_id = 2 and li.appointment_date > CURRENT_TIMESTAMP"
+		} else {
+			whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.LeadStatusId)
+		}
+
+		whereClause = fmt.Sprintf(`
+			%s 
+			AND li.is_archived = $2
+			AND li.updated_at BETWEEN $3 AND $4
+		`,
+			whereClause,
+		)
+
+		query = fmt.Sprintf(`
 			SELECT
 				li.leads_id,
 				li.state,
@@ -116,20 +136,20 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				li.appointment_date,
 				li.appointment_disposition_note,
 				li.is_archived,
-				li.notes
+				li.notes,
+				li.status_id
+				
 			FROM get_leads_info_hierarchy($1) li
-			WHERE li.status_id = $2
-			AND li.is_archived = $3
-			AND li.created_at >= TO_DATE($4, 'DD-MM-YYYY')
-			AND li.created_at <= TO_DATE($5, 'DD-MM-YYYY')
-			LIMIT $6 OFFSET $7`
+			%s
+			ORDER BY li.updated_at DESC
+			LIMIT $5 OFFSET $6;
+		`, whereClause)
 
 		whereEleList = append(whereEleList,
 			userEmail,
-			dataReq.LeadStatusId,
 			dataReq.IsArchived,
-			dataReq.StartDate,
-			dataReq.EndDate,
+			time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.UTC),
+			time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 23, 59, 59, 0, time.UTC),
 			dataReq.PageSize,
 			offset,
 		)
@@ -263,10 +283,31 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				notes = ""
 			}
 
+			status_id, ok := item["status_id"].(int64)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get won status from leads info Item: %+v\n", item)
+				notes = ""
+			}
+
+			// variable for action needed message
+			action_needed_message := ""
+
+			// cerating action needed message
+			if dataReq.LeadStatusId == 4 {
+				if status_id == 2 {
+					action_needed_message = "Update Status"
+				} else if status_id == 5 {
+					action_needed_message = "Deal Won"
+				} else {
+					action_needed_message = "Other"
+				}
+			}
+
 			LeadsData := models.GetLeadsData{
 				LeadID:                     leads_id,
 				State:                      state,
 				FirstName:                  first_name,
+				StatusID:                   status_id,
 				LastName:                   last_name,
 				EmailID:                    email_id,
 				PhoneNumber:                phone_number,
@@ -283,13 +324,25 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				AppointmentDispositionNote: appointment_disposition_note,
 				IsArchived:                 is_archived,
 				Notes:                      notes,
+				ActionNeededMessage:        action_needed_message,
 			}
 
 			LeadsDataList = append(LeadsDataList, LeadsData)
 
 		}
 
-		appserver.FormAndSendHttpResp(resp, "Leads Data", http.StatusOK, LeadsDataList, int64(len(data)))
+		// Count total records from db
+		query = fmt.Sprintf(`SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li %s`, whereClause)
+
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList[0:4])
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get lead count from DB err: %v", err)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch lead count", http.StatusInternalServerError, nil)
+			return
+		}
+		recordCount = data[0]["count"].(int64)
+
+		appserver.FormAndSendHttpResp(resp, "Leads Data", http.StatusOK, LeadsDataList, recordCount)
 
 	} else {
 		log.FuncErrorTrace(0, "Failed to retrieve user email id in get leads data request err: %v", err)

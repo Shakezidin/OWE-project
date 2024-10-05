@@ -1,19 +1,15 @@
 import { ROUTES } from './routes';
 import { BiSupport } from 'react-icons/bi';
-import { RiPieChart2Fill, RiUserSettingsLine } from 'react-icons/ri';
-import { BsDatabaseGear } from 'react-icons/bs';
+import { RiUserSettingsLine } from 'react-icons/ri';
 import { MdOutlinePayment, MdPendingActions } from 'react-icons/md';
-import { FiServer } from 'react-icons/fi';
 import { GrDocumentConfig } from 'react-icons/gr';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject, AiOutlineTeam } from 'react-icons/ai';
 import { ImStatsBars2 } from 'react-icons/im';
-import { FaRegCalendarCheck } from 'react-icons/fa6';
-import { RiCalendarScheduleLine } from "react-icons/ri";
-import { FaMapLocationDot } from "react-icons/fa6";
-import { FaCloudUploadAlt } from 'react-icons/fa';
+import { RiCalendarScheduleLine } from 'react-icons/ri';
 import { IoCloudUploadOutline, IoListSharp } from 'react-icons/io5';
-import { TfiMapAlt } from 'react-icons/tfi';
+import { PiMapPin } from 'react-icons/pi';
+
 const mob = {
   mob: [
     {
@@ -67,11 +63,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Install Map',
         icon: (
-          <TfiMapAlt
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
+          <PiMapPin size={20} style={{ marginLeft: '3px' }} color="black" />
         ),
       },
     },
@@ -108,11 +100,7 @@ const mob = {
       sidebarProps: {
         displayText: 'Lead Management',
         icon: (
-          <IoListSharp
-            size={20}
-            style={{ marginLeft: '3px' }}
-            color="black"
-          />
+          <IoListSharp size={20} style={{ marginLeft: '3px' }} color="black" />
         ),
       },
     },
@@ -151,7 +139,6 @@ const mob = {
         icon: <BiSupport size={20} style={{ flexShrink: '0' }} />,
       },
     },
-    
 
     // {
     //   path: ROUTES.CALENDAR,

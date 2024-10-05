@@ -93,7 +93,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Email Function Call
-	err = sentAppointmentEmail(ClientEmail, &aptDate)
+	err = sentAppointmentEmail(ClientEmail, &aptDate, true)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send the email to the client %v", err)
@@ -102,7 +102,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	//******************************************************************************************//
-	// Get the User Id via email_id from the data base
+	// Get the creator User Id via email_id from the data base
 	userEmail, ok := req.Context().Value("emailid").(string)
 	if !ok {
 		log.FuncErrorTrace(0, "failed to retrieve user email from context %v", err)
@@ -135,7 +135,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	//**********************************************************************************************//
-	query = "UPDATE leads_info SET appointment_date = $1,status_id = 1,updated_at = CURRENT_TIMESTAMP, last_updated_by = $2 WHERE leads_id = $3;"
+	query = "UPDATE leads_info SET appointment_date = $1, appointment_scheduled_date = CURRENT_TIMESTAMP,status_id = 1, updated_at = CURRENT_TIMESTAMP, last_updated_by = $2 WHERE leads_id = $3;"
 
 	whereEleList = append(whereEleList, aptDate)
 	whereEleList = append(whereEleList, creatorUserId)

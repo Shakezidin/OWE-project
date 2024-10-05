@@ -173,6 +173,6 @@ func ValidateCreateLeadsRequest(req models.CreateLeadsReq) error {
 }
 
 // dummy [TODO: call outlook api]
-func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time) error {
+func sentAppointmentEmail(clientEmail string, appointmentDate *time.Time, isReschedule bool) error {
 	return nil
 }

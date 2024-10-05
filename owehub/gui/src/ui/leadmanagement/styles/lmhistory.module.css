@@ -26,9 +26,8 @@
 }
 
 .history_lists:hover {
-  background-color: #EEF5FF;
+  background-color: #eef5ff;
 }
-
 
 /* .history_list_inner {
   display: flex;
@@ -40,7 +39,6 @@
   transition: all 0.3s ease;
 } */
 
-
 .history_list_inner {
   display: grid;
   grid-template-columns: repeat(3, minmax(12vw, 1fr)) 2fr minmax(12vw, 1fr);
@@ -50,17 +48,14 @@
   transition: all 0.3s ease;
 }
 
-.history_list_inner>*:last-child {
+.history_list_inner > *:last-child {
   justify-self: center;
 }
 
-.history_list_inner>*:nth-child(4) {
+.history_list_inner > *:nth-child(4) {
   justify-self: start;
   padding-left: 85px;
 }
-
-
-
 
 .email {
   display: flex;
@@ -125,8 +120,6 @@
   transform: scale(1.06);
 }
 
-
-
 .history_list_activity {
   display: flex;
   flex-direction: row;
@@ -136,7 +129,6 @@
   margin-top: 20px;
   padding: 35px 0px 20px 0px;
   width: 100%;
-
 }
 
 .history_list_activities {
@@ -249,7 +241,7 @@
 }
 
 .history_list_head {
-  color: #3E3E3E;
+  color: #3e3e3e;
   font-weight: 600;
   font-size: 16px;
   width: 10%;
@@ -260,7 +252,7 @@
 .lead_his_remove {
   width: 135px;
   height: 38px;
-  background-color: #EE4747;
+  background-color: #ee4747;
   font-weight: 500;
   font-size: 16px;
   color: #fff;
@@ -292,7 +284,7 @@
 .hist_date {
   font-weight: 500;
   font-size: 12px;
-  color: #377CF6;
+  color: #377cf6;
 }
 
 .hist_checkbox_count img {
@@ -313,8 +305,6 @@
   align-items: center;
   gap: 18px;
 }
-
-
 
 .monthSelect {
   background-color: #3b82f6;
@@ -341,15 +331,10 @@
   transform: scale(1.06);
 }
 
-
-
-
-
 @media screen and (max-width: 767px) {
   .h_screen {
     display: flex;
     align-items: center;
-
   }
 
   .customer_wrapper_list {
@@ -379,7 +364,7 @@
     padding: 22px 0px 20px 49px;
   }
 
-  .history_list_inner{
+  .history_list_inner {
     padding-right: 8px;
   }
 
@@ -465,7 +450,6 @@
     align-items: center;
     gap: 6px;
   }
-
 }
 
 .lead__datepicker_wrapper:hover {
@@ -474,12 +458,12 @@
 
 .lead__datepicker_content {
   position: absolute;
-  right: 26px;
+  left: 29px;
   z-index: 10;
   background-color: var(--white-color);
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  top: 140px;
+  top: 20px;
 }
 
 .lead__datepicker_btns {
@@ -496,7 +480,16 @@
 .lead__datepicker_btns button:first-child {
   margin-right: 0.5rem;
 }
-
+.lead__datepicker_wrapper {
+  position: relative;
+  line-height: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 11;
+}
+.lead__datepicker_wrapper:hover {
+  z-index: 11;
+}
 
 @media screen and (max-width: 767px) {
   .monthSelect {
@@ -519,15 +512,14 @@
     padding-right: 6px;
   }
 
-  .history_list_inner>*:last-child {
+  .history_list_inner > *:last-child {
     justify-self: center;
   }
 
-  .history_list_inner>*:nth-child(4) {
+  .history_list_inner > *:nth-child(4) {
     justify-self: start;
     padding-left: 0;
   }
-
 
   .customer_wrapper_list {
     padding-inline: 3px;
@@ -547,7 +539,7 @@
   .phone_number_tab {
     font-weight: 400;
     font-size: 12px;
-    color: #3E3E3E;
+    color: #3e3e3e;
     margin-top: 10px;
     margin-left: 34px;
   }
@@ -558,9 +550,7 @@
 
   .act_head {
     max-width: 100px;
-    
   }
-
 }
 
 .page_heading_container {

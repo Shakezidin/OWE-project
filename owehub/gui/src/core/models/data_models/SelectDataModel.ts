@@ -29,11 +29,11 @@ export const stateOption = (newFormData: any): Option[] =>
     value,
     label: value,
   }));
-  
-  export const availableStates = (newFormData: any): Option[] => 
-    newFormData?.available_states?.map((value: string) => 
-      value === "" ? { value: "", label: "-" } : { value, label: value }
-    ) || []; 
+
+export const availableStates = (newFormData: any): Option[] =>
+  newFormData?.available_states?.map((value: string) =>
+    value === '' ? { value: '', label: '-' } : { value, label: value }
+  ) || [];
 export const subDealerOption = (newFormData: any): Option[] =>
   newFormData?.sub_dealer?.map((value: string) => ({
     value,

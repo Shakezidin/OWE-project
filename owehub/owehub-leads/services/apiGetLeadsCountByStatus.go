@@ -11,7 +11,10 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 /******************************************************************************
@@ -25,6 +28,8 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 	var (
 		err         error
 		apiResponse models.GetLeadsCountByStatusList
+		dataReq     models.GetLeadsCountByStatusRequest
+		reqBody     []byte
 		data        []map[string]interface{}
 	)
 
@@ -38,16 +43,52 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
+	reqBody, err = ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get leads count by status data req err:  %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	err = json.Unmarshal(reqBody, &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal get leads count by status request body err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	startDate, err := time.Parse("02-01-2006", dataReq.StartDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse start date err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse start date", http.StatusBadRequest, nil)
+		return
+	}
+	endDate, err := time.Parse("02-01-2006", dataReq.EndDate)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse end date err: %v", err)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse end date", http.StatusBadRequest, nil)
+		return
+	}
+
+	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, time.UTC)
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 0, time.UTC)
+
+	whereEleList := []interface{}{authenticatedEmail, startDate, endDate}
 	query := `
 		SELECT s.status_id, s.status_name, grp.count 
 		FROM (
 			SELECT count(leads_info.*), leads_status.status_id
 			FROM get_leads_info_hierarchy($1) leads_info
-			RIGHT JOIN leads_status ON leads_info.status_id = leads_status.status_id
+			RIGHT JOIN leads_status 
+				ON leads_info.status_id = leads_status.status_id 
+				AND leads_info.updated_at BETWEEN $2 AND $3
+				AND leads_info.is_archived = false
+				AND (leads_info.status_id != 2 OR leads_info.appointment_date < CURRENT_TIMESTAMP)
 			GROUP BY leads_status.status_id
+			HAVING leads_status.status_id NOT IN (5, 6) -- Excluding WON & LOST
 		) grp INNER JOIN leads_status s ON s.status_id = grp.status_id
 	`
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail})
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get leads count by status with err: %v", err)
@@ -70,6 +111,28 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to assert status_id to int64 type Item: %+v", item)
 			continue
+		}
+
+		// Special case for status_id = 4 (Action Needed)
+		if statusId == 4 {
+			query = `
+				SELECT count(li.*) FROM get_leads_info_hierarchy($1) li
+				WHERE (
+					(li.status_id = 5 AND li.proposal_created_date IS NULL)
+					OR (li.status_id = 2 AND li.appointment_date < CURRENT_TIMESTAMP)
+				) AND li.updated_at BETWEEN $2 AND $3 AND li.is_archived = false
+			`
+
+			data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+			if err != nil || len(data) <= 0 {
+				log.FuncErrorTrace(0, "Failed to get action neeeded leads count with err: %v", err)
+			} else {
+				actionNeededCount, ok := data[0]["count"].(int64)
+				if ok {
+					count += actionNeededCount
+				}
+			}
+
 		}
 		apiResponse.Leads = append(apiResponse.Leads, models.GetLeadsCountByStatus{
 			Count:      count,

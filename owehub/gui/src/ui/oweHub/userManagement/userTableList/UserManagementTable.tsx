@@ -1,4 +1,10 @@
-import React, { SetStateAction, useEffect, useState, useCallback, useRef } from 'react';
+import React, {
+  SetStateAction,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import '../user.css';
 import '../../configure/configure.css';
 import UserTable from '../userManagerAllTable/UserTable';
@@ -29,6 +35,7 @@ import UserIcon from '../lib/UserIcon';
 import { debounce } from '../../../../utiles/debounce';
 import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import Input from '../../../components/text_input/Input';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -99,7 +106,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         page_size: pageSize1,
       };
       dispatch(fetchUserListBasedOnRole(data));
-  
+
       if (selectedOption.value === 'Partner') {
         dispatch(fetchDealerList(dataa));
       }
@@ -107,7 +114,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     return () => {
       dispatch(resetOpt());
     };
-  }, [dispatch, currentPage1, pageSize1, activeSalesRep,initialRender]);
+  }, [dispatch, currentPage1, pageSize1, activeSalesRep, initialRender]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
@@ -402,11 +409,18 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           <div className="userManagementTable__search">
             <input
               type="text"
+              name="Search"
               placeholder="Search users..."
               value={search}
               onChange={(e) => {
-                handleSearchChange(e);
-                setSearch(e.target.value);
+                if (e.target.value.length <= 50) {
+                  e.target.value = e.target.value.replace(
+                    /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                    ''
+                  );
+                  handleSearchChange(e);
+                  setSearch(e.target.value);
+                }
               }}
             />
             {!activeSalesRep && <div>{AddBtn}</div>}

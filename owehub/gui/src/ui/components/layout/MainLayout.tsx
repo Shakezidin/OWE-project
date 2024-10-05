@@ -16,9 +16,8 @@ import ChangePassword from '../../oweHub/resetPassword/ChangePassword/ChangePass
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { cancelAllRequests } from '../../../http';
-
 import useAuth from '../../../hooks/useAuth';
-import ChatSupport from './ChatSupport';
+import useIdleTimer from '../../../hooks/useIdleTimer';
 
 const MainLayout = () => {
   const { authData, filterAuthData } = useAuth();
@@ -33,6 +32,21 @@ const MainLayout = () => {
   const [sidebarChange, setSidebarChange] = useState<number>(0);
   const [sessionExist, setSessionExist] = useState(false);
 
+  /** logout  */
+  const logoutUser = (message?: string) => {
+    dispatch(activeSessionTimeout());
+    dispatch(logout());
+    filterAuthData();
+    navigate('/login');
+    toast.error(
+      message ? message : 'Session time expired. Please login again..'
+    );
+  };
+
+  /** check idle time  */
+  useIdleTimer({ onIdle: logoutUser, timeout: 900000 });
+
+  /** reset paswword */
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
@@ -48,18 +62,13 @@ const MainLayout = () => {
     const token = userData?.token;
     const expirationTime = userData?.expirationTime;
     const expirationTimeInMin = userData?.expirationTimeInMin;
-    console.log('userData', userData);
     if (token && expirationTime && expirationTimeInMin) {
       const currentTime = Date.now();
       if (currentTime < parseInt(expirationTime, 10)) {
         setSessionExist(true);
         const timeout = setTimeout(
           () => {
-            dispatch(activeSessionTimeout());
-            dispatch(logout());
-            filterAuthData();
-            navigate('/login');
-            toast.error('Session time expired. Please login again..');
+            logoutUser('Session time expired. Please login again..');
           },
           parseInt(expirationTimeInMin) * 60 * 1000
         ); // 480 minutes in milliseconds
@@ -67,15 +76,10 @@ const MainLayout = () => {
         return () => clearTimeout(timeout);
       } else {
         // Token has expired
-        dispatch(activeSessionTimeout());
-        dispatch(logout());
-        filterAuthData();
-        navigate('/login');
-
-        toast.error('Session time expired. Please login again..');
+        logoutUser('Session time expired. Please login again..');
       }
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, navigate]);
 
   /** check whether user exist or not */
   useEffect(() => {
@@ -87,10 +91,7 @@ const MainLayout = () => {
           if (response.payload) {
           } else {
             // User does not exist, log out
-            dispatch(logout());
-            filterAuthData();
-            navigate('/login');
-            toast.error('User does not exist. Please register..');
+            logoutUser('User does not exist. Please register..');
             cancelAllRequests();
           }
         })
@@ -99,7 +100,7 @@ const MainLayout = () => {
         });
     }
   }, [dispatch, navigate, authData]);
-  const isStaging = process.env.REACT_APP_ENV;
+
   useEffect(() => {
     setToggleOpen(isTablet);
     if (localStorage.getItem('version') !== process.env.REACT_APP_VERSION!) {

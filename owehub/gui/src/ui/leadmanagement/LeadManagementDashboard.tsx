@@ -21,6 +21,7 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
+import ThreeDotsImage from '../Library/stylesFolder/ThreeDots.svg';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -29,13 +30,22 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { toZonedTime } from 'date-fns-tz';
 import {
   endOfWeek,
+  format,
   startOfMonth,
   startOfWeek,
   startOfYear,
   subDays,
 } from 'date-fns';
-import Breadcrumb from '../components/breadcrumb/Breadcrumb';
-
+import HistoryRedirect from '../Library/HistoryRedirect';
+import useAuth from '../../hooks/useAuth';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { toast } from 'react-toastify';
+import MicroLoader from '../components/loader/MicroLoader';
+import DataNotFound from '../components/loader/DataNotFound';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
+import ArchivedPages from './ArchievedPages';
+import useMatchMedia from '../../hooks/useMatchMedia';
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -44,6 +54,11 @@ export type DateRangeWithLabel = {
   start: Date;
   end: Date;
 };
+interface StatusData {
+  name: string;
+  value: number;
+  color: string;
+}
 
 function getUserTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -92,29 +107,6 @@ type Lead = {
   address: string;
   status: string;
 };
-
-const pieData = [
-  { name: 'Pending leads', value: 135, color: '#FF832A' },
-  { name: 'Appointment sent', value: 29, color: '#81A6E7' },
-  { name: 'Appointment accepted', value: 21, color: '#52B650' },
-  { name: 'Appointment declined', value: 15, color: '#CD4040' },
-  { name: 'Action Needed', value: 10, color: '#63ACA3' },
-];
-
-const lineData = [
-  { name: 'Jan', won: 35, lost: 15 },
-  { name: 'Feb', won: 40, lost: 20 },
-  { name: 'Mar', won: 45, lost: 15 },
-  { name: 'Apr', won: 40, lost: 30 },
-  { name: 'May', won: 70, lost: 20 },
-  { name: 'Jun', won: 45, lost: 35 },
-  { name: 'Jul', won: 75, lost: 35 },
-  { name: 'Aug', won: 90, lost: 40 },
-  { name: 'Sep', won: 60, lost: 20 },
-  { name: 'Oct', won: 55, lost: 30 },
-  { name: 'Nov', won: 70, lost: 35 },
-  { name: 'Dec', won: 80, lost: 45 },
-];
 
 const leads = [
   {
@@ -244,7 +236,8 @@ const leads = [
     email: 'jasprit8772@gmail.com',
     address: '12333 Domingo Ct',
     status: 'Update Status',
-  }, {
+  },
+  {
     id: '17',
     name: 'Risabh Pant',
     phone: '+00 876472822',
@@ -289,7 +282,6 @@ const renderActiveShape = (props: any) => {
 
   // Center text in pie chart
 
-
   const splitText = (text: string, width: number) => {
     const words = text.split(' ');
     const lines = [];
@@ -323,7 +315,11 @@ const renderActiveShape = (props: any) => {
             key={index}
             x={cx}
             dy={index ? 15 : 0}
-            style={{ fontSize: '12.07px', wordBreak: 'break-word',fontWeight:550 }}
+            style={{
+              fontSize: '12.07px',
+              wordBreak: 'break-word',
+              fontWeight: 550,
+            }}
           >
             {line}
           </tspan>
@@ -450,23 +446,21 @@ const CustomTooltip = ({
 };
 
 const LeadManagementDashboard = () => {
-  const [selectedMonth, setSelectedMonth] = useState('Aug');
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [filteredLeads, setFilteredLeads] = useState(leads);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
+  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
-  const [selectedDate, setSelectedDate] = useState('25 Aug, 2024');
+
   const width = useWindowWidth();
   const isTablet = width <= 1024;
-
-
   // shams start
-  const [expandedLeads, setExpandedLeads] = useState<string[]>([]);
-  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(null);
+  const [selectedPeriod, setSelectedPeriod] =
+    useState<DateRangeWithLabel | null>(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
@@ -475,8 +469,8 @@ const LeadManagementDashboard = () => {
     startDate: Date | null;
     endDate: Date | null;
   }>({
-    startDate: null,
-    endDate: null,
+    startDate: startOfThisWeek,
+    endDate: today,
   });
 
   const handleRangeChange = (ranges: any) => {
@@ -495,36 +489,56 @@ const LeadManagementDashboard = () => {
     setIsCalendarOpen(false);
   };
 
-
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const dateRangeRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
-  const [toggledId, setToggledId] = useState<string | null>(null);
+  const [toggledId, setToggledId] = useState<number[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(1);
+  const [itemsPerPage, setItemPerPage] = useState(10);
+  const startIndex = (page - 1) * itemsPerPage + 1;
+  const endIndex = page * itemsPerPage;
+  const totalPage = Math.ceil(totalCount / 10);
+  const [refresh, setRefresh] = useState(1);
+  const [archived, setArchived] = useState(false);
+  const [leadId, setLeadId] = useState(0);
+  const isMobile = useMatchMedia('(max-width: 1024px)');
+  const [reschedule, setReschedule] = useState(false);
+
+
+  const paginate = (pageNumber: number) => {
+    setPage(pageNumber);
+  };
+
+  const goToNextPage = () => {
+    setPage(page + 1);
+  };
+
+  const goToPrevPage = () => {
+    setPage(page - 1);
+  };
 
   const toggleCalendar = () => {
     setIsCalendarOpen((prevState) => !prevState);
   };
 
-//CALLING FOR RANGE PICK IN USING SELECT CODE
-const handlePeriodChange = (
-  newValue: SingleValue<DateRangeWithLabel>, 
-  actionMeta: ActionMeta<DateRangeWithLabel>
-) => {
-  if (newValue) {
-    setSelectedDates({
-      startDate: newValue.start,
-      endDate: newValue.end,
-    });
-    setSelectedPeriod(newValue);
-  } else {
-    setSelectedDates({ startDate: null, endDate: null });
-  }
-};
-
-
-
-
+  //CALLING FOR RANGE PICK IN USING SELECT CODE
+  const handlePeriodChange = (
+    newValue: SingleValue<DateRangeWithLabel>,
+    actionMeta: ActionMeta<DateRangeWithLabel>
+  ) => {
+    if (newValue) {
+      setSelectedDates({
+        startDate: newValue.start,
+        endDate: newValue.end,
+      });
+      setSelectedPeriod(newValue);
+    } else {
+      setSelectedDates({ startDate: null, endDate: null });
+    }
+  };
+  //CALLING FOR HISTORY
 
   const handleClickOutside = (event: Event) => {
     if (
@@ -547,22 +561,20 @@ const handlePeriodChange = (
     };
   }, []);
   // shams end
-  const itemsPerPage = 5;
+  // const itemsPerPage = 10;
   const navigate = useNavigate();
-
-  const handleHistory = () => {
-    navigate('/leadmng-history');
-  };
 
   const handleAddLead = () => {
     navigate('/leadmgt-addnew');
   };
 
   useEffect(() => {
-    const pieName = pieData[activeIndex].name;
-    const newFilter = statusMap[pieName as keyof typeof statusMap];
-    setCurrentFilter(newFilter);
-    setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+    if (pieData.length > 0) {
+      const pieName = pieData[activeIndex].name;
+      const newFilter = statusMap[pieName as keyof typeof statusMap];
+      setCurrentFilter(newFilter);
+      setFilteredLeads(leads.filter((lead) => lead.status === newFilter));
+    }
   }, [activeIndex]);
 
   const handlePieClick = (_: React.MouseEvent<SVGElement>, index: number) => {
@@ -579,38 +591,16 @@ const handlePeriodChange = (
     );
   };
 
-  const getLeadCount = (status: string) => {
-    return leads.filter((lead) => lead.status === status).length;
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentLeads = filteredLeads.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const goToNextPage = () =>
-    setCurrentPage((prev) =>
-      Math.min(prev + 1, Math.ceil(filteredLeads.length / itemsPerPage))
-    );
-  const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
-  const handleLeadSelection = (lead: Lead) => {
+  const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
-      prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
+      prev.includes(leadId)
+        ? prev.filter((id) => id !== leadId)
+        : [...prev, leadId]
     );
-  };
-
-  const handleArchiveSelected = () => {
-    // Implement the logic to remove selected leads
-    setFilteredLeads((prev) =>
-      prev.filter((lead) => !selectedLeads.includes(lead))
-    );
-    setSelectedLeads([]);
   };
 
   const handleReschedule = (lead: any) => {
-    console.log(`Lead ${lead.name} is being rescheduled`);
-    handleFilterClick('Pending'); // Switch to the "Pending" tab
+    setShowConfirmModal(true);
   };
 
   const handleArchive = (lead: Lead) => {
@@ -621,20 +611,13 @@ const handlePeriodChange = (
   const handleDetailModal = (lead: Lead) => {
     setShowConfirmModal(true); // Show detail modal
   };
-  console.log('currentFilter', currentFilter);
 
-  const toggleLeadExpansion = (leadId: string) => {
-    setExpandedLeads((prev) =>
-      prev.includes(leadId)
-        ? prev.filter((id) => id !== leadId)
-        : [...prev, leadId]
+  const handleChevronClick = (itemId: number) => {
+    console.log(itemId);
+    setToggledId((prevToggledId) =>
+      prevToggledId.includes(itemId) ? [] : [itemId]
     );
   };
-
-  const handleChevronClick = (id: string) => {
-    setToggledId((prevId) => (prevId === id ? null : id));
-  };
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -644,476 +627,816 @@ const handlePeriodChange = (
     setIsModalOpen(false);
   };
 
+  const [isArcModalOpen, setIsArcModalOpen] = useState(false);
+  const handleOpenArcModal = () => {
+    console.log("click on arch")
+    setIsArcModalOpen(true);
+    console.log(isArcModalOpen)
+  };
+
+  const handleCloseArcModal = () => {
+    setIsArcModalOpen(false);
+  };
+
+  // ************************ API Integration By Saurabh ********************************\\
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const { authData, saveAuthData } = useAuth();
+  const [loading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
+  const [lineData, setLineData] = useState([]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await postCaller(
+            'get_periodic_won_lost_leads',
+            {
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+            },
+            true
+          );
+
+          if (response.status === 200) {
+            const apiData = response.data.periodic_list;
+            const formattedData = apiData.map((item: any) => ({
+              name: item.period_label,
+              won: item.won_count,
+              lost: item.lost_count,
+            }));
+            setLineData(formattedData);
+          } else if (response.status > 201) {
+            toast.error(response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isAuthenticated, selectedDates]);
+
+  const defaultData: DefaultData = {
+    PENDING: { name: 'Pending leads', value: 0, color: '#FF832A' },
+    SENT: { name: 'Appointment sent', value: 0, color: '#81A6E7' },
+    ACCEPTED: { name: 'Appointment accepted', value: 0, color: '#52B650' },
+    DECLINED: { name: 'Appointment declined', value: 0, color: '#CD4040' },
+    'ACTION NEEDED': { name: 'Action Needed', value: 0, color: '#63ACA3' },
+  };
+  interface DefaultData {
+    [key: string]: StatusData;
+  }
+  interface StatusData {
+    name: string;
+    value: number;
+    color: string;
+  }
+  const [pieData, setPieData] = useState<StatusData[]>([]);
+  const [totalValue, setTotalValue] = useState<number>(0);
+  const [archive, setArchive] = useState(false);
+  const [ref, setRef] = useState(0);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await postCaller(
+            'get_leads_count_by_status',
+            {
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+            },
+            true
+          );
+
+          if (response.status === 200) {
+            const apiData = response.data.leads;
+            const formattedData = apiData.reduce(
+              (acc: DefaultData, item: any) => {
+                acc[item.status_name] = {
+                  name: defaultData[item.status_name].name,
+                  value: item.count,
+                  color: defaultData[item.status_name].color,
+                };
+                return acc;
+              },
+              {} as DefaultData
+            );
+            const mergedData = Object.values({
+              ...defaultData,
+              ...formattedData,
+            }) as StatusData[];
+            setPieData(mergedData);
+          } else if (response.status > 201) {
+            toast.error(response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isAuthenticated, selectedDates, refresh]);
+
+  useEffect(() => {
+    const calculateTotalValue = () => {
+      const sum = pieData.reduce((acc, item) => acc + item.value, 0);
+      setTotalValue(sum);
+    };
+
+    calculateTotalValue();
+  }, [pieData]);
+
+  const dispatch = useAppDispatch();
+  const { isLoading, leadsData, totalcount } = useAppSelector(
+    (state) => state.leadManagmentSlice
+  );
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      let statusId;
+      switch (currentFilter) {
+        case 'Action Needed':
+          statusId = 4;
+          break;
+        case 'Pending':
+          statusId = 0;
+          break;
+        case 'Sent':
+          statusId = 1;
+          break;
+        case 'Accepted':
+          statusId = 2;
+          break;
+        case 'Declined':
+          statusId = 3;
+          break;
+        default:
+          statusId = 0;
+      }
+
+      const data = {
+        start_date: selectedDates.startDate
+          ? format(selectedDates.startDate, 'dd-MM-yyyy')
+          : '',
+        end_date: selectedDates.endDate
+          ? format(selectedDates.endDate, 'dd-MM-yyyy')
+          : '',
+        status_id: statusId,
+        is_archived: archive,
+        page_size: 10,
+        page_number: archive ? 1 : page,
+      };
+
+      dispatch(getLeads(data));
+    }
+  }, [
+    selectedDates,
+    isModalOpen,
+    archive,
+    isAuthenticated,
+    itemsPerPage,
+    page,
+    currentFilter,
+    refresh,
+    ref
+  ]);
+
+  useEffect(() => {
+    if (leadsData.length > 0) {
+      setTotalCount(totalcount);
+    }
+  }, [leadsData]);
+
+  const handleArchiveSelected = async () => {
+    setArchived(true);
+    try {
+      const response = await postCaller(
+        'toggle_archive',
+        {
+          ids: selectedLeads,
+          is_archived: true,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Leads Archieved successfully');
+        setSelectedLeads([]);
+        setRefresh((prev) => prev + 1);
+        setArchived(false);
+      } else {
+        toast.warn(response.message);
+        setArchived(false);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+      setArchived(false);
+    }
+    setArchived(false);
+  };
+
+  //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
-      <div style={{ marginLeft: "6px", marginTop: "6px" }}>
-      <Breadcrumb
-          head=""
-          linkPara="Lead Management"
-          route={''}
-          linkparaSecond=""
-          marginLeftMobile="12px"
-        />
+      <div style={{ marginLeft: 6, marginTop: 6 }}>
+        <div className="breadcrumb-container" style={{ marginLeft: 0 }}>
+          <div className="bread-link">
+            <div className="" style={{ cursor: 'pointer' }}>
+              <h3>Lead Management</h3>
+            </div>
+            <div className="">
+              <p style={{ color: 'rgb(4, 165, 232)', fontSize: 14 }}></p>
+            </div>
+          </div>
+        </div>
       </div>
-      {showConfirmModal && (
-        <ConfirmModel
-          isOpen1={isModalOpen} onClose1={handleCloseModal}
-        />
-      )}
 
-      {showArchiveModal && (
-        <ArchiveModal
-        // isOpen={filterOPen} handleClose={filterClose}
-        />
-      )}
+
+      <ConfirmModel
+        isOpen1={isModalOpen}
+        onClose1={handleCloseModal}
+        leadId={leadId}
+        refresh={refresh}
+        setRefresh={setRefresh}
+        reschedule={reschedule}
+      />
+
+
+
+      <ArchiveModal
+        isArcOpen={isArcModalOpen}
+        onArcClose={handleCloseArcModal}
+        leadId={leadId}
+        activeIndex={ref}
+        setActiveIndex={setRef}
+      />
+
 
       <div className={styles.chartGrid}>
         <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            Overview 
-            <div>Total leads: 200</div>
+          <div className={styles.cardHeaderFirst}>
+            Overview
+            <div>Total leads: {totalValue ? totalValue : '0'}</div>
           </div>
           <div className={styles.cardContent}>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart className={styles.pieChart}>
-                <Pie
-                  activeIndex={activeIndex}
-                  activeShape={renderActiveShape}
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  onClick={handlePieClick}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+            {loading ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <MicroLoader />
+              </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart className={styles.pieChart}>
+                    <Pie
+                      activeIndex={activeIndex}
+                      activeShape={renderActiveShape}
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      onClick={handlePieClick}
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className={styles.legend}>
+                  {pieData.map((item) => (
+                    <div key={item.name} className={styles.legendItem}>
+                      <div
+                        className={styles.legendColor}
+                        style={{ backgroundColor: item.color }}
+                      ></div>
+                      <span className={styles.legendText}>{item.name}</span>
+                    </div>
                   ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className={styles.legend}>
-              {pieData.map((item) => (
-                <div key={item.name} className={styles.legendItem}>
-                  <div
-                    className={styles.legendColor}
-                    style={{ backgroundColor: item.color }}
-                  ></div>
-                  <span className={styles.legendText}>{item.name}</span>
                 </div>
-              ))}
-            </div>
+              </>
+            ) : (
+              <DataNotFound />
+            )}
           </div>
         </div>
 
         <div className={`${styles.card} ${styles.lineCard}`}>
           {/* shams start */}
-          <div className={styles.cardHeader}>
+          <div className={styles.cardHeaderSecond}>
             <span>Total Won Lost</span>
             <div className={styles.date_calendar}>
-              {isCalendarOpen && (
-                <div
-                  ref={calendarRef}
-                  className={styles.lead__datepicker_content}
-                >
-                  <DateRange
-                    editableDateInputs={true}
-                    onChange={handleRangeChange}
-                    moveRangeOnFirstSelection={false}
-                    ranges={selectedRanges}
-                  />
-                  <div className={styles.lead__datepicker_btns}>
-                    <button className="reset-calender" onClick={onReset}>
-                      Reset
-                    </button>
-                    <button className="apply-calender" onClick={onApply}>
-                      Apply
-                    </button>
+              <div className={styles.lead__datepicker_wrapper}>
+                {isCalendarOpen && (
+                  <div
+                    ref={calendarRef}
+                    className={styles.lead__datepicker_content}
+                  >
+                    <DateRange
+                      editableDateInputs={true}
+                      onChange={handleRangeChange}
+                      moveRangeOnFirstSelection={false}
+                      ranges={selectedRanges}
+                    />
+                    <div className={styles.lead__datepicker_btns}>
+                      <button className="reset-calender" onClick={onReset}>
+                        Reset
+                      </button>
+                      <button className="apply-calender" onClick={onApply}>
+                        Apply
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
               {selectedDates.startDate && selectedDates.endDate && (
                 <div className={styles.hist_date}>
                   <span className={styles.date_display}>
                     {selectedDates.startDate.toLocaleDateString('en-US', {
                       day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    }) +
+                      ' ' +
+                      selectedDates.startDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                      }) +
+                      ' ' +
+                      selectedDates.startDate.getFullYear()}
                     {' - '}
                     {selectedDates.endDate.toLocaleDateString('en-US', {
                       day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    }) +
+                      ' ' +
+                      selectedDates.endDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                      }) +
+                      ' ' +
+                      selectedDates.endDate.getFullYear()}
                   </span>
                 </div>
               )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               {/* RABINDR718.....DATE_PICKER STARTED */}
-    <Select value={selectedPeriod}
-                    onChange={handlePeriodChange}
-                    options={periodFilterOptions}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: 'px',
-                        borderRadius: '8px',
-                        outline: 'none',
-                        color: '#3E3E3E',
-                        width: '140px',
-                        height: '36px',
-                        fontSize: '12px',
-                        border: '1px solid #d0d5dd',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        alignContent: 'center',
-                        backgroundColor: '#fffff',
-                        boxShadow: 'none',
-                        '@media only screen and (max-width: 767px)': {
-                          width: '80px',
-                          // width: 'fit-content',
-                        },
-                        '&:focus-within': {
-                          borderColor: '#377CF6',
-                          boxShadow: '0 0 0 1px #377CF6',
-                          caretColor: '#3E3E3E',
-                        },
-                      }),
-                      placeholder: (baseStyles) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                      }),
-                      indicatorSeparator: () => ({
-                        display: 'none',
-                      }),
-                      dropdownIndicator: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                        '&:hover': {
-                          color: '#3E3E3E',
-                        },
-
-                      }),
-                      option: (baseStyles, state) => ({
-                        ...baseStyles,
-                        fontSize: '13px',
-                        color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-                        backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-                        '&:hover': {
-                          backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-                        },
-                        cursor: 'pointer',
-                      }),
-                      singleValue: (baseStyles, state) => ({
-                        ...baseStyles,
-                        color: '#3E3E3E',
-                      }),
-                      menu: (baseStyles) => ({
-                        ...baseStyles,
-                        width: '140px',
-                        marginTop: "0px"
-                      }),
-                    }}
-                  />
-<div
-                  ref={toggleRef}
-                  className={styles.calender}
-                  onClick={toggleCalendar}
-                >
-                  <img src={ICONS.includes_icon} alt="" />
-                </div>
+              <Select
+                value={selectedPeriod}
+                onChange={handlePeriodChange}
+                options={periodFilterOptions}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    marginTop: 'px',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    color: '#3E3E3E',
+                    width: '140px',
+                    height: '36px',
+                    fontSize: '12px',
+                    border: '1px solid #d0d5dd',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    alignContent: 'center',
+                    backgroundColor: '#fffff',
+                    boxShadow: 'none',
+                    '&:focus-within': {
+                      borderColor: '#377CF6',
+                      boxShadow: '0 0 0 1px #377CF6',
+                      caretColor: '#3E3E3E',
+                    },
+                    '&:hover': {
+                      borderColor: '#377CF6',
+                      boxShadow: '0 0 0 1px #377CF6',
+                    },
+                  }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none',
+                  }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                    '&:hover': {
+                      color: '#3E3E3E',
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: '13px',
+                    fontWeight: '400',
+                    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
+                    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
+                    },
+                    cursor: 'pointer',
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#3E3E3E',
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: '140px',
+                    marginTop: '0px',
+                  }),
+                }}
+              />
+              <div
+                ref={toggleRef}
+                className={styles.calender}
+                onClick={toggleCalendar}
+              >
+                <img src={ICONS.includes_icon} alt="" />
+              </div>
+            </div>
           </div>
-
-          </div>
-           {/* RABINDR718.....DATE_PICKER ENDED */}
-        
-          
-          
-          
-
+          {/* RABINDR718.....DATE_PICKER ENDED */}
           <div
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
-            <ResponsiveContainer
-              className={styles.chart_main_grid}
-              width="100%"
-              height={300}
-            >
-              <LineChart data={lineData}>
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend
-                  className={styles.lineChart_legend}
-                  formatter={(value) =>
-                    value === 'won' ? 'Total won' : 'Total Lost'
-                  }
-                  wrapperStyle={{ fontSize: '12px',fontWeight:550,marginBottom:-15 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="won"
-                  stroke="#57B93A"
-                  strokeWidth={2}
-                  name="won"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="lost"
-                  stroke="#CD4040"
-                  strokeWidth={2}
-                  name="lost"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {loading ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <MicroLoader />
+              </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer
+                  className={styles.chart_main_grid}
+                  width="100%"
+                  height={300}
+                >
+                  <LineChart data={lineData}>
+                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend
+                      className={styles.lineChart_legend}
+                      formatter={(value) =>
+                        value === 'won' ? 'Total won' : 'Total Lost'
+                      }
+                      wrapperStyle={{
+                        fontSize: '12px',
+                        fontWeight: 550,
+                        marginBottom: -15,
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="won"
+                      stroke="#57B93A"
+                      strokeWidth={2}
+                      name="won"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="lost"
+                      stroke="#CD4040"
+                      strokeWidth={2}
+                      name="lost"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </>
+            ) : (
+              <DataNotFound />
+            )}
           </div>
         </div>
       </div>
 
       <div className={styles.card}>
-        <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
-          {selectedLeads.length === 0 ? (
-            <>
-               <div className={styles.buttonGroup}>
-                {['Pending', 'Sent', 'Accepted', 'Declined','Action Needed'].map((status) => (
-                  <button
-                    key={status}
-                    className={`${styles.button} ${currentFilter === status ? styles.buttonActive : ''}
-                     ${status === 'Action Needed' ? styles.action_needed_btn : ''}`} 
-                     onClick={() => handleFilterClick(status)}>
-                    <p
-                      className={`${styles.status} ${currentFilter !== status ? styles.statusInactive : ''}`}
-                    >
-                      {getLeadCount(status)}
-                    </p>
-                    {status}
-                  </button>
-                ))}
-              </div>
-              <div className={styles.filterCallToAction}>
-                <div className={styles.filtericon} onClick={handleHistory}>
-                  <img
-                    src={ICONS.historyLeadMgmt}
-                    alt=""
-                    width="100"
-                    height="100"
-                  />
-                </div>
-                <div className={styles.filtericon} onClick={handleAddLead}>
-                  <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className={styles.selectionHeader}>
-              <div className={styles.selectionInfo}>
-                <span
-                  className={styles.closeIcon}
-                  onClick={() => setSelectedLeads([])}
-                >
-                  <img src={ICONS.cross} alt="" height="26" width="26" />
-                </span>
-                <span>{selectedLeads.length} Selected</span>
-              </div>
-              <button
-                className={styles.removeButton}
-                onClick={handleArchiveSelected}
-              >
-                Archived
-              </button>
-            </div>
-          )}
-        </div>
+        {archive == true && (
+          <ArchivedPages
+            setArchive={setArchive}
+            activeIndex={ref}
+            setActiveIndex={setRef}
+          />
+        )}
+        {archive == false && (
+          <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
+            {selectedLeads.length === 0 ? (
+              <>
+                <div className={styles.buttonGroup}>
+                  {pieData.map((data) => {
+                    let displayStatus = '';
+                    switch (data.name) {
+                      case 'Pending leads':
+                        displayStatus = 'Pending';
+                        break;
+                      case 'Appointment sent':
+                        displayStatus = 'Sent';
+                        break;
+                      case 'Appointment accepted':
+                        displayStatus = 'Accepted';
+                        break;
+                      case 'Appointment declined':
+                        displayStatus = 'Declined';
+                        break;
+                      case 'Action Needed':
+                        displayStatus = 'Action Needed';
+                        break;
+                      default:
+                        displayStatus = data.name;
+                    }
 
-        <div className={styles.cardContent}>
-          <table className={styles.table}>
-            <tbody>
-              {currentLeads.map((lead, index) => (
-                <React.Fragment key={index}>
-                  <tr className={styles.history_lists}>
-                    <td className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`} onClick={handleOpenModal}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={selectedLeads.includes(lead)}
-                          onChange={() => handleLeadSelection(lead)}
-                        />
-                      </label>
-                      <div
-                        className={styles.user_name}
-                        onClick={() =>
-                          currentFilter == 'Pending' && handleDetailModal(lead)
-                        }
+                    return (
+                      <button
+                        key={data.name}
+                        className={`${styles.button} ${currentFilter === displayStatus ? styles.buttonActive : ''}
+                         ${displayStatus === 'Action Needed' ? styles.action_needed_btn : ''}`}
+                        onClick={() => handleFilterClick(displayStatus)}
                       >
-                        <h2>{lead.name}</h2>
-                        <p style={{ color: getStatusColor(lead.status) }}>
-                          {lead.status}
+                        <p
+                          className={`${styles.status} ${currentFilter !== displayStatus ? styles.statusInactive : ''}`}
+                        >
+                          {data.value}
                         </p>
-                      </div>
-                      <div className={styles.phone_number}>{lead.phone}</div>
-                      <div className={styles.email}>
-                        <span>
-                          {lead.email}
-                          <img
-                            className="ml1"
-                            height={15}
-                            width={15}
-                            src={ICONS.complete}
-                            alt="verified"
-                          />
-                        </span>
-                      </div>
-                      <div className={styles.address}>{lead.address}</div>
-                     
+                        {displayStatus}
+                      </button>
+                    );
+                  })}
+                </div>
 
-                      {lead.status === 'Declined' && (
-                        <div className={styles.actionButtons}>
-                          <button
-                            onClick={() => handleReschedule(lead)}
-                            className={styles.rescheduleButton}
-                          >
-                            Reschedule
-                          </button>
-                          {
-                            isTablet ?
-                            <button
-                            onClick={() => handleArchive(lead)}
-                            className={styles.archiveButton}
-                            >
-                              <img src={ICONS.declinedArchive}/>
-                            </button>
-                            :
-                            <button
-                            onClick={() => handleArchive(lead)}
-                            className={styles.archiveButton}
-                          >
-                            Archive
-                          </button>
-                          }
-                         
-                        </div>
-                      )}
+                {/* RABINDRA */}
+                {/* HERE THE PART OF CODE WHERE REDIRECT TO ACHIEVES STARTED */}
+                <HistoryRedirect setArchive={setArchive} />
 
-                    {lead.status === 'Action Needed' && (
-                        <div className={styles.actionButtons}>
-                          <button
-                            onClick={() => handleReschedule(lead)}
-                            className={styles.rescheduleButton}
-                          >
-                            Reschedule
-                          </button>
-                         
-                        </div>
-                      )}
-
+                <div className={styles.filterCallToAction}>
+                  <div className={styles.filtericon} onClick={handleAddLead}>
+                    <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className={styles.selectionHeader}>
+                <div className={styles.selectionInfo}>
+                  <span
+                    className={styles.closeIcon}
+                    onClick={() => setSelectedLeads([])}
+                  >
+                    <img src={ICONS.cross} alt="" height="26" width="26" />
+                  </span>
+                  <span>{selectedLeads.length} Selected</span>
+                </div>
+                <button
+                  style={{
+                    pointerEvents: archived ? 'none' : 'auto',
+                    opacity: archived ? 0.6 : 1,
+                    cursor: archived ? 'not-allowed' : 'pointer',
+                  }}
+                  className={styles.removeButton}
+                  onClick={handleArchiveSelected}
+                  disabled={archived}
+                >
+                  {archived ? 'Archiving...' : 'Archive'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        <div className={styles.cardContent}>
+          {archive == false && (
+            <table className={styles.table}>
+              <tbody>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={leadsData.length}>
                       <div
-                        className={styles.chevron_down}
-                        onClick={() => handleChevronClick(lead.id)}
+                        style={{ display: 'flex', justifyContent: 'center' }}
                       >
-                        <img
-                          src={
-                            toggledId === lead.id
-                              ? ICONS.chevronUp
-                              : ICONS.chevronDown
-                          }
-                          alt={
-                            toggledId === lead.id
-                              ? 'chevronUp-icon'
-                              : 'chevronDown-icon'
-                          }
-                        />
+                        <MicroLoader />
                       </div>
                     </td>
                   </tr>
-                  {toggledId === lead.id && (
-                    <tr>
-                      <td colSpan={5} className={styles.detailsRow}>
-                        <div className={''}>{lead.phone}</div>
-                        <div className={''}>
-                          <span>
-                            {lead.email}
-                            <img
-                              className="ml1"
-                              height={15}
-                              width={15}
-                              src={ICONS.complete}
-                              alt="verified"
+                ) : leadsData.length > 0 ? (
+                  leadsData.map((lead: any, index: number) => (
+                    <React.Fragment key={index}>
+                      <tr className={styles.history_lists}>
+                        <td
+                          className={`${lead.status === 'Declined' ||
+                            lead.status === 'Action Needed'
+                            ? styles.history_list_inner_declined
+                            : styles.history_list_inner
+                            }`}
+                          onClick={(e) => {
+                            setLeadId(lead['leads_id']);
+                            if (
+                              !(e.target as HTMLElement).closest('label') &&
+                              !(e.target as HTMLElement).closest(`.${styles.chevron_down}`)
+                            ) {
+                              if (
+                                currentFilter !== 'Declined' &&
+                                currentFilter !== 'Action Needed'
+                              ) {
+                                handleOpenModal();
+                                setReschedule(false);
+                              }
+
+                            }
+                          }}
+                        >
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={selectedLeads.includes(lead['leads_id'])}
+                              onChange={() =>
+                                handleLeadSelection(lead['leads_id'])
+                              }
                             />
-                          </span>
-                        </div>
-                        <div className={''}>{lead.address}</div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
+                          </label>
+                          <div
+                            className={styles.user_name}
+                            onClick={() =>
+                              currentFilter == 'Pending' &&
+                              handleDetailModal(lead)
+                            }
+                          >
+                            <h2>
+                              {lead.first_name} {lead.last_name}
+                            </h2>
+                            <p style={{ color: getStatusColor(currentFilter) }}>
+                              {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
+                            </p>
+                          </div>
+                          <div className={styles.phone_number}>
+                            {lead.phone_number}
+                          </div>
+                          <div className={styles.email}>
+                            <span>
+                              {lead.email_id}
+                            </span>
 
-    {/* HERE IMPLEMENT PAGINATION */}
+                          </div>
+                          <div className={styles.address}>
+                            {lead?.street_address
+                              ? lead.street_address.length >= 20
+                                ? `${lead.street_address.slice(0, 45)}...`
+                                : lead.street_address
+                              : 'N/A'}
+                          </div>
+                          {/* <div className={styles.ScheduleBtnNew}>
+                          <button>Schedule</button>
+                          </div>
+                          <div className={styles.ThreeDotsMinor}>
+                            <img src={ThreeDotsImage} alt='Optional-Dot'/>
+                          </div> */}
 
-    <div className={styles.leadpagination}>
+                          {currentFilter === 'Declined' && (
+                            <div className={styles.actionButtons}>
+                              <button
+                                onClick={() => {
+                                  handleOpenModal();
+                                  setReschedule(true);
+                                }}
+                                className={styles.rescheduleButton}
+                              >
+                                Reschedule
+                              </button>
+                              {isTablet ? (
+                                <button
+                                  onClick={() => handleArchive(lead)}
+                                  className={styles.archiveButton}
+                                >
+                                  <img src={ICONS.declinedArchive} />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleOpenArcModal()}
+                                  className={styles.archiveButton}
+                                >
+                                  Archive
+                                </button>
+                              )}
+                            </div>
+                          )}
 
-{ filteredLeads.length > 0 && <div className={styles.leftitem}>
-        <p className={styles.pageHeading}>
-        {indexOfFirstItem + 1} -{' '}
-        {Math.min(indexOfLastItem, filteredLeads.length)} of{' '}
-        {filteredLeads.length} items
-      </p>
-</div>}
+                          {currentFilter === 'Action Needed' && (
+                            <div className={styles.actionButtons}>
+                              <button
+                                onClick={() => {
+                                  handleOpenModal();
+                                  setReschedule(true);
+                                }}
+                                className={styles.rescheduleButton}
+                              >
+                                Reschedule
+                              </button>
+                            </div>
+                          )}
 
+                          <div
+                            className={styles.chevron_down}
+                            onClick={() => handleChevronClick(lead['leads_id'])}
+                          >
+                            <img
+                              src={
+                                toggledId.includes(lead['leads_id'])
+                                  ? ICONS.chevronUp
+                                  : ICONS.chevronDown
+                              }
+                              alt={
+                                toggledId.includes(lead['leads_id'])
+                                  ? 'chevronUp-icon'
+                                  : 'chevronDown-icon'
+                              }
+                            />
+                          </div>
+                        </td>
+                      </tr>
 
+                      {toggledId.includes(lead['leads_id']) && isMobile && (
+                        <tr>
+                          <td colSpan={5} className={styles.detailsRow}>
+                            <div className={''}>{lead.phone_number}</div>
+                            <div className={''}>
+                              <span>
+                                {lead.email_id}
 
-  <div className={styles.rightitem}>
-  <Pagination
-      currentPage={currentPage}
-      totalPages={Math.ceil(filteredLeads.length / itemsPerPage)}
-      paginate={paginate}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-      perPage={itemsPerPage}
-      currentPageData={currentLeads}
-    />
-  </div>
+                              </span>
+                            </div>
+                            <div className={''}>
+                              {lead?.street_address
+                                ? lead.street_address.length > 20
+                                  ? `${lead.street_address.slice(0, 20)}...`
+                                  : lead.street_address
+                                : 'N/A'}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <tr style={{ border: 0 }}>
+                    <td colSpan={10}>
+                      <DataNotFound />
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
 
+          {leadsData.length > 0 && (
+            <div className={styles.leadpagination}>
+              <div className={styles.leftitem}>
+                <p className={styles.pageHeading}>
+                  {startIndex} - {endIndex} of {totalcount} item
+                </p>
+              </div>
 
-
-</div>
-
+              <div className={styles.rightitem}>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPage}
+                  paginate={paginate}
+                  currentPageData={[]}
+                  goToNextPage={goToNextPage}
+                  goToPrevPage={goToPrevPage}
+                  perPage={itemsPerPage}
+                />
+          
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

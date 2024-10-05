@@ -12,7 +12,7 @@ const Index = () => {
   const totalPage = Math.ceil(totalCount / 10);
   return (
     <>
-     <div style={{ marginLeft: "6px", marginTop: "6px" }}>
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
         <Breadcrumb
           head=""
           linkPara="Schedule"

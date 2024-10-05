@@ -1,6 +1,5 @@
 /* -----------------Vaibhav Start----------------- */
 
-
 .dashboard {
   /* padding: 24px; */
   background-color: #f3f4f6;
@@ -24,6 +23,15 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 200px;
+}
+.cardHeaderFirst {
+  padding: 18px 16px 16px 16px;
+  /* border-bottom: 1px solid #e5e7eb; */
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .cardHeader {
@@ -31,8 +39,16 @@
   /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+}
+.cardHeaderSecond {
+  padding: 10.8px 16px 16px 16px;
+  font-weight: bold;
+  display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: -7px;
 }
 
 .cardContent {
@@ -119,10 +135,9 @@
   font-weight: 500;
   padding-right: 12px;
   transition: all 500ms;
-
 }
 
-.button:hover{
+.button:hover {
   background-color: #ddebff;
 }
 
@@ -131,10 +146,13 @@
   border-radius: 50%;
   padding: 4px;
   color: #377cf6;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .statusInactive {
   background: #dfdfdf !important;
@@ -146,9 +164,8 @@
   color: white;
   border: unset !important;
 }
-.buttonActive:hover{
+.buttonActive:hover {
   background-color: #3b82f6;
-
 }
 
 .table {
@@ -197,11 +214,11 @@ table tbody tr:hover {
 }
 .filterCallToAction {
   display: flex;
-  gap: 10px;
-  transform: scale(0.7) translate(-1em,-4em);
+  gap: 3px;
+  transform: scale(0.75);
   position: relative;
   /* top: -2pc; */
-  right: -8px;
+  /* right: -8px; */
 }
 
 .pieChart :focus {
@@ -219,6 +236,13 @@ table tbody tr:hover {
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   /* margin-bottom: 16px; */
+}
+.ScheduleBtnNew{
+  width: 103px;
+
+}
+.ThreeDotsMinor{
+
 }
 
 .history_list_inner {
@@ -257,6 +281,7 @@ table tbody tr:hover {
 .email {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -363,20 +388,18 @@ input[type='checkbox']:checked {
 }
 
 .paginationContainer {
-  display: flex;              
-  justify-content: space-between; 
-  align-items: center;   
-  height: 50px;   
-}
-
-.leadpagination {
-  display: flex;              
-  justify-content: space-between; 
-  align-items: center;     
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   height: 50px;
 }
 
-
+.leadpagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
 
 .chevron_down {
   display: none !important;
@@ -394,32 +417,29 @@ input[type='checkbox']:checked {
   gap: 10px;
 }
 
-.action_needed_btn{
-  width:auto;
+.action_needed_btn {
+  width: auto;
 }
 
-.tabs_setting{
+.tabs_setting {
   padding: 10px 0 0 5px;
-
 }
 
 /* -----------------Vaibhav End----------------- */
-
 
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
 
 /* For tablets and larger screens */
 @media (min-width: 768px) {
-  .tabs_setting{
+  .tabs_setting {
     padding: 10px 15px;
   }
   .history_list_inner_declined {
     display: grid;
     /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
-    grid-template-columns: 35px 1fr 1fr 2fr 1fr auto!important;
+    grid-template-columns: 35px 1fr 1fr 2fr 1fr auto !important;
     /* place-items: center; */
     align-items: center;
-
   }
   .chartGrid {
     grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
@@ -441,10 +461,31 @@ input[type='checkbox']:checked {
     gap: 10px;
     transform: scale(1);
     position: unset;
+    padding-left: 10px;
   }
   .mobile_view_table {
     display: flex;
     flex: 1;
+  }
+}
+
+@media screen and (min-width: 336px) and (max-width: 436px) {
+  .date_calendar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: right !important;
+    gap: 4px !important;
+  }
+}
+
+@media screen and (min-width: 349px) and (max-width: 405px) {
+  .date_calendar {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    padding: 17px 16px 17px 35px !important;
+    margin: 17px 16px 17px 35px !important;
   }
 }
 
@@ -464,13 +505,11 @@ input[type='checkbox']:checked {
     grid-template-columns: 1fr 2fr 1fr 1fr !important;
     /* place-items: center; */
     align-items: start;
-
   }
   .history_list_inner {
     display: grid;
     grid-template-columns: auto 2fr auto !important;
     align-items: baseline;
-
   }
   .actionButtons {
     transform: scale(0.7) translate(0, -10px);
@@ -492,15 +531,14 @@ input[type='checkbox']:checked {
     display: flex;
     gap: 10px;
     transform: scale(0.8);
-    margin-right:-15px
+    margin-right: -15px;
   }
-  .date_calendar {  
+  /* .date_calendar {
     gap: unset !important;
-  }
-  .user_name{
+  } */
+  .user_name {
     transform: translate(5px, -5px);
   }
-
 }
 
 /* Tablets in both portrait and landscape */
@@ -511,7 +549,6 @@ input[type='checkbox']:checked {
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
     /* place-items: center; */
     align-items: center;
-
   }
 }
 
@@ -570,7 +607,6 @@ input[type='checkbox']:checked {
     align-items: start !important;
   }
 
-
   /* HERE MEDIA SCREEN */
   .leadpagination {
     display: flex !important;
@@ -579,7 +615,8 @@ input[type='checkbox']:checked {
     gap: 50px !important;
   }
 
-  .leftitem, .rightitem {
+  .leftitem,
+  .rightitem {
     align-items: flex-start; /* Optional: vertically center the items */
   }
 }
@@ -594,19 +631,22 @@ input[type='checkbox']:checked {
   /* Styles for extra-large screens */
 }
 
-
-
 /*---------------- Shams Start-------------------- */
-
+.lead__datepicker_wrapper {
+  position: relative;
+  line-height: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 11;
+}
 .lead__datepicker_content {
   position: absolute;
-  right: 26px;
-  z-index: 10;
+  left: 46px;
+  z-index: 100;
   background-color: var(--white-color);
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  top: 160px;
-  right: 60px;
+  top: 20px;
 }
 
 .lead__datepicker_btns {
@@ -661,8 +701,8 @@ input[type='checkbox']:checked {
   background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
   background-repeat: no-repeat;
   background-position: right 10px center;
-  padding-right: 32px; 
-  padding-left: 15px; 
+  padding-right: 32px;
+  padding-left: 15px;
 }
 
 .calender {
@@ -685,77 +725,11 @@ input[type='checkbox']:checked {
 .date_calendar {
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  gap: 5px !important;
   align-items: center;
   flex-wrap: wrap;
   justify-content: right !important;
 }
-/*---------------- Shams Start-------------------- */
-
-
-
-/* styles={{
-  control: (baseStyles, state) => ({
-    ...baseStyles,
-    marginTop: 'px',
-    borderRadius: '8px',
-    outline: 'none',
-    color: '#3E3E3E',
-    width: '140px',
-    height: '36px',
-    fontSize: '12px',
-    border: '1px solid #d0d5dd',
-    fontWeight: '500',
-    cursor: 'pointer',
-    alignContent: 'center',
-    backgroundColor: '#fffff',
-    boxShadow: 'none',
-    '@media only screen and (max-width: 767px)': {
-      width: '80px',
-      // width: 'fit-content',
-    },
-    '&:focus-within': {
-      borderColor: '#377CF6',
-      boxShadow: '0 0 0 1px #377CF6',
-      caretColor: '#3E3E3E',
-    },
-  }),
-  placeholder: (baseStyles) => ({
-    ...baseStyles,
-    color: '#3E3E3E',
-  }),
-  indicatorSeparator: () => ({
-    display: 'none',
-  }),
-  dropdownIndicator: (baseStyles, state) => ({
-    ...baseStyles,
-    color: '#3E3E3E',
-    '&:hover': {
-      color: '#3E3E3E',
-    },
-
-  }),
-  option: (baseStyles, state) => ({
-    ...baseStyles,
-    fontSize: '13px',
-    color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
-    backgroundColor: state.isSelected ? '#fffff' : '#fffff',
-    '&:hover': {
-      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
-    },
-    cursor: 'pointer',
-  }),
-  singleValue: (baseStyles, state) => ({
-    ...baseStyles,
-    color: '#3E3E3E',
-  }),
-  menu: (baseStyles) => ({
-    ...baseStyles,
-    width: '140px',
-    marginTop: "0px"
-  }),
-}} */
-
 
 /* General style for the month select */
 /* General style for the month select */
@@ -782,7 +756,7 @@ input[type='checkbox']:checked {
 
 /* Arrow in the dropdown */
 .monthSelect::after {
-  content: "▼"; /* Down arrow character */
+  content: '▼'; /* Down arrow character */
   font-size: 12px;
   color: #3e3e3e;
   position: absolute;
@@ -840,9 +814,33 @@ input[type='checkbox']:checked {
 }
 
 @media only screen and (max-width: 767px) {
+  .cardHeaderSecond span {
+    font-size: 14px;
+    text-align: left;
+  }
   .monthSelect {
     width: 80px;
   }
+
+  .lead__datepicker_content {
+    position: absolute;
+
+    left: -140px;
+    z-index: 100;
+    background-color: var(--white-color);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    top: 57px;
+  }
 }
 
+@media screen and (max-width: 767px) {
+  .leadpagination {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
 

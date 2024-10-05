@@ -14,6 +14,16 @@
   color: #263747;
 }
 
+.desktop-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mobile-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .pipeline-googlemap {
   display: flex;
   align-items: center;
@@ -31,7 +41,7 @@
 
 .pipeline-googlemap svg {
   font-size: 20px;
-  color: #377CF6;
+  color: #377cf6;
 }
 
 .performance-exportbtn {
@@ -45,13 +55,15 @@
   margin-top: 7px;
   height: 40px;
   width: 40px;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   width: fit-content;
 }
 
 .pipeline-export {
   margin-top: 1px;
-  padding: 9px 12px;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
 }
 
 .performance-exportbtn:hover {
@@ -427,7 +439,7 @@
   display: none;
 }
 
-.pipeline-header-btns button:hover {
+.pipeline-header-btns button:not([disabled]):hover {
   background: #377cf6;
   color: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -1278,7 +1290,7 @@
     margin-top: 6.8rem !important;
   }
 
-  .active-queue{
+  .active-queue {
     top: 165px !important;
   }
 }
@@ -1291,11 +1303,11 @@
   .pipline-export-btn .performance-exportbtn {
     margin-top: 8.5rem !important;
   }
-  .active-queue{
+
+  .active-queue {
     top: 190px !important;
   }
 }
-
 
 @media (max-width: 1200px) {
   .project-status-head-card {
@@ -1398,7 +1410,6 @@
     width: 200px;
   }
 }
-
 
 @media (max-width: 890px) {
   .performance-bars {
@@ -1634,11 +1645,12 @@
   }
 
   .active-queue {
-    padding-top: 10px;
+    padding-top: 4px;
     margin-right: 0;
     position: absolute;
     left: 10px;
     top: 155px;
+    z-index: 99;
   }
 
   .arrow-wrap {
@@ -1850,6 +1862,14 @@
   .progress-box {
     border-radius: 4px !important;
   }
+
+  .pipeline-header-btns {
+    padding-right: 12px;
+  }
+
+  .top-btns-wrapper {
+    padding-bottom: 0 !important;
+  }
 }
 
 @media (max-width: 1280px) {
@@ -1863,15 +1883,22 @@
 }
 
 @media (max-width: 530px) {
-  .breadcrumb-container{
+  .breadcrumb-container {
     margin-left: 0px !important;
   }
+
   .status-boxes {
     margin-top: 1rem;
   }
-  .top-btns-wrapper{
+
+  .top-btns-wrapper {
     flex-direction: column;
     flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .pipeline-header-btns {
+    padding-right: 0;
   }
 
   .pipeline-header-btns .desktop-btn {

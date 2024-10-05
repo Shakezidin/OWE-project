@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from '../styles/confirmmodal.module.css';
 import ConfirmationICON from './Modalimages/ConfirmationICON.svg';
 import ThumbsSucess from './Modalimages//Thumbs.svg';
@@ -11,21 +11,54 @@ import EditModal from './EditModal';
 import AppointmentScheduler from './AppointmentScheduler';
 import CrossIcon from '../Modals/Modalimages/crossIcon.png';
 import Pen from '../Modals/Modalimages/Vector.png';
+import { toast } from 'react-toastify';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { format } from 'date-fns';
+import {
+  getLeadById,
+  getLeads,
+} from '../../../redux/apiActions/leadManagement/LeadManagementAction';
+import { useDispatch } from 'react-redux';
+import useAuth from '../../../hooks/useAuth';
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
 interface EditModalProps {
   isOpen1: boolean;
   onClose1: () => void;
+  leadId?: number;
+  refresh?: number;
+  setRefresh?: (value: number) => void;
+  reschedule?: boolean
 }
-  const ConfirmaModel: React.FC<EditModalProps> = ({ isOpen1, onClose1 }) => {
+interface LeadData {
+  first_name: string;
+  last_name: string;
+  email_id: string;
+  phone_number: string;
+  street_address: string;
+  status_id: number;
+  created_at: string;
+  appointment_date: string;
+  appointment_scheduled_date: string;
+  appointment_accepted_date: string;
+}
+const ConfirmaModel: React.FC<EditModalProps> = ({
+  isOpen1,
+  onClose1,
+  leadId,
+  reschedule
+}) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalOpen, setModalClose] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState('');
+  const [load, setLoad] = useState(false);
+  const [leadData, setLeadData] = useState<LeadData | null>(null);
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
   };
-
   const handleTimeChange = (time: string) => {
     setSelectedTime(time);
   };
@@ -38,17 +71,98 @@ interface EditModalProps {
     setIsModalOpen(true);
   };
 
-
-  
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+  const dispatch = useDispatch();
+
+  const handleSendAppointment = async () => {
+    setLoad(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 1,
+          appointment_date: selectedDate
+            ? format(selectedDate, 'dd-MM-yyyy')
+            : '',
+          appointment_time: selectedTime ? selectedTime : '',
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Appointment Sent Successfully');
+        setVisibleDiv(1);
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  const [isAuthenticated, setAuthenticated] = useState(false);
+  const { authData, saveAuthData } = useAuth();
+  const [loading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const isPasswordChangeRequired =
+      authData?.isPasswordChangeRequired?.toString();
+    setAuthenticated(isPasswordChangeRequired === 'false');
+  }, [authData]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await postCaller(
+            'get_lead_info',
+            {
+              leads_id: leadId,
+            },
+            true
+          );
+
+          if (response.status === 200) {
+            setLeadData(response.data);
+            if (reschedule === true) {
+              setVisibleDiv(0);
+            } else {
+              setVisibleDiv(response.data?.status_id);
+            }
+          } else if (response.status >= 201) {
+            toast.warn(response.data.message);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isAuthenticated, leadId, isModalOpen]);
+
+  console.log(reschedule, "asgdhgfsdghf")
+
+  useEffect(() => {
+    const handleEscapeKey = (event: any) => {
+      if (event.key === 'Escape') {
+        onClose1();
+      }
+    };
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, []);
 
 
-  
-
-
- 
   return (
     <div>
       {isOpen1 && (
@@ -56,93 +170,129 @@ interface EditModalProps {
           <div className={classes.customer_wrapper_list}>
             <div className={classes.DetailsMcontainer}>
               <div className={classes.parentSpanBtn} onClick={HandleModal}>
-                <img className={classes.crossBtn} src={CrossIcon}  onClick={HandleModal}/>
+                <img
+                  className={classes.crossBtn}
+                  src={CrossIcon}
+                  onClick={HandleModal}
+                />
               </div>
-              <div className={classes.pers_det_top}>
-                <div className={classes.Column1Details}>
-                  <div className={classes.main_name}>
-                    Adam Samson{' '}
-                    <img
-                      onClick={HandleModal}
-                      className={classes.crossIconImg}
-                      src={CrossIcon}
-                    />
-                  </div>
-                  <span className={classes.mobileNumber}>+91 8739273728</span>
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <MicroLoader />
                 </div>
-                <div className={classes.Column2Details}>
-                  <span className={classes.addresshead}>
-                    12778 Domingo Ct, Parker, COLARDO, 2312
-                  </span>
-                  <span className={classes.emailStyle}>
-                    Sampletest@gmail.com{' '}
-                    <span className={classes.verified}>
-                      <svg
-                        className={classes.verifiedMarked}
-                        width="13"
-                        height="13"
-                        viewBox="0 0 13 13"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clipPath="url(#clip0_6615_16896)">
-                          <path
-                            d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
-                            fill="#20963A"
-                          />
-                          <path
-                            d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
-                            fill="white"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_6615_16896">
-                            <rect
-                              width="12.16"
-                              height="12.16"
-                              fill="white"
-                              transform="translate(0 0.421875)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>{' '}
-                      <span className={classes.verifyLetter}> Verified</span>
+              ) : leadData ? (
+                <div className={classes.pers_det_top}>
+                  <div className={classes.Column1Details}>
+                    <div className={classes.main_name}>
+                      {leadData?.first_name} {leadData?.last_name}{' '}
+                      <img
+                        onClick={HandleModal}
+                        className={classes.crossIconImg}
+                        src={CrossIcon}
+                      />
+                    </div>
+                    <span className={classes.mobileNumber}>
+                      {leadData?.phone_number}
                     </span>
-                  </span>
-                  <div>
-                    <div
-                      className={classes.edit_modal_openMediaScreen}
-                      onClick={handleOpenModal}
-                    >
-                      {/* <RiEdit2Line  />  I have USed Custom PNG Image instead of Library for PEN <img src={Pen}> in the EDIT BUTTON */}
-                      <span className={classes.edit_modal_button2}>
-                      <img className={classes.editPenStyle} src={Pen} ></img> Edit
-                      </span>
+                  </div>
+                  <div className={classes.Column2Details}>
+                    <span className={classes.addresshead}>
+                      {leadData?.street_address
+                        ? leadData.street_address.length > 20
+                          ? `${leadData.street_address.slice(0, 30)}...`
+                          : leadData.street_address
+                        : 'N/A'}
+                    </span>
+                    <span className={classes.emailStyle}>
+                      {leadData?.email_id}{' '}
+                      {/* <span className={classes.verified}> */}
+                      {/* <svg
+                          className={classes.verifiedMarked}
+                          width="13"
+                          height="13"
+                          viewBox="0 0 13 13"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g clipPath="url(#clip0_6615_16896)">
+                            <path
+                              d="M6.08 0.425781C2.71702 0.425781 0 3.13967 0 6.50578C0 9.87189 2.71389 12.5858 6.08 12.5858C9.44611 12.5858 12.16 9.87189 12.16 6.50578C12.16 3.13967 9.44302 0.425781 6.08 0.425781Z"
+                              fill="#20963A"
+                            />
+                            <path
+                              d="M8.99542 4.72214C8.8347 4.56137 8.59049 4.56137 8.42668 4.72212L5.30786 7.84096L3.72834 6.26146C3.56762 6.10074 3.32341 6.10074 3.1596 6.26146C2.99888 6.42219 2.99888 6.66637 3.1596 6.8302L5.02346 8.69406C5.10383 8.77443 5.18418 8.81461 5.30784 8.81461C5.42839 8.81461 5.51185 8.77443 5.59222 8.69406L8.99542 5.29088C9.15614 5.13016 9.15614 4.886 8.99542 4.72214Z"
+                              fill="white"
+                            />
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_6615_16896">
+                              <rect
+                                width="12.16"
+                                height="12.16"
+                                fill="white"
+                                transform="translate(0 0.421875)"
+                              />
+                            </clipPath>
+                          </defs>
+                        </svg>{' '} */}
+                      {/* <span className={classes.verifyLetter}> Verified</span>
+                      </span> */}
+                    </span>
+                    <div>
+                      {visibleDiv === 0 ||
+                        (visibleDiv === 11 && (
+                          <div
+                            className={classes.edit_modal_openMediaScreen}
+                            onClick={handleOpenModal}
+                          >
+                            <span className={classes.edit_modal_button2}>
+                              <img
+                                className={classes.editPenStyle}
+                                src={Pen}
+                              ></img>{' '}
+                              Edit
+                            </span>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>
-              </div>
-              <div>
-                <div
-                  className={classes.edit_modal_open}
-                  onClick={handleOpenModal}
-                >
-                  <span className={classes.edit_modal_button}>
-                    <img className={classes.editPenStyle} src={Pen} ></img> Edit
-                  </span>
+              ) : (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  "No Data Found"
                 </div>
+              )}
+              <div>
+                {(visibleDiv === 0 || visibleDiv === 11) && (
+                  <div
+                    className={classes.edit_modal_open}
+                    onClick={handleOpenModal}
+                  >
+                    <span className={classes.edit_modal_button}>
+                      <img
+                        className={classes.editPenStyle}
+                        src={Pen}
+                        alt="Edit Pen"
+                      />{' '}
+                      Edit
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
-            <EditModal isOpen={isModalOpen} onClose={handleCloseModal} />
-            {/* <div style={{marginTop:"-308px"}}> </div> */}
+            <EditModal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              leadData={leadData}
+            />
             {visibleDiv === 0 && (
               <AppointmentScheduler
-              setVisibleDiv={setVisibleDiv}
-              onDateChange={handleDateChange}
-              onTimeChange={handleTimeChange}
-            />
+                setVisibleDiv={setVisibleDiv}
+                onDateChange={handleDateChange}
+                onTimeChange={handleTimeChange}
+              />
             )}
-            {visibleDiv === 1 && (
+            {visibleDiv === 11 && (
               <>
                 {' '}
                 <div>
@@ -164,12 +314,21 @@ interface EditModalProps {
                   <div className={classes.survey_button}>
                     <button
                       className={classes.self}
-                      style={{ color: '#fff', border: 'none' }}
-                      onClick={() => setVisibleDiv(2)}
+                      style={{
+                        color: '#fff',
+                        border: 'none',
+                        cursor: load ? 'not-allowed' : 'pointer',
+                      }}
+                      onClick={handleSendAppointment}
+                      disabled={load}
                     >
-                      CONFIRM, SENT APPOINTMENT
+                      {load ? 'Sending...' : 'CONFIRM, SENT APPOINTMENT'}
                     </button>
-                    <button id="otherButtonId" className={classes.other}>
+                    <button
+                      id="otherButtonId"
+                      className={classes.other}
+                      onClick={handleOpenModal}
+                    >
                       Edit customer details
                     </button>
                   </div>
@@ -177,13 +336,13 @@ interface EditModalProps {
               </>
             )}
             {/* FROM HERE  WE DO NOT NEED EDIT BUTTON */}
-            {visibleDiv === 2 && (
+            {visibleDiv === 1 && (
               <>
                 <div className={classes.success_not}>
                   <div>
                     <img
                       className={classes.thumbsImg}
-                      onClick={() => setVisibleDiv(3)}
+                      // onClick={() => setVisibleDiv(3)}
                       height="111px"
                       width="111px"
                       src={ThumbsSucess}
@@ -193,12 +352,13 @@ interface EditModalProps {
                     Appointment sent successfully{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    27 Aug ,2024. 12:00 PM
+                    {selectedDate ? format(selectedDate, 'dd MMM, yyyy') : ''}{' '}
+                    {selectedTime}
                   </span>
                 </div>
                 <div className={classes.survey_button}>
                   <span className={classes.AppSentDate2}>
-                    Appointment sent on 25, Aug, 2024
+                    Appointment sent on {format(new Date(), 'dd MMM, yyyy')}
                   </span>
                   <span className={classes.AppSentDate2}>
                     Waiting for confirmation
@@ -206,13 +366,13 @@ interface EditModalProps {
                 </div>
               </>
             )}
-            {visibleDiv === 3 && (
+            {visibleDiv === 2 && (
               <>
                 <div className={classes.success_not}>
                   <div>
                     <img
                       className={classes.thumbsImg}
-                      onClick={() => setVisibleDiv(4)}
+                      // onClick={() => setVisibleDiv(4)}
                       height="140px"
                       width="140px"
                       src={SignatureICON}
@@ -238,7 +398,7 @@ interface EditModalProps {
                 </div>
               </>
             )}
-            {visibleDiv === 4 && (
+            {visibleDiv === 67 && (
               <>
                 <div className={classes.success_not}>
                   <div>
@@ -249,7 +409,7 @@ interface EditModalProps {
                 <div className={classes.closedButtonQuestionmark}>
                   <button
                     className={classes.self}
-                    onClick={() => setVisibleDiv(6)}
+                    onClick={() => setVisibleDiv(4)}
                     style={{
                       backgroundColor: '#3AC759',
                       color: '#FFFFFF',
@@ -290,7 +450,7 @@ interface EditModalProps {
                 </div>
               </>
             )}
-            {visibleDiv === 5 && (
+            {visibleDiv === 3 && (
               <>
                 <div className={classes.customer_wrapper_list_Edited2}>
                   <div className={classes.success_not_Edited4Model}>
@@ -335,7 +495,7 @@ interface EditModalProps {
                 </div>
               </>
             )}
-            {visibleDiv === 6 && (
+            {visibleDiv === 5 && (
               <>
                 <div className={classes.customer_wrapper_list_Edited}>
                   <div className={classes.success_not_Edited4Model}>

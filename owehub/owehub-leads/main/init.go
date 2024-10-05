@@ -52,6 +52,7 @@ var apiRoutes = appserver.ApiRoutes{
 		false,
 		[]types.UserGroup{},
 	},
+
 	{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/create_leads",
@@ -66,6 +67,15 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/toggle_archive",
+		apiHandler.HandleToggleArchive,
+		true,
+		leadsRoleGroup,
+	},
+
 	{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/get_leads",
@@ -73,6 +83,7 @@ var apiRoutes = appserver.ApiRoutes{
 		true,
 		leadsRoleGroup,
 	},
+
 	{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/leads_history",
@@ -98,6 +109,34 @@ var apiRoutes = appserver.ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/get_periodic_won_lost_leads",
 		apiHandler.HandleGetPeriodicWonLostLeadsRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/edit_leads",
+		apiHandler.HandleEditLeadsRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/status_won",
+		apiHandler.HandleWonRequest,
+		true,
+		[]types.UserGroup{types.GroupAdminDealer},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/update_lead_status",
+		apiHandler.HandleUpdateLeadStatusRequest,
+		true,
+		leadsRoleGroup,
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-leads-service/v1/get_lead_info",
+		apiHandler.HandleGetLeadInfo,
 		true,
 		leadsRoleGroup,
 	},

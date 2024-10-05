@@ -92,14 +92,7 @@ func HandleGetPerformanceCsvDownloadRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
-	query = "SELECT intOpsMetSchema.home_owner, intOpsMetSchema.unique_id, salMetSchema.customer_email, salMetSchema.customer_phone_number, salMetSchema.address, salMetSchema.state, " +
-		"salMetSchema.contract_total, intOpsMetSchema.system_size, salMetSchema.contract_date, intOpsMetSchema.site_survey_scheduled_date, intOpsMetSchema.site_survey_completed_date, intOpsMetSchema.cad_ready, " +
-		"intOpsMetSchema.cad_complete_date, intOpsMetSchema.permit_submitted_date, intOpsMetSchema.ic_submitted_date, intOpsMetSchema.permit_approved_date, intOpsMetSchema.ic_approved_date, fieldOpsSchema.roofing_created_date, " +
-		"fieldOpsSchema.roofing_completed_date, intOpsMetSchema.pv_install_created_date, fieldOpsSchema.battery_scheduled_date, fieldOpsSchema.battery_complete_date, intOpsMetSchema.pv_install_completed_date, " +
-		"fieldOpsSchema.mpu_created_date, fieldOpsSchema.derate_created_date, secondFieldOpsSchema.trenching_ws_open, fieldOpsSchema.derate_completed_date, fieldOpsSchema.mpu_complete_date, " +
-		"secondFieldOpsSchema.trenching_completed, fieldOpsSchema.fin_created_date, fieldOpsSchema.fin_pass_date, intOpsMetSchema.pto_submitted_date, intOpsMetSchema.pto_date, salMetSchema.contract_date,secondFieldOpsSchema.roofing_status, " +
-		"salMetSchema.dealer, salMetSchema.primary_sales_rep FROM internal_ops_metrics_schema AS intOpsMetSchema LEFT JOIN sales_metrics_schema AS salMetSchema " +
-		"ON intOpsMetSchema.unique_id = salMetSchema.unique_id LEFT JOIN field_ops_metrics_schema AS fieldOpsSchema ON intOpsMetSchema.unique_id = fieldOpsSchema.unique_id LEFT JOIN second_field_ops_metrics_schema AS secondFieldOpsSchema ON intOpsMetSchema.unique_id = secondFieldOpsSchema.unique_id "
+	query = models.CsvSalesMetricsRetrieveQueryFunc()
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
 	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
 
@@ -621,7 +614,7 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -633,7 +626,7 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
 		for i, dealer := range dataFilter.DealerName {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, dealer)
@@ -653,10 +646,10 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		whereAdded = true
 	}
 	// Add the always-included filters
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause
@@ -668,9 +661,9 @@ func PrepareAdminDlrCsvFilters(tableName string, dataFilter models.GetCsvDownloa
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()
@@ -704,7 +697,7 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE salMetSchema.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -717,7 +710,7 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.primary_sales_rep IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -737,7 +730,7 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" salMetSchema.dealer IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.dealer IN (")
 		for i, dealer := range dataFilter.DealerName {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, dealer)
@@ -757,10 +750,10 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 		whereAdded = true
 	}
 	// Add the always-included filters
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		// Prepare the values for the IN clause
@@ -772,9 +765,9 @@ func PrepareSaleRepCsvFilters(tableName string, dataFilter models.GetCsvDownload
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()

@@ -14,14 +14,16 @@ export interface ICustomer {
   system_size: number;
   address: string;
 }
-const customers = [{
-  roof_type: "ABC",
-  home_owner: "test",
-  customer_email: "test@gmail.com",
-  customer_phone_number: "8840957619",
-  system_size: 10,
-  address: "Noida India",
-}]
+const customers = [
+  {
+    roof_type: 'ABC',
+    home_owner: 'test',
+    customer_email: 'test@gmail.com',
+    customer_phone_number: '8840957619',
+    system_size: 10,
+    address: 'Noida India',
+  },
+];
 const CustomersList = ({
   page = 1,
   setPage,
@@ -130,11 +132,11 @@ const CustomersList = ({
                 roofType={item.roof_type}
                 name={item.home_owner}
                 email={item.customer_email}
-                withSecondaryBtn={active === "travel"}
+                withSecondaryBtn={active === 'travel'}
                 mobile={item.customer_phone_number}
                 sysSize={item.system_size}
                 key={index}
-                mapStyles={{ flexBasis: "265px", }}
+                mapStyles={{ flexBasis: '265px' }}
                 address={item.address}
               />
             );

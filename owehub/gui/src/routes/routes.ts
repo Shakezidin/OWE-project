@@ -50,6 +50,7 @@ export const ROUTES = {
   CONFIG_APOTH: '/config/ap-oth',
   CONFIG_APPDA: '/config/ap-pda',
   CONFIG_APDEALER: '/config/ap-dealer',
+  CONFIG_DEALERPAYMENTS: '/config/dealer-payments',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
@@ -79,10 +80,11 @@ export const ROUTES = {
   SCHEDULE_SALES_REP_SURVEY: '/schedule-sales-rep',
   PEINDING_QUEUE: '/pending-actions',
   LEAD_MANAGEMENT: '/leadmng-dashboard',
+  LEAD_MANAGEMENT_ARCHIEVES: '/lead-dashboard-archieves',
   LEAD_MANAGEMENT_ADD_NEW: '/leadmgt-addnew',
   LEAD_MANAGEMENT_ADD_NEW_MODAL: '/leadmgt-addnew-model',
   LEAD_MANAGEMENT_HISTORY: '/leadmng-history',
   LEAD_MANAGEMENT_SUCCESS_MODAl: '/lead-mgmt-success-modal',
-  MAP_ADDRESS:'/map-address',
-  SALE_RP_CUSTOMER_FORM:"/sale-rep-customer-form"
+  MAP_ADDRESS: '/map-address',
+  SALE_RP_CUSTOMER_FORM: '/sale-rep-customer-form',
 };
