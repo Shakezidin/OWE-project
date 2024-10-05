@@ -372,7 +372,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   <div>
                     <img
                       className={classes.thumbsImg}
-                      onClick={() => setVisibleDiv(4)}
+                      // onClick={() => setVisibleDiv(4)}
                       height="140px"
                       width="140px"
                       src={SignatureICON}
