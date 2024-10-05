@@ -93,47 +93,48 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	pageSize := dataReq.PageSize
 	pageNumber := dataReq.PageNumber
 	if pageSize <= 0 {
-		pageSize = 10 // setting default page size if <0
+		pageSize = 10
 	}
 	if pageNumber <= 0 {
-		pageNumber = 1 // setting default pagenumber
+		pageNumber = 1
 	}
 	offset := (pageNumber - 1) * pageSize
 
-	// Construct the query with pagination
-
-	// FOR SHOWING ALL DATA 🔴🔴🔴
+	// Construct the query without ORDER BY inside the whereClause
 	if dataReq.LeadsStatus == -1 {
 		whereClause = "WHERE li.status_id IN (5, 6)"
 	} else {
+		// Show data based on a specific status
 		whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.LeadsStatus)
 	}
 
+	// Add date range and archive conditions to the whereClause
 	whereClause = fmt.Sprintf(`
-		%s 
-		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY') 
-		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY')  + INTERVAL '1 day'
-		AND li.is_archived = $4
-	`, whereClause)
+    %s
+    AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
+    AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
+    AND li.is_archived = $4
+`, whereClause)
 
+	// Construct the final query with pagination and ORDER BY
 	leadsHistoryQuery = fmt.Sprintf(`
-        SELECT
-            li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
-            ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
-            li.appointment_scheduled_date, li.appointment_accepted_date, 
-            li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
-        FROM
-            get_leads_info_hierarchy($1) li
-        JOIN
-            leads_status ls ON li.status_id = ls.status_id
-         %s
-        ORDER BY
-             li.updated_at DESC
-        LIMIT $5  -- for page size
-        OFFSET $6  -- Offset for pagination
-         `,
-		whereClause,
-	)
+    SELECT
+        li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
+        ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
+        li.appointment_scheduled_date, li.appointment_accepted_date,
+        li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
+    FROM
+        get_leads_info_hierarchy($1) li
+    JOIN
+        leads_status ls ON li.status_id = ls.status_id
+    %s
+    ORDER BY li.updated_at DESC
+`, whereClause)
+
+	// Add pagination conditionally if valid
+	if dataReq.PageSize > 0 && dataReq.PageNumber > 0 {
+		leadsHistoryQuery += " LIMIT $5 OFFSET $6"
+	}
 
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	whereEleList = append(whereEleList,
@@ -182,11 +183,11 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	// Count total records from db
 	leadsHistoryCountQuery = fmt.Sprintf(`
-		SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
-		JOIN
-			leads_status ls ON li.status_id = ls.status_id
-		%s
-		`, whereClause)
+        SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
+        JOIN
+            leads_status ls ON li.status_id = ls.status_id
+        %s
+        `, whereClause)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryCountQuery, whereEleList[0:4])
 	if err != nil {
@@ -209,9 +210,6 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
  ******************************************************************************/
 func getLeadHistoryTimeline(resultItem map[string]interface{}) (timeline []models.GetLeadsTimelineItem) {
 
-	// retrieve appoitment_scheduled_date, appointment_accepted_date, appointment_date first as they are mandatory
-	// in either case of lead being won or lost, we will have a timeline with these three at least
-	// further dates depend on won or lost status
 	if appointmentScheduledDate, ok := resultItem["appointment_scheduled_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
 			Label: common.LeadTimelineLabelScheduled,
