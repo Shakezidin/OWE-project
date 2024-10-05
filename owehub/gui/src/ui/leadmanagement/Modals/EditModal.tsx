@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import MicroLoader from '../../components/loader/MicroLoader';
 
 interface FormInput
-  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {}
+  extends React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> { }
 
 interface EditModalProps {
   isOpen: boolean;
@@ -89,24 +89,18 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
   }, [isOpen, onClose]);
 
   const handleConfrm = async (e: any) => {
+    setLoad(true);
     e.preventDefault();
     setErrors(errors);
     if (Object.keys(errors).length === 0) {
-      setLoad(true);
       try {
         const response = await postCaller(
           'edit_leads',
           {
             leads_id: leadData?.leads_id,
-            email_id: leadData?.email_id
-              ? leadData?.email_id
-              : formData.email_id,
-            mobile_number: leadData?.phone_number
-              ? leadData?.phone_number
-              : formData.mobile_number,
-            address: leadData?.street_address
-              ? leadData?.street_address
-              : formData.address,
+            email_id: formData.email_id,
+            phone_number: formData.mobile_number,
+            street_address: formData.address,
           },
           true
         );
@@ -122,6 +116,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
         console.error('Error submitting form:', error);
       }
     }
+    setLoad(false);
   };
 
   return (
@@ -151,7 +146,9 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                 <div className={classes.Column2Details_Edited_Mode}>
                   <span className={classes.addresshead}>
                     {leadData?.street_address
-                      ? leadData?.street_address
+                      ? leadData.street_address.length > 20
+                        ? `${leadData.street_address.slice(0, 20)}...`
+                        : leadData.street_address
                       : 'N/A'}
                   </span>
                   <span className={classes.emailStyle}>
@@ -208,7 +205,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   onChange={handleInputChange}
                   name="email_id"
                   maxLength={100}
-                  // backgroundColor="#9cc3fb"
+                // backgroundColor="#9cc3fb"
                 />
                 <Input
                   type="text"
@@ -217,7 +214,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   onChange={handleInputChange}
                   name="address"
                   maxLength={100}
-                  // backgroundColor="#9cc3fb"
+                // backgroundColor="#9cc3fb"
                 />
               </div>
 
@@ -232,10 +229,13 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                     border: 'none',
                     fontWeight: '500',
                     fontSize: '14px',
+                    pointerEvents: load ? 'none' : 'auto',
+                    opacity: load ? 0.6 : 1,
+                    cursor: load ? 'not-allowed' : 'pointer',
                   }}
                   onClick={handleConfrm}
                 >
-                  CONFIRM
+                  {load ? "Updating...." : "CONFIRM"}
                 </button>
               </div>
             </div>

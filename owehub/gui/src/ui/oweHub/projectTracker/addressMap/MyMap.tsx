@@ -206,15 +206,16 @@ const MyMapComponent: React.FC = () => {
   );
 
   const milesOptions = [
+    { miles: 1 },
+    { miles: 2 },
     { miles: 5 },
     { miles: 10 },
-    { miles: 25 },
+    { miles: 20 },
     { miles: 50 },
-    { miles: 100 },
-    { miles: 200 },
+    {miles:100},
   ];
 
-  const [selectedMiles, setSelectedMiles] = useState<any>(10); // Default to 10 miles
+  const [selectedMiles, setSelectedMiles] = useState<any>(1); // Default to 10 miles
 
   // Handle change function
   const handleChange = (newValue: any) => {
@@ -596,7 +597,7 @@ const MyMapComponent: React.FC = () => {
                           setSearchValue(''); // Clear the search value
                           setFilteredLocations(locations);
                           setSearchedLocation(null);
-                          setSelectedMiles(10); // Reset to show all locations
+                          setSelectedMiles(1); // Reset to show all locations
 
                           if (mapRef.current) {
                             const bounds = new google.maps.LatLngBounds();

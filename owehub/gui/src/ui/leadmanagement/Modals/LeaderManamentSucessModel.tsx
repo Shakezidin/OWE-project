@@ -123,8 +123,10 @@ const LeadManamentSucessModel: React.FC<EditModalProps> = ({
                 </div>
                 <div className={classes.Column2Details}>
                   <span className={classes.addresshead}>
-                    {leadData?.street_address
-                      ? leadData?.street_address
+                  {leadData?.street_address
+                      ? leadData.street_address.length > 20
+                        ? `${leadData.street_address.slice(0, 20)}...`
+                        : leadData.street_address
                       : 'N/A'}
                   </span>
                   <span className={classes.emailStyle}>

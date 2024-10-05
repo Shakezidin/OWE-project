@@ -6,12 +6,6 @@ export default [
     isCheckbox: true,
   },
   {
-    name: 'dealer',
-    displayName: 'Sales Partner',
-    type: 'string',
-    isCheckbox: false,
-  },
-  {
     name: 'rep1',
     displayName: 'Rep 1',
     type: 'string',
@@ -27,12 +21,6 @@ export default [
     name: 'contract_date',
     displayName: 'Contract Date',
     type: 'date',
-    isCheckbox: false,
-  },
-  {
-    name: 'contract_value',
-    displayName: 'Contract Value',
-    type: 'number',
     isCheckbox: false,
   },
   { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
@@ -68,7 +56,6 @@ export default [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'state', displayName: 'State', type: 'string', isCheckbox: false },
   { name: 'dba', displayName: 'DBA', type: 'string', isCheckbox: false },
   {
     name: 'status_date',

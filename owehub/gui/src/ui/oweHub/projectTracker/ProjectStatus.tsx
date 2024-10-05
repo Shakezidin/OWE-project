@@ -518,14 +518,20 @@ const ProjectStatus = () => {
       };
       console.log('val', val);
       setSelectedProject(val);
-      dispatch(getProjectDetail(projectOption[0]?.value));
+      
+     
     }
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
     if (selectedProject.value) {
       dispatch(getProjectDetail(selectedProject.value));
+       
+    } else if(projectOption.length) {
+      dispatch(getProjectDetail(projectOption[0]?.value));
     }
+
+    
   }, [selectedProject.value]);
 
   useEffect(() => {

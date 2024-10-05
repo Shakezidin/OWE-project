@@ -644,7 +644,7 @@
     align-items: center;
     width: 100%;
     height: auto;
-    padding: 0px 11px 11px 11px;
+    padding: -4px 11px 11px 11px;
     border: 1px solid #377cf6;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
