@@ -400,13 +400,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                         <div className={styles.email}>
                           <span>
                             {lead.email_id}
-                            <img
-                              className="ml1"
-                              height={15}
-                              width={15}
-                              src={ICONS.complete}
-                              alt="verified"
-                            />
+                            
                           </span>
                         </div>
                         <div className={styles.address}>
@@ -503,13 +497,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                           <div className={''}>
                             <span>
                               {lead.email_id}
-                              <img
-                                className="ml1"
-                                height={15}
-                                width={15}
-                                src={ICONS.complete}
-                                alt="verified"
-                              />
+                              
                             </span>
                           </div>
                           <div className={''}>
@@ -531,13 +519,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                           <div className={''}>
                             <span>
                               {lead.email_id}
-                              <img
-                                className="ml1"
-                                height={15}
-                                width={15}
-                                src={ICONS.complete}
-                                alt="verified"
-                              />
+                              
                             </span>
                           </div>
                           <div className={''}>
