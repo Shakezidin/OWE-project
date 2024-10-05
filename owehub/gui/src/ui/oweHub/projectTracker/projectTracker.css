@@ -1645,11 +1645,12 @@
   }
 
   .active-queue {
-    padding-top: 10px;
+    padding-top: 4px;
     margin-right: 0;
     position: absolute;
     left: 10px;
     top: 155px;
+    z-index: 99;
   }
 
   .arrow-wrap {
@@ -1838,6 +1839,7 @@
 }
 
 @media (max-width: 768px) {
+
   .select-container .css-1n894bm-control,
   .select-container .css-xego5g-control {
     margin-top: 1rem;
@@ -1860,10 +1862,12 @@
   .progress-box {
     border-radius: 4px !important;
   }
-  .pipeline-header-btns{
+
+  .pipeline-header-btns {
     padding-right: 12px;
   }
-  .top-btns-wrapper{
+
+  .top-btns-wrapper {
     padding-bottom: 0 !important;
   }
 }
@@ -1893,7 +1897,7 @@
     gap: 4px;
   }
 
-  .pipeline-header-btns{
+  .pipeline-header-btns {
     padding-right: 0;
   }
 
