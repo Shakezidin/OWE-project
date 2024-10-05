@@ -23,6 +23,9 @@ ALTER TABLE user_details
 
 ALTER TABLE user_details
     ALTER COLUMN dealer_id TYPE BIGINT;
+
+ALTER TABLE user_details
+    ALTER COLUMN dealer_owner TYPE BIGINT;
     
 ALTER TABLE user_details
 ADD COLUMN podio_user BOOLEAN DEFAULT false;
@@ -59,12 +62,12 @@ DECLARE
     v_role_id INT;
     v_user_details_id INT;
     v_reporting_manager_id INT;
-    v_dealer_owner_id INT;
+    v_dealer_owner_id BIGINT;
     v_state_id INT;
     v_zipcode_id INT;
     v_team_id INT;
     v_max_user_code INT;
-    v_dealer_id INT;
+    v_dealer_id BIGINT;
     v_new_user_code VARCHAR(255);
     v_reporting_manager VARCHAR(255);
 BEGIN
@@ -146,7 +149,7 @@ BEGIN
 
      -- Get the dealer owner's user_id
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        SELECT partner_id INTO v_dealer_id
+        SELECT item_id INTO v_dealer_id
         FROM sales_partner_dbhub_schema
         WHERE sales_partner_name = p_dealer_name;
 
@@ -214,6 +217,8 @@ BEGIN
     )
     RETURNING user_id INTO v_user_id;
 
+    RAISE NOTICE 'Role Name: %, Dealer Name: %, Dealer Logo: %', p_role_name, p_dealer_name, p_dealer_logo;
+
     IF p_role_name = 'Dealer Owner' AND p_dealer_name IS NOT NULL AND p_dealer_name != '' AND p_dealer_logo != '' THEN
         UPDATE partner_details
         SET partner_logo = p_dealer_logo
@@ -253,7 +258,7 @@ CREATE OR REPLACE FUNCTION update_user(
 RETURNS INT 
 AS $$
 DECLARE
-    v_dealer_id INT;
+    v_dealer_id BIGINT;
     v_reporting_manager VARCHAR(255);
 BEGIN
 
