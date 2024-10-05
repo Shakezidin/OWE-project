@@ -28,6 +28,7 @@ interface EditModalProps {
   leadId?: number;
   refresh?: number;
   setRefresh?: (value: number) => void;
+  reschedule?: boolean
 }
 interface LeadData {
   first_name: string;
@@ -45,8 +46,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   isOpen1,
   onClose1,
   leadId,
-  refresh,
-  setRefresh,
+  reschedule
 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -129,7 +129,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
           if (response.status === 200) {
             setLeadData(response.data);
-            setVisibleDiv(response.data?.status_id);
+            if (reschedule === true) {
+              setVisibleDiv(0);
+            } else {
+              setVisibleDiv(response.data?.status_id);
+            }
           } else if (response.status >= 201) {
             toast.warn(response.data.message);
           }
@@ -144,8 +148,10 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   }, [isAuthenticated, leadId, isModalOpen]);
 
+  console.log(reschedule, "asgdhgfsdghf")
+
   useEffect(() => {
-    const handleEscapeKey = (event:any) => {
+    const handleEscapeKey = (event: any) => {
       if (event.key === 'Escape') {
         onClose1();
       }
@@ -155,6 +161,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, []);
+
 
   return (
     <div>
@@ -190,16 +197,16 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                   </div>
                   <div className={classes.Column2Details}>
                     <span className={classes.addresshead}>
-                    {leadData?.street_address
-                      ? leadData.street_address.length > 20
-                        ? `${leadData.street_address.slice(0, 30)}...`
-                        : leadData.street_address
-                      : 'N/A'}
+                      {leadData?.street_address
+                        ? leadData.street_address.length > 20
+                          ? `${leadData.street_address.slice(0, 30)}...`
+                          : leadData.street_address
+                        : 'N/A'}
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
                       {/* <span className={classes.verified}> */}
-                        {/* <svg
+                      {/* <svg
                           className={classes.verifiedMarked}
                           width="13"
                           height="13"
@@ -228,7 +235,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                             </clipPath>
                           </defs>
                         </svg>{' '} */}
-                        {/* <span className={classes.verifyLetter}> Verified</span>
+                      {/* <span className={classes.verifyLetter}> Verified</span>
                       </span> */}
                     </span>
                     <div>

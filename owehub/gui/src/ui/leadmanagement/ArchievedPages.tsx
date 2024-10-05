@@ -350,7 +350,7 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                   <React.Fragment key={index}>
                     <tr className={styles.history_lists}>
                       <td
-                      //WORKING CODE RIGHT For MOBILE && PCs
+                        //WORKING CODE RIGHT For MOBILE && PCs
                         // className={`${
                         //   lead.status === 'Declined' ||
                         //   lead.status === 'Action Needed'
@@ -361,17 +361,16 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                         //       : styles.history_list_inner
                         // }`}
                         // NEED FOR TABLET EDIT
-                        className={`${
-                          lead.status === 'Declined' ||             
-                          lead.status === 'Action Needed'           
-                            ? styles.history_list_inner_declined 
+                        className={`${lead.status === 'Declined' ||
+                            lead.status === 'Action Needed'
+                            ? styles.history_list_inner_declined
 
                             : (selectedLeads.length > 0 && isMobile ?
-                              styles.history_list_inner_Mobile_View 
-                               :(selectedLeads.length > 0 && 
-                              isTablet?styles.history_list_inner_Tablet_View :styles.history_list_inner ))
-                        }`}
-                        onClick={handleOpenModal}
+                              styles.history_list_inner_Mobile_View
+                              : (selectedLeads.length > 0 &&
+                                isTablet ? styles.history_list_inner_Tablet_View : styles.history_list_inner))
+                          }`}
+                      // onClick={handleOpenModal}
                       >
                         <label>
                           <input
@@ -400,17 +399,17 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                         <div className={styles.email}>
                           <span>
                             {lead.email_id}
-                            
+
                           </span>
                         </div>
                         <div className={styles.address}>
                           {/* {lead.street_address ? lead.street_address : 'N/A'} */}
-                       
-                                 {lead?.street_address
-                          ? lead.street_address.length > 20
-                            ? `${lead.street_address.slice(0, 20)}...`
-                            : lead.street_address
-                          : 'N/A'}
+
+                          {lead?.street_address
+                            ? lead.street_address.length > 20
+                              ? `${lead.street_address.slice(0, 20)}...`
+                              : lead.street_address
+                            : 'N/A'}
                         </div>
                         {selectedLeads.length > 0 ? (
                           ' '
@@ -497,17 +496,17 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                           <div className={''}>
                             <span>
                               {lead.email_id}
-                              
+
                             </span>
                           </div>
                           <div className={''}>
                             {/* {lead.street_address ? lead.street_address : 'N/A'} */}
-                            
-                                 {lead?.street_address
-                          ? lead.street_address.length > 20
-                            ? `${lead.street_address.slice(0, 20)}...`
-                            : lead.street_address
-                          : 'N/A'}
+
+                            {lead?.street_address
+                              ? lead.street_address.length > 20
+                                ? `${lead.street_address.slice(0, 20)}...`
+                                : lead.street_address
+                              : 'N/A'}
                           </div>
                         </td>
                       </tr>
@@ -519,18 +518,18 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                           <div className={''}>
                             <span>
                               {lead.email_id}
-                              
+
                             </span>
                           </div>
                           <div className={''}>
-                         
-                                 {lead?.street_address
-                          ? lead.street_address.length > 20
-                            ? `${lead.street_address.slice(0, 20)}...`
-                            : lead.street_address
-                          : 'N/A'}
+
+                            {lead?.street_address
+                              ? lead.street_address.length > 20
+                                ? `${lead.street_address.slice(0, 20)}...`
+                                : lead.street_address
+                              : 'N/A'}
                             {/* {lead.street_address} */}
-                            </div>
+                          </div>
                         </td>
                       </tr>
                     )}
