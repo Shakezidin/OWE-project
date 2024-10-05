@@ -350,17 +350,6 @@ const ArchivedPages = ({ activeIndex, setActiveIndex, setArchive }: HistoryRedir
                   <React.Fragment key={index}>
                     <tr className={styles.history_lists}>
                       <td
-                        //WORKING CODE RIGHT For MOBILE && PCs
-                        // className={`${
-                        //   lead.status === 'Declined' ||
-                        //   lead.status === 'Action Needed'
-                        //     ? styles.history_list_inner_declined
-                        //     : selectedLeads.length > 0 && isMobile 
-                        //       ?
-                        //         styles.history_list_inner_Mobile_View
-                        //       : styles.history_list_inner
-                        // }`}
-                        // NEED FOR TABLET EDIT
                         className={`${lead.status === 'Declined' ||
                             lead.status === 'Action Needed'
                             ? styles.history_list_inner_declined
