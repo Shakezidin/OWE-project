@@ -82,7 +82,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 				ON leads_info.status_id = leads_status.status_id 
 				AND leads_info.updated_at BETWEEN $2 AND $3
 				AND leads_info.is_archived = false
-				AND (leads_info.status_id != 2 OR leads_info.appointment_date < CURRENT_TIMESTAMP)
+				AND (leads_info.status_id != 2 OR leads_info.appointment_date > CURRENT_TIMESTAMP)
 			GROUP BY leads_status.status_id
 			HAVING leads_status.status_id NOT IN (5, 6) -- Excluding WON & LOST
 		) grp INNER JOIN leads_status s ON s.status_id = grp.status_id
