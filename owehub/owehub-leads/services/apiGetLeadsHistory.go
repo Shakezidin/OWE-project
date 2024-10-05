@@ -131,20 +131,19 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
     ORDER BY li.updated_at DESC
 `, whereClause)
 
-	// Add pagination conditionally if valid
-	if dataReq.PageSize > 0 && dataReq.PageNumber > 0 {
-		leadsHistoryQuery += " LIMIT $5 OFFSET $6"
-	}
-
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	whereEleList = append(whereEleList,
 		authenticatedUserEmail,
 		dataReq.StartDate,
 		dataReq.EndDate,
 		dataReq.IsArchived,
-		pageSize,
-		offset,
 	)
+
+	// Add pagination conditionally if valid
+	if dataReq.PageSize > 0 && dataReq.PageNumber > 0 {
+		leadsHistoryQuery += " LIMIT $5 OFFSET $6"
+		whereEleList = append(whereEleList, pageSize, offset)
+	}
 
 	// Execute the query
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryQuery, whereEleList)
