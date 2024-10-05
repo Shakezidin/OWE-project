@@ -146,6 +146,7 @@ const DropdownCheckbox: React.FC<DropdownCheckboxProps> = ({
             placeholder={placeholder}
             value={search}
             onChange={handleSearch}
+            maxLength={50} // Set 50-character limit
           />
           {!!(!search && options.length) && (
             <div className="dropdown-item">

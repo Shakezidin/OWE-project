@@ -33,9 +33,9 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
   }, [isOpen]);
 
   const [formData, setFormData] = useState({
-    email_id: '',
-    mobile_number: '',
-    address: '',
+    email_id: leadData?.email_id ? leadData?.email_id : '',
+    mobile_number: leadData?.phone_number ? leadData?.phone_number :  '',
+    address: leadData?.street_address ? leadData?.street_address :'',
   });
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
@@ -98,7 +98,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
           'edit_leads',
           {
             leads_id: leadData?.leads_id,
-            email_id: formData.email_id,
+            email_id:  formData.email_id,
             phone_number: formData.mobile_number,
             street_address: formData.address,
           },
@@ -147,7 +147,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   <span className={classes.addresshead}>
                     {leadData?.street_address
                       ? leadData.street_address.length > 20
-                        ? `${leadData.street_address.slice(0, 20)}...`
+                        ? `${leadData.street_address.slice(0, 30)}...`
                         : leadData.street_address
                       : 'N/A'}
                   </span>
@@ -192,7 +192,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
               <div className={classes.inputFields}>
                 <Input
                   type="text"
-                  value={formData.mobile_number || leadData?.phone_number || ''}
+                  value={formData.mobile_number}
                   placeholder="+91 8127577509"
                   onChange={handleInputChange}
                   name="mobile_number"
@@ -200,7 +200,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                 />
                 <Input
                   type="text"
-                  value={formData.email_id || leadData?.email_id || ''}
+                  value={formData.email_id}
                   placeholder="johndoe1234@gmail.com"
                   onChange={handleInputChange}
                   name="email_id"
@@ -209,7 +209,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                 />
                 <Input
                   type="text"
-                  value={formData.address || leadData?.street_address || ''}
+                  value={formData.address}
                   placeholder="12778 Domingo Ct, Parker, COLARDO, 2312"
                   onChange={handleInputChange}
                   name="address"
