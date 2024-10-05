@@ -7,6 +7,7 @@ import Pagination from '../components/pagination/Pagination';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import { DateRange } from 'react-date-range';
 import { toZonedTime } from 'date-fns-tz';
+import Papa from 'papaparse';
 import {
   endOfWeek,
   format,
@@ -22,6 +23,9 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import DataNotFound from '../components/loader/DataNotFound';
 import MicroLoader from '../components/loader/MicroLoader';
+import { MdDownloading } from 'react-icons/md';
+import { LuImport } from 'react-icons/lu';
+import { Tooltip } from 'react-tooltip';
 
 interface HistoryTableProp {
   first_name: string;
@@ -335,6 +339,87 @@ const LeradManagementHistory = () => {
     setPage(1); // Reset to the first page when changing items per page
   };
 
+  const [exporting, setIsExporting] = useState(false);
+
+  const exportCsv = async () => {
+    setIsExporting(true);
+    const headers = [
+      'Leads ID',
+      'Status ID',
+      'First Name',
+      'Last Name',
+      'Phone Number',
+      'Email ID',
+      'Street Address',
+      'Zipcode',
+      'Deal Date',
+      'Deal Status',
+      'Appointment Scheduled',
+      'Appointment Accepted',
+      'Appointment Date',
+      'Deal Won',
+      'Proposal Sent',
+    ];
+
+    try {
+      const response = await postCaller(
+        'leads_history',
+        {
+          leads_status: selectedValue,
+          start_date: selectedDates.startDate
+            ? format(selectedDates.startDate, 'dd-MM-yyyy')
+            : '',
+          end_date: selectedDates.endDate
+            ? format(selectedDates.endDate, 'dd-MM-yyyy')
+            : '',
+          page_size: 0,
+          page_number: 0,
+        },
+        true
+      );
+
+      if (response.status > 201) {
+        toast.error(response.data.message);
+        setIsExporting(false);
+        return;
+      }
+
+      const csvData = response.data?.leads_history_list?.map?.((item: any) => [
+        item.leads_id,
+        item.status_id,
+        item.first_name,
+        item.last_name,
+        item.phone_number,
+        item.email_id,
+        item.street_address,
+        item.zipcode,
+        item.deal_date,
+        item.deal_status,
+        item.timeline.find((event: any) => event.label === 'Appoitment Scheduled')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Appointment Accepted')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Appointment Date')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Deal Won')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Proposal Sent')?.date || '',
+      ]);
+
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'leads_history.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      toast.error('An error occurred while exporting the data.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const isMobile = useMatchMedia('(max-width: 767px)');
   const isTablet = useMatchMedia('(max-width: 1024px)');
 
@@ -367,15 +452,23 @@ const LeradManagementHistory = () => {
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.startDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.startDate.getFullYear()}
                         {' - '}
                         {selectedDates.endDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.endDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.endDate.getFullYear()}
                       </span>
                     </div>
                   ) : null}
@@ -411,15 +504,23 @@ const LeradManagementHistory = () => {
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.startDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.startDate.getFullYear()}
                         {' - '}
                         {selectedDates.endDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.endDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.endDate.getFullYear()}
                       </span>
                     </div>
                   ) : null}
@@ -506,15 +607,40 @@ const LeradManagementHistory = () => {
                   <div className={styles.sort_drop}>
                     <SortingDropDown onChange={handleSortingChange} />
                   </div>
-                  <div className={styles.calender}>
-                    <img
-                      src={ICONS.LeadMngExport}
-                      style={{ marginTop: '-2px' }}
-                      alt=""
-                      height={22}
-                      width={22}
-                    />
+                  <div
+                    className={styles.calender}
+                    onClick={exportCsv}
+                    data-tooltip-id="export"
+                    style={{
+                      pointerEvents: exporting ? 'none' : 'auto',
+                      opacity: exporting ? 0.6 : 1,
+                      cursor: exporting ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {exporting ? (
+                      <MdDownloading
+                        className="downloading-animation"
+                        size={20}
+                        color='white'
+                      />
+                    ) : (
+                      <LuImport size={20} color='white' />
+                    )}
                   </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="export"
+                    place="bottom"
+                    content="Export"
+                  />
 
                   <div className={styles.hist_ret} onClick={handleCross}>
                     <img src={ICONS.cross} alt="" height="26" width="26" />
@@ -603,12 +729,6 @@ const LeradManagementHistory = () => {
                       )}
                       <div className={styles.email}>
                         <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                        <img
-                          height={15}
-                          width={15}
-                          src={ICONS.complete}
-                          alt="img"
-                        />
                       </div>
                       <div className={styles.address}>
                         {item?.street_address
@@ -694,12 +814,6 @@ const LeradManagementHistory = () => {
                       </div>
                       <div className={styles.email}>
                         <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                        <img
-                          height={15}
-                          width={15}
-                          src={ICONS.complete}
-                          alt="img"
-                        />
                       </div>
                       <div className={styles.address}>
 

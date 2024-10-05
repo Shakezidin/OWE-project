@@ -1290,7 +1290,7 @@ const LeadManagementDashboard = () => {
                               {lead.first_name} {lead.last_name}
                             </h2>
                             <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter}
+                              {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
                             </p>
                           </div>
                           <div className={styles.phone_number}>
