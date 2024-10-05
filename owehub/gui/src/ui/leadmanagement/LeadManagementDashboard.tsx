@@ -21,7 +21,7 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import ThreeDotsImage from './Modals/Modalimages/ThreeDots.svg';
+import ThreeDotsImage from '../Library/stylesFolder/ThreeDots.svg';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -1300,13 +1300,7 @@ const LeadManagementDashboard = () => {
                             <span>
                               {lead.email_id}
                             </span>
-                            <img
-                              className="ml1"
-                              height={15}
-                              width={15}
-                              src={ICONS.complete}
-                              alt="verified"
-                            />
+                            
                           </div>
                           <div className={styles.address}>
                             {lead?.street_address
@@ -1315,6 +1309,12 @@ const LeadManagementDashboard = () => {
                                 : lead.street_address
                               : 'N/A'}
                           </div>
+                          {/* <div className={styles.ScheduleBtnNew}>
+                          <button>Schedule</button>
+                          </div>
+                          <div className={styles.ThreeDotsMinor}>
+                            <img src={ThreeDotsImage} alt='Optional-Dot'/>
+                          </div> */}
 
                           {currentFilter === 'Declined' && (
                             <div className={styles.actionButtons}>
@@ -1384,13 +1384,7 @@ const LeadManagementDashboard = () => {
                             <div className={''}>
                               <span>
                                 {lead.email_id}
-                                <img
-                                  className="ml1"
-                                  height={15}
-                                  width={15}
-                                  src={ICONS.complete}
-                                  alt="verified"
-                                />
+                                
                               </span>
                             </div>
                             <div className={''}>
