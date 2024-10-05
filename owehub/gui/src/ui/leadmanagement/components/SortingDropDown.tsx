@@ -2,12 +2,12 @@ import React, { SetStateAction, useEffect, useRef, useState } from 'react';
 import { PiSortAscendingLight } from 'react-icons/pi';
 import './index.css';
 interface propTypes {
-  onChange?: (val: string) => void;
+  onChange?: (val: number) => void;
   default?: 'asc' | 'desc' | 'all';
 }
 const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all'>('asc');
+  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all'>('all');
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -47,7 +47,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
               onClick={() => {
                 setIsActive('all');
                 setIsDropdownOpen(false);
-                onChange?.('all');
+                onChange?.(-1);
               }}
               className={isActive === 'all' ? 'active_sorting' : ''}
             >
@@ -57,7 +57,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
               onClick={() => {
                 setIsActive('desc');
                 setIsDropdownOpen(false);
-                onChange?.('desc');
+                onChange?.(6);
               }}
               className={isActive === 'desc' ? 'active_sorting' : ''}
             >
@@ -67,7 +67,7 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
               onClick={() => {
                 setIsActive('asc');
                 setIsDropdownOpen(false);
-                onChange?.('asc');
+                onChange?.(5);
               }}
               className={isActive === 'asc' ? 'active_sorting' : ''}
             >

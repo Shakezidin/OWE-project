@@ -12,8 +12,8 @@
 
 button.trash-btn {
   background-color: #377cf6;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
 }
 
 .user_user-type {
@@ -25,6 +25,7 @@ button.trash-btn {
   z-index: 100;
   padding: 1px 4px 0;
   transition: all 0.3s ease;
+  margin-bottom: -4px;
 }
 
 /* .user-dropdown.hover-effect:hover {
@@ -44,5 +45,8 @@ button.trash-btn {
   .delete-icon-container {
     gap: 1.2rem;
     width: 100%;
+  }
+  button.trash-btn {
+    margin-top: -5px;
   }
 }

@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -40,21 +41,21 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get Adder data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Adder data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get Adder data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Adder data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get Adder data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -72,7 +73,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
@@ -92,7 +93,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Adder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get Adder data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -103,7 +104,8 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	}
 	whereEleList = nil
 
-	query = "SELECT COUNT(system_size) AS weekly_sale FROM consolidated_data_view WHERE "
+	query = `SELECT COUNT(contracted_system_size) AS weekly_sale FROM customers_customers_schema cs LEFT JOIN consolidated_data_view  cdv ON 
+			cdv.unique_id = cs.unique_id WHERE `
 
 	filter, whereEleList = FilterPerformerProfileData(dataReq)
 	if filter != "" {
@@ -113,7 +115,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get weekly_sale from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get weekly_sale from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get weekly_sale from DB", http.StatusBadRequest, nil)
 		return
 	}
 	if len(data) > 0 {
@@ -122,7 +124,7 @@ func GetperformerProfileDataRequest(resp http.ResponseWriter, req *http.Request)
 
 	performerProfileData.Rank = dataReq.Rank
 	log.FuncInfoTrace(0, "performer profile data fetched : %v ", performerProfileData)
-	FormAndSendHttpResp(resp, "Adder Data", http.StatusOK, performerProfileData)
+	appserver.FormAndSendHttpResp(resp, "Adder Data", http.StatusOK, performerProfileData)
 }
 
 func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filters string, whereEleList []interface{}) {
@@ -132,20 +134,20 @@ func FilterPerformerProfileData(dataReq models.GetPerformerProfileDataReq) (filt
 
 	switch dataReq.DataType {
 	case "sale_rep":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v')", dataReq.Dealer, dataReq.Name, dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v' AND cs.primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cdv.team = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
-		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.state = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cdv.region = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "setter":
-		filtersBuilder.WriteString(fmt.Sprintf(" setter = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(" AND contract_date BETWEEN current_date - interval '1 days' * $%d AND current_date ", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" AND cs.sale_date BETWEEN current_date - interval '1 days' * $%d AND current_date ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, "7")
 
 	filters = filtersBuilder.String()
@@ -160,31 +162,33 @@ func GetQueryForTotalCount(dataReq models.GetPerformerProfileDataReq) (filters s
 	var filtersBuilder strings.Builder
 
 	if dataReq.CountKwSelection {
-		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN contract_date IS NOT NULL THEN system_size END) AS total_sales,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN ntp_date IS NOT NULL THEN system_size END) AS total_ntp,")
-		filtersBuilder.WriteString(" COUNT(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size END) AS total_installs")
+		filtersBuilder.WriteString("SELECT COUNT(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size END) AS total_sales,")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN cdv.ntp_date IS NOT NULL THEN cs.contracted_system_size END) AS total_ntp,")
+		filtersBuilder.WriteString(" COUNT(CASE WHEN pis.pv_completion_date IS NOT NULL THEN cs.contracted_system_size END) AS total_installs")
 	} else {
-		filtersBuilder.WriteString("SELECT SUM(CASE WHEN contract_date IS NOT NULL THEN system_size ELSE 0 END) AS total_sales,")
-		filtersBuilder.WriteString(" SUM(CASE WHEN ntp_date IS NOT NULL THEN system_size ELSE 0 END) AS total_ntp,")
-		filtersBuilder.WriteString(" SUM(CASE WHEN pv_install_completed_date IS NOT NULL THEN system_size ELSE 0 END) AS total_installs")
+		filtersBuilder.WriteString("SELECT SUM(CASE WHEN cs.sale_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_sales,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN cs.contracted_system_size IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_ntp,")
+		filtersBuilder.WriteString(" SUM(CASE WHEN pis.pv_completion_date IS NOT NULL THEN cs.contracted_system_size ELSE 0 END) AS total_installs")
 	}
 
-	filtersBuilder.WriteString(" FROM consolidated_data_view ")
+	filtersBuilder.WriteString(` FROM customers_customers_schema cs LEFT JOIN ntp_ntp_schema ns ON ns.unique_id = cs.unique_id 
+								LEFT JOIN pv_install_install_subcontracting_schema pis ON pis.customer_unique_id = cs.unique_id 
+								LEFT JOIN consolidated_data_view cdv ON cdv.unique_id = cs.unique_id `)
 	filtersBuilder.WriteString(" WHERE ")
 
 	switch dataReq.DataType {
 	case "sale_rep":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v' AND (primary_sales_rep = '%v' OR secondary_sales_rep = '%v')", dataReq.Dealer, dataReq.Name, dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v' AND cs.primary_sales_rep = '%v'", dataReq.Dealer, dataReq.Name))
 	case "team":
-		filtersBuilder.WriteString(fmt.Sprintf(" team = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cdv.team = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "state":
-		filtersBuilder.WriteString(fmt.Sprintf(" state = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.state = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "dealer":
-		filtersBuilder.WriteString(fmt.Sprintf(" dealer = '%v'", dataReq.Name))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.dealer = '%v'", dataReq.Name))
 	case "region":
-		filtersBuilder.WriteString(fmt.Sprintf(" region = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cdv.region = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	case "setter":
-		filtersBuilder.WriteString(fmt.Sprintf(" setter = '%v' AND dealer = '%v'", dataReq.Name, dataReq.Dealer))
+		filtersBuilder.WriteString(fmt.Sprintf(" cs.setter = '%v' AND cs.dealer = '%v'", dataReq.Name, dataReq.Dealer))
 	}
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters : %s", filters)

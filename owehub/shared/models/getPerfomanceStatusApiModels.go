@@ -15,7 +15,7 @@ type PerfomanceStatusReq struct {
 	Email             string
 	UniqueIds         []string `json:"unique_ids"`
 	ProjectLimit      int
-	DealerName        interface{}
+	DealerNames       []string `json:"dealer_names"`
 	IntervalDays      string
 	ItemLastSeen      int64    `json:"item_last_seen"`
 	StartDate         string   `json:"start_date"`
@@ -26,7 +26,7 @@ type PerfomanceStatusReq struct {
 type PerfomanceTileDataReq struct {
 	Email         string
 	ProjectLimit  int
-	DealerName    interface{}
+	DealerNames   []string `json:"dealer_names"`
 	IntervalDays  string
 	StartDate     string   `json:"start_date"`
 	EndDate       string   `json:"end_date"`

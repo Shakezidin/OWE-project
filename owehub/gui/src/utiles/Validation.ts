@@ -13,6 +13,10 @@ export const validateEmail = (email: string): boolean => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 };
 
+export const validateZipCode = (zipCode: string): boolean => {
+  return /^[0-9]{4,12}$/.test(zipCode.trim());
+};
+
 export const validateMobileNumber = (mobileNumber: string): boolean => {
   return /^\+?[0-9]{10,16}$/.test(mobileNumber.trim());
 };
@@ -82,12 +86,14 @@ export const createUserObject = (
   formData: CreateUserModel
 ): CreateUserParamModel => {
   let createObject: CreateUserParamModel = {
-    name: formData.first_name + ' ' + formData.last_name,
+    name: formData.first_name?.trim() + ' ' + formData.last_name?.trim(),
     email_id: formData.email_id,
     mobile_number: formData.mobile_number,
     role_name: formData.role_name,
     designation: 'SE',
     description: formData.description,
+    zip_code: formData.zip_code,
+    podio_checked: formData.podioChecked,
   };
   if (formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER) {
     createObject = {
@@ -104,6 +110,7 @@ export const createUserObject = (
       dealer: formData.dealer,
       reporting_manager: formData.report_to,
       region: formData.add_region, //TODO: need to discuss
+      podio_checked: formData.podioChecked,
     };
   }
 
@@ -113,6 +120,7 @@ export const createUserObject = (
       dealer: formData.dealer,
       reporting_manager: formData.report_to,
       team_name: formData.team_name,
+      podio_checked: formData.podioChecked,
     };
   }
   if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
@@ -120,6 +128,7 @@ export const createUserObject = (
       ...createObject,
       dealer: formData.dealer,
       reporting_manager: formData.report_to,
+      podio_checked: formData.podioChecked,
     };
   }
   if (

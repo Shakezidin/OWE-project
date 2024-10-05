@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -37,28 +38,28 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in change password request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from change password request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &changePasswordReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal Change Password request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Change Password request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Change Password request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(changePasswordReq.CurrentPassword) <= 0) || (len(changePasswordReq.NewPassword) <= 0) {
 		err = fmt.Errorf("Empty New or Current Password")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty New or Old Password Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty New or Old Password Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -73,7 +74,7 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 	_, _, roleName, _, err := ValidateUser(creds)
 	if err != nil {
 		log.FuncErrorTrace(0, "Invalid Current Password err: %v", err)
-		FormAndSendHttpResp(resp, "Invalid Current Password", http.StatusUnauthorized, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Current Password", http.StatusUnauthorized, nil)
 		return
 	}
 
@@ -83,7 +84,7 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, userNameQuery, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get ar import data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get ar import data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get ar import data from DB", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -95,13 +96,13 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 				err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to update OWEDB Password err: %v", err)
-					FormAndSendHttpResp(resp, "Failed update the DB Password", http.StatusInternalServerError, nil)
+					appserver.FormAndSendHttpResp(resp, "Failed update the DB Password", http.StatusInternalServerError, nil)
 					return
 				}
 			}
 		} else {
 			log.FuncErrorTrace(0, "Failed to get user details from DB: %v", err)
-			FormAndSendHttpResp(resp, "User does not exists in DB", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "User does not exists in DB", http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -110,9 +111,9 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 	err = UpdatePassword(changePasswordReq.NewPassword, userEmailId)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update the new password", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update the new password", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Password Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Password Updated Successfully", http.StatusOK, nil)
 }

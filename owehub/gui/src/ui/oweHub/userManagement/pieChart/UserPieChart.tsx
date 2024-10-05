@@ -6,14 +6,19 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import perfomance_mask from '../lib/perfomance_mask.png';
 import onboarding_mask from '../lib/onboarding_mask.png';
 import useMatchMedia from '../../../../hooks/useMatchMedia';
-import { ALL_USER_ROLE_LIST, TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import {
+  ALL_USER_ROLE_LIST,
+  TYPE_OF_USER,
+} from '../../../../resources/static_data/Constant';
 interface UserPieChartProps {
   onboardingList: OnboardingChartModel[];
   userPerformanceList: OnboardingChartModel[];
   loading: boolean;
   onValueChange: (value: string) => void;
-  activeSalesRep: string
-  setSelectedOption: Dispatch<SetStateAction<{ label?: string; value?: string }>>
+  activeSalesRep: string;
+  setSelectedOption: Dispatch<
+    SetStateAction<{ label?: string; value?: string }>
+  >;
 }
 
 const UserPieChart: React.FC<UserPieChartProps> = ({
@@ -22,7 +27,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   loading,
   onValueChange,
   activeSalesRep,
-  setSelectedOption
+  setSelectedOption,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   // const [isClicked, setIsClicked] = useState(false);
@@ -35,25 +40,29 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
     setIsHovered(false);
   };
 
-
-
   const [isHovered1, setIsHovered1] = useState(false);
   // const [isClicked1, setIsClicked1] = useState(false);
 
   const handleClick = (value: string) => {
-    onValueChange(value)
-    setSelectedOption({ label: TYPE_OF_USER.SALES_REPRESENTATIVE, value: TYPE_OF_USER.SALES_REPRESENTATIVE });
+    onValueChange(value);
+    setSelectedOption({
+      label: TYPE_OF_USER.SALES_REPRESENTATIVE,
+      value: TYPE_OF_USER.SALES_REPRESENTATIVE,
+    });
   };
-  const handleChartClick = (value: string, type: "sales" | string) => {
+  const handleChartClick = (value: string, type: 'sales' | string) => {
     console.log('value', value);
-    if (type === "sales") {
-      onValueChange(value)
-      setSelectedOption({ label: TYPE_OF_USER.SALES_REPRESENTATIVE, value: TYPE_OF_USER.SALES_REPRESENTATIVE });
+    if (type === 'sales') {
+      onValueChange(value);
+      setSelectedOption({
+        label: TYPE_OF_USER.SALES_REPRESENTATIVE,
+        value: TYPE_OF_USER.SALES_REPRESENTATIVE,
+      });
     } else {
       setSelectedOption({ label: value, value: value });
-      onValueChange("")
+      onValueChange('');
     }
-  }
+  };
 
   const handleMouseEnter1 = () => {
     setIsHovered1(true);
@@ -62,7 +71,10 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   const handleMouseLeave1 = () => {
     setIsHovered1(false);
   };
-  const totalOnboarding = onboardingList.reduce((acc, curr) => acc + curr.value, 0);
+  const totalOnboarding = onboardingList.reduce(
+    (acc, curr) => acc + curr.value,
+    0
+  );
 
   const isTablet = useMatchMedia('(max-width: 1024px)');
   return (
@@ -112,13 +124,14 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   dataKey="value"
                   strokeWidth={3}
                   focusable={false}
-                  onClick={(e: any) => handleChartClick(e["data-value"], "all")}
+                  onClick={(e: any) => handleChartClick(e['data-value'], 'all')}
                 >
                   {onboardingList.map((entry, index) => (
                     <Cell
-                      style={{ outline: 'none' }}
+                      style={{ outline: 'none', cursor: 'pointer' }}
                       id={`${index}`}
                       key={`cell-${index}`}
+                      className="cursor-pointer"
                       data-svg-id={entry.name}
                       data-value={entry.name}
                       fill={entry.fill}
@@ -140,17 +153,18 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               />
             </div>
           ) : (
-            !loading && <div className="data-not-found " style={{ width: '100%' }}>
-              <DataNotFound
-                title={loading ? 'Searching..' : 'No SaleRep Found'}
-              />
-            </div>
+            !loading && (
+              <div className="data-not-found " style={{ width: '100%' }}>
+                <DataNotFound
+                  title={loading ? 'Searching..' : 'No SaleRep Found'}
+                />
+              </div>
+            )
           )}
 
           <div>
             {!!onboardingList.length && (
-              <div className='flex items-center mb2 justify-between'>
-
+              <div className="flex items-center mb2 justify-between">
                 <h4
                   className={`${isTablet ? '' : 'h4'}  text-dark`}
                   style={{
@@ -158,9 +172,8 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     fontSize: isTablet ? 14 : undefined,
                   }}
                 >
-                  {totalOnboarding}  -      Number of users
+                  {totalOnboarding} - Number of users
                 </h4>
-
               </div>
             )}
             {onboardingList.map((user) => {
@@ -175,9 +188,15 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     style={{ fontSize: isTablet ? 12 : undefined }}
                     className={`grid-wrapper-list  text-dark  ${isTablet ? '' : 'h5'}`}
                   >
-                    <span style={{ fontWeight: 600 }}>{user.value.toString().length === 1 ? 0 : ""}{user.value} </span>
-                    <span > - </span>
-                    <span style={{ fontWeight: 500, fontSize: 12 }}> {user.name} </span>
+                    <span style={{ fontWeight: 600 }}>
+                      {user.value.toString().length === 1 ? 0 : ''}
+                      {user.value}{' '}
+                    </span>
+                    <span> - </span>
+                    <span style={{ fontWeight: 500, fontSize: 12 }}>
+                      {' '}
+                      {user.name}{' '}
+                    </span>
                   </div>
                 </div>
               );
@@ -215,11 +234,18 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     paddingAngle={2}
                     dataKey="value"
                     strokeWidth={3}
-                    onClick={(e: any) => handleChartClick(e["data-value"].split(" ")[0].replace("Inactive", "InActive"), "sales")}
+                    onClick={(e: any) =>
+                      handleChartClick(
+                        e['data-value']
+                          .split(' ')[0]
+                          .replace('Inactive', 'InActive'),
+                        'sales'
+                      )
+                    }
                   >
                     {userPerformanceList.map((entry, index) => (
                       <Cell
-                        style={{ outline: 'none' }}
+                        style={{ outline: 'none', cursor: 'pointer' }}
                         id={`${index}`}
                         data-value={entry.name}
                         key={`cell-${index}`}
@@ -239,20 +265,22 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               <img src={perfomance_mask} alt="" className="mask-chart-img" />
             </div>
           ) : (
-            !loading && <div className="data-not-found">
-              <DataNotFound
-                title={loading ? 'Searching..' : 'No SaleRep Found'}
-              />
-            </div>
+            !loading && (
+              <div className="data-not-found">
+                <DataNotFound
+                  title={loading ? 'Searching..' : 'No SaleRep Found'}
+                />
+              </div>
+            )
           )}
 
           {!!userPerformanceList.length && (
-            <div className="flex stats-wrapper items-center justify-center pb2">
+            <div className="flex stats-wrapper items-center justify-center pb2 mt3">
               <div
-                className={`flex items-center active-slrp ${activeSalesRep === "Active" ? 'clicked' : ''}`}
+                className={`flex items-center active-slrp ${activeSalesRep === 'Active' ? 'clicked' : ''}`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                onClick={() => handleClick("Active")}
+                onClick={() => handleClick('Active')}
               >
                 <div className="flex items-center act-top">
                   <div
@@ -263,7 +291,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       height: 18,
                       borderRadius: '50%',
                       border:
-                        isHovered || activeSalesRep === "Active"
+                        isHovered || activeSalesRep === 'Active'
                           ? '3px solid #fff'
                           : '3px solid #D2FFF9',
                       flexShrink: 0,
@@ -273,7 +301,10 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   <span
                     className="bold upl"
                     style={{
-                      color: isHovered || activeSalesRep === "Active" ? '#fff' : '#263747',
+                      color:
+                        isHovered || activeSalesRep === 'Active'
+                          ? '#fff'
+                          : '#263747',
                     }}
                   >
                     {userPerformanceList?.[0]?.value}
@@ -291,10 +322,10 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               </div>
 
               <div
-                className={`flex items-center inactive-slrp  ${activeSalesRep === "InActive" ? 'clicked1' : ''}`}
+                className={`flex items-center inactive-slrp  ${activeSalesRep === 'InActive' ? 'clicked1' : ''}`}
                 onMouseEnter={handleMouseEnter1}
                 onMouseLeave={handleMouseLeave1}
-                onClick={() => handleClick("InActive")}
+                onClick={() => handleClick('InActive')}
               >
                 <div className="flex items-center">
                   <div
@@ -305,7 +336,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       height: 18,
                       borderRadius: '50%',
                       border:
-                        (isHovered1 || activeSalesRep === "InActive")
+                        isHovered1 || activeSalesRep === 'InActive'
                           ? '3px solid #fff'
                           : '3px solid rgb(253, 196, 209)',
                       flexShrink: 0,
@@ -315,7 +346,10 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                   <span
                     className="bold"
                     style={{
-                      color: (isHovered1 || activeSalesRep === "InActive") ? '#fff' : '#263747',
+                      color:
+                        isHovered1 || activeSalesRep === 'InActive'
+                          ? '#fff'
+                          : '#263747',
                     }}
                   >
                     {userPerformanceList?.[1]?.value}

@@ -2,28 +2,33 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/appointmentScheduler.css';
+import { timeSlots } from '../../../resources/static_data/Constant';
+import { toast } from 'react-toastify';
 
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
+  onDateChange: (date: Date) => void;
+  onTimeChange: (time: string) => void;
 }
 
-const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({ setVisibleDiv }) => {
+const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
+  setVisibleDiv,
+  onDateChange,
+  onTimeChange,
+}) => {
   const [selectedDate, setSelectedDate] = useState(new Date('2024-08-25'));
-  const [selectedTime, setSelectedTime] = useState('12:00 PM');
+  const [selectedTime, setSelectedTime] = useState('');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(true);
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
+    onDateChange(date);
   };
 
   const handleTimeChange = (time: string) => {
     setSelectedTime(time);
+    onTimeChange(time);
   };
-
-  const timeSlots = [
-    '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-    '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
-  ];
 
   return (
     <div className="appointmentSchedulerContainer">
@@ -48,6 +53,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({ setVisibleD
             selected={selectedDate}
             onChange={handleDateChange}
             inline
+            
             renderCustomHeader={({
               date,
               decreaseMonth,
@@ -56,14 +62,25 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({ setVisibleD
               nextMonthButtonDisabled,
             }) => (
               <div className="custom-header">
-                <button className='prev-month' onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-                  {"<"}
+                <button
+                  className="prev-month"
+                  onClick={decreaseMonth}
+                  disabled={prevMonthButtonDisabled}
+                >
+                  {'<'}
                 </button>
                 <span className="custom-header-text">
-                  {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  {date.toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric',
+                  })}
                 </span>
-                <button className='next-month' onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-                  {">"}
+                <button
+                  className="next-month"
+                  onClick={increaseMonth}
+                  disabled={nextMonthButtonDisabled}
+                >
+                  {'>'}
                 </button>
               </div>
             )}
@@ -84,11 +101,28 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({ setVisibleD
       )}
 
       <div className="selectedDateDisplay">
-        {selectedDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}, {selectedTime}
+        {selectedDate
+          .toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+          .toUpperCase()}
+        {selectedTime && `, ${selectedTime}`}
       </div>
 
       <div className="sendAppointmentBtn">
-        <button onClick={() => setVisibleDiv(1)}>SEND APPOINTMENT</button>
+        <button
+          onClick={() => {
+            if (selectedTime && selectedDate) {
+              setVisibleDiv(11);
+            } else {
+             toast.warn('Please select date & time before proceeding.');
+            }
+          }}
+        >
+          SEND APPOINTMENT
+        </button>
       </div>
     </div>
   );

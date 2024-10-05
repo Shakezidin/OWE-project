@@ -6,11 +6,13 @@
   flex-basis: calc(100%);
   border-radius: 8px;
   background-color: #fff;
-  padding-top: 15px;
+  padding-top: 30px;
   padding-inline: 20px;
   max-width: 950px;
-  height: 575px;
-  margin-left: 20px;
+  height: max-content;
+  margin-left: 35px;
+  margin-right: 35px;
+  border: 1px solid #d8d8d8;
 }
 
 .customer_wrapper_list::-webkit-scrollbar {
@@ -43,15 +45,24 @@
 }
 
 .an_head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'poppins', sans-serif;
   margin-left: 33px;
   font-size: 16px;
   font-weight: 500;
   color: #333333;
   margin-top: 4px;
+  line-height: 24px;
 }
 
 .an_top {
   font-size: 18px;
+  padding-left: 38px;
+  padding-right: 38px;
+  padding-top: 15px;
+  /* padding-bottom: 2px; */
   font-weight: 600;
 }
 
@@ -66,6 +77,7 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-bottom: 20px;
 }
 
 .submitbut:hover {
@@ -81,6 +93,8 @@
   background-color: #f3f3f3;
   border: none;
   margin-top: 22px;
+  font-size: 12px;
+  font-weight: 500;
 }
 .tenst_inp:focus {
   outline: none;
@@ -88,7 +102,7 @@
 
 .tentaclesicons {
   position: absolute;
-  top: 65%;
+  top: 67%;
   /* right: 5px; */
   transform: translateY(-50%);
   display: flex;
@@ -96,14 +110,14 @@
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  padding-left: 77px;
+  padding-left: 72px;
   /* Prevents clicking on the icons from affecting the input */
 }
 
 .tentaclesicons img {
-  width: 12px;
+  width: 9px;
   /* Adjust the size of the icons as needed */
-  height: 12px;
+  height: 9px;
   cursor: pointer;
   pointer-events: auto;
   transition: transform 0.3s ease;
@@ -126,4 +140,151 @@
   padding: 24px 0 24px 0;
   gap: 1rem;
   /* border-top: 1px solid #d0d5dd; */
+}
+
+.custom_Input {
+  font-size: 12px;
+  font-weight: 500;
+  flex: 1 1;
+  height: 2.27rem;
+  color: #000;
+  padding: 0px 14px;
+  line-height: 18px;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  width: 80% !important;
+}
+
+.custom_label {
+  font-family: 'poppins', sans-serif !important;
+  color: #6d6d6d !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+}
+
+.innerView {
+  border: none !important;
+  width: 80% !important;
+}
+
+.scroll_user {
+  padding-left: 19px;
+}
+
+.an_head p {
+  padding-top: 6px;
+  padding-left: 19px;
+  padding-bottom: 9px;
+}
+
+/* @media screen and (max-width: 1055px){
+  body {
+    overflow-y: hidden !important; 
+    overflow-x: hidden !important; 
+  }
+
+  .salrep_input_container{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+} */
+
+/* @media screen and (max-width: 1024px){
+  body {
+    overflow-y: hidden; 
+    overflow-x: hidden; 
+  } */
+
+/* .an_top {
+
+  } 
+  .customer_wrapper_list{
+
+  }
+
+  .scroll_user{
+    padding-left: 0;
+  }
+
+  .an_head p{
+    padding-left: 0;
+  } */
+
+/* @media screen and (max-width: 768){
+.salrep_input_container{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+} */
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (max-width: 750px) {
+  .salrep_input_container.reverse_col {
+    flex-direction: column-reverse !important;
+  }
+
+  .salrep_input_container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .an_top {
+    padding-left: 20px;
+  }
+  .customer_wrapper_list {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .an_head p {
+    padding-left: 0px !important;
+    margin-left: -33px;
+  }
+  .scroll_user {
+    padding-left: 0px;
+  }
+  .inputView {
+    padding-left: 0px !important;
+  }
+  .innerView {
+    width: 240% !important;
+    border-radius: 8px;
+  }
+  .custom_Input {
+    width: 250% !important;
+    border-radius: 8px;
+  }
+  .submitbut {
+    width: 95%;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+  }
 }

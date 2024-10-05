@@ -1,5 +1,5 @@
 /**************************************************************************
- *	Function	: getSaleTypeApiModels.go
+ *	Function	: getStateApiModels.go
  *	DESCRIPTION : Files contains struct for get sale type models
  *	DATE        : 20-Jan-2024
  **************************************************************************/

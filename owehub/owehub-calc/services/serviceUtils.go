@@ -2,13 +2,10 @@ package services
 
 import (
 	log "OWEApp/shared/logger"
-	types "OWEApp/shared/types"
 	"encoding/binary"
-	"encoding/json"
 	"fmt"
 
 	"math/rand"
-	"net/http"
 	"time"
 )
 
@@ -58,33 +55,4 @@ func GenerateRandomNumWithLen(len int) (randNumber string, err error) {
 	// Format the OTP to ensure it has leading zeros if necessary
 	formatString := fmt.Sprintf("%%0%dd", len)
 	return fmt.Sprintf(formatString, otp), nil
-}
-
-func FormAndSendHttpResp(httpResp http.ResponseWriter, message string, httpStatusCode int, data types.Data, dbRecCount ...int64) {
-	log.EnterFn(0, "FormAndSendHttpResp")
-	defer func() { log.ExitFn(0, "FormAndSendHttpResp", nil) }()
-	// Check if dbRecCount is provided
-	var count int64
-	if len(dbRecCount) > 0 {
-		count = dbRecCount[0]
-	}
-
-	response := types.ApiResponse{
-		Status:     httpStatusCode,
-		Message:    message,
-		DbRecCount: count,
-		Data:       data,
-	}
-
-	jsonResp, err := json.Marshal(response)
-	if err != nil {
-		httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		httpResp.WriteHeader(http.StatusInternalServerError)
-		httpResp.Write([]byte("Error marshaling response"))
-		return
-	} else {
-		httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		httpResp.WriteHeader(httpStatusCode)
-		httpResp.Write([]byte(jsonResp))
-	}
 }

@@ -8,26 +8,67 @@
   display: flex !important;
 }
 
-.performance-exportbtn {
-  margin-left: auto;
-  width: -moz-fit-content;
-  width: fit-content;
-  cursor: pointer;
-  z-index: 10;
+.pipeline-heading h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #263747;
+}
+
+.desktop-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mobile-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pipeline-googlemap {
+  display: flex;
   align-items: center;
-  border-radius: 5px;
-  border: none;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: #f1f1f1;
-  background-color: #377cf6 !important;
-  margin-top: 7px;
+  justify-content: center;
+  background: #cddefc;
+  border-radius: 6px;
+  cursor: pointer;
+  position: absolute;
+  right: -50px;
+  top: 1px;
+  height: 40px;
+  width: 40px;
   transition: all 0.3s ease;
+}
+
+.pipeline-googlemap svg {
+  font-size: 20px;
+  color: #377cf6;
+}
+
+.performance-exportbtn {
+  align-items: center;
+  background-color: #377cf6 !important;
+  border: none;
+  border-radius: 5px;
+  color: #f1f1f1;
+  cursor: pointer;
+  margin-left: auto;
+  margin-top: 7px;
+  height: 40px;
+  width: 40px;
+  transition: all 0.3s ease;
+  width: fit-content;
+}
+
+.pipeline-export {
+  margin-top: 1px;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
 }
 
 .performance-exportbtn:hover {
   background-color: #005eff !important;
-  transform: scale(1.07);
+  transform: scale(1.03);
 }
 
 .milestone-status {
@@ -259,13 +300,11 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-right: 10px;
+  margin-right: 14px;
   text-wrap: nowrap;
 }
 
 .active-queue svg {
-  width: 2rem;
-  height: 1.7rem;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
@@ -355,7 +394,7 @@
 
 .pipeline-title h2,
 .performance-table-heading h2 {
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 550;
   color: var(--page-heading-color);
 }
@@ -365,9 +404,11 @@
   flex-wrap: nowrap;
   gap: 1.5rem;
   max-width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
   padding: 1rem 1.25rem;
-  scroll-behavior: smooth;
+  user-select: none;
 }
 
 .pipeline-header-btns {
@@ -376,7 +417,7 @@
   gap: 10px;
 }
 
-.pipeline-header-btns p {
+.pipeline-header-btns button {
   font-weight: 500;
   font-size: 16px;
   border: 1.5px solid #377cf6;
@@ -398,7 +439,7 @@
   display: none;
 }
 
-.pipeline-header-btns p:hover {
+.pipeline-header-btns button:not([disabled]):hover {
   background: #377cf6;
   color: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -409,6 +450,7 @@
   margin-right: 12px;
 }
 
+/* 
 .project-card-container-1::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -434,7 +476,7 @@
 
 .project-card-container-1::-webkit-scrollbar-corner {
   background-color: transparent;
-}
+} */
 
 .project-card-container-1 .project-card {
   position: relative;
@@ -547,7 +589,6 @@
   justify-content: center;
   gap: 5px;
   border-radius: 8px;
-  outline-offset: 3px;
   width: 140px;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -558,9 +599,12 @@
   transform: scale(1.05);
 }
 
-.project-card h2,
+.project-card h2 {
+  font-weight: 600;
+}
+
 .project-card p {
-  color: #fff;
+  color: #263747;
   font-weight: 500;
   width: 100px;
   text-wrap: nowrap;
@@ -724,27 +768,36 @@
 
 .para-head {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .span-para {
   font-size: 12px;
+  font-weight: 600;
 }
 
 .view-flex {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  color: #fff;
   font-size: 12px;
   cursor: pointer;
   position: absolute;
   right: 10px;
   top: 60px;
+  color: #263747;
 }
 
 .view-flex img {
-  filter: invert(1);
+  color: #263747;
+}
+
+.status-card-wrp:hover .view-flex {
+  color: #fff;
+}
+
+.status-card-wrp:hover .view-flex img {
+  filter: brightness(0) invert(1);
 }
 
 .status-graph-heading p {
@@ -904,6 +957,7 @@
   display: flex;
   justify-content: space-between;
   padding: 1.5rem;
+  position: relative;
 }
 
 .proper-select {
@@ -911,7 +965,6 @@
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  margin-right: 12px;
   position: relative;
   margin-top: -6px;
 }
@@ -930,7 +983,6 @@
 }
 
 .proper-select .input {
-  height: 48px;
   width: 225px;
 }
 
@@ -1166,6 +1218,7 @@
   padding: 1rem;
   background: #f7f7f7;
   border-radius: 8px;
+  position: relative;
   margin: 0 10px;
 }
 
@@ -1176,13 +1229,14 @@
 }
 
 .status-indicator {
-  color: #8c8c8c;
-  font-size: 14px;
+  color: #565656;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .progress-box {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .progress-box-body {
@@ -1192,7 +1246,7 @@
 }
 
 .progress-box-body p {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   text-wrap: nowrap;
 }
@@ -1224,6 +1278,34 @@
 
   .hover-text {
     left: 20% !important;
+  }
+}
+
+@media (max-width: 406px) {
+  .pipeline-googlemap {
+    top: 100px !important;
+  }
+
+  .pipline-export-btn .performance-exportbtn {
+    margin-top: 6.8rem !important;
+  }
+
+  .active-queue {
+    top: 165px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .pipeline-googlemap {
+    top: 127px !important;
+  }
+
+  .pipline-export-btn .performance-exportbtn {
+    margin-top: 8.5rem !important;
+  }
+
+  .active-queue {
+    top: 190px !important;
   }
 }
 
@@ -1329,45 +1411,50 @@
   }
 }
 
-@media (max-width: 844px) {
-  .performance-box-container {
-    width: 100%;
-  }
-}
-
 @media (max-width: 890px) {
   .performance-bars {
     width: unset !important;
+  }
+
+  .performance-project .proper-select {
+    margin-right: 0;
+    margin-top: -5px;
+  }
+
+  .performance-table-heading .proper-top {
+    padding: 1rem 0.7rem;
+  }
+
+  .proper-top {
+    margin-bottom: 3rem;
+  }
+
+  .pipeline-box-container {
+    position: absolute;
+    top: 4rem;
+    flex-wrap: wrap;
+    width: 97%;
+    justify-content: center;
+    margin: 0;
   }
 
   .per-sales {
     font-size: 11px !important;
   }
 
-  .progress-box-body p {
-    font-size: 10px;
-    text-wrap: nowrap;
-  }
-
-  .performance-box-container {
-    gap: 0.5rem;
-    padding: 1rem 10px;
-  }
-
-  .performance-table-heading h3 {
-    font-size: 14px !important;
-    line-height: 1rem;
-  }
-
-  .status-indicator {
-    font-size: 10px;
-    text-wrap: nowrap;
+  .pipeline-googlemap {
+    right: 55px;
+    top: -47px;
   }
 }
 
 @media (max-width: 768px) {
   .project-status-table-title1 {
     justify-content: flex-end;
+  }
+
+  .pipline-export-btn .performance-exportbtn {
+    margin-top: 6.2rem;
   }
 
   .proj-status-tab-head {
@@ -1384,7 +1471,7 @@
   }
 
   .perf-export-btn {
-    text-align: center;
+    text-align: end;
   }
 
   .mob-projSt {
@@ -1456,11 +1543,7 @@
 
   .performance-box-container {
     gap: 1rem;
-  }
-
-  .performance-box-container {
-    flex-wrap: wrap;
-    justify-content: center;
+    margin: 0;
   }
 
   .status-card-parent .status-card {
@@ -1558,6 +1641,16 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 1rem 2rem;
+  }
+
+  .active-queue {
+    padding-top: 4px;
+    margin-right: 0;
+    position: absolute;
+    left: 10px;
+    top: 155px;
+    z-index: 99;
   }
 
   .arrow-wrap {
@@ -1746,9 +1839,15 @@
 }
 
 @media (max-width: 768px) {
+
   .select-container .css-1n894bm-control,
   .select-container .css-xego5g-control {
     margin-top: 1rem;
+  }
+
+  .pipeline-googlemap {
+    right: 50px;
+    top: 90px;
   }
 
   .progress-qc-acre {
@@ -1756,8 +1855,20 @@
     margin-top: -48px;
   }
 
+  .proper-top {
+    margin-bottom: 0;
+  }
+
   .progress-box {
     border-radius: 4px !important;
+  }
+
+  .pipeline-header-btns {
+    padding-right: 12px;
+  }
+
+  .top-btns-wrapper {
+    padding-bottom: 0 !important;
   }
 }
 
@@ -1772,8 +1883,22 @@
 }
 
 @media (max-width: 530px) {
+  .breadcrumb-container {
+    margin-left: 0px !important;
+  }
+
   .status-boxes {
     margin-top: 1rem;
+  }
+
+  .top-btns-wrapper {
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .pipeline-header-btns {
+    padding-right: 0;
   }
 
   .pipeline-header-btns .desktop-btn {

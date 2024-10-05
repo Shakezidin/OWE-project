@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -44,21 +45,21 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ProjectManagement data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ProjectManagement data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get ProjectManagement data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get ProjectManagement data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get ProjectManagement data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -71,7 +72,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 	email := req.Context().Value("emailid").(string)
 	dataReq.Email = email
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist in DB 1", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist in DB 1", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -95,12 +96,12 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchDealerForAmAeProjectList(dataReq, role)
 			if err != nil {
-				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
 			if len(dealerNames) == 0 {
 				log.FuncInfoTrace(0, "No dealer list found")
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, 0)
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, []string{}, 0)
 				return
 			}
 			filter, whereEleList = PrepareAeAmProjectFilters(dealerNames, dataReq, false)
@@ -120,7 +121,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		// This is thrown is there are no sale rep are available under this particular user
 		if len(SaleRepList) == 0 {
 			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
-			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, []string{}, int64(0))
+			appserver.FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, []string{}, int64(0))
 			return
 		}
 
@@ -141,14 +142,14 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ProjectManagement data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ProjectManagement data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get ProjectManagement data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -170,7 +171,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 
 	recordLen := len(projectList)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList), recordLen)
-	FormAndSendHttpResp(resp, "ProjectManagementStatus Data", http.StatusOK, projectList, int64(recordLen))
+	appserver.FormAndSendHttpResp(resp, "ProjectManagementStatus Data", http.StatusOK, projectList, int64(recordLen))
 }
 
 /******************************************************************************
@@ -192,7 +193,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf("salMetSchema.dealer = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 		whereAdded = true
 	}
@@ -204,10 +205,10 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		filtersBuilder.WriteString(" AND ")
 	}
 	// Add the always-included filters
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		if !whereAdded {
@@ -225,7 +226,7 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(` salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` customers_customers_schema.project_status IN (%s)`, statusList))
 	}
 
 	filters = filtersBuilder.String()
@@ -256,7 +257,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString("salMetSchema.primary_sales_rep IN (")
+		filtersBuilder.WriteString("customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -277,7 +278,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(fmt.Sprintf("salMetSchema.dealer = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf("customers_customers_schema.dealer = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
@@ -290,10 +291,10 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 	}
 
 	filtersBuilder.WriteString(`
-		intOpsMetSchema.unique_id IS NOT NULL
-		AND intOpsMetSchema.unique_id <> ''
-		AND intOpsMetSchema.system_size IS NOT NULL
-		AND intOpsMetSchema.system_size > 0`)
+		customers_customers_schema.unique_id IS NOT NULL
+		AND customers_customers_schema.unique_id <> ''
+		AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+		AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	// Handle the project status filter
 	if len(dataFilter.ProjectStatus) > 0 {
@@ -312,7 +313,7 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 		statusList := strings.Join(statusValues, ", ")
 
 		// Append the IN clause to the filters
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.project_status IN (%s)", statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.project_status IN (%s)", statusList))
 	}
 
 	filters = filtersBuilder.String()
@@ -347,7 +348,7 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 			filtersBuilder.WriteString(" WHERE ")
 			whereAdded = true
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" salMetSchema.dealer IN (%s) ", strings.Join(placeholders, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.dealer IN (%s) ", strings.Join(placeholders, ",")))
 		for _, dealer := range dealerList {
 			whereEleList = append(whereEleList, dealer)
 		}
@@ -359,10 +360,10 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 		filtersBuilder.WriteString(" WHERE")
 		whereAdded = true
 	}
-	filtersBuilder.WriteString(` intOpsMetSchema.unique_id IS NOT NULL
-			AND intOpsMetSchema.unique_id <> ''
-			AND intOpsMetSchema.system_size IS NOT NULL
-			AND intOpsMetSchema.system_size > 0`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			AND customers_customers_schema.unique_id <> ''
+			AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			AND system_customers_schema.contracted_system_size_parent > 0`)
 
 	if len(dataFilter.ProjectStatus) > 0 {
 		var statusValues []string
@@ -370,9 +371,9 @@ func PrepareAeAmProjectFilters(dealerList []string, dataFilter models.ProjectSta
 			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
 		}
 		statusList := strings.Join(statusValues, ", ")
-		filtersBuilder.WriteString(fmt.Sprintf(` AND salMetSchema.project_status IN (%s)`, statusList))
+		filtersBuilder.WriteString(fmt.Sprintf(` AND customers_customers_schema.project_status IN (%s)`, statusList))
 	} else {
-		filtersBuilder.WriteString(` AND salMetSchema.project_status IN ('ACTIVE')`)
+		filtersBuilder.WriteString(` AND customers_customers_schema.project_status IN ('ACTIVE')`)
 	}
 
 	filters = filtersBuilder.String()

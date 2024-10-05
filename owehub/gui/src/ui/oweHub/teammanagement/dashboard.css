@@ -357,7 +357,7 @@
 }
 .teamdash-header h1 {
   font-weight: 600;
-  font-size: 28px;
+  font-size: 1.3rem;
 }
 .dash-newteam .create {
   background-color: #ffffff;
@@ -365,8 +365,7 @@
   padding: 6.33px, 8.13px, 6.33px, 8.13px;
   border: 1px solid #377cf6;
   border-radius: 8px;
-  height: 38px;
-  width: 180px;
+  padding: 8px 12px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }

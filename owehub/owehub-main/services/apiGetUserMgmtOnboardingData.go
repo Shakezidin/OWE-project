@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -44,34 +45,34 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get user management data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get user management data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get user management data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get user management data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get user management data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	role, ok := req.Context().Value("rolename").(string)
 	if !ok || role == "" {
-		FormAndSendHttpResp(resp, "No role exists", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No role exists", http.StatusBadRequest, nil)
 		return
 	}
 
 	// Extract email from context (assume it's stored there)
 	email, ok := req.Context().Value("emailid").(string)
 	if !ok || email == "" {
-		FormAndSendHttpResp(resp, "Email not found in context", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Email not found in context", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -101,7 +102,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 
 		dealerID, dealerName, err = RetrieveDealerIDByEmail(email)
 		if err != nil {
-			FormAndSendHttpResp(resp, fmt.Sprintf("Failed to retrieve dealer ID: %v", err), http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Failed to retrieve dealer ID: %v", err), http.StatusBadRequest, nil)
 			return
 		}
 
@@ -113,7 +114,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get UserMgmt Onboarding data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get UserMgmt Onboarding data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -139,13 +140,11 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 			salesRep = strings.Split(SalesRepresentatives, ", ")
 		}
 
-		// Create a new GetDealerTierData object
 		usrOnboardingData := models.GetUsMgmtOnbData{
 			RoleName:  RoleName,
 			UserCount: UserCount,
 		}
 
-		// Append the new dealerTierData to the usrMgOnbList
 		usrMgOnbList.UsrMgmtOnbList = append(usrMgOnbList.UsrMgmtOnbList, usrOnboardingData)
 	}
 
@@ -164,7 +163,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, activeRepQuery, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get active sales representatives from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get active sales representatives from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get active sales representatives from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -201,7 +200,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of UserMgmt Onboarding List fetched : %v list %+v", len(usrMgOnbList.UsrMgmtOnbList), usrMgOnbList)
-	FormAndSendHttpResp(resp, "UserMgmt Onboarding Data", http.StatusOK, usrMgOnbList)
+	appserver.FormAndSendHttpResp(resp, "UserMgmt Onboarding Data", http.StatusOK, usrMgOnbList)
 }
 
 // ExtractKeys returns keys from a map[string]bool where the values are true

@@ -40,4 +40,6 @@ type SvcConfig struct {
 	LogCfg                LoggingCfg
 	DbConfList            DBConfigList
 	SvcSrvCfg             SrvConf
+	PodioCfg              PodioConfigList
+	PodioAppCfg           PodioAppConfig
 }

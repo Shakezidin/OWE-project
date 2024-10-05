@@ -106,8 +106,62 @@
   justify-content: center;
 }
 
+.per-page-container {
+  display: flex;
+  align-items: center;
+}
+
+.per-page-container label {
+  margin-right: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.per-page-container select {
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 30px 8px 10px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  position: relative;
+}
+
+.per-page-container select:hover {
+  border-color: #007bff;
+}
+
+.per-page-container select:focus {
+  outline: none;
+  border-color: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.per-page-container select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #999;
+  pointer-events: none;
+}
+
+.per-page-container select option {
+  background-color: #fff;
+  color: #333;
+}
+
 @media (max-width: 576px) {
   .pagination {
     gap: 0.3rem;
+  }
+  .pagination-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

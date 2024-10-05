@@ -12,6 +12,7 @@ interface PaginationProps {
   goToNextPage: () => void;
   goToPrevPage: () => void;
   perPage: number;
+  onPerPageChange?: (perPage: number) => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -22,9 +23,32 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPageData,
   goToPrevPage,
   perPage,
+  onPerPageChange,
 }) => {
+  const handlePerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedPerPage = parseInt(event.target.value, 10);
+    if (onPerPageChange) {
+      onPerPageChange(selectedPerPage);
+    }
+  };
+
   return (
     <div className="pagination-container">
+      {onPerPageChange && (
+        <div className="per-page-container">
+          <label htmlFor="perPageSelectText">Items in page:</label>
+          <select
+            id="perPageSelect"
+            value={perPage}
+            onChange={handlePerPageChange}
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+      )}
       <ReactPaginate
         breakLabel="..."
         nextLabel={
@@ -69,4 +93,5 @@ const Pagination: React.FC<PaginationProps> = ({
     </div>
   );
 };
+
 export default Pagination;

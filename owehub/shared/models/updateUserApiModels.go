@@ -29,7 +29,8 @@ type UpdateUserReq struct {
 }
 
 type DeleteUsers struct {
-	UserCodes []string `json:"user_codes"`
-	Usernames []string `json:"usernames"`
-	EmailIds  []string `json:"email_id"`
+	UserCodes       []string `json:"user_codes"`
+	Usernames       []string `json:"usernames"`
+	EmailIds        []string `json:"email_id"`
+	DeleteFromPodio bool     `json:"podio_checked"`
 }

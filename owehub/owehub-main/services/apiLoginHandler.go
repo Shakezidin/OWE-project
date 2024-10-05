@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -44,40 +45,40 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in Login request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Login request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &creds)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal Login request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Login request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Login request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(creds.Password) <= 0) || (len(creds.EmailId) <= 0) {
 		err = fmt.Errorf("empty emailId or password received in login request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty emailId or password", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty emailId or password", http.StatusBadRequest, nil)
 		return
 	}
 
 	emailId, userName, roleName, passwordChangeRequired, err = ValidateUser(creds)
 	if (err != nil) || (len(emailId) <= 0) || (len(roleName) <= 0) {
 		log.FuncErrorTrace(0, "Failed to Validate User Unauthorize access err: %v", err)
-		FormAndSendHttpResp(resp, err.Error(), http.StatusUnauthorized, nil)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusUnauthorized, nil)
 		return
 	}
 
 	expirationTime := time.Now().Add(time.Duration(logginSessionTimeMin) * time.Minute)
-	claims := &Claims{
+	claims := &types.Claims{
 		EmailId:  emailId,
 		RoleName: roleName,
 		StandardClaims: jwt.StandardClaims{
@@ -88,7 +89,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	tokenString, err := token.SignedString(types.JwtKey)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to generate JWT token for Login err: %v", err)
-		FormAndSendHttpResp(resp, "Unauthorize access", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Unauthorize access", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -105,7 +106,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get v Dealer data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get v Dealer data from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
@@ -121,5 +122,5 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	loginResp.TimeToExpire = logginSessionTimeMin
 
 	log.FuncInfoTrace(0, "Login Successful for User : %v", creds.EmailId)
-	FormAndSendHttpResp(resp, "Login Successful", http.StatusOK, loginResp)
+	appserver.FormAndSendHttpResp(resp, "Login Successful", http.StatusOK, loginResp)
 }

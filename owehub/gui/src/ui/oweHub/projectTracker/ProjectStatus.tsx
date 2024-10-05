@@ -20,6 +20,7 @@ import QCModal from './PopUp';
 import NtpModal from './NtpPopUp';
 import Input from '../../components/text_input/Input';
 import { debounce } from '../../../utiles/debounce';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 interface ActivePopups {
   [key: number]: number | null;
@@ -517,14 +518,20 @@ const ProjectStatus = () => {
       };
       console.log('val', val);
       setSelectedProject(val);
-      dispatch(getProjectDetail(projectOption[0]?.value));
+      
+     
     }
   }, [projectOption.length, projectId, dispatch]);
 
   useEffect(() => {
     if (selectedProject.value) {
       dispatch(getProjectDetail(selectedProject.value));
+       
+    } else if(projectOption.length) {
+      dispatch(getProjectDetail(projectOption[0]?.value));
     }
+
+    
   }, [selectedProject.value]);
 
   useEffect(() => {
@@ -591,6 +598,8 @@ const ProjectStatus = () => {
 
   const isMobile = useMatchMedia('(max-width: 767px)');
 
+  const [isHovered, setIsHovered] = useState(-1);
+
   return (
     <>
       <QCModal
@@ -606,6 +615,15 @@ const ProjectStatus = () => {
       />
 
       <div className="">
+        <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+          <Breadcrumb
+            head=""
+            linkPara="Project Manager"
+            route={''}
+            linkparaSecond=""
+            marginLeftMobile="12px"
+          />
+        </div>
         <div style={{ padding: '0px' }}>
           <div className="flex mt1 top-project-cards">
             <div
@@ -656,23 +674,27 @@ const ProjectStatus = () => {
                       className="rounded-8"
                       style={{
                         padding: 3,
-                        border: `1px dashed ${el.bgColor}`,
+                        border:
+                          isHovered === i ? 'none' : `1px dashed ${el.bgColor}`,
                         zIndex: i === 1 ? 50 : undefined,
                       }}
                     >
                       <div
-                        className=" flex items-center rounded-8 justify-center relative "
+                        className=" flex items-center rounded-8 justify-center relative status-card-wrp"
                         style={{
-                          background: el.bgColor,
+                          background:
+                            isHovered === i ? el.hoverColor : el.bgColor,
                           height: 83,
                           zIndex: i === 1 ? 50 : undefined,
                         }}
+                        onMouseEnter={() => setIsHovered(i)}
+                        onMouseLeave={() => setIsHovered(-1)}
                       >
                         <div
                           style={{
                             width: '100%',
                             textAlign: 'center',
-                            color: '#fff',
+                            color: isHovered === i ? '#fff' : '#263747',
                           }}
                         >
                           <p className="para-head text-white-color">
@@ -771,8 +793,8 @@ const ProjectStatus = () => {
                       style={{
                         background: '#4191C9',
                         borderRadius: 0,
-                        width: 14,
-                        height: 14,
+                        width: 12,
+                        height: 12,
                       }}
                     ></div>
                     <p>Stages</p>
@@ -783,8 +805,8 @@ const ProjectStatus = () => {
                       style={{
                         background: '#63ACA3',
                         borderRadius: 0,
-                        width: 14,
-                        height: 14,
+                        width: 12,
+                        height: 12,
                       }}
                     ></div>
                     <p>Completed</p>
@@ -795,8 +817,8 @@ const ProjectStatus = () => {
                       style={{
                         background: '#E9E9E9',
                         borderRadius: 0,
-                        width: 14,
-                        height: 14,
+                        width: 12,
+                        height: 12,
                       }}
                     ></div>
                     <p>Not Started yet</p>

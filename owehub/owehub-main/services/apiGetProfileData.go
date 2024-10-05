@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -74,7 +75,7 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get Profile data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Profile Data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get Profile Data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	// Record_Id
@@ -266,5 +267,5 @@ func HandleGetProfileDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send the response
 	log.FuncInfoTrace(0, "User profile data fetched for email: %v data %+v", emailId, userData)
-	FormAndSendHttpResp(resp, "User Data", http.StatusOK, userData)
+	appserver.FormAndSendHttpResp(resp, "User Data", http.StatusOK, userData)
 }

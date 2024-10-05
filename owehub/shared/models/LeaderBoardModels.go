@@ -31,10 +31,19 @@ type GetLeaderBoard struct {
 	HighLight bool    `json:"hightlight"`
 }
 
-type GetLeaderBoardList struct {
+type GetLeaderBoardListData struct {
 	LeaderBoardList []GetLeaderBoard `json:"ap_ded_list"`
 	TotalSale       float64          `json:"total_sale"`
 	TotalNtp        float64          `json:"total_ntp"`
 	TotalInstall    float64          `json:"total_install"`
 	TotalCancel     float64          `json:"total_cancel"`
+}
+
+type GetLeaderBoardList struct {
+	TopLeaderBoardList []GetLeaderBoard `json:"top_leader_board_list"`
+	LeaderBoardList    []GetLeaderBoard `json:"leader_board_list"`
+	TotalSale          float64          `json:"total_sale"`
+	TotalNtp           float64          `json:"total_ntp"`
+	TotalInstall       float64          `json:"total_install"`
+	TotalCancel        float64          `json:"total_cancel"`
 }

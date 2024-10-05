@@ -8,6 +8,8 @@
 package main
 
 import (
+	apiHandler "OWEApp/owehub-calc/services"
+	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
@@ -18,7 +20,6 @@ import (
 	"strconv"
 	"strings"
 
-	apiHandler "OWEApp/owehub-calc/services"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -42,47 +43,97 @@ const (
 	AppVersion = "1.0.0"
 )
 
-/* constains api execution information
-*  service names, methods, patterns and
-*  handler function*/
-type ServiceApiRoute struct {
-	Method             string
-	Pattern            string
-	Handler            http.HandlerFunc
-	IsAuthReq          bool
-	GroupAllowedAccess []types.UserGroup
-}
-
-type ApiRoutes []ServiceApiRoute
-
-var apiRoutes = ApiRoutes{
+var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/loggingconf",
+		"/owe-calc-service/v1/loggingconf",
 		handleDynamicLoggingConf,
 		false,
 		[]types.UserGroup{},
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/httpconf",
+		"/owe-calc-service/v1/httpconf",
 		handleDynamicHttpConf,
 		false,
 		[]types.UserGroup{},
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owehub-calc-service/v1/config-update",
-		apiHandler.HandleConfigUpdateHandler,
-		false,
-		[]types.UserGroup{},
+		"/owe-calc-service/v1/create_slack_config",
+		apiHandler.HandleCreateSlackConfig,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owehub-calc-service/v1/data-update",
-		apiHandler.HandleDataUpdateHandler,
-		false,
-		[]types.UserGroup{},
+		"/owe-calc-service/v1/update_slack_config",
+		apiHandler.HandleUpdateSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/update_slack_config_archive",
+		apiHandler.HandleArchiveSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_slack_config",
+		apiHandler.HandleGetSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/delete_slack_config",
+		apiHandler.HandleDeleteSlackConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_dealercredit",
+		apiHandler.HandleGetDealerCreditConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_dealeroverride",
+		apiHandler.HandleGetDealerOverrideConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_dealerpayment",
+		apiHandler.HandleGetDealerPaymentConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_finaceschedule",
+		apiHandler.HandleGetFinanceScheduleConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_finacetypes",
+		apiHandler.HandleGetFinanceTypesConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-calc-service/v1/get_partnerpayschedule",
+		apiHandler.HandleGetPartnerPayScheduleConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
 	},
 }
 
@@ -384,7 +435,7 @@ func FetchDbCfg() (err error) {
 func InitHttpCallbackPath() {
 	log.EnterFn(0, "InitHttpCallbackPath")
 
-	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-commisions-service/v1"
+	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-calc-service/v1"
 
 	log.ExitFn(0, "InitHttpCallbackPath", nil)
 }

@@ -10,6 +10,7 @@ import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { useDebounce } from '../../../hooks/useDebounce';
 import Switch from '../../components/Switch';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 const PendingQueue = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search);
@@ -90,12 +91,19 @@ const PendingQueue = () => {
 
   return (
     <>
-      <div style={{ borderRadius: 6 }} className="flex items-center bg-white px2 justify-between">
-
-        <h2 className={`my2 ${styles.pending_queue_title}`}>
-          Pending Actions
-        </h2>
-
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+        <Breadcrumb
+          head=""
+          linkPara="Pending Actions"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
+      <div
+        style={{ borderRadius: 6 }}
+        className="flex items-center bg-white px2 justify-between"
+      >
         {/* <div className="flex items-center">
        
           <Switch checked={pre} onChange={() => {
@@ -109,7 +117,9 @@ const PendingQueue = () => {
         </div> */}
       </div>
       {
-        <div className={` ${pre?styles.grid_3:styles.grid_2} ${styles.pending_card_wrapper}`}>
+        <div
+          className={` ${pre ? styles.grid_3 : styles.grid_2} ${styles.pending_card_wrapper}`}
+        >
           {load ? (
             <div
               style={{ gridTemplateColumns: '1/4' }}
@@ -119,7 +129,6 @@ const PendingQueue = () => {
             </div>
           ) : (
             <>
-
               <div
                 className={styles.pending_card}
                 onClick={() => {
@@ -170,33 +179,41 @@ const PendingQueue = () => {
                   </div>
                 </div>
               </div>
-              {pre && <div
-                className={styles.pending_card}
-                onClick={pre ? () => {
-                  setActive('qc')
-                  setPage(1)
-                  setSearch('');
-                } : undefined}
-              >
+              {pre && (
                 <div
-                  className={` ${pre ? "" : styles.disabled_card} ${active === 'qc' ? styles.active_card : pre ? styles.pending_card_hover : ""} ${styles.pending_card_inner}`}
+                  className={styles.pending_card}
+                  onClick={
+                    pre
+                      ? () => {
+                          setActive('qc');
+                          setPage(1);
+                          setSearch('');
+                        }
+                      : undefined
+                  }
                 >
-                  {pre && <h5 className={styles.pending_stats}>
-                    {tileData.qc_pending_count || '0'}
-                  </h5>}
-                  <div style={{ lineHeight: '1.2rem' }}>
-                    <h5
-                      className={styles.pending_card_title}
-                      style={{ fontWeight: 500 }}
-                    >
-                      QC Pending
-                    </h5>
-                    <p className={styles.pending_card_desc}>
-                      Click to see all pending actions in QC
-                    </p>
+                  <div
+                    className={` ${pre ? '' : styles.disabled_card} ${active === 'qc' ? styles.active_card : pre ? styles.pending_card_hover : ''} ${styles.pending_card_inner}`}
+                  >
+                    {pre && (
+                      <h5 className={styles.pending_stats}>
+                        {tileData.qc_pending_count || '0'}
+                      </h5>
+                    )}
+                    <div style={{ lineHeight: '1.2rem' }}>
+                      <h5
+                        className={styles.pending_card_title}
+                        style={{ fontWeight: 500 }}
+                      >
+                        QC Pending
+                      </h5>
+                      <p className={styles.pending_card_desc}>
+                        Click to see all pending actions in QC
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>}
+              )}
             </>
           )}
         </div>
@@ -210,42 +227,45 @@ const PendingQueue = () => {
           <div
             className={`flex  py2 items-center justify-between ${styles.pending_queue_table_header}`}
           >
-            <h3
-              className={` ${styles.table_heading}`}
-              style={{ fontWeight: 700, fontSize: 20 }}
-            >
-              {active === 'qc'
-                ? 'QC Checklist'
-                : active === 'ntp'
-                  ? 'NTP Checklist'
-                  : 'C/O Status'}
-            </h3>
-
-            <div className="performance-box-container">
-              <p className="status-indicator">Checklist Indicators</p>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#2EAF71', borderRadius: '2px' }}
-                ></div>
-                <p>Completed</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#EBA900', borderRadius: '2px' }}
-                ></div>
-                <p>Pending OWE</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#E14514', borderRadius: '2px' }}
-                ></div>
-                <p>Sale Rep Action Required</p>
+            <div className={styles.pendingQueHead}>
+              <h3
+                className={` ${styles.table_heading}`}
+                style={{ fontWeight: 600, fontSize: 16 }}
+              >
+                {active === 'qc'
+                  ? 'QC Checklist'
+                  : active === 'ntp'
+                    ? 'NTP Checklist'
+                    : 'C/O Status'}
+              </h3>
+              <div
+                className={`performance-box-container ${styles.pendingBoxContainer}`}
+                style={{ padding: '0.6rem 1rem' }}
+              >
+                <p className="status-indicator">Checklist Indicators</p>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#2EAF71', borderRadius: '2px' }}
+                  ></div>
+                  <p>Completed</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#EBA900', borderRadius: '2px' }}
+                  ></div>
+                  <p>Pending OWE</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#E14514', borderRadius: '2px' }}
+                  ></div>
+                  <p>Sale Rep Action Required</p>
+                </div>
               </div>
             </div>
-
             <div className={styles.search_wrapper}>
               <Input
                 type="text"
@@ -253,7 +273,12 @@ const PendingQueue = () => {
                 value={search}
                 name="Search for Unique ID or Name"
                 onChange={(e) => {
-                  setSearch(e.target.value);
+                  const input = e.target.value;
+                  const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+
+                  if (regex.test(input)) {
+                    setSearch(input); // Only update state if input is valid
+                  }
                 }}
               />
             </div>
@@ -358,7 +383,7 @@ const PendingQueue = () => {
                                     className="mr1"
                                     color={
                                       item[active][key] ===
-                                        'Pending (Action Required)'
+                                      'Pending (Action Required)'
                                         ? '#E14514'
                                         : item[active][key] === 'Pending'
                                           ? '#EBA900'

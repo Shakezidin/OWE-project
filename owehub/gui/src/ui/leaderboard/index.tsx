@@ -13,6 +13,7 @@ import { TYPE_OF_USER } from '../../resources/static_data/Constant';
 import { PDFDocument } from 'pdf-lib';
 import 'jspdf-autotable';
 import useAuth, { AuthData } from '../../hooks/useAuth';
+import { countReset } from 'console';
 
 export type DateRangeWithLabel = {
   label?: string;
@@ -50,8 +51,11 @@ const Index = () => {
 
   const [isOpen, setIsOpen] = useState(-1);
   const [count, setCount] = useState(0);
+  const [page, setPage] = useState(1);
+
   const [active, setActive] = useState(categories[0].key);
   const [groupBy, setGroupBy] = useState(groupby[0].value);
+  const [tableData, setTableData] = useState([]);
   const [activeHead, setActiveHead] = useState('count');
   const [details, setDetails] = useState([]);
   const [isGenerating, setGenerating] = useState(false);
@@ -120,15 +124,14 @@ const Index = () => {
   }, [groupBy, role, authData]);
 
   useEffect(() => {
-
     if (isAuthenticated && isFetched) {
       (async () => {
         setIsLoading(true);
         try {
-          const data = await postCaller('get_perfomance_leaderboard', {
+          const data = await postCaller('get_perfomance_leaderboard_data', {
             type: activeHead,
             sort_by: active,
-            page_size: 3,
+            page_size: 25,
             page_number: 1,
             start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
             end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
@@ -141,7 +144,8 @@ const Index = () => {
             setIsLoading(false);
             return;
           }
-          setDetails(data.data?.ap_ded_list);
+          setDetails(data.data?.top_leader_board_list);
+          setTableData(data);
           setIsLoading(false);
           setCount(data?.dbRecCount || 0);
         } catch (error) {
@@ -160,6 +164,8 @@ const Index = () => {
     isFetched,
     authData,
   ]);
+
+  console.log(tableData, 'data');
   const shareImage = () => {
     if (topCards.current) {
       const element = topCards.current;
@@ -188,7 +194,7 @@ const Index = () => {
     }
   };
 
-  const exportPdf = async (callback: () => void) => {
+  const exportPdf = async () => {
     if (leaderboard.current) {
       setIsExporting(true);
       const element = leaderboard.current;
@@ -238,13 +244,12 @@ const Index = () => {
         URL.revokeObjectURL(url);
         selector.style.overflow = 'auto';
         setIsExporting(false);
-        callback();
       }
     }
   };
 
   const generateTablePdf = async (width: number, height: number) => {
-    const getAllLeaders = await postCaller('get_perfomance_leaderboard', {
+    const getAllLeaders = await postCaller('get_perfomance_leaderboard_data', {
       type: activeHead,
       dealer: selectDealer.map((item) => item.value),
       page_size: count,
@@ -277,7 +282,7 @@ const Index = () => {
     // @ts-ignore
     doc.autoTable({
       columns: columns,
-      body: data.ap_ded_list.map((item: any) => ({
+      body: data.leader_board_list.map((item: any) => ({
         rank: item.rank,
         rep_name: item.rep_name,
         dealer: item.dealer,
@@ -315,6 +320,7 @@ const Index = () => {
           isShowDropdown={isShowDropdown}
           setIsFetched={setIsFetched}
           bannerDetails={bannerDetails}
+          isLoading={isLoading}
           isGenerating={isGenerating}
         />
         <PerformanceCards
@@ -337,14 +343,19 @@ const Index = () => {
         setSelectedRangeDate={setSelectedRangeDate}
         activeHead={activeHead}
         setActiveHead={setActiveHead}
+        setIsLoading={setIsLoading}
+        isLoading={isLoading}
         active={active}
         isExporting={isExporting}
         resetDealer={resetDealer}
         setActive={setActive}
+        tableData={tableData}
         setGroupBy={setGroupBy}
         groupBy={groupBy}
         setDealer={setDealer}
         selectDealer={selectDealer}
+        page={page}
+        setPage={setPage}
       />
       <Sidebar
         dealer={dealer}

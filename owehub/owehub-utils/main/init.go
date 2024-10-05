@@ -8,6 +8,7 @@
 package main
 
 import (
+	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
@@ -41,23 +42,17 @@ const (
 	AppVersion = "1.0.0"
 )
 
-/* constains api execution information
-*  service names, methods, patterns and
-*  handler function*/
-type ServiceApiRoute struct {
-	Method             string
-	Pattern            string
-	Handler            http.HandlerFunc
-	IsAuthReq          bool
-	GroupAllowedAccess []types.UserGroup
-}
-
-type ApiRoutes []ServiceApiRoute
-
-var apiRoutes = ApiRoutes{
+var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/loggingconf",
+		"/owe-utils-service/v1/loggingconf",
+		handleDynamicLoggingConf,
+		false,
+		[]types.UserGroup{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-utils-service/v1/notification_graph",
 		handleDynamicLoggingConf,
 		false,
 		[]types.UserGroup{},
@@ -362,7 +357,7 @@ func FetchDbCfg() (err error) {
 func InitHttpCallbackPath() {
 	log.EnterFn(0, "InitHttpCallbackPath")
 
-	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-commisions-service/v1"
+	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-utils-service/v1"
 
 	log.ExitFn(0, "InitHttpCallbackPath", nil)
 }

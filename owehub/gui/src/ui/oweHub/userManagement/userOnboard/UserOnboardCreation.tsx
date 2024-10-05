@@ -434,6 +434,33 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </div>
                   </div>
                 </div>
+                {(formData.role_name === TYPE_OF_USER.SALE_MANAGER ||
+                  formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+                  formData.role_name === TYPE_OF_USER.REGIONAL_MANGER ||
+                  formData.role_name === TYPE_OF_USER.DEALER_OWNER) && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    <CheckBox
+                      checked={formData.podioChecked}
+                      onChange={() => {
+                        dispatch(
+                          updateUserForm({
+                            field: 'podioChecked',
+                            value: !formData.podioChecked,
+                          })
+                        );
+                      }}
+                    />
+                    <div className="access-data">
+                      <p>Add user to podio</p>
+                    </div>
+                  </div>
+                )}
                 <div className="create-input-field-note">
                   <label htmlFor="" className="inputLabel">
                     Description

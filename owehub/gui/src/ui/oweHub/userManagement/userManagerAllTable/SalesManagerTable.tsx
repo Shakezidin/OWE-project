@@ -31,23 +31,23 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
   const [sortKey, setSortKey] = useState('user_code');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
- 
+
   const handleSort = (key: string) => {
-    const direction = sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc'
+    const direction =
+      sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc';
     if (sortKey === key) {
       setSortDirection(direction);
     } else {
       setSortKey(key);
       setSortDirection(direction);
     }
-    sortArray(key,direction)
+    sortArray(key, direction);
   };
 
-
-  const sortArray = (sortKey: string,direction:string) => {
+  const sortArray = (sortKey: string, direction: string) => {
     let sortedData = [...data];
     if (sortKey) {
       sortedData.sort((a: any, b: any) => {
@@ -70,9 +70,8 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
         }
       });
     }
-    dispatch(shuffleArray(sortedData))
-
-  }
+    dispatch(shuffleArray(sortedData));
+  };
   return (
     <>
       {/* <UserHeaderSection  name="Sale Manager"/> */}

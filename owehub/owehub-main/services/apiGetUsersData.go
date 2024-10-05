@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -48,21 +49,21 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get users data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get users data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get users data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get users data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get users data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -74,14 +75,14 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
 			DealerName, dealerNameOk := data[0]["dealer_name"].(string)
 			if !dealerNameOk || DealerName == "" {
 				log.FuncErrorTrace(0, "empty dealer name")
-				FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
+				appserver.FormAndSendHttpResp(resp, "Failed to get the dealer name, empty dealer name", http.StatusInternalServerError, nil)
 				return
 			}
 			dataReq.DealerName = DealerName
@@ -137,7 +138,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -336,7 +337,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, activeRepQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get active sales representatives from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get active sales representatives from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get active sales representatives from DB", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -373,14 +374,14 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get user data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get user data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get user data from DB", http.StatusBadRequest, nil)
 			return
 		}
 		RecordCount = int64(len(data))
 	}
 
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersDetailsList.UsersDataList), usersDetailsList)
-	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList, RecordCount)
 }
 
 /******************************************************************************
@@ -482,6 +483,27 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	if len(dataFilter.UserRoles) > 0 {
+		log.FuncErrorTrace(0, "dataaa = %v", dataFilter.UserRoles)
+		if whereAdder {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdder = true
+		}
+
+		filtersBuilder.WriteString(" ur.role_name IN (")
+		for i, dealer := range dataFilter.UserRoles {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, dealer)
+
+			if i < len(dataFilter.UserRoles)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
 	}
 
 	if len(dataFilter.DealerName) > 0 {

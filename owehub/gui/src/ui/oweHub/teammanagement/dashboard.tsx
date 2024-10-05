@@ -17,6 +17,7 @@ import { showAlert } from '../../components/alert/ShowAlert';
 import { resetTeams } from '../../../redux/apiSlice/teamManagementSlice.tsx/teamManagmentSlice';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import useAuth from '../../../hooks/useAuth';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 
 interface AccordionSection {
   data: any;
@@ -155,6 +156,16 @@ const TeamManagement: React.FC = () => {
           // onSubmitCreateUser={onSubmitCreateTeam}
         />
       )}
+
+      <div style={{ marginLeft: '6px', marginTop: '6px' }}>
+        <Breadcrumb
+          head=""
+          linkPara="Teams"
+          route={''}
+          linkparaSecond=""
+          marginLeftMobile="12px"
+        />
+      </div>
 
       <div className="team-container">
         <div className="team-main">

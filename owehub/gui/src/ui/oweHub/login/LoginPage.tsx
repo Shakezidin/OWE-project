@@ -263,6 +263,16 @@ export const LoginPage = () => {
               </div>
             </div>
           </Link>
+
+          {isStaging === 'staging' && (
+            <Link to={ROUTES.SALE_RP_CUSTOMER_FORM}>
+              <div className="battery-calc">
+                <div className={`battery-calc-button `}>
+                  <p className="coming-soon">Scheduler Form</p>
+                </div>
+              </div>
+            </Link>
+          )}
         </div>
         <div className="solar-sun">
           <img src={ICONS.SolarSun} alt="sun-image" />
