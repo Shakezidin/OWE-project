@@ -2,9 +2,7 @@ package services
 
 import (
 	log "OWEApp/shared/logger"
-	types "OWEApp/shared/types"
 	"encoding/binary"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -81,35 +79,6 @@ func CompareHashPassword(hashPassword string, password string) (err error) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password))
 	return err
-}
-
-func FormAndSendHttpResp(httpResp http.ResponseWriter, message string, httpStatusCode int, data types.Data, dbRecCount ...int64) {
-	log.EnterFn(0, "FormAndSendHttpResp")
-	defer func() { log.ExitFn(0, "FormAndSendHttpResp", nil) }()
-	// Check if dbRecCount is provided
-	var count int64
-	if len(dbRecCount) > 0 {
-		count = dbRecCount[0]
-	}
-
-	response := types.ApiResponse{
-		Status:     httpStatusCode,
-		Message:    message,
-		DbRecCount: count,
-		Data:       data,
-	}
-
-	jsonResp, err := json.Marshal(response)
-	if err != nil {
-		httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		httpResp.WriteHeader(http.StatusInternalServerError)
-		httpResp.Write([]byte("Error marshaling response"))
-		return
-	} else {
-		httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		httpResp.WriteHeader(httpStatusCode)
-		httpResp.Write([]byte(jsonResp))
-	}
 }
 
 func BytesToStringArray(raw []byte) []string {

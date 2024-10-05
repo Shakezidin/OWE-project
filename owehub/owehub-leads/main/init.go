@@ -10,6 +10,7 @@ package main
 import (
 	leadsService "OWEApp/owehub-leads/common"
 	apiHandler "OWEApp/owehub-leads/services"
+	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -43,22 +44,9 @@ const (
 	AppVersion = "1.0.0"
 )
 
-/* constains api execution information
-*  service names, methods, patterns and
-*  handler function*/
-type ServiceApiRoute struct {
-	Method             string
-	Pattern            string
-	Handler            http.HandlerFunc
-	IsAuthReq          bool
-	GroupAllowedAccess []types.UserGroup
-}
-
-type ApiRoutes []ServiceApiRoute
-
 var leadsRoleGroup = []types.UserGroup{types.GroupAdminDealer, types.GroupSalesManagement}
 
-var apiRoutes = ApiRoutes{
+var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-leads-service/v1/loggingconf",
@@ -498,7 +486,7 @@ func FetchAuroraCfg() (err error) {
 func InitHttpCallbackPath() {
 	log.EnterFn(0, "InitHttpCallbackPath")
 
-	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-commisions-service/v1"
+	types.CommGlbCfg.HTTPTimerCallBackPath = models.URISchemehttp + types.CommGlbCfg.SelfAddr + "/owe-leads-service/v1"
 
 	log.ExitFn(0, "InitHttpCallbackPath", nil)
 }
