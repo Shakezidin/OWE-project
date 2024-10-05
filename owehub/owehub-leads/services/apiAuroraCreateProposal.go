@@ -8,6 +8,7 @@ package services
 
 import (
 	leadsService "OWEApp/owehub-leads/common"
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -42,21 +43,21 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in CreateProjectRequest")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err = io.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from CreateProjectRequest err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal HTTP Request body to CreateProjectRequest err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,14 +80,14 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to retrieve leads info from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
 	if len(data) <= 0 {
 		err = fmt.Errorf("leads info not found")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Lead not found", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Lead not found", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,7 +95,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if !ok {
 		err = fmt.Errorf("first_name not found for lead id %d", dataReq.LeadsId)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -102,7 +103,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if !ok {
 		err = fmt.Errorf("last_name not found for lead id %d", dataReq.LeadsId)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -110,7 +111,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if !ok {
 		err = fmt.Errorf("email_id not found for lead id %d", dataReq.LeadsId)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -118,7 +119,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if !ok {
 		err = fmt.Errorf("phone_number not found for lead id %d", dataReq.LeadsId)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -126,7 +127,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if !ok {
 		err = fmt.Errorf("street_address not found for lead id %d", dataReq.LeadsId)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve leads info from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -156,14 +157,14 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	createProjectResp, err = createProjApi.Call()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to create aurora project err %v", err)
-		FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 		return
 	}
 	projectId, ok := createProjectResp.Project["id"].(string)
 	if !ok {
 		err = fmt.Errorf("project_id not found in create project response")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve project id from create project response", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve project id from create project response", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -179,7 +180,7 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 	if !ok {
 		err = fmt.Errorf("design_id not found in create design response")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve design id from create design response", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve design id from create design response", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -191,9 +192,9 @@ func HandleAuroraCreateProposalRequest(resp http.ResponseWriter, req *http.Reque
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to create aurora proposal err %v", err)
-		FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, err.Error(), http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Proposal created successfully", http.StatusOK, createProposalResp.Proposal)
+	appserver.FormAndSendHttpResp(resp, "Proposal created successfully", http.StatusOK, createProposalResp.Proposal)
 }
