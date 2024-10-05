@@ -32,8 +32,9 @@ func HandleGetSalesRepSchedulingProjectsRequest(resp http.ResponseWriter, req *h
 		schedulingProjectsRecords []map[string]interface{}
 	)
 
+	FormAndSendHttpResp(resp, "Scheduling projects retrieved successfully", http.StatusOK, apiResp)
 	log.EnterFn(0, "HandleGetSalesRepSchedulingProjectsRequest")
-	defer func() { log.ExitFn(0, "HandleGetSalesRepSchedulingProjectsRequest", err) }()
+
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get SalesRep SchedulingProjects request")

@@ -23,7 +23,7 @@ import (
  * INPUT:           resp, req
  * RETURNS:         void
  ******************************************************************************/
-func HandleGetSchedulingProjectsRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleScheduleNotification(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                       error
 		apiResp                   models.GetSchedulingProjectsList
