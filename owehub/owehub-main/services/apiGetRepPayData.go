@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -83,28 +84,28 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ar data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ar data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get ar data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get ar data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get ar data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	if dataReq.ReportType == "" {
 		err = errors.New("empty input fields in api is not allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -112,7 +113,7 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	if dataReq.UseCutoff == "YES" {
 		parsedDate, err := time.Parse(dateFormat, dataReq.PayRollDate)
 		if err != nil {
-			FormAndSendHttpResp(resp, "error parsing date", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "error parsing date", http.StatusBadRequest, nil)
 			return
 		}
 		adjustedDate := parsedDate.AddDate(0, 0, -5)
@@ -144,14 +145,14 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 		filterData, err = db.ReteriveFromDB(db.OweHubDbIndex, maxPerRepQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get ACTIVE+ data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get ACTIVE+ data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get ACTIVE+ data from DB", http.StatusBadRequest, nil)
 			return
 		}
 	} else if dataReq.ReportType == "STANDARD" {
 		filterData, err = db.ReteriveFromDB(db.OweHubDbIndex, totalPerRepQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get STANDARD data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get STANDARD data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get STANDARD data from DB", http.StatusBadRequest, nil)
 			return
 		}
 	}
@@ -162,7 +163,7 @@ func GetRepPayDataFromView(resp http.ResponseWriter, req *http.Request) {
 	Finaldata, err := db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get RepPayData data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get RepPayData data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get RepPayData data from DB", http.StatusBadRequest, nil)
 		return
 	}
 

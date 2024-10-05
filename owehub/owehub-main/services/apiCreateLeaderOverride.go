@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create leader override request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create leader override request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createLeaderOverrideReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create leader override request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create Leader Override request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create Leader Override request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -62,26 +63,26 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 		(len(createLeaderOverrideReq.StartDate) <= 0) || (len(createLeaderOverrideReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createLeaderOverrideReq.SalesQ <= float64(0) {
 		err = fmt.Errorf("Invalid sales Q Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sales Q Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Sales Q Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createLeaderOverrideReq.PayRate <= float64(0) {
 		err = fmt.Errorf("Invalid PayRate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PayRate Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid PayRate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createLeaderOverrideReq.TeamKwQ <= float64(0) {
 		err = fmt.Errorf("Invalid team Kw Q  Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Team Kw Q Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Team Kw Q Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -112,12 +113,12 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateLeaderOverrideFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add leader override in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Leader Override", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Leader Override", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New leader override created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Leader Override Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Leader Override Created Successfully", http.StatusOK, nil)
 }

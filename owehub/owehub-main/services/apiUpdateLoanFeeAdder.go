@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleUpdateLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Req
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update loan fee adder request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update loan fee adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateLoanFeeAdderReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal Update loan fee adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update loan fee adder request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Update loan fee adder request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -67,81 +68,81 @@ func HandleUpdateLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Req
 		(len(UpdateLoanFeeAdderReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateLoanFeeAdderReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Record Id, Update failed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateLoanFeeAdderReq.Contract <= float64(0) {
 		err = fmt.Errorf("Invalid contract Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Contract Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Contract Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.OweCost <= float64(0) {
 		err = fmt.Errorf("Invalid Owe cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Owwe Cost Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Owwe Cost Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.AddrAmount <= float64(0) {
 		err = fmt.Errorf("Invalid addr amount Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Addr Amount Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Addr Amount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.PerKwAmount <= float64(0) {
 		err = fmt.Errorf("Invalid PerKwAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.RepDollDivbyPer <= float64(0) {
 		err = fmt.Errorf("Invalid RepDollDivbyPer Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid RepDollDivbyPer Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid RepDollDivbyPer Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.SysSize <= float64(0) {
 		err = fmt.Errorf("Invalid sys size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.RepCount <= float64(0) {
 		err = fmt.Errorf("Invalid rep count Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rep Count Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Rep Count Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.PerRepAddrShare <= float64(0) {
 		err = fmt.Errorf("Invalid PerRepAddrShare Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerRepAddrShare Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid PerRepAddrShare Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.PerRepOvrdShare <= float64(0) {
 		err = fmt.Errorf("Invalid PerRepOvrdShare Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerRepOvrdShare Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid PerRepOvrdShare Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.R1PayScale <= float64(0) {
 		err = fmt.Errorf("Invalid R1PayScale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1PayScale Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid R1PayScale Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.R2PayScale <= float64(0) {
 		err = fmt.Errorf("Invalid R2PayScale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R2PayScale Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid R2PayScale Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -180,12 +181,12 @@ func HandleUpdateLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Req
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateLoanFeeAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update loan fee adder in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update loan fee adder", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update loan fee adder", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Loan Fee Adder Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Loan Fee Adder Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Loan Fee Adder Updated Successfully", http.StatusOK, nil)
 }

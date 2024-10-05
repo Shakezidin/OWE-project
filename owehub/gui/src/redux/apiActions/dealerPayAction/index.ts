@@ -11,7 +11,7 @@ interface Ipaginate {
   sort_by?: string;
   commission_model: string;
   filters: FilterModel[];
-  preffered_type:string
+  preffered_type: string;
 }
 
 export const getDealerPay = createAsyncThunk(
@@ -19,7 +19,7 @@ export const getDealerPay = createAsyncThunk(
   async (params: Ipaginate, { rejectWithValue }) => {
     try {
       const resp = await postCaller('get_dealerpay', params);
-      if(resp.status >201){
+      if (resp.status > 201) {
         return rejectWithValue(resp.message);
       }
       const count = resp.dbRecCount || 0;
@@ -38,8 +38,8 @@ export const getDealerPayTileData = createAsyncThunk(
       const resp = await postCaller('get_dlrpay_tiledata', {
         ALL: params.dealer,
       });
-       console.log(resp, 'tile action');
-      if(resp.status >201){
+      console.log(resp, 'tile action');
+      if (resp.status > 201) {
         return rejectWithValue(resp.message);
       }
       return resp.data;

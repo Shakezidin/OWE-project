@@ -48,13 +48,12 @@
 }
 .sort_btn:hover {
   transform: scale(1.04);
-  background-color: #0045f4;
+  background-color: #00298f;
 }
 
 .active_sorting {
   color: #0045f4;
 }
-
 
 .lead-cal-content {
   width: 330px;
@@ -98,7 +97,7 @@
   padding: 2px;
 }
 
-.lead-reset-calender{
+.lead-reset-calender {
   background-color: #2b63f1;
   color: #fff;
   font-size: 12px;
@@ -109,12 +108,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.lead-reset-calender:hover{
+.lead-reset-calender:hover {
   transform: scale(1.06);
   background-color: #1a44ae;
 }
 
-.lead-apply-calender{
+.lead-apply-calender {
   background-color: #2b63f1;
   color: #fff;
   font-size: 12px;
@@ -125,7 +124,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.lead-apply-calender:hover{
+.lead-apply-calender:hover {
   transform: scale(1.06);
   background-color: #1a44ae;
 }

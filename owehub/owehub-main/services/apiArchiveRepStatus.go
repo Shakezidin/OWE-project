@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -29,7 +30,7 @@ import (
 func HandleRepStatusArchiveRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err             error
-		RepStatusArcReq     models.ArchiveRepStatus
+		RepStatusArcReq models.ArchiveRepStatus
 		queryParameters []interface{}
 		result          []interface{}
 	)
@@ -40,28 +41,28 @@ func HandleRepStatusArchiveRequest(resp http.ResponseWriter, req *http.Request) 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in  appt setters archive request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from  appt setters archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &RepStatusArcReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal  appt setters archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal  appt setters archive request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal  appt setters archive request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(RepStatusArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty,  archive failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Record Id is empty,  archive failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,11 +80,11 @@ func HandleRepStatusArchiveRequest(resp http.ResponseWriter, req *http.Request) 
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRepStatusArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to  appt setters archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to  appt setters archive", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to  appt setters archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "appt setters archive d with Id: %+v", data)
-	FormAndSendHttpResp(resp, "Appt Setters Archive d Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Appt Setters Archive d Successfully", http.StatusOK, nil)
 }

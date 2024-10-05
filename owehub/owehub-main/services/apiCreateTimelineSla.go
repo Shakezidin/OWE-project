@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleCreateTimelineSlaRequest(resp http.ResponseWriter, req *http.Request)
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create timeline sla request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create timeline sla request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createTimelineSla)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create timeline sla request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create timeline sla request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create timeline sla request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -60,13 +61,13 @@ func HandleCreateTimelineSlaRequest(resp http.ResponseWriter, req *http.Request)
 		(len(createTimelineSla.StartDate) <= 0) || (len(createTimelineSla.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createTimelineSla.Days <= 0 {
 		err = fmt.Errorf("Invalid days Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Days Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Days Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -80,12 +81,12 @@ func HandleCreateTimelineSlaRequest(resp http.ResponseWriter, req *http.Request)
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateTimelineSlaFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add timeline sla in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Timeline Sla", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Timeline Sla", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New timeline sla created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "timeline sla Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "timeline sla Created Successfully", http.StatusOK, nil)
 }

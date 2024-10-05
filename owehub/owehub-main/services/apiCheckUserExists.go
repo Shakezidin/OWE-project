@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -37,28 +38,28 @@ func HandleCheckUserExists(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create adder credit request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create adder credit request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createAdderCreditReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal request body err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal request request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal request request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(createAdderCreditReq.Email) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -73,15 +74,15 @@ func HandleCheckUserExists(resp http.ResponseWriter, req *http.Request) {
 	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusNotFound, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusNotFound, nil)
 		return
 	}
 
 	if len(data) == 0 {
-		FormAndSendHttpResp(resp, "user does not exist in the system", http.StatusOK, response)
+		appserver.FormAndSendHttpResp(resp, "user does not exist in the system", http.StatusOK, response)
 		return
 	}
 	response.Exists = true
 	log.DBTransDebugTrace(0, "email id: %+v", data[0]["email_id"])
-	FormAndSendHttpResp(resp, "user exists", http.StatusOK, response)
+	appserver.FormAndSendHttpResp(resp, "user exists", http.StatusOK, response)
 }

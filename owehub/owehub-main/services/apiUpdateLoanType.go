@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,41 +39,41 @@ func HandleUpdateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update loan type request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update loan type request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateLoanTypeReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update loan type request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update loan type request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update loan type request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(updateLoanTypeReq.ProductCode) <= 0) || (len(updateLoanTypeReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateLoanTypeReq.Adder <= 0 {
 		err = fmt.Errorf("Invalid adder Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Adder Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Adder Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateLoanTypeReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	queryParameters = append(queryParameters, updateLoanTypeReq.RecordId)
@@ -85,12 +86,12 @@ func HandleUpdateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateLoanTypeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update loan type in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update loan type", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update loan type", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "loan type updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Loan Type Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Loan Type Updated Successfully", http.StatusOK, nil)
 }

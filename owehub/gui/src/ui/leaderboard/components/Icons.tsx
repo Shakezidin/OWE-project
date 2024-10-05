@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const FirstAwardIcon = ({
   width = 23,
@@ -330,12 +330,19 @@ export const ArrowForward = () => {
   );
 };
 
-export const Calendar = () => {
+export const Calendar = ({ disabled }: { disabled?: boolean }) => {
   const [fillColor, setFillColor] = useState('#EE824D');
 
   const handleMouseEnter = () => {
     setFillColor('#ec9d76'); // Replace with the desired hover color
   };
+  useEffect(() => {
+    if (disabled) {
+      setFillColor('rgba(236, 157, 118, 0.5)');
+    } else {
+      setFillColor('#ec9d76');
+    }
+  }, [disabled]);
 
   const handleMouseLeave = () => {
     setFillColor('#EE824D'); // Revert back to the original color
@@ -347,8 +354,8 @@ export const Calendar = () => {
       viewBox="0 0 30 33" // Updated viewBox to match the new height
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => !disabled && handleMouseEnter()}
+      onMouseLeave={() => !disabled && handleMouseLeave}
     >
       <rect
         width="30"

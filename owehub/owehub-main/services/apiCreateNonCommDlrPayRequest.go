@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -46,21 +47,21 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create non comm dealer pay request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create non comm dealer pay request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createNonCommDlrPay)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create non comm dealer pay request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create Non Comm Dealer Pay request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create Non Comm Dealer Pay request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -71,7 +72,7 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		len(createNonCommDlrPay.Date) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -81,7 +82,7 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
@@ -95,7 +96,7 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get appt setters data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
@@ -130,12 +131,12 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateNonCommDlrPayFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add non comm dealer pay in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Non Comm Dealer Pay", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Non Comm Dealer Pay", http.StatusInternalServerError, nil)
 		return
 	}
 
 	responce := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New non comm dealer pay created with Id: %+v", responce["result"])
-	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Non Comm Dealer Pay Created Successfully", http.StatusOK, nil)
 }

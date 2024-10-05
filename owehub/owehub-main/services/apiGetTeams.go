@@ -1,6 +1,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -27,14 +28,14 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get users data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	var dataReq models.GetTeamsRequest
 	if err := json.NewDecoder(req.Body).Decode(&dataReq); err != nil {
 		log.FuncErrorTrace(0, "Failed to decode HTTP Request body from get users data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -110,7 +111,7 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -140,5 +141,5 @@ func HandleGetTeamsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersNameList), usersNameList)
-	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersNameList)
+	appserver.FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersNameList)
 }

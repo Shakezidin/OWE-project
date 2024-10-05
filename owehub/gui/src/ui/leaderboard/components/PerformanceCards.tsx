@@ -85,7 +85,9 @@ const PerformanceCards: React.FC<performance> = ({
                   onClick={shareImage}
                   disabled={isGenerating}
                 >
-                  <MdDownload className="share-svg" />
+                  <MdDownload
+                    className={`share-svg ${isGenerating ? 'downloading-animation' : ''} `}
+                  />
                   <p> Download </p>
                 </button>
               )}
@@ -110,7 +112,7 @@ const PerformanceCards: React.FC<performance> = ({
             <MicroLoader />
           </div>
         )}
-        {!isLoading && details.length ? (
+        {!isLoading && details?.length ? (
           <div className="cards flex justify-between">
             {rank2 && !isLoading ? (
               <div className="card-one">

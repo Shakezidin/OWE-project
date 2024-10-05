@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -37,21 +38,21 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get dlr pay time data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get dlrpay tile  data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get dlrpay tile data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get dlrpay tile data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get dlrpay tile data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -102,7 +103,7 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get dlrpay tile data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get dlrpay tile data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get dlrpay tile data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -120,6 +121,6 @@ func HandleManageDlrPayTileDataRequest(resp http.ResponseWriter, req *http.Reque
 	// Log the data being sent
 	log.FuncDebugTrace(0, "dlr pay tiles data: %+v", dealerPayTileData)
 
-	// Send response using FormAndSendHttpResp function
-	FormAndSendHttpResp(resp, "dealer pay tales data retrieved successfully", http.StatusOK, dealerPayTileData)
+	// Send response using appserver.FormAndSendHttpResp function
+	appserver.FormAndSendHttpResp(resp, "dealer pay tales data retrieved successfully", http.StatusOK, dealerPayTileData)
 }

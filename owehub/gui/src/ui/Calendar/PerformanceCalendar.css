@@ -265,17 +265,17 @@
   margin-right: 0.5rem;
 }
 
-.mobile-calendar-text>* {
+.mobile-calendar-text > * {
   display: none;
 }
 
-@media (max-width: 870px){
-  .cell{
+@media (max-width: 870px) {
+  .cell {
     width: 100px;
     height: 95px;
     padding: 7px;
   }
-  .days{
+  .days {
     font-size: 12px;
   }
   .event-box .event-icon {
@@ -283,17 +283,17 @@
     width: 1rem;
     height: 1rem;
   }
-  .event-text{
+  .event-text {
     font-size: 11px;
   }
-  .date-format{
+  .date-format {
     font-size: 1rem;
   }
-  .cell-dots .event-box{
+  .cell-dots .event-box {
     width: 85px;
     gap: 0;
   }
-  .calendar-btn-close .calendar-head-btn{
+  .calendar-btn-close .calendar-head-btn {
     padding: 6px 10px !important;
   }
 }
@@ -449,11 +449,10 @@
     font-weight: 500;
   }
 
-  .calendar-btn-close{
+  .calendar-btn-close {
     position: absolute;
     top: 88%;
     margin-top: 14px;
     gap: 0;
   }
-
 }

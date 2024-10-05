@@ -1,8 +1,7 @@
-
 .succicon {
   height: 76px;
   width: 76px;
-  background-color: #F55B5B;
+  background-color: #f55b5b;
   border: 3px solid #333333;
   border-radius: 50%;
   display: flex;
@@ -58,12 +57,11 @@
 }
 
 .self {
-  background-color: #377CF6;
-  ;
+  background-color: #377cf6;
   transition: all 0.3s ease;
 }
 .self:hover {
-  background-color: #377CF6;
+  background-color: #377cf6;
   transform: scale(1.03);
 }
 
@@ -100,55 +98,50 @@
 .DetailsMcontainer {
   display: flex;
   justify-content: space-between;
-  width: auto;          
+  width: auto;
   height: auto;
   height: 112px;
   padding: 12px;
-  border: 1px solid #377CF6;
-  border-top-left-radius: 8px; 
+  border: 1px solid #377cf6;
+  border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  border-bottom-left-radius: 0px; 
+  border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
-  background-color: #EEF5FF;
+  background-color: #eef5ff;
 }
 
-
-
-.main_name{
-  font-weight:600;
+.main_name {
+  font-weight: 600;
   font-size: 18px;
-  margin-bottom: 3.7%; 
-  }
-  
-  .Column1Details{
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    flex-basis: auto;
-    padding: 14px;
-    font-size: 14px;  
-  
-  }
-  .verified{
-    color: #20963A;
-    margin-left: 5px;
-    
-  }
-  
-  .Column2Details{
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    flex-basis: auto;
-    padding: 14px;
-    font-size: 14px;
-    margin-bottom: 1.5%; 
-  }
-  
-  .addresshead{
-    margin-bottom: 3.7%;
-  }
+  margin-bottom: 3.7%;
+}
 
+.Column1Details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  flex-basis: auto;
+  padding: 14px;
+  font-size: 14px;
+}
+.verified {
+  color: #20963a;
+  margin-left: 5px;
+}
+
+.Column2Details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  flex-basis: auto;
+  padding: 14px;
+  font-size: 14px;
+  margin-bottom: 1.5%;
+}
+
+.addresshead {
+  margin-bottom: 3.7%;
+}
 
 @media (min-width: 276px) and (max-width: 512px) and (min-height: 600px) and (max-height: 1146px) {
   .customer_wrapper_list {
@@ -156,41 +149,39 @@
     margin-top: 20px;
     border-radius: 8px;
     background-color: #fff;
-    max-width: 346px; 
-    height: 550px; 
+    max-width: 346px;
+    height: 550px;
   }
-    
+
   .DetailsMcontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;  
-    height: auto; 
+    width: 100%;
+    height: auto;
     padding: 16px;
-    border: 1px solid #377CF6;
-    border-top-left-radius: 8px; 
+    border: 1px solid #377cf6;
+    border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    border-bottom-left-radius: 0px; 
+    border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    background-color: #EEF5FF;
+    background-color: #eef5ff;
   }
-  .main_name{
-    font-weight:600;
+  .main_name {
+    font-weight: 600;
     font-size: 18px;
     margin-top: -13px;
     margin-bottom: 3.7%;
-    margin-left: -139px; 
-    }
+    margin-left: -139px;
+  }
 
-    .mobileNumber{
-      text-align: left;
-      margin-left: -139px;
-      
-    }
-    .addresshead{
-      margin-bottom: 3.7%;
-      margin-top: -15px;
-    }
-  
+  .mobileNumber {
+    text-align: left;
+    margin-left: -139px;
+  }
+  .addresshead {
+    margin-bottom: 3.7%;
+    margin-top: -15px;
+  }
 }

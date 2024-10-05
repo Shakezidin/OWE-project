@@ -14,7 +14,8 @@
   scrollbar-width: 0;
   overflow-y: auto;
   scroll-behavior: smooth;
-  height: 100vh;
+  height: calc(100vh - 63px);
+  padding-bottom: 46px;
 }
 
 .side-bar-container::-webkit-scrollbar {
@@ -115,8 +116,11 @@
 }
 
 .side-bar-logo img {
-  width: 31px;
-  height: 31px;
+  /* width: 31px;
+  height: 31px; */
+  width: auto;
+  height: 45px;
+  transform: scale(1.2);
 }
 
 .side-bar-logo h3 {
@@ -195,9 +199,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 10px;
+  margin-top: 8px;
   cursor: pointer;
-  padding: 0.7rem 1.2rem 0.7rem 1.5rem;
+  padding: 10px;
   border-radius: 6px;
 }
 .side-icon-container a {

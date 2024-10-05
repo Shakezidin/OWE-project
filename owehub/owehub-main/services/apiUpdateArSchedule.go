@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update Ar schedule request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Ar schedule request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateArScheduleReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update Ar schedule request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update Ar schedule request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update Ar schedule request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,38 +62,38 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		(len(updateArScheduleReq.CalcDate) <= 0) || (len(updateArScheduleReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateArScheduleReq.RedLine <= float64(0) {
 		err = fmt.Errorf("Invalid RedLine price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per RedLine Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Per RedLine Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateArScheduleReq.PermitPay <= float64(0) {
 		err = fmt.Errorf("Invalid PermitPay price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per PermitPay Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Per PermitPay Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateArScheduleReq.PermitMax <= float64(0) {
 		err = fmt.Errorf("Invalid PermitMax price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per PermitMax Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Per PermitMax Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateArScheduleReq.InstallPay <= float64(0) {
 		err = fmt.Errorf("Invalid InstallPay price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per RedInstallPayLine Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Per RedInstallPayLine Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateArScheduleReq.PtoPay <= float64(0) {
 		err = fmt.Errorf("Invalid PtoPay price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per PtoPay Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Per PtoPay Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -127,12 +128,12 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateArScheduleFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update Ar schedule in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update Ar schedule", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update Ar schedule", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Ar schedule updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Ar Schedule Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Ar Schedule Updated Successfully", http.StatusOK, nil)
 }

@@ -109,7 +109,6 @@ const SelectOption: React.FC<Props> = ({
             outline: 'none',
             fontSize: '13px',
             height: '2.25rem',
-            border: '1px solid #d0d5dd',
             cursor: 'pointer',
             boxShadow: 'none',
             width: width || baseStyles.width,
@@ -117,7 +116,7 @@ const SelectOption: React.FC<Props> = ({
             transition: 'border-color 0.3s ease', // Modify this line
             '&:hover': enableHoverEffect
               ? {
-                  border: '2px solid #0493ce',
+                  border: '2px solid #377CF6',
                 }
               : {},
           }),

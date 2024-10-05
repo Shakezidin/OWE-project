@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
@@ -37,21 +38,21 @@ func HandleUpdateSlackConfigRequest(resp http.ResponseWriter, req *http.Request)
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update Slack Config request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Slack Config request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateSlackConfigReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update Slack Config request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update slack config request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update slack config request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -60,7 +61,7 @@ func HandleUpdateSlackConfigRequest(resp http.ResponseWriter, req *http.Request)
 		(len(updateSlackConfigReq.ChannelId) <= 0) {
 		err = fmt.Errorf("empty input fields in API is not allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -77,14 +78,14 @@ func HandleUpdateSlackConfigRequest(resp http.ResponseWriter, req *http.Request)
 		log.FuncErrorTrace(0, "Failed to Update Slack Config in DB with err: %v", err)
 
 		if strings.Contains(err.Error(), "not found") {
-			FormAndSendHttpResp(resp, "Slack config not found", http.StatusNotFound, nil)
+			appserver.FormAndSendHttpResp(resp, "Slack config not found", http.StatusNotFound, nil)
 			return
 		}
 
-		FormAndSendHttpResp(resp, "Failed to Update Slack Config", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Update Slack Config", http.StatusInternalServerError, nil)
 		return
 	}
 
 	log.FuncDebugTrace(0, "Updated Slack Config with Id: %d", updateSlackConfigReq.RecordId)
-	FormAndSendHttpResp(resp, "Slack Config Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Slack Config Updated Successfully", http.StatusOK, nil)
 }

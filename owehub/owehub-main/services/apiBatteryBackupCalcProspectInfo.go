@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -41,21 +42,21 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in set prospect info request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from set prospect info request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &prospectInfoData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal set prospect info request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal set prospect info request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal set prospect info request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -63,7 +64,7 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 		len(prospectInfoData.SREmailId) <= 0 ||
 		len(prospectInfoData.MultiImages) <= 0 {
 		log.FuncErrorTrace(0, "Empty Mandatory Parameter Received")
-		FormAndSendHttpResp(resp, "Empty Mandatory Parameter Received", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Mandatory Parameter Received", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -88,7 +89,7 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateBatteryBackupCalcProspectInfo, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Create Prospect info in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Prospect Info", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Prospect Info", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -98,12 +99,12 @@ func HandleSetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 		response.ProspectId = int(v)
 	} else {
 		log.FuncErrorTrace(0, "Error: data[result] is not of type int : %v", reflect.TypeOf(data["result"]))
-		FormAndSendHttpResp(resp, "Failed to Create Prospect Info, Failed to Process Prospect Id ", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Prospect Info, Failed to Process Prospect Id ", http.StatusInternalServerError, nil)
 		return
 	}
 
 	log.FuncDebugTrace(0, "prospect info created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "prospect info created Successfully", http.StatusOK, response)
+	appserver.FormAndSendHttpResp(resp, "prospect info created Successfully", http.StatusOK, response)
 }
 
 /******************************************************************************
@@ -127,21 +128,21 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get prospect info request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get prospect info request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &prospectInfoId)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get prospect info request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get prospect info request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get prospect info request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -156,13 +157,13 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get prospect info data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get prospect info data from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get prospect info data from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
 	if len(data) <= 0 {
 		log.FuncErrorTrace(0, "Prospects Info for Prospects Id %v not present in DB", prospectInfoId.ProspectId)
-		FormAndSendHttpResp(resp, "Prospects Info for Prospects Id not present in DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Prospects Info for Prospects Id not present in DB", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -183,5 +184,5 @@ func HandleGetProspectInfo(resp http.ResponseWriter, req *http.Request) {
 	prospectInfoData.AddedNotes = data[0]["added_notes"].(string)
 
 	log.FuncDebugTrace(0, "prospect info reterived: %+v", prospectInfoData)
-	FormAndSendHttpResp(resp, "prospect info reterived Successfully", http.StatusOK, prospectInfoData)
+	appserver.FormAndSendHttpResp(resp, "prospect info reterived Successfully", http.StatusOK, prospectInfoData)
 }

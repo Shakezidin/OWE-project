@@ -20,6 +20,7 @@ type DataRequestBody struct {
 	SalesRepStatus string   `json:"sales_rep_status"`
 	Filters        []Filter `json:"filters"`
 	DealerName     string
+	UserRoles      []string `json:"user_roles"`
 }
 
 type MailRequestBody struct {

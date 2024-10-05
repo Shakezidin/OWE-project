@@ -11,6 +11,8 @@ import Select from 'react-select';
 import { getProjects } from '../../../redux/apiSlice/projectManagement';
 import { FaUpload } from 'react-icons/fa';
 import Papa from 'papaparse';
+import { MdDownloading } from 'react-icons/md';
+import 'react-tooltip/dist/react-tooltip.css';
 import {
   format,
   subDays,
@@ -41,6 +43,11 @@ import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import QCModal from './PopUp';
 import QCPopUp from './ProjMngPopups/QC';
 import NtpPopUp from './ProjMngPopups/NTP';
+import { LuImport } from 'react-icons/lu';
+import DropdownCheckbox from '../../components/DropdownCheckBox';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import { Tooltip as ReactTooltip, Tooltip } from 'react-tooltip';
+
 interface Option {
   value: string;
   label: string;
@@ -62,10 +69,12 @@ const ProjectPerformence = () => {
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [activeTab, setActiveTab] = useState('Active Queue');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [titleData, setTileData] = useState<any>('');
   const [activeCardId, setActiveCardId] = useState(null);
   const [activeCardTitle, setActiveCardTitle] = useState<string>('');
+
+  const [mapHovered, setMapHovered] = useState(false);
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -73,11 +82,18 @@ const ProjectPerformence = () => {
   }>({} as Option);
 
   const { authData } = useAuth();
-  const role = authData?.role;
+  const role = localStorage.getItem('role');
+
+  const showDropdown =
+    role === TYPE_OF_USER.ADMIN ||
+    role === TYPE_OF_USER.FINANCE_ADMIN ||
+    role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+    role === TYPE_OF_USER.ACCOUNT_MANAGER;
 
   const today = new Date();
   const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
   const startOfThisMonth = startOfMonth(today);
+  const [selectedDealer, setSelectedDealer] = useState<Option[]>([]);
   const startOfThisYear = startOfYear(today);
   const startOfLastMonth = new Date(
     today.getFullYear(),
@@ -114,7 +130,9 @@ const ProjectPerformence = () => {
   });
 
   const [exportShow, setExportShow] = useState<boolean>(false);
+  const [dealerOption, setDealerOption] = useState<Option[]>([]);
   const [isExportingData, setIsExporting] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
   const toggleExportShow = () => {
     setExportShow((prev) => !prev);
   };
@@ -195,9 +213,7 @@ const ProjectPerformence = () => {
       'FinCreate Date',
       'FinPass Date',
       'Pto Submitted Date',
-      'Pto Date'
-
-
+      'Pto Date',
     ];
 
     const getAllData = await postCaller('get_peroformancecsvdownload', {
@@ -206,6 +222,9 @@ const ProjectPerformence = () => {
       page_number: 1,
       page_size: projectsCount,
       selected_milestone: selectedMilestone,
+      dealer_names: selectedDealer.map((item) => item.value),
+      project_status:
+        activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
     });
     if (getAllData.status > 201) {
       toast.error(getAllData.message);
@@ -240,8 +259,7 @@ const ProjectPerformence = () => {
       item.FinCreateDate,
       item.FinPassDate,
       item.PtoSubmittedDate,
-      item.PtoDate    
-      
+      item.PtoDate,
     ]);
 
     const csvRows = [headers, ...csvData];
@@ -266,6 +284,8 @@ const ProjectPerformence = () => {
   //   return () => toast.dismiss();
   // }, []);
 
+  // const showDropdown =
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -282,6 +302,27 @@ const ProjectPerformence = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const leaderDealer = (newFormData: any): { value: string; label: string }[] =>
+    newFormData?.dealer_name?.map((value: string) => ({
+      value,
+      label: value,
+    }));
+
+  const getNewFormData = async () => {
+    const tableData = {
+      tableNames: ['dealer_name'],
+    };
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    if (res.status > 200) {
+      return;
+    }
+    if (res.data?.dealer_name) {
+      setSelectedDealer(leaderDealer(res.data));
+      setDealerOption(leaderDealer(res.data));
+    }
+    setIsFetched(true);
+  };
 
   const periodFilterOptions: any = [
     {
@@ -325,41 +366,47 @@ const ProjectPerformence = () => {
   );
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      try {
-        const data = await postCaller('get_perfomancetiledata', {
-          project_status:
-            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
-        });
+    if (isFetched) {
+      (async () => {
+        setLoading(true);
+        try {
+          const data = await postCaller('get_perfomancetiledata', {
+            project_status:
+              activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
+            dealer_names: selectedDealer.map((item) => item.value),
+          });
 
-        if (data.status > 201) {
-          toast.error(data.message);
-          return;
+          if (data.status > 201) {
+            toast.error(data.message);
+            return;
+          }
+          setTileData(data.data || {});
+          setLoading(false);
+        } catch (error) {
+          console.error(error);
+          toast.error((error as Error).message);
+        } finally {
         }
-        console.log(data.data);
-        setTileData(data.data);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-      } finally {
-      }
-    })();
-  }, [activeTab]);
+      })();
+    }
+  }, [activeTab, selectedDealer, isFetched]);
 
   useEffect(() => {
-    dispatch(
-      getPerfomanceStatus({
-        page,
-        perPage,
-        startDate: '',
-        endDate: '',
-        uniqueId: searchValue ? searchValue : '',
-        selected_milestone: selectedMilestone,
-        project_status:
-          activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
-      })
-    );
+    if (isFetched) {
+      dispatch(
+        getPerfomanceStatus({
+          page,
+          perPage,
+          startDate: '',
+          endDate: '',
+          uniqueId: searchValue ? searchValue : '',
+          selected_milestone: activeCardId ? selectedMilestone : '',
+          project_status:
+            activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
+          dealer_names: selectedDealer.map((item) => item.value),
+        })
+      );
+    }
   }, [
     page,
     selectedRangeDate.start,
@@ -368,7 +415,18 @@ const ProjectPerformence = () => {
     searchValue,
     selectedMilestone,
     activeTab,
+    selectedDealer,
+    isFetched,
+    activeCardId
   ]);
+
+  useEffect(() => {
+    if (showDropdown) {
+      getNewFormData();
+    } else {
+      setIsFetched(true);
+    }
+  }, [showDropdown]);
 
   const calculateCompletionPercentage = (
     project: (typeof projectStatus)[0]
@@ -441,266 +499,39 @@ const ProjectPerformence = () => {
     },
   ];
 
-  const cardColors = ['#57B3F1', '#E0728C', '#63ACA3', '#6761DA', '#C470C7'];
+  const cardColors = [
+    '#57B3F1',
+    '#E0728C',
+    '#63ACA3',
+    '#6761DA',
+    '#C470C7',
+    '#A07FFF',
+    '#EE6363',
+  ];
+  const hoverColors = [
+    '#DCF1FF',
+    '#FFE1E8',
+    '#C3E7E3',
+    '#DEDCFF',
+    '#FEE0FF',
+    '#E5D1FF',
+    '#FFC9C9',
+  ];
+  const activeColors = [
+    '#57B3F1',
+    '#E1728C',
+    '#63ACA3',
+    '#6761DA',
+    '#C470C7',
+    '#A07FFF',
+    '#EE6363',
+  ];
+
   const resetPage = () => {
     setPage(1);
   };
 
   const isMobile = useMatchMedia('(max-width: 767px)');
-
-  const DateFilter = ({
-    selected,
-    setSelected,
-    resetPage,
-  }: {
-    selected: DateRangeWithLabel;
-    setSelected: (newVal: DateRangeWithLabel) => void;
-    resetPage: () => void;
-  }) => {
-    const [showCalendar, setShowCalendar] = useState(false);
-    const [selectedRanges, setSelectedRanges] = useState(
-      selected
-        ? [
-          {
-            startDate: selected.start,
-            endDate: selected.end,
-            key: 'selection',
-          },
-        ]
-        : []
-    );
-
-    const onApply = () => {
-      const range = selectedRanges[0];
-      if (!range) return;
-      setSelected({
-        start: range.startDate,
-        end: range.endDate,
-        label: 'Custom',
-      });
-      setShowCalendar(false);
-      resetPage();
-    };
-
-    const onReset = () => {
-      const defaultOption = periodFilterOptions[5];
-      setSelected(periodFilterOptions[5]);
-      setSelectedRanges([
-        {
-          startDate: defaultOption.start,
-          endDate: defaultOption.end,
-          key: 'selection',
-        },
-      ]);
-      setShowCalendar(false);
-      resetPage();
-    };
-
-    // update datepicker if "selected" updated externally
-    useEffect(() => {
-      setSelectedRanges([
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]);
-    }, [selected]);
-
-    // close on click outside anywhere
-    const wrapperRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-        console.log(event);
-        const remain = window.innerWidth - event.clientX;
-        if (
-          wrapperRef.current &&
-          !event.composedPath().includes(wrapperRef.current) &&
-          remain > 15
-        )
-          setShowCalendar(false);
-      };
-      document.addEventListener('mousedown', handleClickOutside);
-      return () =>
-        document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    useEffect(() => {
-      const handleKeydown = (e: any) => {
-        if (e.key === 'Escape') {
-          setActiveCardId(null);
-        }
-      };
-      window.addEventListener('keydown', handleKeydown);
-      return () => {
-        window.removeEventListener('keydown', handleKeydown);
-      };
-    }, []);
-
-    return (
-      <div className="flex items-center justify-end">
-        <div className="leaderborder_filter-slect-wrapper mr1">
-          <Select
-            options={periodFilterOptions}
-            value={selected}
-            isSearchable={false}
-            onChange={(value) => value && setSelected(value)}
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                fontSize: '11px',
-                fontWeight: '500',
-                borderRadius: '4px',
-                outline: 'none',
-                width: 'fit-content',
-                minWidth: '92px',
-                height: '28px',
-                alignContent: 'center',
-                cursor: 'pointer',
-                boxShadow: 'none',
-                border: '1px solid #377CF6',
-                minHeight: 30,
-              }),
-              valueContainer: (provided, state) => ({
-                ...provided,
-                height: '30px',
-                padding: '0 6px',
-              }),
-              placeholder: (baseStyles) => ({
-                ...baseStyles,
-                color: '#377CF6',
-              }),
-              indicatorSeparator: () => ({
-                display: 'none',
-              }),
-              dropdownIndicator: (baseStyles, state) => ({
-                ...baseStyles,
-                svg: {
-                  fill: '#377CF6',
-                },
-                marginLeft: '-18px',
-              }),
-
-              option: (baseStyles, state) => ({
-                ...baseStyles,
-                fontSize: '12px',
-                color: '#fff',
-                transition: 'all 500ms',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                  background: 'none',
-                  transition: 'all 500ms',
-                },
-                background: '#377CF6',
-                transform: state.isSelected ? 'scale(1.1)' : 'scale(1)',
-              }),
-
-              singleValue: (baseStyles, state) => ({
-                ...baseStyles,
-                color: '#377CF6',
-                fontSize: 11,
-                padding: '0 8px',
-              }),
-              menu: (baseStyles) => ({
-                ...baseStyles,
-                width: '92px',
-                zIndex: 999,
-                color: '#FFFFFF',
-              }),
-              menuList: (base) => ({
-                ...base,
-                background: '#377CF6',
-              }),
-              input: (base) => ({ ...base, margin: 0 }),
-            }}
-          />
-        </div>
-        <div
-          ref={wrapperRef}
-          className="leaderboard-data__datepicker-wrapper calender-wrapper"
-        >
-          <span
-            role="button"
-            onClick={() => setShowCalendar((prev) => !prev)}
-            style={{ lineHeight: 0 }}
-          >
-            <Calendar />
-          </span>
-          {showCalendar && (
-            <div className="leaderboard-data__datepicker-content">
-              <DateRange
-                editableDateInputs={true}
-                onChange={(item) => {
-                  const startDate = item.selection?.startDate;
-                  const endDate = item.selection?.endDate;
-                  if (startDate && endDate) {
-                    setSelectedRanges([
-                      { startDate, endDate, key: 'selection' },
-                    ]);
-                  } else {
-                    // Handle the case when no dates are selected
-                    setSelectedRanges([]);
-                  }
-                }}
-                moveRangeOnFirstSelection={false}
-                ranges={selectedRanges}
-              />
-              <div className="leaderboard-data__datepicker-btns">
-                <button className="reset-calender" onClick={onReset}>
-                  Reset
-                </button>
-                <button className="apply-calender" onClick={onApply}>
-                  Apply
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const PeriodFilter = ({
-    period,
-    setPeriod,
-    resetPage,
-  }: {
-    period: DateRangeWithLabel | null;
-    setPeriod: (newVal: DateRangeWithLabel) => void;
-    resetPage: () => void;
-  }) => {
-    return (
-      <ul className="leaderboard-data__btn-group">
-        {periodFilterOptions.map((item: any) => (
-          <li key={item.label}>
-            <button
-              onClick={() => {
-                if (item.label === 'All') {
-                  setPeriod({
-                    label: 'All',
-                    start: null,
-                    end: null,
-                  });
-                } else {
-                  setPeriod(item);
-                }
-                resetPage();
-              }}
-              className={
-                'leaderboard-data__btn' +
-                (period?.label === item.label
-                  ? ' leaderboard-data__btn--active performance-btn'
-                  : ' inactive-btn')
-              }
-            >
-              {item.label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    );
-  };
 
   const handlePendingRequest = (pending: any) => {
     setSelectedMilestone(pending);
@@ -733,49 +564,125 @@ const ProjectPerformence = () => {
 
   console.log(projectStatus, datacount, 'projectStatus');
   console.log(selectedRangeDate, 'select');
+
+  const [isHovered, setIsHovered] = useState(-1);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) return;
+
+    let isDown = false;
+    let startX: number;
+    let scrollLeft: number;
+
+    const mouseDownHandler = (e: MouseEvent) => {
+      isDown = true;
+      container.classList.add('active');
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+      container.style.cursor = 'grabbing';
+    };
+
+    const mouseLeaveHandler = () => {
+      isDown = false;
+      container.style.cursor = 'grab';
+    };
+
+    const mouseUpHandler = () => {
+      isDown = false;
+      container.style.cursor = 'grab';
+    };
+
+    const mouseMoveHandler = (e: MouseEvent) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1;
+      container.scrollLeft = scrollLeft - walk;
+    };
+
+    container.addEventListener('mousedown', mouseDownHandler);
+    container.addEventListener('mouseleave', mouseLeaveHandler);
+    container.addEventListener('mouseup', mouseUpHandler);
+    container.addEventListener('mousemove', mouseMoveHandler);
+
+    return () => {
+      container.removeEventListener('mousedown', mouseDownHandler);
+      container.removeEventListener('mouseleave', mouseLeaveHandler);
+      container.removeEventListener('mouseup', mouseUpHandler);
+      container.removeEventListener('mousemove', mouseMoveHandler);
+    };
+  }, []);
+
   return (
     <div className="">
-      <div className="flex justify-between p2 top-btns-wrapper">
+      <div
+        className="flex justify-between items-center top-btns-wrapper"
+        style={{ paddingTop: 'calc(1rem - 8px)', paddingBottom: '1rem' }}
+      >
         <Breadcrumb
           head=""
+          cssStyles={{ paddingBottom: 0 }}
           linkPara="Pipeline"
           route={''}
-          linkparaSecond="Dashboard"
+          linkparaSecond=""
           marginLeftMobile="12px"
         />
+
         <div className="pipeline-header-btns">
-          <p
+          {showDropdown && (
+            <DropdownCheckbox
+              label={selectedDealer.length === 1 ? 'partner' : 'partners'}
+              placeholder={'Search partners'}
+              selectedOptions={selectedDealer}
+              options={dealerOption}
+              onChange={(val) => {
+                setSelectedDealer(val);
+                setPage(1);
+              }}
+              disabled={loading || isLoading}
+            />
+          )}
+          <button
+            disabled={loading || isLoading}
             className={`desktop-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Active Queue'), setPage(1);
             }}
           >
             Active
-          </p>
-          <p
+          </button>
+          <button
+            disabled={loading || isLoading}
             className={`mobile-btn ${activeTab === 'Active Queue' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Active Queue'), setPage(1);
             }}
           >
             Active
-          </p>
-          <p
+          </button>
+
+          <button
+            disabled={loading || isLoading}
             className={`desktop-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Hold & Jeopardy'), setPage(1);
             }}
           >
             Hold & Jeopardy
-          </p>
-          <p
+          </button>
+          <button
+            disabled={loading || isLoading}
             className={`mobile-btn ${activeTab === 'Hold & Jeopardy' ? 'active' : ''}`}
             onClick={() => {
               handleActiveTab('Hold & Jeopardy'), setPage(1);
             }}
           >
             H&J
-          </p>
+          </button>
         </div>
       </div>
       <div className="project-container">
@@ -783,7 +690,11 @@ const ProjectPerformence = () => {
           <h2>{activeTab === 'Active Queue' ? 'Active' : 'Hold & Jeopardy'}</h2>
         </div>
         <div className="flex stats-card-wrapper">
-          <div style={{ width: '100%' }} className="project-card-container-1 ">
+          <div
+            ref={containerRef}
+            style={{ width: '100%', cursor: 'grab' }}
+            className="project-card-container-1"
+          >
             {loading ? (
               <div
                 style={{
@@ -798,31 +709,39 @@ const ProjectPerformence = () => {
               </div>
             ) : (
               <>
-                {' '}
                 {topCardsData.map((card, index) => {
                   const cardColor = cardColors[index % cardColors.length];
+                  const hoverColor = hoverColors[index % hoverColors.length];
+                  const activeColor = activeColors[index % activeColors.length];
                   const isActive = activeCardId === card.id;
+
                   const handleCardClick = (cardId: any, title: string) => {
                     setActiveCardId(activeCardId === cardId ? null : cardId);
                     setActiveCardTitle(activeCardId === cardId ? '' : title);
                   };
+
                   return (
                     <div
+                      key={card.id}
                       className="flex items-center arrow-wrap"
                       style={{ marginRight: '-20px' }}
                     >
                       <div
                         key={card.id}
-                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''} ${isActive ? 'active' : ''}`}
+                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
+                          } ${isActive ? 'active' : ''}`}
+                        onMouseEnter={() => setIsHovered(index)}
+                        onMouseLeave={() => setIsHovered(-1)}
                         style={{
-                          backgroundColor: cardColor,
-                          outline:
-                            activeCardId === card.id
-                              ? `4px solid ${cardColor}`
-                              : `1px dotted ${cardColor}`,
-                          pointerEvents:
-                            card.pending === 'roof' ? 'none' : 'auto',
-                          opacity: card.pending === 'roof' ? '0.3' : '',
+                          backgroundColor: isActive
+                            ? activeColor
+                            : isHovered === index
+                              ? hoverColor
+                              : '#F6F6F6',
+                          border:
+                            isHovered === index
+                              ? `none`
+                              : `2px solid ${cardColor}`,
                         }}
                         onClick={(e) => {
                           handlePendingRequest(card?.pending);
@@ -835,12 +754,21 @@ const ProjectPerformence = () => {
                         >
                           {activeCardId === card.id ? <MdDone /> : card.id}
                         </span>
-                        <p>{card.title || 'N/A'}</p>
-                        {card.pending !== 'roof' ? (
-                          <h2>{card.value || '0'}</h2>
-                        ) : (
-                          <small style={{ color: 'white' }}>Coming Soon</small>
-                        )}
+                        <p style={{ color: isActive ? '#fff' : '' }}>
+                          {card.title || 'N/A'}
+                        </p>
+                        <h2
+                          style={{
+                            color:
+                              isHovered === index && !isActive
+                                ? '#263747'
+                                : isActive
+                                  ? '#fff'
+                                  : cardColor,
+                          }}
+                        >
+                          {card.value || '0'}
+                        </h2>
                       </div>
                       {index < topCardsData.length - 1 && (
                         <div
@@ -886,6 +814,7 @@ const ProjectPerformence = () => {
               {activeCardId !== null && (
                 <div className="active-queue">
                   <IoClose
+                    size={18}
                     onClick={() => {
                       setActiveCardId(null),
                         setSelectedMilestone(''),
@@ -903,13 +832,22 @@ const ProjectPerformence = () => {
                   value={search}
                   name="Search for Unique ID or Name"
                   onChange={(e) => {
-                    handleSearchChange(e);
-                    setSearch(e.target.value);
+                    const input = e.target.value;
+                    const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+
+                    // Check if input contains valid characters and length is <= 50
+                    if (regex.test(input) && input.length <= 50) {
+                      setSearch(input);
+                      handleSearchChange(e);
+                    }
                   }}
                 />
               </div>
 
-              <div className="performance-box-container">
+              <div
+                className="performance-box-container pipeline-box-container"
+                style={{ padding: '0.7rem 1rem' }}
+              >
                 <p className="status-indicator">Status indicators</p>
                 <div className="progress-box-body">
                   <div
@@ -932,23 +870,41 @@ const ProjectPerformence = () => {
                   ></div>
                   <p>Not Started</p>
                 </div>
-                { isStaging === 'staging' ? 
-                <div className='pipeline-googlemap'>
-                  <img src={ICONS.PinMap} alt="pin map" />
-                </div>
-              : null }
               </div>
             </div>
 
-            <div className="perf-export-btn">
-              <button
-                disabled={isExportingData}
-                onClick={ExportCsv}
-                className={`performance-exportbtn ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
-              >
-                <FaUpload size={12} className="mr-1" />
-                <span>{isExportingData ? ' Downloading... ' : ' Export '}</span>
-              </button>
+            <div className="perf-export-btn relative pipline-export-btn">
+              {!!(projectStatus.length && !loading) && (
+                <button
+                  disabled={isExportingData}
+                  onClick={ExportCsv}
+                  data-tooltip-id="export"
+                  className={`performance-exportbtn flex items-center justify-center pipeline-export ${isExportingData ? 'cursor-not-allowed opacity-50' : ''}`}
+                >
+                  {isExportingData ? (
+                    <MdDownloading
+                      className="downloading-animation"
+                      size={20}
+                    />
+                  ) : (
+                    <LuImport size={20} />
+                  )}
+                </button>
+              )}
+
+              <Tooltip
+                style={{
+                  zIndex: 20,
+                  background: '#f7f7f7',
+                  color: '#000',
+                  fontSize: 12,
+                  paddingBlock: 4,
+                }}
+                offset={8}
+                id="export"
+                place="bottom"
+                content="Export"
+              />
             </div>
           </div>
 
@@ -1334,29 +1290,31 @@ const ProjectPerformence = () => {
             </table>
           </div>
 
-          <div className="page-heading-container">
-            {!!projectsCount && (
-              <p className="page-heading">
-                {startIndex} -{' '}
-                {endIndex > projectsCount ? projectsCount : endIndex} of{' '}
-                {projectsCount} item
-              </p>
-            )}
+          {!isLoading && (
+            <div className="page-heading-container">
+              {!!projectsCount && (
+                <p className="page-heading">
+                  {startIndex} -{' '}
+                  {endIndex > projectsCount ? projectsCount : endIndex} of{' '}
+                  {projectsCount} item
+                </p>
+              )}
 
-            {projectStatus?.length > 0 ? (
-              <Pagination
-                currentPage={page}
-                totalPages={Math.ceil(projectsCount / perPage)}
-                paginate={(num) => setPage(num)}
-                currentPageData={projectStatus}
-                goToNextPage={() => setPage((prev) => prev + 1)}
-                goToPrevPage={() =>
-                  setPage((prev) => (prev < 1 ? prev - 1 : prev))
-                }
-                perPage={perPage}
-              />
-            ) : null}
-          </div>
+              {projectStatus?.length > 0 ? (
+                <Pagination
+                  currentPage={page}
+                  totalPages={Math.ceil(projectsCount / perPage)}
+                  paginate={(num) => setPage(num)}
+                  currentPageData={projectStatus}
+                  goToNextPage={() => setPage((prev) => prev + 1)}
+                  goToPrevPage={() =>
+                    setPage((prev) => (prev < 1 ? prev - 1 : prev))
+                  }
+                  perPage={perPage}
+                />
+              ) : null}
+            </div>
+          )}
         </div>
       </div>
     </div>

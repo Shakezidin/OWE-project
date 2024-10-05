@@ -49,6 +49,7 @@ export interface UserRoleBasedListModel {
   team_name: string;
   dealer: string;
   db_username: string;
+  zip_code: any;
 }
 
 export interface DBTable {
@@ -75,6 +76,7 @@ export interface CreateUserModel {
   preferred_name: string;
   dealer_code: string;
   podioChecked: boolean;
+  zip_code: any;
 }
 
 export interface CreateUserParamModel {
@@ -93,6 +95,7 @@ export interface CreateUserParamModel {
   dealer_logo?: string;
   dealer?: string;
   podio_checked?: boolean;
+  zip_code?: any;
 }
 
 export interface DeleteUserModel {

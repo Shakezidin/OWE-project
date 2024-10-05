@@ -38,21 +38,21 @@ const UserTable: React.FC<UserTableProps> = ({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [email, setEmail] = useState('');
   const { authData } = useAuth();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleSort = (key: string) => {
-    const direction = sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc'
+    const direction =
+      sortKey === key ? (sortDirection === 'desc' ? 'asc' : 'desc') : 'asc';
     if (sortKey === key) {
       setSortDirection(direction);
     } else {
       setSortKey(key);
       setSortDirection(direction);
     }
-    sortArray(key,direction)
+    sortArray(key, direction);
   };
 
-
-  const sortArray = (sortKey: string,direction:string) => {
+  const sortArray = (sortKey: string, direction: string) => {
     let sortedData = [...data];
     if (sortKey) {
       sortedData.sort((a: any, b: any) => {
@@ -75,9 +75,8 @@ const UserTable: React.FC<UserTableProps> = ({
         }
       });
     }
-    dispatch(shuffleArray(sortedData))
-
-  }
+    dispatch(shuffleArray(sortedData));
+  };
 
   const UserManagementTableColumn = useMemo(() => {
     const col = [...UserColumns];
@@ -85,6 +84,13 @@ const UserTable: React.FC<UserTableProps> = ({
       col.splice(3, 0, {
         name: 'dealer_owner',
         displayName: 'Dealer',
+        type: 'string',
+        isCheckbox: false,
+      });
+    } else if (selectedValue === TYPE_OF_USER.ALL) {
+      col.splice(3, 0, {
+        name: 'role_name',
+        displayName: 'Role',
         type: 'string',
         isCheckbox: false,
       });
@@ -99,6 +105,7 @@ const UserTable: React.FC<UserTableProps> = ({
     }
   }, [authData]);
 
+  console.log(selectedValue, 'ghjsfghsdf');
   return (
     <div
       className="UserManageTable"
@@ -158,6 +165,9 @@ const UserTable: React.FC<UserTableProps> = ({
                   </div>
                 </td>
                 <td>{el.name}</td>
+                {selectedValue === TYPE_OF_USER.ALL && (
+                  <td>{el.role_name ? el.role_name : 'NA'}</td>
+                )}
                 {/* <td>{el.role_name}</td> */}
                 {/* <td>{el.reporting_manager}</td> */}
                 {selectedValue === TYPE_OF_USER.SUB_DEALER_OWNER && (
@@ -165,6 +175,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 )}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
+
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                   {el.description ? el.description : 'NA'}
                 </td>

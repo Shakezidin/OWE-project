@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create rep pay settings data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create rep pay settings data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createRepPaySettingsData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create rep pay settings data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create rep pay settings data request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create rep pay settings data request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,20 +62,20 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 		len(createRepPaySettingsData.Position) == 0 ||
 		len(createRepPaySettingsData.StartDate) == 0 || len(createRepPaySettingsData.EndDate) <= 0 {
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, createRepPaySettingsData)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, createRepPaySettingsData)
 		return
 	}
 
 	StartDate, err := time.Parse("2006-01-02", createRepPaySettingsData.StartDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
-		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
 		return
 	}
 	EndDate, err := time.Parse("2006-01-02", createRepPaySettingsData.EndDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse Date: %v", err)
-		FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -90,12 +91,12 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateRepPaySettingsDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add rep pay settings data in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Rep Pay Settings Data", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Rep Pay Settings Data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New rep pay settings data created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Rep Pay Settings Data Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Rep Pay Settings Data Created Successfully", http.StatusOK, nil)
 }

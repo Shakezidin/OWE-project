@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,51 +39,51 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update auto adder request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update auto adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAutoAdderReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update auto adder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update auto adder request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update auto adder request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(updateAutoAdderReq.UniqueID) <= 0) || (len(updateAutoAdderReq.Date) <= 0) ||
 		(len(updateAutoAdderReq.Type) <= 0) || (len(updateAutoAdderReq.GC) <= 0) ||
-		// (len(updateAutoAdderReq.DescriptionRepVisible) <= 0) || 
-		// (len(updateAutoAdderReq.AdderType) <= 0)|| 
+		// (len(updateAutoAdderReq.DescriptionRepVisible) <= 0) ||
+		// (len(updateAutoAdderReq.AdderType) <= 0)||
 		(len(updateAutoAdderReq.NotesNoRepVisible) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	// if updateAutoAdderReq.ExactAmount <= float64(0) {
 	// 	err = fmt.Errorf("Invalid exacy amount list Not Allowed")
 	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed, Update failed", http.StatusBadRequest, nil)
+	// 	appserver.FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed, Update failed", http.StatusBadRequest, nil)
 	// 	return
 	// }
 	if updateAutoAdderReq.PerKWAmount <= float64(0) {
 		err = fmt.Errorf("Invalid perkwamount price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Perkwamount Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Perkwamount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.RepPercentage <= float64(0) {
 		err = fmt.Errorf("Invalid rep percentage Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid rep percentage Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid rep percentage Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -90,14 +91,14 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		err = fmt.Errorf("Error parsing date:", err)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid date, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid date, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
-	updateAutoAdderReq.PerKWAmount= 99.99
+	updateAutoAdderReq.PerKWAmount = 99.99
 	updateAutoAdderReq.DescriptionRepVisible = "description"
 	updateAutoAdderReq.AdderType = "adder type"
-	
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateAutoAdderReq.RecordId)
 	queryParameters = append(queryParameters, updateAutoAdderReq.UniqueID)
@@ -115,12 +116,12 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAutoAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update auto adder in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to apdate auto adder", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to apdate auto adder", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "auto adder updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Auto Adder Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Auto Adder Updated Successfully", http.StatusOK, nil)
 }

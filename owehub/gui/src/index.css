@@ -19,6 +19,59 @@
 .rcw-new-message {
   width: calc(100% - 15px);
 }
+/*auto complete */
+
+/* Global CSS to target the Google Maps Autocomplete dropdown */
+
+/* Dialogue Map Hover css  */
+.gm-style .gm-style-iw-c {
+  padding: 0 !important;
+}
+.gm-style .gm-style-iw-c:focus-visible {
+  outline: none !important;
+}
+.gm-style-iw-chr {
+  display: none !important;
+}
+
+/* This styles the container of the dropdown */
+.pac-container {
+  font-family: 'Poppins', sans-serif !important; /* Ensure Poppins is applied */
+  font-size: 12px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #ccc !important;
+  overflow: hidden !important;
+  cursor: pointer;
+}
+
+/* Styles individual dropdown items */
+.pac-item {
+  padding: 4px 12px !important;
+  border-bottom: 1px solid #eaeaea !important;
+  cursor: pointer;
+  font-size: inherit !important;
+}
+
+.pac-item .pac-icon {
+  display: none !important;
+}
+
+.pac-item .pac-item-query {
+  font-size: 12px !important;
+}
+
+/* Highlighting items when hovered */
+.pac-item:hover {
+  background-color: #f2f7ff !important;
+}
+
+/* Style the highlighted text inside each item */
+.pac-item .pac-item-query {
+  font-weight: 400px !important;
+  color: #263747 !important;
+}
+
 /* color config */
 :root {
   --white-color: #fff;
@@ -78,6 +131,21 @@ input::-webkit-inner-spin-button {
   display: flex;
   justify-content: center;
   height: 80vh;
+}
+
+.downloading-animation {
+  animation: 1.2s ease-in-out infinite download-animation;
+}
+
+@keyframes download-animation {
+  from {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(150%);
+    opacity: 0;
+  }
 }
 .data-not-found {
   display: flex;

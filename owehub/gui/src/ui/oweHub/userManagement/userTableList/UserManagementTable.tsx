@@ -1,11 +1,17 @@
-import React, { SetStateAction, useEffect, useState, useCallback } from 'react';
+import React, {
+  SetStateAction,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import '../user.css';
 import '../../configure/configure.css';
 import UserTable from '../userManagerAllTable/UserTable';
 import AppointmentSetterTable from '../userManagerAllTable/AppointmentSetterTable';
 import PartnerTable from '../userManagerAllTable/PartnerTable';
 import SalesManagerTable from '../userManagerAllTable/SalesManagerTable';
-import AccountManagerTable from '../userManagerAllTable/AccountManagerTable'
+import AccountManagerTable from '../userManagerAllTable/AccountManagerTable';
 import AccountExecutiveTable from '../userManagerAllTable/AccountExecutiveTable';
 import SalesRepresentativeTable from '../userManagerAllTable/SalesRepresentativeTable';
 import DealerOwnerTable from '../userManagerAllTable/DealerOwnerTable';
@@ -29,6 +35,7 @@ import UserIcon from '../lib/UserIcon';
 import { debounce } from '../../../../utiles/debounce';
 import { ICONS } from '../../../../resources/icons/Icons';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import Input from '../../../components/text_input/Input';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -77,34 +84,37 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const { loading, dealerList, dealerCount } = useAppSelector(
     (state) => state.userManagement
   );
-
+  const initialRender = useRef(false);
 
   useEffect(() => {
-    const data = {
-      page_number: currentPage1,
-      page_size: pageSize1,
-      sales_rep_status: activeSalesRep,
-      filters: [
-        {
-          Column: 'role_name',
-          Operation: '=',
-          Data: selectedOption.value,
-        },
-      ],
-    };
-    const dataa = {
-      page_number: currentPage1,
-      page_size: pageSize1,
-    };
-    dispatch(fetchUserListBasedOnRole(data));
+    if (initialRender.current) {
+      initialRender.current = true;
+      const data = {
+        page_number: currentPage1,
+        page_size: pageSize1,
+        sales_rep_status: activeSalesRep,
+        filters: [
+          {
+            Column: 'role_name',
+            Operation: '=',
+            Data: selectedOption.value,
+          },
+        ],
+      };
+      const dataa = {
+        page_number: currentPage1,
+        page_size: pageSize1,
+      };
+      dispatch(fetchUserListBasedOnRole(data));
 
-    if (selectedOption.value === 'Partner') {
-      dispatch(fetchDealerList(dataa));
+      if (selectedOption.value === 'Partner') {
+        dispatch(fetchDealerList(dataa));
+      }
     }
     return () => {
       dispatch(resetOpt());
     };
-  }, [dispatch, currentPage1, pageSize1, activeSalesRep]);
+  }, [dispatch, currentPage1, pageSize1, activeSalesRep, initialRender]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
@@ -141,6 +151,23 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const renderComponent = () => {
     switch (selectedOption.label) {
+      case TYPE_OF_USER.ALL:
+        return (
+          <UserTable
+            selectedValue={selectedOption.label}
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
       case TYPE_OF_USER.ADMIN:
         return (
           <UserTable
@@ -222,6 +249,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
+
       case TYPE_OF_USER.PARTNER:
         return (
           <PartnerTable
@@ -366,7 +394,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          {(activeSalesRep) && (
+          {activeSalesRep && (
             <img
               style={{ cursor: 'pointer' }}
               src={ICONS.cross}
@@ -374,27 +402,32 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
           )}
 
-          {activeSalesRep &&
-            <h3>{activeSalesRep} Sales Rep</h3>
-          }
+          {activeSalesRep && <h3>{activeSalesRep} Sales Rep</h3>}
         </div>
 
-        <div className="delete-icon-container items-start mt2 ">
+        <div className="delete-icon-container items-center items-start mt2 ">
           <div className="userManagementTable__search">
             <input
               type="text"
+              name="Search"
               placeholder="Search users..."
               value={search}
               onChange={(e) => {
-                handleSearchChange(e);
-                setSearch(e.target.value);
+                if (e.target.value.length <= 50) {
+                  e.target.value = e.target.value.replace(
+                    /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+                    ''
+                  );
+                  handleSearchChange(e);
+                  setSearch(e.target.value);
+                }
               }}
             />
-            {!(activeSalesRep) && <div>{AddBtn}</div>}
+            {!activeSalesRep && <div>{AddBtn}</div>}
           </div>
 
           <div className="user_user-type">
-            {!(activeSalesRep) && (
+            {!activeSalesRep && (
               <div
                 className="flex items-end  user-dropdown hover-effect"
                 onClick={() => setIsOpen(true)}
@@ -440,7 +473,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
                     }}
                     menuWidth="fit-content"
                     menuListStyles={{
-                      width: "fit-content"
+                      width: 'fit-content',
                     }}
                     enableHoverEffect={false}
                   />
@@ -480,15 +513,17 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         </div>
       </div>
 
-      {selectedOption && loading ?
+      {selectedOption && loading ? (
         <div className="flex my3 justify-center items-center">
           <MicroLoader />
         </div>
-        : renderComponent()}
+      ) : (
+        renderComponent()
+      )}
 
       {selectedOption.value !== 'Partner' ? (
         <div className="user-page-heading-container">
-          {userRoleBasedList?.length > 0 && !loading  ? (
+          {userRoleBasedList?.length > 0 && !loading ? (
             <>
               <p className="page-heading">
                 {startIndex} - {endIndex > count! ? count : endIndex} of {count}{' '}

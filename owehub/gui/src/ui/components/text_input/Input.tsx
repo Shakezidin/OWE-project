@@ -30,6 +30,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onMouseLeave?: () => void;
   isMobile?: boolean;
   backgroundColor?: string;
+  labelClassName?: string;
+  innerViewClassName?: string;
 }
 
 const Input: FC<InputProps> = ({
@@ -50,6 +52,8 @@ const Input: FC<InputProps> = ({
   onMouseLeave,
   isMobile,
   backgroundColor,
+  labelClassName,
+  innerViewClassName = '',
   ...rest
 }) => {
   const validationRules = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,8 +75,10 @@ const Input: FC<InputProps> = ({
 
   return (
     <div className="input-wrapper">
-      {label && <label className="inputLabel">{label}</label>}
-      <div className="input-inner-view">
+      {label && (
+        <label className={`inputLabel ${labelClassName}`}>{label}</label>
+      )}{' '}
+      <div className={`input-inner-view ${innerViewClassName}`}>
         <input
           type={type}
           name={name}

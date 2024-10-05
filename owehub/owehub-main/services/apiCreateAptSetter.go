@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleCreateAptSetterRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create appointment setter request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create appointment setter request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createAptSetterReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create appointment setter request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create appointment setter request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal create appointment setter request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,14 +62,14 @@ func HandleCreateAptSetterRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(createAptSetterReq.EndDate) <= 0) || (len(createAptSetterReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createAptSetterReq.PayRate <= float32(0) {
 		err = fmt.Errorf("Invalid Pay Rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Pay Rate Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Pay Rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -83,12 +84,12 @@ func HandleCreateAptSetterRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateApiSetterFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add appointment setter in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create appointment setter", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create appointment setter", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New Appointment setter created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Appointment Setter Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Appointment Setter Created Successfully", http.StatusOK, nil)
 }

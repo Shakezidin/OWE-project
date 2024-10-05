@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -39,21 +40,21 @@ func HandleSetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in set prospect load request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from set prospect load request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &prospectLoadInfo)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal set prospect load request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal set prospect load request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal set prospect load request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -62,7 +63,7 @@ func HandleSetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 		len(prospectLoadInfo.Breakers) <= 0 {
 
 		log.FuncErrorTrace(0, "Empty Mandatory Parameter Received")
-		FormAndSendHttpResp(resp, "Empty Mandatory Parameter Received", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Mandatory Parameter Received", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -76,14 +77,14 @@ func HandleSetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	breakersJSON, err := json.Marshal(prospectLoadInfo.Breakers)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Parse Breaker to JSON with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Parse Breaker to JSON", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Parse Breaker to JSON", http.StatusInternalServerError, nil)
 		return
 	}
 
 	err = breakersJSONB.Set(breakersJSON)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Parse Breaker to JSON with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Parse Breaker to JSON", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Parse Breaker to JSON", http.StatusInternalServerError, nil)
 		return
 	}
 	queryParameters = append(queryParameters, breakersJSONB)
@@ -92,12 +93,12 @@ func HandleSetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.InsertBatteryBackupCalcProspectLoad, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Insert Prospect Load in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Prospect Load", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Prospect Load", http.StatusInternalServerError, nil)
 		return
 	}
 
 	log.FuncDebugTrace(0, "Prospect Load created Sucessfully")
-	FormAndSendHttpResp(resp, "Prospect Load created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Prospect Load created Successfully", http.StatusOK, nil)
 }
 
 /******************************************************************************
@@ -121,21 +122,21 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get prospect load request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get prospect load request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &prospectInfoId)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get prospect load request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get prospect load request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get prospect load request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -175,13 +176,13 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get prospect load data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get prospect load data from DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get prospect load data from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
 	if len(data) <= 0 {
 		log.FuncErrorTrace(0, "Prospects load for Prospects Id %v not present in DB", prospectInfoId.ProspectId)
-		FormAndSendHttpResp(resp, "Prospects load for Prospects Id not present in DB", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Prospects load for Prospects Id not present in DB", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -199,7 +200,7 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 
 	if err := json.Unmarshal(data[0]["breakers"].([]uint8), &prospectLoadInfo.Breakers); err != nil {
 		log.FuncErrorTrace(0, "Failed to Unmarshal Breakers Info from Prospect Load err: %+v", err)
-		FormAndSendHttpResp(resp, "Failed to Unmarshal Breakers Info from Prospect Load", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Unmarshal Breakers Info from Prospect Load", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -210,5 +211,5 @@ func HandleGetProspectLoad(resp http.ResponseWriter, req *http.Request) {
 
 	prospectLoadInfo.TotalCategoryAmperes = totalAmpere
 	log.FuncDebugTrace(0, "prospect load reterived: %+v", prospectLoadInfo)
-	FormAndSendHttpResp(resp, "prospect load reterived Successfully", http.StatusOK, prospectLoadInfo)
+	appserver.FormAndSendHttpResp(resp, "prospect load reterived Successfully", http.StatusOK, prospectLoadInfo)
 }

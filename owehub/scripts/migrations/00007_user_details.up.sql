@@ -23,6 +23,9 @@ ALTER TABLE user_details
 
 ALTER TABLE user_details
     ALTER COLUMN dealer_id TYPE BIGINT;
+    
+ALTER TABLE user_details
+ADD COLUMN podio_user BOOLEAN DEFAULT false;
 
 CREATE OR REPLACE FUNCTION create_new_user(
     p_name VARCHAR(255),
@@ -46,6 +49,7 @@ CREATE OR REPLACE FUNCTION create_new_user(
     p_team_name VARCHAR(255),
     p_dealer_name VARCHAR(255),
     p_dealer_logo VARCHAR(255),
+    p_add_to_podio BOOLEAN,
     p_tables_permissions jsonb,
     OUT v_user_id INT
 )
@@ -180,6 +184,7 @@ BEGIN
         country,
         team_id,
         dealer_id,
+	podio_user,
         tables_permissions
     )
     VALUES (
@@ -204,6 +209,7 @@ BEGIN
         p_country,
         v_team_id,
         v_dealer_id,
+	p_add_to_podio,
         p_tables_permissions
     )
     RETURNING user_id INTO v_user_id;

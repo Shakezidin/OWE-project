@@ -8,6 +8,7 @@
 package main
 
 import (
+	appserver "OWEApp/shared/appserver"
 	"OWEApp/shared/types"
 	"encoding/json"
 	"fmt"
@@ -17,6 +18,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	apiHandler "OWEApp/owehub-main/services"
 	"OWEApp/shared/db"
@@ -28,10 +30,12 @@ import (
 )
 
 type CfgFilePaths struct {
-	CfgJsonDir          string
-	LoggingConfJsonPath string
-	HTTPConfJsonPath    string
-	DbConfJsonPath      string
+	CfgJsonDir           string
+	LoggingConfJsonPath  string
+	HTTPConfJsonPath     string
+	DbConfJsonPath       string
+	PodioConfJsonPath    string
+	PodioAppConfJsonPath string
 }
 
 var (
@@ -42,20 +46,7 @@ const (
 	AppVersion = "1.0.0"
 )
 
-/* constains api execution information
-*  service names, methods, patterns and
-*  handler function*/
-type ServiceApiRoute struct {
-	Method             string
-	Pattern            string
-	Handler            http.HandlerFunc
-	IsAuthReq          bool
-	GroupAllowedAccess []types.UserGroup
-}
-
-type ApiRoutes []ServiceApiRoute
-
-var apiRoutes = ApiRoutes{
+var apiRoutes = appserver.ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/loggingconf",
@@ -1581,6 +1572,13 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomance_leaderboard",
+		apiHandler.HandleGetLeaderBoardRequestTemp,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_perfomance_leaderboard_data",
 		apiHandler.HandleGetLeaderBoardRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
@@ -1645,6 +1643,20 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_calender_csv_download",
 		apiHandler.HandleGetCalenderCsvDownloadRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_user_address",
+		apiHandler.HandleGetUserAddressDataRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_graph_api_access_token",
+		apiHandler.HandleGraphApiAccessToken,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
@@ -1798,6 +1810,22 @@ func init() {
 		log.ConfDebugTrace(0, "Database Configuration fatched Successfully from file.")
 	}
 
+	//* Read and Initialize Podio configuration from cfg */
+	err = FetchPodioCfg()
+	if err != nil {
+		log.ConfErrorTrace(0, "FetchPodioCfg failed %+v", err)
+		return
+	} else {
+		log.ConfDebugTrace(0, "Podio Configuration fatched Successfully from file.")
+	}
+
+	//* For initial setting up podio
+	go apiHandler.SyncHubUsersToPodioOnInit()
+	// if err != nil {
+	// 	log.ConfErrorTrace(0, "Failed to insert users to PODIO err: %+v", err)
+	// }
+
+	time.Sleep(time.Minute * 1)
 	types.ExitChan = make(chan error)
 	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 
@@ -1899,8 +1927,57 @@ func InitCfgPaths() {
 	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
+	gCfgFilePaths.PodioConfJsonPath = gCfgFilePaths.CfgJsonDir + "podioConfig.json"
+	gCfgFilePaths.PodioAppConfJsonPath = gCfgFilePaths.CfgJsonDir + "podioAppConfig.json"
 
 	log.ExitFn(0, "InitCfgPaths", nil)
+}
+
+/******************************************************************************
+* FUNCTION:        FetchPodioCfg
+*
+* DESCRIPTION:   function is used to get the podio configuration
+* INPUT:        service name to be initialized
+* RETURNS:      error
+******************************************************************************/
+func FetchPodioCfg() (err error) {
+	log.EnterFn(0, "FetchPodioCfg")
+	defer func() { log.ExitFn(0, "FetchPodioCfg", err) }()
+
+	var podioCfg models.PodioConfigList
+	var podioAppCfg models.PodioAppConfig
+
+	log.ConfDebugTrace(0, "Reading Podio Config from: %+v", gCfgFilePaths.PodioConfJsonPath)
+	file, err := os.Open(gCfgFilePaths.PodioConfJsonPath)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.PodioConfJsonPath, err)
+		panic(err)
+	}
+	bVal, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &podioCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.PodioConfJsonPath, err)
+		panic(err)
+	}
+
+	log.ConfDebugTrace(0, "Reading Podio Config from: %+v", gCfgFilePaths.PodioAppConfJsonPath)
+	file, err = os.Open(gCfgFilePaths.PodioAppConfJsonPath)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to open file %+v: %+v", gCfgFilePaths.PodioAppConfJsonPath, err)
+		panic(err)
+	}
+	bVal, _ = ioutil.ReadAll(file)
+	err = json.Unmarshal(bVal, &podioAppCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to Urmarshal file: %+v Error: %+v", gCfgFilePaths.PodioAppConfJsonPath, err)
+		panic(err)
+	}
+
+	types.CommGlbCfg.PodioCfg = podioCfg
+	types.CommGlbCfg.PodioAppCfg = podioAppCfg
+	log.ConfDebugTrace(0, "Logging Configurations: %+v", types.CommGlbCfg.LogCfg)
+
+	return err
 }
 
 /******************************************************************************

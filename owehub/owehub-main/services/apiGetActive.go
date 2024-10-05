@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 
@@ -35,12 +36,12 @@ func HandleGetActiveAndStartTime(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get start time  in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create User", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create User", http.StatusInternalServerError, nil)
 		return
 	}
 
 	// Send the response
 	log.FuncInfoTrace(0, "SELECT pg_postmaster_start_time() AS start_time: %v list %+v", data, data)
-	FormAndSendHttpResp(resp, "Data base tables", http.StatusOK, data)
+	appserver.FormAndSendHttpResp(resp, "Data base tables", http.StatusOK, data)
 
 }

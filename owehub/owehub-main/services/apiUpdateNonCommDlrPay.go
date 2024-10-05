@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -46,21 +47,21 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update non comm dealer pay request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update non comm dealer pay request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateNonCommDlrPay)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update non comm dealer pay request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update non comm dealer pay request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update non comm dealer pay request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -71,7 +72,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		len(UpdateNonCommDlrPay.Date) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,7 +80,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	if UpdateNonCommDlrPay.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid record_id: %f, Not Allowed", UpdateNonCommDlrPay.RecordId)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -89,7 +90,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
@@ -105,7 +106,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get appt setters data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
 			return
 		}
 		if len(data) > 0 {
@@ -141,12 +142,12 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateNonCommDlrPayFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update non comm dealer pay in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update non comm dealer pay", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update non comm dealer pay", http.StatusInternalServerError, nil)
 		return
 	}
 
 	responce := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "non comm dealer pay Updated with Id: %+v", responce["result"])
-	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Non Comm Dealer Pay Updated Successfully", http.StatusOK, nil)
 }

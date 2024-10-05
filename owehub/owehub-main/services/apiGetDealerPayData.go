@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -48,34 +49,34 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get ar data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ar data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get ar data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get ar data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get ar data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	if dataReq.PayRollStartDate == "" || dataReq.PayRollEndDate == "" || dataReq.UseCutoff == "" || dataReq.DealerName == "" {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if dataReq.DealerName == "HOUSE" {
 		log.FuncInfoTrace(0, "dealername is House, So function retun with a message ")
-		FormAndSendHttpResp(resp, "'HOUSE' dealer is currently filtered from this report", http.StatusOK, nil)
+		appserver.FormAndSendHttpResp(resp, "'HOUSE' dealer is currently filtered from this report", http.StatusOK, nil)
 		return
 	}
 
@@ -121,7 +122,7 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer pay data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get dealer pay data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get dealer pay data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -358,13 +359,13 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get dealer credit data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get dealer credit data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of ar data List fetched : %v list %+v", len(dealerpayDataList.DealerPayList), dealerpayDataList)
-	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, dealerpayDataList, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, dealerpayDataList, RecordCount)
 }
 
 func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, forDataCount, offset bool) (filters string, whereEleList []interface{}) {

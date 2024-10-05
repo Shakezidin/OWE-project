@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update payment schedule request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update payment schedule request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updatePaymentSchedule)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update update payment schedule err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update update payment schedule", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal update update payment schedule", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -63,48 +64,48 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 		(len(updatePaymentSchedule.CommissionModel) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updatePaymentSchedule.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updatePaymentSchedule.Rl <= float64(0) {
 		err = fmt.Errorf("Invalid rate list Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid rate list Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid rate list Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updatePaymentSchedule.Draw <= float64(0) {
 		err = fmt.Errorf("Invalid draw percentage Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Draw Percentage Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Draw Percentage Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updatePaymentSchedule.DrawMax <= float64(0) {
 		err = fmt.Errorf("Invalid draw max Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Draw Max Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Draw Max Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updatePaymentSchedule.RepDraw <= float64(0) {
 		err = fmt.Errorf("Invalid Rep Draw Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rep Draw Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Rep Draw Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updatePaymentSchedule.RepDrawMax <= float64(0) {
 		err = fmt.Errorf("Invalid Rep Draw Max Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rep Draw Max Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Rep Draw Max Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -128,12 +129,12 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdatePaymentScheduleFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update payment schedule in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update payment schedule", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update payment schedule", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "payment schedule updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Payment Schedule Updated Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Payment Schedule Updated Successfully", http.StatusOK, nil)
 }

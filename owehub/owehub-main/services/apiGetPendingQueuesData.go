@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -49,21 +50,21 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get pending queue data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get pending queue data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get pending queue data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get pending queue data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get pending queue data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,7 +76,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -101,14 +102,14 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		case string(types.RoleAccountManager), string(types.RoleAccountExecutive):
 			dealerNames, err := FetchPendingQueueProjectDealerForAmAe(dataReq, role)
 			if err != nil {
-				FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
+				appserver.FormAndSendHttpResp(resp, fmt.Sprintf("%s", err), http.StatusBadRequest, nil)
 				return
 			}
 
 			if len(dealerNames) == 0 {
 				perfomanceList := models.PerfomanceListResponse{}
 				log.FuncInfoTrace(0, "No dealer list present : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-				FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
+				appserver.FormAndSendHttpResp(resp, "No dealer list present for this user", http.StatusOK, perfomanceList, RecordCount)
 				return
 			}
 			dataReq.DealerNames = dealerNames
@@ -123,7 +124,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 	} else {
 		log.FuncErrorTrace(0, "Failed to get pending queue data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -136,7 +137,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 				PendingQueueList: []models.GetPendingQueue{},
 			}
 			log.FuncErrorTrace(0, "No sale representatives exist: %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			appserver.FormAndSendHttpResp(resp, "No sale representatives exist", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -157,7 +158,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 		queryWithFiler = qcNTPQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -165,7 +166,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get pending queue data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get pending queue data", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -261,7 +262,7 @@ func HandleGetPendingQuesDataRequest(resp http.ResponseWriter, req *http.Request
 
 	paginatedData := Paginate(pendingqueueList.PendingQueueList, int64(dataReq.PageNumber), int64(dataReq.PageSize))
 	log.FuncInfoTrace(0, "Number of pending queue List fetched : %v list %+v", len(paginatedData), paginatedData)
-	FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, paginatedData, RecordCount)
+	appserver.FormAndSendHttpResp(resp, "Pending queue Data", http.StatusOK, paginatedData, RecordCount)
 }
 
 /******************************************************************************
@@ -291,7 +292,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		)
 
 		filtersBuilder.WriteString(" WHERE")
-		filtersBuilder.WriteString(fmt.Sprintf(" ss.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -306,7 +307,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		}
 
 		// Add condition for LOWER(cv.unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(ips.unique_id) IN (")
+		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -318,7 +319,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		filtersBuilder.WriteString(") ")
 
 		// Add OR condition for cv.unique_id ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR LOWER(ips.unique_id) ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
@@ -330,7 +331,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 		filtersBuilder.WriteString("])")
 
 		// Add OR condition for cv.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR ips.home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -364,7 +365,7 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 			}
 
 			// Add the IN clause with dealer names directly in the query
-			filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(dealerNames, ",")))
+			filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.dealer IN (%s)", strings.Join(dealerNames, ",")))
 		}
 	}
 
@@ -374,11 +375,11 @@ func PrepareAdminDlrPendingQueueFilters(tableName string, dataFilter models.Pend
 	} else {
 		filtersBuilder.WriteString(" WHERE")
 	}
-	filtersBuilder.WriteString(` ips.unique_id IS NOT NULL
-			 AND ips.unique_id <> ''
-			 AND ips.system_size IS NOT NULL
-			 AND ips.system_size > 0
-			 AND ss.project_status IN ('ACTIVE')`)
+	filtersBuilder.WriteString(` customers_customers_schema.unique_id IS NOT NULL
+			 AND customers_customers_schema.unique_id <> ''
+			 AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			 AND system_customers_schema.contracted_system_size_parent > 0
+			 AND customers_customers_schema.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 
@@ -411,7 +412,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 			endDate.Format("02-01-2006 15:04:05"),
 		)
 
-		filtersBuilder.WriteString(fmt.Sprintf(" WHERE ss.contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+		filtersBuilder.WriteString(fmt.Sprintf(" WHERE customers_customers_schema.sale_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
 		whereAdded = true
 	}
 
@@ -426,7 +427,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 		}
 
 		// Add condition for LOWER(intOpsMetSchema.unique_id) IN (...)
-		filtersBuilder.WriteString("LOWER(ips.unique_id) IN (")
+		filtersBuilder.WriteString("LOWER(customers_customers_schema.unique_id) IN (")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("LOWER($%d)", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
@@ -438,7 +439,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 		filtersBuilder.WriteString(") ")
 
 		// Add OR condition for LOWER(cv.unique_id) ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR LOWER(ips.unique_id) ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR LOWER(customers_customers_schema.unique_id) ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, "%"+filter+"%") // Match anywhere in the string
@@ -450,7 +451,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 		filtersBuilder.WriteString("])")
 
 		// Add OR condition for intOpsMetSchema.home_owner ILIKE ANY (ARRAY[...])
-		filtersBuilder.WriteString(" OR ips.home_owner ILIKE ANY (ARRAY[")
+		filtersBuilder.WriteString(" OR customers_customers_schema.customer_name ILIKE ANY (ARRAY[")
 		for i, filter := range dataFilter.UniqueIds {
 			// Wrap the filter in wildcards for pattern matching
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -475,7 +476,7 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 			whereAdded = true
 		}
 
-		filtersBuilder.WriteString(" ss.primary_sales_rep IN (")
+		filtersBuilder.WriteString(" customers_customers_schema.primary_sales_rep IN (")
 		for i, sale := range saleRepList {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, sale)
@@ -504,15 +505,15 @@ func PrepareSaleRepPendingQueueFilters(tableName string, dataFilter models.Pendi
 		}
 
 		// Add the IN clause with dealer names directly in the query
-		filtersBuilder.WriteString(fmt.Sprintf(" ss.dealer IN (%s)", strings.Join(dealerNames, ",")))
+		filtersBuilder.WriteString(fmt.Sprintf(" customers_customers_schema.dealer IN (%s)", strings.Join(dealerNames, ",")))
 	}
 
 	// Add the always-included filters
-	filtersBuilder.WriteString(` AND ips.unique_id IS NOT NULL
-			 AND ips.unique_id <> ''
-			 AND ips.system_size IS NOT NULL
-			 AND ips.system_size > 0 
-			 AND ss.project_status IN ('ACTIVE')`)
+	filtersBuilder.WriteString(` AND customers_customers_schema.unique_id IS NOT NULL
+			 AND customers_customers_schema.unique_id <> ''
+			 AND system_customers_schema.contracted_system_size_parent IS NOT NULL
+			 AND system_customers_schema.contracted_system_size_parent > 0 
+			 AND customers_customers_schema.project_status IN ('ACTIVE')`)
 
 	filters = filtersBuilder.String()
 

@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -29,14 +30,17 @@ import (
  ******************************************************************************/
 func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err              error
-		reqBody          []byte
-		deleteUsersReq   models.DeleteUsers
-		whereEleList     []interface{}
-		query            string
-		userDetails      []map[string]interface{}
-		tablePermissions []models.TablePermission
-		rowsAffected     int64
+		err               error
+		reqBody           []byte
+		userDetailsResult []map[string]interface{}
+		whereClause       string
+		deleteUsersReq    models.DeleteUsers
+		whereEleList      []interface{}
+		query             string
+		userQuery         string
+		userDetails       []map[string]interface{}
+		tablePermissions  []models.TablePermission
+		rowsAffected      int64
 	)
 
 	log.EnterFn(0, "HandleDeleteUsersRequest")
@@ -45,27 +49,37 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in delete users request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err = ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from delete users request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &deleteUsersReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal delete users request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal delete users request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal delete users request", http.StatusBadRequest, nil)
 		return
 	}
 
 	// setup user info logging
 	logUserApi, closeUserLog := initUserApiLogging(req)
 	defer func() { closeUserLog(err) }()
+
+	whereClause = fmt.Sprintf("WHERE user_code IN ('%s')", strings.Join(deleteUsersReq.UserCodes, ","))
+
+	userQuery = fmt.Sprintf(`SELECT name, email_id, user_code, role_id
+							 FROM user_details %s;`, whereClause)
+
+	userDetailsResult, err = db.ReteriveFromDB(db.OweHubDbIndex, userQuery, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user details from DB for podio err: %v", err)
+	}
 
 	//
 	// NEW LOGIC: Delete By Email
@@ -76,7 +90,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get user details err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to delete users", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to delete users", http.StatusInternalServerError, nil)
 			return
 		}
 
@@ -133,13 +147,13 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 
 		if rowsAffected == 0 {
 			log.DBTransDebugTrace(0, "No User(s) deleted with emails: %v", deleteUsersReq.EmailIds)
-			FormAndSendHttpResp(resp, "No User(s) deleted, user(s) not present with provided emails", http.StatusNotFound, nil)
+			appserver.FormAndSendHttpResp(resp, "No User(s) deleted, user(s) not present with provided emails", http.StatusNotFound, nil)
 			logUserApi("No users deleted")
 			return
 		}
 
 		log.DBTransDebugTrace(0, "Total %d User(s) deleted with Emails: %v", rowsAffected, deleteUsersReq.EmailIds)
-		FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
+		appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
 
 		return
 	}
@@ -151,7 +165,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	if len(deleteUsersReq.UserCodes) == 0 {
 		err = fmt.Errorf("User codes list is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "User codes list is empty, delete users failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "User codes list is empty, delete users failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -181,16 +195,23 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	err, rowsAffected = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to delete Users data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to delete users Data from DB", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to delete users Data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
 	if rowsAffected == 0 {
 		log.DBTransDebugTrace(0, "No User(s) deleted with User codes: %v", deleteUsersReq.UserCodes)
-		FormAndSendHttpResp(resp, "No User(s) deleted, user(s) not present with provided user codes", http.StatusNotFound, nil)
+		appserver.FormAndSendHttpResp(resp, "No User(s) deleted, user(s) not present with provided user codes", http.StatusNotFound, nil)
 		return
 	}
 
-	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v", rowsAffected, deleteUsersReq.UserCodes)
-	FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
+	//* logic to delte users from podio
+
+	err, _ = DeletePodioUsers(userDetailsResult)
+	if err != nil {
+		log.FuncInfoTrace(0, "error deleting users from podio; err: %v", err)
+	}
+
+	log.DBTransDebugTrace(0, "Total %d User(s) deleted with User codes: %v ", rowsAffected, deleteUsersReq.UserCodes)
+	appserver.FormAndSendHttpResp(resp, fmt.Sprintf("Total %d User(s) from OweHub app deleted Successfully", rowsAffected), http.StatusOK, rowsAffected)
 }

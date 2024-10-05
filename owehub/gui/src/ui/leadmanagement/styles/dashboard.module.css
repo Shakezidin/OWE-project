@@ -1,206 +1,229 @@
+/* -----------------Vaibhav Start----------------- */
+
 .dashboard {
-    padding: 24px;
-    background-color: #f3f4f6;
-    min-height: 100vh;
-  }
-  
-  .title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 24px;
-  }
-  
-  .chartGrid {
-    display: grid;
-    grid-template-columns: 1fr; /* Default to single column for mobile */
-    gap: 24px;
-    margin-bottom: 24px;
-  }
+  /* padding: 24px; */
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
 
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
 
-  
-  .card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cardHeader {
-    padding: 16px;
-    border-bottom: 1px solid #e5e7eb;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .cardContent {
-    padding: 16px;
-  }
-  
-  .totalLeads {
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 8px;
-  }
-  
-  .legend {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 16px;
-  }
-  
-  .legendItem {
-    display: flex;
-    align-items: center;
-  }
-  
-  .legendColor {
-    width: 12px;
-    height: 6.12px;
-    border-radius: 6.12px;
-    margin-right: 8px;
-    
-  }
-  
-  .legendText {
-    font-size: 10.71px;
-  }
-  
-  /* Shams */
-  .monthSelect {
-    background-color: #377CF6;
-    color: white;
-    border-radius: 20px;
-    padding: 6px 10px;
-    border: none;
-    padding-right:0;
-  }
-  
-  .stats {
-    margin-top: 16px;
-    font-size: 14px;
-  }
-  
-  .statItem {
-    margin-right: 16px;
-  }
-  
-  /* .buttonGroup {
+.chartGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* Default to single column for mobile */
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 200px;
+}
+.cardHeaderFirst {
+  padding: 18px 16px 16px 16px;
+  /* border-bottom: 1px solid #e5e7eb; */
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardHeader {
+  padding: 16px;
+  /* border-bottom: 1px solid #e5e7eb; */
+  font-weight: bold;
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+}
+.cardHeaderSecond {
+  padding: 10.8px 16px 16px 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -7px;
+}
+
+.cardContent {
+  padding: 16px;
+}
+
+.totalLeads {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+}
+
+.legendColor {
+  width: 12px;
+  height: 6.12px;
+  border-radius: 6.12px;
+  margin-right: 8px;
+}
+
+.legendText {
+  font-size: 10.71px;
+}
+
+/* Shams */
+.monthSelect {
+  background-color: #377cf6;
+  color: white;
+  border-radius: 20px;
+  padding: 6px 10px;
+  border: none;
+  padding-right: 0;
+}
+
+.stats {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.statItem {
+  margin-right: 16px;
+}
+
+/* .buttonGroup {
     display: flex;
     gap: 8px;
     width: 70%;
     overflow: scroll;
     flex-wrap: wrap;
   } */
-  .buttonGroup {
-    display: flex;
-    padding: 5px;
-    gap: 8px;
-    width: 70%;
-    overflow: scroll;
-    /* flex-wrap: wrap; */
-    box-shadow: inset -3px 0px 5px 2px #0000000d;
-    border-radius: 22px 0 0 22px;
-  }
-  
-  .button {
-    border: 1px solid #858585 !important;
-    color: #858585;
-    background-color: #fff;
-    padding: 5px;
-    border-radius: 26px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-weight: 500;
-    transition: all 500ms;
-  }
-
-  .status{
-    background: #fff;
-    border-radius: 50%;
-    padding: 4px;
-    color: #377CF6;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    font-size: 14px;
-  }
-  .statusInactive {
-    background: #DFDFDF !important;
-    color: #929292 !important;
-  }
-  
-  
-  .buttonActive {
-    background-color: #3b82f6;
-    color: white;
-    border:unset !important;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .table th,
-  .table td {
-    text-align: left;
-    padding: 11px;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .table th {
-    font-weight: bold;
-  }
-
-  table tbody tr:hover {
-    transition: 0.4s all linear;
-    background-color: #377df623;
+.buttonGroup {
+  display: flex;
+  padding: 5px;
+  gap: 5px;
+  width: 71%;
+  /* overflow: scroll; */
+  flex-wrap: wrap;
+  /* box-shadow: inset -3px 0px 5px 2px #0000000d; */
+  border-radius: 22px 0 0 22px;
 }
-  
-  .statusPending {
-    color: #f59e0b;
-  }
 
-  .filtericon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 39px;
-    width: 39px;
-    border-radius: 50%;
-    background-color: #377cf6;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .filtericon:hover {
-    background-color: #005eff;
-    transform: scale(1.04);
-  }
-  .filtericon img {
-    height: 24px;
-    width: 24px;
-  }
-  .filterCallToAction{
-    display: flex;
-    gap: 10px;
-    transform: scale(0.7);
-    position: relative;
-    /* top: -2pc; */
-    right: -8px;
-  }
+.button {
+  border: 1px solid #858585 !important;
+  color: #858585;
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 26px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  padding-right: 12px;
+  transition: all 500ms;
+}
 
- 
-  .pieChart :focus {
-    outline: none;
-  }
+.button:hover {
+  background-color: #ddebff;
+}
 
+.status {
+  background: #fff;
+  border-radius: 50%;
+  padding: 4px;
+  color: #377cf6;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.statusInactive {
+  background: #dfdfdf !important;
+  color: #929292 !important;
+}
 
+.buttonActive {
+  background-color: #3b82f6;
+  color: white;
+  border: unset !important;
+}
+.buttonActive:hover {
+  background-color: #3b82f6;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 11px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table th {
+  font-weight: bold;
+}
+
+table tbody tr:hover {
+  transition: 0.4s all linear;
+  background-color: #377df623;
+}
+
+.statusPending {
+  color: #f59e0b;
+}
+
+.filtericon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 39px;
+  width: 39px;
+  border-radius: 50%;
+  background-color: #377cf6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.filtericon:hover {
+  background-color: #005eff;
+  transform: scale(1.04);
+}
+.filtericon img {
+  height: 24px;
+  width: 24px;
+}
+.filterCallToAction {
+  display: flex;
+  gap: 3px;
+  transform: scale(0.75);
+  position: relative;
+  /* top: -2pc; */
+  /* right: -8px; */
+}
+
+.pieChart :focus {
+  outline: none;
+}
 
 .table {
   width: 100%;
@@ -213,6 +236,13 @@
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   /* margin-bottom: 16px; */
+}
+.ScheduleBtnNew{
+  width: 103px;
+
+}
+.ThreeDotsMinor{
+
 }
 
 .history_list_inner {
@@ -237,7 +267,7 @@
 .user_name p {
   font-weight: 500;
   font-size: 12px;
-  color: #81A6E7;
+  color: #81a6e7;
   margin: 4px 0 0 0;
 }
 
@@ -251,10 +281,11 @@
 .email {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   width: 16px;
   height: 16px;
   border-radius: 100px;
@@ -262,7 +293,7 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-input[type="checkbox"]:checked {
+input[type='checkbox']:checked {
   background-color: #3b82f6;
   border-color: #3b82f6;
 }
@@ -273,7 +304,7 @@ input[type="checkbox"]:checked {
 }
 
 .rescheduleButton {
-  background-color: #2979FF; /* Blue color */
+  background-color: #2979ff; /* Blue color */
   color: white;
   border: none;
   padding: 8px 16px;
@@ -284,7 +315,7 @@ input[type="checkbox"]:checked {
 }
 
 .rescheduleButton:hover {
-  background-color: #1565C0; /* Darker blue on hover */
+  background-color: #1565c0; /* Darker blue on hover */
 }
 
 .archiveButton {
@@ -295,14 +326,15 @@ input[type="checkbox"]:checked {
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .archiveButton:hover {
   background-color: #757575;
   color: white;
 }
-
 
 .selectionHeader {
   display: flex;
@@ -332,13 +364,13 @@ input[type="checkbox"]:checked {
   transform: scale(1.09);
 }
 
-.closeIcon:hover{
+.closeIcon:hover {
   background: #377cf630;
   border-radius: 5px;
 }
 
 .removeButton {
-  background-color: #EE4747;
+  background-color: #ee4747;
   color: white;
   border: none;
   padding: 0px 20px;
@@ -348,189 +380,331 @@ input[type="checkbox"]:checked {
   height: 38px;
   font-size: 16px;
   transition: all 0.3s ease;
-  
 }
 
 .removeButton:hover {
-  background-color: #EE4747;
+  background-color: #ee4747;
   transform: scale(1.05);
 }
 
-.paginationContainer{
+.paginationContainer {
   display: flex;
-  justify-content: right;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
 }
 
-.chevron_down{
+.leadpagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
+
+.chevron_down {
   display: none !important;
   height: 24px;
   width: 24px;
-  background-color: #EAECF0;
+  background-color: #eaecf0;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
 }
 
+.date_parent {
+  display: flex;
+  gap: 10px;
+}
 
+.action_needed_btn {
+  width: auto;
+}
 
+.tabs_setting {
+  padding: 10px 0 0 5px;
+}
 
-
-
-
-
-
+/* -----------------Vaibhav End----------------- */
 
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
 
+/* For tablets and larger screens */
+@media (min-width: 768px) {
+  .tabs_setting {
+    padding: 10px 15px;
+  }
+  .history_list_inner_declined {
+    display: grid;
+    /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
+    grid-template-columns: 35px 1fr 1fr 2fr 1fr auto !important;
+    /* place-items: center; */
+    align-items: center;
+  }
+  .chartGrid {
+    grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
+  }
+  .lineCard {
+    margin-right: 26px;
+  }
+  .buttonGroup {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    box-shadow: unset;
+  }
+  .filterCallToAction {
+    display: flex;
+    gap: 10px;
+    transform: scale(1);
+    position: unset;
+    padding-left: 10px;
+  }
+  .mobile_view_table {
+    display: flex;
+    flex: 1;
+  }
+}
 
-  /* For tablets and larger screens */
-  @media (min-width: 768px) {
-    .chartGrid {
-      grid-template-columns: 40% 60%; /* First card 40%, second card 60% */
-    }
-    .lineCard {
-      margin-right:26px
-    }
-    .buttonGroup {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      flex-wrap: nowrap;
-      display: flex;
-      flex-direction: row;
-      box-shadow: unset;
-    }
-    .filterCallToAction{
-      display: flex;
-      gap: 10px;
-      transform: scale(1);
-      position: unset;
-    }
-    .mobile_view_table{
-      display: flex;
-      flex:1
-    }
+@media screen and (min-width: 336px) and (max-width: 436px) {
+  .date_calendar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: right !important;
+    gap: 4px !important;
   }
-  
-  /* Smartphones in both portrait and landscape */
-  @media only screen and (min-width: 320px) and (max-width: 480px) {
-    /* Styles for smartphones */
-    .button{
-      transform: scale(0.9);
-    }
-    .phone_number,
-    .email,
-    .address {
-      display: none;
-    }
-    .history_list_inner {
-      display: grid;
-      grid-template-columns: auto 2fr 0 0 0 auto !important;
-  }
-      .chevron_down{
-      display: block !important;
-      height: 24px !important;
-      width: 24px !important;
-      background-color: #EAECF0;
-      display: flex!important;
-      justify-content: center!important;
-      align-items: center!important;
-      border-radius: 5px;
-    }
+}
 
-   
+@media screen and (min-width: 349px) and (max-width: 405px) {
+  .date_calendar {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    padding: 17px 16px 17px 35px !important;
+    margin: 17px 16px 17px 35px !important;
   }
-  
-  /* Tablets in both portrait and landscape */
-  @media only screen and (min-width: 481px) and (max-width: 768px) {
-    /* Styles for tablets */
-    
-  }
-  
-  /* Laptops and small desktops */
-  @media only screen and (min-width: 769px) and (max-width: 1024px) {
-    /* Styles for small desktops */
-   
-  }
-  
-  
-  /* Large desktops and monitors */
-  @media only screen and (min-width: 1025px) and (max-width: 1200px) {
-    /* Styles for large desktops */
-   
-  }
-  
-  
-  /* Extra large desktops */
-  @media only screen and (min-width: 1201px) {
-    /* Styles for extra-large screens */
+}
 
+/* Smartphones in both portrait and landscape */
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  /* Styles for smartphones */
+  .button {
+    transform: scale(0.9);
   }
-    
+  .phone_number,
+  .email,
+  .address {
+    display: none;
+  }
+  .history_list_inner_declined {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr !important;
+    /* place-items: center; */
+    align-items: start;
+  }
+  .history_list_inner {
+    display: grid;
+    grid-template-columns: auto 2fr auto !important;
+    align-items: baseline;
+  }
+  .actionButtons {
+    transform: scale(0.7) translate(0, -10px);
+  }
+  .chevron_down {
+    display: block !important;
+    height: 24px !important;
+    width: 24px !important;
+    background-color: #eaecf0;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 5px;
+  }
+  .hist_date {
+    font-size: 10px !important;
+  }
+  .date_parent {
+    display: flex;
+    gap: 10px;
+    transform: scale(0.8);
+    margin-right: -15px;
+  }
+  /* .date_calendar {
+    gap: unset !important;
+  } */
+  .user_name {
+    transform: translate(5px, -5px);
+  }
+}
 
+/* Tablets in both portrait and landscape */
+@media only screen and (min-width: 481px) and (max-width: 768px) {
+  /* Styles for tablets */
+  .history_list_inner_declined {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
+    /* place-items: center; */
+    align-items: center;
+  }
+}
 
-  /* Shams */
+/* Laptops and small desktops */
+@media only screen and (min-width: 767px) and (max-width: 1025px) {
+  /* Styles for small desktops */
+  /* .history_list_inner_declined {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
+    align-items: center;
 
-   
+  } */
+  .chartGrid {
+    grid-template-columns: 50% 50%; /* First card 40%, second card 60% */
+  }
+  .lineChart_div {
+    position: relative;
+    /* top: 50px; */
+    align-items: center;
+    justify-content: center;
+    /* margin-top: 30px;
+      margin-right: 40px; */
+    right: 30px;
+  }
+
+  .lineChart_legend {
+    display: none;
+  }
+
+  .hist_date {
+    font-weight: 500 !important;
+    font-size: 12px !important;
+  }
+
+  .date_display {
+    position: relative;
+  }
+
+  .date_calendar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: right !important;
+    gap: 10px;
+  }
+
+  .date_parent {
+    display: flex;
+    gap: 10px;
+  }
+
+  .history_list_inner {
+    display: grid;
+    grid-template-columns: 0.4fr 2fr 1.5fr 3.5fr 2fr auto !important;
+    justify-content: center !important;
+    align-items: start !important;
+  }
+
+  /* HERE MEDIA SCREEN */
+  .leadpagination {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    gap: 50px !important;
+  }
+
+  .leftitem,
+  .rightitem {
+    align-items: flex-start; /* Optional: vertically center the items */
+  }
+}
+
+/* Large desktops and monitors */
+@media only screen and (min-width: 1025px) and (max-width: 1200px) {
+  /* Styles for large desktops */
+}
+
+/* Extra large desktops */
+@media only screen and (min-width: 1201px) {
+  /* Styles for extra-large screens */
+}
+
+/*---------------- Shams Start-------------------- */
+.lead__datepicker_wrapper {
+  position: relative;
+  line-height: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 11;
+}
 .lead__datepicker_content {
   position: absolute;
-  right: 26px;
-  z-index: 10;
+  left: 46px;
+  z-index: 100;
   background-color: var(--white-color);
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  top: 160px;
-  right: 60px;
+  top: 20px;
 }
- 
+
 .lead__datepicker_btns {
   display: flex;
   justify-content: center;
   padding: 0.25rem;
   margin-bottom: 1rem;
 }
- 
+
 .lead__datepicker_btns button {
   position: static;
 }
- 
+
 .lead__datepicker_btns button:first-child {
   margin-right: 0.5rem;
 }
- 
- 
+
 .hist_date {
   font-weight: 600;
   font-size: 14px;
-  color: #377CF6;
+  color: #377cf6;
 }
- 
+
 .monthSelect {
-  background-color: #3b82f6;
+  /* background-color: #3b82f6; */
   color: white;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   padding: 4px 8px;
   border: none;
   font-size: 12px;
   font-weight: 500;
 }
- 
+
 .monthSelect option {
   font-weight: 500;
   font-size: 12px;
   transition: all 0.3s ease;
 }
- 
+
 .monthSelect :hover {
   border: none;
 }
- 
+
 .monthSelect option:hover {
   transform: scale(1.06);
 }
- 
- 
+
+.monthSelect {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+  padding-left: 15px;
+}
+
 .calender {
   background-color: #377cf6;
   width: 32px;
@@ -542,16 +716,131 @@ input[type="checkbox"]:checked {
   cursor: pointer;
   transition: all 500ms ease;
 }
- 
+
 .calender:hover {
   transform: scale(1.06);
   background-color: #0b4cbd;
 }
- 
-.date_calendar{
+
+.date_calendar {
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  gap: 5px !important;
   align-items: center;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: right !important;
 }
+
+/* General style for the month select */
+/* General style for the month select */
+.monthSelect {
+  margin-top: 0;
+  border-radius: 8px;
+  outline: none;
+  color: #3e3e3e;
+  width: 140px;
+  height: 36px;
+  font-size: 12px;
+  border: 1px solid #d0d5dd;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 20px; /* Space for the arrow */
+  background-color: #ffffff;
+  box-shadow: none;
+  position: relative;
+  appearance: none;
+}
+
+/* Arrow in the dropdown */
+.monthSelect::after {
+  content: '▼'; /* Down arrow character */
+  font-size: 12px;
+  color: #3e3e3e;
+  position: absolute;
+  right: 10px;
+  pointer-events: none; /* Prevent interaction with the arrow */
+}
+
+/* Border will be none when the dropdown is open */
+.monthSelect:focus {
+  border: none;
+  box-shadow: none;
+}
+
+/* Focused state styling for border color when the dropdown is not open */
+.monthSelectFocus:focus-within {
+  border-color: #377cf6;
+  box-shadow: 0 0 0 1px #377cf6;
+  caret-color: #3e3e3e;
+}
+
+/* Placeholder styling */
+.placeholder {
+  color: #3e3e3e;
+}
+
+/* Option styling */
+.option {
+  font-size: 13px;
+  color: #3e3e3e;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: #ddebff;
+}
+
+.optionSelected {
+  background-color: #ffffff;
+}
+
+/* Single value styling */
+.singleValue {
+  color: #3e3e3e;
+}
+
+/* Menu styling */
+.menu {
+  width: 140px;
+  margin-top: 0px;
+}
+
+.indicatorSeparator {
+  display: none;
+}
+
+@media only screen and (max-width: 767px) {
+  .cardHeaderSecond span {
+    font-size: 14px;
+    text-align: left;
+  }
+  .monthSelect {
+    width: 80px;
+  }
+
+  .lead__datepicker_content {
+    position: absolute;
+
+    left: -140px;
+    z-index: 100;
+    background-color: var(--white-color);
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    top: 57px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .leadpagination {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
+

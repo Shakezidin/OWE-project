@@ -1,17 +1,27 @@
-import React, { SetStateAction, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PiSortAscendingLight } from 'react-icons/pi';
 import './index.css';
+
 interface propTypes {
   onChange?: (val: string) => void;
   default?: 'asc' | 'desc' | 'all';
 }
-const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
+
+const SortingDropDown = ({
+  default: defaultSort = '' as 'asc' | 'desc' | 'all',
+  onChange,
+}: propTypes) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all'>('asc');
+  const [isActive, setIsActive] = useState<'asc' | 'desc' | 'all' | ''>(
+    defaultSort
+  ); // no value selected by default
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
   const dropdownRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const elm = event.target as HTMLElement;
@@ -30,12 +40,13 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   return (
     <div className="relative drop-ref-container">
       <button
         onClick={toggleDropdown}
         ref={dropdownRef}
-        className={`flex items-center justify-center  sort_btn`}
+        className={`flex items-center justify-center sort_btn`}
       >
         <PiSortAscendingLight size={26} />
       </button>
@@ -43,11 +54,16 @@ const SortingDropDown = ({ default: defaultSort, onChange }: propTypes) => {
       {isDropdownOpen && (
         <div className="pr-dropdown">
           <ul>
-            {/* <li onClick={() => {
-              setIsActive("all")
-              setIsDropdownOpen(false)
-              onChange?.("all")
-            }} className={isActive === "all" ? "active_sorting" : ""} >All</li> */}
+            <li
+              onClick={() => {
+                setIsActive('all');
+                setIsDropdownOpen(false);
+                onChange?.('all');
+              }}
+              className={isActive === 'all' ? 'active_sorting' : ''}
+            >
+              All
+            </li>
             <li
               onClick={() => {
                 setIsActive('desc');

@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
@@ -38,27 +39,27 @@ func HandleArchiveSlackConfigRequest(resp http.ResponseWriter, req *http.Request
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in archive Slack Config request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := io.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from archive Slack Config request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &archiveSlackConfigReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal archive Slack Config request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal archive slack config request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal archive slack config request", http.StatusBadRequest, nil)
 		return
 	}
 	if len(archiveSlackConfigReq.RecordId) <= 0 {
 		err = fmt.Errorf("record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty,  archive failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Record Id is empty,  archive failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -69,10 +70,10 @@ func HandleArchiveSlackConfigRequest(resp http.ResponseWriter, req *http.Request
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateSlackConfigArchiveFuntion, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to archive slack_config in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to archive slack_config", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to archive slack_config", http.StatusInternalServerError, nil)
 		return
 	}
 
 	log.DBTransDebugTrace(0, "slack config archived with id Id: %v", archiveSlackConfigReq.RecordId)
-	FormAndSendHttpResp(resp, "Slack config archived Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Slack config archived Successfully", http.StatusOK, nil)
 }

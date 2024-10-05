@@ -16,8 +16,8 @@ import {
   startOfWeek,
   endOfWeek,
   startOfYear,
-  format
-} from "date-fns"
+  format,
+} from 'date-fns';
 import { FaUpload } from 'react-icons/fa';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -37,6 +37,7 @@ import {
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
 import useAuth, { AuthData } from '../../../hooks/useAuth';
 import { toZonedTime } from 'date-fns-tz';
+import { MdDownloading } from 'react-icons/md';
 
 // import 'jspdf-autotable';
 interface ILeaderBordUser {
@@ -104,9 +105,9 @@ function getUserTimezone() {
 
 // Function to get current date in the user's timezone
 function getCurrentDateInUserTimezone() {
-  const now = new Date()
-  const userTimezone = getUserTimezone()
-  return toZonedTime(now, userTimezone)
+  const now = new Date();
+  const userTimezone = getUserTimezone();
+  return toZonedTime(now, userTimezone);
 }
 const today = getCurrentDateInUserTimezone();
 const startOfThisWeek = startOfWeek(today, { weekStartsOn: 1 }); // assuming week starts on Monday, change to 0 if it starts on Sunday
@@ -128,16 +129,16 @@ const endOfLastWeek = endOfWeek(subDays(startOfThisWeek, 1), {
   weekStartsOn: 1,
 });
 
-
-
 const PeriodFilter = ({
   period,
   setPeriod,
   resetPage,
+  disabled,
 }: {
   period: DateRangeWithLabel | null;
   setPeriod: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
+  disabled?: boolean;
 }) => {
   const periodFilterOptions: DateRangeWithLabel[] = [
     {
@@ -181,6 +182,7 @@ const PeriodFilter = ({
               setPeriod(item);
               resetPage();
             }}
+            disabled={disabled}
             className={
               'leaderboard-data__btn' +
               (period?.label === item.label
@@ -206,6 +208,7 @@ const SelectableFilter = ({
   setSelected,
   resetPage,
   resetDealer,
+  disabled,
 }: {
   label: string;
   options: { value: string; label: string }[];
@@ -213,6 +216,7 @@ const SelectableFilter = ({
   setSelected: (newVal: string) => void;
   resetPage: () => void;
   resetDealer: (value: string) => void;
+  disabled?: boolean;
 }) => {
   return (
     <>
@@ -229,6 +233,7 @@ const SelectableFilter = ({
                     resetDealer(item.value);
                   }
                 }}
+                disabled={disabled}
                 className={
                   'leaderboard-data__btn' +
                   (item.value === selected
@@ -246,6 +251,7 @@ const SelectableFilter = ({
         <label>{label}</label>
         <Select
           options={options}
+          isDisabled={disabled}
           value={options.find((option) => option.value === selected)}
           onChange={(newVal) => {
             setSelected(newVal?.value ?? '');
@@ -311,10 +317,12 @@ const DateFilter = ({
   selected,
   setSelected,
   resetPage,
+  disabled,
 }: {
   selected: DateRangeWithLabel;
   setSelected: (newVal: DateRangeWithLabel) => void;
   resetPage: () => void;
+  disabled: boolean;
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedRanges, setSelectedRanges] = useState(
@@ -422,6 +430,7 @@ const DateFilter = ({
         <Select
           options={periodFilterOptions}
           value={selected}
+          isDisabled={disabled}
           // placeholder={selected?"Custom"}
           isSearchable={false}
           onChange={(value) => value && setSelected(value)}
@@ -501,9 +510,9 @@ const DateFilter = ({
           onClick={() => setShowCalendar((prev) => !prev)}
           style={{ lineHeight: 0 }}
         >
-          <Calendar />
+          <Calendar disabled={disabled} />
         </span>
-        {showCalendar && (
+        {showCalendar && !disabled && (
           <div className="leaderboard-data__datepicker-content">
             <DateRange
               editableDateInputs={true}
@@ -535,6 +544,8 @@ const DateFilter = ({
 const Table = ({
   setIsOpen,
   setDealer,
+  setPage,
+  page,
   active,
   setActive,
   setGroupBy,
@@ -549,10 +560,18 @@ const Table = ({
   count,
   resetDealer,
   isFetched,
+  tableData,
+  setIsLoading,
+  isLoading,
 }: {
   setIsOpen: Dispatch<SetStateAction<number>>;
   setDealer: Dispatch<SetStateAction<IDealer>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  isLoading: any;
+  setPage: Dispatch<SetStateAction<number>>;
+  page: number;
   active: string;
+  tableData: any;
   groupBy: string;
   setActive: Dispatch<SetStateAction<string>>;
   setGroupBy: Dispatch<SetStateAction<string>>;
@@ -561,17 +580,16 @@ const Table = ({
   setSelectedRangeDate: Dispatch<DateRangeWithLabel>;
   selectedRangeDate: DateRangeWithLabel;
   selectDealer: { label: string; value: string }[];
-  exportPdf: (fn: () => void) => void;
+  exportPdf: () => void;
   isExporting: boolean;
   count: number;
   resetDealer: (value: string) => void;
   isFetched: boolean;
 }) => {
-  const [leaderTable, setLeaderTable] = useState<ILeaderBordUser[]>([]);
-  const [page, setPage] = useState(1);
+  const [leaderTable, setLeaderTable] = useState<any>([]);
 
   const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [exportShow, setExportShow] = useState<boolean>(false);
   const [isExportingData, setIsExporting] = useState(false);
   const toggleExportShow = () => {
@@ -590,37 +608,14 @@ const Table = ({
     setAuthenticated(isPasswordChangeRequired === 'false');
   }, [authData]);
 
+  console.log(tableData, 'tableData');
+
   useEffect(() => {
-    if (isAuthenticated && isFetched) {
-      (async () => {
-        try {
-          setIsLoading(true);
-          const data = await postCaller('get_perfomance_leaderboard', {
-            type: activeHead,
-            dealer: selectDealer.map((item) => item.value),
-            page_size: itemsPerPage,
-            page_number: page,
-            start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
-            end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
-            sort_by: active,
-            group_by: groupBy,
-          });
-          if (data.status > 201) {
-            setIsLoading(false);
-            toast.error(data.message);
-            return;
-          }
-          if (data.data?.ap_ded_list) {
-            setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
-            setTotalCount(data?.dbRecCount);
-            setTotalStats(data.data);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      })();
+    if (tableData) {
+      // setLeaderTable(tableData.data.leader_board_list
+      // );
+      setLeaderTable(tableData?.data?.leader_board_list);
+      setTotalCount(tableData?.data?.dbRecCount);
     }
   }, [
     activeHead,
@@ -632,7 +627,52 @@ const Table = ({
     groupBy,
     isAuthenticated,
     isFetched,
+    tableData,
   ]);
+
+  // useEffect(() => {
+  //   if (isAuthenticated && isFetched) {
+  //     (async () => {
+  //       try {
+  //         setIsLoading(true);
+  //         const data = await postCaller('get_perfomance_leaderboard', {
+  //           type: activeHead,
+  //           dealer: selectDealer.map((item) => item.value),
+  //           page_size: itemsPerPage,
+  //           page_number: page,
+  //           start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
+  //           end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
+  //           sort_by: active,
+  //           group_by: groupBy,
+  //         });
+  //         if (data.status > 201) {
+  //           setIsLoading(false);
+  //           toast.error(data.message);
+  //           return;
+  //         }
+  //         if (data.data?.ap_ded_list) {
+  //           setLeaderTable(data.data?.ap_ded_list as ILeaderBordUser[]);
+  //           setTotalCount(data?.dbRecCount);
+  //           setTotalStats(data.data);
+  //         }
+  //       } catch (error) {
+  //         console.error(error);
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     })();
+  //   }
+  // }, [
+  //   activeHead,
+  //   active,
+  //   selectedRangeDate,
+  //   itemsPerPage,
+  //   page,
+  //   selectDealer,
+  //   groupBy,
+  //   isAuthenticated,
+  //   isFetched,
+  // ]);
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
@@ -653,9 +693,11 @@ const Table = ({
     setPage(page - 1);
   };
 
-  const sortedPage = leaderTable
-    .slice()
-    .sort((a, b) => (a.hightlight || b.hightlight ? -1 : 1));
+  const sortedPage = leaderTable?.slice().sort((a: any, b: any) => {
+    if (a.hightlight && !b.hightlight) return -1;
+    if (!a.hightlight && b.hightlight) return 1;
+    return 0;
+  });
 
   function formatSaleValue(value: any) {
     if (value === null || value === undefined) return ''; // Handle null or undefined values
@@ -666,7 +708,7 @@ const Table = ({
   }
   const role = authData?.role;
   const getTotal = (column: keyof ILeaderBordUser): number => {
-    return sortedPage.reduce((sum, item) => {
+    return sortedPage.reduce((sum: any, item: any) => {
       const value = item[column];
       // Ensure value is a number
       return sum + (typeof value === 'number' ? value : 0);
@@ -723,7 +765,7 @@ const Table = ({
     setIsExporting(true);
     const headers = [
       'UniqueID',
-      "Homeowner Name",
+      'Homeowner Name',
       'Homeowner Email',
       'Homeowner Phone',
       'Address',
@@ -740,7 +782,7 @@ const Table = ({
     ];
 
     const getAllLeaders = await postCaller('get_leaderboardcsvdownload', {
-      dealer_name: selectDealer.map((item) => item.value),
+      dealer_names: selectDealer.map((item) => item.value),
       start_date: format(selectedRangeDate.start, 'dd-MM-yyyy'),
       end_date: format(selectedRangeDate.end, 'dd-MM-yyyy'),
       group_by: groupBy,
@@ -782,7 +824,7 @@ const Table = ({
     setIsExporting(false);
     setExportShow(false);
   };
-
+  console.log(groupBy, 'groupBy');
   const getName = useMemo(() => {
     if (groupBy === 'primary_sales_rep') {
       return 'Sale Rep Name';
@@ -793,7 +835,8 @@ const Table = ({
       } else {
         return 'Partner Name';
       }
-    } if (groupBy === 'region') {
+    }
+    if (groupBy === 'region') {
       return 'Region Name';
     }
     if (groupBy === 'state') {
@@ -802,18 +845,29 @@ const Table = ({
     if (groupBy === 'team') {
       return 'Team Name';
     }
-    else {
+    if (groupBy === 'setter') {
+      return 'Setter Name';
+    } else {
       return 'Partner Name';
     }
-
   }, [role, authData, groupBy]);
   return (
     <div className="leaderboard-data" style={{ borderRadius: 12 }}>
       {/* <button onClick={handleGeneratePdf}>export json pdf</button> */}
       <div className="relative exportt" ref={wrapperReff}>
-        <div className="export-trigger" onClick={toggleExportShow}>
-          <FaUpload size={12} className="mr1" />
-          <span> Export </span>
+        <div
+          className="export-trigger overflow-hidden"
+          onClick={() => !isExporting && !isExportingData && toggleExportShow()}
+        >
+          {isExporting || isExportingData ? (
+            <MdDownloading className="downloading-animation" size={20} />
+          ) : (
+            <FaUpload size={12} className="mr1" />
+          )}
+          <span>
+            {' '}
+            {isExporting || isExportingData ? 'Exporting...' : 'Export'}{' '}
+          </span>
         </div>
         {exportShow && (
           <div className="export-opt">
@@ -821,7 +875,8 @@ const Table = ({
               className="export-btn"
               disabled={isExporting || isExportingData}
               onClick={() => {
-                exportPdf(toggleExportShow);
+                exportPdf();
+                setExportShow(false);
               }}
             >
               <span>Pdf</span>
@@ -829,7 +884,10 @@ const Table = ({
             <button
               disabled={isExportingData}
               className="export-btn export-btnn"
-              onClick={exportCsv}
+              onClick={() => {
+                exportCsv();
+                setExportShow(false);
+              }}
             >
               <span>Csv</span>
             </button>
@@ -902,6 +960,7 @@ const Table = ({
             options={rankByOptions}
             resetPage={resetPage}
             selected={active}
+            disabled={isLoading}
             resetDealer={resetDealer}
             setSelected={setActive}
           />
@@ -912,11 +971,13 @@ const Table = ({
             </div>
             <div className="flex items-center justify-end">
               <PeriodFilter
+                disabled={isLoading}
                 resetPage={resetPage}
                 period={selectedRangeDate}
                 setPeriod={setSelectedRangeDate}
               />
               <DateFilter
+                disabled={isLoading}
                 selected={selectedRangeDate}
                 resetPage={resetPage}
                 setSelected={setSelectedRangeDate}
@@ -927,6 +988,7 @@ const Table = ({
         <div className="leaderboard-data__filter-row">
           <SelectableFilter
             label="Group by:"
+            disabled={isLoading}
             options={
               role === 'Admin' ||
                 role === TYPE_OF_USER.DEALER_OWNER ||
@@ -944,14 +1006,14 @@ const Table = ({
 
           <div className="leaderbord-tab-container">
             <div
-              onClick={() => setActiveHead('kw')}
-              className={`tab ${activeHead === 'kw' ? 'activehead' : ''}`}
+              onClick={() => !isLoading && setActiveHead('kw')}
+              className={`tab  ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'kw' ? 'activehead' : ''}`}
             >
               KW
             </div>
             <div
-              onClick={() => setActiveHead('count')}
-              className={`tab ${activeHead === 'count' ? 'activehead' : ''}`}
+              onClick={() => isLoading && setActiveHead('count')}
+              className={`tab ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'count' ? 'activehead' : ''}`}
             >
               Count
             </div>
@@ -968,11 +1030,12 @@ const Table = ({
           >
             <MicroLoader />
           </div>
-        ) : sortedPage.length ? (
+        ) : sortedPage?.length ? (
           <>
-            {sortedPage.map((item) => {
+            {sortedPage?.map((item: any) => {
               return (
                 <div
+                  key={item.rank}
                   onClick={() => {
                     setIsOpen(item.rank);
                     setDealer((prev) => ({
@@ -1127,8 +1190,8 @@ const Table = ({
                     </div>
                   </td>
                 </tr>
-              ) : sortedPage.length ? (
-                sortedPage.map((item) => {
+              ) : sortedPage?.length ? (
+                sortedPage?.map((item: any) => {
                   return (
                     <tr
                       className="pointer"
@@ -1206,23 +1269,25 @@ const Table = ({
         </div>
       </div>
 
-      {leaderTable?.length > 0 ? (
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
-            {totalCount} item
-          </p>
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            paginate={paginate}
-            currentPageData={leaderTable}
-            goToNextPage={goToNextPage}
-            goToPrevPage={goToPrevPage}
-            perPage={itemsPerPage}
-          />
-        </div>
-      ) : null}
+      <div className="page-heading-container">
+        {leaderTable?.length > 0 && !isLoading ? (
+          <>
+            <p className="page-heading">
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {totalCount} item
+            </p>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              paginate={paginate}
+              currentPageData={leaderTable}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+            />
+          </>
+        ) : null}
+      </div>
     </div>
   );
 };

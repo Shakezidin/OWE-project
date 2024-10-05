@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 
@@ -36,28 +37,28 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in forgot password request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from forgot password request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &forgotPasswordReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal forgot Password request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal forgot Password request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal forgot Password request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(forgotPasswordReq.EmailId) <= 0 {
 		err = fmt.Errorf("Empty Email id Received")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Email Id Not Allowed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty Email Id Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -65,7 +66,7 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = GetUserInfo(forgotPasswordReq.EmailId)
 	if err != nil || data == nil {
 		log.FuncErrorTrace(0, "Invalid Email Id User doesnot exists err: %v", err)
-		FormAndSendHttpResp(resp, "Invalid Email Id", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid Email Id", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -74,41 +75,41 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 		otp, err = GenerateRandomNumWithLen(ForgotPasswordOTPLen)
 		if err != nil || len(otp) <= 0 {
 			log.FuncErrorTrace(0, "Failed to generate OTP err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to generate the OTP", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to generate the OTP", http.StatusInternalServerError, nil)
 			return
 		}
 
 		/* Send the OTP to user Email */
-			// subject := "OTP for Password Reset"
+		// subject := "OTP for Password Reset"
 
-	// plainTextContent := fmt.Sprintf("OTP for password reset. Valid for %v Minutes", ForgotPassOtpExpireInMin)
-	// 	htmlContent := fmt.Sprintf(`
-	//     <div style="
-	//         border: 2px solid black;
-	//         padding: 10px;
-	//         font-size: 24px;
-	//         width: fit-content;
-	//         margin: auto;
-	//     ">
-	//         <strong>%s</strong>
-	//     </div>
-	// `, otp)
+		// plainTextContent := fmt.Sprintf("OTP for password reset. Valid for %v Minutes", ForgotPassOtpExpireInMin)
+		// 	htmlContent := fmt.Sprintf(`
+		//     <div style="
+		//         border: 2px solid black;
+		//         padding: 10px;
+		//         font-size: 24px;
+		//         width: fit-content;
+		//         margin: auto;
+		//     ">
+		//         <strong>%s</strong>
+		//     </div>
+		// `, otp)
 		err = SendOTPToClient(forgotPasswordReq.EmailId, otp)
 		if err != nil || len(otp) <= 0 {
 			log.FuncErrorTrace(0, "Failed to send OTP to client err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to send the OTP to client", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to send the OTP to client", http.StatusInternalServerError, nil)
 			return
 		}
 
 		/* Store OTP in local buffer against user Email Id */
 		StoreForgotPassOTP(forgotPasswordReq.EmailId, otp)
-		FormAndSendHttpResp(resp, "OTP Generated Successfully", http.StatusOK, nil)
+		appserver.FormAndSendHttpResp(resp, "OTP Generated Successfully", http.StatusOK, nil)
 	} else {
 
 		if len(forgotPasswordReq.NewPassword) <= 0 || len(forgotPasswordReq.Otp) <= 0 {
 			err = fmt.Errorf("Empty New Password or OTP Received")
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "Empty New Password or OTP Not Allowed", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Empty New Password or OTP Not Allowed", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -116,7 +117,7 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 		if !ValidateForgotPassOTP(forgotPasswordReq.EmailId, forgotPasswordReq.Otp) {
 			err = fmt.Errorf("Invalid OTP provided")
 			log.FuncErrorTrace(0, "%v", err)
-			FormAndSendHttpResp(resp, "Invalid OTP", http.StatusUnauthorized, nil)
+			appserver.FormAndSendHttpResp(resp, "Invalid OTP", http.StatusUnauthorized, nil)
 			return
 		}
 
@@ -124,10 +125,10 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 		err = UpdatePassword(forgotPasswordReq.NewPassword, forgotPasswordReq.EmailId)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to update the new password", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to update the new password", http.StatusInternalServerError, nil)
 			return
 		}
 
-		FormAndSendHttpResp(resp, "Password Updated Successfully", http.StatusOK, nil)
+		appserver.FormAndSendHttpResp(resp, "Password Updated Successfully", http.StatusOK, nil)
 	}
 }

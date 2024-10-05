@@ -20,6 +20,7 @@ interface BannerProps {
   isShowDropdown: boolean;
   isGenerating: boolean;
   setIsFetched: React.Dispatch<SetStateAction<boolean>>;
+  isLoading: boolean;
 }
 
 const Banner: React.FC<BannerProps> = ({
@@ -28,6 +29,7 @@ const Banner: React.FC<BannerProps> = ({
   isShowDropdown,
   setIsFetched,
   isGenerating,
+  isLoading,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
@@ -197,7 +199,10 @@ const Banner: React.FC<BannerProps> = ({
       >
         <div
           className={
-            role !== 'Admin' && role !== TYPE_OF_USER.FINANCE_ADMIN && role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE && role !== TYPE_OF_USER.ACCOUNT_MANAGER
+            role !== 'Admin' &&
+            role !== TYPE_OF_USER.FINANCE_ADMIN &&
+            role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+            role !== TYPE_OF_USER.ACCOUNT_MANAGER
               ? 'radiant-anime'
               : 'radiant-anime-2'
           }
@@ -205,7 +210,10 @@ const Banner: React.FC<BannerProps> = ({
         <div className="banner-wrap">
           {/* left side  */}
           {!isGenerating ? (
-            <button className="edit-button" onClick={() => setShowModal(true)}>
+            <button
+              className={`edit-button ${isLoading ? 'edit-button-load' : ''}`}
+              onClick={() => !isLoading && setShowModal(true)}
+            >
               <LiaEdit className="edit-svg" />
               <p>Edit</p>
             </button>
@@ -219,10 +227,10 @@ const Banner: React.FC<BannerProps> = ({
               details?.dealer_logo && (
                 <img
                   src={
-                    (role === 'Admin' ||
-                      role === TYPE_OF_USER.FINANCE_ADMIN ||
-                      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                      role === TYPE_OF_USER.ACCOUNT_MANAGER)
+                    role === 'Admin' ||
+                    role === TYPE_OF_USER.FINANCE_ADMIN ||
+                    role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                    role === TYPE_OF_USER.ACCOUNT_MANAGER
                       ? details?.dealer_logo || ICONS.OWEBanner
                       : details?.dealer_logo || ICONS.BannerLogo
                   }
@@ -234,24 +242,24 @@ const Banner: React.FC<BannerProps> = ({
               role === TYPE_OF_USER.ADMIN ||
               role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
               role === TYPE_OF_USER.ACCOUNT_MANAGER) && (
-                <img
-                  src={
-                    (role === 'Admin' ||
-                      role === TYPE_OF_USER.FINANCE_ADMIN ||
-                      role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                      role === TYPE_OF_USER.ACCOUNT_MANAGER)
-                      ? details?.dealer_logo || ICONS.OWEBanner
-                      : details?.dealer_logo || ICONS.BannerLogo
-                  }
-                  style={{ maxWidth: 132, maxHeight: 180 }}
-                  alt="solar-name-icon"
-                />
-              )}
+              <img
+                src={
+                  role === 'Admin' ||
+                  role === TYPE_OF_USER.FINANCE_ADMIN ||
+                  role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+                  role === TYPE_OF_USER.ACCOUNT_MANAGER
+                    ? details?.dealer_logo || ICONS.OWEBanner
+                    : details?.dealer_logo || ICONS.BannerLogo
+                }
+                style={{ maxWidth: 132, maxHeight: 180 }}
+                alt="solar-name-icon"
+              />
+            )}
             <div className="">
               {role !== 'Admin' &&
-                role !== TYPE_OF_USER.FINANCE_ADMIN &&
-                role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-                role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+              role !== TYPE_OF_USER.FINANCE_ADMIN &&
+              role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
                 <h1 className="solar-heading">
                   {details?.daeler_name || 'N/A'}
                 </h1>
@@ -261,9 +269,9 @@ const Banner: React.FC<BannerProps> = ({
                 </h1>
               )}
               {role !== 'Admin' &&
-                role !== TYPE_OF_USER.FINANCE_ADMIN &&
-                role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-                role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+              role !== TYPE_OF_USER.FINANCE_ADMIN &&
+              role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+              role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
                 <div className="flex items-center ">
                   <img src={ICONS.OWEBannerLogo} alt="" />
                   <p className="left-ban-des">
@@ -275,17 +283,17 @@ const Banner: React.FC<BannerProps> = ({
           </div>
 
           {role !== 'Admin' &&
-            role !== TYPE_OF_USER.FINANCE_ADMIN &&
-            role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-            role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+          role !== TYPE_OF_USER.FINANCE_ADMIN &&
+          role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+          role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
             <div className="straight-line"></div>
           ) : null}
           {/* right side  */}
           <div className="flex items-center banner-right">
             {role !== 'Admin' &&
-              role !== TYPE_OF_USER.FINANCE_ADMIN &&
-              role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-              role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
+            role !== TYPE_OF_USER.FINANCE_ADMIN &&
+            role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+            role !== TYPE_OF_USER.ACCOUNT_MANAGER ? (
               <div className="banner-names flex flex-column">
                 <div>
                   <p className="owner-heading">Owner Name</p>
@@ -303,10 +311,10 @@ const Banner: React.FC<BannerProps> = ({
             ) : null}
             <div
               className={
-                (role !== 'Admin' &&
-                  role !== TYPE_OF_USER.FINANCE_ADMIN &&
-                  role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
-                  role !== TYPE_OF_USER.ACCOUNT_MANAGER)
+                role !== 'Admin' &&
+                role !== TYPE_OF_USER.FINANCE_ADMIN &&
+                role !== TYPE_OF_USER.ACCOUNT_EXCUTIVE &&
+                role !== TYPE_OF_USER.ACCOUNT_MANAGER
                   ? 'banner-trophy'
                   : 'user-trophy'
               }
@@ -341,7 +349,10 @@ const Banner: React.FC<BannerProps> = ({
         </div>
       </div>
 
-      {(role === 'Admin' || role === TYPE_OF_USER.FINANCE_ADMIN || role === TYPE_OF_USER.ACCOUNT_EXCUTIVE || role === TYPE_OF_USER.ACCOUNT_MANAGER) && (
+      {(role === 'Admin' ||
+        role === TYPE_OF_USER.FINANCE_ADMIN ||
+        role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+        role === TYPE_OF_USER.ACCOUNT_MANAGER) && (
         <div
           className="dealer-dropdown-filter"
           style={{ zIndex: 100 }}
@@ -349,12 +360,13 @@ const Banner: React.FC<BannerProps> = ({
         >
           {!isGenerating ? (
             <div
-              onClick={() => setIsOpen(!isOpen)}
-              className={`dealer-toggler pointer flex items-center ${isOpen ? 'open' : ''
-                }`}
+              onClick={() => !isLoading && setIsOpen(!isOpen)}
+              className={`dealer-toggler pointer flex items-center ${
+                isOpen ? 'open' : ''
+              } ${isLoading ? 'dealer-toggler-load' : ''}`}
             >
               <span>
-                {selectDealer?.length ?? "0"}{' '}
+                {selectDealer?.length ?? '0'}{' '}
                 <span>{selectDealer?.length > 1 ? 'Partners' : 'Partner'}</span>
               </span>
               <FaChevronDown className="ml1 fa-chevron-down" />
@@ -373,6 +385,7 @@ const Banner: React.FC<BannerProps> = ({
                   placeholder="Search Dealers"
                   style={{ width: '100%' }}
                   value={search}
+                  disabled={isLoading}
                   onChange={(e) => {
                     setSearch(e.target.value);
                     if (e.target.value.trim()) {
@@ -413,6 +426,7 @@ const Banner: React.FC<BannerProps> = ({
                   <input
                     type="checkbox"
                     style={{ flexShrink: 0 }}
+                    disabled={isLoading}
                     checked={selectDealer?.some(
                       (item) => item.value === option.value
                     )}

@@ -12,6 +12,9 @@ ALTER TABLE user_details
     ADD CONSTRAINT user_details_dealer_id_fkey
         FOREIGN KEY (dealer_id)
         REFERENCES v_dealer(id) ON DELETE SET NULL;
+        
+ALTER TABLE user_details
+DROP COLUMN podio_user;
 
 CREATE OR REPLACE FUNCTION create_new_user(
     p_name VARCHAR(255),
@@ -209,6 +212,7 @@ EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'An error occurred while creating the user: %', SQLERRM;
 END;
+<<<<<<< HEAD
 $$ LANGUAGE plpgsql;
 
 
@@ -290,3 +294,6 @@ EXCEPTION
         RAISE EXCEPTION 'Error updating record in user_details: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
+=======
+$$ LANGUAGE plpgsql;
+>>>>>>> dev
