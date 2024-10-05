@@ -153,8 +153,8 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                   </span>
                   <span className={classes.emailStyle}>
                     {leadData?.email_id}{' '}
-                    <span className={classes.verified}>
-                      <svg
+                    {/* <span className={classes.verified}> */}
+                      {/* <svg
                         className={classes.verifiedMarked}
                         width="13"
                         height="13"
@@ -182,9 +182,9 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
                             />
                           </clipPath>
                         </defs>
-                      </svg>{' '}
-                      Verified
-                    </span>
+                      </svg>{' '} */}
+                      {/* Verified
+                    </span> */}
                   </span>
                 </div>
               </div>

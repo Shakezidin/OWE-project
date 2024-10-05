@@ -185,8 +185,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     </span>
                     <span className={classes.emailStyle}>
                       {leadData?.email_id}{' '}
-                      <span className={classes.verified}>
-                        <svg
+                      {/* <span className={classes.verified}> */}
+                        {/* <svg
                           className={classes.verifiedMarked}
                           width="13"
                           height="13"
@@ -214,9 +214,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                               />
                             </clipPath>
                           </defs>
-                        </svg>{' '}
-                        <span className={classes.verifyLetter}> Verified</span>
-                      </span>
+                        </svg>{' '} */}
+                        {/* <span className={classes.verifyLetter}> Verified</span>
+                      </span> */}
                     </span>
                     <div>
                       {visibleDiv === 0 ||
