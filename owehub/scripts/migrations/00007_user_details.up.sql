@@ -264,7 +264,7 @@ BEGIN
 
  -- Get the dealer owner's user_id
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        SELECT partner_id INTO v_dealer_id
+        SELECT item_id INTO v_dealer_id
         FROM sales_partner_dbhub_schema 
         WHERE sales_partner_name = p_dealer_name;
 
