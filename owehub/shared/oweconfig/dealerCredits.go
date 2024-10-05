@@ -29,11 +29,7 @@ type DealerCredits struct {
 	DealerCreditsData []DealerCreditsStruct
 }
 
-var (
-	DlrCreditRespCfg DealerCredits
-)
-
-func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.DataRequestBody) (err error) {
+func GetDealerCreditsConfigFromDB(dataFilter models.DataRequestBody) (dlrCreditRespCfg DealerCredits, err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -41,8 +37,11 @@ func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.D
 		filter       string
 		tableName    string = db.TableName_DealerCreditsCommisionsDbhub
 	)
-	log.EnterFn(0, "LoadDealerCreditsConfigFromDB")
-	defer func() { log.ExitFn(0, "LoadDealerCreditsConfigFromDB", err) }()
+	log.EnterFn(0, "GetDealerCreditsConfigFromDB")
+	defer func() { log.ExitFn(0, "GetDealerCreditsConfigFromDB", err) }()
+
+	/* Reset the DealerCreditsData slice */
+	dlrCreditRespCfg.DealerCreditsData = dlrCreditRespCfg.DealerCreditsData[:0]
 
 	query = `SELECT * FROM ` + tableName
 
@@ -54,16 +53,13 @@ func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.D
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
 		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
-		return err
+		return dlrCreditRespCfg, err
 	}
 
 	if len(data) == 0 {
 		err = fmt.Errorf("No Data found in DB for DealerCredits Configuration.")
-		return err
+		return dlrCreditRespCfg, err
 	}
-
-	/* Reset the DealerCreditsData slice */
-	dlrCreds.DealerCreditsData = dlrCreds.DealerCreditsData[:0]
 
 	for _, item := range data {
 		DealerCreditsStructList := DealerCreditsStruct{
@@ -78,8 +74,8 @@ func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.D
 			Notes:        getString(item, "notes"),
 		}
 
-		dlrCreds.DealerCreditsData = append(dlrCreds.DealerCreditsData, DealerCreditsStructList)
+		dlrCreditRespCfg.DealerCreditsData = append(dlrCreditRespCfg.DealerCreditsData, DealerCreditsStructList)
 	}
 
-	return err
+	return dlrCreditRespCfg, err
 }

@@ -29,6 +29,7 @@ func HandleGetFinanceTypesConfigRequest(resp http.ResponseWriter, req *http.Requ
 		err         error
 		dataReq     models.DataRequestBody
 		RecordCount int
+		finTypesCgf oweconfig.FinanceTypes
 	)
 
 	log.EnterFn(0, "HandleGetFinanceTypesConfigRequest")
@@ -56,16 +57,14 @@ func HandleGetFinanceTypesConfigRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	/*Load Condiguration from database*/
-	err = oweconfig.FinanceTypesRespCfg.LoadFinanceTypesConfigFromDB(dataReq)
+	finTypesCgf, err = oweconfig.GetFinanceTypesConfigFromDB(dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to load dealer finance types config from DB. err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to load dealer finance types config from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	finTypesCgf := oweconfig.FinanceTypesRespCfg.FinanceTypesData
-
-	RecordCount = int(len(finTypesCgf))
+	RecordCount = int(len(finTypesCgf.FinanceTypesData))
 	log.FuncDebugTrace(0, "Dealer finance types Config Total No of Records: %v", RecordCount)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
@@ -75,13 +74,13 @@ func HandleGetFinanceTypesConfigRequest(resp http.ResponseWriter, req *http.Requ
 			if end > RecordCount { // Adjust the end index if it exceeds the total count
 				end = RecordCount
 			}
-			finTypesCgf = finTypesCgf[offset:end]
+			finTypesCgf.FinanceTypesData = finTypesCgf.FinanceTypesData[offset:end]
 		} else {
-			finTypesCgf = []oweconfig.FinanceTypesStruct{}
+			finTypesCgf.FinanceTypesData = []oweconfig.FinanceTypesStruct{}
 		}
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of finance types List fetched : %v list %+v", len(finTypesCgf), finTypesCgf)
+	log.FuncInfoTrace(0, "Number of finance types List fetched : %v list %+v", len(finTypesCgf.FinanceTypesData), finTypesCgf)
 	appserver.FormAndSendHttpResp(resp, "Dealer finance types Data", http.StatusOK, finTypesCgf, int64(RecordCount))
 }

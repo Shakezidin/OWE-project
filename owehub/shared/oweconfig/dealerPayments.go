@@ -32,11 +32,7 @@ type DealerPayments struct {
 	DealerPaymentsData []DealerPaymentsStruct
 }
 
-var (
-	DlrPaymentRespCfg DealerPayments
-)
-
-func (dlrPayment *DealerPayments) LoadDealerPaymentsConfigFromDB(dataFilter models.DataRequestBody) (err error) {
+func GetDealerPaymentsConfigFromDB(dataFilter models.DataRequestBody) (dlrPaymentRespCfg DealerPayments, err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -44,8 +40,11 @@ func (dlrPayment *DealerPayments) LoadDealerPaymentsConfigFromDB(dataFilter mode
 		filter       string
 		tableName    string = db.TableName_DealerPaymentsCommisionsDbhub
 	)
-	log.EnterFn(0, "LoadDealerPaymentsConfigFromDB")
-	defer func() { log.ExitFn(0, "LoadDealerPaymentsConfigFromDB", err) }()
+	log.EnterFn(0, "GetDealerPaymentsConfigFromDB")
+	defer func() { log.ExitFn(0, "GetDealerPaymentsConfigFromDB", err) }()
+
+	/* Reset the DealerPaymentsData slice */
+	dlrPaymentRespCfg.DealerPaymentsData = dlrPaymentRespCfg.DealerPaymentsData[:0]
 
 	query = `SELECT * FROM ` + tableName
 
@@ -57,16 +56,13 @@ func (dlrPayment *DealerPayments) LoadDealerPaymentsConfigFromDB(dataFilter mode
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
 		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
-		return err
+		return dlrPaymentRespCfg, err
 	}
 
 	if len(data) == 0 {
-		err = fmt.Errorf("No Data found in DB for DealerPayments Configuration.")
-		return err
+		err = fmt.Errorf("no data found in db for dealer payments configuration")
+		return dlrPaymentRespCfg, err
 	}
-
-	/* Reset the DealerPaymentsData slice */
-	dlrPayment.DealerPaymentsData = dlrPayment.DealerPaymentsData[:0]
 
 	for _, item := range data {
 		DealerPaymentsStructList := DealerPaymentsStruct{
@@ -83,8 +79,8 @@ func (dlrPayment *DealerPayments) LoadDealerPaymentsConfigFromDB(dataFilter mode
 			Transaction:   getString(item, "transaction"),
 			Notes:         getString(item, "notes"),
 		}
-		dlrPayment.DealerPaymentsData = append(dlrPayment.DealerPaymentsData, DealerPaymentsStructList)
+		dlrPaymentRespCfg.DealerPaymentsData = append(dlrPaymentRespCfg.DealerPaymentsData, DealerPaymentsStructList)
 	}
 
-	return err
+	return dlrPaymentRespCfg, err
 }

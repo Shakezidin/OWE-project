@@ -34,11 +34,7 @@ type FinanceSchedule struct {
 	FinanceScheduleData []FinanceScheduleStruct
 }
 
-var (
-	FinanceSchedRespCfg FinanceSchedule
-)
-
-func (financeSched *FinanceSchedule) LoadFinanceScheduleConfigFromDB(dataFilter models.DataRequestBody) (err error) {
+func GetFinanceScheduleConfigFromDB(dataFilter models.DataRequestBody) (financeSchedRespCfg FinanceSchedule, err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -46,8 +42,11 @@ func (financeSched *FinanceSchedule) LoadFinanceScheduleConfigFromDB(dataFilter 
 		filter       string
 		tableName    string = db.TableName_FinanceScheduleCommisionsDbhub
 	)
-	log.EnterFn(0, "LoadFinanceScheduleConfigFromDB")
-	defer func() { log.ExitFn(0, "LoadFinanceScheduleConfigFromDB", err) }()
+	log.EnterFn(0, "GetFinanceScheduleConfigFromDB")
+	defer func() { log.ExitFn(0, "GetFinanceScheduleConfigFromDB", err) }()
+
+	/* Reset the FinanceScheduleData slice */
+	financeSchedRespCfg.FinanceScheduleData = financeSchedRespCfg.FinanceScheduleData[:0]
 
 	query = `SELECT * FROM ` + tableName
 
@@ -59,16 +58,13 @@ func (financeSched *FinanceSchedule) LoadFinanceScheduleConfigFromDB(dataFilter 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
 		log.FuncErrorTrace(0, "Failed to get  Partnet Pay Schedule data from DB err: %v", err)
-		return err
+		return financeSchedRespCfg, err
 	}
 
 	if len(data) == 0 {
 		err = fmt.Errorf("No Data found in DB for PartnerPaySchedule Configuration.")
-		return err
+		return financeSchedRespCfg, err
 	}
-
-	/* Reset the FinanceScheduleData slice */
-	financeSched.FinanceScheduleData = financeSched.FinanceScheduleData[:0]
 
 	for _, item := range data {
 		FinanceScheduleStructList := FinanceScheduleStruct{
@@ -88,8 +84,8 @@ func (financeSched *FinanceSchedule) LoadFinanceScheduleConfigFromDB(dataFilter 
 			NoEndDateCanaryH: getString(item, "no_end_date_canary_h"),
 		}
 
-		financeSched.FinanceScheduleData = append(financeSched.FinanceScheduleData, FinanceScheduleStructList)
+		financeSchedRespCfg.FinanceScheduleData = append(financeSchedRespCfg.FinanceScheduleData, FinanceScheduleStructList)
 	}
 
-	return err
+	return financeSchedRespCfg, err
 }

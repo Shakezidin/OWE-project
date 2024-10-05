@@ -36,11 +36,7 @@ type PartnerPaySchedule struct {
 	PartnerPayScheduleData []PartnerPayScheduleStruct
 }
 
-var (
-	PartnerPaySchedRespCfg PartnerPaySchedule
-)
-
-func (partnerPaySched *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB(dataFilter models.DataRequestBody) (err error) {
+func GetPartnerPayScheduleConfigFromDB(dataFilter models.DataRequestBody) (partnerPaySchedRespCfg PartnerPaySchedule, err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -48,8 +44,11 @@ func (partnerPaySched *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB(da
 		filter       string
 		tableName    string = db.TableName_SalesPartnerPayScheduleCommisionsDbhub
 	)
-	log.EnterFn(0, "LoadPartnerPayScheduleConfigFromDB")
-	defer func() { log.ExitFn(0, "LoadPartnerPayScheduleConfigFromDB", err) }()
+	log.EnterFn(0, "GetPartnerPayScheduleConfigFromDB")
+	defer func() { log.ExitFn(0, "GetPartnerPayScheduleConfigFromDB", err) }()
+
+	/* Reset the PartnerPayScheduleData slice */
+	partnerPaySchedRespCfg.PartnerPayScheduleData = partnerPaySchedRespCfg.PartnerPayScheduleData[:0]
 
 	query = `SELECT * FROM ` + tableName
 
@@ -61,16 +60,13 @@ func (partnerPaySched *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB(da
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
 		log.FuncErrorTrace(0, "Failed to get  Partnet Pay Schedule data from DB err: %v", err)
-		return err
+		return partnerPaySchedRespCfg, err
 	}
 
 	if len(data) == 0 {
 		err = fmt.Errorf("No Data found in DB for PartnerPaySchedule Configuration.")
-		return err
+		return partnerPaySchedRespCfg, err
 	}
-
-	/* Reset the PartnerPayScheduleData slice */
-	partnerPaySched.PartnerPayScheduleData = partnerPaySched.PartnerPayScheduleData[:0]
 
 	for _, item := range data {
 		PartnerPayScheduleStructList := PartnerPayScheduleStruct{
@@ -92,8 +88,8 @@ func (partnerPaySched *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB(da
 			ActiveDateEnd:                getTime(item, "active_date_end"),
 		}
 
-		partnerPaySched.PartnerPayScheduleData = append(partnerPaySched.PartnerPayScheduleData, PartnerPayScheduleStructList)
+		partnerPaySchedRespCfg.PartnerPayScheduleData = append(partnerPaySchedRespCfg.PartnerPayScheduleData, PartnerPayScheduleStructList)
 	}
 
-	return err
+	return partnerPaySchedRespCfg, err
 }

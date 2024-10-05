@@ -29,11 +29,7 @@ type DealerOverride struct {
 	DealerOverrideData []DealerOverrideStruct
 }
 
-var (
-	DlrOverrideRespCfg DealerOverride
-)
-
-func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB(dataFilter models.DataRequestBody) (err error) {
+func GetDealerOverrideConfigFromDB(dataFilter models.DataRequestBody) (dlrOverrideRespCfg DealerOverride, err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -41,8 +37,11 @@ func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB(dataFilter models.
 		filter       string
 		tableName    string = db.TableName_DealerOverrideCommisionsDbhub
 	)
-	log.EnterFn(0, "LoadDealerOverrideConfigFromDB")
-	defer func() { log.ExitFn(0, "LoadDealerOverrideConfigFromDB", err) }()
+	log.EnterFn(0, "GetDealerOverrideConfigFromDB")
+	defer func() { log.ExitFn(0, "GetDealerOverrideConfigFromDB", err) }()
+
+	/* Reset the DealerOverrideData slice */
+	dlrOverrideRespCfg.DealerOverrideData = dlrOverrideRespCfg.DealerOverrideData[:0]
 
 	query = `SELECT * FROM ` + tableName
 
@@ -54,16 +53,13 @@ func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB(dataFilter models.
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
 		log.FuncErrorTrace(0, "Failed to get dealer override data from DB err: %v", err)
-		return err
+		return dlrOverrideRespCfg, err
 	}
 
 	if len(data) == 0 {
-		err = fmt.Errorf("No Data found in DB for DealerOverride Configuration.")
-		return err
+		err = fmt.Errorf("no data found in db for dealeroverride configuration")
+		return dlrOverrideRespCfg, err
 	}
-
-	/* Reset the DealerOverrideData slice */
-	dlrOvrd.DealerOverrideData = dlrOvrd.DealerOverrideData[:0]
 
 	for _, item := range data {
 		DealerOverrideStructList := DealerOverrideStruct{
@@ -77,8 +73,8 @@ func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB(dataFilter models.
 			EndDate:   getTime(item, "end_date"),
 		}
 
-		dlrOvrd.DealerOverrideData = append(dlrOvrd.DealerOverrideData, DealerOverrideStructList)
+		dlrOverrideRespCfg.DealerOverrideData = append(dlrOverrideRespCfg.DealerOverrideData, DealerOverrideStructList)
 	}
 
-	return err
+	return dlrOverrideRespCfg, err
 }

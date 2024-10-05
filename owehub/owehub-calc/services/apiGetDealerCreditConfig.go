@@ -26,9 +26,10 @@ import (
  ******************************************************************************/
 func HandleGetDealerCreditConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err         error
-		dataReq     models.DataRequestBody
-		RecordCount int
+		err          error
+		dataReq      models.DataRequestBody
+		RecordCount  int
+		dlrCreditCgf oweconfig.DealerCredits
 	)
 
 	log.EnterFn(0, "HandleGetDealerCreditConfigRequest")
@@ -56,16 +57,14 @@ func HandleGetDealerCreditConfigRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	/*Load Condiguration from database*/
-	err = oweconfig.DlrCreditRespCfg.LoadDealerCreditsConfigFromDB(dataReq)
+	dlrCreditCgf, err = oweconfig.GetDealerCreditsConfigFromDB(dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to load dealer credit config from DB. err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to load dealer credit config from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	dlrCreditCgf := oweconfig.DlrCreditRespCfg.DealerCreditsData
-
-	RecordCount = int(len(dlrCreditCgf))
+	RecordCount = int(len(dlrCreditCgf.DealerCreditsData))
 	log.FuncDebugTrace(0, "Dealer Credit Config Total No of Records: %v", RecordCount)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
@@ -75,13 +74,13 @@ func HandleGetDealerCreditConfigRequest(resp http.ResponseWriter, req *http.Requ
 			if end > RecordCount { // Adjust the end index if it exceeds the total count
 				end = RecordCount
 			}
-			dlrCreditCgf = dlrCreditCgf[offset:end]
+			dlrCreditCgf.DealerCreditsData = dlrCreditCgf.DealerCreditsData[offset:end]
 		} else {
-			dlrCreditCgf = []oweconfig.DealerCreditsStruct{}
+			dlrCreditCgf.DealerCreditsData = []oweconfig.DealerCreditsStruct{}
 		}
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealer credit List fetched : %v list %+v", len(dlrCreditCgf), dlrCreditCgf)
+	log.FuncInfoTrace(0, "Number of dealer credit List fetched : %v list %+v", len(dlrCreditCgf.DealerCreditsData), dlrCreditCgf)
 	appserver.FormAndSendHttpResp(resp, "Dealer Credit Data", http.StatusOK, dlrCreditCgf, int64(RecordCount))
 }

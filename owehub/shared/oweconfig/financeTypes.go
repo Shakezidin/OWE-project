@@ -46,11 +46,7 @@ type FinanceTypes struct {
 	FinanceTypesData []FinanceTypesStruct
 }
 
-var (
-	FinanceTypesRespCfg FinanceTypes
-)
-
-func (finType *FinanceTypes) LoadFinanceTypesConfigFromDB(dataFilter models.DataRequestBody) (err error) {
+func GetFinanceTypesConfigFromDB(dataFilter models.DataRequestBody) (financeTypesRespCfg FinanceTypes, err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -58,8 +54,11 @@ func (finType *FinanceTypes) LoadFinanceTypesConfigFromDB(dataFilter models.Data
 		filter       string
 		tableName    string = db.TableName_FinanceTypesCommisionsDbhub
 	)
-	log.EnterFn(0, "LoadFinanceTypesConfigFromDB")
-	defer func() { log.ExitFn(0, "LoadFinanceTypesConfigFromDB", err) }()
+	log.EnterFn(0, "GetFinanceTypesConfigFromDB")
+	defer func() { log.ExitFn(0, "GetFinanceTypesConfigFromDB", err) }()
+
+	/* Reset the FinanceTypesData slice */
+	financeTypesRespCfg.FinanceTypesData = financeTypesRespCfg.FinanceTypesData[:0]
 
 	query = `SELECT * FROM ` + tableName
 
@@ -71,16 +70,13 @@ func (finType *FinanceTypes) LoadFinanceTypesConfigFromDB(dataFilter models.Data
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
 		log.FuncErrorTrace(0, "Failed to get  Partnet Pay Types data from DB err: %v", err)
-		return err
+		return financeTypesRespCfg, err
 	}
 
 	if len(data) == 0 {
 		err = fmt.Errorf("No Data found in DB for PartnerPayTypes Configuration.")
-		return err
+		return financeTypesRespCfg, err
 	}
-
-	/* Reset the FinanceTypesData slice */
-	finType.FinanceTypesData = finType.FinanceTypesData[:0]
 
 	for _, item := range data {
 		FinanceTypesStructList := FinanceTypesStruct{
@@ -111,8 +107,8 @@ func (finType *FinanceTypes) LoadFinanceTypesConfigFromDB(dataFilter models.Data
 			FinanceTypeUid:           getString(item, "finance_type_uid"),
 		}
 
-		finType.FinanceTypesData = append(finType.FinanceTypesData, FinanceTypesStructList)
+		financeTypesRespCfg.FinanceTypesData = append(financeTypesRespCfg.FinanceTypesData, FinanceTypesStructList)
 	}
 
-	return err
+	return financeTypesRespCfg, err
 }

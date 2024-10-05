@@ -26,9 +26,10 @@ import (
  ******************************************************************************/
 func HandleGetDealerPaymentConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err         error
-		dataReq     models.DataRequestBody
-		RecordCount int
+		err           error
+		dataReq       models.DataRequestBody
+		RecordCount   int
+		dlrPaymentCgf oweconfig.DealerPayments
 	)
 
 	log.EnterFn(0, "HandleGetDealerPaymentConfigRequest")
@@ -56,16 +57,14 @@ func HandleGetDealerPaymentConfigRequest(resp http.ResponseWriter, req *http.Req
 	}
 
 	/*Load Condiguration from database*/
-	err = oweconfig.DlrPaymentRespCfg.LoadDealerPaymentsConfigFromDB(dataReq)
+	dlrPaymentCgf, err = oweconfig.GetDealerPaymentsConfigFromDB(dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to load dealer payment config from DB. err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to load dealer payment config from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	dlrPaymentCgf := oweconfig.DlrPaymentRespCfg.DealerPaymentsData
-
-	RecordCount = int(len(dlrPaymentCgf))
+	RecordCount = int(len(dlrPaymentCgf.DealerPaymentsData))
 	log.FuncDebugTrace(0, "Dealer Payment Config Total No of Records: %v", RecordCount)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
@@ -75,13 +74,13 @@ func HandleGetDealerPaymentConfigRequest(resp http.ResponseWriter, req *http.Req
 			if end > RecordCount { // Adjust the end index if it exceeds the total count
 				end = RecordCount
 			}
-			dlrPaymentCgf = dlrPaymentCgf[offset:end]
+			dlrPaymentCgf.DealerPaymentsData = dlrPaymentCgf.DealerPaymentsData[offset:end]
 		} else {
-			dlrPaymentCgf = []oweconfig.DealerPaymentsStruct{}
+			dlrPaymentCgf.DealerPaymentsData = []oweconfig.DealerPaymentsStruct{}
 		}
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealer payment List fetched : %v list %+v", len(dlrPaymentCgf), dlrPaymentCgf)
+	log.FuncInfoTrace(0, "Number of dealer payment List fetched : %v list %+v", len(dlrPaymentCgf.DealerPaymentsData), dlrPaymentCgf)
 	appserver.FormAndSendHttpResp(resp, "Dealer payment Data", http.StatusOK, dlrPaymentCgf, int64(RecordCount))
 }

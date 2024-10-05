@@ -26,9 +26,10 @@ import (
  ******************************************************************************/
 func HandleGetDealerOverrideConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err         error
-		dataReq     models.DataRequestBody
-		RecordCount int
+		err            error
+		dataReq        models.DataRequestBody
+		RecordCount    int
+		dlrOverrideCgf oweconfig.DealerOverride
 	)
 
 	log.EnterFn(0, "HandleGetDealerOverrideConfigRequest")
@@ -56,16 +57,14 @@ func HandleGetDealerOverrideConfigRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	/*Load Condiguration from database*/
-	err = oweconfig.DlrOverrideRespCfg.LoadDealerOverrideConfigFromDB(dataReq)
+	dlrOverrideCgf, err = oweconfig.GetDealerOverrideConfigFromDB(dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to load dealer override config from DB. err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to load dealer override config from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	dlrOverrideCgf := oweconfig.DlrOverrideRespCfg.DealerOverrideData
-
-	RecordCount = int(len(dlrOverrideCgf))
+	RecordCount = int(len(dlrOverrideCgf.DealerOverrideData))
 	log.FuncDebugTrace(0, "Dealer override Config Total No of Records: %v", RecordCount)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
@@ -75,13 +74,13 @@ func HandleGetDealerOverrideConfigRequest(resp http.ResponseWriter, req *http.Re
 			if end > RecordCount { // Adjust the end index if it exceeds the total count
 				end = RecordCount
 			}
-			dlrOverrideCgf = dlrOverrideCgf[offset:end]
+			dlrOverrideCgf.DealerOverrideData = dlrOverrideCgf.DealerOverrideData[offset:end]
 		} else {
-			dlrOverrideCgf = []oweconfig.DealerOverrideStruct{}
+			dlrOverrideCgf.DealerOverrideData = []oweconfig.DealerOverrideStruct{}
 		}
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealer override List fetched : %v list %+v", len(dlrOverrideCgf), dlrOverrideCgf)
+	log.FuncInfoTrace(0, "Number of dealer override List fetched : %v list %+v", len(dlrOverrideCgf.DealerOverrideData), dlrOverrideCgf)
 	appserver.FormAndSendHttpResp(resp, "Dealer override Data", http.StatusOK, dlrOverrideCgf, int64(RecordCount))
 }

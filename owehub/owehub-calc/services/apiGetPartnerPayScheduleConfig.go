@@ -26,9 +26,10 @@ import (
  ******************************************************************************/
 func HandleGetPartnerPayScheduleConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err         error
-		dataReq     models.DataRequestBody
-		RecordCount int
+		err                error
+		dataReq            models.DataRequestBody
+		RecordCount        int
+		partnerPaySchedCgf oweconfig.PartnerPaySchedule
 	)
 
 	log.EnterFn(0, "HandleGetPartnerPayScheduleConfigRequest")
@@ -56,16 +57,14 @@ func HandleGetPartnerPayScheduleConfigRequest(resp http.ResponseWriter, req *htt
 	}
 
 	/*Load Condiguration from database*/
-	err = oweconfig.PartnerPaySchedRespCfg.LoadPartnerPayScheduleConfigFromDB(dataReq)
+	partnerPaySchedCgf, err = oweconfig.GetPartnerPayScheduleConfigFromDB(dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to load PartnerPaySchedule config from DB. err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to load PartnerPaySchedule config from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	partnerPaySchedCgf := oweconfig.PartnerPaySchedRespCfg.PartnerPayScheduleData
-
-	RecordCount = int(len(partnerPaySchedCgf))
+	RecordCount = int(len(partnerPaySchedCgf.PartnerPayScheduleData))
 	log.FuncDebugTrace(0, "PartnerPaySchedule Config Total No of Records: %v", RecordCount)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
@@ -75,13 +74,13 @@ func HandleGetPartnerPayScheduleConfigRequest(resp http.ResponseWriter, req *htt
 			if end > RecordCount { // Adjust the end index if it exceeds the total count
 				end = RecordCount
 			}
-			partnerPaySchedCgf = partnerPaySchedCgf[offset:end]
+			partnerPaySchedCgf.PartnerPayScheduleData = partnerPaySchedCgf.PartnerPayScheduleData[offset:end]
 		} else {
-			partnerPaySchedCgf = []oweconfig.PartnerPayScheduleStruct{}
+			partnerPaySchedCgf.PartnerPayScheduleData = []oweconfig.PartnerPayScheduleStruct{}
 		}
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of PartnerPaySchedule List fetched : %v list %+v", len(partnerPaySchedCgf), partnerPaySchedCgf)
+	log.FuncInfoTrace(0, "Number of PartnerPaySchedule List fetched : %v list %+v", len(partnerPaySchedCgf.PartnerPayScheduleData), partnerPaySchedCgf)
 	appserver.FormAndSendHttpResp(resp, "PartnerPaySchedule Data", http.StatusOK, partnerPaySchedCgf, int64(RecordCount))
 }

@@ -26,9 +26,10 @@ import (
  ******************************************************************************/
 func HandleGetFinanceScheduleConfigRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err         error
-		dataReq     models.DataRequestBody
-		RecordCount int
+		err            error
+		dataReq        models.DataRequestBody
+		RecordCount    int
+		finScheduleCgf oweconfig.FinanceSchedule
 	)
 
 	log.EnterFn(0, "HandleGetFinanceScheduleConfigRequest")
@@ -56,16 +57,14 @@ func HandleGetFinanceScheduleConfigRequest(resp http.ResponseWriter, req *http.R
 	}
 
 	/*Load Condiguration from database*/
-	err = oweconfig.FinanceSchedRespCfg.LoadFinanceScheduleConfigFromDB(dataReq)
+	finScheduleCgf, err = oweconfig.GetFinanceScheduleConfigFromDB(dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to load dealer finance schedule config from DB. err: %v", err)
 		appserver.FormAndSendHttpResp(resp, "Failed to load dealer finance schedule config from DB", http.StatusInternalServerError, nil)
 		return
 	}
 
-	finScheduleCgf := oweconfig.FinanceSchedRespCfg.FinanceScheduleData
-
-	RecordCount = int(len(finScheduleCgf))
+	RecordCount = int(len(finScheduleCgf.FinanceScheduleData))
 	log.FuncDebugTrace(0, "Dealer finance schedule Config Total No of Records: %v", RecordCount)
 
 	if dataReq.PageNumber > 0 && dataReq.PageSize > 0 {
@@ -75,13 +74,13 @@ func HandleGetFinanceScheduleConfigRequest(resp http.ResponseWriter, req *http.R
 			if end > RecordCount { // Adjust the end index if it exceeds the total count
 				end = RecordCount
 			}
-			finScheduleCgf = finScheduleCgf[offset:end]
+			finScheduleCgf.FinanceScheduleData = finScheduleCgf.FinanceScheduleData[offset:end]
 		} else {
-			finScheduleCgf = []oweconfig.FinanceScheduleStruct{}
+			finScheduleCgf.FinanceScheduleData = []oweconfig.FinanceScheduleStruct{}
 		}
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealer finance schedule List fetched : %v list %+v", len(finScheduleCgf), finScheduleCgf)
+	log.FuncInfoTrace(0, "Number of dealer finance schedule List fetched : %v list %+v", len(finScheduleCgf.FinanceScheduleData), finScheduleCgf)
 	appserver.FormAndSendHttpResp(resp, "Dealer finance schedule Data", http.StatusOK, finScheduleCgf, int64(RecordCount))
 }
