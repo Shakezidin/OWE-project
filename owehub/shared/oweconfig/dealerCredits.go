@@ -11,7 +11,6 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -40,13 +39,14 @@ func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.D
 		whereEleList []interface{}
 		query        string
 		filter       string
+		tableName    string = db.TableName_DealerCreditsCommisionsDbhub
 	)
 	log.EnterFn(0, "LoadDealerCreditsConfigFromDB")
 	defer func() { log.ExitFn(0, "LoadDealerCreditsConfigFromDB", err) }()
 
-	query = `SELECT * FROM ` + db.TableName_DealerCreditsCommisionsDbhub
+	query = `SELECT * FROM ` + tableName
 
-	filter, whereEleList = prepareDealerCreditFilters(db.TableName_DealerCreditsCommisionsDbhub, dataFilter, true)
+	filter, whereEleList = prepareConfigFilters(tableName, dataFilter, true)
 	if filter != "" {
 		query = query + filter
 	}
@@ -82,65 +82,4 @@ func (dlrCreds *DealerCredits) LoadDealerCreditsConfigFromDB(dataFilter models.D
 	}
 
 	return err
-}
-
-/******************************************************************************
- * FUNCTION:		prepareDealerCreditFilters
- * DESCRIPTION:     handler for prepare filter
- * INPUT:			resp, req
- * RETURNS:    		void
- ******************************************************************************/
-func prepareDealerCreditFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "prepareDealerCreditFilters")
-	defer func() { log.ExitFn(0, "prepareDealerCreditFilters", nil) }()
-
-	var filtersBuilder strings.Builder
-
-	/* Check if there are filters */
-	if len(dataFilter.Filters) > 0 {
-		filtersBuilder.WriteString(" WHERE ")
-		for i, filter := range dataFilter.Filters {
-			// Check if the column is a foreign key
-			column := filter.Column
-
-			// Determine the operator and value based on the filter operation
-			operator := GetFilterDBMappedOperator(filter.Operation)
-			value := filter.Data
-
-			// For "stw" and "edw" operations, modify the value with '%'
-			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
-				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
-			}
-
-			// Build the filter condition using correct db column name
-			if i > 0 {
-				filtersBuilder.WriteString(" AND ")
-			}
-			switch column {
-			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "customer":
-				filtersBuilder.WriteString(fmt.Sprintf("customer %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "credit_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("credit_amount %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "approved_by":
-				filtersBuilder.WriteString(fmt.Sprintf("approved_by %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "credit_date":
-				filtersBuilder.WriteString(fmt.Sprintf("credit_date %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			}
-		}
-	}
-
-	filters = filtersBuilder.String()
-
-	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
-	return filters, whereEleList
 }

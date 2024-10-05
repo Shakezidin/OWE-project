@@ -9,6 +9,7 @@ package oweconfig
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	models "OWEApp/shared/models"
 	"fmt"
 	"time"
 )
@@ -49,16 +50,23 @@ var (
 	FinanceTypesRespCfg FinanceTypes
 )
 
-func (finType *FinanceTypes) LoadFinanceTypesConfigFromDB() (err error) {
+func (finType *FinanceTypes) LoadFinanceTypesConfigFromDB(dataFilter models.DataRequestBody) (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
 		query        string
+		filter       string
+		tableName    string = db.TableName_FinanceTypesCommisionsDbhub
 	)
 	log.EnterFn(0, "LoadFinanceTypesConfigFromDB")
 	defer func() { log.ExitFn(0, "LoadFinanceTypesConfigFromDB", err) }()
 
-	query = `SELECT * FROM ` + db.TableName_FinanceTypesCommisionsDbhub
+	query = `SELECT * FROM ` + tableName
+
+	filter, whereEleList = prepareConfigFilters(tableName, dataFilter, true)
+	if filter != "" {
+		query = query + filter
+	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {

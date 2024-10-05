@@ -9,6 +9,7 @@ package oweconfig
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	models "OWEApp/shared/models"
 	"fmt"
 	"time"
 )
@@ -39,16 +40,23 @@ var (
 	PartnerPaySchedRespCfg PartnerPaySchedule
 )
 
-func (partnerPaySched *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB() (err error) {
+func (partnerPaySched *PartnerPaySchedule) LoadPartnerPayScheduleConfigFromDB(dataFilter models.DataRequestBody) (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
 		query        string
+		filter       string
+		tableName    string = db.TableName_SalesPartnerPayScheduleCommisionsDbhub
 	)
 	log.EnterFn(0, "LoadPartnerPayScheduleConfigFromDB")
 	defer func() { log.ExitFn(0, "LoadPartnerPayScheduleConfigFromDB", err) }()
 
-	query = `SELECT * FROM ` + db.TableName_SalesPartnerPayScheduleCommisionsDbhub
+	query = `SELECT * FROM ` + tableName
+
+	filter, whereEleList = prepareConfigFilters(tableName, dataFilter, true)
+	if filter != "" {
+		query = query + filter
+	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {

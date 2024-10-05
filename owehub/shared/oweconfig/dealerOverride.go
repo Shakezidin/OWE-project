@@ -9,6 +9,7 @@ package oweconfig
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	models "OWEApp/shared/models"
 	"fmt"
 	"time"
 )
@@ -32,16 +33,23 @@ var (
 	DlrOverrideRespCfg DealerOverride
 )
 
-func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB() (err error) {
+func (dlrOvrd *DealerOverride) LoadDealerOverrideConfigFromDB(dataFilter models.DataRequestBody) (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
 		query        string
+		filter       string
+		tableName    string = db.TableName_DealerOverrideCommisionsDbhub
 	)
 	log.EnterFn(0, "LoadDealerOverrideConfigFromDB")
 	defer func() { log.ExitFn(0, "LoadDealerOverrideConfigFromDB", err) }()
 
-	query = `SELECT * FROM ` + db.TableName_DealerOverrideCommisionsDbhub
+	query = `SELECT * FROM ` + tableName
+
+	filter, whereEleList = prepareConfigFilters(tableName, dataFilter, true)
+	if filter != "" {
+		query = query + filter
+	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
