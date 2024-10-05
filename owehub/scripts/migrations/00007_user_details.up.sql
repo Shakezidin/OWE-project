@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS partner_details (
-    id INT PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     partner_code VARCHAR(255),
     partner_logo VARCHAR(255),
     bg_colour VARCHAR(255),
@@ -20,6 +20,9 @@ ALTER TABLE user_details
     ADD CONSTRAINT user_details_dealer_id_fkey
         FOREIGN KEY (dealer_id)
         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
+
+ALTER TABLE user_details
+    ALTER COLUMN dealer_id TYPE BIGINT;
 
 CREATE OR REPLACE FUNCTION create_new_user(
     p_name VARCHAR(255),
@@ -298,3 +301,5 @@ EXCEPTION
         RAISE EXCEPTION 'Error updating record in user_details: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
+
+COPY user_details (name,user_code,mobile_number,email_id,password,password_change_required,reporting_manager,dealer_id,role_id,user_status,user_designation,description,region,street_address,state,city,zipcode,country,tables_permissions,created_at,updated_at) FROM '/docker-entrypoint-initdb.d/user_details.csv' DELIMITER ',' CSV;
