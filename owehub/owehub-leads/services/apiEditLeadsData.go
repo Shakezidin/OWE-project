@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,21 +39,21 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in update request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal request: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -60,7 +61,7 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	if dataReq.LeadId <= 0 {
 		err = fmt.Errorf("invalid lead ID %d", dataReq.LeadId)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid lead ID, update failed", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid lead ID, update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -80,7 +81,7 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	if len(updateFields) == 0 {
 		err = fmt.Errorf("no fields provided to update")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "No fields provided to update", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No fields provided to update", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -91,15 +92,15 @@ func HandleEditLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update lead info: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update lead info", http.StatusInternalServerError, nil)
-		return
-	}
-	
-	if res == 0 {
-		log.FuncErrorTrace(0, "No rows updated for lead details: %v", err)
-		FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update lead info", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Lead info updated successfully", http.StatusOK, nil)
+	if res == 0 {
+		log.FuncErrorTrace(0, "No rows updated for lead details: %v", err)
+		appserver.FormAndSendHttpResp(resp, "No rows were updated", http.StatusInternalServerError, nil)
+		return
+	}
+
+	appserver.FormAndSendHttpResp(resp, "Lead info updated successfully", http.StatusOK, nil)
 }

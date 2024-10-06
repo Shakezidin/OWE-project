@@ -86,27 +86,10 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			query = "SELECT name as data FROM " + db.TableName_states
 		case "teams":
 			query = "SELECT team_name as data FROM " + db.TableName_teams
-		case "sub-dealer":
-			query = "SELECT sub_dealer as data FROM " + db.TableName_dealer_override
-			tableName = "sub-dealer"
-		case "source":
-			query = "SELECT name as data FROM " + db.TableName_source
-		case "adder_type":
-			query = "SELECT adder_type as data FROM " + db.TableName_adder_type
-		// case "owe_cost":
-		// 	query = "SELECT CAST(owe_cost AS VARCHAR) AS data FROM " + db.TableName_tier_loan_fee
-		case "tier":
-			query = "SELECT tier_name as data FROM " + db.TableName_tier
 		case "roles":
 			query = "SELECT role_name as data FROM " + db.TableName_user_roles
 		case "users":
 			query = "SELECT name as data FROM " + db.TableName_users_details
-		case "sale_type":
-			query = "SELECT type_name as data FROM " + db.TableName_sale_type
-		case "loan_type":
-			query = "SELECT product_code as data FROM " + db.TableName_loan_type
-		case "dealer":
-			query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer + " WHERE is_deleted = false"
 		case "dealer_name":
 			if role == string(types.RoleAccountManager) || role == string(types.RoleAccountExecutive) {
 				accountName, err := fetchAmAeName(email)
@@ -135,8 +118,6 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	LEFT JOIN pv_install_install_subcontracting_schema pis ON cs.unique_id = pis.customer_unique_id
 	where pis.pv_completion_date IS NOT NULL`
 			dbIndex = db.RowDataDBIndex
-		case "rep_type":
-			query = "SELECT rep_type as data FROM " + db.TableName_rep_type
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil

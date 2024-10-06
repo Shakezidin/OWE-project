@@ -504,6 +504,7 @@ const LeadManagementDashboard = () => {
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
   const isMobile = useMatchMedia('(max-width: 1024px)');
+  const [reschedule, setReschedule] = useState(false);
 
 
   const paginate = (pageNumber: number) => {
@@ -880,6 +881,7 @@ const LeadManagementDashboard = () => {
         leadId={leadId}
         refresh={refresh}
         setRefresh={setRefresh}
+        reschedule={reschedule}
       />
 
 
@@ -1259,12 +1261,13 @@ const LeadManagementDashboard = () => {
                             if (
                               !(e.target as HTMLElement).closest('label') &&
                               !(e.target as HTMLElement).closest(`.${styles.chevron_down}`)
-                            )  {
+                            ) {
                               if (
                                 currentFilter !== 'Declined' &&
                                 currentFilter !== 'Action Needed'
                               ) {
                                 handleOpenModal();
+                                setReschedule(false);
                               }
 
                             }
@@ -1290,7 +1293,7 @@ const LeadManagementDashboard = () => {
                               {lead.first_name} {lead.last_name}
                             </h2>
                             <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter}
+                              {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
                             </p>
                           </div>
                           <div className={styles.phone_number}>
@@ -1300,7 +1303,7 @@ const LeadManagementDashboard = () => {
                             <span>
                               {lead.email_id}
                             </span>
-                            
+
                           </div>
                           <div className={styles.address}>
                             {lead?.street_address
@@ -1321,6 +1324,7 @@ const LeadManagementDashboard = () => {
                               <button
                                 onClick={() => {
                                   handleOpenModal();
+                                  setReschedule(true);
                                 }}
                                 className={styles.rescheduleButton}
                               >
@@ -1349,6 +1353,7 @@ const LeadManagementDashboard = () => {
                               <button
                                 onClick={() => {
                                   handleOpenModal();
+                                  setReschedule(true);
                                 }}
                                 className={styles.rescheduleButton}
                               >
@@ -1384,7 +1389,7 @@ const LeadManagementDashboard = () => {
                             <div className={''}>
                               <span>
                                 {lead.email_id}
-                                
+
                               </span>
                             </div>
                             <div className={''}>
@@ -1428,6 +1433,7 @@ const LeadManagementDashboard = () => {
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
                 />
+          
               </div>
             </div>
           )}

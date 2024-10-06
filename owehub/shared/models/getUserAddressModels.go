@@ -1,5 +1,5 @@
 /**************************************************************************
- *	Function	: getTimelineSlaApiModels.go
+ *	Function	: getUserAddressApiModels.go
  *	DESCRIPTION : Files contains struct for get timeline sla type models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
@@ -25,7 +25,7 @@ type GetUserAddressData struct {
 	Latitute      float64 `json:"latitute"`
 	Longitude     float64 `json:"lognitude"`
 	ProjectStatus string  `json:"project_status"`
-	State         string `json:"state"`
+	State         string  `json:"state"`
 }
 
 type GetUserAddressList struct {

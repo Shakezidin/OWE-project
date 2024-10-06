@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/appointmentScheduler.css';
 import { timeSlots } from '../../../resources/static_data/Constant';
+import { toast } from 'react-toastify';
 
 interface AppointmentSchedulerProps {
   setVisibleDiv: (div: number) => void;
@@ -52,6 +53,7 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
             selected={selectedDate}
             onChange={handleDateChange}
             inline
+            
             renderCustomHeader={({
               date,
               decreaseMonth,
@@ -112,10 +114,10 @@ const AppointmentScheduler: React.FC<AppointmentSchedulerProps> = ({
       <div className="sendAppointmentBtn">
         <button
           onClick={() => {
-            if (selectedTime) {
-              setVisibleDiv(1);
+            if (selectedTime && selectedDate) {
+              setVisibleDiv(11);
             } else {
-              console.log('Please select a time before proceeding.');
+             toast.warn('Please select date & time before proceeding.');
             }
           }}
         >
