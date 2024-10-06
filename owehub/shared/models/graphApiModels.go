@@ -6,6 +6,10 @@
 
 package models
 
+import (
+	"time"
+)
+
 type OutlookEventRequest struct {
 	Subject               string
 	Body                  string
@@ -44,4 +48,24 @@ type EventCancellationRequest struct {
 	Comment   string // give reason why are you cancelling the event
 	EventId   string
 	OwnerMail string // This is the mail from which the event is created
+}
+
+type SubscriptionReq struct {
+	SubscriptionId                 string `json:"subscriptionId"`
+	SubscriptionExpirationDateTime string `json:"subscriptionExpirationDateTime"`
+	ChangeType                     string `json:"changeType"`
+	Resource                       string `json:"resource"`
+}
+
+type EventDetails struct {
+	Date            string
+	Day             string
+	StartTime       string
+	EndTime         string
+	StartDate       time.Time
+	EndDate         time.Time
+	TransactionID   string
+	EventId         string
+	SurveyorEntraId string
+	EventStatus string
 }
