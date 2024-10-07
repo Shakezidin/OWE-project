@@ -307,7 +307,8 @@ input[type='checkbox']:checked {
   background-color: #2979ff; /* Blue color */
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 8px 0;
+  width: 140px;
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer;
@@ -842,5 +843,13 @@ input[type='checkbox']:checked {
     gap: 10px;
     margin-top: 10px;
   }
+}
+
+.project_list {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
 }
 

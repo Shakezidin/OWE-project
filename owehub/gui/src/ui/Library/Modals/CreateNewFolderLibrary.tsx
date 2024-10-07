@@ -3,6 +3,9 @@ import classes from './styles/createfolderlibrary.module.css';
 import { useNavigate } from 'react-router-dom';
 import { ICONS } from '../../../resources/icons/Icons';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface propGets {
@@ -25,20 +28,22 @@ const CreateNewFolderLibrary: React.FC<propGets> = ({ setIsVisibleNewFolder}) =>
  
   const createFolder=async()=>{
     try {
-      const token = ""
+      const token = Cookies.get("myToken");
       const response=await axios.post("https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/root/children",{"name":folderName,"folder":{}},{
         headers:{
           Authorization:`Bearer ${token}`
         }
       })
        console.log(response)
+       toast.success(`Folder "${folderName}" created successfully!`);
       // alert(`Folder Name: ${response}`);
     } catch (error) {
       console.error(error);
+       toast.error('Failed to create folder. Please try again.');
       
     }
 
-    // setIsVisibleNewFolder(false);
+  setIsVisibleNewFolder(false);
   }
 
 
