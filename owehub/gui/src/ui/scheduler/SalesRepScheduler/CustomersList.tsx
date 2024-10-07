@@ -109,6 +109,13 @@ const CustomersList = () => {
   const [sortBy, setSortBy] = useState('New To Old');
   const isSmallScreen = useMatchMedia('(max-width:968px)');
   const isMobile = useMatchMedia('(max-width:450px)');
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  const toggleCalendar = () => {
+    setIsCalendarOpen(!isCalendarOpen);
+  };
+
+
   const getCustomers = async () => {
     try {
       setIsPending(true);
@@ -174,15 +181,21 @@ const CustomersList = () => {
         className={`flex items-center justify-between ${styles.schedule_header}`}
       >
         <h1 className={styles.schedule_detail}>Schedule</h1>
-        <button className={styles.calendar_btn_mobile}>
+
+        {isSmallScreen && (
+          <button className={styles.calendar_btn_mobile} onClick={toggleCalendar}>
           <CalendarIcon />
         </button>
+        )}
+        
       </div>
 
       <div className={`flex justify-between  `}>
-        <div
-          className={` ${selectedCustomer === -1 ? styles.show_mobile : styles.hide_mobile} ${styles.customer_wrapper_list}`}
-        >
+      <div
+  className={`${
+    selectedCustomer === -1 && !isCalendarOpen ? styles.show_mobile : styles.hide_mobile
+  } ${styles.customer_wrapper_list}`}
+>
           <div className={styles.sr_top}>
             <div className={styles.pending}>
               <>
@@ -358,8 +371,10 @@ const CustomersList = () => {
         </div>
 
         <div
-          className={` ${selectedCustomer > -1 ? styles.show_mobile : styles.hide_mobile} bg-white ${styles.calendar_wrapper}`}
-        >
+  className={`${
+    (selectedCustomer > -1 || isCalendarOpen) ? styles.show_mobile : styles.hide_mobile
+  } bg-white ${styles.calendar_wrapper}`}
+>
           {!isSurveyScheduled ? (
             <>
               <div className="flex items-center justify-between mb3">
@@ -373,6 +388,7 @@ const CustomersList = () => {
                     setSelectedTime(undefined);
                     setAvailableSlots([]);
                     setSelectedCustomer(-1);
+                    setIsCalendarOpen(false)
                   }}
                   className={`${styles.calendar_close_btn_mobile} ml2`}
                 >
