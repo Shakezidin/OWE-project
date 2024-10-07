@@ -84,7 +84,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  const dispatch = useDispatch();
+  console.log(action, "do something new")
 
   const handleSendAppointment = async () => {
     setLoad(true);
@@ -173,6 +173,81 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     };
   }, []);
 
+  const handleCloseWon = async () => {
+    setLoad(true);
+    try {
+
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 5,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        setVisibleDiv(5);
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
+    }
+  }
+
+  const [reason, setReason] = useState('')
+  const [reasonError, setReasonError] = useState('');
+
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    if (name === 'reason') {
+      if (value.trim() !== '') {
+        setReason(value);
+        setReasonError(''); // Clear any previous error message
+      } else {
+        setReason('');
+        setReasonError('Reason cannot be empty'); // Set an error message
+      }
+    }
+  };
+
+  const handleCloseLost = async () => {
+    if (reason.trim() === '') {
+      setReasonError('Reason cannot be empty');
+      return;
+    }
+
+    setLoad(true);
+    try {
+      const response = await postCaller(
+        'update_lead_status',
+        {
+          leads_id: leadId,
+          status_id: 5,
+          reason: reason
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Status Updated Successfully');
+        HandleModal();
+        setReason('');
+      } else if (response.status >= 201) {
+        toast.warn(response.message);
+      }
+      setLoad(false);
+    } catch (error) {
+      setLoad(false);
+      console.error('Error submitting form:', error);
+    }
+  };
+
   // Function to create project, design, and proposal in sequence
 
   const handleCreateProposal = async () => {
@@ -240,77 +315,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
       HandleModal();
     }
   };
-
-  const handleCloseWon = async () => {
-    setLoad(true);
-    try {
-
-      const response = await postCaller(
-        'update_lead_status',
-        {
-          leads_id: leadId,
-          status_id: 5,
-        },
-        true
-      );
-
-      if (response.status === 200) {
-        toast.success('Status Updated Successfully');
-        setVisibleDiv(5);
-      } else if (response.status >= 201) {
-        toast.warn(response.message);
-      }
-      setLoad(false);
-    } catch (error) {
-      setLoad(false);
-      console.error('Error submitting form:', error);
-    }
-  }
-
-  const [reason, setReason] = useState('')
-  const [reasonError, setReasonError] = useState('');
-
-  const handleInputChange = (event:any) => {
-    const { name, value } = event.target;
-    
-    if (name === 'reason') {
-      if (value.trim() !== '') {
-        setReason(value);
-        setReasonError(''); // Clear any previous error message
-      } else {
-        setReason('');
-        setReasonError('Reason cannot be empty'); // Set an error message
-      }
-    }
-  };
-
-  const handleCloseLost = async () => {
-    setLoad(true);
-    try {
-
-      const response = await postCaller(
-        'update_lead_status',
-        {
-          leads_id: leadId,
-          status_id: 5,
-        },
-        true
-      );
-
-      if (response.status === 200) {
-        toast.success('Status Updated Successfully');
-        setVisibleDiv(5);
-      } else if (response.status >= 201) {
-        toast.warn(response.message);
-      }
-      setLoad(false);
-    } catch (error) {
-      setLoad(false);
-      console.error('Error submitting form:', error);
-    }
-  }
-
-
 
   // const handleCreateProposal = async () => {
   //   setLoadingProposal(true);
@@ -624,9 +628,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       backgroundColor: '#3AC759',
                       color: '#FFFFFF',
                       border: 'none',
-                      pointerEvents: load ? 'none' : 'auto',
-                      opacity: load ? 0.6 : 1,
-                      cursor: load ? 'not-allowed' : 'pointer',
+                      pointerEvents: load || loading  ? 'none' : 'auto',
+                      opacity: load || loading ? 0.6 : 1,
+                      cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                   >
                     CLOSED WON
@@ -638,6 +642,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       backgroundColor: '#CD4040',
                       color: '#FFFFFF',
                       border: 'none',
+                      pointerEvents: load || loading  ? 'none' : 'auto',
+                      opacity: load || loading ? 0.6 : 1,
+                      cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                     className={classes.other}
                   >
@@ -649,6 +656,9 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       backgroundColor: '#D3D3D3',
                       color: '#888888',
                       border: 'none',
+                      pointerEvents: load || loading  ? 'none' : 'auto',
+                      opacity: load || loading ? 0.6 : 1,
+                      cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
                     className={classes.other}
                     onClick={() => setVisibleDiv(3)}
@@ -704,7 +714,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                         backgroundColor: '#377CF6',
                         color: '#FFFFFF',
                         border: 'none',
+                        pointerEvents: load ? 'none' : 'auto',
+                        opacity: load ? 0.6 : 1,
+                        cursor: load ? 'not-allowed' : 'pointer',
                       }}
+                      onClick={handleCloseLost}
                     >
                       SUBMIT
                     </button>

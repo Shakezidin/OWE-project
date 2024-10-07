@@ -364,6 +364,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+}
+
+.dropdownContainerModal input{
+  margin-top: 8px;
+  width: 80%;
+  border-radius: 8px;
+  height: 40px;
+  text-align: center;
 }
 
 .dropdownModal {
@@ -398,6 +407,8 @@
 .whydeniedDiv {
   display: flex;
   align-items: center;
+  text-align: center;
+  justify-content: center;
   
   margin-top: 6.7%;
 }
