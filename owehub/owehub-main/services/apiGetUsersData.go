@@ -281,7 +281,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Dealer
-		DealerLogo, dealerlogoOk := item["dealer_logo"].(string)
+		DealerLogo, dealerlogoOk := item["partner_logo"].(string)
 		if !dealerlogoOk || DealerLogo == "" {
 			DealerLogo = ""
 		}
@@ -291,6 +291,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if !bgcolouroOk || BgColour == "" {
 			BgColour = ""
 		}
+
+		// Dealer
+		DealerCode, dealerCodeOk := item["partner_code"].(string)
+		if !dealerCodeOk || DealerCode == "" {
+			DealerCode = ""
+		}
+
 		DBUsername, ok := item["db_username"].(string)
 		if !ok {
 			DBUsername = ""
@@ -329,6 +336,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Dealer:            Dealer,
 			DealerLogo:        DealerLogo,
 			BgColour:          BgColour,
+			DealerCode:        DealerCode,
 			TablePermission:   tablePermissions,
 		}
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
