@@ -89,6 +89,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
         }
 
         await handleSuccess?.();
+        setIsVisible(false)
         toast.success(`File "${file.name}" uploaded successfully!`);
       }));
     } catch (error) {
