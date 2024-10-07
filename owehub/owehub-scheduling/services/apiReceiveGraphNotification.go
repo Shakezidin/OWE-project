@@ -54,13 +54,16 @@ func HandleGetGraphNotificationRequest(resp http.ResponseWriter, req *http.Reque
 
 	//* When we are creating subscription, body value can be null
 
-	log.FuncInfoTrace(0, "BODY -> %v", string(respBody))
+	log.FuncInfoTrace(0, "BODY 1 -> %v", string(respBody))
 
-	if len(respBody) > 0 {
+	if len(string(respBody)) > 0 {
+		log.FuncInfoTrace(0, "BODY 2 -> %v", string(respBody))
 		err = json.Unmarshal(respBody, &subscriptionBody)
 		if err != nil {
 			log.FuncErrorTrace(0, "Error unmarshalling subscription response: %v", err)
 		}
+
+		log.FuncInfoTrace(0, "SUB BODY %v -> ", subscriptionBody)
 		err = routingBasedOnChangeType(subscriptionBody.ChangeType, subscriptionBody.Resource)
 		if err != nil {
 			log.FuncErrorTrace(0, "Error routing requests: %v", err)
@@ -80,7 +83,7 @@ func HandleGetGraphNotificationRequest(resp http.ResponseWriter, req *http.Reque
 
 /**************************************************************************
 * File			: routingBasedOnChangeType.go
-* DESCRIPTION	: 
+* DESCRIPTION	:
 * DATE			: 28-Aug-2024
 **************************************************************************/
 func routingBasedOnChangeType(changeType, resource string) error {
@@ -92,12 +95,14 @@ func routingBasedOnChangeType(changeType, resource string) error {
 		OwnerMail: entraId,
 	}
 
+	log.FuncInfoTrace(0, "REQUEST -> %v -> ", request)
 	eventTable, err := outlook.GetOutlookEvent(request)
 	if err != nil {
 		log.FuncErrorTrace(0, "Error getting event details: %v", err)
 		return err
 	}
 
+	log.FuncInfoTrace(0, "EVENT -> %v -> ", eventTable)
 	eventDetails, err := ParseEventDetails(eventTable)
 	if err != nil {
 		log.FuncErrorTrace(0, "Error parsing event details: %v", err)
@@ -137,7 +142,7 @@ func routingBasedOnChangeType(changeType, resource string) error {
 
 /**************************************************************************
 * File			: ParseEventDetails.go
-* DESCRIPTION	: 
+* DESCRIPTION	:
 * DATE			: 28-Aug-2024
 **************************************************************************/
 func ParseEventDetails(event graphmodels.Eventable) (*models.EventDetails, error) {
@@ -178,7 +183,7 @@ func ParseEventDetails(event graphmodels.Eventable) (*models.EventDetails, error
 
 /**************************************************************************
 * File			: getEventIdFromSubsReq.go
-* DESCRIPTION	: 
+* DESCRIPTION	:
 * DATE			: 28-Aug-2024
 **************************************************************************/
 func getEventIdFromSubsReq(resource string) string {
@@ -193,7 +198,7 @@ func getEventIdFromSubsReq(resource string) string {
 
 /**************************************************************************
 * File			: getEntraIdFromResource.go
-* DESCRIPTION	: 
+* DESCRIPTION	:
 * DATE			: 28-Aug-2024
 **************************************************************************/
 func getEntraIdFromResource(resource string) string {

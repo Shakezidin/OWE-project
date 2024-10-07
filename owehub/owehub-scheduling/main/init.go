@@ -139,10 +139,10 @@ func init() {
 	var err error
 	defer func() {
 		if err != nil {
-			log.ConfInfoTrace(0, "Owe-Calculation Service Initialization failed. Exiting... %+v", err)
+			log.ConfInfoTrace(0, "Owe-Scheduling Service Initialization failed. Exiting... %+v", err)
 			os.Exit(1)
 		}
-		log.ConfDebugTrace(0, "Owe-Calculation Service Initialized Successfully")
+		log.ConfDebugTrace(0, "Owe-Scheduling Service Initialized Successfully")
 	}()
 	/* Initializing Logger package */
 	initLogger("OWEHUB-SCHEDULING", "-", "-", log.FUNCTRL, "VM", "/var/log/owe/owehub-scheduling.log", 100, 28, 3)

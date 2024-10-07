@@ -54,52 +54,52 @@ services:
     privileged: true
 
   ############## OWE HUB CALC #####################
-  service-owehub-calc:
-    restart: always
-    image: owehub-calc:v1
-    container_name: owehub-calc_1
-    networks:
-      owe_net:
-        ipv4_address: 172.30.0.213
-    ports:
-      - "31021:8080"
-    environment:
-      SELF_CFG_PATH: "json/"
-      ANLF_SVC_ADDR:
-      OAUTH2_SUPPORT: "NO"
-      OPEN_HTTP_STD_PORT: "NO"
-      HTTPS_SUPPORT: "NO"
-      HTTP_READ_HEADER_TIMEOUT: "10"
-    depends_on:
-      - service-postgres
-      - migrate
-    volumes:
-      - /var/log/owe/:/var/log/owe/
-    privileged: true
+  # service-owehub-calc:
+  #   restart: always
+  #   image: owehub-calc:v1
+  #   container_name: owehub-calc_1
+  #   networks:
+  #     owe_net:
+  #       ipv4_address: 172.30.0.213
+  #   ports:
+  #     - "31021:8080"
+  #   environment:
+  #     SELF_CFG_PATH: "json/"
+  #     ANLF_SVC_ADDR:
+  #     OAUTH2_SUPPORT: "NO"
+  #     OPEN_HTTP_STD_PORT: "NO"
+  #     HTTPS_SUPPORT: "NO"
+  #     HTTP_READ_HEADER_TIMEOUT: "10"
+  #   depends_on:
+  #     - service-postgres
+  #     - migrate
+  #   volumes:
+  #     - /var/log/owe/:/var/log/owe/
+  #   privileged: true
 
   ############## OWE HUB MAIN #####################
-  service-owehub-main:
-    restart: always
-    image: owehub-main:v1
-    container_name: owehub-main
-    networks:
-      owe_net:
-        ipv4_address: 172.30.0.212
-    ports:
-      - "31020:8080"
-    environment:
-      SELF_CFG_PATH: "json/"
-      ANLF_SVC_ADDR:
-      OAUTH2_SUPPORT: "NO"
-      OPEN_HTTP_STD_PORT: "NO"
-      HTTPS_SUPPORT: "NO"
-      HTTP_READ_HEADER_TIMEOUT: "10"
-    depends_on:
-      - service-postgres
-      - migrate
-    volumes:
-      - /var/log/owe/:/var/log/owe/
-    privileged: true
+  # service-owehub-main:
+  #   restart: always
+  #   image: owehub-main:v1
+  #   container_name: owehub-main
+  #   networks:
+  #     owe_net:
+  #       ipv4_address: 172.30.0.212
+  #   ports:
+  #     - "31020:8080"
+  #   environment:
+  #     SELF_CFG_PATH: "json/"
+  #     ANLF_SVC_ADDR:
+  #     OAUTH2_SUPPORT: "NO"
+  #     OPEN_HTTP_STD_PORT: "NO"
+  #     HTTPS_SUPPORT: "NO"
+  #     HTTP_READ_HEADER_TIMEOUT: "10"
+  #   depends_on:
+  #     - service-postgres
+  #     - migrate
+  #   volumes:
+  #     - /var/log/owe/:/var/log/owe/
+  #   privileged: true
 
   ############### OWE HUB UTILS #####################
   # service-owehub-utils:
@@ -126,28 +126,28 @@ services:
   #   privileged: true
 
   ############### OWE HUB LEADS #####################
-  service-owehub-leads:
-    restart: always
-    image: owehub-leads:v1
-    container_name: owehub-leads
-    networks:
-      owe_net:
-        ipv4_address: 172.30.0.215
-    ports:
-      - "31023:8080"
-    environment:
-      SELF_CFG_PATH: "json/"
-      ANLF_SVC_ADDR:
-      OAUTH2_SUPPORT: "NO"
-      OPEN_HTTP_STD_PORT: "NO"
-      HTTPS_SUPPORT: "NO"
-      HTTP_READ_HEADER_TIMEOUT: "10"
-    depends_on:
-      - service-postgres
-      - migrate
-    volumes:
-      - /var/log/owe/:/var/log/owe/
-    privileged: true
+  # service-owehub-leads:
+  #   restart: always
+  #   image: owehub-leads:v1
+  #   container_name: owehub-leads
+  #   networks:
+  #     owe_net:
+  #       ipv4_address: 172.30.0.215
+  #   ports:
+  #     - "31023:8080"
+  #   environment:
+  #     SELF_CFG_PATH: "json/"
+  #     ANLF_SVC_ADDR:
+  #     OAUTH2_SUPPORT: "NO"
+  #     OPEN_HTTP_STD_PORT: "NO"
+  #     HTTPS_SUPPORT: "NO"
+  #     HTTP_READ_HEADER_TIMEOUT: "10"
+  #   depends_on:
+  #     - service-postgres
+  #     - migrate
+  #   volumes:
+  #     - /var/log/owe/:/var/log/owe/
+  #   privileged: true
 
 networks:
   owe_net:
