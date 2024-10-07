@@ -46,7 +46,9 @@ const SortByLibrary: React.FC<SortByLibraryProps> = ({ onSort }) => {
         className={`${classes.logo_sortby_botton} ${isVisible ? classes.active : ''}`}
       >
         Sort by
-        <FaChevronDown className={`${classes.icon} ${isVisible ? classes.icon_active : ''}`} />
+        <FaChevronDown
+          className={`${classes.icon} ${isVisible ? classes.icon_active : ''}`}
+        />
       </button>
 
       {isVisible && (

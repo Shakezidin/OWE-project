@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -38,34 +39,34 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 	authenticatedEmail, ok := req.Context().Value("emailid").(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get emailid from context")
-		FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
 		return
 	}
 
 	reqBody, err = ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get leads count by status data req err:  %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get leads count by status request body err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	startDate, err := time.Parse("02-01-2006", dataReq.StartDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse start date err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to parse start date", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse start date", http.StatusBadRequest, nil)
 		return
 	}
 	endDate, err := time.Parse("02-01-2006", dataReq.EndDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse end date err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to parse end date", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to parse end date", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -82,7 +83,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 				ON leads_info.status_id = leads_status.status_id 
 				AND leads_info.updated_at BETWEEN $2 AND $3
 				AND leads_info.is_archived = false
-				AND (leads_info.status_id != 2 OR leads_info.appointment_date < CURRENT_TIMESTAMP)
+				AND (leads_info.status_id != 2 OR leads_info.appointment_date > CURRENT_TIMESTAMP)
 			GROUP BY leads_status.status_id
 			HAVING leads_status.status_id NOT IN (5, 6) -- Excluding WON & LOST
 		) grp INNER JOIN leads_status s ON s.status_id = grp.status_id
@@ -91,7 +92,7 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 
 	if err != nil || len(data) <= 0 {
 		log.FuncErrorTrace(0, "Failed to get leads count by status with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get leads count by status", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -141,5 +142,5 @@ func HandleGetLeadsCountByStatusRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	log.FuncDebugTrace(0, "Retrieved leads count by status: %v", apiResponse.Leads)
-	FormAndSendHttpResp(resp, "Get leads count by status", http.StatusOK, apiResponse)
+	appserver.FormAndSendHttpResp(resp, "Get leads count by status", http.StatusOK, apiResponse)
 }

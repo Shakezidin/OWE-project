@@ -14,6 +14,7 @@ import (
 	"OWEApp/shared/types"
 	"encoding/json"
 	"io/ioutil"
+	"strings"
 
 	"fmt"
 	"net/http"
@@ -97,7 +98,7 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 
 	tableName := db.ViewName_ConsolidatedDataView
 
-	filter, whereEleList = PrepareCalenderFilters(tableName, dataReq, SaleRepList)
+	filter, whereEleList = PrepareCalenderCsvFilters(tableName, dataReq, SaleRepList)
 
 	if filter != "" {
 		queryWithFiler = query + filter
@@ -117,4 +118,81 @@ func HandleGetCalenderCsvDownloadRequest(resp http.ResponseWriter, req *http.Req
 
 	log.FuncInfoTrace(0, "Number of calender csv download List fetched : %v list %+v", 1, data)
 	appserver.FormAndSendHttpResp(resp, "calender csv download Data", http.StatusOK, data, RecordCount)
+}
+
+func PrepareCalenderCsvFilters(tableName string, dataFilter models.GetCalenderDataReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareCalenderCsvFilters")
+	defer func() { log.ExitFn(0, "PrepareCalenderCsvFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false
+
+	// // Start constructing the WHERE clause if the date range is provided
+	// if dataFilter.StartDate != "" && dataFilter.EndDate != "" {
+	// 	startDate, _ := time.Parse("02-01-2006", dataFilter.StartDate)
+	// 	endDate, _ := time.Parse("02-01-2006", dataFilter.EndDate)
+
+	// 	endDate = endDate.Add(24*time.Hour - time.Second)
+
+	// 	whereEleList = append(whereEleList,
+	// 		startDate.Format("02-01-2006 00:00:00"),
+	// 		endDate.Format("02-01-2006 15:04:05"),
+	// 	)
+
+	// 	filtersBuilder.WriteString(fmt.Sprintf(" WHERE contract_date BETWEEN TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS') AND TO_TIMESTAMP($%d, 'DD-MM-YYYY HH24:MI:SS')", len(whereEleList)-1, len(whereEleList)))
+	// 	whereAdded = true
+	// }
+
+	// Add sales representative filter
+	if len(saleRepList) > 0 {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+			whereAdded = true
+		}
+
+		filtersBuilder.WriteString(" cs.primary_sales_rep IN (")
+		for i, sale := range saleRepList {
+			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+			whereEleList = append(whereEleList, sale)
+
+			if i < len(saleRepList)-1 {
+				filtersBuilder.WriteString(", ")
+			}
+		}
+		filtersBuilder.WriteString(")")
+	}
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND ")
+	} else {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true
+	}
+	// Add the always-included filters
+	filtersBuilder.WriteString(` cs.unique_id IS NOT NULL
+			AND cs.unique_id <> ''
+			AND scs.contracted_system_size_parent IS NOT NULL
+			AND scs.contracted_system_size_parent > 0`)
+
+	if len(dataFilter.ProjectStatus) > 0 {
+		// Prepare the values for the IN clause
+		var statusValues []string
+		for _, val := range dataFilter.ProjectStatus {
+			statusValues = append(statusValues, fmt.Sprintf("'%s'", val))
+		}
+		// Join the values with commas
+		statusList := strings.Join(statusValues, ", ")
+
+		// Append the IN clause to the filters
+		filtersBuilder.WriteString(fmt.Sprintf(` AND project_status IN (%s)`, statusList))
+	} else {
+		filtersBuilder.WriteString(` AND cs.project_status IN ('ACTIVE')`)
+	}
+
+	filters = filtersBuilder.String()
+
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	return filters, whereEleList
 }

@@ -26,13 +26,14 @@ const DeleteFileModal: React.FC<propGet> = ({ setIsVisible, onDelete }) => {
           </div>
         </div>
         <div className={classes.survey_button}>
-          <button
-            className={classes.self}
-            onClick={() => setIsVisible(false)}
-          >
+          <button className={classes.self} onClick={() => setIsVisible(false)}>
             Cancel
           </button>
-          <button id="otherButtonId" className={classes.other} onClick={handleDelete}>
+          <button
+            id="otherButtonId"
+            className={classes.other}
+            onClick={handleDelete}
+          >
             Delete
           </button>
         </div>

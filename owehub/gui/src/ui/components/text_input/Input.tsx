@@ -75,9 +75,10 @@ const Input: FC<InputProps> = ({
 
   return (
     <div className="input-wrapper">
- {label && (
-      <label className={`inputLabel ${labelClassName}`}>{label}</label>
-    )}      <div className={`input-inner-view ${innerViewClassName}`}>
+      {label && (
+        <label className={`inputLabel ${labelClassName}`}>{label}</label>
+      )}{' '}
+      <div className={`input-inner-view ${innerViewClassName}`}>
         <input
           type={type}
           name={name}

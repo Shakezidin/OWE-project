@@ -18,7 +18,7 @@ import { format } from 'date-fns';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { CalendarIcon } from './components/Icons';
 import useMatchMedia from '../../../hooks/useMatchMedia';
-import { IoClose } from "react-icons/io5";
+import { IoClose } from 'react-icons/io5';
 interface ITimeSlot {
   id: number;
   time: string;
@@ -88,7 +88,7 @@ const customers = [
   },
   {
     roof_type: 'XYZ Rooftype',
-    home_owner: 'Jacob Martin',
+    home_owner: 'Jon Jones',
     customer_email: 'Alexsimon322@gmail.com',
     customer_phone_number: '(831) 544-1235',
     system_size: '450 KW',
@@ -170,16 +170,19 @@ const CustomersList = () => {
 
   return (
     <div className={styles.schedule_page_wrapper}>
-      <div className={`flex items-center justify-between ${styles.schedule_header}`}>
+      <div
+        className={`flex items-center justify-between ${styles.schedule_header}`}
+      >
         <h1 className={styles.schedule_detail}>Schedule</h1>
         <button className={styles.calendar_btn_mobile}>
           <CalendarIcon />
         </button>
-
       </div>
 
       <div className={`flex justify-between  `}>
-        <div className={` ${selectedCustomer === -1 ? styles.show_mobile : styles.hide_mobile} ${styles.customer_wrapper_list}`}>
+        <div
+          className={` ${selectedCustomer === -1 ? styles.show_mobile : styles.hide_mobile} ${styles.customer_wrapper_list}`}
+        >
           <div className={styles.sr_top}>
             <div className={styles.pending}>
               <>
@@ -224,7 +227,7 @@ const CustomersList = () => {
                       setCollapse(-1);
                     }
                   }}
-                  className={`${(selectedCustomer === index) ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${(isSmallScreen ? collapse === index : selectedCustomer === index) ? styles.selected_active_customer : ''} `}
+                  className={`${selectedCustomer === index ? `${styles.customer_details_selected} ${styles.open}` : styles.customer_details}  ${(isSmallScreen ? collapse === index : selectedCustomer === index) ? styles.selected_active_customer : ''} `}
                 >
                   <div className={styles.cust_det_top}>
                     <div className={styles.cust_name}>
@@ -234,7 +237,11 @@ const CustomersList = () => {
                           className={styles.name_icon}
                         >
                           <span>
-                            {customer.home_owner.slice(0, 2).toUpperCase()}
+                            {customer.home_owner
+                              .split(' ')
+                              .map((name) => name[0]) 
+                              .join('') 
+                              .toUpperCase()}{' '}
                           </span>
                         </div>
                         {customer.home_owner}
@@ -253,7 +260,8 @@ const CustomersList = () => {
                           size={22}
                           style={{
                             transform:
-                              (isSmallScreen || selectedCustomer === index) && collapse === index
+                              (isSmallScreen || selectedCustomer === index) &&
+                              collapse === index
                                 ? 'rotate(180deg)'
                                 : undefined,
                             transition: 'all 500ms',
@@ -295,56 +303,63 @@ const CustomersList = () => {
                       </div>
                     </div>
                   </div>
-                  {(isSmallScreen || (selectedCustomer === index)) && collapse === index && (
-                    <div className={styles.cust_det_bot}>
-                      {/* kilo Watt */}
-                      <div
-                        className={`${styles.grid_items} ${styles.grid_items}`}
-                      >
-                        <div className={styles.name_icon}>
-                          <img width={13} src={ICONS.scheduleDoor} alt="img" />
+                  {(isSmallScreen || selectedCustomer === index) &&
+                    collapse === index && (
+                      <div className={styles.cust_det_bot}>
+                        {/* kilo Watt */}
+                        <div
+                          className={`${styles.grid_items} ${styles.grid_items}`}
+                        >
+                          <div className={styles.name_icon}>
+                            <img
+                              width={13}
+                              src={ICONS.scheduleDoor}
+                              alt="img"
+                            />
+                          </div>
+                          <div className={styles.head_det}>
+                            <span> {customer.system_size} </span>
+                          </div>
                         </div>
-                        <div className={styles.head_det}>
-                          <span> {customer.system_size} </span>
+
+                        {/* rooftype */}
+                        <div
+                          className={`${styles.grid_items} ${styles.rooftype_align}`}
+                        >
+                          <div className={styles.name_icon}>
+                            <img
+                              style={{ filter: 'brightness(10)' }}
+                              src={ICONS.RoofType}
+                              width={15}
+                              alt="img"
+                            />
+                          </div>
+                          <div className={styles.head_det}>
+                            <span> {customer.roof_type} </span>
+                          </div>
+                        </div>
+
+                        {/* address */}
+
+                        <div className={`${styles.grid_items}`}>
+                          <div className={styles.name_icon}>
+                            <IoLocationOutline />
+                          </div>
+                          <div className={styles.head_det}>
+                            <span>{customer.address}</span>
+                          </div>
                         </div>
                       </div>
-
-                      {/* rooftype */}
-                      <div
-                        className={`${styles.grid_items} ${styles.rooftype_align}`}
-                      >
-                        <div className={styles.name_icon}>
-                          <img
-                            style={{ filter: 'brightness(10)' }}
-                            src={ICONS.RoofType}
-                            width={15}
-                            alt="img"
-                          />
-                        </div>
-                        <div className={styles.head_det}>
-                          <span> {customer.roof_type} </span>
-                        </div>
-                      </div>
-
-                      {/* address */}
-
-                      <div className={`${styles.grid_items}`}>
-                        <div className={styles.name_icon}>
-                          <IoLocationOutline />
-                        </div>
-                        <div className={styles.head_det}>
-                          <span>{customer.address}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               ))
             )}
           </div>
         </div>
 
-        <div className={` ${selectedCustomer > -1 ? styles.show_mobile : styles.hide_mobile} bg-white ${styles.calendar_wrapper}`}>
+        <div
+          className={` ${selectedCustomer > -1 ? styles.show_mobile : styles.hide_mobile} bg-white ${styles.calendar_wrapper}`}
+        >
           {!isSurveyScheduled ? (
             <>
               <div className="flex items-center justify-between mb3">
@@ -352,15 +367,17 @@ const CustomersList = () => {
                   Select Date & Time
                 </h5>
 
-                <button onClick={() => {
-                  setSelectedDate(undefined)
-                  setSelectedTime(undefined)
-                  setAvailableSlots([])
-                  setSelectedCustomer(-1)
-                }} className={`${styles.calendar_close_btn_mobile} ml2`}>
+                <button
+                  onClick={() => {
+                    setSelectedDate(undefined);
+                    setSelectedTime(undefined);
+                    setAvailableSlots([]);
+                    setSelectedCustomer(-1);
+                  }}
+                  className={`${styles.calendar_close_btn_mobile} ml2`}
+                >
                   <IoClose size={24} />
                 </button>
-
               </div>
               <div
                 className={`flex items-start ${styles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
@@ -368,7 +385,7 @@ const CustomersList = () => {
                 <DayPickerCalendar
                   dayCellClassName={styles.day_cell}
                   circleSize={isMobile ? 44 : 50}
-                  selectedDate = {selectedDate}
+                  selectedDate={selectedDate}
                   onClick={(e) => {
                     setSelectedDate(e.date);
 
@@ -380,11 +397,17 @@ const CustomersList = () => {
                   dayWithProgress={dayWithProgress}
                 />
                 {selectedDate ? (
-                  <div className="flex flex-column  justify-center" style={{ width: "100%" }}>
+                  <div
+                    className="flex flex-column  justify-center"
+                    style={{ width: '100%' }}
+                  >
                     <h5
                       className={`mb2 ${styles.time_slot_label}`}
-                      style={{ fontSize: 14, fontWeight: 500,textAlign:"center" }}
-
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 500,
+                        textAlign: 'center',
+                      }}
                     >
                       {' '}
                       Select time slot

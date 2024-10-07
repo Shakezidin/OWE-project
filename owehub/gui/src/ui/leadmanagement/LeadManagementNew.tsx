@@ -29,8 +29,6 @@ const LeadManagementNew = () => {
   const [zip_codeError, setZip_codeError] = useState('');
   const [load, setLoad] = useState(false);
 
-
-
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     const lettersAndSpacesPattern = /^[A-Za-z\s]+$/;
@@ -47,21 +45,17 @@ const LeadManagementNew = () => {
       }
     } else if (name === 'email_id') {
       const isValidEmail = validateEmail(value.trim());
-     
+
       if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
       } else {
         setEmailError('');
-   
       }
       const trimmedValue = value.replace(/\s/g, '');
       setFormData((prevData) => ({
         ...prevData,
         [name]: trimmedValue,
       }));
-
-
-
     } else if (name === 'zip_code') {
       const trimmedValueC = value.trim();
       const isValidZipCode = validateZipCode(trimmedValueC);
@@ -84,7 +78,6 @@ const LeadManagementNew = () => {
         [name]: value,
       }));
 
-  
       const err = { ...errors };
       delete err[name];
       setErrors(err);
@@ -136,15 +129,19 @@ const LeadManagementNew = () => {
     if (Object.keys(errors).length === 0) {
       setLoad(true);
       try {
-        const response = await postCaller('create_leads', {
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          phone_number: formData.mobile_number,
-          email_id: formData.email_id,
-          street_address: formData.address,
-          zipcode: '84101',
-          notes: formData.notes,
-        }, true);
+        const response = await postCaller(
+          'create_leads',
+          {
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            phone_number: formData.mobile_number,
+            email_id: formData.email_id,
+            street_address: formData.address,
+            zipcode: '84101',
+            notes: formData.notes,
+          },
+          true
+        );
         if (response.status === 200) {
           toast.success('Lead Created Succesfully');
           resetFormData();
@@ -157,6 +154,7 @@ const LeadManagementNew = () => {
         console.error('Error submitting form:', error);
       }
     }
+    navigate('/leadmng-dashboard')
   };
 
   const resetFormData = () => {
@@ -168,20 +166,20 @@ const LeadManagementNew = () => {
   };
 
   return (
-   <div className={classes.ScrollableDivRemove}>
-    <div className={`${classes.main_head} ${classes.form_header}`} >
-Create New Lead
+    <div className={classes.ScrollableDivRemove}>
+      <div className={`${classes.main_head} ${classes.form_header}`}>
+        Create New Lead
         <img src={ICONS.cross} alt="" onClick={handleBack} />
       </div>
-      <div className={`flex justify-between mt2 ${classes.h_screen}`}  >
-        <div className={classes.customer_wrapper_list} >
+      <div className={`flex justify-between mt2 ${classes.h_screen}`}>
+        <div className={classes.customer_wrapper_list}>
           <form onSubmit={handleSubmit}>
-            <div className="modal-body" >
-              <div className={classes.an_head} >Fill the Form</div>
-              <div className="scroll-user" >
-                <div className={classes.createProfileInputView} >
-                  <div className={classes.createProfileTextView} >
-                    <div className={classes.salrep_input_container} >
+            <div className="modal-body">
+              <div className={classes.an_head}>Fill the Form</div>
+              <div className="scroll-user">
+                <div className={classes.createProfileInputView}>
+                  <div className={classes.createProfileTextView}>
+                    <div className={classes.salrep_input_container}>
                       <div className={classes.srs_new_create}>
                         <Input
                           type="text"
@@ -332,8 +330,7 @@ Create New Lead
                               ? 'exceeded'
                               : ''
                           }`}
-                        >
-                        </p>
+                        ></p>
                       </div>
                     </div>
                   </div>
@@ -353,7 +350,7 @@ Create New Lead
           </form>
         </div>
       </div>
-   </div>
+    </div>
   );
 };
 

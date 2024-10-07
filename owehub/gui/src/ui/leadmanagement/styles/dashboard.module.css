@@ -25,14 +25,13 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   min-height: 200px;
 }
-.cardHeaderFirst{
+.cardHeaderFirst {
   padding: 18px 16px 16px 16px;
   /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
 }
 
 .cardHeader {
@@ -40,18 +39,16 @@
   /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
 }
-.cardHeaderSecond{
+.cardHeaderSecond {
   padding: 10.8px 16px 16px 16px;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: -7px;
-
-
 }
 
 .cardContent {
@@ -140,7 +137,6 @@
   transition: all 500ms;
 }
 
-
 .button:hover {
   background-color: #ddebff;
 }
@@ -207,7 +203,6 @@ table tbody tr:hover {
   background-color: #377cf6;
   cursor: pointer;
   transition: all 0.3s ease;
-  
 }
 .filtericon:hover {
   background-color: #005eff;
@@ -241,6 +236,13 @@ table tbody tr:hover {
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   /* margin-bottom: 16px; */
+}
+.ScheduleBtnNew{
+  width: 103px;
+
+}
+.ThreeDotsMinor{
+
 }
 
 .history_list_inner {
@@ -279,6 +281,7 @@ table tbody tr:hover {
 .email {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -304,7 +307,8 @@ input[type='checkbox']:checked {
   background-color: #2979ff; /* Blue color */
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 8px 0;
+  width: 140px;
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer;
@@ -473,9 +477,7 @@ input[type='checkbox']:checked {
     flex-wrap: wrap !important;
     justify-content: right !important;
     gap: 4px !important;
-  
   }
-
 }
 
 @media screen and (min-width: 349px) and (max-width: 405px) {
@@ -483,11 +485,9 @@ input[type='checkbox']:checked {
     display: flex !important;
     flex-direction: row !important;
     gap: 4px !important;
-    padding:  17px 16px 17px 35px !important;
-    margin:  17px 16px 17px 35px !important;
-  
+    padding: 17px 16px 17px 35px !important;
+    margin: 17px 16px 17px 35px !important;
   }
-
 }
 
 /* Smartphones in both portrait and landscape */
@@ -732,8 +732,6 @@ input[type='checkbox']:checked {
   justify-content: right !important;
 }
 
-
-
 /* General style for the month select */
 /* General style for the month select */
 .monthSelect {
@@ -817,13 +815,9 @@ input[type='checkbox']:checked {
 }
 
 @media only screen and (max-width: 767px) {
-
- 
-  .cardHeaderSecond span{
+  .cardHeaderSecond span {
     font-size: 14px;
     text-align: left;
-  
-
   }
   .monthSelect {
     width: 80px;
@@ -841,4 +835,21 @@ input[type='checkbox']:checked {
   }
 }
 
+@media screen and (max-width: 767px) {
+  .leadpagination {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
+
+.project_list {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+}
 

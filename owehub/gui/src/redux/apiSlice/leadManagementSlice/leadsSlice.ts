@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import {
+  getLeadById,
   getLeads,
 } from '../../apiActions/leadManagement/LeadManagementAction';
 
@@ -9,6 +10,7 @@ interface IState {
   isFormSubmitting: boolean;
   error: string;
   leadsData: any[];
+  leadDetail: any;
   isSuccess: boolean;
   totalcount: number;
 }
@@ -18,6 +20,7 @@ const initialState: IState = {
   isFormSubmitting: false,
   error: '',
   leadsData: [],
+  leadDetail: {},
   isSuccess: false,
   totalcount: 0,
 };
@@ -45,7 +48,20 @@ const leadManagementSlice = createSlice({
         state.error = action.payload as string;
         toast.error(action.payload as string);
       })
-      
+
+      .addCase(getLeadById.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getLeadById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.leadsData = action.payload.data || {};
+        state.totalcount = action.payload.dbRecCount || 0;
+      })
+      .addCase(getLeadById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+        toast.error(action.payload as string);
+      });
   },
 });
 

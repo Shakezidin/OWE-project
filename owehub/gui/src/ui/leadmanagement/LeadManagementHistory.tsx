@@ -7,6 +7,7 @@ import Pagination from '../components/pagination/Pagination';
 import useMatchMedia from '../../hooks/useMatchMedia';
 import { DateRange } from 'react-date-range';
 import { toZonedTime } from 'date-fns-tz';
+import Papa from 'papaparse';
 import {
   endOfWeek,
   format,
@@ -22,6 +23,9 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import DataNotFound from '../components/loader/DataNotFound';
 import MicroLoader from '../components/loader/MicroLoader';
+import { MdDownloading } from 'react-icons/md';
+import { LuImport } from 'react-icons/lu';
+import { Tooltip } from 'react-tooltip';
 
 interface HistoryTableProp {
   first_name: string;
@@ -40,7 +44,7 @@ interface HistoryTableProp {
   deal_won_date: string | null;
   deal_lost_date: string | null;
   proposal_sent_date: string | null;
-  timeline: any
+  timeline: any;
 }
 
 export type DateRangeWithLabel = {
@@ -225,8 +229,6 @@ const LeradManagementHistory = () => {
     };
   }, []);
 
- 
-
   const [selectedValue, setSelectedValue] = useState<number>(-1);
 
   const handleSortingChange = (value: number) => {
@@ -240,6 +242,8 @@ const LeradManagementHistory = () => {
   const { authData, saveAuthData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [historyTable, setHistoryTable] = useState<HistoryTableProp[]>([]);
+  const [refresh, setRefresh] = useState(1);
+  const [remove, setRemove] = useState(false);
   useEffect(() => {
     const isPasswordChangeRequired =
       authData?.isPasswordChangeRequired?.toString();
@@ -252,17 +256,21 @@ const LeradManagementHistory = () => {
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller('leads_history', {
-            leads_status: selectedValue,
-            start_date: selectedDates.startDate
-              ? format(selectedDates.startDate, 'dd-MM-yyyy')
-              : '',
-            end_date: selectedDates.endDate
-              ? format(selectedDates.endDate, 'dd-MM-yyyy')
-              : '',
-            page_size: itemsPerPage,
-            page_number: page,
-          },true);
+          const response = await postCaller(
+            'leads_history',
+            {
+              leads_status: selectedValue,
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+              page_size: itemsPerPage,
+              page_number: page,
+            },
+            true
+          );
 
           if (response.status > 201) {
             toast.error(response.data.message);
@@ -284,7 +292,7 @@ const LeradManagementHistory = () => {
 
       fetchData();
     }
-  }, [isAuthenticated, selectedDates, itemsPerPage, page, selectedValue]);
+  }, [isAuthenticated, selectedDates, itemsPerPage, page, selectedValue, refresh]);
 
   const handlePeriodChange = (
     selectedOption: SingleValue<DateRangeWithLabel>
@@ -301,9 +309,115 @@ const LeradManagementHistory = () => {
     }
   };
 
+  const deleteLeads = async () => {
+    setRemove(true);
+    try {
+      const response = await postCaller(
+        'delete_lead',
+        {
+          ids: selectedItemIds,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        setRefresh((prev) => (prev + 1));
+        toast.success('Lead History deleted successfully');
+        setRemove(false);
+        handleCrossClick();
+      } else {
+        toast.warn(response.message);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+    }
+    setRemove(false);
+  };
+
   const handlePerPageChange = (selectedPerPage: number) => {
     setItemPerPage(selectedPerPage);
     setPage(1); // Reset to the first page when changing items per page
+  };
+
+  const [exporting, setIsExporting] = useState(false);
+
+  const exportCsv = async () => {
+    setIsExporting(true);
+    const headers = [
+      'Leads ID',
+      'Status ID',
+      'First Name',
+      'Last Name',
+      'Phone Number',
+      'Email ID',
+      'Street Address',
+      'Zipcode',
+      'Deal Date',
+      'Deal Status',
+      'Appointment Scheduled',
+      'Appointment Accepted',
+      'Appointment Date',
+      'Deal Won',
+      'Proposal Sent',
+    ];
+
+    try {
+      const response = await postCaller(
+        'leads_history',
+        {
+          leads_status: selectedValue,
+          start_date: selectedDates.startDate
+            ? format(selectedDates.startDate, 'dd-MM-yyyy')
+            : '',
+          end_date: selectedDates.endDate
+            ? format(selectedDates.endDate, 'dd-MM-yyyy')
+            : '',
+          page_size: 0,
+          page_number: 0,
+        },
+        true
+      );
+
+      if (response.status > 201) {
+        toast.error(response.data.message);
+        setIsExporting(false);
+        return;
+      }
+
+      const csvData = response.data?.leads_history_list?.map?.((item: any) => [
+        item.leads_id,
+        item.status_id,
+        item.first_name,
+        item.last_name,
+        item.phone_number,
+        item.email_id,
+        item.street_address,
+        item.zipcode,
+        item.deal_date,
+        item.deal_status,
+        item.timeline.find((event: any) => event.label === 'Appoitment Scheduled')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Appointment Accepted')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Appointment Date')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Deal Won')?.date || '',
+        item.timeline.find((event: any) => event.label === 'Proposal Sent')?.date || '',
+      ]);
+
+      const csvRows = [headers, ...csvData];
+      const csvString = Papa.unparse(csvRows);
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'leads_history.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      toast.error('An error occurred while exporting the data.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const isMobile = useMatchMedia('(max-width: 767px)');
@@ -338,42 +452,50 @@ const LeradManagementHistory = () => {
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.startDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.startDate.getFullYear()}
                         {' - '}
                         {selectedDates.endDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.endDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.endDate.getFullYear()}
                       </span>
                     </div>
                   ) : null}
                 </div>
                 <div className={styles.filters}>
-                <div className={styles.lead__datepicker_wrapper}>
-                  {isCalendarOpen && (
-                    <div
-                      className={styles.lead__datepicker_content}
-                      ref={dateRangeRef}
-                    >
-                      <DateRange
-                        editableDateInputs={true}
-                        onChange={handleRangeChange}
-                        moveRangeOnFirstSelection={false}
-                        ranges={selectedRanges}
-                      />
-                      <div className={styles.lead__datepicker_btns}>
-                        <button className="reset-calender" onClick={onReset}>
-                          Reset
-                        </button>
-                        <button className="apply-calender" onClick={onApply}>
-                          Apply
-                        </button>
+                  <div className={styles.lead__datepicker_wrapper}>
+                    {isCalendarOpen && (
+                      <div
+                        className={styles.lead__datepicker_content}
+                        ref={dateRangeRef}
+                      >
+                        <DateRange
+                          editableDateInputs={true}
+                          onChange={handleRangeChange}
+                          moveRangeOnFirstSelection={false}
+                          ranges={selectedRanges}
+                        />
+                        <div className={styles.lead__datepicker_btns}>
+                          <button className="reset-calender" onClick={onReset}>
+                            Reset
+                          </button>
+                          <button className="apply-calender" onClick={onApply}>
+                            Apply
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </div>
                   {!isMobile &&
                     selectedDates.startDate &&
@@ -382,15 +504,23 @@ const LeradManagementHistory = () => {
                       <span>
                         {selectedDates.startDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.startDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.startDate.getFullYear()}
                         {' - '}
                         {selectedDates.endDate.toLocaleDateString('en-US', {
                           day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        }) +
+                          ' ' +
+                          selectedDates.endDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                          }) +
+                          ' ' +
+                          selectedDates.endDate.getFullYear()}
                       </span>
                     </div>
                   ) : null}
@@ -423,6 +553,10 @@ const LeradManagementHistory = () => {
                           borderColor: '#377CF6',
                           boxShadow: '0 0 0 1px #377CF6',
                           caretColor: '#3E3E3E',
+                        },
+                        '&:hover': {
+                          borderColor: '#377CF6',
+                          boxShadow: '0 0 0 1px #377CF6',
                         },
                       }),
                       placeholder: (baseStyles) => ({
@@ -473,15 +607,40 @@ const LeradManagementHistory = () => {
                   <div className={styles.sort_drop}>
                     <SortingDropDown onChange={handleSortingChange} />
                   </div>
-                  <div className={styles.calender}>
-                    <img
-                      src={ICONS.LeadMngExport}
-                      style={{ marginTop: '-2px' }}
-                      alt=""
-                      height={22}
-                      width={22}
-                    />
+                  <div
+                    className={styles.calender}
+                    onClick={exportCsv}
+                    data-tooltip-id="export"
+                    style={{
+                      pointerEvents: exporting ? 'none' : 'auto',
+                      opacity: exporting ? 0.6 : 1,
+                      cursor: exporting ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {exporting ? (
+                      <MdDownloading
+                        className="downloading-animation"
+                        size={20}
+                        color='white'
+                      />
+                    ) : (
+                      <LuImport size={20} color='white' />
+                    )}
                   </div>
+
+                  <Tooltip
+                    style={{
+                      zIndex: 20,
+                      background: '#f7f7f7',
+                      color: '#000',
+                      fontSize: 12,
+                      paddingBlock: 4,
+                    }}
+                    offset={8}
+                    id="export"
+                    place="bottom"
+                    content="Export"
+                  />
 
                   <div className={styles.hist_ret} onClick={handleCross}>
                     <img src={ICONS.cross} alt="" height="26" width="26" />
@@ -491,7 +650,11 @@ const LeradManagementHistory = () => {
             </>
           )}
           {checkedCount != 0 && (
-            <div className={styles.lead_his_remove}>Remove</div>
+            <div style={{
+              pointerEvents: remove ? 'none' : 'auto',
+              opacity: remove ? 0.6 : 1,
+              cursor: remove ? 'not-allowed' : 'pointer',
+            }} onClick={deleteLeads} className={styles.lead_his_remove}>{remove ? "Removing..." : "Remove"}</div>
           )}
         </div>
 
@@ -566,15 +729,13 @@ const LeradManagementHistory = () => {
                       )}
                       <div className={styles.email}>
                         <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                        <img
-                          height={15}
-                          width={15}
-                          src={ICONS.complete}
-                          alt="img"
-                        />
                       </div>
                       <div className={styles.address}>
-                        {item.street_address ? item.street_address : 'N/A'}
+                        {item?.street_address
+                          ? item.street_address.length > 20
+                            ? `${item.street_address.slice(0, 20)}...`
+                            : item.street_address
+                          : 'N/A'}
                       </div>
                     </>
                   )}
@@ -615,14 +776,28 @@ const LeradManagementHistory = () => {
 
                         <div className={styles.history_list_activities}>
                           {item.timeline.map((activity: any, index: number) => (
-                            <div key={index} className={styles.history_list_activity_det}>
+                            <div
+                              key={index}
+                              className={styles.history_list_activity_det}
+                            >
                               <div className={styles.circle_with_line}>
                                 <div className={styles.line1}></div>
                                 <div className={styles.circle}></div>
                               </div>
                               <div className={styles.activity_info}>
-                                <div className={styles.act_head}>{activity.label}</div>
-                                <div className={styles.act_date}>{new Date(activity.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                                <div className={styles.act_head}>
+                                  {activity.label}
+                                </div>
+                                <div className={styles.act_date}>
+                                  {new Date(activity.date).toLocaleDateString(
+                                    'en-US',
+                                    {
+                                      day: 'numeric',
+                                      month: 'short',
+                                      year: 'numeric',
+                                    }
+                                  )}
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -639,15 +814,14 @@ const LeradManagementHistory = () => {
                       </div>
                       <div className={styles.email}>
                         <p>{item.email_id ? item.email_id : 'N/A'}</p>
-                        <img
-                          height={15}
-                          width={15}
-                          src={ICONS.complete}
-                          alt="img"
-                        />
                       </div>
                       <div className={styles.address}>
-                        {item.street_address ? item.street_address : 'N/A'}
+
+                        {item?.street_address
+                          ? item.street_address.length > 20
+                            ? `${item.street_address.slice(0, 20)}...`
+                            : item.street_address
+                          : 'N/A'}
                       </div>
                     </div>
 
@@ -658,7 +832,10 @@ const LeradManagementHistory = () => {
                       >
                         <div className={styles.history_list_head}>Activity</div>
                         {item.timeline.map((activity: any, index: number) => (
-                          <div key={index} className={styles.history_list_activity_det}>
+                          <div
+                            key={index}
+                            className={styles.history_list_activity_det}
+                          >
                             <div className={styles.circle_with_line}>
                               <div className={styles.line_mob}></div>
                               <div className={styles.circle_mob}></div>
@@ -667,7 +844,16 @@ const LeradManagementHistory = () => {
                               <div className={styles.act_head}>
                                 {activity.label}
                               </div>
-                              <div className={styles.act_date}>{new Date(activity.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                              <div className={styles.act_date}>
+                                {new Date(activity.date).toLocaleDateString(
+                                  'en-US',
+                                  {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric',
+                                  }
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -683,7 +869,7 @@ const LeradManagementHistory = () => {
         </div>
 
         {!!totalCount && (
-          <div className="page_heading_container">
+          <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex} of {totalCount} item
             </p>

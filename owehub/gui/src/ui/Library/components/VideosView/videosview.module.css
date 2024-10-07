@@ -1,136 +1,124 @@
- 
 .folderMain_wrapper {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;  
-    gap: 28px;
-    padding-left: 24px;
-    background-color: #ffffff;
-  }  
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding-left: 24px;
+  background-color: #ffffff;
+}
 
-   .folderDiv {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-   
-   
+.folderDiv {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
 }
-.videoImage_wrapper{
-    position: relative;
-    cursor: pointer;
+.videoImage_wrapper {
+  position: relative;
+  cursor: pointer;
 }
- .transparent_play{
-   
-    background-color:#2D2D2DBF;   
-     width: 275px;
-     height: 150px;
-     border: 1px solid #CFCFCF;
-     border-radius: 6px;
-     object-fit: cover;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     position: absolute;
-     top: 23px;
-     visibility: hidden;
-     
- }
- .videoImage_wrapper:hover  .transparent_play{
-    visibility: visible;
-    cursor: pointer;
- }
-.videosview_images{
+.transparent_play {
+  background-color: #2d2d2dbf;
   width: 275px;
-    height: 150px;
-    border: 1px solid #CFCFCF;
-    border-radius: 6px;
-    object-fit: cover;
-   
+  height: 150px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 23px;
+  visibility: hidden;
+}
+.videoImage_wrapper:hover .transparent_play {
+  visibility: visible;
+  cursor: pointer;
+}
+.videosview_images {
+  width: 275px;
+  height: 150px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
-
-
-
-.video_time {    
-    height: 24px !important;
-    width: 51px !important;
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
-    top: 144px;
-    left: 218px;
-    background-color:#2E2E2E;
-    color: #ffffff;
-    font-size: 12px;
-    line-height: 20px;
-    font-family: 'Roboto';
-    font-weight: 500;
-    padding-top: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 2px;
-
-  }
-
-  .folderIcon_wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    background-color: #f2f2f2;
-    width: 108px;
-    margin-top: 15px;
-    padding: 8px 22px;
-    border-radius: 8px;
-  
-}
-     
-
- 
- 
-  .folderContent_wrapper{ 
-    margin-top: 5px;
-  }
-   
-
-  .videosview_name{
-    font-family: 'Inter';
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
-    padding-left: 9px;
-
-  }
-  .videoInfo_wrapper{
-     display: flex; 
-     flex-direction: row;
-     align-items: center; 
-    gap: 6px;
-    padding-left: 9px; 
+.video_time {
+  height: 24px !important;
+  width: 51px !important;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  top: 144px;
+  left: 218px;
+  background-color: #2e2e2e;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 20px;
+  font-family: 'Roboto';
+  font-weight: 500;
+  padding-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 2px;
 }
 
-   
- 
-  .videosSize{
-    font-family: 'Inter';
-    font-weight: 400;
-    font-size: 10px;
-    line-height: 20px; 
-    color: #959595;
-  }
-  .videosdate{
-    font-family: 'Inter';
-    font-weight: 400;
-    font-size: 10px;
-    line-height: 20px; 
-    color: #959595; 
- }
-  .video_name{
-    font-family: 'Inter';
-    font-weight: 400;
-    font-size: 10px;
-    line-height: 20px; 
-    color: #959595;    
-  }
-  .videos_piline{
-    color: #959595;
-  }
+.folderIcon_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: #f2f2f2;
+  width: 108px;
+  margin-top: 15px;
+  padding: 8px 22px;
+  border-radius: 8px;
+}
+
+.folderContent_wrapper {
+  margin-top: 5px;
+}
+
+.videosview_name {
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  padding-left: 9px;
+}
+.videoInfo_wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding-left: 9px;
+}
+
+.videosSize {
+  font-family: 'Inter';
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 20px;
+  color: #959595;
+}
+.videosdate {
+  font-family: 'Inter';
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 20px;
+  color: #959595;
+}
+.video_name {
+  font-family: 'Inter';
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 20px;
+  color: #959595;
+}
+.videos_piline {
+  color: #959595;
+}
+
+.videos_piline {
+  background-color: #959595;
+  height: 15px;
+  width: 0.9px;
+}

@@ -1,9 +1,10 @@
 .schedule_detail {
-  font-size: 20px;
+  font-size: 16px;
   color: #263747;
-  font-weight: 500;
+  font-weight: 600;
   padding-top: 8px;
   padding-bottom: 14px;
+  line-height: 30px;
 }
 
 .day_cell {
@@ -101,8 +102,8 @@
 }
 
 .pending h3 {
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 16px;
   color: #263747;
 }
 
@@ -435,22 +436,22 @@
   color: #fff;
   cursor: pointer;
 }
-.calendar_close_btn_mobile{
+.calendar_close_btn_mobile {
   display: none;
 }
 
 @media (max-width: 968px) {
   .calendar_btn_mobile {
     display: inline-flex;
-    background-color: #377CF6;
+    background-color: #377cf6;
     border: none;
     border-radius: 8px;
     color: #fff;
     padding: 5px;
     cursor: pointer;
   }
-  .calendar_schedule_btn{
-    padding-block:6px;
+  .calendar_schedule_btn {
+    padding-block: 6px;
     font-size: 16px;
     border-radius: 6px;
   }
@@ -462,12 +463,11 @@
   .date_time_wrapper div:first-child {
     margin-inline: auto;
   }
-  .calendar_close_btn_mobile{
+  .calendar_close_btn_mobile {
     display: block;
     border: none;
     background-color: transparent;
   }
-
 
   .time_slot_pill_wrapper {
     width: 100%;
@@ -518,7 +518,6 @@
     display: block;
   }
 
-
   .notification {
     width: 32px;
     height: 32px;
@@ -530,7 +529,7 @@
   }
 }
 
-@media (max-width:450px) {
+@media (max-width: 450px) {
   .sr_top {
     padding-left: 8px;
     padding-right: 8px;
@@ -573,5 +572,4 @@
     padding-block: 0;
     padding-inline: 8px;
   }
-
 }

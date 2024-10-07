@@ -1,7 +1,6 @@
 import React from 'react';
 import { ICONS } from '../../../../resources/icons/Icons';
 import styles from './videosview.module.css';
-import { PiLineVerticalThin } from 'react-icons/pi';
 
 // Define the interface for the video data
 interface VideoData {
@@ -45,9 +44,9 @@ function VideosView({ videoData }: VideosViewProps) {
             <div className={styles.videosview_name}>{video.iconName}</div>
             <div className={styles.videoInfo_wrapper}>
               <div className={styles.videosSize}>{video.size}</div>
-              <PiLineVerticalThin className={styles.videos_piline} />
+              <div className={styles.videos_piline}></div>
               <div className={styles.videosdate}>{video.date}</div>
-              <PiLineVerticalThin className={styles.videos_piline} />
+              <div className={styles.videos_piline}></div>
               <div className={styles.video_name}>{video.name}</div>
             </div>
           </div>

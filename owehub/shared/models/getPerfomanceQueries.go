@@ -227,10 +227,10 @@ func CsvSalesMetricsRetrieveQueryFunc() string {
 
 func SalesRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
-        SELECT intOpsMetSchema.unique_id, intOpsMetSchema.home_owner
-        FROM internal_ops_metrics_schema intOpsMetSchema
-        LEFT JOIN sales_metrics_schema AS salMetSchema 
-            ON intOpsMetSchema.unique_id = salMetSchema.unique_id `
+        SELECT customers_customers_schema.unique_id, customers_customers_schema.customer_name AS home_owner
+        FROM customers_customers_schema
+        LEFT JOIN system_customers_schema 
+            ON customers_customers_schema.unique_id = system_customers_schema.customer_id `
 	return SalesMetricsRetrieveQuery
 }
 
@@ -250,28 +250,107 @@ func AdminDlrSaleRepRetrieveQueryFunc() string {
 func ProjectMngmntRetrieveQueryFunc() string {
 
 	ProjectMngmntRetrieveQuery := `
-        SELECT unique_id, contract_date, ntp_working_date, 
-        ntp_date, site_survey_scheduled_date, site_survey_rescheduled_date, 
-        site_survey_completed_date, roofing_scheduled_date, roofing_created_date,
-        roofing_completed_date, electrical_permit_created_date, electrical_submitted_date, 
-        electrical_approved_date, pv_install_created_date, pv_install_scheduled_date,
-        pv_install_completed_date, ic_created_date, ic_submitted_date, 
-        ic_approved_date, credit_expiration_date, permit_created,
-        permit_submitted_date, permit_approved_date, fin_scheduled_date, 
-        fin_pass_date, pto_created_date, pto_submitted_date,
-        pto_date, system_size, prospect,
-        ahj, project_status, state, epc,
-        contract_total, finance_company, net_epc,
-        pv_install_created_date AS pv_install_created_date_2,
-        mpu_created_date, mpu_scheduled_date, mpu_complete_date,
-        derate_created_date, derate_scheduled_date, derate_completed_date,
-        trenching_ws_open, trenching_scheduled, trenching_completed,
-        adder_breakdown_and_total, adders_total,cad_complete_date,active_date,cad_ready,
-        battery_scheduled_date,battery_complete_date,fin_created_date,home_owner
-        FROM consolidated_data_view
-    `
+        SELECT 
+        customers_customers_schema.unique_id, 
+        customers_customers_schema.sale_date AS contract_date,
+        ntp_ntp_schema.pending_ntp_date AS ntp_working_date, 
+        ntp_ntp_schema.ntp_complete_date AS ntp_date, 
+        survey_survey_schema.original_survey_scheduled_date AS site_survey_scheduled_date, 
+        internal_ops_metrics_schema.site_survey_rescheduled_date AS site_survey_rescheduled_date, 
+        survey_survey_schema.survey_completion_date AS site_survey_completed_date, 
+        roofing_request_install_subcontracting_schema.work_scheduled_date AS roofing_scheduled_date, 
+        roofing_request_install_subcontracting_schema.created_on AS roofing_created_date,
+        roofing_request_install_subcontracting_schema.work_completed_date AS roofing_completed_date, 
+        electrical_permits_permit_fin_schema.created_on AS electrical_permit_created_date, 
+        pv_install_install_subcontracting_schema.created_on AS pv_install_created_date, 
+        pv_install_install_subcontracting_schema.time_stamp_scheduled AS pv_install_scheduled_date,
+        pv_install_install_subcontracting_schema.pv_completion_date AS pv_install_completed_date, 
+        ic_ic_pto_schema.created_on AS ic_created_date, 
+        ic_ic_pto_schema.ic_submitted_date, 
+        ic_ic_pto_schema.ic_approved_date, 
+        customers_customers_schema.credit_expiration_date_field AS credit_expiration_date, 
+        permit_fin_pv_permits_schema.created_on AS permit_created,
+        permit_fin_pv_permits_schema.pv_submitted AS permit_submitted_date, 
+        permit_fin_pv_permits_schema.pv_approved AS permit_approved_date, 
+        fin_permits_fin_schema.pv_fin_date AS fin_scheduled_date, 
+        fin_permits_fin_schema.approved_date AS fin_pass_date, 
+        pto_ic_schema.pto_created_on AS pto_created_date, 
+        pto_ic_schema.submitted AS pto_submitted_date,
+        pto_ic_schema.pto_granted AS pto_date, 
+        system_customers_schema.contracted_system_size_parent AS system_size, 
+        ntp_ntp_schema.ahj, 
+        customers_customers_schema.project_status, 
+        customers_customers_schema.state, 
+        CASE
+        WHEN ((system_customers_schema.contracted_system_size_parent IS NULL) 
+            OR (system_customers_schema.contracted_system_size_parent <= (0)::double precision)) THEN (0)::double precision
+        WHEN customers_customers_schema.total_system_cost_calc_h ~ '^[0-9]+(\.[0-9]+)?$' THEN 
+            (customers_customers_schema.total_system_cost_calc_h::double precision / 
+            (system_customers_schema.contracted_system_size_parent * (1000)::double precision))
+        ELSE 0
+        END AS epc,
+        customers_customers_schema.total_system_cost AS contract_total, 
+        ntp_ntp_schema.finance AS finance_company, 
+        ntp_ntp_schema.net_epc,
+        mpu_service_electrical_schema.mpu_created_on AS mpu_created_date, 
+        mpu_service_electrical_schema.pk_or_cutover_date AS mpu_scheduled_date, 
+        mpu_service_electrical_schema.pk_or_cutover_date_of_completion AS mpu_complete_date,
+        derates_service_electrical_schema.derate_created_on AS derate_created_date, 
+        derates_service_electrical_schema.scheduled_date AS derate_scheduled_date, 
+        derates_service_electrical_schema.completion_date AS derate_completed_date,
+        trenching_service_electrical_schema.trenching_created_on AS trenching_ws_open, 
+        trenching_service_electrical_schema.work_scheduled_date AS trenching_scheduled, 
+        trenching_service_electrical_schema.completion_date AS trenching_completed,
+        customers_customers_schema.adder_breakdown_and_total_new AS adder_breakdown_and_total, 
+        sales_metrics_schema.adders_total,
+        internal_ops_metrics_schema.cad_complete_date,
+        internal_ops_metrics_schema.cad_ready,
+        batteries_service_electrical_schema.battery_installation_date AS battery_scheduled_date,
+        batteries_service_electrical_schema.completion_date AS battery_complete_date,
+        fin_permits_fin_schema.created_on AS fin_created_date,
+        customers_customers_schema.customer_name AS home_owner
+        FROM customers_customers_schema
+        LEFT JOIN ntp_ntp_schema 
+        ON ntp_ntp_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN survey_survey_schema
+        ON survey_survey_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN roofing_request_install_subcontracting_schema
+        ON roofing_request_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN electrical_permits_permit_fin_schema
+        ON electrical_permits_permit_fin_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN pv_install_install_subcontracting_schema
+        ON pv_install_install_subcontracting_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN ic_ic_pto_schema 
+        ON ic_ic_pto_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN permit_fin_pv_permits_schema 
+        ON permit_fin_pv_permits_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN fin_permits_fin_schema
+        ON fin_permits_fin_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN pto_ic_schema 
+        ON pto_ic_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN system_customers_schema
+        ON system_customers_schema.customer_id = customers_customers_schema.unique_id
+        LEFT JOIN mpu_service_electrical_schema
+        ON mpu_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN derates_service_electrical_schema
+        ON derates_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN trenching_service_electrical_schema
+        ON trenching_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
+        --LEFT JOIN planset_cad_schema
+        --ON planset_cad_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN batteries_service_electrical_schema
+        ON batteries_service_electrical_schema.customer_unique_id = customers_customers_schema.unique_id
+        LEFT JOIN internal_ops_metrics_schema 
+           ON internal_ops_metrics_schema.unique_id = customers_customers_schema.unique_id
+        LEFT JOIN sales_metrics_schema
+            ON sales_metrics_schema.unique_id = customers_customers_schema.unique_id
+        `
 	return ProjectMngmntRetrieveQuery
 }
+
+// pv_install_created_date AS pv_install_created_date_2,
+// electrical_submitted_date,active_date,        prospect, removed from prjectmnmnt query
+//         electrical_approved_date,
 
 // func QcNtpRetrieveQueryFunc() string {
 // 	var filtersBuilder strings.Builder
@@ -328,6 +407,9 @@ func QcNtpRetrieveQueryFunc() string {
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(`
         SELECT 
+            customers_customers_schema.current_live_cad,
+            customers_customers_schema.system_sold_er,
+            customers_customers_schema.podio_link,
             customers_customers_schema.unique_id,
             ntp_ntp_schema.production_discrepancy, 
             ntp_ntp_schema.finance_ntp_of_project, 
@@ -338,7 +420,7 @@ func QcNtpRetrieveQueryFunc() string {
             customers_customers_schema.state,
             customers_customers_schema.customer_name AS home_owner,
             ntp_ntp_schema.ntp_complete_date AS ntp_date,
-            split_part(sales_metrics_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
+            split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value,
             CASE 
                 WHEN customers_customers_schema.utility_company = 'APS' THEN prospects_customers_schema.powerclerk_sent_az
                 ELSE 'Not Needed' 
@@ -368,10 +450,8 @@ func QcNtpRetrieveQueryFunc() string {
             ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
         LEFT JOIN system_customers_schema  
             ON customers_customers_schema.unique_id = system_customers_schema.customer_id
-        LEFT JOIN sales_metrics_schema  
-            ON customers_customers_schema.unique_id = sales_metrics_schema.unique_id
         LEFT JOIN prospects_customers_schema 
-                ON split_part(sales_metrics_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
+                ON split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) = prospects_customers_schema.item_id::text
     `)
 
 	return filtersBuilder.String()

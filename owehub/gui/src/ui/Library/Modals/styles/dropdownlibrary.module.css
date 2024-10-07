@@ -25,10 +25,9 @@
   transition: background-color 0.2s ease; /* Optional: Add a hover effect */
 }
 
-.verticalDots:hover{
+.verticalDots:hover {
   border: 1px solid #377cf6; /* Border for the circle */
 }
-
 
 .dropdownMenu {
   list-style: none;
@@ -54,7 +53,7 @@
 }
 
 .dropdownItem:hover {
-  background-color: #D6E5FF;
+  background-color: #d6e5ff;
   border-radius: 4px;
 }
 
@@ -62,5 +61,4 @@
   background-color: #377cf6;
   color: #ffffff;
   border-radius: 4px;
-
 }

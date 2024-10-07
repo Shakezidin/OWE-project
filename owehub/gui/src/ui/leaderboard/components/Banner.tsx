@@ -20,7 +20,7 @@ interface BannerProps {
   isShowDropdown: boolean;
   isGenerating: boolean;
   setIsFetched: React.Dispatch<SetStateAction<boolean>>;
-  isLoading:boolean;
+  isLoading: boolean;
 }
 
 const Banner: React.FC<BannerProps> = ({
@@ -29,7 +29,7 @@ const Banner: React.FC<BannerProps> = ({
   isShowDropdown,
   setIsFetched,
   isGenerating,
-  isLoading
+  isLoading,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState<any>('');
@@ -210,7 +210,10 @@ const Banner: React.FC<BannerProps> = ({
         <div className="banner-wrap">
           {/* left side  */}
           {!isGenerating ? (
-            <button className="edit-button" onClick={() => setShowModal(true)}>
+            <button
+              className={`edit-button ${isLoading ? 'edit-button-load' : ''}`}
+              onClick={() => !isLoading && setShowModal(true)}
+            >
               <LiaEdit className="edit-svg" />
               <p>Edit</p>
             </button>
@@ -357,10 +360,10 @@ const Banner: React.FC<BannerProps> = ({
         >
           {!isGenerating ? (
             <div
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => !isLoading && setIsOpen(!isOpen)}
               className={`dealer-toggler pointer flex items-center ${
                 isOpen ? 'open' : ''
-              }`}
+              } ${isLoading ? 'dealer-toggler-load' : ''}`}
             >
               <span>
                 {selectDealer?.length ?? '0'}{' '}

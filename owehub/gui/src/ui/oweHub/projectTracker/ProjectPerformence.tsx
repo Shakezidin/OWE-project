@@ -400,7 +400,7 @@ const ProjectPerformence = () => {
           startDate: '',
           endDate: '',
           uniqueId: searchValue ? searchValue : '',
-          selected_milestone: selectedMilestone,
+          selected_milestone: activeCardId ? selectedMilestone : '',
           project_status:
             activeTab === 'Active Queue' ? ['ACTIVE'] : ['JEOPARDY', 'HOLD'],
           dealer_names: selectedDealer.map((item) => item.value),
@@ -417,6 +417,7 @@ const ProjectPerformence = () => {
     activeTab,
     selectedDealer,
     isFetched,
+    activeCardId
   ]);
 
   useEffect(() => {
@@ -721,14 +722,14 @@ const ProjectPerformence = () => {
 
                   return (
                     <div
+                      key={card.id}
                       className="flex items-center arrow-wrap"
                       style={{ marginRight: '-20px' }}
                     >
                       <div
                         key={card.id}
-                        className={`project-card ${
-                          index === topCardsData.length - 1 ? 'last-card' : ''
-                        } ${isActive ? 'active' : ''}`}
+                        className={`project-card ${index === topCardsData.length - 1 ? 'last-card' : ''
+                          } ${isActive ? 'active' : ''}`}
                         onMouseEnter={() => setIsHovered(index)}
                         onMouseLeave={() => setIsHovered(-1)}
                         style={{
@@ -813,7 +814,7 @@ const ProjectPerformence = () => {
               {activeCardId !== null && (
                 <div className="active-queue">
                   <IoClose
-                    size={18}
+                    size={20}
                     onClick={() => {
                       setActiveCardId(null),
                         setSelectedMilestone(''),
@@ -831,9 +832,13 @@ const ProjectPerformence = () => {
                   value={search}
                   name="Search for Unique ID or Name"
                   onChange={(e) => {
-                    if (e.target.value.length <= 50) {
+                    const input = e.target.value;
+                    const regex = /^[a-zA-Z0-9\s]*$/; // Allow only alphanumeric and spaces
+
+                    // Check if input contains valid characters and length is <= 50
+                    if (regex.test(input) && input.length <= 50) {
+                      setSearch(input);
                       handleSearchChange(e);
-                      setSearch(e.target.value);
                     }
                   }}
                 />
@@ -979,7 +984,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.qc).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.qc.qc_action_required_count > 0
+                                          project.qc.qc_action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }
@@ -1005,7 +1010,7 @@ const ProjectPerformence = () => {
                                         Object.values(project.ntp).some(
                                           (value) => value === 'Pending'
                                         ) ||
-                                        project.ntp.action_required_count > 0
+                                          project.ntp.action_required_count > 0
                                           ? ICONS.Pendingqc
                                           : ICONS.complete
                                       }

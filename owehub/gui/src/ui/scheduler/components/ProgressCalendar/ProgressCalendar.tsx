@@ -23,16 +23,16 @@ type DayPickerCalendarProps = {
   dayWithProgress?: DayWithProgress[];
   onClick?: ({ date, event }: { date: Date; event: TEvent }) => void;
   dayCellClassName?: string;
-  circleSize?: number,
-  selectedDate?: Date | undefined
+  circleSize?: number;
+  selectedDate?: Date | undefined;
 };
 
 interface ExtendedDayButtonProps extends DayButtonProps {
   dayWithProgress: DayWithProgress[] | undefined;
   selected: Date | undefined;
   onDateSelect?: ({ date, event }: { date: Date; event: TEvent }) => void;
-  dayCellClassName?: string,
-  circleSize?: number
+  dayCellClassName?: string;
+  circleSize?: number;
 }
 
 const getCurrentDayExcludedHoliday = (): Date => {
@@ -96,7 +96,6 @@ const DayButton = ({
         onDateSelect?.({ date: day.date, event: { id: findDay?.id! } })
       }
       style={{ width: dayCellClassName ? undefined : 52 }}
-
     >
       {isNext ? (
         <CircularProgress
@@ -123,18 +122,19 @@ const DayPickerCalendar = ({
   onClick,
   dayCellClassName,
   circleSize,
-  selectedDate
+  selectedDate,
 }: DayPickerCalendarProps) => {
   const [selected, setSelected] = useState<Date>();
   const defaultClassNames = getDefaultClassNames();
 
   useEffect(() => {
-    setSelected(selectedDate)
-  }, [selectedDate])
+    setSelected(selectedDate);
+  }, [selectedDate]);
 
   return (
     <div>
       <h5
+        style={{ fontWeight: 600 }}
         className={`  mb2 ${defaultClassNames.month_caption} ${!selected ? 'flex justify-center' : 'ml2'} `}
       >
         {' '}

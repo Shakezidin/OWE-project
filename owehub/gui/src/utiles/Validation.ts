@@ -41,7 +41,6 @@ export const validateForm = (
     if (!validateMobileNumber(formData.mobile_number)) {
       errors.PhoneNumber = true;
     }
-
   }
   if (formData.role_name.length === 0) {
     errors.Role = true;

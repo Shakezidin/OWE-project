@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -46,28 +47,28 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get leads data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get leads data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get leads data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get leads data Request body", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get leads data Request body", http.StatusInternalServerError, nil)
 		return
 	}
 
 	// Check if leadStatusId is invalid (<= 0 or >= 4)
 	if dataReq.LeadStatusId < 0 || dataReq.LeadStatusId > 4 {
 		log.FuncErrorTrace(0, "Wrong Lead Status")
-		FormAndSendHttpResp(resp, "Wrong Lead Status", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Wrong Lead Status", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -75,7 +76,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	startTime, err = time.Parse("02-01-2006", dataReq.StartDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
-		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -83,7 +84,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	endTime, err = time.Parse("02-01-2006", dataReq.EndDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
-		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -140,7 +141,8 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				
 			FROM get_leads_info_hierarchy($1) li
 			%s
-			LIMIT $5 OFFSET $6
+			ORDER BY li.updated_at DESC
+			LIMIT $5 OFFSET $6;
 		`, whereClause)
 
 		whereEleList = append(whereEleList,
@@ -156,7 +158,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get data from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to fetch data", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch data", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -215,7 +217,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				city = ""
 			}
 
-			zipcode, ok := item["zipcode"].(int64)
+			zipcode, ok := item["zipcode"].(string)
 			if !ok {
 				log.FuncErrorTrace(0, "Failed to get zipcode from leads info Item: %+v\n", item)
 				continue
@@ -335,16 +337,16 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList[0:4])
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get lead count from DB err: %v", err)
-			FormAndSendHttpResp(resp, "Failed to fetch lead count", http.StatusInternalServerError, nil)
+			appserver.FormAndSendHttpResp(resp, "Failed to fetch lead count", http.StatusInternalServerError, nil)
 			return
 		}
 		recordCount = data[0]["count"].(int64)
 
-		FormAndSendHttpResp(resp, "Leads Data", http.StatusOK, LeadsDataList, recordCount)
+		appserver.FormAndSendHttpResp(resp, "Leads Data", http.StatusOK, LeadsDataList, recordCount)
 
 	} else {
 		log.FuncErrorTrace(0, "Failed to retrieve user email id in get leads data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to retrieve user email id in get leads data Request body", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to retrieve user email id in get leads data Request body", http.StatusInternalServerError, nil)
 		return
 	}
 }

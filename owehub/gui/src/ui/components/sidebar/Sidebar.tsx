@@ -24,8 +24,6 @@ interface Toggleprops {
 const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const [, setDb] = useState<boolean>(false);
   const [, setProject] = useState<boolean>(false);
-
-  const { authData } = useAuth();
   const [cords, setCords] = useState<{
     left: number;
     top: number;
@@ -39,9 +37,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const timeOut = useRef<NodeJS.Timeout | null>(null);
 
   const role = localStorage.getItem('role');
-
-  const dealer = localStorage.getItem('dealer');
-  console.log(dealer, 'sidebar dealer');
 
   const filteredList = () => {
     let list = [...createSideMenuList()];
@@ -242,7 +237,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     id?: number
   ) => {
     const elm = e.target as HTMLAnchorElement;
-    console.log('working', id, 'didiididid');
 
     if (timeOut.current) {
       clearTimeout(timeOut.current);
@@ -274,8 +268,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   // TODO showing required routes for now
   // const isMobile = width < 768;
   const isMobile = true;
-
-  console.log(filteredList(), 'dealer');
   return (
     <div
       style={{ zIndex: '30' }}

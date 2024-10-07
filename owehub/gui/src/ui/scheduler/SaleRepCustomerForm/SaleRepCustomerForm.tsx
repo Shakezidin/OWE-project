@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { MdKeyboardBackspace } from 'react-icons/md';
 import useMatchMedia from '../../../hooks/useMatchMedia';
 import { IoClose } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 const timeSlots = [
   { id: 1, time: '6:00 Am - 9:00 Am', uniqueId: 1 },
   { id: 7, time: '9:30 Am - 12:30 Pm', uniqueId: 2 },
@@ -23,7 +24,7 @@ const dayWithProgress = [
   { id: 4, date: new Date(2024, 8, 5), progress: 63 },
   { id: 5, date: new Date(2024, 8, 4), progress: 79 },
   { id: 6, date: new Date(2024, 8, 2), progress: 20 },
-  { id: 7, date: new Date(2024, 9, 3), progress: 95 },
+  { id: 7, date: new Date(2024, 9, 4), progress: 95 },
 ];
 interface ITimeSlot {
   id: number;
@@ -42,7 +43,7 @@ const SaleRepCustomerForm = () => {
     phoneNo: '983 4785 9298',
     email: 'john@gmail.com',
     address: '103, avenue street, Colorado, 267531',
-    salesRep: 'Ajay Negi'
+    salesRep: 'Ajay Negi',
   });
 
   const isSmallScreen = useMatchMedia('(max-width:968px)');
@@ -50,15 +51,19 @@ const SaleRepCustomerForm = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
   return (
-    <div className={` ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ""}`}>
-      <div className={`${styles.form_conatiner} ${step === 2 ? styles.bg_transparent : ""} `}>
+    <div
+      className={`scrollbar ${styles.form_wrapper} ${step === 1 ? styles.no_inner_padding : ''} `}
+    >
+      <div
+        className={`${styles.form_conatiner} ${step === 2 ? styles.bg_transparent : ''} `}
+      >
         <div
           className={` flex items-center justify-center ${styles.form_header}`}
         >
@@ -66,33 +71,40 @@ const SaleRepCustomerForm = () => {
             <>
               <div
                 className="flex items-center"
-                style={{ flexBasis: step === 2 && !isSmallScreen ? '40%' : undefined }}
+                style={{
+                  flexBasis: step === 2 && !isSmallScreen ? '40%' : undefined,
+                }}
               >
                 {step > 1 && (
-                  <MdKeyboardBackspace
-                    style={{ cursor: 'pointer' }}
-                    className={`curosr-pointer ml3 ${styles.back_btn}`}
-                    color="#fff"
-              
-                    
-                    onClick={() => setStep(1)}
-                  />
+                  <div className={`${styles.back_btn} curosr-pointer ml3`}>
+
+                    <MdKeyboardBackspace
+                      style={{ cursor: 'pointer' }}                
+                      onClick={() => setStep(1)}
+                    />
+                  </div>
                 )}
                 <div
                   className={
                     step === 1
                       ? 'flex flex-column items-center justify-center '
-                      : 'mx-auto'
+                      : styles.header_title
                   }
-                  style={{ width: step === 2 && !isSmallScreen ? 'fit-content' : undefined }}
+                  style={{
+                    width:
+                      step === 2 && !isSmallScreen ? 'fit-content' : undefined,
+                  }}
                 >
-                  <h3>Customer Information</h3>
+                  <h3>Site survey Scheduling Form</h3>
                   <p>Change the customer information if incorrect</p>
                 </div>
               </div>
 
               {step === 2 && (
-                <div style={{ flexBasis: '60%' }} className={styles.date_header_label}>
+                <div
+                  style={{ flexBasis: '60%' }}
+                  className={styles.date_header_label}
+                >
                   <div className="flex items-center justify-center">
                     <h3 className="text-white text-center">
                       Select Date & Time
@@ -108,25 +120,38 @@ const SaleRepCustomerForm = () => {
             className="flex items-center flex-column justify-center"
             style={{ width: '100%', height: '500px' }}
           >
-            <h3 className={shardeStyles.survey_success_message}>
-              Site survey scheduled 👍
-            </h3>
-            <h5 className={shardeStyles.selected_time}>
+             <h5 className={` mb2  ${shardeStyles.selected_time}`} style={{fontSize:18,fontWeight:300}}>
               {selectedDate && format(selectedDate, 'EEEE, dd MMM')}{' '}
               {selectedTime?.time}{' '}
             </h5>
+            <h3 className={`${shardeStyles.survey_success_message} text-center mb2`}>
+              Site survey appointment information submitted 👍
+            </h3>
+            <p  style={{fontSize:14,textAlign:"center",fontWeight:300}}>The team will review the information and schedule the survey. 
+              <br />
+              You will be notified via email once the arrangements are made</p>
+             
+            <Link to="/login" className={styles.navigate_btn} >
+            Go to dashboard
+            </Link>
           </div>
         )}
         <div className="flex">
           {step <= 2 && (
             <div
               style={{
-                flexBasis: step === 1 ? isSmallScreen ? "100%" : '70%' : isSmallScreen ?
-                  undefined : '40%'
+                flexBasis:
+                  step === 1
+                    ? isSmallScreen
+                      ? '100%'
+                      : '70%'
+                    : isSmallScreen
+                      ? undefined
+                      : '40%',
               }}
-              className={`${styles.form_content}  ${step === 2 ? styles.mobile_hidden : ""} py3 ${step === 2 ? 'px4' : ''} `}
+              className={`${styles.form_content}  ${step === 2 ? styles.mobile_hidden : ''} py3 ${step === 2 ? 'px4' : ''} `}
             >
-              <div className='mb2'>
+              <div className="mb2">
                 <Input
                   label="Prospect ID"
                   name="prospectId"
@@ -136,7 +161,7 @@ const SaleRepCustomerForm = () => {
                   readOnly
                 />
               </div>
-              <div className='mb2'>
+              <div className="mb2">
                 <Input
                   label="Name"
                   name="name"
@@ -144,15 +169,15 @@ const SaleRepCustomerForm = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className='mb2'>
+              <div className="mb2">
                 <Input
-                  label="Phone no."
+                  label="Phone No."
                   name="phoneNo"
                   value={formData.phoneNo}
                   onChange={handleChange}
                 />
               </div>
-              <div className='mb2'>
+              <div className="mb2">
                 <Input
                   label="Email"
                   name="email"
@@ -160,7 +185,7 @@ const SaleRepCustomerForm = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className='mb2'>
+              <div className="mb2">
                 <Input
                   label="Address"
                   name="address"
@@ -168,7 +193,7 @@ const SaleRepCustomerForm = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div >
+              <div>
                 <Input
                   label="Sales Rep"
                   name="salesRep"
@@ -181,21 +206,24 @@ const SaleRepCustomerForm = () => {
             </div>
           )}
           {step === 2 && (
-            <div style={{ flex: "1" }} className={styles.date_time_container}>
-              <div className={`  items-center justify-between  px2 ${styles.sm_date_close_header}`}>
+            <div style={{ flex: '1' }} className={styles.date_time_container}>
+              <div
+                className={`  items-center justify-between  px2 ${styles.sm_date_close_header}`}
+              >
                 <h5 style={{ fontWeight: 500, fontSize: 16 }} className="">
                   Select Date & Time
                 </h5>
 
-                <button onClick={() => {
-                  setSelectedDate(undefined)
-                  setSelectedTime(undefined)
-                  setAvailableSlots([])
-
-                }} className={`${shardeStyles.calendar_close_btn_mobile} ml2`}>
+                <button
+                  onClick={() => {
+                    setSelectedDate(undefined);
+                    setSelectedTime(undefined);
+                    setAvailableSlots([]);
+                  }}
+                  className={`${shardeStyles.calendar_close_btn_mobile} ml2`}
+                >
                   <IoClose size={24} />
                 </button>
-
               </div>
               <div
                 className={`flex items-start mt3 ${shardeStyles.date_time_wrapper} ${selectedDate ? 'justify-between' : 'justify-center'}`}
@@ -215,16 +243,20 @@ const SaleRepCustomerForm = () => {
                   dayWithProgress={dayWithProgress}
                 />
                 {selectedDate ? (
-                  <div className="flex flex-column  justify-center" style={{ width: "100%" }}>
+                  <div
+                    className={`flex flex-column  justify-center ${styles.slot_wrapper}`}
+                    style={{ width: '100%' }}
+                  >
                     <h5
-                      className={`mb2 ${shardeStyles.time_slot_label}`}
-                      style={{ fontSize: 14, fontWeight: 500, textAlign: "center" }}
-
+                      className={`mb2 ${shardeStyles.time_slot_label} `}
+                      style={{ fontSize: 14, fontWeight: 500 }}
                     >
                       {' '}
                       Select time slot
                     </h5>
-                    <div className={` ${styles.sm_padding} ${shardeStyles.time_slot_pill_wrapper}`}>
+                    <div
+                      className={` ${styles.sm_padding} ${shardeStyles.time_slot_pill_wrapper}`}
+                    >
                       {!!availableSlots.length ? (
                         availableSlots.map((slot) => {
                           return (
@@ -245,8 +277,6 @@ const SaleRepCustomerForm = () => {
                 ) : (
                   ''
                 )}
-
-
               </div>
               {selectedTime && selectedDate && (
                 <div className={`mt2 ${styles.btn_wrapper}`}>
@@ -273,7 +303,7 @@ const SaleRepCustomerForm = () => {
         </div>
 
         {step === 1 && (
-          <div className={`bg-white mt3 ${styles.sm_padding}`}>
+          <div className={`bg-white mt3  ${styles.sm_padding}`}>
             <p style={{ fontSize: 12 }} className="text-center mb2">
               Make sure all the information is correct before confirming
             </p>

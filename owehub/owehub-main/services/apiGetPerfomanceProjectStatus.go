@@ -608,13 +608,11 @@ func PaginateData(data models.PerfomanceListResponse, req models.PerfomanceStatu
         ntp_ntp_schema.change_order_status,
         customers_customers_schema.utility_company,
         customers_customers_schema.state,
-        split_part(sales_metrics_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
+        split_part(ntp_ntp_schema.prospectid_dealerid_salesrepid, ',', 1) AS first_value
     FROM 
         customers_customers_schema
     LEFT JOIN ntp_ntp_schema 
         ON customers_customers_schema.unique_id = ntp_ntp_schema.unique_id
-    LEFT JOIN 
-        sales_metrics_schema  ON customers_customers_schema.unique_id = sales_metrics_schema.unique_id
     WHERE 
         customers_customers_schema.unique_id = ANY(ARRAY['` + strings.Join(uniqueIds, "','") + `'])
 )

@@ -230,7 +230,7 @@ const AddNew = () => {
                           }}
                           controlStyles={{
                             backgroundColor: '#F3F3F3',
-                            width: '85%',
+                            width: '80%',
                             borderStyle: 'none',
                             '@media only screen and (max-width: 750px)': {
                               width: '240%',
@@ -290,7 +290,9 @@ const AddNew = () => {
                       </div>
                     </div>
 
-                    <div className={styles.salrep_input_container}>
+                    <div
+                      className={` ${styles.reverse_col} ${styles.salrep_input_container}`}
+                    >
                       <div className={styles.srs_new_create}>
                         <label
                           className={`${styles.custom_label} inputLabel-select selected-fields-onboard`}

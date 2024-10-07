@@ -12,6 +12,7 @@ import {
   Legend,
   Sector,
 } from 'recharts';
+import axios from 'axios';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
 import './styles/mediaQuery.css';
@@ -21,7 +22,7 @@ import Pagination from '../components/pagination/Pagination';
 import ArchiveModal from './Modals/LeaderManamentSucessModel';
 import ConfirmModel from './Modals/ConfirmModel';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import ThreeDotsImage from './Modals/Modalimages/ThreeDots.svg';
+import ThreeDotsImage from '../Library/stylesFolder/ThreeDots.svg';
 
 // shams start
 import { DateRange } from 'react-date-range';
@@ -45,6 +46,7 @@ import DataNotFound from '../components/loader/DataNotFound';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getLeads } from '../../redux/apiActions/leadManagement/LeadManagementAction';
 import ArchivedPages from './ArchievedPages';
+import useMatchMedia from '../../hooks/useMatchMedia';
 // import { Select } from 'react-day-picker';
 // import styles from './styles/lmhistory.module.css';
 
@@ -106,10 +108,6 @@ type Lead = {
   address: string;
   status: string;
 };
-
-
-
-
 
 const leads = [
   {
@@ -452,17 +450,24 @@ const LeadManagementDashboard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [filteredLeads, setFilteredLeads] = useState(leads);
-  const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
+  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
+  const [isNewButtonActive, setIsNewButtonActive] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [designs, setDesigns] = useState([]);
+  const [proposal, setProposal] = useState(null);
+
+
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
   // shams start
-  const [selectedPeriod, setSelectedPeriod] = useState<DateRangeWithLabel | null>(
-    periodFilterOptions.find((option) => option.label === 'This Week') || null
-  );
+  const [selectedPeriod, setSelectedPeriod] =
+    useState<DateRangeWithLabel | null>(
+      periodFilterOptions.find((option) => option.label === 'This Week') || null
+    );
   const [selectedRanges, setSelectedRanges] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
@@ -502,6 +507,14 @@ const LeadManagementDashboard = () => {
   const startIndex = (page - 1) * itemsPerPage + 1;
   const endIndex = page * itemsPerPage;
   const totalPage = Math.ceil(totalCount / 10);
+  const [refresh, setRefresh] = useState(1);
+  const [archived, setArchived] = useState(false);
+  const [leadId, setLeadId] = useState(0);
+  const [projects, setProjects] = useState([])
+  const isMobile = useMatchMedia('(max-width: 1024px)');
+  const [reschedule, setReschedule] = useState(false);
+  const [action, setAction] = useState(false);
+
 
   const paginate = (pageNumber: number) => {
     setPage(pageNumber);
@@ -587,20 +600,12 @@ const LeadManagementDashboard = () => {
     );
   };
 
-
-
-  const handleLeadSelection = (lead: Lead) => {
+  const handleLeadSelection = (leadId: number) => {
     setSelectedLeads((prev) =>
-      prev.includes(lead) ? prev.filter((l) => l !== lead) : [...prev, lead]
+      prev.includes(leadId)
+        ? prev.filter((id) => id !== leadId)
+        : [...prev, leadId]
     );
-  };
-
-  const handleArchiveSelected = () => {
-    // Implement the logic to remove selected leads
-    setFilteredLeads((prev) =>
-      prev.filter((lead) => !selectedLeads.includes(lead))
-    );
-    setSelectedLeads([]);
   };
 
   const handleReschedule = (lead: any) => {
@@ -619,9 +624,7 @@ const LeadManagementDashboard = () => {
   const handleChevronClick = (itemId: number) => {
     console.log(itemId);
     setToggledId((prevToggledId) =>
-      prevToggledId.includes(itemId)
-        ? []
-        : [itemId]
+      prevToggledId.includes(itemId) ? [] : [itemId]
     );
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -633,6 +636,16 @@ const LeadManagementDashboard = () => {
     setIsModalOpen(false);
   };
 
+  const [isArcModalOpen, setIsArcModalOpen] = useState(false);
+  const handleOpenArcModal = () => {
+    console.log("click on arch")
+    setIsArcModalOpen(true);
+    console.log(isArcModalOpen)
+  };
+
+  const handleCloseArcModal = () => {
+    setIsArcModalOpen(false);
+  };
 
   // ************************ API Integration By Saurabh ********************************\\
   const [isAuthenticated, setAuthenticated] = useState(false);
@@ -651,14 +664,18 @@ const LeadManagementDashboard = () => {
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller('get_periodic_won_lost_leads', {
-            start_date: selectedDates.startDate
-              ? format(selectedDates.startDate, 'dd-MM-yyyy')
-              : '',
-            end_date: selectedDates.endDate
-              ? format(selectedDates.endDate, 'dd-MM-yyyy')
-              : '',
-            },true);
+          const response = await postCaller(
+            'get_periodic_won_lost_leads',
+            {
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+            },
+            true
+          );
 
           if (response.status === 200) {
             const apiData = response.data.periodic_list;
@@ -700,32 +717,43 @@ const LeadManagementDashboard = () => {
   const [pieData, setPieData] = useState<StatusData[]>([]);
   const [totalValue, setTotalValue] = useState<number>(0);
   const [archive, setArchive] = useState(false);
+  const [ref, setRef] = useState(0);
 
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
         try {
           setIsLoading(true);
-          const response = await postCaller('get_leads_count_by_status', {
-            start_date: selectedDates.startDate
-              ? format(selectedDates.startDate, 'dd-MM-yyyy')
-              : '',
-            end_date: selectedDates.endDate
-              ? format(selectedDates.endDate, 'dd-MM-yyyy')
-              : '',
-          },true);
-
+          const response = await postCaller(
+            'get_leads_count_by_status',
+            {
+              start_date: selectedDates.startDate
+                ? format(selectedDates.startDate, 'dd-MM-yyyy')
+                : '',
+              end_date: selectedDates.endDate
+                ? format(selectedDates.endDate, 'dd-MM-yyyy')
+                : '',
+            },
+            true
+          );
+  
           if (response.status === 200) {
             const apiData = response.data.leads;
-            const formattedData = apiData.reduce((acc: DefaultData, item: any) => {
-              acc[item.status_name] = {
-                name: defaultData[item.status_name].name,
-                value: item.count,
-                color: defaultData[item.status_name].color,
-              };
-              return acc;
-            }, {} as DefaultData);
-            const mergedData = Object.values({ ...defaultData, ...formattedData }) as StatusData[];
+            const formattedData = apiData.reduce(
+              (acc: DefaultData, item: any) => { 
+                acc[item.status_name] = {
+                  name: defaultData[item.status_name].name,
+                  value: item.count,
+                  color: defaultData[item.status_name].color,
+                };
+                return acc;
+              },
+              {} as DefaultData
+            );
+            const mergedData = Object.values({
+              ...defaultData,
+              ...formattedData,
+            }) as StatusData[];
             setPieData(mergedData);
           } else if (response.status > 201) {
             toast.error(response.data.message);
@@ -736,10 +764,10 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-
+  
       fetchData();
     }
-  }, [isAuthenticated, selectedDates]);
+  }, [isAuthenticated, selectedDates, refresh]);
 
   useEffect(() => {
     const calculateTotalValue = () => {
@@ -750,11 +778,23 @@ const LeadManagementDashboard = () => {
     calculateTotalValue();
   }, [pieData]);
 
-
   const dispatch = useAppDispatch();
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
+
+  const getAuroraData = async () => {
+    try {
+        const response = await axios.get('http://localhost:5000/api/projects');
+        // Handle the response as needed
+        console.log("response.data", response.data);
+        setProjects(response.data.projects)
+        
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -775,10 +815,12 @@ const LeadManagementDashboard = () => {
         case 'Declined':
           statusId = 3;
           break;
+        case 'Projects':
+          statusId = 5;
+          break;
         default:
-          statusId = 0;
+        statusId = 0;
       }
-
 
       const data = {
         start_date: selectedDates.startDate
@@ -790,18 +832,99 @@ const LeadManagementDashboard = () => {
         status_id: statusId,
         is_archived: archive,
         page_size: 10,
-        page_number: page,
+        page_number: archive ? 1 : page,
       };
 
-      dispatch(getLeads(data));
+      if(statusId == 5) {
+        getAuroraData(); // Call the function to get Aurora Project data
+      }
+      else{
+        dispatch(getLeads(data));
+      }
     }
-  }, [selectedDates, archive, isAuthenticated, itemsPerPage, page, currentFilter]);
+  }, [
+    selectedDates,
+    isModalOpen,
+    archive,
+    isAuthenticated,
+    itemsPerPage,
+    page,
+    currentFilter,
+    refresh,
+    ref
+  ]);
 
   useEffect(() => {
     if (leadsData.length > 0) {
       setTotalCount(totalcount);
     }
-  }, [leadsData])
+  }, [leadsData]);
+
+  const handleArchiveSelected = async () => {
+    setArchived(true);
+    try {
+      const response = await postCaller(
+        'toggle_archive',
+        {
+          ids: selectedLeads,
+          is_archived: true,
+        },
+        true
+      );
+
+      if (response.status === 200) {
+        toast.success('Leads Archieved successfully');
+        setSelectedLeads([]);
+        setRefresh((prev) => prev + 1);
+        setArchived(false);
+      } else {
+        toast.warn(response.message);
+        setArchived(false);
+      }
+    } catch (error) {
+      console.error('Error deleting leads:', error);
+      setArchived(false);
+    }
+    setArchived(false);
+  };
+
+  const handleNewButtonClick = () => {
+    setCurrentFilter('Projects'); // Example filter name
+    setIsNewButtonActive(true);
+  };
+
+  // Function to fetch project details
+const fetchProjectDetails = async (projectId: string) => {
+  try {
+    const response = await axios.get(`http://localhost:5000/api/projects/${projectId}`);
+    setSelectedProject(response.data); // Set the selected project details
+    fetchDesigns(projectId); // Fetch designs for the selected project
+  } catch (error) {
+    console.error('Error fetching project details:', error);
+  }
+};
+
+// Function to fetch designs for a project
+const fetchDesigns = async (projectId: string) => {
+  try {
+    const response = await axios.get(`/api/designs?projectId=${projectId}`);
+    setDesigns(response.data.designs); // Set the designs for the selected project
+  } catch (error) {
+    console.error('Error fetching designs:', error);
+  }
+};
+
+// Function to fetch proposal for a design
+const fetchProposal = async (designId: string) => {
+  try {
+    const response = await axios.get(`/api/proposals?designId=${designId}`);
+    setProposal(response.data); // Set the proposal details
+  } catch (error) {
+    console.error('Error fetching proposal:', error);
+  }
+}
+  
+
   //************************************************************************************************ */
   return (
     <div className={styles.dashboard}>
@@ -818,15 +941,27 @@ const LeadManagementDashboard = () => {
         </div>
       </div>
 
-      {showConfirmModal && (
-        <ConfirmModel isOpen1={isModalOpen} onClose1={handleCloseModal} />
-      )}
 
-      {showArchiveModal && (
-        <ArchiveModal
-        // isOpen={filterOPen} handleClose={filterClose}
-        />
-      )}
+      <ConfirmModel
+        isOpen1={isModalOpen}
+        onClose1={handleCloseModal}
+        leadId={leadId}
+        refresh={refresh}
+        setRefresh={setRefresh}
+        reschedule={reschedule}
+        action={action}
+      />
+
+
+
+      <ArchiveModal
+        isArcOpen={isArcModalOpen}
+        onArcClose={handleCloseArcModal}
+        leadId={leadId}
+        activeIndex={ref}
+        setActiveIndex={setRef}
+      />
+
 
       <div className={styles.chartGrid}>
         <div className={styles.card}>
@@ -836,47 +971,51 @@ const LeadManagementDashboard = () => {
           </div>
           <div className={styles.cardContent}>
             {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <MicroLoader />
               </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart className={styles.pieChart}>
+                    <Pie
+                      activeIndex={activeIndex}
+                      activeShape={renderActiveShape}
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      onClick={handlePieClick}
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className={styles.legend}>
+                  {pieData.map((item) => (
+                    <div key={item.name} className={styles.legendItem}>
+                      <div
+                        className={styles.legendColor}
+                        style={{ backgroundColor: item.color }}
+                      ></div>
+                      <span className={styles.legendText}>{item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
-              lineData.length > 0 ? (
-                <>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <PieChart className={styles.pieChart}>
-                      <Pie
-                        activeIndex={activeIndex}
-                        activeShape={renderActiveShape}
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        onClick={handlePieClick}
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className={styles.legend}>
-                    {pieData.map((item) => (
-                      <div key={item.name} className={styles.legendItem}>
-                        <div
-                          className={styles.legendColor}
-                          style={{ backgroundColor: item.color }}
-                        ></div>
-                        <span className={styles.legendText}>{item.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <DataNotFound />
-              )
+              <DataNotFound />
             )}
           </div>
         </div>
@@ -912,29 +1051,25 @@ const LeadManagementDashboard = () => {
               {selectedDates.startDate && selectedDates.endDate && (
                 <div className={styles.hist_date}>
                   <span className={styles.date_display}>
-                    {
-                      selectedDates.startDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
+                    {selectedDates.startDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                    }) +
                       ' ' +
                       selectedDates.startDate.toLocaleDateString('en-US', {
                         month: 'short',
                       }) +
-                      ', ' +
-                      selectedDates.startDate.getFullYear()
-                    }
+                      ' ' +
+                      selectedDates.startDate.getFullYear()}
                     {' - '}
-                    {
-                      selectedDates.endDate.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                      }) +
+                    {selectedDates.endDate.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                    }) +
                       ' ' +
                       selectedDates.endDate.toLocaleDateString('en-US', {
                         month: 'short',
                       }) +
-                      ', ' +
-                      selectedDates.endDate.getFullYear()
-                    }
+                      ' ' +
+                      selectedDates.endDate.getFullYear()}
                   </span>
                 </div>
               )}
@@ -965,6 +1100,10 @@ const LeadManagementDashboard = () => {
                       boxShadow: '0 0 0 1px #377CF6',
                       caretColor: '#3E3E3E',
                     },
+                    '&:hover': {
+                      borderColor: '#377CF6',
+                      boxShadow: '0 0 0 1px #377CF6',
+                    },
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
@@ -983,13 +1122,11 @@ const LeadManagementDashboard = () => {
                   option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: '13px',
-                    fontWeight: "400",
+                    fontWeight: '400',
                     color: state.isSelected ? '#3E3E3E' : '#3E3E3E',
                     backgroundColor: state.isSelected ? '#fffff' : '#fffff',
                     '&:hover': {
-                      backgroundColor: state.isSelected
-                        ? '#ddebff'
-                        : '#ddebff',
+                      backgroundColor: state.isSelected ? '#ddebff' : '#ddebff',
                     },
                     cursor: 'pointer',
                   }),
@@ -1018,63 +1155,70 @@ const LeadManagementDashboard = () => {
             className={`${styles.cardContent} ${styles.lineChart_div} lineChart-wrapper`}
           >
             {loading ? (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <MicroLoader />
               </div>
+            ) : lineData.length > 0 ? (
+              <>
+                <ResponsiveContainer
+                  className={styles.chart_main_grid}
+                  width="100%"
+                  height={300}
+                >
+                  <LineChart data={lineData}>
+                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend
+                      className={styles.lineChart_legend}
+                      formatter={(value) =>
+                        value === 'won' ? 'Total won' : 'Total Lost'
+                      }
+                      wrapperStyle={{
+                        fontSize: '12px',
+                        fontWeight: 550,
+                        marginBottom: -15,
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="won"
+                      stroke="#57B93A"
+                      strokeWidth={2}
+                      name="won"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="lost"
+                      stroke="#CD4040"
+                      strokeWidth={2}
+                      name="lost"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </>
             ) : (
-              lineData.length > 0 ? (
-                <>
-                  <ResponsiveContainer
-                    className={styles.chart_main_grid}
-                    width="100%"
-                    height={300}
-                  >
-                    <LineChart data={lineData}>
-                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend
-                        className={styles.lineChart_legend}
-                        formatter={(value) =>
-                          value === 'won' ? 'Total won' : 'Total Lost'
-                        }
-                        wrapperStyle={{
-                          fontSize: '12px',
-                          fontWeight: 550,
-                          marginBottom: -15,
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="won"
-                        stroke="#57B93A"
-                        strokeWidth={2}
-                        name="won"
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="lost"
-                        stroke="#CD4040"
-                        strokeWidth={2}
-                        name="lost"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </>
-              ) : (
-                <DataNotFound />
-              )
+              <DataNotFound />
             )}
           </div>
         </div>
       </div>
 
       <div className={styles.card}>
-        {
-          archive == true &&
-          <ArchivedPages setArchive={setArchive} />
-        }
-        {archive == false &&
+        {archive == true && (
+          <ArchivedPages
+            setArchive={setArchive}
+            activeIndex={ref}
+            setActiveIndex={setRef}
+          />
+        )}
+        {archive == false && (
           <div className={`${styles.cardHeader} ${styles.tabs_setting}`}>
             {selectedLeads.length === 0 ? (
               <>
@@ -1117,6 +1261,17 @@ const LeadManagementDashboard = () => {
                       </button>
                     );
                   })}
+                   <button
+                    onClick={handleNewButtonClick}
+                    className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
+                    >
+                     <p
+                          className={styles.statusInactive}
+                        >
+                          
+                        </p>
+                        Aurora Projects
+                  </button>
                 </div>
 
                 {/* RABINDRA */}
@@ -1128,7 +1283,6 @@ const LeadManagementDashboard = () => {
                     <img src={ICONS.AddIconSr} alt="" width="80" height="80" />
                   </div>
                 </div>
-
               </>
             ) : (
               <div className={styles.selectionHeader}>
@@ -1142,78 +1296,173 @@ const LeadManagementDashboard = () => {
                   <span>{selectedLeads.length} Selected</span>
                 </div>
                 <button
+                  style={{
+                    pointerEvents: archived ? 'none' : 'auto',
+                    opacity: archived ? 0.6 : 1,
+                    cursor: archived ? 'not-allowed' : 'pointer',
+                  }}
                   className={styles.removeButton}
                   onClick={handleArchiveSelected}
+                  disabled={archived}
                 >
-                  Archived
+                  {archived ? 'Archiving...' : 'Archive'}
                 </button>
               </div>
             )}
           </div>
-        }
-
+        )}
         <div className={styles.cardContent}>
-          {archive == false &&
+          {archive == false && (
             <table className={styles.table}>
               <tbody>
                 {isLoading ? (
                   <tr>
                     <td colSpan={leadsData.length}>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
                         <MicroLoader />
                       </div>
                     </td>
                   </tr>
-                ) : leadsData.length > 0 ? (
+                ) : 
+                
+                currentFilter == "Projects" && projects.length > 0 ? 
+                  projects.map((project:any , index:number) => (
+                    <React.Fragment key={index}>
+                    {/* <tr className={styles.history_lists}>
+                          <td className={styles.project_list}>
+                         
+                           <div style={{fontWeight:"bold"}}>
+                              Project Name
+                            </div>
+
+                            <div>
+                               Property Address
+                            </div>
+                        
+                            <div>
+                              Created At
+                            </div>
+                            <div>
+                              Project ID
+                            </div>
+                          </td>
+                    </tr> */}
+                    {/* <tr key={project.id} className={styles.history_lists}>
+                          <td className={styles.project_list}>
+                         
+                           <div style={{fontWeight:"bold"}}>
+                              {project.name}
+                            </div>
+
+                            <div>
+                              {project.property_address}
+                            </div>
+                        
+                            <div>
+                              {new Date(project.created_at).toLocaleString()}
+                            </div>
+                            <div>
+                              {project.id}
+                            </div>
+                          </td>
+                        </tr> */}
+                        <tr key={project.id} className={styles.history_lists} onClick={() => fetchProjectDetails(project.id)}>
+                          <td className={styles.project_list}>
+                            <div style={{ fontWeight: "bold" }}>
+                              {project.name}
+                            </div>
+
+                            <div>
+                              {project.property_address}
+                            </div>
+
+                            <div>
+                              {new Date(project.created_at).toLocaleString()}
+                            </div>
+                            <div>
+                              {project.id}
+                            </div>
+                          </td>
+                        </tr>
+                        </React.Fragment>
+                      ))
+                  :
+                leadsData.length > 0 ? (
                   leadsData.map((lead: any, index: number) => (
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
                         <td
-                          className={`${lead.status === 'Declined' || lead.status === 'Action Needed' ? styles.history_list_inner_declined : styles.history_list_inner}`}
-                          onClick={() =>
-                            lead.status === 'Declined' ||
-                              lead.status === 'Action Needed'
-                              ? ''
-                              : handleOpenModal()
-                          }
+                          className={`${lead.status === 'Declined' ||
+                            lead.status === 'Action Needed'
+                            ? styles.history_list_inner_declined
+                            : styles.history_list_inner
+                            }`}
+                          onClick={(e) => {
+                            setLeadId(lead['leads_id']);
+                            if (
+                              !(e.target as HTMLElement).closest('label') &&
+                              !(e.target as HTMLElement).closest(`.${styles.chevron_down}`)
+                            ) {
+                              if (
+                                currentFilter !== 'Declined' &&
+                                currentFilter !== 'Action Needed'
+                              ) {
+                                handleOpenModal();
+                                setReschedule(false);
+                              }
+
+                            }
+                          }}
                         >
                           <label>
                             <input
                               type="checkbox"
-                              checked={selectedLeads.includes(lead)}
-                              onChange={() => handleLeadSelection(lead)}
+                              checked={selectedLeads.includes(lead['leads_id'])}
+                              onChange={() =>
+                                handleLeadSelection(lead['leads_id'])
+                              }
                             />
                           </label>
                           <div
                             className={styles.user_name}
                             onClick={() =>
-                              currentFilter == 'Pending' && handleDetailModal(lead)
+                              currentFilter == 'Pending' &&
+                              handleDetailModal(lead)
                             }
                           >
-                            <h2>{lead.first_name} {lead.last_name}</h2>
+                            <h2>
+                              {lead.first_name} {lead.last_name}
+                            </h2>
                             <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter}
+                              {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
                             </p>
                           </div>
-                          <div className={styles.phone_number}>{lead.phone_number}</div>
+                          <div className={styles.phone_number}>
+                            {lead.phone_number}
+                          </div>
                           <div className={styles.email}>
                             <span>
                               {lead.email_id}
-                              <img
-                                className="ml1"
-                                height={15}
-                                width={15}
-                                src={ICONS.complete}
-                                alt="verified"
-                              />
                             </span>
+                            
                           </div>
-                          <div className={styles.address}>{lead.city ? lead.city : "N/A"}</div>
+                          <div className={styles.address}>
+                            {lead?.street_address
+                              ? lead.street_address.length >= 20
+                                ? `${lead.street_address.slice(0, 45)}...`
+                                : lead.street_address
+                              : 'N/A'}
+                          </div>
 
                           {currentFilter === 'Declined' && (
                             <div className={styles.actionButtons}>
                               <button
-                                onClick={() => handleReschedule(lead)}
+                                onClick={() => {
+                                  handleOpenModal();
+                                  setReschedule(true);
+                                }}
                                 className={styles.rescheduleButton}
                               >
                                 Reschedule
@@ -1227,7 +1476,7 @@ const LeadManagementDashboard = () => {
                                 </button>
                               ) : (
                                 <button
-                                  onClick={() => handleArchive(lead)}
+                                  onClick={() => handleOpenArcModal()}
                                   className={styles.archiveButton}
                                 >
                                   Archive
@@ -1239,27 +1488,31 @@ const LeadManagementDashboard = () => {
                           {currentFilter === 'Action Needed' && (
                             <div className={styles.actionButtons}>
                               <button
-                                onClick={() => handleReschedule(lead)}
+                                onClick={() => {
+                                  if (lead.action_needed_message === "Update Status") {
+                                    handleOpenModal();
+                                    setAction(true);
+                                  }
+                                }}
                                 className={styles.rescheduleButton}
                               >
-                                Reschedule
+                                {lead.action_needed_message === "Update Status" ? "Update Status" : "Create Proposal"}
                               </button>
                             </div>
                           )}
 
                           <div
                             className={styles.chevron_down}
-                            onClick={() => handleChevronClick(lead["leads_id "])}
-
+                            onClick={() => handleChevronClick(lead['leads_id'])}
                           >
                             <img
                               src={
-                                toggledId.includes(lead["leads_id "])
+                                toggledId.includes(lead['leads_id'])
                                   ? ICONS.chevronUp
                                   : ICONS.chevronDown
                               }
                               alt={
-                                toggledId.includes(lead["leads_id "])
+                                toggledId.includes(lead['leads_id'])
                                   ? 'chevronUp-icon'
                                   : 'chevronDown-icon'
                               }
@@ -1268,23 +1521,23 @@ const LeadManagementDashboard = () => {
                         </td>
                       </tr>
 
-                      {toggledId.includes(lead["leads_id "]) && (
+                      {toggledId.includes(lead['leads_id']) && isMobile && (
                         <tr>
                           <td colSpan={5} className={styles.detailsRow}>
                             <div className={''}>{lead.phone_number}</div>
                             <div className={''}>
                               <span>
                                 {lead.email_id}
-                                <img
-                                  className="ml1"
-                                  height={15}
-                                  width={15}
-                                  src={ICONS.complete}
-                                  alt="verified"
-                                />
+                                
                               </span>
                             </div>
-                            <div className={''}>{lead.city ? lead.city : "N/A"}</div>
+                            <div className={''}>
+                              {lead?.street_address
+                                ? lead.street_address.length > 20
+                                  ? `${lead.street_address.slice(0, 20)}...`
+                                  : lead.street_address
+                                : 'N/A'}
+                            </div>
                           </td>
                         </tr>
                       )}
@@ -1299,12 +1552,10 @@ const LeadManagementDashboard = () => {
                 )}
               </tbody>
             </table>
-          }
-
+          )}
 
           {leadsData.length > 0 && (
             <div className={styles.leadpagination}>
-
               <div className={styles.leftitem}>
                 <p className={styles.pageHeading}>
                   {startIndex} - {endIndex} of {totalcount} item
@@ -1321,6 +1572,7 @@ const LeadManagementDashboard = () => {
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
                 />
+
               </div>
             </div>
           )}

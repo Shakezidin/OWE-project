@@ -8,7 +8,11 @@
   cursor: pointer;
   /* transition: all 0.3s ease; */
 }
+.filtericonHistory:hover{
+  background-color: #ddebff;
+  transform: scale(1.05);
 
+}
 .ICONSTYLETHREEDOT {
   width: auto;
   height: auto;
@@ -22,27 +26,48 @@
   .filtericonHistory {
     margin-top: -2px !important;
   }
- 
 }
 
 @media screen and (max-width: 768px) {
-
   .filtericonHistory {
     display: flex;
     align-items: center;
-    height: 31px;
-    width: 31px;
+    height: 30px;
+    width: 30px;
+    margin-top: 1px !important;
+    margin-left: 23px;
     border-radius: 50%;
     border: 1.2px solid #377cf6;
     cursor: pointer;
-    /* transition: all 0.3s ease; */
+
+    /* .buttonGroup INSIDE THIS GROUP WIDTH IS ALSO REMOVE */
   }
 
   .ICONSTYLETHREEDOT {
     width: auto;
     height: auto;
-    margin-left: 13px;
+    margin-left: 12px;
     align-items: center;
     justify-content: center;
   }
 }
+@media only screen and (min-width: 460px) and (max-width: 768px) {
+  .filtericonHistory {
+    display: flex;
+    align-items: center;
+    height: 31px;
+    width: 33px;
+    margin-top: 1px !important;
+    margin-left: 99px !important;
+    border-radius: 50%;
+    border: 1.2px solid #377cf6 !important;
+    cursor: pointer;
+  }
+  .ICONSTYLETHREEDOT {
+    width: auto;
+    height: auto;
+    margin-left: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+  }

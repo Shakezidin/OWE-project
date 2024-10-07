@@ -306,6 +306,10 @@
   .children-container::-webkit-scrollbar {
     display: none;
   }
+  .side-bar-logo {
+   
+    border-right: unset;
+  }
 }
 
 @media screen and (max-width: 767px) {

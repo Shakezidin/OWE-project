@@ -159,8 +159,6 @@ const DashBoardTable = ({
                         </span>
                       </div>
                     </td>
-
-                    <td style={{ color: '#101828' }}>{el.dealer || 'N/A'}</td>
                     <td style={{ color: '#101828' }}>{el.rep1 || 'N/A'}</td>
                     <td style={{ color: '#101828' }}>
                       {el.home_owner || 'N/A'}
@@ -168,9 +166,6 @@ const DashBoardTable = ({
                     <td style={{ color: '#101828' }}>
                       {(el.contract_date && dateFormat(el.contract_date)) ||
                         'N/A'}
-                    </td>
-                    <td style={{ color: '#101828' }}>
-                      ${el.contract_value ?? 'N/A'}
                     </td>
                     <td style={{ color: '#63BC51', fontWeight: '500' }}>
                       ${el.amount ?? 'N/A'}
@@ -222,10 +217,17 @@ const DashBoardTable = ({
                     </td>
                     <td>{el.net_rev ? el.net_rev : 'N/A'}</td>
                     <td>{el.current_status || 'N/A'}</td>
-                    <td>{el.state || 'N/A'}</td>
                     <td>{el.dba || 'N/A'}</td>
                     <td>{el.status_date || 'N/A'}</td>
                     <td>{el.sys_size || 'N/A'}</td>
+                    <td>{el.dealer_code || 'N/A'}</td>
+                    <td>{el.type || 'N/A'}</td>
+                    <td>{el.today || 'N/A'}</td>
+                    <td>{el.contract || 'N/A'}</td>
+                    <td>{el.setter || 'N/A'}</td>
+                    <td>{el.rep_pay || 'N/A'}</td>
+                    <td>{el.state || 'N/A'}</td>
+                    <td>{el.sub_total || 'N/A'}</td>
                     <td>{el.loan_fee || 'N/A'}</td>
                     <td>{el.draw_amt || 'N/A'}</td>
                     <td>{el.rl || 'N/A'}</td>

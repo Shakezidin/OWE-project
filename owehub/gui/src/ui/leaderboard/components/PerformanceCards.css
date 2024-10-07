@@ -289,4 +289,7 @@
   .share-button {
     left: 10px;
   }
+  .share-button p {
+    font-size: 12px;
+  }
 }
