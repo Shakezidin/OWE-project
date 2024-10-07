@@ -104,14 +104,14 @@ func HandleUpdateLeadStatusRequest(resp http.ResponseWriter, req *http.Request) 
 
 	// CASE 1: set lead status to 1 (SENT) --> Send Appointment
 	if dataReq.StatusId == 1 {
-		// previous lead status should be 0 (PENDING), 1 (SENT) or 3 (DECLINED) or 4 (ACTION NEEDED)
-		if leadStatus != 0 && leadStatus != 1 && leadStatus != 3 && leadStatus != 4 {
+		// previous lead status should be 0 (PENDING) or 1 (SENT) or 2 (ACCEPTED) or 3 (DECLINED) or 4 (ACTION NEEDED)
+		if leadStatus != 0 && leadStatus != 1 && leadStatus != 2 && leadStatus != 3 && leadStatus != 4 {
 			log.FuncErrorTrace(0, "Invalid update lead action, can't update lead status to 1 (SENT) from %d", leadStatus)
 			appserver.FormAndSendHttpResp(resp, "Invalid update lead action", http.StatusBadRequest, nil)
 			return
 		}
 
-		isRescheduling := leadStatus == 1 || leadStatus == 3
+		isRescheduling := leadStatus != 0
 
 		aptDate, err = time.Parse("02-01-2006 03:04 PM", dataReq.AppointmentDate+" "+dataReq.AppointmentTime)
 		if err != nil {

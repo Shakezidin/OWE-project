@@ -31,6 +31,7 @@ interface EditModalProps {
   refresh?: number;
   setRefresh?: (value: number) => void;
   reschedule?: boolean
+  action?:boolean
 }
 interface LeadData {
   first_name: string;
@@ -48,7 +49,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   isOpen1,
   onClose1,
   leadId,
-  reschedule
+  reschedule,
+  action
 }) => {
   const [visibleDiv, setVisibleDiv] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -138,6 +140,8 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
             setLeadData(response.data);
             if (reschedule === true) {
               setVisibleDiv(0);
+            }else if(action == true){
+               setVisibleDiv(67);
             } else {
               setVisibleDiv(response.data?.status_id);
             }
@@ -574,13 +578,13 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     }}
                     className={classes.other}
                   >
-                    FOLLOW NEEDED
+                    Reschedule Appointment
                   </button>
                   <span className={classes.getAppointment}>
-                    Reschedule Appointment
+                    
                   </span>
                   <span className={classes.notAvailableCtmr}>
-                    In case of customer was not available
+                    
                   </span>
                 </div>
               </>

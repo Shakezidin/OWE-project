@@ -22,7 +22,7 @@ const LeadManagementNew = () => {
     zip_code: '',
     notes: '',
   });
-  console.log(formData, 'form data consoling ');
+  // console.log(formData, 'form data consoling ');
   const [errors, setErrors] = useState<{ [key: string]: string }>({}); // Added for validation errors // Added for validation error message
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -123,11 +123,15 @@ const LeadManagementNew = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    console.log("ZIP_CODE")
+    // console.log(formData, 'Checked in Console ');
     const errors = validateForm(formData);
     setErrors(errors);
-
+    console.log(formData.zip_code)
+   
     if (Object.keys(errors).length === 0) {
       setLoad(true);
+      
       try {
         const response = await postCaller(
           'create_leads',
@@ -137,7 +141,7 @@ const LeadManagementNew = () => {
             phone_number: formData.mobile_number,
             email_id: formData.email_id,
             street_address: formData.address,
-            zipcode: '84101',
+            zipcode: formData.zip_code,
             notes: formData.notes,
           },
           true
@@ -145,6 +149,7 @@ const LeadManagementNew = () => {
         if (response.status === 200) {
           toast.success('Lead Created Succesfully');
           resetFormData();
+          navigate('/leadmng-dashboard')
         } else if (response.status >= 201) {
           toast.warn(response.message);
         }
@@ -152,9 +157,13 @@ const LeadManagementNew = () => {
       } catch (error) {
         setLoad(false);
         console.error('Error submitting form:', error);
+        
       }
+      
     }
-    navigate('/leadmng-dashboard')
+   
+    console.log(formData, 'FORM SUCCESSFULLY SUBMITTED ');
+   
   };
 
   const resetFormData = () => {
