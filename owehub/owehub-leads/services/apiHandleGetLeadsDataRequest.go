@@ -217,7 +217,7 @@ func HandleGetLeadsDataRequest(resp http.ResponseWriter, req *http.Request) {
 				city = ""
 			}
 
-			zipcode, ok := item["zipcode"].(int64)
+			zipcode, ok := item["zipcode"].(string)
 			if !ok {
 				log.FuncErrorTrace(0, "Failed to get zipcode from leads info Item: %+v\n", item)
 				continue
