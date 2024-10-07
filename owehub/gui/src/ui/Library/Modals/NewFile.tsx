@@ -55,18 +55,40 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
   const uploadFiles = async () => {
     if (files.length === 0) return;
 
-    const accessToken = Cookies.get("myToken")
+    const accessToken = Cookies.get("myToken");
     const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || ""}`;
+
     try {
       await Promise.all(files.map(async (file) => {
-        const apiUrl = `${apiUrlBase}${file.name}:/content`;
-        const resp = await axios.put(apiUrl, file, {
+        const apiUrl = `${apiUrlBase}${file.name}:/createUploadSession`;
+ 
+        const sessionResponse = await axios.post(apiUrl, {
+          item: { "@microsoft.graph.conflictBehavior": "rename" }
+        }, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': file.type || 'application/octet-stream',
+            'Content-Type': 'application/json',
           },
         });
-        await handleSuccess?.()
+
+        const uploadUrl = sessionResponse.data.uploadUrl;
+        const chunkSize = 320 * 1024; 
+        const totalChunks = Math.ceil(file.size / chunkSize);
+
+        for (let i = 0; i < totalChunks; i++) {
+          const start = i * chunkSize;
+          const end = Math.min(start + chunkSize, file.size);
+          const chunk = file.slice(start, end);
+
+          await axios.put(uploadUrl, chunk, {
+            headers: {
+              'Content-Range': `bytes ${start}-${end - 1}/${file.size}`,
+              'Content-Type': file.type || 'application/octet-stream',
+            },
+          });
+        }
+
+        await handleSuccess?.();
         toast.success(`File "${file.name}" uploaded successfully!`);
       }));
     } catch (error) {
