@@ -61,11 +61,11 @@ function FolderView({
           key={folder.id}
           onMouseEnter={() => setHoveredIndex(parseInt(folder.id))}
           onMouseLeave={() => setHoveredIndex(null)}
-          onDoubleClick={() => navigate(`/library/${folder.name}`)}
+          onDoubleClick={() => navigate(`/library/${folder.name.substring(0, 10)}`)}
         >
           <div className={styles.createdByWrapper}>
             <p className={styles.createdBy}>Created by</p>
-            <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name}</p>
+            <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name.substring(0, 10)}</p>
           </div>
           <div className={styles.folderIcon_wrapper}>
             <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
@@ -89,7 +89,7 @@ function FolderView({
           </div>
 
           <div className={styles.folderContent_wrapper}>
-            <div className={styles.folder_name}>{folder.name}</div>
+            <div className={styles.folder_name}>{folder.name.substring(0, 10)}</div>
             <div className={styles.folderInfo_wrapper}>
               <div className={styles.foldersize}> {folder.size > 1024 * 1024
                 ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`
