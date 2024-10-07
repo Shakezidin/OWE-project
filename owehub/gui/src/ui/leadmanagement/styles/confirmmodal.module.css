@@ -361,6 +361,7 @@
 
 .dropdownContainerModal {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -386,7 +387,6 @@
 }
 
 .whydenied {
-  margin-left: 11.7%;
   color: #6f6f6f;
   font-size: 12px;
   font-weight: 500;
@@ -396,6 +396,9 @@
   justify-content: space-between;
 }
 .whydeniedDiv {
+  display: flex;
+  align-items: center;
+  
   margin-top: 6.7%;
 }
 
