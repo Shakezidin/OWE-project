@@ -2,34 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../../../resources/icons/Icons';
 import styles from './folderView.module.css';
 import { format } from 'date-fns';
+import  {FileOrFolder} from '../../types';
 
 interface FolderViewProps {
   onCheckboxChange: (isChecked: boolean, index: number, id:string) => void;
   sortOption: 'none' | 'name' | 'date' | 'size';
   checkedFolders: number[];
   folderData:FileOrFolder[];
+  onFolderClick: (folder: FileOrFolder) => void;
 }
-interface FileOrFolder {
-  id: string;
-  name: string;
-  folder?: object;  // Optional for folders
-  childCount:number;
-  createdDateTime: string;
-  eTag: string;
-  lastModifiedDateTime: string;
-  webUrl: string; // URL to the file
-  size: number; 
-  shared:object;
-  "@microsoft.graph.downloadUrl":string;
-  // File size in bytes
-  // Include any other properties you expect
-}
+
+
+
+
 
 function FolderView({
   onCheckboxChange,
   sortOption,
   checkedFolders,
-  folderData
+  folderData,
+  onFolderClick
 }: FolderViewProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -68,7 +60,7 @@ function FolderView({
           key={folder.id}
           onMouseEnter={() => setHoveredIndex(parseInt(folder.id))}
           onMouseLeave={() => setHoveredIndex(null)}
-          
+          onClick={() => onFolderClick(folder)}
         >
           <div className={styles.createdByWrapper}>
             <p className={styles.createdBy}>Created by</p>

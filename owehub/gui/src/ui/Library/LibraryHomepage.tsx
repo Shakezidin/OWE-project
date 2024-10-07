@@ -21,6 +21,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import MicroLoader from '../components/loader/MicroLoader';
+import { FileOrFolder } from './types';
 const LibraryHomepage = () => {
   const [searchValue, setSearchValue] = useState('');
   const [activeSection, setActiveSection] = useState<'files' | 'folders' | 'dropdown' | null>('files');
@@ -35,6 +36,8 @@ const LibraryHomepage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [recycleBinItems, setRecycleBinItems] = useState<any[]>([]);
   const [selectedDelete,setSelecetedDelete]=useState("");
+  const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
+  const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
   const [libData, setLibData] = useState([
     {
       url: ICONS.pdf,
@@ -183,6 +186,33 @@ const LibraryHomepage = () => {
       FileType: 'img',
     },
   ]);
+   
+  const fetchFolderContent = async (folderId: string) => {
+    setLoading(true);
+    const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${folderId}/children`;
+    const token = await Cookies.get('myToken');
+    if (!token) {
+      console.error('Token not found in cookies.');
+      return;
+    }
+ 
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+ 
+    try {
+      const response = await axios.get(url, config);
+      setCurrentFolderContent(response.data.value);
+    } catch (error) {
+      console.error('Error fetching folder content:', error);
+      toast.error("Failed to fetch folder content");
+    }
+    setLoading(false);
+  };
+ 
+
     //Ajay Chaudhary Code Start from Here
 
 // const [expirationTime, setExpirationTime] = useState<number | null>(null);
@@ -557,6 +587,17 @@ const deleteMyFiles=async()=>{
       setAllIds((prev) => [...prev, id]);
 
   };
+
+  const handleFolderClick = (folder: FileOrFolder) => {
+    setCurrentFolder(folder);
+    fetchFolderContent(folder.id);
+  };
+ 
+  const handleBackClick = () => {
+    setCurrentFolder(null);
+    setCurrentFolderContent([]);
+    fetchDataFromGraphAPI();
+  };
   const handleDelete =async () => {
     // const newLibData = libData.filter((_, index) => !checkedFolders.includes(index));
     // setLibData(newLibData);
@@ -586,6 +627,21 @@ const deleteMyFiles=async()=>{
   };
 
   const renderHeaderContent = () => {
+    if (currentFolder) {
+      return (
+        <div className={styles.folderHeader}>
+          <div className={styles.undoButton} onClick={handleBackClick}>
+              <BiArrowBack style={{
+                        height: '20px',
+                        width: '20px',
+                      }} />
+            </div>
+          <p className={styles.recycle_p}>{currentFolder.name}</p>
+          
+        </div>
+      );
+    }
+ 
     if (checkedItems > 0) {
       return (
         <>
@@ -698,6 +754,52 @@ const deleteMyFiles=async()=>{
   };
 
   const renderContent = () => {
+     
+    if (currentFolder) {
+      if (loading) {
+        return <div className={styles.filesLoader}><MicroLoader /></div>;
+      }
+ 
+      if (currentFolderContent.length === 0) {
+        return <p className={styles.noParagraph}>No items in this folder.</p>;
+      }
+ 
+      return (
+        <div className={styles.libSectionWrapper}>
+          <div className={styles.lib_Grid_Header}>
+            <div className={`${styles.grid_item} ${styles.table_name}`}>Name</div>
+            <div className={styles.grid_item}>Uploaded by</div>
+            <div className={styles.grid_item}>Uploaded Date</div>
+            <div className={styles.grid_item}>Actions</div>
+          </div>
+ 
+          {currentFolderContent.map((item) => (
+            <div className={styles.libGridItem} key={item.id}>
+              <div className={`${styles.file_icon} ${styles.image_div}`}>
+                <img
+                  className={styles.cardImg}
+                  src={item['@microsoft.graph.downloadUrl'] || ICONS.pdf}
+                  alt={item.name}
+                />
+                <div>
+                  <p className={styles.name}>{item.name}</p>
+                  <p className={styles.size}>{item.size < 1024 ? item.size : Math.round(item.size / 1024)} {item.size < 1024 ? 'KB' : 'MB'}</p>
+                </div>
+              </div>
+              <div className={styles.grid_item}>{item.lastModifiedBy?.user?.displayName || 'Unknown'}</div>
+              <div className={styles.grid_item}>{format(new Date(item.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
+              <div className={`${styles.grid_item} ${styles.grid_icon}`}>
+                <RxDownload className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} />
+                <RiDeleteBinLine className={styles.icons} style={{ height: '18px', width: '18px', color: '#667085' }} onClick={() => handleClickdeleted(item.id)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+ 
+ 
+ 
     if (isRecycleBinView) {
       return (
         <div className={styles.recycleBinContent}>
@@ -720,6 +822,7 @@ const deleteMyFiles=async()=>{
           sortOption={sortOption}
           checkedFolders={checkedFolders}
           folderData={folderData}
+          onFolderClick={handleFolderClick}
         />
       );
     }
