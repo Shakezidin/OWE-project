@@ -84,8 +84,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  console.log(action, "do something new")
-
+  
   const handleSendAppointment = async () => {
     setLoad(true);
     try {
@@ -140,13 +139,6 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
 
           if (response.status === 200) {
             setLeadData(response.data);
-            if (reschedule === true) {
-              setVisibleDiv(0);
-            } else if (action == true) {
-              setVisibleDiv(67);
-            } else {
-              setVisibleDiv(response.data?.status_id);
-            }
           } else if (response.status >= 201) {
             toast.warn(response.data.message);
           }
@@ -277,7 +269,16 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
-  // Function to create project, design, and proposal in sequence
+  useEffect(() => {
+    if (reschedule === true) {
+      setVisibleDiv(0);
+    } else if (action === true) {
+      setVisibleDiv(67);
+    } else if (leadData) {
+      setVisibleDiv(leadData.status_id);
+    }
+  }, [reschedule, action, leadData]);
+
 
   const handleCreateProposal = async () => {
     if (!leadData) {
