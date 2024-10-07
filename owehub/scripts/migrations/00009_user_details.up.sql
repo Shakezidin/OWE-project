@@ -1,5 +1,28 @@
+CREATE TABLE IF NOT EXISTS partner_details (
+    id BIGSERIAL PRIMARY KEY,
+    partner_code VARCHAR(255),
+    partner_logo VARCHAR(255),
+    bg_colour VARCHAR(255),
+    preferred_name VARCHAR(255),
+    partner_id BIGINT,
+    FOREIGN KEY (partner_id) REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE CASCADE
+);
+
 ALTER TABLE user_details
-ADD COLUMN podio_user BOOLEAN DEFAULT false;
+ADD COLUMN partner_id BIGINT;
+
+ALTER TABLE user_details
+ADD COLUMN dealer_owner_id BIGINT;
+
+
+-- Add new foreign key constraints to refer to sales_partner_dbhub_schema.item_id
+ALTER TABLE user_details
+    ADD CONSTRAINT user_details_dealerowner_fkey
+        FOREIGN KEY (dealer_owner_id)
+        REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL,
+    ADD CONSTRAINT user_details_partner_id_fkey
+        FOREIGN KEY (partner_id)
+        REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
 
 
 CREATE OR REPLACE FUNCTION create_new_user(
@@ -34,12 +57,12 @@ DECLARE
     v_role_id INT;
     v_user_details_id INT;
     v_reporting_manager_id INT;
-    v_dealer_owner_id INT;
+    v_dealer_owner_id BIGINT;
     v_state_id INT;
     v_zipcode_id INT;
     v_team_id INT;
     v_max_user_code INT;
-    v_dealer_id INT;
+    v_dealer_id BIGINT;
     v_new_user_code VARCHAR(255);
     v_reporting_manager VARCHAR(255);
 BEGIN
@@ -121,9 +144,9 @@ BEGIN
 
      -- Get the dealer owner's user_id
     IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
-        SELECT id INTO v_dealer_id
-        FROM v_dealer
-        WHERE dealer_name = p_dealer_name;
+        SELECT item_id INTO v_dealer_id
+        FROM sales_partner_dbhub_schema
+        WHERE sales_partner_name = p_dealer_name;
 
         IF NOT FOUND THEN
             RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
@@ -146,7 +169,7 @@ BEGIN
         password,
         password_change_required,
         reporting_manager,
-        dealer_owner,   
+        dealer_owner_id,   
         role_id,
         user_status,
         user_designation,
@@ -158,8 +181,8 @@ BEGIN
         zipcode,
         country,
         team_id,
-        dealer_id,
-        podio_user,
+        partner_id,
+	podio_user,
         tables_permissions
     )
     VALUES (
@@ -184,16 +207,23 @@ BEGIN
         p_country,
         v_team_id,
         v_dealer_id,
-        p_add_to_podio,
+	p_add_to_podio,
         p_tables_permissions
     )
     RETURNING user_id INTO v_user_id;
 
-    IF p_role_name = 'Dealer Owner' AND p_dealer_name IS NOT NULL AND p_dealer_name != '' AND p_dealer_logo != '' THEN
-        UPDATE v_dealer
-        SET dealer_logo = p_dealer_logo
-        WHERE id = v_dealer_id;
-    END IF;
+    RAISE NOTICE 'Role Name: %, Dealer Name: %, Dealer Logo: %', p_role_name, p_dealer_name, p_dealer_logo;
+
+  IF p_role_name = 'Dealer Owner' 
+   AND p_dealer_name IS NOT NULL 
+   AND p_dealer_name != '' 
+   AND p_dealer_logo != '' THEN
+   
+    INSERT INTO partner_details (partner_logo, partner_id)
+    VALUES (p_dealer_logo, v_dealer_id);
+    
+END IF;
+
 
 EXCEPTION
     WHEN unique_violation THEN
@@ -202,3 +232,85 @@ EXCEPTION
         RAISE EXCEPTION 'An error occurred while creating the user: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION update_user(
+    p_name VARCHAR(255),
+    -- p_db_username VARCHAR(255),
+    p_reporting_manager VARCHAR(255),
+    p_dealer_owner VARCHAR(255),
+    p_role_name VARCHAR(50),
+    p_user_status VARCHAR(50),
+    p_designation VARCHAR(255),
+    p_description VARCHAR(255),
+    p_region VARCHAR(255),
+    p_street_address VARCHAR(255),
+    p_state VARCHAR(255),
+    p_city VARCHAR(255),
+    p_zipcode VARCHAR(255),
+    p_country VARCHAR(255),
+    p_user_code VARCHAR(255),
+    p_dealer_name VARCHAR(255),
+    p_preferred_name VARCHAR(255),
+    p_tables_permissions jsonb,
+    OUT v_user_id INT
+)
+RETURNS INT 
+AS $$
+DECLARE
+    v_dealer_id BIGINT;
+    v_reporting_manager VARCHAR(255);
+BEGIN
+
+ -- Get the dealer owner's user_id
+    IF p_dealer_name IS NOT NULL AND p_dealer_name != '' THEN
+        SELECT item_id INTO v_dealer_id
+        FROM sales_partner_dbhub_schema 
+        WHERE sales_partner_name = p_dealer_name;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
+        END IF;
+    ELSE
+        v_dealer_id := NULL;
+    END IF;
+
+    UPDATE user_details
+    SET 
+        name = p_name,
+        -- db_username = p_db_username,
+        reporting_manager = CASE WHEN p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_reporting_manager) LIMIT 1) ELSE NULL END,
+        dealer_owner_id = CASE WHEN p_dealer_owner IS NOT NULL AND p_dealer_owner != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer_owner) LIMIT 1) ELSE NULL END,
+        role_id = CASE WHEN p_role_name IS NOT NULL AND p_role_name != '' THEN (SELECT role_id FROM user_roles WHERE LOWER(role_name) = LOWER(p_role_name) LIMIT 1) ELSE NULL END,
+        user_status = COALESCE(NULLIF(p_user_status, ''), NULL),
+        user_designation = COALESCE(NULLIF(p_designation, ''), NULL),
+        description = COALESCE(NULLIF(p_description, ''), NULL),
+        region = COALESCE(NULLIF(p_region, ''), NULL),
+        street_address = COALESCE(NULLIF(p_street_address, ''), NULL),
+        state = CASE WHEN p_state IS NOT NULL AND p_state != '' THEN (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state) LIMIT 1) ELSE NULL END,
+        city = COALESCE(NULLIF(p_city, ''), NULL),
+        zipcode = CASE WHEN p_zipcode IS NOT NULL AND p_zipcode != '' THEN (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1) ELSE NULL END,
+        country = COALESCE(NULLIF(p_country, ''), NULL),
+        partner_id = v_dealer_id,
+        tables_permissions = p_tables_permissions,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE user_code = p_user_code
+    RETURNING user_id INTO v_user_id;
+    
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Record with ID % not found in user_details table', p_record_id;
+    END IF;
+
+    IF p_role_name = 'Dealer Owner' AND p_preferred_name IS NOT NULL AND p_preferred_name != '' THEN
+        UPDATE partner_details
+        SET preferred_name = p_preferred_name
+        WHERE partner_id = v_dealer_id;
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error updating record in user_details: %', SQLERRM;
+END;
+$$ LANGUAGE plpgsql;
+
+-- COPY user_details (name,user_code,mobile_number,email_id,password,password_change_required,reporting_manager,partner_id,role_id,user_status,user_designation,description,region,street_address,state,city,zipcode,country,tables_permissions,created_at,updated_at) FROM '/docker-entrypoint-initdb.d/user_details.csv' DELIMITER ',' CSV;

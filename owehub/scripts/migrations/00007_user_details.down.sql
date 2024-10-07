@@ -1,18 +1,3 @@
-DROP TABLE IF EXISTS partner_details;
--- Drop the foreign key constraints pointing to sales_partner_dbhub_schema.item_id
-ALTER TABLE user_details
-    DROP CONSTRAINT IF EXISTS user_details_dealer_owner_fkey,
-    DROP CONSTRAINT IF EXISTS user_details_dealer_id_fkey;
-
--- Restore the original foreign key constraints to v_dealer(id)
-ALTER TABLE user_details
-    ADD CONSTRAINT user_details_dealer_owner_fkey
-        FOREIGN KEY (dealer_owner)
-        REFERENCES v_dealer(id) ON DELETE SET NULL,
-    ADD CONSTRAINT user_details_dealer_id_fkey
-        FOREIGN KEY (dealer_id)
-        REFERENCES v_dealer(id) ON DELETE SET NULL;
-        
 ALTER TABLE user_details
 DROP COLUMN podio_user;
 
@@ -212,7 +197,6 @@ EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'An error occurred while creating the user: %', SQLERRM;
 END;
-<<<<<<< HEAD
 $$ LANGUAGE plpgsql;
 
 
@@ -294,6 +278,3 @@ EXCEPTION
         RAISE EXCEPTION 'Error updating record in user_details: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
-=======
-$$ LANGUAGE plpgsql;
->>>>>>> dev
