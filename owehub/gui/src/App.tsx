@@ -40,6 +40,7 @@ import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap';
 import SaleRepCustomerForm from './ui/scheduler/SaleRepCustomerForm/SaleRepCustomerForm';
 import ArchivedPages from './ui/leadmanagement/ArchievedPages';
 import DealerPayments from './ui/oweHub/configure/dealerPayments/DealerPayments';
+import FolderDetail from './ui/Library/FolderDetail/FolderDetail';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -119,6 +120,7 @@ function App() {
           {ManageRoutesWithRole(role_name!)}
 
           <Route path={ROUTES.LIBRARY} element={<LibraryHomepage />} />
+          <Route path={ROUTES.FOLDER_DETAIL} element={<FolderDetail />} />
 
           <Route path={ROUTES.SCHEDULER} element={<Scheduler />} />
           <Route path={ROUTES.SCHEDULE_DETAIL} element={<ScheduleDetail />} />
