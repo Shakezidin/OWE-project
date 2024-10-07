@@ -140,13 +140,11 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 			salesRep = strings.Split(SalesRepresentatives, ", ")
 		}
 
-		// Create a new GetDealerTierData object
 		usrOnboardingData := models.GetUsMgmtOnbData{
 			RoleName:  RoleName,
 			UserCount: UserCount,
 		}
 
-		// Append the new dealerTierData to the usrMgOnbList
 		usrMgOnbList.UsrMgmtOnbList = append(usrMgOnbList.UsrMgmtOnbList, usrOnboardingData)
 	}
 

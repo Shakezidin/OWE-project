@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -39,7 +40,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in create leads request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -47,7 +48,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create leads data req err:  %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -55,7 +56,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	err = json.Unmarshal(reqBody, &CreateLeadsReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create leads request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal leads user request", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal leads user request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -64,7 +65,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "invalid data provided: %v", err)
-		FormAndSendHttpResp(resp, "Empty fields are not allowed in Api", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Empty fields are not allowed in Api", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -72,7 +73,7 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmail, ok := req.Context().Value("emailid").(string)
 	if !ok {
 		log.FuncErrorTrace(0, "failed to retrieve user email from context %v", err)
-		FormAndSendHttpResp(resp, "User email not found", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "User email not found", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -91,14 +92,14 @@ func HandleCreateLeadsRequest(resp http.ResponseWriter, req *http.Request) {
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateLeadFunction, queryParameters)
 	if err != nil {
 		if strings.Contains(err.Error(), "EMAIL_OR_PHONE_NO._EXISTS") {
-			FormAndSendHttpResp(resp, "Email id or phone number already exists", http.StatusBadRequest, nil)
+			appserver.FormAndSendHttpResp(resp, "Email id or phone number already exists", http.StatusBadRequest, nil)
 			return
 		}
 		log.FuncErrorTrace(0, "Failed to Add Leads in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Lead ", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to Create Lead ", http.StatusInternalServerError, nil)
 		return
 	}
 
 	// Sending success response
-	FormAndSendHttpResp(resp, "Lead Created Successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Lead Created Successfully", http.StatusOK, nil)
 }

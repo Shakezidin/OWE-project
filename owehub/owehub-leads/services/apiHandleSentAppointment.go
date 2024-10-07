@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -43,21 +44,21 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get leads data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from user err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal the sent appointment details err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal sent appointment data Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal sent appointment data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -65,7 +66,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	aptDate, err = time.Parse("02-01-2006 03:04 PM", dataReq.AppointmentDate+" "+dataReq.AppointmentTime)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse appointment date and time err: %v", err)
-		FormAndSendHttpResp(resp, "Appointment date and time format is incorrect", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Appointment date and time format is incorrect", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,19 +76,19 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{authenticatedEmail, dataReq.LeadsId})
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get email from database: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get email from database", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get email from database", http.StatusInternalServerError, nil)
 		return
 	}
 	// find length of data.
 	if len(data) == 0 {
 		log.FuncErrorTrace(0, "Lead with leads_id %d not found", dataReq.LeadsId)
-		FormAndSendHttpResp(resp, "Lead not found", http.StatusBadRequest, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "Lead not found", http.StatusBadRequest, nil, 0)
 		return
 	}
 	ClientEmail, ok := data[0]["email_id"].(string)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get the email_id from leads info table: %+v\n", data[0])
-		FormAndSendHttpResp(resp, "Failed to get the email_id from leads info table", http.StatusInternalServerError, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "Failed to get the email_id from leads info table", http.StatusInternalServerError, nil, 0)
 		return
 	}
 
@@ -96,7 +97,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to send the email to the client %v", err)
-		FormAndSendHttpResp(resp, "Failed to send the email to the client", http.StatusInternalServerError, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "Failed to send the email to the client", http.StatusInternalServerError, nil, 0)
 		return
 	}
 
@@ -105,7 +106,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmail, ok := req.Context().Value("emailid").(string)
 	if !ok {
 		log.FuncErrorTrace(0, "failed to retrieve user email from context %v", err)
-		FormAndSendHttpResp(resp, "User email not found", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "User email not found", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -115,7 +116,7 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get user_id from database: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get user_id from database", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to get user_id from database", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -123,14 +124,14 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 	dataLength = len(data)
 	if dataLength == 0 {
 		log.FuncErrorTrace(0, "Data is blank")
-		FormAndSendHttpResp(resp, "Data is blank", http.StatusInternalServerError, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "Data is blank", http.StatusInternalServerError, nil, 0)
 		return
 	}
 
 	creatorUserId, ok := data[0]["user_id"].(int64)
 	if !ok {
 		log.FuncErrorTrace(0, "Failed to get the user_id from leads info table: %+v\n", data[0])
-		FormAndSendHttpResp(resp, "Failed to get the user_id from leads info table", http.StatusInternalServerError, nil, 0)
+		appserver.FormAndSendHttpResp(resp, "Failed to get the user_id from leads info table", http.StatusInternalServerError, nil, 0)
 		return
 	}
 	//**********************************************************************************************//
@@ -144,10 +145,10 @@ func HandleSentAppointmentRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update the appointment details in db : %v", err)
-		FormAndSendHttpResp(resp, "Failed to update the appointment details in db", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to update the appointment details in db", http.StatusInternalServerError, nil)
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Appointment updated successfully", http.StatusOK, nil, 0)
+	appserver.FormAndSendHttpResp(resp, "Appointment updated successfully", http.StatusOK, nil, 0)
 
 }

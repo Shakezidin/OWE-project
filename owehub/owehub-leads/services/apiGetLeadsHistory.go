@@ -8,6 +8,7 @@ package services
 
 import (
 	"OWEApp/owehub-leads/common"
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -47,21 +48,21 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get Leads data request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Leads data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal get Leads History request body err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Leads History request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal get Leads History request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -69,7 +70,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	LS := dataReq.LeadsStatus
 	if LS != 5 && LS != 6 && LS != -1 {
 		log.FuncErrorTrace(0, "Not a correct Lead status")
-		FormAndSendHttpResp(resp, "Correct Leads status is required", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Correct Leads status is required", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -77,7 +78,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	_, err = time.Parse("02-01-2006", dataReq.StartDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert Start date :%+v to time.Time err: %+v", dataReq.StartDate, err)
-		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -85,7 +86,7 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	_, err = time.Parse("02-01-2006", dataReq.EndDate)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert end date :%+v to time.Time err: %+v", dataReq.EndDate, err)
-		FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Invalid date format, Expected format : DD-MM-YYYY", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -93,47 +94,43 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 	pageSize := dataReq.PageSize
 	pageNumber := dataReq.PageNumber
 	if pageSize <= 0 {
-		pageSize = 10 // setting default page size if <0
+		pageSize = 10
 	}
 	if pageNumber <= 0 {
-		pageNumber = 1 // setting default pagenumber
+		pageNumber = 1
 	}
 	offset := (pageNumber - 1) * pageSize
 
-	// Construct the query with pagination
-
-	// FOR SHOWING ALL DATA 🔴🔴🔴
+	// Construct the query without ORDER BY inside the whereClause
 	if dataReq.LeadsStatus == -1 {
 		whereClause = "WHERE li.status_id IN (5, 6)"
 	} else {
+		// Show data based on a specific status
 		whereClause = fmt.Sprintf("WHERE li.status_id = %d", dataReq.LeadsStatus)
 	}
 
+	// Add date range and archive conditions to the whereClause
 	whereClause = fmt.Sprintf(`
-		%s 
-		AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY') 
-		AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY')  + INTERVAL '1 day'
-		AND li.is_archived = $4
-	`, whereClause)
+    %s
+    AND li.updated_at >= TO_TIMESTAMP($2, 'DD-MM-YYYY')
+    AND li.updated_at < TO_TIMESTAMP($3, 'DD-MM-YYYY') + INTERVAL '1 day'
+    AND li.is_archived = $4
+`, whereClause)
 
+	// Construct the final query with pagination and ORDER BY
 	leadsHistoryQuery = fmt.Sprintf(`
-        SELECT
-            li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
-            ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
-            li.appointment_scheduled_date, li.appointment_accepted_date, 
-            li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
-        FROM
-            get_leads_info_hierarchy($1) li
-        JOIN
-            leads_status ls ON li.status_id = ls.status_id
-         %s
-        ORDER BY
-             li.updated_at DESC
-        LIMIT $5  -- for page size
-        OFFSET $6  -- Offset for pagination
-         `,
-		whereClause,
-	)
+    SELECT
+        li.leads_id, li.first_name, li.last_name, li.email_id, li.phone_number, li.status_id,
+        ls.status_name, li.updated_at, li.appointment_disposition_note, li.street_address,
+        li.appointment_scheduled_date, li.appointment_accepted_date,
+        li.appointment_declined_date, li.appointment_date, li.lead_won_date, li.lead_lost_date, li.proposal_created_date
+    FROM
+        get_leads_info_hierarchy($1) li
+    JOIN
+        leads_status ls ON li.status_id = ls.status_id
+    %s
+    ORDER BY li.updated_at DESC
+`, whereClause)
 
 	authenticatedUserEmail := req.Context().Value("emailid").(string)
 	whereEleList = append(whereEleList,
@@ -141,15 +138,19 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 		dataReq.StartDate,
 		dataReq.EndDate,
 		dataReq.IsArchived,
-		pageSize,
-		offset,
 	)
+
+	// Add pagination conditionally if valid
+	if dataReq.PageSize > 0 && dataReq.PageNumber > 0 {
+		leadsHistoryQuery += " LIMIT $5 OFFSET $6"
+		whereEleList = append(whereEleList, pageSize, offset)
+	}
 
 	// Execute the query
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryQuery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get lead history from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to fetch lead history", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch lead history", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -182,22 +183,22 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
 
 	// Count total records from db
 	leadsHistoryCountQuery = fmt.Sprintf(`
-		SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
-		JOIN
-			leads_status ls ON li.status_id = ls.status_id
-		%s
-		`, whereClause)
+        SELECT COUNT(*) FROM get_leads_info_hierarchy($1) li
+        JOIN
+            leads_status ls ON li.status_id = ls.status_id
+        %s
+        `, whereClause)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, leadsHistoryCountQuery, whereEleList[0:4])
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get lead history count from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to fetch lead history count", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to fetch lead history count", http.StatusInternalServerError, nil)
 		return
 	}
 
 	recordCount = data[0]["count"].(int64)
 
-	FormAndSendHttpResp(resp, "Leads History Data", http.StatusOK, LeadsHistoryResponse, recordCount)
+	appserver.FormAndSendHttpResp(resp, "Leads History Data", http.StatusOK, LeadsHistoryResponse, recordCount)
 
 }
 
@@ -209,9 +210,6 @@ func HandleGetLeadsHistory(resp http.ResponseWriter, req *http.Request) {
  ******************************************************************************/
 func getLeadHistoryTimeline(resultItem map[string]interface{}) (timeline []models.GetLeadsTimelineItem) {
 
-	// retrieve appoitment_scheduled_date, appointment_accepted_date, appointment_date first as they are mandatory
-	// in either case of lead being won or lost, we will have a timeline with these three at least
-	// further dates depend on won or lost status
 	if appointmentScheduledDate, ok := resultItem["appointment_scheduled_date"].(time.Time); ok {
 		timeline = append(timeline, models.GetLeadsTimelineItem{
 			Label: common.LeadTimelineLabelScheduled,

@@ -8,6 +8,7 @@
 package services
 
 import (
+	"OWEApp/shared/appserver"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
@@ -42,7 +43,7 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in toggle archive request")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -50,7 +51,7 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to read HTTP Request body : %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -58,7 +59,7 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal request: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Request body", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to unmarshal Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -67,7 +68,7 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 	if length == 0 {
 		err = fmt.Errorf("no lead IDs provided")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "No lead IDs provided", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "No lead IDs provided", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -102,7 +103,7 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 		}
 		err = fmt.Errorf("Couldnt find the following leads in the database: %v", ids)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Couldnt find one or more leads in the database", http.StatusBadRequest, nil)
+		appserver.FormAndSendHttpResp(resp, "Couldnt find one or more leads in the database", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -112,10 +113,10 @@ func HandleToggleArchive(resp http.ResponseWriter, req *http.Request) {
 	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to archive the lead id's")
-		FormAndSendHttpResp(resp, "Failed to archive the lead id's", http.StatusInternalServerError, nil)
+		appserver.FormAndSendHttpResp(resp, "Failed to archive the lead id's", http.StatusInternalServerError, nil)
 		return
 	}
 
 	log.DBTransDebugTrace(0, "Leads archived successfully")
-	FormAndSendHttpResp(resp, "Lead archived status toggled successfully", http.StatusOK, nil)
+	appserver.FormAndSendHttpResp(resp, "Lead archived status toggled successfully", http.StatusOK, nil)
 }

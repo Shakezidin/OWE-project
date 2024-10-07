@@ -12,6 +12,7 @@ import {
   Legend,
   Sector,
 } from 'recharts';
+import axios from 'axios';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import styles from './styles/dashboard.module.css';
 import './styles/mediaQuery.css';
@@ -453,6 +454,12 @@ const LeadManagementDashboard = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [leadToArchive, setLeadToArchive] = useState<Lead | null>(null);
+  const [isNewButtonActive, setIsNewButtonActive] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [designs, setDesigns] = useState([]);
+  const [proposal, setProposal] = useState(null);
+
+
 
   const width = useWindowWidth();
   const isTablet = width <= 1024;
@@ -503,6 +510,7 @@ const LeadManagementDashboard = () => {
   const [refresh, setRefresh] = useState(1);
   const [archived, setArchived] = useState(false);
   const [leadId, setLeadId] = useState(0);
+  const [projects, setProjects] = useState([])
   const isMobile = useMatchMedia('(max-width: 1024px)');
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
@@ -728,11 +736,11 @@ const LeadManagementDashboard = () => {
             },
             true
           );
-
+  
           if (response.status === 200) {
             const apiData = response.data.leads;
             const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => {
+              (acc: DefaultData, item: any) => { 
                 acc[item.status_name] = {
                   name: defaultData[item.status_name].name,
                   value: item.count,
@@ -756,7 +764,7 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-
+  
       fetchData();
     }
   }, [isAuthenticated, selectedDates, refresh]);
@@ -774,6 +782,19 @@ const LeadManagementDashboard = () => {
   const { isLoading, leadsData, totalcount } = useAppSelector(
     (state) => state.leadManagmentSlice
   );
+
+  const getAuroraData = async () => {
+    try {
+        const response = await axios.get('http://localhost:5000/api/projects');
+        // Handle the response as needed
+        console.log("response.data", response.data);
+        setProjects(response.data.projects)
+        
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -794,8 +815,11 @@ const LeadManagementDashboard = () => {
         case 'Declined':
           statusId = 3;
           break;
+        case 'Projects':
+          statusId = 5;
+          break;
         default:
-          statusId = 0;
+        statusId = 0;
       }
 
       const data = {
@@ -811,7 +835,12 @@ const LeadManagementDashboard = () => {
         page_number: archive ? 1 : page,
       };
 
-      dispatch(getLeads(data));
+      if(statusId == 5) {
+        getAuroraData(); // Call the function to get Aurora Project data
+      }
+      else{
+        dispatch(getLeads(data));
+      }
     }
   }, [
     selectedDates,
@@ -858,6 +887,43 @@ const LeadManagementDashboard = () => {
     }
     setArchived(false);
   };
+
+  const handleNewButtonClick = () => {
+    setCurrentFilter('Projects'); // Example filter name
+    setIsNewButtonActive(true);
+  };
+
+  // Function to fetch project details
+const fetchProjectDetails = async (projectId: string) => {
+  try {
+    const response = await axios.get(`http://localhost:5000/api/projects/${projectId}`);
+    setSelectedProject(response.data); // Set the selected project details
+    fetchDesigns(projectId); // Fetch designs for the selected project
+  } catch (error) {
+    console.error('Error fetching project details:', error);
+  }
+};
+
+// Function to fetch designs for a project
+const fetchDesigns = async (projectId: string) => {
+  try {
+    const response = await axios.get(`/api/designs?projectId=${projectId}`);
+    setDesigns(response.data.designs); // Set the designs for the selected project
+  } catch (error) {
+    console.error('Error fetching designs:', error);
+  }
+};
+
+// Function to fetch proposal for a design
+const fetchProposal = async (designId: string) => {
+  try {
+    const response = await axios.get(`/api/proposals?designId=${designId}`);
+    setProposal(response.data); // Set the proposal details
+  } catch (error) {
+    console.error('Error fetching proposal:', error);
+  }
+}
+  
 
   //************************************************************************************************ */
   return (
@@ -1195,6 +1261,17 @@ const LeadManagementDashboard = () => {
                       </button>
                     );
                   })}
+                   <button
+                    onClick={handleNewButtonClick}
+                    className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
+                    >
+                     <p
+                          className={styles.statusInactive}
+                        >
+                          
+                        </p>
+                        Aurora Projects
+                  </button>
                 </div>
 
                 {/* RABINDRA */}
@@ -1248,7 +1325,71 @@ const LeadManagementDashboard = () => {
                       </div>
                     </td>
                   </tr>
-                ) : leadsData.length > 0 ? (
+                ) : 
+                
+                currentFilter == "Projects" && projects.length > 0 ? 
+                  projects.map((project:any , index:number) => (
+                    <React.Fragment key={index}>
+                    {/* <tr className={styles.history_lists}>
+                          <td className={styles.project_list}>
+                         
+                           <div style={{fontWeight:"bold"}}>
+                              Project Name
+                            </div>
+
+                            <div>
+                               Property Address
+                            </div>
+                        
+                            <div>
+                              Created At
+                            </div>
+                            <div>
+                              Project ID
+                            </div>
+                          </td>
+                    </tr> */}
+                    {/* <tr key={project.id} className={styles.history_lists}>
+                          <td className={styles.project_list}>
+                         
+                           <div style={{fontWeight:"bold"}}>
+                              {project.name}
+                            </div>
+
+                            <div>
+                              {project.property_address}
+                            </div>
+                        
+                            <div>
+                              {new Date(project.created_at).toLocaleString()}
+                            </div>
+                            <div>
+                              {project.id}
+                            </div>
+                          </td>
+                        </tr> */}
+                        <tr key={project.id} className={styles.history_lists} onClick={() => fetchProjectDetails(project.id)}>
+                          <td className={styles.project_list}>
+                            <div style={{ fontWeight: "bold" }}>
+                              {project.name}
+                            </div>
+
+                            <div>
+                              {project.property_address}
+                            </div>
+
+                            <div>
+                              {new Date(project.created_at).toLocaleString()}
+                            </div>
+                            <div>
+                              {project.id}
+                            </div>
+                          </td>
+                        </tr>
+                        </React.Fragment>
+                      ))
+                  :
+                leadsData.length > 0 ? (
                   leadsData.map((lead: any, index: number) => (
                     <React.Fragment key={index}>
                       <tr className={styles.history_lists}>
@@ -1305,7 +1446,7 @@ const LeadManagementDashboard = () => {
                             <span>
                               {lead.email_id}
                             </span>
-
+                            
                           </div>
                           <div className={styles.address}>
                             {lead?.street_address
@@ -1387,7 +1528,7 @@ const LeadManagementDashboard = () => {
                             <div className={''}>
                               <span>
                                 {lead.email_id}
-
+                                
                               </span>
                             </div>
                             <div className={''}>
