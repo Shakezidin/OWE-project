@@ -38,155 +38,6 @@ const LibraryHomepage = () => {
   const [selectedDelete, setSelecetedDelete] = useState("");
   const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
   const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
-  // const [libData, setLibData] = useState([
-  //   {
-  //     url: ICONS.pdf,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'UNTD SOLAR_.PDF',
-  //     size: '34.82 KB',
-  //     FileType: 'pdf',
-  //   },
-  //   {
-  //     url: ICONS.excelIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'UNTD SOLAR_.Excel',
-  //     size: '34.82 KB',
-  //     FileType: 'excel',
-  //   },
-  //   {
-  //     url: ICONS.viedoImageOne,
-  //     url_play: ICONS.viedoplay,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'Meeting recording.MP4',
-  //     size: '34.82 mb',
-  //     FileType: 'mp4',
-  //     duration: '23.45',
-  //   },
-  //   {
-  //     url: ICONS.pdf,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'UNTD SOLAR_.PDF',
-  //     size: '34.82 KB',
-  //     FileType: 'pdf',
-  //   },
-  //   {
-  //     url: ICONS.excelIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 sep 2024',
-  //     iconName: 'UNTD SOLAR_.Excel',
-  //     size: '30.82 KB',
-  //     FileType: 'excel',
-  //   },
-  //   {
-  //     url: ICONS.viedoImageOne,
-  //     url_play: ICONS.viedoplay,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'Meeting recording.MP4',
-  //     size: '34.82 gb',
-  //     FileType: 'mp4',
-  //     duration: '23.45',
-  //   },
-  //   {
-  //     url: ICONS.viedoImageOne,
-  //     url_play: ICONS.viedoplay,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'Meeting recording.MP4',
-  //     size: '34.82 gb',
-  //     FileType: 'mp4',
-  //     duration: '23.45',
-  //   },
-  //   {
-  //     url: ICONS.imageIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '17 Aug 2024',
-  //     iconName: 'Screenshot_1234.jpeg',
-  //     size: '34.82 KB',
-  //     FileType: 'img',
-  //   },
-  //   {
-  //     url: ICONS.pdf,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'UNTD SOLAR_.PDF',
-  //     size: '34.82 KB',
-  //     FileType: 'pdf',
-  //   },
-  //   {
-  //     url: ICONS.excelIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '8 feb 2024',
-  //     iconName: 'UNTD SOLAR_.Excel',
-  //     size: '52 KB',
-  //     FileType: 'excel',
-  //   },
-  //   {
-  //     url: ICONS.viedoImageOne,
-  //     url_play: ICONS.viedoplay,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'Meeting recording.MP4',
-  //     size: '26.65 mb',
-  //     FileType: 'mp4',
-  //     duration: '23.45',
-  //   },
-  //   {
-  //     url: ICONS.imageIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'Screenshot_1234.jpeg',
-  //     size: '46.45 KB',
-  //     FileType: 'img',
-  //   },
-  //   {
-  //     url: ICONS.pdf,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'UNTD SOLAR_.PDF',
-  //     size: '34.82 KB',
-  //     FileType: 'pdf',
-  //   },
-  //   {
-  //     url: ICONS.excelIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'UNTD SOLAR_.Excel',
-  //     size: '34.82 KB',
-  //     FileType: 'excel',
-  //   },
-  //   {
-  //     url: ICONS.viedoImageOne,
-  //     url_play: ICONS.viedoplay,
-  //     name: 'Jordan Ulmer',
-  //     date: '14 Sep 2024',
-  //     iconName: 'Meeting recording.MP4',
-  //     size: '22 mb',
-  //     FileType: 'mp4',
-  //     duration: '23.45',
-  //   },
-  //   {
-  //     url: ICONS.imageIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '28 Sep 2024',
-  //     iconName: 'Screenshot_1234.jpeg',
-  //     size: '34.82 KB',
-  //     FileType: 'img',
-  //   },
-  //   {
-  //     url: ICONS.imageIcon,
-  //     name: 'Jordan Ulmer',
-  //     date: '3 mar 2024',
-  //     iconName: 'Screenshot_1234.jpeg',
-  //     size: '34.82 KB',
-  //     FileType: 'img',
-  //   },
-  // ]);
-
   const fetchFolderContent = async (folderId: string) => {
     setLoading(true);
     const url = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drive/items/${folderId}/children`;
@@ -249,22 +100,6 @@ const LibraryHomepage = () => {
       fetchDataFromGraphAPI();
     }
   }, []);
-  //   const checkTokenValidity = () => {
-  //   const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-  //   const storedExpirationTime = parseInt(expirationTime?.toString() || '0', 10);
-  //   return currentTime < storedExpirationTime;
-  // };
-
-
-
-  // useEffect(() => {
-  //   if (!checkTokenValidity()) {
-  //     console.error('Token expired or not found in cookies.');
-  //     getToken();
-  //   } else {
-  //     console.log("Token is valid");
-  //   }
-  // }, [expirationTime]);
   interface User {
     // Define the properties of the user object as needed
     id: string;
@@ -332,6 +167,7 @@ const LibraryHomepage = () => {
 
   // },[Cookies.get('myToken')]);
   const [originalFileData, setOriginalFileData] = useState<FileOrFolder[]>([]);
+  const [originalFolderData, setOriginalFolderData] = useState<FileOrFolder[]>([]);
   useEffect(() => {
     if (allData) {
       const folders: FileOrFolder[] = [];
@@ -349,9 +185,9 @@ const LibraryHomepage = () => {
       setFolderData([...folders]);
       setFileData([...files]);
       setOriginalFileData([...files]);
+      setOriginalFolderData([...folders]);
     }
   }, [allData]);
-
 
   //Delete FILES OR FOLDERS
 
@@ -458,12 +294,23 @@ const LibraryHomepage = () => {
     // setFileData(fileData.filter((file)=>file.name.toLowerCase().includes(searchValue.toLowerCase())));
     if (e.target.value === '') {
       setFileData(originalFileData);
-    } else {
-      // Filter the file data based on the search input
-      const filteredData = originalFileData.filter((file) =>
-        file.name.toLowerCase().includes(e.target.value.toLowerCase())
+      setFolderData(originalFolderData);
+    } if(activeSection==='files')
+    {
+      
+        // Filter the file data based on the search input
+        const filteredData = originalFileData.filter((file) =>
+          file.name.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        setFileData(filteredData);
+      
+    }
+    else if(activeSection==='folders')
+    {
+      const filteredData = originalFolderData.filter((folder) =>
+        folder.name.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      setFileData(filteredData);
+      setFolderData(filteredData);
     }
   }
 
@@ -540,10 +387,9 @@ const LibraryHomepage = () => {
 
   const filteredData = fileData.filter((data) => {
     const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'excel') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && data.file?.mimeType === 'image/png') || (selectedType === 'Videos' && data.file?.mimeType === 'mp4');
+    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && data.file?.mimeType === 'image/png') || (selectedType === 'Videos' && (data.file?.mimeType === 'video/mp4' || data.file?.mimeType === 'video/mpeg' || data.file?.mimeType === 'video/ogg' || data.file?.mimeType === 'video/webm' || data.file?.mimeType === 'video/x-msvideo' || data.file?.mimeType === 'video/quicktime'));
     return matchesSearch && matchesType;
   });
-  console.log("myFile dATA-", fileData);
 
   // const convertToBytes = (sizeString: string) => {
   //   const [size, unit] = sizeString.split(' ');
@@ -732,7 +578,7 @@ const LibraryHomepage = () => {
               className={styles.searchInput}
             />
           </div>
-          <NewFile activeSection={activeSection} />
+          <NewFile activeSection={activeSection} handleSuccess={fetchDataFromGraphAPI}/>
 
           {activeSection == 'files' ? (<div
             className={styles.recycleBin}
@@ -804,7 +650,7 @@ const LibraryHomepage = () => {
       return (
         <div className={styles.recycleBinContent}>
           {recycleBinItems.length === 0 ? (
-            <p>No items in recycle bin</p>
+            <p></p>
           ) : (
             recycleBinItems.map((item, index) => (
               <div key={index}>
@@ -822,7 +668,6 @@ const LibraryHomepage = () => {
           sortOption={sortOption}
           checkedFolders={checkedFolders}
           folderData={folderData}
-
         />
       );
     }
@@ -846,18 +691,25 @@ const LibraryHomepage = () => {
         </div>
 
         {loading ? <div className={styles.filesLoader}> <MicroLoader /></div> : fileData.length > 0 ? (
-          fileData.map((data) => (
+          sortedData.map((data) => (
             <div className={styles.libGridItem} key={data.id}>
               <div className={`${styles.file_icon} ${styles.image_div}`}>
                 <img
                   className={styles.cardImg}
-                  src={data.file?.mimeType==='application/pdf'? ICONS.pdf: data.file?.mimeType==="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"?ICONS.excelIcon: data.file?.mimeType==='video/mp4' ? ICONS.viedoImageOne : data.file?.mimeType==='video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType==='video/ogg' ? ICONS.viedoImageOne :data.file?.mimeType==='video/webm' ? ICONS.viedoImageOne : data.file?.mimeType==='video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType==='video/quicktime' ? ICONS.viedoImageOne :'@microsoft.graph.downloadUrl'}
+                  src={data.file?.mimeType==='application/pdf'? ICONS.pdf: data.file?.mimeType==="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"?ICONS.excelIcon: data.file?.mimeType==='video/mp4' ? ICONS.viedoImageOne : data.file?.mimeType==='video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType==='video/ogg' ? ICONS.viedoImageOne :data.file?.mimeType==='video/webm' ? ICONS.viedoImageOne : data.file?.mimeType==='video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType==='video/quicktime' ? ICONS.viedoImageOne :data.file?.mimeType==='text/plain'?'':data['@microsoft.graph.downloadUrl']}
                   alt={`null`}
                   loading='lazy'
                 />
                 <div>
-                  <p className={styles.name}>{data.name.substring(0, 10)}{data.name.length > 10 ? `__.png` : ``}</p>
-                  <p className={styles.size}>{data.size < 1024 ? data.size : Math.round(data.size / 1024)} {data.size < 1024 ? 'byte' : 'kb'}</p>
+                  <p className={styles.name}>{data.name.substring(0, 10)}</p>
+                  <p className={styles.size}>
+                  {data.size < 1024 
+                  ? `${data.size} byte${data.size !== 1 ? 's' : ''}` 
+                  : data.size < 1048576 
+                  ? `${Math.round(data.size / 1024)} KB`
+                  : `${Math.round(data.size / 1048576)} MB`}
+                  </p>
+
                 </div>
               </div>
               <div className={styles.grid_item}>{data.lastModifiedBy.user.displayName}</div>
