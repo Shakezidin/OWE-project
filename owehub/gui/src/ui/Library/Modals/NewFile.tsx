@@ -13,11 +13,12 @@ interface NewFileProps {
   onSort?: (option: string) => void;
   handleSuccess?: () => void,
   uploadPath?: string
+  folderUploadPath?: string
 }
 
 type Option = 'Upload folder' | 'New folder' | 'Upload file';
 
-const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath }) => {
+const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess, uploadPath,folderUploadPath }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isVisibleNewFolder, setIsVisibleNewFolder] = useState(false);
   const [isVisibleuploadFile, setIsVisibleuploadFile] = useState(false);
@@ -27,6 +28,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
   const FolderInputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [file, setFile] = useState<File | null>(null);
+  const [isCreateFolder, setIsCreateFolder] = useState(false)
 
 
 
@@ -54,10 +56,10 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     if (files.length === 0) return;
 
     const accessToken = Cookies.get("myToken")
-    const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || ""}/children`;
+    const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || ""}`;
     try {
       await Promise.all(files.map(async (file) => {
-        const apiUrl = `${apiUrlBase}${file.name}/content`;
+        const apiUrl = `${apiUrlBase}${file.name}:/content`;
         const resp = await axios.put(apiUrl, file, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -122,10 +124,16 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     }
   }, [file]);
 
+  const closeOnSuccess = ()=>{
+    handleSuccess?.()
+    setIsVisible(false)
+    
+  }
+
 
   const handleOptionClickFile = () => {
 
-    fileInputRef.current?.click();
+    setIsCreateFolder(true)
 
   }
   // api code end for uploadFile
@@ -182,9 +190,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
               >
                 + New folder
               </li>
-              {isVisibleNewFolder && (<CreateNewFolderLibrary setIsVisibleNewFolder={setIsVisibleNewFolder} onDelete={function (): void {
-                throw new Error('Function not implemented.');
-              }} />)}
+             
 
             </>
           ) : (
@@ -211,6 +217,10 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
         </ul>
 
       )}
+
+      {
+        isCreateFolder && <CreateNewFolderLibrary uploadPath={folderUploadPath} setIsVisibleNewFolder={setIsCreateFolder} handleSuccess={closeOnSuccess} />
+      }
     </div>
 
   );
