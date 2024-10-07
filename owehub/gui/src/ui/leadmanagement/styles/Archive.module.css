@@ -245,7 +245,6 @@ table tbody tr:hover {
   transform: scale(0.7) translate(-1em, -4em);
   position: relative;
   right: -8px;
-
 }
 
 .pieChart :focus {
@@ -261,17 +260,16 @@ table tbody tr:hover {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-
 }
 
 .history_list_inner {
   display: grid !important;
-grid-template-columns:auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr)
-0.4fr auto !important;
- align-items: center !important;
+  grid-template-columns:
+    auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr)
+    0.4fr auto !important;
+  align-items: center !important;
   padding: 16px !important;
   gap: 16px !important;
-
 }
 
 .user_name {
@@ -543,7 +541,6 @@ input[type='checkbox']:checked {
   padding: 10px 0 0 5px;
 }
 
-
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
 @media (min-width: 768px) {
   .tabs_setting {
@@ -632,8 +629,8 @@ input[type='checkbox']:checked {
   }
   .BOXDelete {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
+    justify-content: center;
+    align-items: center;
     border-radius: 5px;
     margin-bottom: -10px;
     transform: translate(0, -7px);
@@ -756,34 +753,30 @@ input[type='checkbox']:checked {
   .history_list_inner_declined {
     display: grid;
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-   
+
     align-items: center;
   }
-
 }
 @media only screen and (min-width: 668px) and (max-width: 768px) {
-.history_list_inner {
- 
-}
-.UnArchiveButton {
-  padding: 0px 10px 0px 10px;
-  border-radius: 26px;
-  cursor: pointer;
-  width: 85px;
-  height: 33px;
-  font-size: 12px;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
+  .history_list_inner {
+  }
+  .UnArchiveButton {
+    padding: 0px 10px 0px 10px;
+    border-radius: 26px;
+    cursor: pointer;
+    width: 85px;
+    height: 33px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
 
-.UnArchiveButton:hover {
-  background-color: #377cf6;
-  transform: scale(1.05);
-}
-
+  .UnArchiveButton:hover {
+    background-color: #377cf6;
+    transform: scale(1.05);
+  }
 }
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
-
   .history_list_inner_Tablet_View {
     display: grid;
     grid-template-columns: 0.2fr 1fr 1fr 1fr 0.4fr 0.4fr auto !important;
@@ -792,13 +785,13 @@ input[type='checkbox']:checked {
 
   .BOXDelete {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     border-radius: 5px;
     transform: translate(0, -3px);
     padding-top: 5px;
     justify-self: center;
-    align-self: center; 
+    align-self: center;
   }
   .UnArchiveButton {
     background-color: #377cf6;
@@ -813,18 +806,16 @@ input[type='checkbox']:checked {
     font-size: 11px;
     margin-right: -7px;
     transition: all 0.3s ease;
-    font-weight: 500;}
-  
+    font-weight: 500;
+  }
+
   .UnArchiveButton:hover {
     background-color: #377cf6;
     transform: scale(1.05);
   }
-  
-
 
   .chartGrid {
     grid-template-columns: 50% 50%;
-
   }
 
   .lineChart_div {
@@ -980,7 +971,6 @@ input[type='checkbox']:checked {
   justify-content: right !important;
 }
 
-
 .monthSelect {
   margin-top: 0;
   border-radius: 8px;
@@ -1027,7 +1017,6 @@ input[type='checkbox']:checked {
   caret-color: #3e3e3e;
 }
 
-
 .placeholder {
   color: #3e3e3e;
 }
@@ -1051,7 +1040,6 @@ input[type='checkbox']:checked {
   color: #3e3e3e;
 }
 
-
 .menu {
   width: 140px;
   margin-top: 0px;
@@ -1066,7 +1054,6 @@ input[type='checkbox']:checked {
     width: 80px;
   }
 }
-
 
 /* IT WILL BE ALSO USED */
 /* @media only screen and (min-width: 450px) and (max-width: 569px) {

@@ -237,12 +237,10 @@ table tbody tr:hover {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   /* margin-bottom: 16px; */
 }
-.ScheduleBtnNew{
+.ScheduleBtnNew {
   width: 103px;
-
 }
-.ThreeDotsMinor{
-
+.ThreeDotsMinor {
 }
 
 .history_list_inner {
@@ -314,7 +312,7 @@ input[type='checkbox']:checked {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.rescheduleButton:hover{
+.rescheduleButton:hover {
   transform: scale(1.04);
   background-color: #0153e0;
 }
@@ -513,16 +511,16 @@ input[type='checkbox']:checked {
   }
   .rescheduleButton {
     /* all: unset; */
-    background-color: #2979ff; 
+    background-color: #2979ff;
     color: white;
     border: none;
     padding: 8px 0;
-    transform:translate(8px, 30px);
+    transform: translate(8px, 30px);
     width: 140px;
     border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.3s ease; 
+    transition: all 0.3s ease;
   }
   .archiveButton {
     background-color: transparent;
@@ -530,18 +528,18 @@ input[type='checkbox']:checked {
     border: 1px solid #757575;
     /* padding: 8px 16px; */
     border-radius: 20px;
-    transform:translate(16px, 30px);
+    transform: translate(16px, 30px);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  
+
   .archiveButton:hover {
     background-color: #757575;
     color: white;
     transform: scale(1.05);
   }
-  .rescheduleButton:hover{
+  .rescheduleButton:hover {
     transform: scale(1.04);
     background-color: #0153e0;
   }
@@ -897,4 +895,3 @@ input[type='checkbox']:checked {
   padding: 16px;
   gap: 16px;
 }
-

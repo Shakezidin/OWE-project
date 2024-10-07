@@ -115,7 +115,6 @@ const CustomersList = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
 
-
   const getCustomers = async () => {
     try {
       setIsPending(true);
@@ -183,19 +182,23 @@ const CustomersList = () => {
         <h1 className={styles.schedule_detail}>Schedule</h1>
 
         {isSmallScreen && (
-          <button className={styles.calendar_btn_mobile} onClick={toggleCalendar}>
-          <CalendarIcon />
-        </button>
+          <button
+            className={styles.calendar_btn_mobile}
+            onClick={toggleCalendar}
+          >
+            <CalendarIcon />
+          </button>
         )}
-        
       </div>
 
       <div className={`flex justify-between  `}>
-      <div
-  className={`${
-    selectedCustomer === -1 && !isCalendarOpen ? styles.show_mobile : styles.hide_mobile
-  } ${styles.customer_wrapper_list}`}
->
+        <div
+          className={`${
+            selectedCustomer === -1 && !isCalendarOpen
+              ? styles.show_mobile
+              : styles.hide_mobile
+          } ${styles.customer_wrapper_list}`}
+        >
           <div className={styles.sr_top}>
             <div className={styles.pending}>
               <>
@@ -252,8 +255,8 @@ const CustomersList = () => {
                           <span>
                             {customer.home_owner
                               .split(' ')
-                              .map((name) => name[0]) 
-                              .join('') 
+                              .map((name) => name[0])
+                              .join('')
                               .toUpperCase()}{' '}
                           </span>
                         </div>
@@ -371,10 +374,12 @@ const CustomersList = () => {
         </div>
 
         <div
-  className={`${
-    (selectedCustomer > -1 || isCalendarOpen) ? styles.show_mobile : styles.hide_mobile
-  } bg-white ${styles.calendar_wrapper}`}
->
+          className={`${
+            selectedCustomer > -1 || isCalendarOpen
+              ? styles.show_mobile
+              : styles.hide_mobile
+          } bg-white ${styles.calendar_wrapper}`}
+        >
           {!isSurveyScheduled ? (
             <>
               <div className="flex items-center justify-between mb3">
@@ -388,7 +393,7 @@ const CustomersList = () => {
                     setSelectedTime(undefined);
                     setAvailableSlots([]);
                     setSelectedCustomer(-1);
-                    setIsCalendarOpen(false)
+                    setIsCalendarOpen(false);
                   }}
                   className={`${styles.calendar_close_btn_mobile} ml2`}
                 >

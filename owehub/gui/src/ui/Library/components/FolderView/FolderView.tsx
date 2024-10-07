@@ -2,26 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../../../resources/icons/Icons';
 import styles from './folderView.module.css';
 import { format } from 'date-fns';
-import  {FileOrFolder} from '../../types';
+import { FileOrFolder } from '../../types';
 
 interface FolderViewProps {
-  onCheckboxChange: (isChecked: boolean, index: number, id:string) => void;
+  onCheckboxChange: (isChecked: boolean, index: number, id: string) => void;
   sortOption: 'none' | 'name' | 'date' | 'size';
   checkedFolders: number[];
-  folderData:FileOrFolder[];
+  folderData: FileOrFolder[];
   onFolderClick: (folder: FileOrFolder) => void;
 }
-
-
-
-
 
 function FolderView({
   onCheckboxChange,
   sortOption,
   checkedFolders,
   folderData,
-  onFolderClick
+  onFolderClick,
 }: FolderViewProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -47,14 +43,13 @@ function FolderView({
     });
     setMyFolderData(sortedData);
   }, [sortOption]);
-  useEffect(()=>{
+  useEffect(() => {
     setMyFolderData(folderData);
-  },[folderData]);
+  }, [folderData]);
 
-  
   return (
     <div className={styles.folderMain_wrapper}>
-      {myFolderData.map((folder,index) => (
+      {myFolderData.map((folder, index) => (
         <div
           className={styles.folderDiv}
           key={folder.id}
@@ -73,14 +68,16 @@ function FolderView({
               <p className={styles.quantity}>{folder.childCount}</p>
               <input
                 className={`${styles.folderInput} ${
-                  checkedFolders.includes(parseInt(folder.id)) || hoveredIndex === parseInt(folder.id)
+                  checkedFolders.includes(parseInt(folder.id)) ||
+                  hoveredIndex === parseInt(folder.id)
                     ? styles.visible
                     : styles.hidden
                 }`}
                 type="checkbox"
-                onChange={(e) => onCheckboxChange(e.target.checked, index,folder.id)}
+                onChange={(e) =>
+                  onCheckboxChange(e.target.checked, index, folder.id)
+                }
                 checked={checkedFolders.includes(index)}
-
               />
             </div>
           </div>
@@ -88,8 +85,15 @@ function FolderView({
           <div className={styles.folderContent_wrapper}>
             <div className={styles.folder_name}>{folder.name}</div>
             <div className={styles.folderInfo_wrapper}>
-              <div className={styles.foldersize}>{folder.size<1024?folder.size:Math.round(folder.size/1024)} {folder.size<1024?'kb':'mb'}</div>
-              <div className={styles.folderdate}>{format(new Date(folder.lastModifiedDateTime),'dd-MM-yyyy')}</div>
+              <div className={styles.foldersize}>
+                {folder.size < 1024
+                  ? folder.size
+                  : Math.round(folder.size / 1024)}{' '}
+                {folder.size < 1024 ? 'kb' : 'mb'}
+              </div>
+              <div className={styles.folderdate}>
+                {format(new Date(folder.lastModifiedDateTime), 'dd-MM-yyyy')}
+              </div>
             </div>
           </div>
         </div>

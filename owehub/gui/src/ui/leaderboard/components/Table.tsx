@@ -328,12 +328,12 @@ const DateFilter = ({
   const [selectedRanges, setSelectedRanges] = useState(
     selected
       ? [
-        {
-          startDate: selected.start,
-          endDate: selected.end,
-          key: 'selection',
-        },
-      ]
+          {
+            startDate: selected.start,
+            endDate: selected.end,
+            key: 'selection',
+          },
+        ]
       : []
   );
 
@@ -991,10 +991,10 @@ const Table = ({
             disabled={isLoading}
             options={
               role === 'Admin' ||
-                role === TYPE_OF_USER.DEALER_OWNER ||
-                role === TYPE_OF_USER.FINANCE_ADMIN ||
-                role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
-                role === TYPE_OF_USER.ACCOUNT_MANAGER
+              role === TYPE_OF_USER.DEALER_OWNER ||
+              role === TYPE_OF_USER.FINANCE_ADMIN ||
+              role === TYPE_OF_USER.ACCOUNT_EXCUTIVE ||
+              role === TYPE_OF_USER.ACCOUNT_MANAGER
                 ? groupByOptions
                 : groupByOptionss
             }

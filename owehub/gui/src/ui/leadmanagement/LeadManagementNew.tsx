@@ -123,15 +123,15 @@ const LeadManagementNew = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log("ZIP_CODE")
+    console.log('ZIP_CODE');
     // console.log(formData, 'Checked in Console ');
     const errors = validateForm(formData);
     setErrors(errors);
-    console.log(formData.zip_code)
-   
+    console.log(formData.zip_code);
+
     if (Object.keys(errors).length === 0) {
       setLoad(true);
-      
+
       try {
         const response = await postCaller(
           'create_leads',
@@ -149,7 +149,7 @@ const LeadManagementNew = () => {
         if (response.status === 200) {
           toast.success('Lead Created Succesfully');
           resetFormData();
-          navigate('/leadmng-dashboard')
+          navigate('/leadmng-dashboard');
         } else if (response.status >= 201) {
           toast.warn(response.message);
         }
@@ -157,13 +157,10 @@ const LeadManagementNew = () => {
       } catch (error) {
         setLoad(false);
         console.error('Error submitting form:', error);
-        
       }
-      
     }
-   
+
     console.log(formData, 'FORM SUCCESSFULLY SUBMITTED ');
-   
   };
 
   const resetFormData = () => {
