@@ -56,7 +56,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
     if (files.length === 0) return;
 
     const accessToken = Cookies.get("myToken");
-    const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || ""}`;
+    const apiUrlBase = `https://graph.microsoft.com/v1.0/sites/e52a24ce-add5-45f6-aec8-fb2535aaa68e/drives/b!ziQq5dWt9kWuyPslNaqmjstRGXtbSdFJt7ikFQDkwscktioganMSRLFyrCAJTFu-/root:${uploadPath || "/"}`;
 
     try {
       await Promise.all(files.map(async (file) => {
@@ -190,7 +190,7 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
       </button>
       {isVisible && (
         <ul className={classes.dropdownMenu}>
-          {activeSection === 'folders' ? (
+      
             <>
               <>
                 <input id="file-upload" type="file" onChange={handleFolderChange}
@@ -207,35 +207,16 @@ const NewFile: React.FC<NewFileProps> = ({ activeSection, onSort, handleSuccess,
                 </li>
               </>
 
-              <li
+            {activeSection === 'folders' &&  <li
                 className={`${classes.dropdownItem} ${selectedOption === 'New folder' ? classes.selected : ''}`}
                 onClick={handleOptionClickFile}
               >
                 + New folder
-              </li>
+              </li>}
              
 
             </>
-          ) : (
-            <>
-              <input id="file-upload" type="file" onChange={handleFileUpload}
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                className={classes.fileInput}
-                multiple
-              />
-              <li className={`${classes.dropdownItem} ${selectedOption === 'Upload file' ? classes.selected : ''}`}
-                onClick={handleOptionClickFile}>
-                + Upload file
-
-              </li>
-
-
-
-
-
-            </>
-          )}
+       
 
         </ul>
 
