@@ -512,6 +512,8 @@ const LeadManagementDashboard = () => {
   const [leadId, setLeadId] = useState(0);
   const [projects, setProjects] = useState([])
   const isMobile = useMatchMedia('(max-width: 1024px)');
+  const isMobileFixed = useMatchMedia('(min-width: 320px) and (max-width: 480px)');
+
   const [reschedule, setReschedule] = useState(false);
   const [action, setAction] = useState(false);
 
@@ -736,11 +738,11 @@ const LeadManagementDashboard = () => {
             },
             true
           );
-  
+
           if (response.status === 200) {
             const apiData = response.data.leads;
             const formattedData = apiData.reduce(
-              (acc: DefaultData, item: any) => { 
+              (acc: DefaultData, item: any) => {
                 acc[item.status_name] = {
                   name: defaultData[item.status_name].name,
                   value: item.count,
@@ -764,7 +766,7 @@ const LeadManagementDashboard = () => {
           setIsLoading(false);
         }
       };
-  
+
       fetchData();
     }
   }, [isAuthenticated, selectedDates, refresh]);
@@ -785,15 +787,15 @@ const LeadManagementDashboard = () => {
 
   const getAuroraData = async () => {
     try {
-        const response = await axios.get('http://localhost:5000/api/projects');
-        // Handle the response as needed
-        console.log("response.data", response.data);
-        setProjects(response.data.projects)
-        
+      const response = await axios.get('http://localhost:5000/api/projects');
+      // Handle the response as needed
+      console.log("response.data", response.data);
+      setProjects(response.data.projects)
+
     } catch (error) {
-        console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error);
     }
-}
+  }
 
 
   useEffect(() => {
@@ -819,7 +821,7 @@ const LeadManagementDashboard = () => {
           statusId = 5;
           break;
         default:
-        statusId = 0;
+          statusId = 0;
       }
 
       const data = {
@@ -835,10 +837,10 @@ const LeadManagementDashboard = () => {
         page_number: archive ? 1 : page,
       };
 
-      if(statusId == 5) {
+      if (statusId == 5) {
         getAuroraData(); // Call the function to get Aurora Project data
       }
-      else{
+      else {
         dispatch(getLeads(data));
       }
     }
@@ -894,36 +896,36 @@ const LeadManagementDashboard = () => {
   };
 
   // Function to fetch project details
-const fetchProjectDetails = async (projectId: string) => {
-  try {
-    const response = await axios.get(`http://localhost:5000/api/projects/${projectId}`);
-    setSelectedProject(response.data); // Set the selected project details
-    fetchDesigns(projectId); // Fetch designs for the selected project
-  } catch (error) {
-    console.error('Error fetching project details:', error);
-  }
-};
+  const fetchProjectDetails = async (projectId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/projects/${projectId}`);
+      setSelectedProject(response.data); // Set the selected project details
+      fetchDesigns(projectId); // Fetch designs for the selected project
+    } catch (error) {
+      console.error('Error fetching project details:', error);
+    }
+  };
 
-// Function to fetch designs for a project
-const fetchDesigns = async (projectId: string) => {
-  try {
-    const response = await axios.get(`/api/designs?projectId=${projectId}`);
-    setDesigns(response.data.designs); // Set the designs for the selected project
-  } catch (error) {
-    console.error('Error fetching designs:', error);
-  }
-};
+  // Function to fetch designs for a project
+  const fetchDesigns = async (projectId: string) => {
+    try {
+      const response = await axios.get(`/api/designs?projectId=${projectId}`);
+      setDesigns(response.data.designs); // Set the designs for the selected project
+    } catch (error) {
+      console.error('Error fetching designs:', error);
+    }
+  };
 
-// Function to fetch proposal for a design
-const fetchProposal = async (designId: string) => {
-  try {
-    const response = await axios.get(`/api/proposals?designId=${designId}`);
-    setProposal(response.data); // Set the proposal details
-  } catch (error) {
-    console.error('Error fetching proposal:', error);
+  // Function to fetch proposal for a design
+  const fetchProposal = async (designId: string) => {
+    try {
+      const response = await axios.get(`/api/proposals?designId=${designId}`);
+      setProposal(response.data); // Set the proposal details
+    } catch (error) {
+      console.error('Error fetching proposal:', error);
+    }
   }
-}
-  
+
 
   //************************************************************************************************ */
   return (
@@ -1261,16 +1263,16 @@ const fetchProposal = async (designId: string) => {
                       </button>
                     );
                   })}
-                   <button
+                  <button
                     onClick={handleNewButtonClick}
                     className={`${styles.button} ${currentFilter === 'Projects' ? styles.buttonActive : ''}`}
+                  >
+                    <p
+                      className={styles.statusInactive}
                     >
-                     <p
-                          className={styles.statusInactive}
-                        >
-                          
-                        </p>
-                        Aurora Projects
+
+                    </p>
+                    Aurora Projects
                   </button>
                 </div>
 
@@ -1325,12 +1327,12 @@ const fetchProposal = async (designId: string) => {
                       </div>
                     </td>
                   </tr>
-                ) : 
-                
-                currentFilter == "Projects" && projects.length > 0 ? 
-                  projects.map((project:any , index:number) => (
-                    <React.Fragment key={index}>
-                    {/* <tr className={styles.history_lists}>
+                ) :
+
+                  currentFilter == "Projects" && projects.length > 0 ?
+                    projects.map((project: any, index: number) => (
+                      <React.Fragment key={index}>
+                        {/* <tr className={styles.history_lists}>
                           <td className={styles.project_list}>
                          
                            <div style={{fontWeight:"bold"}}>
@@ -1349,7 +1351,7 @@ const fetchProposal = async (designId: string) => {
                             </div>
                           </td>
                     </tr> */}
-                    {/* <tr key={project.id} className={styles.history_lists}>
+                        {/* <tr key={project.id} className={styles.history_lists}>
                           <td className={styles.project_list}>
                          
                            <div style={{fontWeight:"bold"}}>
@@ -1386,170 +1388,176 @@ const fetchProposal = async (designId: string) => {
                             </div>
                           </td>
                         </tr>
+                      </React.Fragment>
+                    ))
+                    :
+                    leadsData.length > 0 ? (
+                      leadsData.map((lead: any, index: number) => (
+                        <React.Fragment key={index}>
+                          <tr className={styles.history_lists}>
+                            <td
+                              className={`${lead.status === 'Declined' ||
+                                lead.status === 'Action Needed'
+                                ? styles.history_list_inner_declined
+                                : styles.history_list_inner
+                                }`}
+                              onClick={(e) => {
+                                setLeadId(lead['leads_id']);
+                                if (
+                                  !(e.target as HTMLElement).closest('label') &&
+                                  !(e.target as HTMLElement).closest(`${styles.chevron_downXX}`)
+                                  // !(e.target as HTMLElement).closest(
+                                  //   lead.status === 'Accepted' && isMobileFixed
+                                  //     ? `.${styles.chevron_downAccepted}`
+                                  //     : `.${styles.chevron_down}`
+                                  // )
+                                ) {
+                                  if (
+                                    currentFilter !== 'Declined' &&
+                                    currentFilter !== 'Action Needed'
+                                  ) {
+                                    handleOpenModal();
+                                    setReschedule(false);
+                                  }
+
+                                }
+                              }}
+                            >
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  checked={selectedLeads.includes(lead['leads_id'])}
+                                  onChange={() =>
+                                    handleLeadSelection(lead['leads_id'])
+                                  }
+                                />
+                              </label>
+                              <div
+                                className={styles.user_name}
+                                onClick={() =>
+                                  currentFilter == 'Pending' &&
+                                  handleDetailModal(lead)
+                                }
+                              >
+                                <h2>
+                                  {lead.first_name} {lead.last_name}
+                                </h2>
+                                <p style={{ color: getStatusColor(currentFilter) }}>
+                                  {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
+                                </p>
+                              </div>
+                              <div className={styles.phone_number}>
+                                {lead.phone_number}
+                              </div>
+                              <div className={styles.email}>
+                                <span>
+                                  {lead.email_id}
+                                </span>
+
+                              </div>
+                              <div className={styles.address}>
+                                {lead?.street_address
+                                  ? lead.street_address.length >= 20
+                                    ? `${lead.street_address.slice(0, 45)}...`
+                                    : lead.street_address
+                                  : 'N/A'}
+                              </div>
+
+                              {currentFilter === 'Declined' && (
+                                <div className={styles.actionButtons}>
+                                  <button
+                                    onClick={() => {
+                                      handleOpenModal();
+                                      setReschedule(true);
+                                    }}
+                                    className={styles.rescheduleButton}
+                                  >
+                                    Reschedule
+                                  </button>
+                                  {isTablet ? (
+                                    <button
+                                      onClick={() => handleArchive(lead)}
+                                      className={styles.archiveButton}
+                                    >
+                                      <img src={ICONS.declinedArchive} />
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleOpenArcModal()}
+                                      className={styles.archiveButton}
+                                    >
+                                      Archive
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+
+                              {currentFilter === 'Action Needed' && (
+                                <div className={styles.actionButtons}>
+                                  <button
+                                    onClick={() => {
+                                      if (lead.action_needed_message === "Update Status") {
+                                        handleOpenModal();
+                                        setAction(true);
+                                      }
+                                    }}
+                                    className={styles.rescheduleButton}
+                                  >
+                                    {lead.action_needed_message === "Update Status" ? "Update Status" : "Create Proposal"}
+                                  </button>
+                                </div>
+                              )}
+
+                              <div
+                                // className={lead.status === 'Accepted' && isMobileFixed ? styles.chevron_downAccepted : styles.chevron_down}
+                                className={styles.chevron_down}
+                                onClick={() => handleChevronClick(lead['leads_id'])}
+                              >
+                                <img
+                                  src={
+                                    toggledId.includes(lead['leads_id'])
+                                      ? ICONS.chevronUp
+                                      : ICONS.chevronDown
+                                  }
+                                  alt={
+                                    toggledId.includes(lead['leads_id'])
+                                      ? 'chevronUp-icon'
+                                      : 'chevronDown-icon'
+                                  }
+                                />
+                              </div>
+                            </td>
+                          </tr>
+
+                          {toggledId.includes(lead['leads_id']) && isMobile && (
+                            <tr>
+                              <td colSpan={5} className={styles.detailsRow}>
+                                <div className={''}>{lead.phone_number}</div>
+                                <div className={''}>
+                                  <span>
+                                    {lead.email_id}
+
+                                  </span>
+                                </div>
+                                <div className={''}>
+                                  {lead?.street_address
+                                    ? lead.street_address.length > 20
+                                      ? `${lead.street_address.slice(0, 20)}...`
+                                      : lead.street_address
+                                    : 'N/A'}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
                         </React.Fragment>
                       ))
-                  :
-                leadsData.length > 0 ? (
-                  leadsData.map((lead: any, index: number) => (
-                    <React.Fragment key={index}>
-                      <tr className={styles.history_lists}>
-                        <td
-                          className={`${lead.status === 'Declined' ||
-                            lead.status === 'Action Needed'
-                            ? styles.history_list_inner_declined
-                            : styles.history_list_inner
-                            }`}
-                          onClick={(e) => {
-                            setLeadId(lead['leads_id']);
-                            if (
-                              !(e.target as HTMLElement).closest('label') &&
-                              !(e.target as HTMLElement).closest(`.${styles.chevron_down}`)
-                            ) {
-                              if (
-                                currentFilter !== 'Declined' &&
-                                currentFilter !== 'Action Needed'
-                              ) {
-                                handleOpenModal();
-                                setReschedule(false);
-                              }
-
-                            }
-                          }}
-                        >
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={selectedLeads.includes(lead['leads_id'])}
-                              onChange={() =>
-                                handleLeadSelection(lead['leads_id'])
-                              }
-                            />
-                          </label>
-                          <div
-                            className={styles.user_name}
-                            onClick={() =>
-                              currentFilter == 'Pending' &&
-                              handleDetailModal(lead)
-                            }
-                          >
-                            <h2>
-                              {lead.first_name} {lead.last_name}
-                            </h2>
-                            <p style={{ color: getStatusColor(currentFilter) }}>
-                              {currentFilter === 'Action Needed' ? lead.action_needed_message : currentFilter}
-                            </p>
-                          </div>
-                          <div className={styles.phone_number}>
-                            {lead.phone_number}
-                          </div>
-                          <div className={styles.email}>
-                            <span>
-                              {lead.email_id}
-                            </span>
-                            
-                          </div>
-                          <div className={styles.address}>
-                            {lead?.street_address
-                              ? lead.street_address.length >= 20
-                                ? `${lead.street_address.slice(0, 45)}...`
-                                : lead.street_address
-                              : 'N/A'}
-                          </div>
-
-                          {currentFilter === 'Declined' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  handleOpenModal();
-                                  setReschedule(true);
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                Reschedule
-                              </button>
-                              {isTablet ? (
-                                <button
-                                  onClick={() => handleArchive(lead)}
-                                  className={styles.archiveButton}
-                                >
-                                  <img src={ICONS.declinedArchive} />
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => handleOpenArcModal()}
-                                  className={styles.archiveButton}
-                                >
-                                  Archive
-                                </button>
-                              )}
-                            </div>
-                          )}
-
-                          {currentFilter === 'Action Needed' && (
-                            <div className={styles.actionButtons}>
-                              <button
-                                onClick={() => {
-                                  if (lead.action_needed_message === "Update Status") {
-                                    handleOpenModal();
-                                    setAction(true);
-                                  }
-                                }}
-                                className={styles.rescheduleButton}
-                              >
-                                {lead.action_needed_message === "Update Status" ? "Update Status" : "Create Proposal"}
-                              </button>
-                            </div>
-                          )}
-
-                          <div
-                            className={styles.chevron_down}
-                            onClick={() => handleChevronClick(lead['leads_id'])}
-                          >
-                            <img
-                              src={
-                                toggledId.includes(lead['leads_id'])
-                                  ? ICONS.chevronUp
-                                  : ICONS.chevronDown
-                              }
-                              alt={
-                                toggledId.includes(lead['leads_id'])
-                                  ? 'chevronUp-icon'
-                                  : 'chevronDown-icon'
-                              }
-                            />
-                          </div>
+                    ) : (
+                      <tr style={{ border: 0 }}>
+                        <td colSpan={10}>
+                          <DataNotFound />
                         </td>
                       </tr>
-
-                      {toggledId.includes(lead['leads_id']) && isMobile && (
-                        <tr>
-                          <td colSpan={5} className={styles.detailsRow}>
-                            <div className={''}>{lead.phone_number}</div>
-                            <div className={''}>
-                              <span>
-                                {lead.email_id}
-                                
-                              </span>
-                            </div>
-                            <div className={''}>
-                              {lead?.street_address
-                                ? lead.street_address.length > 20
-                                  ? `${lead.street_address.slice(0, 20)}...`
-                                  : lead.street_address
-                                : 'N/A'}
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <tr style={{ border: 0 }}>
-                    <td colSpan={10}>
-                      <DataNotFound />
-                    </td>
-                  </tr>
-                )}
+                    )}
               </tbody>
             </table>
           )}
