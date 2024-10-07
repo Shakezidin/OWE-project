@@ -1409,8 +1409,9 @@ const fetchProposal = async (designId: string) => {
                                 currentFilter !== 'Declined' &&
                                 currentFilter !== 'Action Needed'
                               ) {
-                                handleOpenModal();
                                 setReschedule(false);
+                                setAction(false);
+                                handleOpenModal();
                               }
 
                             }
