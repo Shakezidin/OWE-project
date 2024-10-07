@@ -205,7 +205,7 @@ table tbody tr:hover {
   transition: all 0.3s ease;
 }
 .filtericon:hover {
-  background-color: #005eff;
+  background-color: #0153e0;
   transform: scale(1.04);
 }
 .filtericon img {
@@ -312,11 +312,11 @@ input[type='checkbox']:checked {
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  transition: all 0.3s ease;
 }
-
-.rescheduleButton:hover {
-  background-color: #1565c0; /* Darker blue on hover */
+.rescheduleButton:hover{
+  transform: scale(1.04);
+  background-color: #0153e0;
 }
 
 .archiveButton {
@@ -327,14 +327,13 @@ input[type='checkbox']:checked {
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .archiveButton:hover {
   background-color: #757575;
   color: white;
+  transform: scale(1.05);
 }
 
 .selectionHeader {
@@ -509,16 +508,62 @@ input[type='checkbox']:checked {
   }
   .history_list_inner {
     display: grid;
-    grid-template-columns: auto 2fr auto !important;
+    grid-template-columns: auto 2fr 1fr auto auto !important ;
     align-items: baseline;
+  }
+  .rescheduleButton {
+    /* all: unset; */
+    background-color: #2979ff; 
+    color: white;
+    border: none;
+    padding: 8px 0;
+    transform:translate(8px, 30px);
+    width: 140px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease; 
+  }
+  .archiveButton {
+    background-color: transparent;
+    color: #757575; /* Gray color */
+    border: 1px solid #757575;
+    /* padding: 8px 16px; */
+    border-radius: 20px;
+    transform:translate(16px, 30px);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .archiveButton:hover {
+    background-color: #757575;
+    color: white;
+    transform: scale(1.05);
+  }
+  .rescheduleButton:hover{
+    transform: scale(1.04);
+    background-color: #0153e0;
   }
   .actionButtons {
     transform: scale(0.7) translate(0, -10px);
+  }
+  .chevron_downAccepted {
+    display: block !important;
+    height: 24px !important;
+    width: 24px !important;
+    transform: translate(-20px, 13px);
+    background-color: #eaecf0;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 5px;
   }
   .chevron_down {
     display: block !important;
     height: 24px !important;
     width: 24px !important;
+    transform: translate(-20px, 13px);
     background-color: #eaecf0;
     display: flex !important;
     justify-content: center !important;

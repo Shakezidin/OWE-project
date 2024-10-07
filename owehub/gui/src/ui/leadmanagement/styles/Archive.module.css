@@ -37,7 +37,6 @@
 .chartGrid {
   display: grid;
   grid-template-columns: 1fr;
-  /* Default to single column for mobile */
   gap: 24px;
   margin-bottom: 24px;
 }
@@ -50,7 +49,6 @@
 
 .cardHeader {
   padding: 16px;
-  /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -89,8 +87,6 @@
 .legendText {
   font-size: 10.71px;
 }
-
-/* Shams */
 .monthSelect {
   background-color: #377cf6;
   color: white;
@@ -114,7 +110,6 @@
   padding: 5px;
   gap: 5px;
   width: 71%;
-  /* overflow: scroll; */
   flex-wrap: wrap;
   border-radius: 22px 0 0 22px;
 }
@@ -205,7 +200,6 @@ table tbody tr:hover {
 .history1 {
   font-size: 12px;
   cursor: pointer;
-  /* font-weight: normal; */
   color: #353232;
 }
 
@@ -250,9 +244,8 @@ table tbody tr:hover {
   gap: 10px;
   transform: scale(0.7) translate(-1em, -4em);
   position: relative;
-  /* top: -2pc; */
   right: -8px;
-  /* position: fixed; */
+
 }
 
 .pieChart :focus {
@@ -262,38 +255,22 @@ table tbody tr:hover {
 .table {
   width: 100%;
   border-collapse: separate;
-  /* border-spacing: 0 16px; */
 }
 
 .history_lists {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-  /* margin-bottom: 16px; */
+
 }
 
 .history_list_inner {
   display: grid !important;
 grid-template-columns:auto minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.4fr)
 0.4fr auto !important;
-/* auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr) minmax(0, 1fr)
-  0.4fr auto !important; */
-  
-    /* auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.9fr) minmax(0, 0.5fr)
-  0.4fr auto !important; */
-    /* auto minmax(0, 0.5fr) minmax(0, 0.5fr) minmax(0, 1fr) minmax(0, 1fr)
-    auto auto !important; */
-    
-  align-items: center !important;
+ align-items: center !important;
   padding: 16px !important;
   gap: 16px !important;
-
-  
-
-
-
-
-
 
 }
 
@@ -343,7 +320,6 @@ input[type='checkbox']:checked {
 
 .cardHeaderFirst {
   padding: 18px 16px 16px 16px;
-  /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -352,7 +328,6 @@ input[type='checkbox']:checked {
 
 .cardHeader {
   padding: 16px;
-  /* border-bottom: 1px solid #e5e7eb; */
   font-weight: bold;
   display: flex;
   justify-content: space-between;
@@ -370,7 +345,6 @@ input[type='checkbox']:checked {
 .actionButtons {
   display: flex;
   gap: 10px;
-  /* Adds space between buttons */
 }
 
 .rescheduleButton {
@@ -386,13 +360,11 @@ input[type='checkbox']:checked {
 
 .rescheduleButton:hover {
   background-color: #1565c0;
-  /* Darker blue on hover */
 }
 
 .archiveButton {
   background-color: transparent;
   color: #757575;
-  /* Gray color */
   border: 1px solid #757575;
   padding: 8px 16px;
   border-radius: 20px;
@@ -423,7 +395,6 @@ input[type='checkbox']:checked {
 
 .closeIcon img {
   cursor: pointer;
-  /* transition: all 0.3s ease; */
 }
 
 .closeIcon img:hover {
@@ -433,7 +404,6 @@ input[type='checkbox']:checked {
 .SecondChildContain {
   display: flex;
   justify-content: flex-end;
-  /* margin-right: 3px !important; */
 }
 
 .closeIcon:hover {
@@ -486,8 +456,7 @@ input[type='checkbox']:checked {
   transition: all 0.3s ease;
 }
 .archieveButtonA:hover {
-  transform: scale(1.09);
-  /* backdrop-filter: #757575; */
+  transform: scale(1.05);
 }
 
 .archieveButton:hover {
@@ -548,7 +517,6 @@ input[type='checkbox']:checked {
   justify-content: space-between;
   align-items: center;
   height: 50px;
-  /* padding: 7px; */
 }
 
 .chevron_down {
@@ -575,11 +543,8 @@ input[type='checkbox']:checked {
   padding: 10px 0 0 5px;
 }
 
-/* -----------------Vaibhav End----------------- */
 
 /* -----------------RESPONSIVE STYLES - MEDIA QUERY----------------- */
-
-/* For tablets and larger screens */
 @media (min-width: 768px) {
   .tabs_setting {
     padding: 10px 15px;
@@ -587,15 +552,12 @@ input[type='checkbox']:checked {
 
   .history_list_inner_declined {
     display: grid;
-    /* grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important; */
     grid-template-columns: 35px 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
     align-items: center;
   }
 
   .chartGrid {
     grid-template-columns: 40% 60%;
-    /* First card 40%, second card 60% */
   }
 
   .lineCard {
@@ -625,9 +587,7 @@ input[type='checkbox']:checked {
   }
 }
 
-/* Smartphones in both portrait and landscape */
 @media only screen and (min-width: 320px) and (max-width: 667px) {
-  /* Styles for smartphones */
   .button {
     transform: scale(0.9);
   }
@@ -672,14 +632,14 @@ input[type='checkbox']:checked {
   }
   .BOXDelete {
     display: flex;
-    justify-content: center; /* Centers the image horizontally inside the flex container */
-    align-items: center; /* Centers the image vertically inside the flex container */
+    justify-content: center; 
+    align-items: center; 
     border-radius: 5px;
     margin-bottom: -10px;
     transform: translate(0, -7px);
     padding-top: 5px;
-    justify-self: center; /* Centers the entire .BOXDelete div horizontally inside the grid cell */
-    align-self: center; /* Centers the .BOXDelete vertically inside the grid cell */
+    justify-self: center;
+    align-self: center;
   }
 
   .hist_date {
@@ -792,34 +752,18 @@ input[type='checkbox']:checked {
   }
 }
 
-/* Tablets in both portrait and landscape */
 @media only screen and (min-width: 481px) and (max-width: 768px) {
-  /* Styles for tablets */
   .history_list_inner_declined {
     display: grid;
     grid-template-columns: 0.5fr 1fr 1fr 2fr 1fr auto !important;
-    /* place-items: center; */
+   
     align-items: center;
-  }
-  @media only screen and (min-width: 481px) and (max-width: 768px) {
-    /* .history_list_inner {
-      display: grid;
-      grid-template-columns: 0.2fr auto 0.4fr 0.4fr 0.2fr !important;
-      align-items: baseline;
-    } */
   }
 
 }
 @media only screen and (min-width: 668px) and (max-width: 768px) {
 .history_list_inner {
-  /* display: grid; */
-  /* grid-template-columns: auto 1fr 1fr 1.5fr 1.5fr auto;
-  align-items: center;
-  padding: 16px;
-  gap: 16px; */
-  /* display: grid;
-  grid-template-columns: 0.2fr auto 0.4fr 0.4fr 0.2fr 0.6fr auto !important;
-  align-items: baseline; */
+ 
 }
 .UnArchiveButton {
   padding: 0px 10px 0px 10px;
@@ -828,7 +772,6 @@ input[type='checkbox']:checked {
   width: 85px;
   height: 33px;
   font-size: 12px;
-  /* margin-right: 9px; */
   transition: all 0.3s ease;
   font-weight: 500;
 }
@@ -839,17 +782,12 @@ input[type='checkbox']:checked {
 }
 
 }
-/* Laptops and small desktops */
 @media only screen and (min-width: 767px) and (max-width: 1025px) {
 
   .history_list_inner_Tablet_View {
     display: grid;
     grid-template-columns: 0.2fr 1fr 1fr 1fr 0.4fr 0.4fr auto !important;
     align-items: baseline;
-    /* display: grid;
-    grid-template-columns: 0.4fr 2fr 1.5fr auto auto auto !important;
-    justify-content: center !important;
-    align-items: start !important; */
   }
 
   .BOXDelete {
@@ -886,7 +824,7 @@ input[type='checkbox']:checked {
 
   .chartGrid {
     grid-template-columns: 50% 50%;
-    /* First card 40%, second card 60% */
+
   }
 
   .lineChart_div {
@@ -894,8 +832,6 @@ input[type='checkbox']:checked {
     /* top: 50px; */
     align-items: center;
     justify-content: center;
-    /* margin-top: 30px;
-          margin-right: 40px; */
     right: 30px;
   }
 
@@ -925,7 +861,6 @@ input[type='checkbox']:checked {
     gap: 10px;
   }
 
-  /* HERE MEDIA SCREEN */
   .leadpagination {
     display: flex !important;
     flex-direction: row !important;
@@ -1045,7 +980,6 @@ input[type='checkbox']:checked {
   justify-content: right !important;
 }
 
-/*---------------- Shams Start-------------------- */
 
 .monthSelect {
   margin-top: 0;
@@ -1087,19 +1021,17 @@ input[type='checkbox']:checked {
   box-shadow: none;
 }
 
-/* Focused state styling for border color when the dropdown is not open */
 .monthSelectFocus:focus-within {
   border-color: #377cf6;
   box-shadow: 0 0 0 1px #377cf6;
   caret-color: #3e3e3e;
 }
 
-/* Placeholder styling */
+
 .placeholder {
   color: #3e3e3e;
 }
 
-/* Option styling */
 .option {
   font-size: 13px;
   color: #3e3e3e;
@@ -1115,12 +1047,11 @@ input[type='checkbox']:checked {
   background-color: #ffffff;
 }
 
-/* Single value styling */
 .singleValue {
   color: #3e3e3e;
 }
 
-/* Menu styling */
+
 .menu {
   width: 140px;
   margin-top: 0px;
@@ -1136,3 +1067,13 @@ input[type='checkbox']:checked {
   }
 }
 
+
+/* IT WILL BE ALSO USED */
+/* @media only screen and (min-width: 450px) and (max-width: 569px) {
+  .history_list_inner {
+    display: grid;
+    grid-template-columns: 0.2fr auto 0.4fr 0.4fr 0.2fr !important;
+    align-items: baseline;
+}
+
+} */
