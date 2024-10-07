@@ -7,25 +7,23 @@ CREATE TABLE IF NOT EXISTS partner_details (
     partner_id BIGINT,
     FOREIGN KEY (partner_id) REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE CASCADE
 );
--- Drop the current foreign key constraints on dealer_owner and dealer_id
+
 ALTER TABLE user_details
-    DROP CONSTRAINT IF EXISTS user_details_dealer_owner_fkey,
-    DROP CONSTRAINT IF EXISTS user_details_dealer_id_fkey;
+ADD COLUMN partner_id BIGINT;
+
+ALTER TABLE user_details
+ADD COLUMN dealer_owner_id BIGINT;
+
 
 -- Add new foreign key constraints to refer to sales_partner_dbhub_schema.item_id
 ALTER TABLE user_details
-    ADD CONSTRAINT user_details_dealer_owner_fkey
-        FOREIGN KEY (dealer_owner)
+    ADD CONSTRAINT user_details_dealerowner_fkey
+        FOREIGN KEY (dealer_owner_id)
         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL,
-    ADD CONSTRAINT user_details_dealer_id_fkey
-        FOREIGN KEY (dealer_id)
+    ADD CONSTRAINT user_details_partner_id_fkey
+        FOREIGN KEY (partner_id)
         REFERENCES sales_partner_dbhub_schema(item_id) ON DELETE SET NULL;
 
-ALTER TABLE user_details
-    ALTER COLUMN dealer_id TYPE BIGINT;
-
-ALTER TABLE user_details
-    ALTER COLUMN dealer_owner TYPE BIGINT;
     
 ALTER TABLE user_details
 ADD COLUMN podio_user BOOLEAN DEFAULT false;
@@ -174,7 +172,7 @@ BEGIN
         password,
         password_change_required,
         reporting_manager,
-        dealer_owner,   
+        dealer_owner_id,   
         role_id,
         user_status,
         user_designation,
@@ -186,7 +184,7 @@ BEGIN
         zipcode,
         country,
         team_id,
-        dealer_id,
+        partner_id,
 	podio_user,
         tables_permissions
     )
@@ -280,7 +278,7 @@ BEGIN
         name = p_name,
         -- db_username = p_db_username,
         reporting_manager = CASE WHEN p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_reporting_manager) LIMIT 1) ELSE NULL END,
-        dealer_owner = CASE WHEN p_dealer_owner IS NOT NULL AND p_dealer_owner != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer_owner) LIMIT 1) ELSE NULL END,
+        dealer_owner_id = CASE WHEN p_dealer_owner IS NOT NULL AND p_dealer_owner != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer_owner) LIMIT 1) ELSE NULL END,
         role_id = CASE WHEN p_role_name IS NOT NULL AND p_role_name != '' THEN (SELECT role_id FROM user_roles WHERE LOWER(role_name) = LOWER(p_role_name) LIMIT 1) ELSE NULL END,
         user_status = COALESCE(NULLIF(p_user_status, ''), NULL),
         user_designation = COALESCE(NULLIF(p_designation, ''), NULL),
@@ -291,7 +289,7 @@ BEGIN
         city = COALESCE(NULLIF(p_city, ''), NULL),
         zipcode = CASE WHEN p_zipcode IS NOT NULL AND p_zipcode != '' THEN (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1) ELSE NULL END,
         country = COALESCE(NULLIF(p_country, ''), NULL),
-        dealer_id = v_dealer_id,
+        partner_id = v_dealer_id,
         tables_permissions = p_tables_permissions,
         updated_at = CURRENT_TIMESTAMP
     WHERE user_code = p_user_code
@@ -313,4 +311,4 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
-COPY user_details (name,user_code,mobile_number,email_id,password,password_change_required,reporting_manager,dealer_id,role_id,user_status,user_designation,description,region,street_address,state,city,zipcode,country,tables_permissions,created_at,updated_at) FROM '/docker-entrypoint-initdb.d/user_details.csv' DELIMITER ',' CSV;
+COPY user_details (name,user_code,mobile_number,email_id,password,password_change_required,reporting_manager,partner_id,role_id,user_status,user_designation,description,region,street_address,state,city,zipcode,country,tables_permissions,created_at,updated_at) FROM '/docker-entrypoint-initdb.d/user_details.csv' DELIMITER ',' CSV;
