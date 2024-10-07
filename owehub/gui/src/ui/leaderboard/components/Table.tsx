@@ -615,8 +615,8 @@ const Table = ({
       // setLeaderTable(tableData.data.leader_board_list
       // );
       setLeaderTable(tableData?.data?.leader_board_list);
-      setTotalCount(tableData.dbRecCount);
-      setTotalStats(tableData.data);
+      setTotalCount(tableData?.dbRecCount);
+      setTotalStats(tableData?.data);
     }
   }, [
     activeHead,
