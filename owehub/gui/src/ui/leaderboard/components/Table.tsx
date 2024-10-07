@@ -1012,7 +1012,7 @@ const Table = ({
               KW
             </div>
             <div
-              onClick={() => isLoading && setActiveHead('count')}
+              onClick={() => !isLoading && setActiveHead('count')}
               className={`tab ${isLoading ? 'disabled-tab' : ''} ${activeHead === 'count' ? 'activehead' : ''}`}
             >
               Count

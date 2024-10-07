@@ -51,9 +51,12 @@ export const ROUTES = {
   CONFIG_APPDA: '/config/ap-pda',
   CONFIG_APDEALER: '/config/ap-dealer',
   CONFIG_DEALERPAYMENTS: '/config/dealer-payments',
+  CONFIG_FINANCE_SCHEDULE: '/config/finance-schedule',
+  CONFIG_SALES_PARTNER_PAY: '/config/sales-partner-commision',
   TEAM_MANAGEMENT_TABLE: '/team-management/:id',
   CALENDAR: '/calendar',
   LIBRARY: '/library',
+
 
   // other routes
   REPORT: '/report',

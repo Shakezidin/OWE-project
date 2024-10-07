@@ -40,6 +40,8 @@ import MyMap from './ui/oweHub/projectTracker/addressMap/MyMap';
 import SaleRepCustomerForm from './ui/scheduler/SaleRepCustomerForm/SaleRepCustomerForm';
 import ArchivedPages from './ui/leadmanagement/ArchievedPages';
 import DealerPayments from './ui/oweHub/configure/dealerPayments/DealerPayments';
+import FinanceSchedule from './ui/oweHub/configure/financeSchedule/financeSchedule';
+import SalesPartnerSchedule from './ui/oweHub/configure/salesPartnerPaySchedule/SalesPartnerSchedule';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -59,6 +61,8 @@ function App() {
       { path: ROUTES.CONFIG_DEALER_CREDIT, element: <DealerCredit /> },
       { path: ROUTES.CONFIG_SLACK, element: <Slack /> },
       { path: ROUTES.CONFIG_DEALERPAYMENTS, element: <DealerPayments /> },
+      { path: ROUTES.CONFIG_FINANCE_SCHEDULE, element: <FinanceSchedule /> },
+      { path: ROUTES.CONFIG_SALES_PARTNER_PAY, element: <SalesPartnerSchedule /> },
     ];
   };
 
