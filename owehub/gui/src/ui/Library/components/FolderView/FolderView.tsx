@@ -65,7 +65,7 @@ function FolderView({
         >
           <div className={styles.createdByWrapper}>
             <p className={styles.createdBy}>Created by</p>
-            <p className={styles.createdByName} style={{flexShrink:0}}>{folder.name}</p>
+            <p className={styles.createdByName} style={{ flexShrink: 0 }}>{folder.name}</p>
           </div>
           <div className={styles.folderIcon_wrapper}>
             <div className={styles.charDiv}>{folder.name.charAt(0)}</div>
@@ -91,7 +91,9 @@ function FolderView({
           <div className={styles.folderContent_wrapper}>
             <div className={styles.folder_name}>{folder.name}</div>
             <div className={styles.folderInfo_wrapper}>
-              <div className={styles.foldersize}>{folder.size < 1024 ? folder.size : Math.round(folder.size / 1024)} {folder.size < 1024 ? 'kb' : 'mb'}</div>
+              <div className={styles.foldersize}> {folder.size > 1024 * 1024
+                ? `${(folder.size / (1024 * 1024)).toFixed(2)} MB`
+                : `${Math.round(folder.size / 1024)} KB`} </div>
               <div className={styles.folderdate}>{format(new Date(folder.lastModifiedDateTime), 'dd-MM-yyyy')}</div>
             </div>
           </div>
