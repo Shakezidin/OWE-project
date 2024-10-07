@@ -248,6 +248,35 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
     }
   };
 
+  const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', options);
+  };
+
+  const calculateRemainingDays = (appointmentDate: string): string => {
+    const currentDate = new Date();
+    const appointmentDateTime = new Date(appointmentDate);
+    const timeDiff = appointmentDateTime.getTime() - currentDate.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    if (daysDiff === 1) {
+      return '1 Day Left';
+    } else if (daysDiff > 1) {
+      return `${daysDiff} Days Left`;
+    } else {
+      return 'Appointment Date Passed';
+    }
+  };
+
   // Function to create project, design, and proposal in sequence
 
   const handleCreateProposal = async () => {
@@ -596,9 +625,11 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                     Appointment Accepted{' '}
                   </span>
                   <span className={classes.ApptSentDate}>
-                    27 Aug ,2024. 12:00 PM
+                    {leadData?.appointment_accepted_date ? formatDate(leadData?.appointment_accepted_date) : ""}
                   </span>
-                  <span className={classes.remaningDate}>6 Days Left</span>
+                  <span className={classes.remaningDate}>
+                    {leadData?.appointment_accepted_date ? calculateRemainingDays(leadData.appointment_accepted_date) : ""}
+                  </span>
                 </div>
 
                 <div className={classes.AfterAppointment}>
@@ -628,7 +659,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       backgroundColor: '#3AC759',
                       color: '#FFFFFF',
                       border: 'none',
-                      pointerEvents: load || loading  ? 'none' : 'auto',
+                      pointerEvents: load || loading ? 'none' : 'auto',
                       opacity: load || loading ? 0.6 : 1,
                       cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
@@ -642,7 +673,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       backgroundColor: '#CD4040',
                       color: '#FFFFFF',
                       border: 'none',
-                      pointerEvents: load || loading  ? 'none' : 'auto',
+                      pointerEvents: load || loading ? 'none' : 'auto',
                       opacity: load || loading ? 0.6 : 1,
                       cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
@@ -656,7 +687,7 @@ const ConfirmaModel: React.FC<EditModalProps> = ({
                       backgroundColor: '#D3D3D3',
                       color: '#888888',
                       border: 'none',
-                      pointerEvents: load || loading  ? 'none' : 'auto',
+                      pointerEvents: load || loading ? 'none' : 'auto',
                       opacity: load || loading ? 0.6 : 1,
                       cursor: load || loading ? 'not-allowed' : 'pointer',
                     }}
