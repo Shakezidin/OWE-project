@@ -27,7 +27,7 @@ type GetLeadsData struct {
 	StreetAddress              string     `json:"street_address"`
 	City                       string     `json:"city"`
 	State                      int64      `json:"state"`
-	Zipcode                    int64      `json:"zipcode"`
+	Zipcode                    string     `json:"zipcode"`
 	ProposalType               string     `json:"proposal_type"`
 	FinanceType                string     `json:"finance_type"`
 	FinanceCompany             string     `json:"finance_company"`
