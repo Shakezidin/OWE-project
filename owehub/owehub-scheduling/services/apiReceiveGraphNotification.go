@@ -78,6 +78,11 @@ func HandleGetGraphNotificationRequest(resp http.ResponseWriter, req *http.Reque
 	}
 }
 
+/**************************************************************************
+* File			: routingBasedOnChangeType.go
+* DESCRIPTION	: 
+* DATE			: 28-Aug-2024
+**************************************************************************/
 func routingBasedOnChangeType(changeType, resource string) error {
 	eventId := getEventIdFromSubsReq(resource)
 	entraId := getEntraIdFromResource(resource)
@@ -106,6 +111,7 @@ func routingBasedOnChangeType(changeType, resource string) error {
 	case "created":
 		//* call function to create an event
 		eventDetails.EventStatus = "created"
+		log.FuncInfoTrace(0, "EVENT CREATED -> metadata: %v", eventDetails)
 	case "updated":
 		attendeeResponse, err := OnEventUpdate(eventId, entraId)
 		if err != nil {
@@ -113,19 +119,27 @@ func routingBasedOnChangeType(changeType, resource string) error {
 		}
 		if attendeeResponse == ResponseTypeDeclined {
 			//* call function to delete the event
+			log.FuncInfoTrace(0, "EVENT UPDATED, SOMEBODY CANCELLED, SO DELETING -> metadata: %v", eventDetails)
 			eventDetails.EventStatus = "deleted"
 		}
 
 		//* else call update function
 		eventDetails.EventStatus = "updated"
+		log.FuncInfoTrace(0, "EVENT UPDATED -> metadata: %v", eventDetails)
 	case "deleted":
 		//* call function to delete the event
 		eventDetails.EventStatus = "deleted"
+		log.FuncInfoTrace(0, "EVENT DELETED -> metadata: %v", eventDetails)
 	default:
 	}
 	return nil
 }
 
+/**************************************************************************
+* File			: ParseEventDetails.go
+* DESCRIPTION	: 
+* DATE			: 28-Aug-2024
+**************************************************************************/
 func ParseEventDetails(event graphmodels.Eventable) (*models.EventDetails, error) {
 	if event == nil {
 		return nil, fmt.Errorf("event is nil")
@@ -162,6 +176,11 @@ func ParseEventDetails(event graphmodels.Eventable) (*models.EventDetails, error
 	}, nil
 }
 
+/**************************************************************************
+* File			: getEventIdFromSubsReq.go
+* DESCRIPTION	: 
+* DATE			: 28-Aug-2024
+**************************************************************************/
 func getEventIdFromSubsReq(resource string) string {
 	var eventID string
 	re := regexp.MustCompile(`Events/([^/]+)$`)
@@ -172,6 +191,11 @@ func getEventIdFromSubsReq(resource string) string {
 	return eventID
 }
 
+/**************************************************************************
+* File			: getEntraIdFromResource.go
+* DESCRIPTION	: 
+* DATE			: 28-Aug-2024
+**************************************************************************/
 func getEntraIdFromResource(resource string) string {
 	var userID string
 	re := regexp.MustCompile(`Users/([^/]+)/`)
