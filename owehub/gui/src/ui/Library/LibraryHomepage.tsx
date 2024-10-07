@@ -27,7 +27,7 @@ const LibraryHomepage = () => {
   const [activeSection, setActiveSection] = useState<'files' | 'folders' | 'dropdown' | null>('files');
   const [isHovered, setIsHovered] = useState(false);
   const [selectedType, setSelectedType] = useState('All');
-  const [sortOption, setSortOption] = useState<'none' | 'name' | 'date' | 'size'>('none');
+  const [sortOption, setSortOption] = useState<'name' | 'date' | 'size'>('date');
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isRecycleBinView, setIsRecycleBinView] = useState(false);
   const [toggleClick, setToggleClick] = useState(false);
@@ -38,154 +38,154 @@ const LibraryHomepage = () => {
   const [selectedDelete, setSelecetedDelete] = useState("");
   const [currentFolder, setCurrentFolder] = useState<FileOrFolder | null>(null);
   const [currentFolderContent, setCurrentFolderContent] = useState<FileOrFolder[]>([]);
-  const [libData, setLibData] = useState([
-    {
-      url: ICONS.pdf,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'UNTD SOLAR_.PDF',
-      size: '34.82 KB',
-      FileType: 'pdf',
-    },
-    {
-      url: ICONS.excelIcon,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'UNTD SOLAR_.Excel',
-      size: '34.82 KB',
-      FileType: 'excel',
-    },
-    {
-      url: ICONS.viedoImageOne,
-      url_play: ICONS.viedoplay,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'Meeting recording.MP4',
-      size: '34.82 mb',
-      FileType: 'mp4',
-      duration: '23.45',
-    },
-    {
-      url: ICONS.pdf,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'UNTD SOLAR_.PDF',
-      size: '34.82 KB',
-      FileType: 'pdf',
-    },
-    {
-      url: ICONS.excelIcon,
-      name: 'Jordan Ulmer',
-      date: '14 sep 2024',
-      iconName: 'UNTD SOLAR_.Excel',
-      size: '30.82 KB',
-      FileType: 'excel',
-    },
-    {
-      url: ICONS.viedoImageOne,
-      url_play: ICONS.viedoplay,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'Meeting recording.MP4',
-      size: '34.82 gb',
-      FileType: 'mp4',
-      duration: '23.45',
-    },
-    {
-      url: ICONS.viedoImageOne,
-      url_play: ICONS.viedoplay,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'Meeting recording.MP4',
-      size: '34.82 gb',
-      FileType: 'mp4',
-      duration: '23.45',
-    },
-    {
-      url: ICONS.imageIcon,
-      name: 'Jordan Ulmer',
-      date: '17 Aug 2024',
-      iconName: 'Screenshot_1234.jpeg',
-      size: '34.82 KB',
-      FileType: 'img',
-    },
-    {
-      url: ICONS.pdf,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'UNTD SOLAR_.PDF',
-      size: '34.82 KB',
-      FileType: 'pdf',
-    },
-    {
-      url: ICONS.excelIcon,
-      name: 'Jordan Ulmer',
-      date: '8 feb 2024',
-      iconName: 'UNTD SOLAR_.Excel',
-      size: '52 KB',
-      FileType: 'excel',
-    },
-    {
-      url: ICONS.viedoImageOne,
-      url_play: ICONS.viedoplay,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'Meeting recording.MP4',
-      size: '26.65 mb',
-      FileType: 'mp4',
-      duration: '23.45',
-    },
-    {
-      url: ICONS.imageIcon,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'Screenshot_1234.jpeg',
-      size: '46.45 KB',
-      FileType: 'img',
-    },
-    {
-      url: ICONS.pdf,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'UNTD SOLAR_.PDF',
-      size: '34.82 KB',
-      FileType: 'pdf',
-    },
-    {
-      url: ICONS.excelIcon,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'UNTD SOLAR_.Excel',
-      size: '34.82 KB',
-      FileType: 'excel',
-    },
-    {
-      url: ICONS.viedoImageOne,
-      url_play: ICONS.viedoplay,
-      name: 'Jordan Ulmer',
-      date: '14 Sep 2024',
-      iconName: 'Meeting recording.MP4',
-      size: '22 mb',
-      FileType: 'mp4',
-      duration: '23.45',
-    },
-    {
-      url: ICONS.imageIcon,
-      name: 'Jordan Ulmer',
-      date: '28 Sep 2024',
-      iconName: 'Screenshot_1234.jpeg',
-      size: '34.82 KB',
-      FileType: 'img',
-    },
-    {
-      url: ICONS.imageIcon,
-      name: 'Jordan Ulmer',
-      date: '3 mar 2024',
-      iconName: 'Screenshot_1234.jpeg',
-      size: '34.82 KB',
-      FileType: 'img',
-    },
-  ]);
+  // const [libData, setLibData] = useState([
+  //   {
+  //     url: ICONS.pdf,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'UNTD SOLAR_.PDF',
+  //     size: '34.82 KB',
+  //     FileType: 'pdf',
+  //   },
+  //   {
+  //     url: ICONS.excelIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'UNTD SOLAR_.Excel',
+  //     size: '34.82 KB',
+  //     FileType: 'excel',
+  //   },
+  //   {
+  //     url: ICONS.viedoImageOne,
+  //     url_play: ICONS.viedoplay,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'Meeting recording.MP4',
+  //     size: '34.82 mb',
+  //     FileType: 'mp4',
+  //     duration: '23.45',
+  //   },
+  //   {
+  //     url: ICONS.pdf,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'UNTD SOLAR_.PDF',
+  //     size: '34.82 KB',
+  //     FileType: 'pdf',
+  //   },
+  //   {
+  //     url: ICONS.excelIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 sep 2024',
+  //     iconName: 'UNTD SOLAR_.Excel',
+  //     size: '30.82 KB',
+  //     FileType: 'excel',
+  //   },
+  //   {
+  //     url: ICONS.viedoImageOne,
+  //     url_play: ICONS.viedoplay,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'Meeting recording.MP4',
+  //     size: '34.82 gb',
+  //     FileType: 'mp4',
+  //     duration: '23.45',
+  //   },
+  //   {
+  //     url: ICONS.viedoImageOne,
+  //     url_play: ICONS.viedoplay,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'Meeting recording.MP4',
+  //     size: '34.82 gb',
+  //     FileType: 'mp4',
+  //     duration: '23.45',
+  //   },
+  //   {
+  //     url: ICONS.imageIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '17 Aug 2024',
+  //     iconName: 'Screenshot_1234.jpeg',
+  //     size: '34.82 KB',
+  //     FileType: 'img',
+  //   },
+  //   {
+  //     url: ICONS.pdf,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'UNTD SOLAR_.PDF',
+  //     size: '34.82 KB',
+  //     FileType: 'pdf',
+  //   },
+  //   {
+  //     url: ICONS.excelIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '8 feb 2024',
+  //     iconName: 'UNTD SOLAR_.Excel',
+  //     size: '52 KB',
+  //     FileType: 'excel',
+  //   },
+  //   {
+  //     url: ICONS.viedoImageOne,
+  //     url_play: ICONS.viedoplay,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'Meeting recording.MP4',
+  //     size: '26.65 mb',
+  //     FileType: 'mp4',
+  //     duration: '23.45',
+  //   },
+  //   {
+  //     url: ICONS.imageIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'Screenshot_1234.jpeg',
+  //     size: '46.45 KB',
+  //     FileType: 'img',
+  //   },
+  //   {
+  //     url: ICONS.pdf,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'UNTD SOLAR_.PDF',
+  //     size: '34.82 KB',
+  //     FileType: 'pdf',
+  //   },
+  //   {
+  //     url: ICONS.excelIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'UNTD SOLAR_.Excel',
+  //     size: '34.82 KB',
+  //     FileType: 'excel',
+  //   },
+  //   {
+  //     url: ICONS.viedoImageOne,
+  //     url_play: ICONS.viedoplay,
+  //     name: 'Jordan Ulmer',
+  //     date: '14 Sep 2024',
+  //     iconName: 'Meeting recording.MP4',
+  //     size: '22 mb',
+  //     FileType: 'mp4',
+  //     duration: '23.45',
+  //   },
+  //   {
+  //     url: ICONS.imageIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '28 Sep 2024',
+  //     iconName: 'Screenshot_1234.jpeg',
+  //     size: '34.82 KB',
+  //     FileType: 'img',
+  //   },
+  //   {
+  //     url: ICONS.imageIcon,
+  //     name: 'Jordan Ulmer',
+  //     date: '3 mar 2024',
+  //     iconName: 'Screenshot_1234.jpeg',
+  //     size: '34.82 KB',
+  //     FileType: 'img',
+  //   },
+  // ]);
 
   const fetchFolderContent = async (folderId: string) => {
     setLoading(true);
@@ -216,6 +216,7 @@ const LibraryHomepage = () => {
   //Ajay Chaudhary Code Start from Here
 
   // const [expirationTime, setExpirationTime] = useState<number | null>(null);
+
   const [isFetchingToken, setIsFetchingToken] = useState(false);
   const getToken = async () => {
     if (isFetchingToken) return; // Prevent duplicate calls
@@ -290,6 +291,10 @@ const LibraryHomepage = () => {
     shared: object;
     childCount: number;
     "@microsoft.graph.downloadUrl": string;
+    url: string;
+    date: string;
+    iconName: string;
+    
     // File size in bytes
     // Include any other properties you expect
   }
@@ -533,40 +538,41 @@ const LibraryHomepage = () => {
     setSearchValue('');
   };
 
-  const filteredData = libData.filter((data) => {
-    const matchesSearch = data.iconName.toLowerCase().includes(searchValue.toLowerCase()) || data.name.toLowerCase().includes(searchValue.toLowerCase());
-    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.FileType === 'excel') || (selectedType === 'PDF Format' && data.FileType === 'pdf') || (selectedType === 'Images' && data.FileType === 'img') || (selectedType === 'Videos' && data.FileType === 'mp4');
+  const filteredData = fileData.filter((data) => {
+    const matchesSearch = data.name.toLowerCase().includes(searchValue.toLowerCase()) || data.lastModifiedBy.user.displayName.toLowerCase().includes(searchValue.toLowerCase());
+    const matchesType = selectedType === 'All' || (selectedType === 'Excel' && data.file?.mimeType === 'excel') || (selectedType === 'PDF Format' && data.file?.mimeType === 'application/pdf') || (selectedType === 'Images' && data.file?.mimeType === 'image/png') || (selectedType === 'Videos' && data.file?.mimeType === 'mp4');
     return matchesSearch && matchesType;
   });
+  console.log("myFile dATA-", fileData);
 
-  const convertToBytes = (sizeString: string) => {
-    const [size, unit] = sizeString.split(' ');
-    const sizeNumber = parseFloat(size);
-    switch (unit.toLowerCase()) {
-      case 'kb': return sizeNumber * 1024;
-      case 'mb': return sizeNumber * 1024 * 1024;
-      case 'gb': return sizeNumber * 1024 * 1024 * 1024;
-      case 'tb': return sizeNumber * 1024 * 1024 * 1024 * 1024;
-      default: return sizeNumber;
-    }
-  };
+  // const convertToBytes = (sizeString: string) => {
+  //   const [size, unit] = sizeString.split(' ');
+  //   const sizeNumber = parseFloat(size);
+  //   switch (unit) {
+  //     case 'kb': return sizeNumber * 1024;
+  //     case 'mb': return sizeNumber * 1024 * 1024;
+  //     case 'gb': return sizeNumber * 1024 * 1024 * 1024;
+  //     case 'tb': return sizeNumber * 1024 * 1024 * 1024 * 1024;
+  //     default: return sizeNumber;
+  //   }
+  // };
 
   const sortedData = [...filteredData].sort((a, b) => {
     switch (sortOption) {
-      case 'name':
-        return a.iconName.localeCompare(b.iconName);
-      case 'date':
-        const dateA = new Date(a.date.split(' ').reverse().join(' '));
-        const dateB = new Date(b.date.split(' ').reverse().join(' '));
-        return dateB.getTime() - dateA.getTime();
-      case 'size':
-        return convertToBytes(b.size) - convertToBytes(a.size);
-      default:
-        return 0;
+        case 'name':
+            return a.name.localeCompare(b.name);
+        case 'date':
+            const dateA = new Date(a.lastModifiedDateTime);
+            const dateB = new Date(b.lastModifiedDateTime);
+            return dateB.getTime() - dateA.getTime(); // sort descending
+        case 'size':
+            return b.size - a.size; // assuming size is already in bytes
+        default:
+            return 0; // no sorting applied
     }
-  });
+});
 
-  const handleSort = (option: 'none' | 'name' | 'date' | 'size') => {
+  const handleSort = (option: 'name' | 'date' | 'size') => {
     setSortOption(option);
   };
   //check handler
@@ -825,7 +831,7 @@ const LibraryHomepage = () => {
       return (
         <div>
           {selectedType === 'Videos' && <VideosView videoData={sortedData
-            .filter((data) => data.FileType === 'mp4')} />}
+           .filter((data) => data.file?.mimeType === 'mp4')} />}
         </div>
       );
     }
@@ -845,8 +851,9 @@ const LibraryHomepage = () => {
               <div className={`${styles.file_icon} ${styles.image_div}`}>
                 <img
                   className={styles.cardImg}
-                  src={data[`@microsoft.graph.downloadUrl`]}
+                  src={data.file?.mimeType==='application/pdf'? ICONS.pdf: data.file?.mimeType==="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"?ICONS.excelIcon: data.file?.mimeType==='video/mp4' ? ICONS.viedoImageOne : data.file?.mimeType==='video/mpeg' ? ICONS.viedoImageOne : data.file?.mimeType==='video/ogg' ? ICONS.viedoImageOne :data.file?.mimeType==='video/webm' ? ICONS.viedoImageOne : data.file?.mimeType==='video/x-msvideo' ? ICONS.viedoImageOne : data.file?.mimeType==='video/quicktime' ? ICONS.viedoImageOne :'@microsoft.graph.downloadUrl'}
                   alt={`null`}
+                  loading='lazy'
                 />
                 <div>
                   <p className={styles.name}>{data.name.substring(0, 10)}{data.name.length > 10 ? `__.png` : ``}</p>

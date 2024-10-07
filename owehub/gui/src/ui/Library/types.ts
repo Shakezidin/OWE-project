@@ -12,6 +12,9 @@ export interface FileOrFolder {
     "@microsoft.graph.downloadUrl": string;
     createdBy: { user: User };
     lastModifiedBy: { user: User };
+    url: string;
+    date: string;
+    iconName: string;
     // Add any other properties that are used in both components
   }
  
