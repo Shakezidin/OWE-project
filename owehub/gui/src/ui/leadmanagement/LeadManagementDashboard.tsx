@@ -505,6 +505,7 @@ const LeadManagementDashboard = () => {
   const [leadId, setLeadId] = useState(0);
   const isMobile = useMatchMedia('(max-width: 1024px)');
   const [reschedule, setReschedule] = useState(false);
+  const [action, setAction] = useState(false);
 
 
   const paginate = (pageNumber: number) => {
@@ -882,6 +883,7 @@ const LeadManagementDashboard = () => {
         refresh={refresh}
         setRefresh={setRefresh}
         reschedule={reschedule}
+        action={action}
       />
 
 
@@ -1312,12 +1314,6 @@ const LeadManagementDashboard = () => {
                                 : lead.street_address
                               : 'N/A'}
                           </div>
-                          {/* <div className={styles.ScheduleBtnNew}>
-                          <button>Schedule</button>
-                          </div>
-                          <div className={styles.ThreeDotsMinor}>
-                            <img src={ThreeDotsImage} alt='Optional-Dot'/>
-                          </div> */}
 
                           {currentFilter === 'Declined' && (
                             <div className={styles.actionButtons}>
@@ -1352,12 +1348,14 @@ const LeadManagementDashboard = () => {
                             <div className={styles.actionButtons}>
                               <button
                                 onClick={() => {
-                                  handleOpenModal();
-                                  setReschedule(true);
+                                  if (lead.action_needed_message === "Update Status") {
+                                    handleOpenModal();
+                                    setAction(true);
+                                  }
                                 }}
                                 className={styles.rescheduleButton}
                               >
-                                Reschedule
+                                {lead.action_needed_message === "Update Status" ? "Update Status" : "Create Proposal"}
                               </button>
                             </div>
                           )}
@@ -1433,7 +1431,7 @@ const LeadManagementDashboard = () => {
                   goToPrevPage={goToPrevPage}
                   perPage={itemsPerPage}
                 />
-          
+
               </div>
             </div>
           )}

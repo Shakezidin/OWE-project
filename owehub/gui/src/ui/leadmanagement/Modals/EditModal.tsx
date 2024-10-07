@@ -33,10 +33,21 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, leadData }) => {
   }, [isOpen]);
 
   const [formData, setFormData] = useState({
-    email_id: leadData?.email_id ? leadData?.email_id : '',
-    mobile_number: leadData?.phone_number ? leadData?.phone_number :  '',
-    address: leadData?.street_address ? leadData?.street_address :'',
+    email_id: '',
+    mobile_number: '',
+    address: '',
   });
+  
+  useEffect(() => {
+    if (leadData) {
+      setFormData({
+        email_id: leadData.email_id || '',
+        mobile_number: leadData.phone_number || '',
+        address: leadData.street_address || '',
+      });
+    }
+  }, [leadData]);
+
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     const lettersAndSpacesPattern = /^[A-Za-z\s]+$/;

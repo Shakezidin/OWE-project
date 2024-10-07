@@ -511,6 +511,7 @@
   margin-top: -16px;
   font-size: 12px;
   margin-bottom: 9px;
+  transition: all 500ms ease;
 }
 
 @media (min-width: 276px) and (max-width: 512px) and (min-height: 620px) and (max-height: 1146px) {
@@ -636,6 +637,7 @@
     font-size: 12px;
     margin-bottom: 9px;
     margin-right: -20px;
+    transition: all 500ms ease;
   }
   .DetailsMcontainer {
     display: flex;
